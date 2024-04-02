@@ -1,6 +1,7 @@
 {
-  "name": "my-turborepo",
+  "name": "klubiq-web",
   "private": true,
+  "author": "Glumia",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
