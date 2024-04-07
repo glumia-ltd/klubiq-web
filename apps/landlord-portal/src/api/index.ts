@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
+import store from '../store';
 
 const api = axios.create({
   //TODO add base URL
@@ -10,7 +11,10 @@ const api = axios.create({
 function AxiosConfig(config: any) {
   //TODO token will be gotten from the store via onAuthStateChanged in firebase
 
-  const token = '';
+  const token = store.getState();
+  console.log(token);
+
+  // const token = '';
 
   config.headers = {};
 
@@ -53,8 +57,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-
 
 export const endpoints = {
   login: () => '/login',
