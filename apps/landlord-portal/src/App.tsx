@@ -1,10 +1,11 @@
-import './App.css';
+import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
+import { Welcome } from './components/Welcome';
 
 function App() {
   return (
-    <>
-      <h1>Welcome to Klubiq!</h1>
-    </>
+    <ThemeContextProvider>
+      <Welcome />
+    </ThemeContextProvider>
   );
 }
 
