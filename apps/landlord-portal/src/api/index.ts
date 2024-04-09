@@ -20,6 +20,9 @@ function AxiosConfig(config: any) {
 
   config.headers['Content-Type'] = 'application/json';
 
+  //TODOS: -  Add correlation ID to headers x-correlation-id
+  // - Add timezone offset  x-client-tzo
+
   config.headers.Authorization = `Bearer ${token}`;
 
   return config;
@@ -59,7 +62,9 @@ api.interceptors.response.use(
 );
 
 export const endpoints = {
-  login: () => '/login',
+  login: () => '/login'
 };
+
+
 
 export { api };

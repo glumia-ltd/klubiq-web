@@ -31,13 +31,20 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
   const STORED_USER_PREFERENCE = storedPreference
     ? storedPreference === 'dark'
     : storedPreference;
-  
-  
+
+  console.log(STORED_USER_PREFERENCE);
+
+  // STORED_USER_PREFERENCE = true if LS is dark, false if LS is light or NULL if nothing in LS
+
   //Get the system preference, this returns true if dark
-  
+
   const USER_SYSTEM_PREFERENCE: boolean = useMediaQuery(
     '(prefers-color-scheme: dark)'
   );
+
+  //USER_SYSTEM_PREFERENCE = true if dark, false otherwise
+
+  // STORED_USER_PREFERENCE ? STORED_USER_PREFERENCE : USER_SYSTEM_PREFERENCE
 
   //Give precedence to the STORED_USER_PREFERENCE from the local storage.
   //If it is null, then select USER_SYSTEM_PREFERENCE through nullish coalescing
