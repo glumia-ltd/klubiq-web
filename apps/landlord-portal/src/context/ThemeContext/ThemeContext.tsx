@@ -32,8 +32,6 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
     ? storedPreference === 'dark'
     : storedPreference;
 
-  console.log(STORED_USER_PREFERENCE);
-
   // STORED_USER_PREFERENCE = true if LS is dark, false if LS is light or NULL if nothing in LS
 
   //Get the system preference, this returns true if dark

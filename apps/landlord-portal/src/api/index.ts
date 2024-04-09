@@ -23,6 +23,8 @@ function AxiosConfig(config: any) {
   //TODOS: -  Add correlation ID to headers x-correlation-id
   // - Add timezone offset  x-client-tzo
 
+  config.headers['X-client-tzo'] = new Date().getTimezoneOffset();
+
   config.headers.Authorization = `Bearer ${token}`;
 
   return config;
@@ -62,9 +64,7 @@ api.interceptors.response.use(
 );
 
 export const endpoints = {
-  login: () => '/login'
+  login: () => '/login',
 };
-
-
 
 export { api };
