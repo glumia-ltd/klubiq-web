@@ -5,9 +5,9 @@ const PrivateRoute = () => {
   // TODO: Get auth token
   // const auth = store.getState()
 
-  const auth = { token: 'token' };
+  const auth = { token: '' };
 
-  return auth.token ? <Outlet /> : <Navigate to={'/'} />;
+  return auth.token ? <Outlet /> : <Navigate to={'/login'} replace={true} />;
 };
 
 export default PrivateRoute;
