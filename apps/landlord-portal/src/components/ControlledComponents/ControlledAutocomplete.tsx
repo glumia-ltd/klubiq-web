@@ -11,7 +11,6 @@ import {
   TextField,
 } from '@mui/material';
 
-
 type ControlledAutocompleteProps = {
   formik: any;
   sx?: any;
@@ -63,8 +62,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
           autoComplete
           autoSelect
           value={formik.values[name]}
-          onChange={(event, newValue) => {
-            // event.preventDefault()
+          onChange={(_, newValue) => {
             !disableOnChange
               ? formik.handleChange({
                   target: {
