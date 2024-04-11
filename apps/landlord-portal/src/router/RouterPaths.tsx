@@ -5,12 +5,12 @@ import {
   createRoutesFromElements,
 } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
-import SignUp from "../components/pages/SignUp"
+import SignUp from '../pages/SignUp';
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path='/login'element={<h1>log in will be here</h1>} />
-      <Route path='/signup' element={<SignUp/>}  />
+      <Route path='/login' element={<h1>log in will be here</h1>} />
+      <Route path='/signup' element={<SignUp />} />
       <Route path='*' element={<Navigate to='/login' replace />} />
 
       <Route element={<PrivateRoute />}>

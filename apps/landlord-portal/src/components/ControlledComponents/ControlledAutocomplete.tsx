@@ -1,5 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { FormControl, InputLabel, Autocomplete, MenuItem, FormHelperText, Stack, Typography, TextField } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  Autocomplete,
+  MenuItem,
+  FormHelperText,
+  Stack,
+  Typography,
+  TextField,
+} from '@mui/material';
+
 
 type ControlledAutocompleteProps = {
   formik: any;
@@ -10,8 +21,7 @@ type ControlledAutocompleteProps = {
   options: { value: any; label: string }[];
   inFieldLabel?: boolean;
   [key: string]: any;
-
-}
+};
 
 const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
   formik,
@@ -40,7 +50,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
       )}
       <FormControl
         sx={{ m: 1, minWidth: 230 }}
-        variant="outlined"
+        variant='outlined'
         fullWidth
         error={formik.touched[name] && Boolean(formik.errors[name])}
       >
@@ -48,12 +58,13 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 
         <Autocomplete
           id={props.name}
-          size="small"
+          size='small'
           autoHighlight
           autoComplete
           autoSelect
           value={formik.values[name]}
           onChange={(event, newValue) => {
+            // event.preventDefault()
             !disableOnChange
               ? formik.handleChange({
                   target: {
@@ -100,4 +111,3 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 };
 
 export default ControlledAutocomplete;
-

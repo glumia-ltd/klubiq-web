@@ -3,7 +3,8 @@ import { InputAdornment, IconButton } from '@mui/material';
 import ControlledTextField from './ControlledTextField';
 import { BsEyeFill, BsEyeSlashFill } from 'react-icons/bs';
 
-interface ControlledPasswordFieldProps extends React.ComponentProps<typeof ControlledTextField> {
+interface ControlledPasswordFieldProps
+  extends React.ComponentProps<typeof ControlledTextField> {
   InputProps?: React.ComponentProps<typeof InputAdornment>;
 }
 
@@ -20,7 +21,7 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
       InputProps={{
         ...InputProps,
         endAdornment: (
-          <InputAdornment>
+          <InputAdornment position='end'>
             <IconButton onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <BsEyeFill /> : <BsEyeSlashFill />}
             </IconButton>
@@ -32,4 +33,3 @@ const ControlledPasswordField: React.FC<ControlledPasswordFieldProps> = ({
 };
 
 export default ControlledPasswordField;
-
