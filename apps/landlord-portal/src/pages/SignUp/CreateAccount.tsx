@@ -10,7 +10,7 @@ const CreateAccount: React.FC = () => {
     firstname: yup.string().required('This field is required'),
     companyName: yup.string().required('This field is required'),
     lastname: yup.string().required('This field is required'),
-    password: yup.string().required('Please enter referral code'),
+    password: yup.string().required('Please enter your password'),
     email: yup.string().email().required('Please enter an email'),
   });
 
