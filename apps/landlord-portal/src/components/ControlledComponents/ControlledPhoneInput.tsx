@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { TextField, Stack, Typography } from '@mui/material';
+import { TextField, Stack, Typography, SxProps } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
-import {get} from "lodash-es"
+import { get } from 'lodash-es';
+
 // const styles = (theme: any) => ({
 //   field: {
 //     height: '100%',
@@ -12,7 +14,7 @@ import {get} from "lodash-es"
 
 type ControlledPhoneInputProps = {
   formik: any;
-  sx?: any;
+  sx?: SxProps;
   classes: any;
   InputProps?: any;
   disableOnChange?: boolean;
@@ -20,22 +22,22 @@ type ControlledPhoneInputProps = {
   name: string;
   type?: string;
   inFieldLabel?: boolean;
-  inputProps?: any;
+  // inputProps?: any;
   prioritizeError?: any;
   value?: any;
-}
+};
 
 const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
   formik,
   sx,
   classes,
-  InputProps,
+  // InputProps,
   disableOnChange,
   label,
   name,
-  type,
+  // type,
   inFieldLabel,
-  inputProps,
+  // inputProps,
   prioritizeError,
   ...props
 }) => {
@@ -77,7 +79,8 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
           autoComplete: 'new-password',
           error:
             Boolean(prioritizeError) ||
-            (Boolean(get(formik.touched, name)) && Boolean(get(formik.errors, name))),
+            (Boolean(get(formik.touched, name)) &&
+              Boolean(get(formik.errors, name))),
           helperText:
             prioritizeError ||
             (get(formik.touched, name) && get(formik.errors, name)) ||
@@ -108,5 +111,4 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
   );
 };
 
-export default (ControlledPhoneInput);
-
+export default ControlledPhoneInput;

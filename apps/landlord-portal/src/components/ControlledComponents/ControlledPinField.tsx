@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { Stack, TextField, } from '@mui/material';
+import { Stack, SxProps, TextField, } from '@mui/material';
 
 type ControlledPinFieldProps = {
   formik: any;
-  sx?: any;
+  sx?: SxProps;
   label?: string;
   name: string;
   type?: string;
@@ -11,7 +12,7 @@ type ControlledPinFieldProps = {
   length?: number;
   validate?: any;
   [key: string]: any;
-}
+};
 
 const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
   formik,

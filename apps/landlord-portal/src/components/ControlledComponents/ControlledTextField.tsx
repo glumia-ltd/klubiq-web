@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import {
   TextField,
@@ -7,11 +8,12 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { get } from 'lodash-es';
+import { SxProps } from '@mui/material';
 
 type ControlledTextFieldProps = {
   loading?: boolean;
   formik: any;
-  sx?: any;
+  sx?: SxProps;
   InputProps?: any;
   disableOnChange?: boolean;
   label?: string;

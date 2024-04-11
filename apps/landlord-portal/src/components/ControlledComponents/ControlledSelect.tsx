@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Typography } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Typography, SxProps } from '@mui/material';
 import { get } from 'lodash-es';
 
 type ControlledSelectProps = {
   loading?: boolean;
   formik: any;
-  sx?: any;
+  sx?: SxProps;
   label: string;
   name: string;
   disableOnChange?: boolean;
   options: { value: any; label: string }[];
   inFieldLabel?: boolean;
   [key: string]: any;
-}
+};
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
-  loading,
+  // loading,
   formik,
   sx,
   label,

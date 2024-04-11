@@ -9,11 +9,12 @@ import {
   Stack,
   Typography,
   TextField,
+  SxProps,
 } from '@mui/material';
 
 type ControlledAutocompleteProps = {
   formik: any;
-  sx?: any;
+  sx?: SxProps;
   label: string;
   name: string;
   disableOnChange?: boolean;
