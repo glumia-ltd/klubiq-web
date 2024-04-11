@@ -17,12 +17,12 @@ type ControlledPinFieldProps = {
 const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
   formik,
   sx,
-  label,
+  // label,
   name,
   type,
-  inFieldLabel,
-  length,
-  validate,
+  // inFieldLabel,
+  // length,
+  // validate,
   ...props
 }) => {
   const InputProps = {
