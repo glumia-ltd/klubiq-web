@@ -1,7 +1,7 @@
 import React from 'react';
-import { Stack, Typography, TextField, FormHelperText } from '@mui/material';
+import { Stack, TextField, } from '@mui/material';
 
-type ControlledPinFieldProps {
+type ControlledPinFieldProps = {
   formik: any;
   sx?: any;
   label?: string;
@@ -53,7 +53,6 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
         {...props}
       />
 
-      {/* {formik.touched[name] && <FormHelperText>{formik.errors[name]}</FormHelperText>} */}
     </Stack>
   );
 };

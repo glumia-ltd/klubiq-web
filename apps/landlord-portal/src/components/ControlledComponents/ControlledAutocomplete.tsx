@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, InputLabel, Autocomplete, MenuItem, FormHelperText, Stack, Typography, TextField } from '@mui/material';
 
-type ControlledAutocompleteProps {
+type ControlledAutocompleteProps = {
   formik: any;
   sx?: any;
   label: string;
@@ -10,6 +10,7 @@ type ControlledAutocompleteProps {
   options: { value: any; label: string }[];
   inFieldLabel?: boolean;
   [key: string]: any;
+
 }
 
 const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
@@ -46,7 +47,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
         {inFieldLabel && <InputLabel>{label}</InputLabel>}
 
         <Autocomplete
-          name={name}
+          id={props.name}
           size="small"
           autoHighlight
           autoComplete

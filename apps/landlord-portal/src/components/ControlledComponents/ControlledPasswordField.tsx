@@ -3,7 +3,7 @@ import { InputAdornment, IconButton } from '@mui/material';
 import ControlledTextField from './ControlledTextField';
 import { BsEyeFill, BsEyeSlashFill } from 'react-icons/bs';
 
-type ControlledPasswordFieldProps extends React.ComponentProps<typeof ControlledTextField> {
+interface ControlledPasswordFieldProps extends React.ComponentProps<typeof ControlledTextField> {
   InputProps?: React.ComponentProps<typeof InputAdornment>;
 }
 

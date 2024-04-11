@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Typography, InputAdornment, CircularProgress } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Typography } from '@mui/material';
 import { get } from 'lodash-es';
 
-type ControlledSelectProps {
+type ControlledSelectProps = {
   loading?: boolean;
   formik: any;
   sx?: any;

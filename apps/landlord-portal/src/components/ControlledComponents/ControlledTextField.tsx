@@ -1,8 +1,14 @@
-import React from 'react';
-import { TextField, Stack, Typography, InputAdornment, CircularProgress } from '@mui/material';
-import { get } from 'lodash-es';
+import React from "react";
+import {
+  TextField,
+  Stack,
+  Typography,
+  InputAdornment,
+  CircularProgress,
+} from "@mui/material";
+import { get } from "lodash-es";
 
-type ControlledTextFieldProps {
+type ControlledTextFieldProps = {
   loading?: boolean;
   formik: any;
   sx?: any;
@@ -16,7 +22,7 @@ type ControlledTextFieldProps {
   prioritizeError?: any;
   onFileSelect?: (files: File[]) => void;
   [key: string]: any;
-}
+};
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
   loading,
@@ -37,7 +43,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
     if (disableOnChange) {
       return;
     }
-    if (type === 'file') {
+    if (type === "file") {
       onFileSelect?.(e.target.files);
     }
     formik.handleChange(e);
@@ -46,16 +52,16 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
   return (
     <Stack
       sx={{
-        justifyContent: 'center',
+        justifyContent: "center",
         minWidth: 150,
         m: 1,
-        flexDirection: 'column',
+        flexDirection: "column",
         ...sx,
       }}
       spacing={0.5}
     >
       {!inFieldLabel && (
-        <Typography fontWeight={500} fontSize={'0.85rem'}>
+        <Typography fontWeight={500} fontSize={"0.85rem"}>
           {label}
         </Typography>
       )}
@@ -66,12 +72,15 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
         size="small"
         variant="outlined"
         label={inFieldLabel && label}
-        type={type || 'text'}
-        value={(props.value !== undefined && props.value) || get(formik.values, name)}
+        type={type || "text"}
+        value={
+          (props.value !== undefined && props.value) || get(formik.values, name)
+        }
         onChange={onChange}
         error={
           Boolean(prioritizeError) ||
-          (Boolean(get(formik.touched, name)) && Boolean(get(formik.errors, name)))
+          (Boolean(get(formik.touched, name)) &&
+            Boolean(get(formik.errors, name)))
         }
         InputProps={{
           endAdornment: loading ? (
@@ -84,7 +93,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
         helperText={
           prioritizeError ||
           (get(formik.touched, name) && get(formik.errors, name)) ||
-          ' '
+          " "
         }
         inputProps={inputProps}
         {...props}
@@ -94,4 +103,3 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 };
 
 export default ControlledTextField;
-

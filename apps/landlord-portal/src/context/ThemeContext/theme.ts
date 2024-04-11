@@ -13,21 +13,21 @@ export const LightTheme: Theme = createTheme({
       dark: "#FF6400",
       contrastText: "#ffffff",
     },
-    primaryLight: {
-      main: "#6699CC",
-      dark: "#0C36A0",
-      contrastText: "#ffffff",
-    },
+    // primaryLight: {
+    //   main: "#6699CC",
+    //   dark: "#0C36A0",
+    //   contrastText: "#ffffff",
+    // },
     background: {
       default: "#ccdbee",
       paper: "#FFFFFF",
     },
-    blue: {
-      main: "#002147",
-    },
-    black: {
-      main: "#1B1B1B",
-    },
+    // blue: {
+    //   main: "#002147",
+    // },
+    // black: {
+    //   main: "#1B1B1B",
+    // },
     
   },
   components: {
@@ -119,13 +119,13 @@ export const LightTheme: Theme = createTheme({
       fontFamily: "Maven Pro, sans-serif",
       letterSpacing: 0,
     },
-    subtitle2lg: {
-      fontWeight: 500,
-      fontSize: "1rem",
-      lineHeight: 1.75,
-      fontFamily: "Maven Pro, sans-serif",
-      letterSpacing: 0,
-    },
+    // subtitle2lg: {
+    //   fontWeight: 500,
+    //   fontSize: "1rem",
+    //   lineHeight: 1.75,
+    //   fontFamily: "Maven Pro, sans-serif",
+    //   letterSpacing: 0,
+    // },
     caption: {
       fontWeight: 400,
       fontSize: "0.75rem",

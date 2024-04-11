@@ -1,18 +1,16 @@
 import React from 'react';
-import { TextField, Stack, Typography, useTheme } from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { TextField, Stack, Typography } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
-import { get } from 'lodash-es';
+import {get} from "lodash-es"
+// const styles = (theme: any) => ({
+//   field: {
+//     height: '100%',
+//   },
+//   countryList: {
+//   },
+// });
 
-const styles = (theme: any) => ({
-  field: {
-    height: '100%',
-  },
-  countryList: {
-  },
-});
-
-type ControlledPhoneInputProps {
+type ControlledPhoneInputProps = {
   formik: any;
   sx?: any;
   classes: any;
@@ -41,7 +39,7 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
   prioritizeError,
   ...props
 }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const handleChange = (value: string) => {
     formik.handleChange({
       target: {
@@ -99,7 +97,7 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
           },
         }}
         placeholder={''}
-        defaultCountry={'ng'}
+        // defaultCountry={'ng'}
         inputClass={classes.field}
         value={props.value || get(formik.values, name)}
         onChange={disableOnChange ? undefined : handleChange}
@@ -110,5 +108,5 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
   );
 };
 
-export default withStyles(styles)(ControlledPhoneInput);
+export default (ControlledPhoneInput);
 
