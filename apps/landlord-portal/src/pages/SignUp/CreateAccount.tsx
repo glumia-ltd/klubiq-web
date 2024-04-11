@@ -11,7 +11,7 @@ const CreateAccount: React.FC = () => {
     companyName: yup.string().required('This field is required'),
     lastname: yup.string().required('This field is required'),
     password: yup.string().required('Please enter your password'),
-    email: yup.string().email().required('Please enter an email'),
+    email: yup.string().email().required('Please enter your email'),
   });
 
   type IValuesType = {
