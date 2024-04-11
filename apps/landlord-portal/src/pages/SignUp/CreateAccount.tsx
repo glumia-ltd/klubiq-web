@@ -14,7 +14,15 @@ const CreateAccount: React.FC = () => {
     email: yup.string().email().required('Please enter an email'),
   });
 
-  const onSubmit = async (values: any) => {
+  type IValuesType = {
+    firstname: string;
+    companyName: string;
+    lastname: string;
+    password: string;
+    email: string;
+  };
+
+  const onSubmit = async (values: IValuesType) => {
     console.log(values, 'hh');
   };
   const formik = useFormik({
