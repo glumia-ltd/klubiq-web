@@ -46,6 +46,7 @@ export const LightTheme: Theme = createTheme({
       styleOverrides: {
         root: {
           background: 'white',
+          height: '2.7rem',
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }
@@ -93,7 +94,7 @@ export const LightTheme: Theme = createTheme({
     },
     h5: {
       fontWeight: 500,
-      fontSize: '30px',
+      fontSize: '2rem',
       lineHeight: 1.5,
       fontFamily: 'Maven Pro, sans-serif',
     },
@@ -150,6 +151,10 @@ export const LightTheme: Theme = createTheme({
       fontFamily: 'Maven Pro, sans-serif',
       letterSpacing: '1px',
       textTransform: 'uppercase',
+    },
+
+    button: {
+      textTransform: 'none',
     },
   },
 });
