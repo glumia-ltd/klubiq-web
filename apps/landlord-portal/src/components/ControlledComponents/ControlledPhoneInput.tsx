@@ -2,7 +2,6 @@
 import React from 'react';
 import { TextField, Stack, Typography, SxProps } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
-import { get } from 'lodash-es';
 
 // const styles = (theme: any) => ({
 //   field: {
@@ -79,11 +78,10 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
           autoComplete: 'new-password',
           error:
             Boolean(prioritizeError) ||
-            (Boolean(get(formik.touched, name)) &&
-              Boolean(get(formik.errors, name))),
+            (Boolean(formik.touched[name]) && Boolean(formik.errors[name])),
           helperText:
             prioritizeError ||
-            (get(formik.touched, name) && get(formik.errors, name)) ||
+            (formik.touched[name] && formik.errors[name]) ||
             ' ',
           sx: {
             'MuiOutlinedInput-input *': {
@@ -102,7 +100,7 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
         placeholder={''}
         // defaultCountry={'ng'}
         inputClass={classes.field}
-        value={props.value || get(formik.values, name)}
+        value={props.value || formik.values[name]}
         onChange={disableOnChange ? undefined : handleChange}
         defaultMask={'... .... .... ...'}
         {...props}

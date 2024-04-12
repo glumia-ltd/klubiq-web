@@ -7,7 +7,6 @@ import {
   InputAdornment,
   CircularProgress,
 } from '@mui/material';
-import { get } from 'lodash-es';
 import { SxProps } from '@mui/material';
 
 type ControlledTextFieldProps = {
@@ -76,13 +75,12 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
         label={inFieldLabel && label}
         type={type || 'text'}
         value={
-          (props.value !== undefined && props.value) || get(formik.values, name)
+          (props.value !== undefined && props.value) || formik.values[name]
         }
         onChange={onChange}
         error={
           Boolean(prioritizeError) ||
-          (Boolean(get(formik.touched, name)) &&
-            Boolean(get(formik.errors, name)))
+          (Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
         }
         InputProps={{
           endAdornment: loading ? (
@@ -94,7 +92,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
         }}
         helperText={
           prioritizeError ||
-          (get(formik.touched, name) && get(formik.errors, name)) ||
+          (formik.touched[name] && formik.errors[name]) ||
           ' '
         }
         inputProps={inputProps}

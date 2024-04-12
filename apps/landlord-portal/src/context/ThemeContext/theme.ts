@@ -1,17 +1,17 @@
-import { Theme, createTheme } from "@mui/material";
+import { Theme, createTheme } from '@mui/material';
 
 export const LightTheme: Theme = createTheme({
   palette: {
-    mode: "light",
+    mode: 'light',
     primary: {
-      main: "#002147",
-      light: "#0096FF",
-      dark: "#1F305E",
+      main: '#002147',
+      light: '#0096FF',
+      dark: '#1F305E',
     },
     secondary: {
-      main: "#FFD700",
-      dark: "#FF6400",
-      contrastText: "#ffffff",
+      main: '#FFD700',
+      dark: '#FF6400',
+      contrastText: '#ffffff',
     },
     // primaryLight: {
     //   main: "#6699CC",
@@ -19,8 +19,8 @@ export const LightTheme: Theme = createTheme({
     //   contrastText: "#ffffff",
     // },
     background: {
-      default: "#ccdbee",
-      paper: "#FFFFFF",
+      default: '#ccdbee',
+      paper: '#FFFFFF',
     },
     // blue: {
     //   main: "#002147",
@@ -28,7 +28,6 @@ export const LightTheme: Theme = createTheme({
     // black: {
     //   main: "#1B1B1B",
     // },
-    
   },
   components: {
     MuiListItemButton: {
@@ -39,96 +38,95 @@ export const LightTheme: Theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: '#FFFFFF',
         },
       },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: "white",
+          background: 'white',
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }
         },
       },
     },
-   
-    MuiGrid:{
+
+    MuiGrid: {
       styleOverrides: {
         root: {
-          padding:"0.3rem!important",
+          padding: '0.3rem!important',
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }
         },
       },
-    }
-
+    },
   },
 
   typography: {
-    fontFamily: "Maven Pro, sans-serif",
+    fontFamily: 'Maven Pro, sans-serif',
     h1: {
       fontWeight: 600,
-      fontSize: "3rem",
+      fontSize: '3rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     h2: {
       fontWeight: 600,
-      fontSize: "2.25rem",
+      fontSize: '2.25rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     h3: {
       fontWeight: 600,
-      fontSize: "2rem",
+      fontSize: '2rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     h4: {
       fontWeight: 600,
-      fontSize: "1.5rem",
+      fontSize: '1.5rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     h5: {
-      fontWeight: 600,
-      fontSize: "1.125rem",
+      fontWeight: 500,
+      fontSize: '30px',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     h6: {
       fontWeight: 600,
-      fontSize: "1rem",
+      fontSize: '1rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     body1: {
       fontWeight: 400,
-      fontSize: "1rem",
+      fontSize: '1rem',
       lineHeight: 1.5,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     body2: {
       fontWeight: 400,
-      fontSize: "0.875rem",
+      fontSize: '0.875rem',
       lineHeight: 1.6,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
     },
     subtitle1: {
       fontWeight: 500,
-      fontSize: "1rem",
+      fontSize: '1rem',
       lineHeight: 1.75,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
       letterSpacing: 0,
     },
     subtitle2: {
       fontWeight: 500,
-      fontSize: "0.875rem",
+      fontSize: '0.875rem',
       lineHeight: 1.75,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
       letterSpacing: 0,
     },
     // subtitle2lg: {
@@ -140,25 +138,25 @@ export const LightTheme: Theme = createTheme({
     // },
     caption: {
       fontWeight: 400,
-      fontSize: "0.75rem",
+      fontSize: '0.75rem',
       lineHeight: 1.6,
-      fontFamily: "Maven Pro, sans-serif",
+      fontFamily: 'Maven Pro, sans-serif',
       letterSpacing: 0,
     },
     overline: {
       fontWeight: 600,
-      fontSize: "0.75rem",
+      fontSize: '0.75rem',
       lineHeight: 2.46,
-      fontFamily: "Maven Pro, sans-serif",
-      letterSpacing: "1px",
-      textTransform: "uppercase",
+      fontFamily: 'Maven Pro, sans-serif',
+      letterSpacing: '1px',
+      textTransform: 'uppercase',
     },
   },
 });
 
 export const DarkTheme: Theme = createTheme({
   palette: {
-    mode: "dark",
+    mode: 'dark',
     // background: {
     //   default: '#212527',
     //   paper: '#292C31',

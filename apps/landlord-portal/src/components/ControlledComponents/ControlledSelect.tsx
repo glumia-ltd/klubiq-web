@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Stack, Typography, SxProps } from '@mui/material';
-import { get } from 'lodash-es';
+
 
 type ControlledSelectProps = {
   loading?: boolean;
@@ -45,7 +45,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
         sx={{ minWidth: 230 }}
         variant="outlined"
         fullWidth
-        error={Boolean(get(formik.touched, name)) && Boolean(get(formik.errors, name))}
+        error={Boolean(formik.touched[name]) && Boolean(formik.errors[name])}
         {...props}
       >
         {inFieldLabel && <InputLabel>{label}</InputLabel>}
@@ -54,7 +54,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
           name={name}
           size="small"
           id={name}
-          value={props.value || get(formik.values, name)}
+          value={props.value || formik.values[name]}
           onChange={!disableOnChange ? formik.handleChange : undefined}
           MenuProps={{ sx: {
             maxHeight: 'calc(100% - 200px)',
@@ -67,7 +67,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
           ))}
         </Select>
         <FormHelperText>
-          {(get(formik.touched, name) && get(formik.errors, name)) || ' '}
+          {(formik.touched[name] && formik.errors[name]) || ' '}
         </FormHelperText>
       </FormControl>
     </Stack>
