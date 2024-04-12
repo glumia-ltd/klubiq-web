@@ -3,15 +3,15 @@ import { Typography, Grid, Card } from '@mui/material';
 import Logo1 from '../../assets/images/octagon.png';
 import Logo2 from '../../assets/images/blueoctagon.png';
 import CreateAccount from './CreateAccount';
-import ContactDetails from './ContactDetails';
+import ContactDetails from './Stepper';
 
 
 const SignUp = () => {
-  const [pageState, setPageState] = useState(1);
+  const [pageState, setPageState] = useState("signup");
 
   return (
     <Grid container spacing={1} sx={{ padding: '4rem' }}>
-      {pageState === 1 && (
+      {pageState === 'signup' && (
         <Grid container spacing={0} mt='1rem'>
           <Grid
             item
@@ -37,7 +37,7 @@ const SignUp = () => {
           >
             <Card
               onClick={() => {
-                console.log('here'), setPageState(2);
+                console.log('here'), setPageState("createaccount");
               }}
               sx={{
                 height: '400px',
@@ -98,8 +98,8 @@ const SignUp = () => {
         </Grid>
       )}
 
-      {pageState === 2 && <CreateAccount />}
-      {pageState === 3 && <ContactDetails />}
+      {pageState === "createaccount" && <CreateAccount />}
+      {pageState === "contactdetails" && <ContactDetails />}
     </Grid>
   );
 };
