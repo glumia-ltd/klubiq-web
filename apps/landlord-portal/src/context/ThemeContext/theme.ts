@@ -47,6 +47,7 @@ export const LightTheme: Theme = createTheme({
         root: {
           background: 'white',
           height: '2.7rem',
+          borderRadius: '0.5rem',
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }
@@ -57,7 +58,7 @@ export const LightTheme: Theme = createTheme({
     MuiGrid: {
       styleOverrides: {
         root: {
-          padding: '0.3rem!important',
+          padding: '0rem!important',
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }

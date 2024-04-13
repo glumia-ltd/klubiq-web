@@ -55,6 +55,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
       sx={{
         justifyContent: 'center',
         minWidth: 150,
+        m:0.5,
         flexDirection: 'column',
         ...sx,
       }}

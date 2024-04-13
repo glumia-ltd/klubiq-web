@@ -56,20 +56,29 @@ const CreateAccount: React.FC = () => {
           container
           spacing={0}
           sx={{
-            alignContent: 'center',
             justifyContent: 'center',
           }}
           component='form'
           onSubmit={formik.handleSubmit}
         >
-          <Grid item xs={12} sm={6} md={6} lg={6} spacing={3}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={6}
+            lg={6}
+            spacing={3}
+            sx={{
+              alignContent: 'center',
+            }}
+          >
             <Grid
               container
-              spacing={0}
               sx={{
                 width: '33rem',
                 margin: '2.7rem 11.6rem 0rem 7.5rem',
               }}
+              spacing={3}
             >
               <Grid
                 item
@@ -95,6 +104,7 @@ const CreateAccount: React.FC = () => {
                   Sign Up and get 30 days free trial.{' '}
                 </Typography>
               </Grid>
+              <Grid container spacing={1}></Grid>
               <Grid item sm={6} xs={12} lg={6}>
                 <ControlledTextField
                   name='firstname'
@@ -209,7 +219,8 @@ const CreateAccount: React.FC = () => {
               background: '#6699CC',
               borderBottomRightRadius: '1.3rem',
               borderBottomLeftRadius: '1.3rem',
-              height: '95vh',
+              height: '97vh',
+              alignSelf: 'start',
             }}
           ></Grid>
         </Grid>

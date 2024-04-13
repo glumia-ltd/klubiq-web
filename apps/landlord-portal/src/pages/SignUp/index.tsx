@@ -9,7 +9,7 @@ const SignUp = () => {
   const [pageState, setPageState] = useState('signup');
 
   return (
-    <Grid container spacing={1} sx={{ padding: '4rem' }}>
+    <Grid container spacing={0} sx={{ padding: '4rem', height: '100vh' }}>
       {pageState === 'signup' && (
         <Grid container spacing={0} mt='1rem'>
           <Grid
