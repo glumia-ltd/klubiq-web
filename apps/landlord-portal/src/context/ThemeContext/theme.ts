@@ -102,13 +102,13 @@ export const LightTheme: Theme = createTheme({
     h6: {
       fontWeight: 600,
       fontSize: '1rem',
-      lineHeight: 1.5,
+      lineHeight: 1,
       fontFamily: 'Maven Pro, sans-serif',
     },
     body1: {
       fontWeight: 400,
       fontSize: '1rem',
-      lineHeight: 1.5,
+      lineHeight: 1,
       fontFamily: 'Maven Pro, sans-serif',
     },
     body2: {

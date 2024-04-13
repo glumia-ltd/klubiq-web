@@ -2,31 +2,33 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
-import PropertyDetails from "./PropertyDetails";
+// import StepLabel from "@mui/material/StepLabel";
+// import StepContent from "@mui/material/StepContent";
 import ContactDetails from "./ContactDetails";
-import { Grid, Button, Typography, Paper } from "@mui/material";
+import PropertyInformation from "./PropertyInformation";
+// import { Grid, Button, Typography, Paper } from "@mui/material";
 import Logo from "../../assets/images/Group 1000002043.png";
-// import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-// import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
+import StepButton from "@mui/material/StepButton";
+import { StepLabel } from "@mui/material";
 
 const steps = [
   {
-    label: "Contact Information",
-    description: "here",
+    label: ["Contact Information", <br />, "Tell us how to reach you"],
+    Icons: <PersonOutlineOutlinedIcon />,
   },
   {
-    label: "Property Information",
-    description: "here",
+    label: ["Property Information", <br />, "Add your first property"],
+    Icons: <PersonAddAlt1OutlinedIcon />,
   },
 ];
 const StepperComponent: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+  // const handleStep = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  // };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -35,107 +37,87 @@ const StepperComponent: React.FC = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
- 
-  
- 
-  
-  
-  // function ColorlibStepIcon(props: StepIconProps) {
-  //   const { active, completed, className } = props;
-  
-  //   const icons: { [index: string]: React.ReactElement } = {
-  //     1: <PersonOutlineOutlinedIcon />,
-  //     2: <PersonAddAlt1OutlinedIcon />,
-  //   };
-  
-  //   return (
-  //     <ColorlibStepIconRoot ownerState={{ completed, active }} className={className}>
-  //       {icons[String(props.icon)]}
-  //     </ColorlibStepIconRoot>
-  //   );
-  // }
-  
 
-  console.log(activeStep, "active");
+  const handleStep = (step: number) => () => {
+    setActiveStep(step);
+  };
+
+  
+  console.log(activeStep, "active", handleStep);
   return (
-    <Grid container spacing={1}>
-      <Grid
-        item
-        xs={2}
-        sm={2}
-        md={2}
-        lg={2}
+    <Box
+      sx={{
+        // width: "440px",
+        // background: "#6699CC",
+        // height: "100vh",
+        display: "flex",
+        // alignItems:"center",
+      }}
+    >
+      <Box
         sx={{
-          height: "100vh",
+          width: "440px",
           background: "#6699CC",
+          height: "100vh",
+          // display: "flex",
+          // alignItems:"center",
         }}
       >
-        <Grid item xs={12} md={12} sm={12} lg={12} mb={"12.5rem"}>
-          <img src={Logo} alt="logo" />
-        </Grid>
+        <img src={Logo} alt="logo" style={{ width: "159px", height: "32px" }} />
 
-        <Grid item xs={12} md={12} sm={12} lg={12}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((step, index) => (
-              <Step key={step.label}>
-
-                <StepLabel
-                  optional={
-                    index === 2 ? (
-                      <Typography variant="caption">Last step</Typography>
-                    ) : null
-                  }
-                >
-                  {step.label}
-                </StepLabel>
-                <StepContent>
-                  <Typography>{step.description}</Typography>
-                  <Box sx={{ mb: 2 }}>
-                    <div>
-                      <Button
-                        variant="contained"
-                        onClick={handleNext}
-                        sx={{ mt: 1, mr: 1 }}
-                      >
-                        {index === steps.length - 1 ? "Finish" : "Continue"}
-                      </Button>
-                      <Button
-                        disabled={index === 0}
-                        onClick={handleBack}
-                        sx={{ mt: 1, mr: 1 }}
-                      >
-                        Back
-                      </Button>
-                    </div>
-                  </Box>
-                </StepContent>
-              </Step>
-            ))}
-          </Stepper>
-          {activeStep === steps.length && (
-            <Paper square elevation={0} sx={{ p: 3 }}>
-              <Typography>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                Reset
-              </Button>
-            </Paper>
-          )}
-        </Grid>
-      </Grid>
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          non-linear
+          sx={{
+            width: "350px",
+            height: "141.27px",
+            marginTop: "380px",
+            marginLeft: "46px",
+            marginRight: "44px",
+          }}
+        >
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel
+              //  StepIconComponent={
+              //   step.Icons
+              // }
+                onClick={handleStep(index)}
+                icon={step.Icons}
+                color="inherit"
+              >
+                {step.label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
 
       {activeStep === 0 && (
-        <Grid item xs={12} sm={10} md={10} lg={10}>
-          <PropertyDetails />
-        </Grid>
+        <Box
+          sx={{
+            height: "100vh",
+          }}
+        >
+          <ContactDetails />{" "}
+        </Box>
       )}
       {activeStep === 1 && (
-        <Grid item xs={12} sm={10} md={10} lg={10}>
-          <ContactDetails />{" "}
-        </Grid>
+        <Box
+          sx={{
+            height: "100vh",
+            // marginTop="5vh"
+            // width: "75vw",
+            // display:"flex",
+            // alignItems: "center",
+            // justifyContent: "center",
+          }}
+        >
+          <PropertyInformation />
+        </Box>
       )}
-    </Grid>
+    </Box>
   );
 };
 
