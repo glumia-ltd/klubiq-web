@@ -10,7 +10,6 @@ import PropertyInformation from "./PropertyInformation";
 import Logo from "../../assets/images/Group 1000002043.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
-import StepButton from "@mui/material/StepButton";
 import { StepLabel } from "@mui/material";
 
 const steps = [
@@ -30,13 +29,7 @@ const StepperComponent: React.FC = () => {
   //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
   // };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+ 
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
