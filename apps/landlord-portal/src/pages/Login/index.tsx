@@ -145,6 +145,7 @@ const Login = () => {
                 xs={12}
                 lg={12}
                 mt={-1}
+                m={0.5}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -160,12 +161,12 @@ const Login = () => {
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
-                    color: '#002147',
+                    color: '#0096FF',
                     fontWeight: '600',
                     cursor: 'pointer',
                   }}
                 >
-                  Forgot password?
+                  Forgot password
                 </Typography>
               </Grid>
 
@@ -174,6 +175,7 @@ const Login = () => {
                 sm={12}
                 xs={12}
                 lg={12}
+                // m={0.5}
                 sx={{
                   alignItems: 'center',
                   textAlign: 'center',
