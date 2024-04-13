@@ -9,41 +9,86 @@ const SignUp = () => {
   const [pageState, setPageState] = useState('signup');
 
   return (
-    <Grid container spacing={0} sx={{ padding: '4rem', height: '100vh' }}>
+    <Grid
+      container
+      spacing={0}
+      sx={{
+        padding: '4rem',
+        height: '100vh',
+      }}
+    >
       {pageState === 'signup' && (
-        <Grid container spacing={0} mt='1rem'>
+        <Grid
+          container
+          spacing={0}
+          mt='1rem'
+          sx={{
+            // border: '2px solid red',
+            alignItems: 'flex-start',
+            height: '100%',
+          }}
+        >
           <Grid
-            item
+            container
             xs={12}
             md={12}
             lg={12}
             sx={{
-              textAlign: 'left',
-              margin: '90px 198px 0px',
+              margin: '6rem 14rem 0rem',
+              // marginLeft: '32%',
+              // marginRight: '32%',
+              alignSelf: 'center',
+              // border: '2px solid green',
               color: '#002147',
               height: '105px',
-              padding: '0px',
+              padding: '0',
             }}
           >
-            <Typography variant='h3' mb={'18px'} sx={{ fontWeight: '700' }}>
-              Create your Klubiq account
-            </Typography>
-            <Typography variant='h5'>I am a:</Typography>
+            <Grid item xs={12} md={12} lg={12}>
+              <Typography
+                variant='h3'
+                mb={'18px'}
+                sx={{
+                  fontWeight: '700',
+                  // border: '2px solid red',
+                  width: 'max-content',
+                }}
+              >
+                Create your Klubiq account
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <Typography
+                variant='h5'
+                sx={{
+                  // border: '2px solid red',
+                  width: 'max-content',
+                }}
+              >
+                I am a:
+              </Typography>
+            </Grid>
           </Grid>
-          <Grid container sx={{ margin: '0px 145px' }}>
+          <Grid
+            container
+            sx={
+              {
+                // margin: '0px 145px',
+                // border: '2px solid yellow',
+              }
+            }
+          >
             <Grid
               item
               xs={12}
-              sm={6}
+              sm={12}
               md={6}
               lg={6}
-              sx={
-                {
-                  // display: 'flex',
-                  // justifyContent: 'right',
-                  // alignItems: 'flex-center',
-                }
-              }
+              sx={{
+                display: 'flex',
+                justifyContent: 'right',
+                alignItems: 'flex-center',
+              }}
             >
               <Card
                 onClick={() => {
@@ -75,7 +120,7 @@ const SignUp = () => {
             <Grid
               item
               xs={12}
-              sm={6}
+              sm={12}
               md={6}
               lg={6}
               sx={{
