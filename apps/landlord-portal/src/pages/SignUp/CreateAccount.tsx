@@ -67,7 +67,7 @@ const CreateAccount: React.FC = () => {
             sm={6}
             md={6}
             lg={6}
-            spacing={3}
+            spacing={1}
             sx={{
               alignContent: 'center',
             }}
