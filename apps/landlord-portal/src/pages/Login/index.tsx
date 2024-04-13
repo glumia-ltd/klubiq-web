@@ -186,6 +186,7 @@ const Login = () => {
                   type='submit'
                   sx={{
                     border: '1px solid #002147',
+                    borderRadius: '0.5rem',
                     color: 'white',
                     background: '#002147',
                     height: '3.1rem',
