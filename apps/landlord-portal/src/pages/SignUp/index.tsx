@@ -44,7 +44,7 @@ const SignUp = () => {
               padding: '0',
             }}
           >
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={6} md={12} lg={12}>
               <Typography
                 variant='h3'
                 mb={'18px'}

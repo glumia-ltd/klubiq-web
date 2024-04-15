@@ -1,30 +1,24 @@
+import { Grid, Typography, Button } from "@mui/material";
 import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import CountryList from "../../helpers/countryList.json";
-import StateList from "../../helpers/stateList.json";
-import { Grid, Typography, Button } from "@mui/material";
+import ControlledCheckBox from "../../components/ControlledComponents/ControlledCheckbox";
 
-import ControlledSelect from "../../components/ControlledComponents/ControlledSelect";
 const ContactDetails: React.FC = () => {
   const validationSchema = yup.object({
-    propertyName: yup.string().required("This field is required"),
-    propertyType: yup.string().required("This field is required"),
-    zip: yup.string().required("This field is required"),
-    street: yup.string().required("Please enter your password"),
-    state: yup.string().required("This field is required"),
-    country: yup.string().required("This field is required"),
-    city: yup.string().required("This field is required"),
+    phoneNumber: yup.string().required("This field is required"),
+    companyName: yup.string().required("This field is required"),
+    address: yup.string().required("This field is required"),
+    mailCheck: yup.bool().oneOf([true], "Please Check Box"),
+    mailCheckTwo: yup.bool().oneOf([true], "Please Check Box"),
   });
 
   type IValuesType = {
-    propertyName: string;
-    propertyType: string;
-    zip: string;
-    street: string;
-    country: string;
-    state: string;
-    city: string;
+    companyName: string;
+    phoneNumber: string;
+    address: string;
+    mailCheck: Boolean;
+    mailCheckTwo: Boolean;
   };
 
   const onSubmit = async (values: IValuesType) => {
@@ -32,109 +26,78 @@ const ContactDetails: React.FC = () => {
   };
   const formik = useFormik({
     initialValues: {
-      propertyName: "",
-      propertyType: "",
-      city: "",
-      state: "",
-      country: "",
-      zip: "",
-      street: "",
+      companyName: "",
+      phoneNumber: "",
+      address: "",
+      mailCheck: false,
+      mailCheckTwo: false,
     },
     validationSchema,
     onSubmit,
   });
-
-  const states = StateList.map((item) => ({
-    value: item.name,
-    label: item.name,
-  }));
-  const country = CountryList.map((item) => ({
-    value: item.name,
-    label: item.name,
-  }));
-
   return (
     <Grid
       container
       spacing={1}
+      sx={{
+        width: "495px",
+        marginLeft: "300px",
+        marginRight: "339px",
+        marginTop: "139px",
+      }}
       component="form"
       onSubmit={formik.handleSubmit}
-      sx={{
-        alignItems: "center",
-        justifyContent:"flex-end",
-        width:"600px"
-      }}
-    > 
+    >
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h2" color="#002147" mb="0.2rem">
-          Property Information{" "}
+          Contact Details{" "}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h6" color="#002147" mb="1.5rem">
-          Tell us about your property.{" "}
+          Tell us how to reach you!{" "}
         </Typography>
       </Grid>
       <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
-          name="propertyName"
-          label="Property Name"
+          name="companyName"
+          label="Company Name"
           type="text"
           formik={formik}
         />
       </Grid>
       <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
-          name="propertyType"
-          label="Property Type"
+          name="phoneNumber"
+          label="Phone Number"
           formik={formik}
           type="text"
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
-        <ControlledSelect
-          name="country"
-          label="Country"
-          type="text"
-          formik={formik}
-          options={country}
-        />
-      </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
-        <ControlledSelect
-          name="state"
-          label="State"
-          type="text"
-          formik={formik}
-          options={states}
-        />
-      </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
-          name="city"
-          label="City"
+          name="address"
+          label="Adresss"
           type="text"
           formik={formik}
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
-        <ControlledTextField
-          name="street"
-          label="Street"
+      <Grid item sm={12} xs={12} lg={12}>
+        <ControlledCheckBox
+          name="mailCheck"
+          label="Receive email notifications for rent payments"
+          type="text"
+          formik={formik}
+        />
+      </Grid>{" "}
+      <Grid item sm={12} xs={12} lg={12}>
+        <ControlledCheckBox
+          name="mailCheckTwo"
+          label="Remember this computer"
           type="text"
           formik={formik}
         />
       </Grid>
-
-      <Grid item sm={6} xs={12} lg={6}>
-        <ControlledTextField
-          name="zip"
-          label="Zip Code"
-          formik={formik}
-          type="email"
-        />
-      </Grid>
-
       <Grid
         item
         sm={12}
@@ -164,24 +127,6 @@ const ContactDetails: React.FC = () => {
         >
           Save & Continue
         </Button>
-      </Grid>
-      <Grid
-        item
-        sm={12}
-        xs={12}
-        lg={12}
-        sx={{
-          alignItems: "center",
-          textAlign: "center",
-          marginTop: "1rem",
-          cursor: "pointer",
-        }}
-        // onClick={goBackToLogin}
-      >
-        <Typography>
-          Already have an account?{" "}
-          <span style={{ color: "#002147", fontWeight: "600" }}>Sign in</span>
-        </Typography>
       </Grid>
     </Grid>
   );
