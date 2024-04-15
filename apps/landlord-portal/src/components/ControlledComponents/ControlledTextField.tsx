@@ -21,7 +21,6 @@ type ControlledTextFieldProps = {
   inFieldLabel?: boolean;
   inputProps?: any;
   prioritizeError?: any;
-  onFileSelect?: (files: File[] | FileList | null) => void;
   [key: string]: any;
 };
 

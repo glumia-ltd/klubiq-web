@@ -1,27 +1,24 @@
-import {
-  Grid,
-  Typography,
-  Button,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-} from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
 import { useFormik } from "formik";
 import * as yup from "yup";
-// import PropertyInformation from './PropertyInformation';
+import ControlledCheckBox from "../../components/ControlledComponents/ControlledCheckbox";
 
 const ContactDetails: React.FC = () => {
   const validationSchema = yup.object({
     phoneNumber: yup.string().required("This field is required"),
     companyName: yup.string().required("This field is required"),
     address: yup.string().required("This field is required"),
+    mailCheck: yup.bool().oneOf([true], "Please Check Box"),
+    mailCheckTwo: yup.bool().oneOf([true], "Please Check Box"),
   });
 
   type IValuesType = {
     companyName: string;
     phoneNumber: string;
     address: string;
+    mailCheck: Boolean;
+    mailCheckTwo: Boolean;
   };
 
   const onSubmit = async (values: IValuesType) => {
@@ -32,6 +29,8 @@ const ContactDetails: React.FC = () => {
       companyName: "",
       phoneNumber: "",
       address: "",
+      mailCheck: false,
+      mailCheckTwo: false,
     },
     validationSchema,
     onSubmit,
@@ -42,12 +41,9 @@ const ContactDetails: React.FC = () => {
       spacing={1}
       sx={{
         width: "495px",
-        height: "400px",
         marginLeft: "300px",
         marginRight: "339px",
-        marginTop: "150px",
-        marginBottom: "353px",
-        textAlign: "left",
+        marginTop: "139px",
       }}
       component="form"
       onSubmit={formik.handleSubmit}
@@ -78,7 +74,7 @@ const ContactDetails: React.FC = () => {
           type="text"
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={12}>
+      <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
           name="address"
           label="Adresss"
@@ -87,20 +83,20 @@ const ContactDetails: React.FC = () => {
         />
       </Grid>
       <Grid item sm={12} xs={12} lg={12}>
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Receive email notifications for rent payments"
-          />
-        </FormGroup>
+        <ControlledCheckBox
+          name="mailCheck"
+          label="Receive email notifications for rent payments"
+          type="text"
+          formik={formik}
+        />
       </Grid>{" "}
       <Grid item sm={12} xs={12} lg={12}>
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Receive maintenance request alerts"
-          />
-        </FormGroup>
+        <ControlledCheckBox
+          name="mailCheckTwo"
+          label="Remember this computer"
+          type="text"
+          formik={formik}
+        />
       </Grid>
       <Grid
         item
@@ -132,24 +128,6 @@ const ContactDetails: React.FC = () => {
           Save & Continue
         </Button>
       </Grid>
-      {/* <Grid
-        item
-        sm={12}
-        xs={12}
-        lg={12}
-        sx={{
-          alignItems: "center",
-          textAlign: "center",
-          marginTop: "1rem",
-          cursor: "pointer",
-        }}
-        // onClick={goBackToLogin}
-      >
-        <Typography>
-          Already have an account?{" "}
-          <span style={{ color: "#002147", fontWeight: "600" }}>Sign in</span>
-        </Typography>
-      </Grid> */}
     </Grid>
   );
 };

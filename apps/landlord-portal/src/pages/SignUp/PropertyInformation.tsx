@@ -70,7 +70,7 @@ const PropertyInformation: React.FC = () => {
         marginLeft: "300px",
         marginRight: "339px",
         marginTop: "90px",
-        marginBottom: "351px",
+        // marginBottom: "351px",
         textAlign: "left",
       }}
     >
@@ -102,7 +102,7 @@ const PropertyInformation: React.FC = () => {
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "left" }}>
         <Typography variant="h6" color="#002147" mb="0.5rem">
-          Property Address{" "}
+           Property Address{" "}
         </Typography>
       </Grid>
       <Grid item sm={6} xs={12} lg={6}>
