@@ -44,7 +44,6 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
             lg={12}
             sx={{
               margin: `${leftAlignTexts ? '6rem 14rem 0rem' : ''}`,
-              border: '2px solid red',
               justifyContent: 'flex-start',
               alignSelf: 'center',
               textAlign: `${leftAlignTexts ? 'left' : 'center'}`,
