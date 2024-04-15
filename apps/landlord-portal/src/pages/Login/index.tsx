@@ -41,7 +41,9 @@ const Login = () => {
     navigate('/signup');
   };
 
-  const routeToForgotPassword = () => {};
+  const routeToForgotPassword = () => {
+    navigate('/forgotPassword');
+  };
 
   return (
     <LoginLayout handleSubmit={formik.handleSubmit}>

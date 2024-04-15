@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import leftArrow from '../../assets/images/left-arrow.svg';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
   email: yup.string().email().required('Please enter your email'),
@@ -14,8 +15,13 @@ type IValuesType = {
 };
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const onSubmit = async (values: IValuesType) => {
     console.log(values);
+  };
+
+  const routeToLogin = () => {
+    navigate('/login');
   };
 
   const formik = useFormik({
@@ -42,7 +48,6 @@ const ForgotPassword = () => {
               width: '30rem',
               justifyContent: 'center',
               alignItems: 'center',
-             
             }}
           >
             <Grid
@@ -58,6 +63,7 @@ const ForgotPassword = () => {
                 cursor: 'pointer',
                 height: '2rem',
               }}
+              onClick={routeToLogin}
             >
               <img
                 src={leftArrow}
@@ -71,7 +77,7 @@ const ForgotPassword = () => {
             </Grid>
             <Grid
               container
-              mt={-20}
+              mt={-30}
               sx={{
                 height: '25rem',
               }}
