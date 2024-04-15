@@ -39,9 +39,10 @@ const ForgotPassword = () => {
           <Grid
             container
             sx={{
-              width: '33rem',
+              width: '30rem',
               justifyContent: 'center',
               alignItems: 'center',
+             
             }}
           >
             <Grid
@@ -53,22 +54,27 @@ const ForgotPassword = () => {
               sx={{
                 display: 'flex',
                 alignItems: 'flex-end',
+                justifyContent: 'flex-start',
                 cursor: 'pointer',
+                height: '2rem',
               }}
             >
               <img
                 src={leftArrow}
                 alt='back arrow'
-                style={{ alignSelf: 'flex-end', marginRight: '5px' }}
+                style={{
+                  marginRight: '-5px',
+                  marginTop: '-5px',
+                }}
               />
-              <Typography>Back to login</Typography>
+              <Typography mt={2}>Back to login</Typography>
             </Grid>
             <Grid
               container
+              mt={-20}
               sx={{
                 height: '25rem',
               }}
-              mt={-10}
             >
               <Grid
                 item
@@ -115,11 +121,10 @@ const ForgotPassword = () => {
                 sm={12}
                 xs={12}
                 lg={12}
-                // m={0.5}
+                mt={-2}
                 sx={{
                   alignItems: 'center',
                   textAlign: 'center',
-                  marginTop: '1rem',
                 }}
               >
                 <Button

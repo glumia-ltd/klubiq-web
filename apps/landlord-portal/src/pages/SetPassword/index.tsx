@@ -48,6 +48,7 @@ const SetPassword = () => {
           >
             <Grid
               container
+              mt={-10}
               sx={{
                 height: '25rem',
               }}
