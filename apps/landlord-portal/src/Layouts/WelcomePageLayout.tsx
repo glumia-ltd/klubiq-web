@@ -4,6 +4,7 @@ import Logo2 from '../assets/images/blueoctagon.png';
 import { FC } from 'react';
 
 type WelcomePageLayoutType = {
+  leftAlignTexts?: boolean;
   mainText: string;
   subText?: string;
   handleLandLordClick?: () => void;
@@ -15,6 +16,7 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
   subText,
   handleLandLordClick,
   handleTenantClick,
+  leftAlignTexts,
 }) => {
   return (
     <Grid
@@ -41,10 +43,11 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
             md={12}
             lg={12}
             sx={{
-              // margin: '6rem 14rem 0rem',
-              justifyContent: 'center',
+              margin: `${leftAlignTexts ? '6rem 14rem 0rem' : ''}`,
+              border: '2px solid red',
+              justifyContent: 'flex-start',
               alignSelf: 'center',
-              textAlign: 'center',
+              textAlign: `${leftAlignTexts ? 'left' : 'center'}`,
               color: '#002147',
               height: '105px',
               padding: '0',
