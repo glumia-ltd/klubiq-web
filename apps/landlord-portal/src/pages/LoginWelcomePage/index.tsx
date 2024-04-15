@@ -13,7 +13,6 @@ const LoginWelcomePage = () => {
       mainText='Welcome!'
       subText='Where would you like to log in today?'
       handleLandLordClick={handleLandLordClick}
-      leftAlignTexts
     />
   );
 };

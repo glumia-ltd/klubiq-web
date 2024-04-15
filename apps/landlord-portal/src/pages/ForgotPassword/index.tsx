@@ -1,9 +1,9 @@
 import { Button, Grid, Typography } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import LoginLayout from '../../Layouts/LoginLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import leftArrow from '../../assets/images/left-arrow.svg';
 import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
@@ -58,22 +58,15 @@ const ForgotPassword = () => {
               lg={12}
               sx={{
                 display: 'flex',
-                alignItems: 'flex-end',
+                alignItems: 'center',
                 justifyContent: 'flex-start',
                 cursor: 'pointer',
                 height: '2rem',
               }}
               onClick={routeToLogin}
             >
-              <img
-                src={leftArrow}
-                alt='back arrow'
-                style={{
-                  marginRight: '-5px',
-                  marginTop: '-5px',
-                }}
-              />
-              <Typography mt={2}>Back to login</Typography>
+              <ArrowBackIosIcon />
+              <Typography>Back to login</Typography>
             </Grid>
             <Grid
               container
