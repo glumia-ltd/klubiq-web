@@ -5,7 +5,7 @@ const LoginWelcomePage = () => {
   const navigate = useNavigate();
 
   const handleLandLordClick = () => {
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -13,7 +13,6 @@ const LoginWelcomePage = () => {
       mainText='Welcome!'
       subText='Where would you like to log in today?'
       handleLandLordClick={handleLandLordClick}
-      leftAlignTexts
     />
   );
 };

@@ -25,18 +25,18 @@ type ControlledCheckBoxProps = {
 };
 
 const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
-  loading,
+  // loading,
   formik,
   sx,
-  InputProps,
+  // InputProps,
   disableOnChange,
   label,
   name,
-  type,
-  inFieldLabel,
-  inputProps,
-  prioritizeError,
-  onFileSelect,
+  // type,
+  // inFieldLabel,
+  // inputProps,
+  // prioritizeError,
+  // onFileSelect,
   ...props
 }) => {
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../Layouts/LoginLayout';
 import {
   Button,
@@ -12,6 +13,8 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -24,21 +27,34 @@ type IValuesType = {
 
 const Login = () => {
   const navigate = useNavigate();
+
   const onSubmit = async (values: IValuesType) => {
-    console.log(values);
+    const { email, password } = values;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user: any = userCredential.user;
+      console.log(user.accessToken);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const formik = useFormik({
     initialValues: {
-      password: '',
       email: '',
+      password: '',
     },
     validationSchema,
     onSubmit,
   });
 
   const routeToSignUp = () => {
-    navigate('/signup');
+    navigate('/signup', { replace: true });
   };
 
   const routeToForgotPassword = () => {
