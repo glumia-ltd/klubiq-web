@@ -18,11 +18,14 @@ export const router = createBrowserRouter(
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<SignUp />} />
       <Route path='/setPassword' element={<SetPassword />} />
-      <Route path='/forgotPassword' element={<ForgotPassword/> } />
+      <Route path='/forgotPassword' element={<ForgotPassword />} />
       <Route path='*' element={<Navigate to='/login' replace />} />
 
       <Route element={<PrivateRoute />}>
-        <Route path='/' element={<h1>This will contain protected route</h1>} />
+        <Route
+          path='/private'
+          element={<h1>This will contain protected route</h1>}
+        />
       </Route>
     </Route>
   )

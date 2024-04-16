@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Grid, Typography, Button } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
@@ -5,13 +6,23 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import StepperComponent from './Stepper';
-// import { useSnackbar } from "notistack";
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
+import { auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
+import { saveUser } from '../../store/AuthStore/AuthSlice';
 
 const CreateAccount: React.FC = () => {
-  const [page, setPage] = useState('accountcreation');
+  const [
+    page,
+    // setPage
+  ] = useState('accountcreation');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validationSchema = yup.object({
     firstname: yup.string().required('This field is required'),
@@ -32,8 +43,31 @@ const CreateAccount: React.FC = () => {
   };
 
   const onSubmit = async (values: IValuesType) => {
-    console.log(values, 'hh');
-    setPage('stepper');
+    const { email, password } = values;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await sendEmailVerification(userCredential.user);
+
+      //TODO: Find out what user info should be saved
+      const user: any = userCredential.user;
+
+      const userInfo = { email: user.email };
+      console.log(userInfo);
+      console.log(user.accessToken);
+      dispatch(saveUser({ user: userInfo, token: user.accessToken }));
+
+      navigate('/private', { replace: true });
+      localStorage.setItem('token', user.accessToken);
+
+      //TODO: Redirect to a page
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const routeToLogin = () => {

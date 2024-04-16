@@ -5,7 +5,7 @@ const LoginWelcomePage = () => {
   const navigate = useNavigate();
 
   const handleLandLordClick = () => {
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (
