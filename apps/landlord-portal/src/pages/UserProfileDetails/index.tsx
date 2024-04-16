@@ -1,17 +1,16 @@
 import { useState } from "react";
-import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 // import StepLabel from "@mui/material/StepLabel";
 // import StepContent from "@mui/material/StepContent";
 import ContactDetails from "./ContactDetails";
 import PropertyInformation from "./PropertyInformation";
-// import { Grid, Button, Typography, Paper } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import Logo from "../../assets/images/Group 1000002043.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
 import { StepLabel } from "@mui/material";
-
+import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 const steps = [
   {
     label: ["Contact Information", <br />, "Tell us how to reach you"],
@@ -22,41 +21,36 @@ const steps = [
     Icons: <PersonAddAlt1OutlinedIcon />,
   },
 ];
+
 const StepperComponent: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  // const handleStep = () => {
-  //   setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  // };
-
- 
+  
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
 
-  
   console.log(activeStep, "active", handleStep);
   return (
-    <Box
-      sx={{
-        // width: "440px",
-        // background: "#6699CC",
-        // height: "100vh",
-        display: "flex",
-        // alignItems:"center",
-      }}
-    >
-      <Box
+    <Grid container spacing={0}>
+      <Grid
+        container
+        item
+        xs={3}
+        sm={3}
+        md={3}
+        lg={3}
         sx={{
-          width: "440px",
           background: "#6699CC",
-          height: "100vh",
-          // display: "flex",
-          // alignItems:"center",
+          backgroundSize: "cover",
         }}
       >
-        <img src={Logo} alt="logo" style={{ width: "159px", height: "32px" }} />
+        <img
+          src={Logo}
+          alt="logo"
+          style={{ width: "159px", height: "32px", margin: "1rem" }}
+        />
 
         <Stepper
           activeStep={activeStep}
@@ -65,19 +59,18 @@ const StepperComponent: React.FC = () => {
           sx={{
             width: "350px",
             height: "141.27px",
-            marginTop: "380px",
             marginLeft: "46px",
             marginRight: "44px",
+            marginTop: "344px",
+            marginBottom: "244px",
           }}
         >
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel
-              //  StepIconComponent={
-              //   step.Icons
-              // }
+                StepIconComponent={ ()=>step.Icons}
                 onClick={handleStep(index)}
-                icon={step.Icons}
+                // icon={step.Icons}
                 color="inherit"
               >
                 {step.label}
@@ -85,32 +78,50 @@ const StepperComponent: React.FC = () => {
             </Step>
           ))}
         </Stepper>
-      </Box>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: "1rem",
+          }}
+        >
+          <MailOutlinedIcon sx={{ fontSize: "1rem", marginRight: "7px" }} />
+
+          <Typography variant="h6">hello@Klubiq.com</Typography>
+        </div>
+      </Grid>
 
       {activeStep === 0 && (
-        <Box
+        <Grid
+          container
+          item
+          xs={9}
+          sm={9}
+          md={9}
+          lg={9}
           sx={{
             height: "100vh",
           }}
         >
-          <ContactDetails />{" "}
-        </Box>
+          <ContactDetails setActiveStep={setActiveStep} />{" "}
+        </Grid>
       )}
       {activeStep === 1 && (
-        <Box
+        <Grid
+          container
+          item
+          xs={9}
+          sm={9}
+          md={9}
+          lg={9}
           sx={{
             height: "100vh",
-            // marginTop="5vh"
-            // width: "75vw",
-            // display:"flex",
-            // alignItems: "center",
-            // justifyContent: "center",
           }}
         >
           <PropertyInformation />
-        </Box>
+        </Grid>
       )}
-    </Box>
+    </Grid>
   );
 };
 

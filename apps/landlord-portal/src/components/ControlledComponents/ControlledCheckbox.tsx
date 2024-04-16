@@ -39,19 +39,20 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
   onFileSelect,
   ...props
 }) => {
- 
   return (
     <Stack
       sx={{
+        justifyContent: "center",
+        m: 0.5,
+
         minWidth: 150,
         flexDirection: "column",
         ...sx,
       }}
     >
-      
       <FormControl
         required
-        error={(formik.touched[name] && formik.errors[name]) || ' '}
+        error={(formik.touched[name] && formik.errors[name]) || " "}
         variant="standard"
       >
         <FormControlLabel
@@ -61,6 +62,10 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
               onChange={!disableOnChange ? formik.handleChange : undefined}
               name={name}
               id={name}
+              // error={
+              //   Boolean(prioritizeError) ||
+              //   (Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
+              // }
             />
           }
           label={label}
