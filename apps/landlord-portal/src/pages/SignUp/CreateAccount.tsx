@@ -25,7 +25,7 @@ const CreateAccount: React.FC = () => {
     lastname: string;
     password: string;
     email: string;
-    mailCheck: Boolean;
+    mailCheck: boolean;
   };
 
   const onSubmit = async (values: IValuesType) => {
