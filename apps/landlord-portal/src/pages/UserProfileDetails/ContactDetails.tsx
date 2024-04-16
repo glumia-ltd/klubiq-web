@@ -3,26 +3,29 @@ import ControlledTextField from "../../components/ControlledComponents/Controlle
 import { useFormik } from "formik";
 import * as yup from "yup";
 import ControlledCheckBox from "../../components/ControlledComponents/ControlledCheckbox";
-
-const ContactDetails: React.FC = () => {
+interface ContactProps {
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
+}
+const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
   const validationSchema = yup.object({
     phoneNumber: yup.string().required("This field is required"),
     companyName: yup.string().required("This field is required"),
     address: yup.string().required("This field is required"),
-    mailCheck: yup.bool().oneOf([true], "Please Check Box"),
-    mailCheckTwo: yup.bool().oneOf([true], "Please Check Box"),
+    // mailCheck: yup.bool().oneOf([true], "Please Check Box"),
+    // mailCheckTwo: yup.bool().oneOf([true], "Please Check Box"),
   });
 
   type IValuesType = {
     companyName: string;
     phoneNumber: string;
     address: string;
-    mailCheck: Boolean;
-    mailCheckTwo: Boolean;
+    mailCheck: boolean;
+    mailCheckTwo: boolean;
   };
 
   const onSubmit = async (values: IValuesType) => {
     console.log(values, "hh");
+    setActiveStep(1)
   };
   const formik = useFormik({
     initialValues: {
@@ -38,12 +41,12 @@ const ContactDetails: React.FC = () => {
   return (
     <Grid
       container
-      spacing={1}
+      spacing={0.5}
       sx={{
         width: "495px",
-        marginLeft: "300px",
-        marginRight: "339px",
-        marginTop: "139px",
+        height: "550px",
+        margin: "150px 100px 150px 250px",
+        alignItems: "center",
       }}
       component="form"
       onSubmit={formik.handleSubmit}

@@ -1,28 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
-import { Grid, Typography, Button } from '@mui/material';
-import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import StepperComponent from './Stepper';
-import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
-import { useNavigate } from 'react-router-dom';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
-import { auth } from '../../firebase';
-import { useDispatch } from 'react-redux';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
+import { Grid, Typography, Button } from "@mui/material";
+import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import ControlledPasswordField from "../../components/ControlledComponents/ControlledPasswordField";
+// import { useSnackbar } from "notistack";
+import ControlledCheckBox from "../../components/ControlledComponents/ControlledCheckbox";
+import { useNavigate } from "react-router-dom";
 
 const CreateAccount: React.FC = () => {
-  const [
-    page,
-    // setPage
-  ] = useState('accountcreation');
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const validationSchema = yup.object({
     firstname: yup.string().required('This field is required'),
@@ -43,35 +29,8 @@ const CreateAccount: React.FC = () => {
   };
 
   const onSubmit = async (values: IValuesType) => {
-    const { email, password } = values;
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await sendEmailVerification(userCredential.user);
-
-      //TODO: Find out what user info should be saved
-      const user: any = userCredential.user;
-
-      const userInfo = { email: user.email };
-      console.log(userInfo);
-      console.log(user.accessToken);
-      dispatch(saveUser({ user: userInfo, token: user.accessToken }));
-
-      navigate('/private', { replace: true });
-      localStorage.setItem('token', user.accessToken);
-
-      //TODO: Redirect to a page
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const routeToLogin = () => {
-    navigate('/login');
+    console.log(values, "hh");
+    navigate("/signup/profileupdate");
   };
   const formik = useFormik({
     initialValues: {
@@ -88,181 +47,178 @@ const CreateAccount: React.FC = () => {
 
   return (
     <>
-      {page === 'accountcreation' && (
+      <Grid
+        container
+        spacing={0}
+        sx={{
+          justifyContent: "center",
+        }}
+        component="form"
+        onSubmit={formik.handleSubmit}
+      >
         <Grid
-          container
-          spacing={0}
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          lg={6}
+          spacing={1}
           sx={{
-            justifyContent: 'center',
+            alignContent: "center",
           }}
-          component='form'
-          onSubmit={formik.handleSubmit}
         >
           <Grid
-            item
-            xs={12}
-            sm={6}
-            md={6}
-            lg={6}
-            spacing={1}
+            container
             sx={{
-              alignContent: 'center',
+              width: "33rem",
+              margin: "2.7rem 11.6rem 0rem 7.5rem",
             }}
+            spacing={3}
           >
             <Grid
-              container
-              sx={{
-                width: '33rem',
-                margin: '2.7rem 11.6rem 0rem 7.5rem',
-              }}
-              spacing={3}
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              sx={{ textAlign: "center" }}
             >
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                sx={{ textAlign: 'center' }}
-              >
-                <Typography variant='h2' color='#002147' mb='1.5rem'>
-                  Create a Klubiq account{' '}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                sx={{ textAlign: 'center' }}
-              >
-                <Typography variant='h6' color='#002147' mb='1.5rem'>
-                  Sign Up and get 30 days free trial.{' '}
-                </Typography>
-              </Grid>
-              <Grid container spacing={1}></Grid>
-              <Grid item sm={6} xs={12} lg={6}>
-                <ControlledTextField
-                  name='firstname'
-                  label='First Name'
-                  type='text'
-                  formik={formik}
-                />
-              </Grid>
-              <Grid item sm={6} xs={12} lg={6}>
-                <ControlledTextField
-                  name='lastname'
-                  label='Last Name'
-                  formik={formik}
-                  type='text'
-                />
-              </Grid>
+              <Typography variant="h2" color="#002147" mb="1.5rem">
+                Create a Klubiq account{" "}
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              sx={{ textAlign: "center" }}
+            >
+              <Typography variant="h6" color="#002147" mb="1.5rem">
+                Sign Up and get 30 days free trial.{" "}
+              </Typography>
+            </Grid>
+            <Grid container spacing={1}></Grid>
+            <Grid item sm={6} xs={12} lg={6}>
+              <ControlledTextField
+                name="firstname"
+                label="First Name"
+                type="text"
+                formik={formik}
+              />
+            </Grid>
+            <Grid item sm={6} xs={12} lg={6}>
+              <ControlledTextField
+                name="lastname"
+                label="Last Name"
+                formik={formik}
+                type="text"
+              />
+            </Grid>
 
-              <Grid item sm={12} xs={12} lg={12}>
-                <ControlledTextField
-                  name='companyName'
-                  label='Company Name'
-                  type='text'
-                  formik={formik}
-                />
-              </Grid>
+            <Grid item sm={12} xs={12} lg={12}>
+              <ControlledTextField
+                name="companyName"
+                label="Company Name"
+                type="text"
+                formik={formik}
+              />
+            </Grid>
 
-              <Grid item sm={12} xs={12} lg={12}>
-                <ControlledTextField
-                  name='email'
-                  label='Email '
-                  formik={formik}
-                  type='email'
-                />
-              </Grid>
+            <Grid item sm={12} xs={12} lg={12}>
+              <ControlledTextField
+                name="email"
+                label="Email "
+                formik={formik}
+                type="email"
+              />
+            </Grid>
 
-              <Grid item sm={12} xs={12} lg={12}>
-                <ControlledPasswordField
-                  name='password'
-                  label='Password'
-                  type='password'
-                  formik={formik}
-                />
-              </Grid>
+            <Grid item sm={12} xs={12} lg={12}>
+              <ControlledPasswordField
+                name="password"
+                label="Password"
+                type="password"
+                formik={formik}
+              />
+            </Grid>
 
-              <Grid item sm={12} xs={12} lg={12}>
-                <ControlledCheckBox
-                  name='mailCheck'
-                  label='I agree to the Terms & Conditions'
-                  type='text'
-                  formik={formik}
-                />
-              </Grid>
+            <Grid item sm={12} xs={12} lg={12}>
+              <ControlledCheckBox
+                name="mailCheck"
+                label="I agree to the Terms & Conditions"
+                type="text"
+                formik={formik}
+              />
+            </Grid>
 
-              <Grid
-                item
-                sm={12}
-                xs={12}
-                lg={12}
+            <Grid
+              item
+              sm={12}
+              xs={12}
+              lg={12}
+              sx={{
+                alignItems: "center",
+                textAlign: "center",
+                marginTop: "1rem",
+              }}
+            >
+              <Button
+                type="submit"
                 sx={{
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  marginTop: '1rem',
+                  border: "1px solid #002147",
+                  color: "white",
+                  background: "#002147",
+                  height: "3.1rem",
+                  width: "100%",
+                  "&:hover": {
+                    color: "#002147",
+                    background: "#FFFFFF",
+                    cursor: "pointer",
+                  },
                 }}
               >
-                <Button
-                  type='submit'
-                  sx={{
-                    border: '1px solid #002147',
-                    color: 'white',
-                    background: '#002147',
-                    height: '3.1rem',
-                    width: '100%',
-                    '&:hover': {
-                      color: '#002147',
-                      background: '#FFFFFF',
-                      cursor: 'pointer',
-                    },
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </Grid>
-              <Grid
-                item
-                sm={12}
-                xs={12}
-                lg={12}
-                sx={{
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                }}
-                onClick={routeToLogin}
-              >
-                <Typography>
-                  Already have an account?{' '}
-                  <span style={{ color: '#002147', fontWeight: '600' }}>
-                    Sign in
-                  </span>
-                </Typography>
-              </Grid>
+                Sign Up
+              </Button>
+            </Grid>
+            <Grid
+              item
+              sm={12}
+              xs={12}
+              lg={12}
+              sx={{
+                alignItems: "center",
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              // onClick={goBackToLogin}
+            >
+              <Typography>
+                Already have an account?{" "}
+                <span style={{ color: "#002147", fontWeight: "600" }}>
+                  Sign in
+                </span>
+              </Typography>
             </Grid>
           </Grid>
-
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={6}
-            lg={5}
-            sx={{
-              background: '#6699CC',
-              borderBottomRightRadius: '1.3rem',
-              borderBottomLeftRadius: '1.3rem',
-              height: '97vh',
-              alignSelf: 'start',
-            }}
-          ></Grid>
         </Grid>
-      )}
-      {page === 'stepper' && <StepperComponent />}
+
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          lg={5}
+          sx={{
+            background: "#6699CC",
+            borderBottomRightRadius: "1.3rem",
+            borderBottomLeftRadius: "1.3rem",
+            height: "97vh",
+            alignSelf: "start",
+          }}
+        ></Grid>
+      </Grid>
     </>
   );
 };

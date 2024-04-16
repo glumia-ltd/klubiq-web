@@ -3,12 +3,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import CountryList from "../../helpers/countryList.json";
 import StateList from "../../helpers/stateList.json";
-import {
-  Grid,
-  Typography,
-  Button,
-  
-} from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 
 import ControlledSelect from "../../components/ControlledComponents/ControlledSelect";
 const PropertyInformation: React.FC = () => {
@@ -66,25 +61,21 @@ const PropertyInformation: React.FC = () => {
       onSubmit={formik.handleSubmit}
       sx={{
         width: "495px",
-        height: "693px",
-        marginLeft: "300px",
-        marginRight: "339px",
-        marginTop: "90px",
-        // marginBottom: "351px",
-        textAlign: "left",
+        height: "550px",
+        margin: "105px 301px 301px 201px",
       }}
     >
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
-        <Typography variant="h2" color="#002147" mb="2rem">
+        <Typography variant="h2" color="#002147" mb="0.8rem">
           Property Information{" "}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
-        <Typography variant="h6" color="#002147" mb="1.5rem">
+        <Typography variant="h6" color="#002147" mb="1rem">
           Tell us about your property.{" "}
         </Typography>
       </Grid>
-      <Grid item sm={12} xs={12} lg={12}>
+      <Grid item sm={12} xs={12} md={12} lg={12}>
         <ControlledTextField
           name="propertyName"
           label="Property Name"
@@ -92,7 +83,7 @@ const PropertyInformation: React.FC = () => {
           formik={formik}
         />
       </Grid>
-      <Grid item sm={12} xs={12} lg={12}>
+      <Grid item sm={12} xs={12} md={12} lg={12}>
         <ControlledTextField
           name="propertyType"
           label="Property Type"
@@ -101,11 +92,11 @@ const PropertyInformation: React.FC = () => {
         />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "left" }}>
-        <Typography variant="h6" color="#002147" mb="0.5rem">
-           Property Address{" "}
+        <Typography variant="h6" color="#002147" m="0.5rem">
+          Property Address{" "}
         </Typography>
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledSelect
           name="country"
           label="Country"
@@ -114,7 +105,7 @@ const PropertyInformation: React.FC = () => {
           options={country}
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledSelect
           name="state"
           label="State"
@@ -123,7 +114,7 @@ const PropertyInformation: React.FC = () => {
           options={states}
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledTextField
           name="city"
           label="City"
@@ -131,7 +122,7 @@ const PropertyInformation: React.FC = () => {
           formik={formik}
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledTextField
           name="street"
           label="Street"
@@ -139,7 +130,7 @@ const PropertyInformation: React.FC = () => {
           formik={formik}
         />
       </Grid>
-      <Grid item sm={6} xs={12} lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledTextField
           name="zip"
           label="Zip Code"
@@ -147,7 +138,6 @@ const PropertyInformation: React.FC = () => {
           type="email"
         />
       </Grid>
-     
       <Grid
         item
         sm={12}
@@ -190,7 +180,16 @@ const PropertyInformation: React.FC = () => {
         }}
         // onClick={goBackToLogin}
       >
-        <Button sx={{ color: "#002147", fontWeight: "600" }}>Add later</Button>
+        <span style={{borderBottom:"1px solid #002147" }}>
+          <Button
+            sx={{
+              color: "#002147",
+              fontWeight: "600",
+            }}
+          >
+            Add later
+          </Button>
+        </span>
       </Grid>
     </Grid>
   );
