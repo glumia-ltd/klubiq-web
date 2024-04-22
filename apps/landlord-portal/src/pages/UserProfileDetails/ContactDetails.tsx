@@ -53,14 +53,14 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
     >
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h2" color="#002147" mb="0.2rem">
-          Contact Details{" "}
+          Company Information{" "}
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
+      {/* <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h6" color="#002147" mb="1.5rem">
           Tell us how to reach you!{" "}
         </Typography>
-      </Grid>
+      </Grid> */}
       <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
           name="companyName"
@@ -121,6 +121,7 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
             width: "100%",
             borderRadius: "0.6rem",
             padding: "0.5rem",
+            height:'3.2rem',
             "&:hover": {
               color: "#002147",
               background: "#FFFFFF",
