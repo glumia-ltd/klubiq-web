@@ -202,6 +202,7 @@ const CreateAccount: React.FC = () => {
             >
               <Button
                 type='submit'
+                disableRipple
                 sx={{
                   border: '1px solid #002147',
                   color: 'white',

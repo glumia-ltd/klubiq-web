@@ -38,7 +38,7 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
         ...sx,
       }}
       direction="row"
-      spacing={0.1}
+      spacing={1.2}
     >
       <TextField
         fullWidth

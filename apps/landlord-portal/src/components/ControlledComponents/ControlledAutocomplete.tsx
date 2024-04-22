@@ -41,7 +41,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
         minWidth: 230,
         ...sx,
       }}
-      spacing={0.1}
+      spacing={1.2}
     >
       {!inFieldLabel && (
         <Typography fontWeight={500} fontSize={'16px'}>

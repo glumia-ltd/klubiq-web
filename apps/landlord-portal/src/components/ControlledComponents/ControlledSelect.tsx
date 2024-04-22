@@ -34,7 +34,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
         minWidth: 230,
         ...sx,
       }}
-      spacing={0.1}
+      spacing={1.2}
     >
       {!inFieldLabel && (
         <Typography fontWeight={500} fontSize={'16px'}>

@@ -65,6 +65,17 @@ export const LightTheme: Theme = createTheme({
         },
       },
     },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiButtonGroup: {
+      defaultProps: {
+        disableRipple: true,
+
+      },
+    },
   },
 
   typography: {
@@ -192,9 +203,22 @@ export const DarkTheme: Theme = createTheme({
   components: {
     MuiListItemButton: {
       defaultProps: {
+        disableRipple: true,
+      },
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
         disableTouchRipple: true,
       },
     },
+    MuiButtonGroup: {
+      defaultProps: {
+        disableRipple: true,
+
+      },
+    },
+
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: {
@@ -316,6 +340,8 @@ export const DarkTheme: Theme = createTheme({
 
     button: {
       textTransform: 'none',
+      disableRipple: true,
+
     },
   },
 });
