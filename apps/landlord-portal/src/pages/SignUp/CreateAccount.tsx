@@ -109,7 +109,7 @@ const CreateAccount: React.FC = () => {
               width: '33rem',
               margin: '2.7rem 11.6rem 0rem 7.5rem',
             }}
-            spacing={3}
+            spacing={2}
           >
             <Grid
               item

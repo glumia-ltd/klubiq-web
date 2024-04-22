@@ -30,14 +30,14 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
     <Stack
       sx={{
         justifyContent: 'center',
-        m: 1,
+        m: 0.1,
         minWidth: 230,
         ...sx,
       }}
-      spacing={0.5}
+      spacing={0.1}
     >
       {!inFieldLabel && (
-        <Typography fontWeight={500} fontSize={'0.85rem'}>
+        <Typography fontWeight={500} fontSize={'16px'}>
           {label}
         </Typography>
       )}

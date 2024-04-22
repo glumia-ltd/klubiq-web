@@ -42,11 +42,10 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
   return (
     <Stack
       sx={{
-        justifyContent: "center",
-        m: 0.5,
-
-        minWidth: 150,
-        flexDirection: "column",
+        // justifyContent: "center",
+        m: 0,
+        minWidth: 230,
+        flexDirection: "row",
         ...sx,
       }}
     >
@@ -70,15 +69,15 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
           }
           label={label}
           labelPlacement="end"
-          sx={{ mx: 0 }}
+          sx={{ mr: 5, mb: 0}}
           componentsProps={{
             typography: {
-              fontSize: 15,
+              fontSize: " 16px",
               fontWeight: 500,
             },
           }}
         />
-        <FormHelperText>
+        <FormHelperText >
           {(formik.touched[name] && formik.errors[name]) || ""}
         </FormHelperText>{" "}
       </FormControl>

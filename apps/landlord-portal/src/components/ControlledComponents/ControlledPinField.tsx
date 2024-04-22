@@ -34,16 +34,17 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
       sx={{
         justifyContent: 'center',
         minWidth: 4,
-        m: 1,
+        m: 0.1,
         ...sx,
       }}
       direction="row"
-      spacing={0.5}
+      spacing={0.1}
     >
       <TextField
         fullWidth
         id={name}
         name={name}
+        sx={{fontSize:"16px"}}
         variant="outlined"
         type={type || 'text'}
         value={formik.values[name]}

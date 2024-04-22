@@ -6,13 +6,12 @@ import ControlledCheckBox from "../../components/ControlledComponents/Controlled
 interface ContactProps {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }
-const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
+const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
   const validationSchema = yup.object({
-    phoneNumber: yup.string().required("This field is required"),
-    companyName: yup.string().required("This field is required"),
-    address: yup.string().required("This field is required"),
+    // phoneNumber: yup.string().required("This field is required"),
+    // companyName: yup.string().required("This field is required"),
+    // address: yup.string().required("This field is required"),
     // mailCheck: yup.bool().oneOf([true], "Please Check Box"),
-    // mailCheckTwo: yup.bool().oneOf([true], "Please Check Box"),
   });
 
   type IValuesType = {
@@ -25,7 +24,7 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
 
   const onSubmit = async (values: IValuesType) => {
     console.log(values, "hh");
-    setActiveStep(1)
+    setActiveStep(1);
   };
   const formik = useFormik({
     initialValues: {
@@ -41,11 +40,11 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
   return (
     <Grid
       container
-      spacing={0.5}
+      spacing={1}
       sx={{
         width: "495px",
-        height: "550px",
-        margin: "150px 100px 150px 250px",
+        height: "400px",
+        margin: "200px 100px 150px 250px",
         alignItems: "center",
       }}
       component="form"
@@ -53,7 +52,7 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
     >
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h2" color="#002147" mb="0.2rem">
-          Contact Details{" "}
+          Contact Information{" "}
         </Typography>
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
@@ -67,6 +66,7 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
           label="Company Name"
           type="text"
           formik={formik}
+          disabled
         />
       </Grid>
       <Grid item sm={12} xs={12} lg={12}>
@@ -80,27 +80,21 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
       <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
           name="address"
-          label="Adresss"
+          label="Addresss"
           type="text"
           formik={formik}
         />
       </Grid>
-      <Grid item sm={12} xs={12} lg={12}>
+      <Grid item sm={12} xs={12} lg={12} >
         <ControlledCheckBox
           name="mailCheck"
           label="Receive email notifications for rent payments"
           type="text"
           formik={formik}
+          sx={{mt:"-7px",}}
         />
       </Grid>{" "}
-      <Grid item sm={12} xs={12} lg={12}>
-        <ControlledCheckBox
-          name="mailCheckTwo"
-          label="Remember this computer"
-          type="text"
-          formik={formik}
-        />
-      </Grid>
+     
       <Grid
         item
         sm={12}
@@ -109,7 +103,7 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
         sx={{
           alignItems: "center",
           textAlign: "center",
-          marginTop: ".5rem",
+          marginTop: ".2rem",
         }}
       >
         <Button
@@ -118,12 +112,13 @@ const ContactDetails: React.FC<ContactProps> = ({setActiveStep}) => {
             border: "1px solid #002147",
             color: "white",
             background: "#002147",
+            height: "3.1rem",
             width: "100%",
             borderRadius: "0.6rem",
             padding: "0.5rem",
             "&:hover": {
-              color: "#002147",
-              background: "#FFFFFF",
+              color: "white",
+              background: "#002147",
               cursor: "pointer",
             },
           }}
