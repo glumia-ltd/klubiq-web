@@ -68,6 +68,11 @@ const CreateAccount: React.FC = () => {
 
     navigate('/signup/profileupdate');
   };
+
+  const routeToLogin = () => {
+    navigate('/login', { replace: true });
+  };
+
   const formik = useFormik({
     initialValues: {
       firstname: '',
@@ -233,7 +238,10 @@ const CreateAccount: React.FC = () => {
             >
               <Typography>
                 Already have an account?{' '}
-                <span style={{ color: '#002147', fontWeight: '600' }}>
+                <span
+                  style={{ color: '#002147', fontWeight: '600' }}
+                  onClick={routeToLogin}
+                >
                   Sign in
                 </span>
               </Typography>

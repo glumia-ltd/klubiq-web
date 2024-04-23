@@ -58,7 +58,7 @@ const Login = () => {
   };
 
   const routeToForgotPassword = () => {
-    navigate('/forgotPassword');
+    navigate('/forgotPassword', { replace: true });
   };
 
   return (
