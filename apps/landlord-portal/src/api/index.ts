@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import store from '../store';
+import { uuid } from 'uuidv4';
 
 const api = axios.create({
   //TODO add base URL
@@ -22,6 +23,8 @@ function AxiosConfig(config: any) {
 
   //TODOS: -  Add correlation ID to headers X-Correlation-Id (uuid v4)
   // - Add timezone offset  x-client-tzo
+
+  config.headers['X-Correlation-Id'] = uuid();
 
   config.headers['X-Client-Tzo'] = new Date().getTimezoneOffset();
 
