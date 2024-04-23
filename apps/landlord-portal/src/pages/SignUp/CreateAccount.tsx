@@ -66,7 +66,7 @@ const CreateAccount: React.FC = () => {
       console.log(error);
     }
 
-    navigate('/signup/profileupdate');
+    navigate('/signup/profileupdate', { replace: true });
   };
 
   const routeToLogin = () => {
