@@ -54,18 +54,14 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
       sx={{
         justifyContent: 'center',
         minWidth: 150,
-        m: 0.5,
+        m:0.1,
         flexDirection: 'column',
         ...sx,
       }}
-      spacing={1}
+      spacing={1.2}
     >
       {!inFieldLabel && (
-        <Typography
-          fontWeight={500}
-          fontSize={'1rem'}
-          // sx={{ marginBottom: '5px' }}
-        >
+      <Typography fontWeight={500} fontSize={'16px'}>
           {label}
         </Typography>
       )}

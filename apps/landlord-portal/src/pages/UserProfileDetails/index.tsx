@@ -5,7 +5,7 @@ import Step from "@mui/material/Step";
 // import StepContent from "@mui/material/StepContent";
 import ContactDetails from "./ContactDetails";
 import PropertyInformation from "./PropertyInformation";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Container } from "@mui/material";
 import Logo from "../../assets/images/Group 1000002043.png";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
@@ -14,7 +14,7 @@ import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 const steps = [
   {
     label: ["Contact Information", <br />, "Tell us how to reach you"],
-    Icons: <PersonOutlineOutlinedIcon />,
+    Icons: <PersonOutlineOutlinedIcon  />,
   },
   {
     label: ["Property Information", <br />, "Add your first property"],
@@ -24,8 +24,6 @@ const steps = [
 
 const StepperComponent: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
-
-  
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
@@ -59,16 +57,14 @@ const StepperComponent: React.FC = () => {
           sx={{
             width: "350px",
             height: "141.27px",
-            marginLeft: "46px",
-            marginRight: "44px",
-            marginTop: "344px",
-            marginBottom: "244px",
+            margin: "289px 44px 244px 46px",
+            cursor: "pointer",
           }}
         >
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel
-                StepIconComponent={ ()=>step.Icons}
+                StepIconComponent={() => step.Icons}
                 onClick={handleStep(index)}
                 // icon={step.Icons}
                 color="inherit"
@@ -78,17 +74,16 @@ const StepperComponent: React.FC = () => {
             </Step>
           ))}
         </Stepper>
-        <div
+        <Container
           style={{
             display: "flex",
             alignItems: "center",
-            marginLeft: "1rem",
           }}
         >
           <MailOutlinedIcon sx={{ fontSize: "1rem", marginRight: "7px" }} />
 
           <Typography variant="h6">hello@Klubiq.com</Typography>
-        </div>
+        </Container>
       </Grid>
 
       {activeStep === 0 && (
