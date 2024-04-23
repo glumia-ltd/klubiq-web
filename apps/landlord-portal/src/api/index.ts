@@ -20,10 +20,10 @@ function AxiosConfig(config: any) {
 
   config.headers['Content-Type'] = 'application/json';
 
-  //TODOS: -  Add correlation ID to headers x-correlation-id
+  //TODOS: -  Add correlation ID to headers X-Correlation-Id (uuid v4)
   // - Add timezone offset  x-client-tzo
 
-  config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
+  config.headers['X-Client-Tzo'] = new Date().getTimezoneOffset();
 
   config.headers.Authorization = `Bearer ${token}`;
 

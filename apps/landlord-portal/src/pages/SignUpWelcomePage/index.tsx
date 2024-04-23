@@ -5,7 +5,7 @@ const SignUpWelcomePage = () => {
   const navigate = useNavigate();
 
   const handleLandLordClick = () => {
-    navigate('/signup/createaccount');
+    navigate('/signup/createaccount', { replace: true });
   };
 
   return (

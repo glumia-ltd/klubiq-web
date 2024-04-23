@@ -55,11 +55,11 @@ const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
           Contact Information{" "}
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
+      {/* <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h6" color="#002147" mb="1.5rem">
           Tell us how to reach you!{" "}
         </Typography>
-      </Grid>
+      </Grid> */}
       <Grid item sm={12} xs={12} lg={12}>
         <ControlledTextField
           name="companyName"

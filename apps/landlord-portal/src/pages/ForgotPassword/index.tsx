@@ -21,7 +21,7 @@ const ForgotPassword = () => {
   };
 
   const routeToLogin = () => {
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   const formik = useFormik({

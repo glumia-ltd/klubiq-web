@@ -20,7 +20,7 @@ const PropertyInformation: React.FC = () => {
   type IValuesType = {
     propertyName: string;
     propertyType: string;
-    zip: string;
+    postal: string;
     street: string;
     country: string;
     state: string;
@@ -37,7 +37,7 @@ const PropertyInformation: React.FC = () => {
       city: "",
       state: "",
       country: "",
-      zip: "",
+      postal: "",
       street: "",
     },
     validationSchema,
@@ -72,7 +72,7 @@ const PropertyInformation: React.FC = () => {
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "center" }}>
         <Typography variant="h6" color="#002147" mb="1rem">
-          Tell us about your property.{" "}
+          Add your first property.{" "}
         </Typography>
       </Grid>
       <Grid item sm={12} xs={12} md={12} lg={12}>
@@ -132,8 +132,8 @@ const PropertyInformation: React.FC = () => {
       </Grid>
       <Grid item xs={12} sm={12} md={6} lg={6}>
         <ControlledTextField
-          name="zip"
-          label="Zip Code"
+          name="postal"
+          label="Postal Code"
           formik={formik}
           type="email"
         />
