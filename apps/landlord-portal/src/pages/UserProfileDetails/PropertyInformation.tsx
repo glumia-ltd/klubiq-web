@@ -10,7 +10,7 @@ const PropertyInformation: React.FC = () => {
   const validationSchema = yup.object({
     propertyName: yup.string().required("This field is required"),
     propertyType: yup.string().required("This field is required"),
-    zip: yup.string().required("This field is required"),
+    // zip: yup.string().required("This field is required"),
     street: yup.string().required("Please enter your password"),
     state: yup.string().required("This field is required"),
     country: yup.string().required("This field is required"),
@@ -56,7 +56,7 @@ const PropertyInformation: React.FC = () => {
   return (
     <Grid
       container
-      spacing={1}
+      spacing={0}
       component="form"
       onSubmit={formik.handleSubmit}
       sx={{
@@ -92,7 +92,7 @@ const PropertyInformation: React.FC = () => {
         />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: "left" }}>
-        <Typography variant="h6" color="#002147" m="0.5rem">
+        <Typography sx={{fontSize:"20px",marginBottom:"1.2rem"}} color="#002147" >
           Property Address{" "}
         </Typography>
       </Grid>
@@ -158,8 +158,8 @@ const PropertyInformation: React.FC = () => {
             height: "3.1rem",
             width: "100%",
             "&:hover": {
-              color: "#002147",
-              background: "#FFFFFF",
+              color: "white",
+              background: "#002147",
               cursor: "pointer",
             },
           }}
