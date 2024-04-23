@@ -54,11 +54,11 @@ const CreateAccount: React.FC = () => {
       const user: any = userCredential.user;
 
       const userInfo = { email: user.email };
-      console.log(userInfo);
-      console.log(user.accessToken);
+
       dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 
       navigate('/private', { replace: true });
+
       localStorage.setItem('token', user.accessToken);
 
       //TODO: Redirect to a page
@@ -66,7 +66,7 @@ const CreateAccount: React.FC = () => {
       console.log(error);
     }
 
-    navigate('/signup/profileupdate');
+    navigate('/signup/profileupdate', { replace: true });
   };
 
   const routeToLogin = () => {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import store from '../store';
+import { uuid } from 'uuidv4';
 
 const api = axios.create({
   //TODO add base URL
@@ -9,19 +10,14 @@ const api = axios.create({
 
 // request config
 function AxiosConfig(config: any) {
-  //TODO token will be gotten from the store via onAuthStateChanged in firebase
 
   const token = store.getState();
-  console.log(token);
-
-  // const token = '';
 
   config.headers = {};
 
   config.headers['Content-Type'] = 'application/json';
 
-  //TODOS: -  Add correlation ID to headers X-Correlation-Id (uuid v4)
-  // - Add timezone offset  x-client-tzo
+  config.headers['X-Correlation-Id'] = uuid();
 
   config.headers['X-Client-Tzo'] = new Date().getTimezoneOffset();
 
