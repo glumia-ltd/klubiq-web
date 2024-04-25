@@ -7,31 +7,29 @@ import ControlledPasswordField from '../../components/ControlledComponents/Contr
 // import { useSnackbar } from "notistack";
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
+import { signInWithCustomToken, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
+import { api, endpoints } from '../../api';
 
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const validationSchema = yup.object({
-    firstname: yup.string().required('This field is required'),
+    firstName: yup.string().required('This field is required'),
     companyName: yup.string().required('This field is required'),
-    lastname: yup.string().required('This field is required'),
+    lastName: yup.string().required('This field is required'),
     password: yup.string().required('Please enter your password'),
     email: yup.string().email().required('Please enter your email'),
     mailCheck: yup.bool().oneOf([true], 'Please Check Box'),
   });
 
   type IValuesType = {
-    firstname: string;
+    firstName: string;
     companyName: string;
-    lastname: string;
+    lastName: string;
     password: string;
     email: string;
     mailCheck: boolean;
@@ -40,15 +38,43 @@ const CreateAccount: React.FC = () => {
   const onSubmit = async (values: IValuesType) => {
     console.log(values, 'hh');
 
-    const { email, password } = values;
+    const { email, password, firstName, lastName, companyName } = values;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await sendEmailVerification(userCredential.user);
+      const userDetails = { email, password, firstName, lastName, companyName };
+
+      const {
+        data: { data: token },
+      } = await api.post(endpoints.signup(), userDetails);
+
+      const userCredential = await signInWithCustomToken(auth, token);
+
+      const actionCodeSettings = {
+        url: 'localhost:5173/login',
+        // iOS: {
+        //   bundleId: 'com.example.ios',
+        // },
+        // android: {
+        //   packageName: 'com.example.android',
+        //   installApp: true,
+        //   minimumVersion: '12',
+        // },
+        // handleCodeInApp: true,
+      };
+
+      await sendEmailVerification(userCredential.user, actionCodeSettings);
+
+      // send notification for email
+
+
+
+      // const userCredential = { user: 'adsfasf' };
+      //   await createUserWithEmailAndPassword(
+      //   auth,
+      //   email,
+      //   password
+      // );
+      // await sendEmailVerification(userCredential.user);
 
       //TODO: Find out what user info should be saved
       const user: any = userCredential.user;
@@ -57,7 +83,7 @@ const CreateAccount: React.FC = () => {
 
       dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 
-      navigate('/private', { replace: true });
+      // navigate('/private', { replace: true });
 
       localStorage.setItem('token', user.accessToken);
 
@@ -75,9 +101,9 @@ const CreateAccount: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstname: '',
+      firstName: '',
       companyName: '',
-      lastname: '',
+      lastName: '',
       password: '',
       email: '',
       mailCheck: false,
@@ -143,7 +169,7 @@ const CreateAccount: React.FC = () => {
             <Grid container spacing={1}></Grid>
             <Grid item sm={6} xs={12} lg={6}>
               <ControlledTextField
-                name='firstname'
+                name='firstName'
                 label='First Name'
                 type='text'
                 formik={formik}
@@ -151,7 +177,7 @@ const CreateAccount: React.FC = () => {
             </Grid>
             <Grid item sm={6} xs={12} lg={6}>
               <ControlledTextField
-                name='lastname'
+                name='lastName'
                 label='Last Name'
                 formik={formik}
                 type='text'
