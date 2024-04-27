@@ -50,31 +50,14 @@ const CreateAccount: React.FC = () => {
       const userCredential = await signInWithCustomToken(auth, token);
 
       const actionCodeSettings = {
-        url: 'localhost:5173/login',
-        // iOS: {
-        //   bundleId: 'com.example.ios',
-        // },
-        // android: {
-        //   packageName: 'com.example.android',
-        //   installApp: true,
-        //   minimumVersion: '12',
-        // },
-        // handleCodeInApp: true,
+        url: 'http://localhost:5173/login',
       };
-
-      await sendEmailVerification(userCredential.user, actionCodeSettings);
 
       // send notification for email
 
+      await sendEmailVerification(userCredential.user, actionCodeSettings);
 
-
-      // const userCredential = { user: 'adsfasf' };
-      //   await createUserWithEmailAndPassword(
-      //   auth,
-      //   email,
-      //   password
-      // );
-      // await sendEmailVerification(userCredential.user);
+      //if successful, reroute to verification email page here. 
 
       //TODO: Find out what user info should be saved
       const user: any = userCredential.user;
@@ -92,7 +75,7 @@ const CreateAccount: React.FC = () => {
       console.log(error);
     }
 
-    navigate('/signup/profileupdate', { replace: true });
+    // navigate('/signup/profileupdate', { replace: true });
   };
 
   const routeToLogin = () => {

@@ -19,7 +19,7 @@ function AxiosConfig(config: any) {
 
   config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 
-  config.headers['origin'] = 'klubiq-ui-dev';
+  config.headers['x-app-handler'] = 'klubiq-ui-dev';
 
   config.headers.Authorization = `Bearer ${token}`;
 
