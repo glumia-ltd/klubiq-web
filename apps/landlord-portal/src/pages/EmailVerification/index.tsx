@@ -6,8 +6,8 @@ import FeedbackContent from "../../components/FeedbackContent";
 interface EmailVerificationProps {}
 
 const EmailVerification: FC<EmailVerificationProps> = ({}) => {
-  const [verifySuccess, setVerifySuccess] = useState(true);
-  const [error, setError] = useState(null);
+  const [verifySuccess] = useState(true);
+  const [error] = useState(null);
 
   const renderViewContent = () => {
     if (verifySuccess)
