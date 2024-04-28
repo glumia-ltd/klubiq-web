@@ -15,6 +15,7 @@ import ControlledPasswordField from '../../components/ControlledComponents/Contr
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useSnackbar } from "notistack";
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -27,6 +28,8 @@ type IValuesType = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const onSubmit = async (values: IValuesType) => {
     const { email, password } = values;
@@ -38,7 +41,8 @@ const Login = () => {
         password
       );
       const user: any = userCredential.user;
-      console.log(user.accessToken);
+      enqueueSnackbar('That was easy!',{ variant: "success" })     ;
+       console.log(user.accessToken);
     } catch (error) {
       console.log(error);
     }
