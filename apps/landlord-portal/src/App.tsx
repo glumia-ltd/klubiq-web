@@ -26,10 +26,16 @@ function App() {
 
   //   return () => listen();
   // }, []);
-
+  
   return (
     <ThemeContextProvider>
-      <SnackbarProvider>
+      <SnackbarProvider anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            dense
+            autoHideDuration={5000}
+      >
         <RouterProvider router={router} />
       </SnackbarProvider>
     </ThemeContextProvider>
