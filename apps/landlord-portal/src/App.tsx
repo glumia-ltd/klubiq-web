@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
-
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router/RouterPaths';
+import { ThemeContextProvider } from "./context/ThemeContext/ThemeContext";
+import { SnackbarProvider } from "notistack";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/RouterPaths";
 // import { useEffect } from 'react';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { auth } from './firebase';
@@ -29,7 +29,9 @@ function App() {
 
   return (
     <ThemeContextProvider>
-      <RouterProvider router={router} />
+      <SnackbarProvider>
+        <RouterProvider router={router} />
+      </SnackbarProvider>
     </ThemeContextProvider>
   );
 }

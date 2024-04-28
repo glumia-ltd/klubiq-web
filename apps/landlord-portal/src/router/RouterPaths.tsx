@@ -13,6 +13,7 @@ import LoginWelcomePage from "../pages/LoginWelcomePage";
 import SetPassword from "../pages/SetPassword";
 import ForgotPassword from "../pages/ForgotPassword";
 import UserProfileDetails from "../pages/UserProfileDetails";
+import EmailVerification from "../pages/EmailVerification";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -23,6 +24,7 @@ export const router = createBrowserRouter(
       <Route path="/signup/profileupdate" element={<UserProfileDetails />} />
       <Route path="/setPassword" element={<SetPassword />} />
       <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route path="/verifyemail" element={<EmailVerification />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
 
       <Route element={<PrivateRoute />}>

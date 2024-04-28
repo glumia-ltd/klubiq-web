@@ -3,13 +3,7 @@ import React from 'react';
 import { TextField, Stack, Typography, SxProps } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
 
-// const styles = (theme: any) => ({
-//   field: {
-//     height: '100%',
-//   },
-//   countryList: {
-//   },
-// });
+
 
 type ControlledPhoneInputProps = {
   formik: any;
@@ -21,7 +15,6 @@ type ControlledPhoneInputProps = {
   name: string;
   type?: string;
   inFieldLabel?: boolean;
-  // inputProps?: any;
   prioritizeError?: any;
   value?: any;
 };
