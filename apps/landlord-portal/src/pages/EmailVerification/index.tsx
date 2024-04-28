@@ -5,7 +5,7 @@ import FeedbackContent from "../../components/FeedbackContent";
 
 interface EmailVerificationProps {}
 
-const EmailVerification: FC<EmailVerificationProps> = ({}) => {
+const EmailVerification: FC<EmailVerificationProps> = () => {
   const [verifySuccess] = useState(true);
   const [error] = useState(null);
 
@@ -14,7 +14,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({}) => {
       return (
         <FeedbackContent
           content={
-            "Your Email Address has been verified,You can continue using the application."
+            "Your Email Address has been verified. You can continue using the application."
           }
           onClick={()=>console.log("here")}
           type="success"
