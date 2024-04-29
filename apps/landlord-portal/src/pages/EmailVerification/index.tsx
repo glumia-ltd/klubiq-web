@@ -5,32 +5,36 @@ import FeedbackContent from '../../components/FeedbackContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { applyActionCode } from 'firebase/auth';
+import successImage from '../../assets/images/circle-ok.svg';
+import errorImage from '../../assets/images/error.svg';
+import { firebaseResponseObject } from '../../helper/FirebaseResponse';
 
 interface EmailVerificationProps {}
 
 const EmailVerification: FC<EmailVerificationProps> = () => {
   const [loading, setLoading] = useState(true);
-  const [verifySuccess] = useState(true);
-  const [error] = useState(null);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>('');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // const mode = searchParams.get('mode');
+  const mode = searchParams.get('mode');
   const oobCode = searchParams.get('oobCode');
-
-  console.log(oobCode);
   const continueUrl = searchParams.get('continueUrl');
+
+  const checkEmailVerification = async (oobCode: string) => {
+    try {
+      await applyActionCode(auth, oobCode);
+      setLoading(false);
+    } catch (error) {
+      setErrorMessage(firebaseResponseObject[(error as Error).message]);
+      setError(true);
+    }
+  };
 
   useEffect(() => {
     if (oobCode) {
-      applyActionCode(auth, oobCode)
-        .then(() => {
-          console.log('Email address verified.');
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      checkEmailVerification(oobCode);
     }
   }, [oobCode]);
 
@@ -39,27 +43,30 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
   };
 
   const renderViewContent = () => {
-    if (verifySuccess)
+    if (mode === 'verifyEmail' && !error) {
       return (
         <FeedbackContent
           content={
             loading
-              ? 'Verifying your email address...'
+              ? 'We are verifying your email address...'
               : 'Your Email Address has been verified. You can continue using the application.'
           }
           onClick={navigateToContinueUrl}
-          type='success'
+          showButton={loading ? false : true}
+          header={loading ? 'Please be patient' : 'Email Verified'}
+          imageLink={loading ? '' : successImage}
         />
       );
-    if (error)
+    } else if (error) {
       return (
         <FeedbackContent
-          content='A verification link has been sent to your email address. Please check your email and click on the link to continue'
-          type='error'
-          onClick={() => console.log('here')}
+          content={errorMessage as string}
+          onClick={navigateToContinueUrl}
+          header={'Verify Your Email'}
+          imageLink={errorImage}
         />
       );
-    else return null;
+    }
   };
   return (
     <Grid container spacing={1} bgcolor='white'>
