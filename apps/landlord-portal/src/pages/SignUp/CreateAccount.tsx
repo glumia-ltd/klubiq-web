@@ -4,10 +4,10 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-// import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
-import { signInWithCustomToken, sendEmailVerification } from 'firebase/auth';
+import { signInWithCustomToken} from 'firebase/auth';
 import { auth } from '../../firebase';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
@@ -16,6 +16,7 @@ import { api, endpoints } from '../../api';
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
     firstName: yup.string().required('This field is required'),
@@ -36,8 +37,6 @@ const CreateAccount: React.FC = () => {
   };
 
   const onSubmit = async (values: IValuesType) => {
-    console.log(values, 'hh');
-
     const { email, password, firstName, lastName, companyName } = values;
 
     try {
@@ -49,15 +48,17 @@ const CreateAccount: React.FC = () => {
 
       const userCredential = await signInWithCustomToken(auth, token);
 
-      const actionCodeSettings = {
-        url: 'http://localhost:5173/login',
-      };
+      enqueueSnackbar('Please verify your email!', { variant: 'success' });
 
-      // send notification for email
+      // const actionCodeSettings = {
+      //   url: 'http://localhost:5173/verify-email',
+      // };
 
-      await sendEmailVerification(userCredential.user, actionCodeSettings);
+      // send notification for email (still using this?)
 
-      //if successful, reroute to verification email page here. 
+      // await sendEmailVerification(userCredential.user, actionCodeSettings);
+
+      //if successful, reroute to verification email page here.
 
       //TODO: Find out what user info should be saved
       const user: any = userCredential.user;
@@ -68,7 +69,7 @@ const CreateAccount: React.FC = () => {
 
       // navigate('/private', { replace: true });
 
-      localStorage.setItem('token', user.accessToken);
+      // localStorage.setItem('token', user.accessToken);
 
       //TODO: Redirect to a page
     } catch (error) {

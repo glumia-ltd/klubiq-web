@@ -60,7 +60,7 @@ api.interceptors.response.use(
 );
 
 export const endpoints = {
-  login: () => 'login',
+  login: () => 'auth/login',
   signup: () => 'auth/renter-signup',
 };
 
