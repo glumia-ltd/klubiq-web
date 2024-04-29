@@ -60,7 +60,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
     } else if (error) {
       return (
         <FeedbackContent
-          content={errorMessage as string}
+          content={(errorMessage as string) || 'An error occurred'}
           onClick={navigateToContinueUrl}
           header={'Verify Your Email'}
           imageLink={errorImage}
