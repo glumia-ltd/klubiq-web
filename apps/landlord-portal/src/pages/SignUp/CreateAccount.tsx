@@ -7,16 +7,19 @@ import ControlledPasswordField from '../../components/ControlledComponents/Contr
 import { useSnackbar } from 'notistack';
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
-import { signInWithCustomToken} from 'firebase/auth';
+import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
 import { api, endpoints } from '../../api';
+import { useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object({
     firstName: yup.string().required('This field is required'),
@@ -40,6 +43,7 @@ const CreateAccount: React.FC = () => {
     const { email, password, firstName, lastName, companyName } = values;
 
     try {
+      setLoading(true);
       const userDetails = { email, password, firstName, lastName, companyName };
 
       const {
@@ -73,6 +77,7 @@ const CreateAccount: React.FC = () => {
 
       //TODO: Redirect to a page
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
 
@@ -215,24 +220,41 @@ const CreateAccount: React.FC = () => {
                 marginTop: '1rem',
               }}
             >
-              <Button
-                type='submit'
-                disableRipple
-                sx={{
-                  border: '1px solid #002147',
-                  color: 'white',
-                  background: '#002147',
-                  height: '3.1rem',
-                  width: '100%',
-                  '&:hover': {
-                    color: '#002147',
-                    background: '#FFFFFF',
-                    cursor: 'pointer',
-                  },
-                }}
-              >
-                Sign Up
-              </Button>
+              {loading ? (
+                <LoadingButton
+                  loading
+                  loadingPosition='center'
+                  variant='outlined'
+                  sx={{
+                    border: '1px solid #002147',
+                    borderRadius: '0.5rem',
+                    color: 'white',
+                    height: '3.1rem',
+                    width: '100%',
+                  }}
+                >
+                  Sign In
+                </LoadingButton>
+              ) : (
+                <Button
+                  type='submit'
+                  disableRipple
+                  sx={{
+                    border: '1px solid #002147',
+                    color: 'white',
+                    background: '#002147',
+                    height: '3.1rem',
+                    width: '100%',
+                    '&:hover': {
+                      color: '#002147',
+                      background: '#FFFFFF',
+                      cursor: 'pointer',
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              )}
             </Grid>
             <Grid
               item

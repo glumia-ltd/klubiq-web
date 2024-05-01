@@ -27,6 +27,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
       await applyActionCode(auth, oobCode);
       setLoading(false);
     } catch (error) {
+      console.log(error);
       setErrorMessage(firebaseResponseObject[(error as Error).message]);
       setError(true);
     }

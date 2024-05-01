@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -19,6 +20,8 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
+import { useState } from 'react';
+import { firebaseResponseObject } from '../../helper/FirebaseResponse';
 // import { api, endpoints } from '../../api';
 
 const validationSchema = yup.object({
@@ -32,6 +35,7 @@ type IValuesType = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -39,6 +43,7 @@ const Login = () => {
     const { email, password } = values;
 
     try {
+      setLoading(true);
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -57,13 +62,20 @@ const Login = () => {
         await sendEmailVerification(userCredential.user, actionCodeSettings);
         // send error response to user asking to verify email
         throw new Error(
-          'Kindly verify your email, check your email for verification link'
+          'Kindly verify your email. Please check your email for your verification link'
         );
       }
 
       enqueueSnackbar('That was easy!', { variant: 'success' });
+
+      setLoading(false);
+
     } catch (error) {
-      enqueueSnackbar((error as Error).message, { variant: 'error' });
+      
+      enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
+        variant: 'error',
+      });
+      setLoading(false);
     }
   };
 
@@ -223,24 +235,41 @@ const Login = () => {
                   marginTop: '1rem',
                 }}
               >
-                <Button
-                  type='submit'
-                  sx={{
-                    border: '1px solid #002147',
-                    borderRadius: '0.5rem',
-                    color: 'white',
-                    background: '#002147',
-                    height: '3.1rem',
-                    width: '100%',
-                    '&:hover': {
-                      color: '#002147',
-                      background: '#FFFFFF',
-                      cursor: 'pointer',
-                    },
-                  }}
-                >
-                  Sign In
-                </Button>
+                {loading ? (
+                  <LoadingButton
+                    loading
+                    loadingPosition='center'
+                    variant='outlined'
+                    sx={{
+                      border: '1px solid #002147',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      height: '3.1rem',
+                      width: '100%',
+                    }}
+                  >
+                    Sign In
+                  </LoadingButton>
+                ) : (
+                  <Button
+                    type='submit'
+                    sx={{
+                      border: '1px solid #002147',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      background: '#002147',
+                      height: '3.1rem',
+                      width: '100%',
+                      '&:hover': {
+                        color: '#002147',
+                        background: '#FFFFFF',
+                        cursor: 'pointer',
+                      },
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </Grid>
 
               <Grid
