@@ -16,13 +16,13 @@ import ControlledPasswordField from '../../components/ControlledComponents/Contr
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import {
-  sendEmailVerification,
+  // sendEmailVerification,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { firebaseResponseObject } from '../../helper/FirebaseResponse';
-// import { api, endpoints } from '../../api';
+import { api, endpoints } from '../../api';
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -53,25 +53,25 @@ const Login = () => {
 
       const user: any = userCredential.user;
 
+      const userName = user.displayName.split(' ');
+      const firstName = userName[0];
+      const lastName = userName[1];
+
+      localStorage.setItem('token', user.accessToken);
+      localStorage.setItem('refreshToken', user.refreshToken);
+
       if (!user.emailVerified) {
-        // send verification email to user
-        const actionCodeSettings = {
-          url: 'http://localhost:5173/verify-email',
-        };
+        const requestBody = { email, firstName, lastName };
 
-        await sendEmailVerification(userCredential.user, actionCodeSettings);
-        // send error response to user asking to verify email
-        throw new Error(
-          'Kindly verify your email. Please check your email for your verification link'
-        );
+        await api.post(endpoints.emailVerification(), requestBody);
+
+        setLoading(false);
+
+        enqueueSnackbar('Please verify your email!', { variant: 'success' });
+      } else {
+        enqueueSnackbar('That was easy!', { variant: 'success' });
       }
-
-      enqueueSnackbar('That was easy!', { variant: 'success' });
-
-      setLoading(false);
-
     } catch (error) {
-      
       enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
         variant: 'error',
       });

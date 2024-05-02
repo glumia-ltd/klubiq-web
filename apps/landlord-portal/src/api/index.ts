@@ -61,7 +61,8 @@ api.interceptors.response.use(
 
 export const endpoints = {
   login: () => 'auth/login',
-  signup: () => 'auth/renter-signup',
+  signup: () => 'auth/landlord-signup',
+  emailVerification: () => 'auth/verification/email',
 };
 
 export { api };

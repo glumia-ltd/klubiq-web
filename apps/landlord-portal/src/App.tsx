@@ -30,8 +30,8 @@ function App() {
   return (
     <ThemeContextProvider>
       <SnackbarProvider anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
+              vertical: "top",
+              horizontal: "right",
             }}
             dense
             autoHideDuration={5000}

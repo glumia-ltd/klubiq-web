@@ -18,7 +18,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const mode = searchParams.get('mode');
+  // const mode = searchParams.get('mode');
   const oobCode = searchParams.get('oobCode');
   const continueUrl = searchParams.get('continueUrl');
 
@@ -26,25 +26,26 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
     try {
       await applyActionCode(auth, oobCode);
       setLoading(false);
+      setError(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
       setErrorMessage(firebaseResponseObject[(error as Error).message]);
-      setError(true);
     }
   };
 
   useEffect(() => {
-    if (oobCode) {
+    if (oobCode && loading) {
       checkEmailVerification(oobCode);
     }
-  }, [oobCode]);
+  }, []);
 
   const navigateToContinueUrl = () => {
     continueUrl && navigate(continueUrl, { replace: true });
   };
 
   const renderViewContent = () => {
-    if (mode === 'verifyEmail' && !error) {
+    if (!error) {
       return (
         <FeedbackContent
           content={
@@ -58,7 +59,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
           imageLink={loading ? '' : successImage}
         />
       );
-    } else if (error) {
+    } else if (errorMessage) {
       return (
         <FeedbackContent
           content={(errorMessage as string) || 'An error occurred'}
