@@ -8,14 +8,21 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { useSnackbar } from "notistack";
+import {
+  // sendEmailVerification,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import { useSnackbar } from 'notistack';
+import { useState } from 'react';
+import { firebaseResponseObject } from '../../helper/FirebaseResponse';
+import { api, endpoints } from '../../api';
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -28,23 +35,47 @@ type IValuesType = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = async (values: IValuesType) => {
     const { email, password } = values;
 
     try {
+      setLoading(true);
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
+
       const user: any = userCredential.user;
-      enqueueSnackbar('That was easy!',{ variant: "success" })     ;
-       console.log(user.accessToken);
+
+      const userName = user.displayName.split(' ');
+      const firstName = userName[0];
+      const lastName = userName[1];
+
+      localStorage.setItem('token', user.accessToken);
+      localStorage.setItem('refreshToken', user.refreshToken);
+
+      if (!user.emailVerified) {
+        const requestBody = { email, firstName, lastName };
+
+        await api.post(endpoints.emailVerification(), requestBody);
+
+        setLoading(false);
+
+        enqueueSnackbar('Please verify your email!', { variant: 'success' });
+      } else {
+        enqueueSnackbar('That was easy!', { variant: 'success' });
+      }
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
+        variant: 'error',
+      });
+      setLoading(false);
     }
   };
 
@@ -204,24 +235,41 @@ const Login = () => {
                   marginTop: '1rem',
                 }}
               >
-                <Button
-                  type='submit'
-                  sx={{
-                    border: '1px solid #002147',
-                    borderRadius: '0.5rem',
-                    color: 'white',
-                    background: '#002147',
-                    height: '3.1rem',
-                    width: '100%',
-                    '&:hover': {
-                      color: '#002147',
-                      background: '#FFFFFF',
-                      cursor: 'pointer',
-                    },
-                  }}
-                >
-                  Sign In
-                </Button>
+                {loading ? (
+                  <LoadingButton
+                    loading
+                    loadingPosition='center'
+                    variant='outlined'
+                    sx={{
+                      border: '1px solid #002147',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      height: '3.1rem',
+                      width: '100%',
+                    }}
+                  >
+                    Sign In
+                  </LoadingButton>
+                ) : (
+                  <Button
+                    type='submit'
+                    sx={{
+                      border: '1px solid #002147',
+                      borderRadius: '0.5rem',
+                      color: 'white',
+                      background: '#002147',
+                      height: '3.1rem',
+                      width: '100%',
+                      '&:hover': {
+                        color: '#002147',
+                        background: '#FFFFFF',
+                        cursor: 'pointer',
+                      },
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </Grid>
 
               <Grid
