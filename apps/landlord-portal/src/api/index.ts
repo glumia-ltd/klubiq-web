@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import store from '../store';
-import { uuid } from 'uuidv4';
 
 const api = axios.create({
   //TODO add base URL
-  baseURL: '/',
+  baseURL: '/api',
 });
 
 // request config
 function AxiosConfig(config: any) {
-
   const token = store.getState();
 
   config.headers = {};
 
-  config.headers['Content-Type'] = 'application/json';
+  config.headers['content-type'] = 'application/json';
 
-  config.headers['X-Correlation-Id'] = uuid();
+  config.headers['x-correlation-id'] = crypto.randomUUID();
 
-  config.headers['X-Client-Tzo'] = new Date().getTimezoneOffset();
+  config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
+
+  config.headers['x-app-handler'] = 'klubiq-ui-dev';
 
   config.headers.Authorization = `Bearer ${token}`;
 
@@ -60,7 +60,9 @@ api.interceptors.response.use(
 );
 
 export const endpoints = {
-  login: () => '/login',
+  login: () => 'auth/login',
+  signup: () => 'auth/landlord-signup',
+  emailVerification: () => 'auth/verification/email',
 };
 
 export { api };
