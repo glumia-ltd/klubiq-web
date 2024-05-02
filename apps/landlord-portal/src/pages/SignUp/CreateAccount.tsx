@@ -90,7 +90,7 @@ const CreateAccount: React.FC = () => {
     <>
       <Grid
         container
-        spacing={0}
+        spacing={1}
         sx={{
           justifyContent: 'center',
         }}
@@ -100,7 +100,7 @@ const CreateAccount: React.FC = () => {
         <Grid
           item
           xs={12}
-          sm={6}
+          sm={12}
           md={6}
           lg={6}
           spacing={1}
@@ -112,9 +112,9 @@ const CreateAccount: React.FC = () => {
             container
             sx={{
               width: '33rem',
-              margin: '2.7rem 11.6rem 0rem 7.5rem',
+              margin: '1.7rem 11.6rem 0rem 7.5rem',
             }}
-            spacing={2}
+            spacing={1}
           >
             <Grid
               item
@@ -140,8 +140,7 @@ const CreateAccount: React.FC = () => {
                 Sign Up and get 30 days free trial.{' '}
               </Typography>
             </Grid>
-            <Grid container spacing={1}></Grid>
-            <Grid item sm={6} xs={12} lg={6}>
+            <Grid item  xs={12} sm={12} lg={6}>
               <ControlledTextField
                 name='firstname'
                 label='First Name'
@@ -149,7 +148,7 @@ const CreateAccount: React.FC = () => {
                 formik={formik}
               />
             </Grid>
-            <Grid item sm={6} xs={12} lg={6}>
+            <Grid item sm={12} xs={12} lg={6}>
               <ControlledTextField
                 name='lastname'
                 label='Last Name'
@@ -233,8 +232,8 @@ const CreateAccount: React.FC = () => {
                 alignItems: 'center',
                 textAlign: 'center',
                 cursor: 'pointer',
+                marginTop:"1rem"
               }}
-              // onClick={goBackToLogin}
             >
               <Typography>
                 Already have an account?{' '}
@@ -251,8 +250,8 @@ const CreateAccount: React.FC = () => {
 
         <Grid
           item
-          xs={12}
-          sm={6}
+          xs={0}
+          sm={0}
           md={6}
           lg={5}
           sx={{
