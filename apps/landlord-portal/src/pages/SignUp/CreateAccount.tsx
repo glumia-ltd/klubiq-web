@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Typography, Button } from '@mui/material';
-import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import { useSnackbar } from 'notistack';
-import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
-import { useNavigate } from 'react-router-dom';
-import { signInWithCustomToken } from 'firebase/auth';
-import { auth } from '../../firebase';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
-import { useDispatch } from 'react-redux';
-import { api, endpoints } from '../../api';
-import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { Grid, Typography, Button } from "@mui/material";
+import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import ControlledPasswordField from "../../components/ControlledComponents/ControlledPasswordField";
+import { useSnackbar } from "notistack";
+import ControlledCheckBox from "../../components/ControlledComponents/ControlledCheckbox";
+import { useNavigate } from "react-router-dom";
+import { signInWithCustomToken } from "firebase/auth";
+import { auth } from "../../firebase";
+import { saveUser } from "../../store/AuthStore/AuthSlice";
+import { useDispatch } from "react-redux";
+import { api, endpoints } from "../../api";
+import { useState } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,12 +22,12 @@ const CreateAccount: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object({
-    firstName: yup.string().required('This field is required'),
-    companyName: yup.string().required('This field is required'),
-    lastName: yup.string().required('This field is required'),
-    password: yup.string().required('Please enter your password'),
-    email: yup.string().email().required('Please enter your email'),
-    mailCheck: yup.bool().oneOf([true], 'Please Check Box'),
+    firstName: yup.string().required("This field is required"),
+    companyName: yup.string().required("This field is required"),
+    lastName: yup.string().required("This field is required"),
+    password: yup.string().required("Please enter your password"),
+    email: yup.string().email().required("Please enter your email"),
+    mailCheck: yup.bool().oneOf([true], "Please Check Box"),
   });
 
   type IValuesType = {
@@ -52,7 +52,7 @@ const CreateAccount: React.FC = () => {
 
       const userCredential = await signInWithCustomToken(auth, token);
 
-      enqueueSnackbar('Please verify your email!', { variant: 'success' });
+      enqueueSnackbar("Please verify your email!", { variant: "success" });
 
       // const actionCodeSettings = {
       //   url: 'http://localhost:5173/verify-email',
@@ -85,16 +85,16 @@ const CreateAccount: React.FC = () => {
   };
 
   const routeToLogin = () => {
-    navigate('/login', { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      companyName: '',
-      lastName: '',
-      password: '',
-      email: '',
+      firstName: "",
+      companyName: "",
+      lastName: "",
+      password: "",
+      email: "",
       mailCheck: false,
     },
     validationSchema,
@@ -105,29 +105,31 @@ const CreateAccount: React.FC = () => {
     <>
       <Grid
         container
-        spacing={1}
+        spacing={0}
         sx={{
-          justifyContent: 'center',
+          justifyContent: "center",
         }}
-        component='form'
+        component="form"
         onSubmit={formik.handleSubmit}
       >
         <Grid
+          container
           item
           xs={12}
           sm={12}
           md={6}
           lg={6}
-          spacing={1}
+          spacing={0}
           sx={{
-            alignContent: 'center',
+            alignContent: "center",
           }}
         >
           <Grid
             container
             sx={{
-              width: '33rem',
-              margin: '1.7rem 11.6rem 0rem 7.5rem',
+              width: "36rem",
+              justifyContent: "center",
+              margin: "auto",
             }}
             spacing={1}
           >
@@ -137,73 +139,73 @@ const CreateAccount: React.FC = () => {
               sm={12}
               md={12}
               lg={12}
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: "center" }}
             >
-              <Typography variant='h2' color='#002147' mb='1.5rem'>
-                Create a Klubiq account{' '}
+              <Typography variant="h2" color="#002147" mb="3rem">
+                Create a Klubiq account{" "}
               </Typography>
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               sm={12}
               md={12}
               lg={12}
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: "center" }}
             >
-              <Typography variant='h6' color='#002147' mb='1.5rem'>
-                Sign Up and get 30 days free trial.{' '}
+              <Typography variant="h6" color="#002147" mb="1.5rem">
+                Sign Up and get 30 days free trial.{" "}
               </Typography>
-            </Grid>
-            <Grid item  xs={12} sm={12} lg={6}>
+            </Grid> */}
+            <Grid item xs={12} sm={12} md={6} lg={6}>
               <ControlledTextField
-                name='firstName'
-                label='First Name'
-                type='text'
+                name="firstName"
+                label="First Name"
+                type="text"
                 formik={formik}
               />
             </Grid>
-            <Grid item sm={12} xs={12} lg={6}>
+            <Grid item sm={12} xs={12} md={6} lg={6}>
               <ControlledTextField
-                name='lastName'
-                label='Last Name'
+                name="lastName"
+                label="Last Name"
                 formik={formik}
-                type='text'
-              />
-            </Grid>
-
-            <Grid item sm={12} xs={12} lg={12}>
-              <ControlledTextField
-                name='companyName'
-                label='Company Name'
-                type='text'
-                formik={formik}
+                type="text"
               />
             </Grid>
 
             <Grid item sm={12} xs={12} lg={12}>
               <ControlledTextField
-                name='email'
-                label='Email '
+                name="companyName"
+                label="Company Name"
+                type="text"
                 formik={formik}
-                type='email'
+              />
+            </Grid>
+
+            <Grid item sm={12} xs={12} lg={12}>
+              <ControlledTextField
+                name="email"
+                label="Email "
+                formik={formik}
+                type="email"
               />
             </Grid>
 
             <Grid item sm={12} xs={12} lg={12}>
               <ControlledPasswordField
-                name='password'
-                label='Password'
-                type='password'
+                name="password"
+                label="Password"
+                type="password"
                 formik={formik}
               />
             </Grid>
 
             <Grid item sm={12} xs={12} lg={12}>
               <ControlledCheckBox
-                name='mailCheck'
-                label='I agree to the Terms & Conditions'
-                type='text'
+                name="mailCheck"
+                label="I agree to the Terms & Conditions"
+                type="text"
                 formik={formik}
               />
             </Grid>
@@ -214,40 +216,40 @@ const CreateAccount: React.FC = () => {
               xs={12}
               lg={12}
               sx={{
-                alignItems: 'center',
-                textAlign: 'center',
-                marginTop: '1rem',
+                alignItems: "center",
+                textAlign: "center",
+                marginTop: "1rem",
               }}
             >
               {loading ? (
                 <LoadingButton
                   loading
-                  loadingPosition='center'
-                  variant='outlined'
+                  loadingPosition="center"
+                  variant="outlined"
                   sx={{
-                    border: '1px solid #002147',
-                    borderRadius: '0.5rem',
-                    color: 'white',
-                    height: '3.1rem',
-                    width: '100%',
+                    border: "1px solid #002147",
+                    borderRadius: "0.5rem",
+                    color: "white",
+                    height: "3.1rem",
+                    width: "100%",
                   }}
                 >
                   Sign In
                 </LoadingButton>
               ) : (
                 <Button
-                  type='submit'
+                  type="submit"
                   disableRipple
                   sx={{
-                    border: '1px solid #002147',
-                    color: 'white',
-                    background: '#002147',
-                    height: '3.1rem',
-                    width: '100%',
-                    '&:hover': {
-                      color: '#002147',
-                      background: '#FFFFFF',
-                      cursor: 'pointer',
+                    border: "1px solid #002147",
+                    color: "white",
+                    background: "#002147",
+                    height: "3.1rem",
+                    width: "100%",
+                    "&:hover": {
+                      color: "#002147",
+                      background: "#FFFFFF",
+                      cursor: "pointer",
                     },
                   }}
                 >
@@ -261,16 +263,16 @@ const CreateAccount: React.FC = () => {
               xs={12}
               lg={12}
               sx={{
-                alignItems: 'center',
-                textAlign: 'center',
-                cursor: 'pointer',
-                marginTop:"1rem"
+                alignItems: "center",
+                textAlign: "center",
+                cursor: "pointer",
+                marginTop: "1.2rem",
               }}
             >
               <Typography>
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <span
-                  style={{ color: '#002147', fontWeight: '600' }}
+                  style={{ color: "#002147", fontWeight: "600" }}
                   onClick={routeToLogin}
                 >
                   Sign in
@@ -287,11 +289,11 @@ const CreateAccount: React.FC = () => {
           md={6}
           lg={5}
           sx={{
-            background: '#6699CC',
-            borderBottomRightRadius: '1.3rem',
-            borderBottomLeftRadius: '1.3rem',
-            height: '97vh',
-            alignSelf: 'start',
+            background: "#6699CC",
+            borderBottomRightRadius: "1.3rem",
+            borderBottomLeftRadius: "1.3rem",
+            height: "97vh",
+            alignSelf: "start",
           }}
         ></Grid>
       </Grid>
