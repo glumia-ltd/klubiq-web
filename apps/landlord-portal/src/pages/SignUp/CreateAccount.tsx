@@ -4,51 +4,65 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-// import { useSnackbar } from "notistack";
+import { useSnackbar } from 'notistack';
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from 'firebase/auth';
+import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
+import { api, endpoints } from '../../api';
+import { useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object({
-    firstname: yup.string().required('This field is required'),
+    firstName: yup.string().required('This field is required'),
     companyName: yup.string().required('This field is required'),
-    lastname: yup.string().required('This field is required'),
+    lastName: yup.string().required('This field is required'),
     password: yup.string().required('Please enter your password'),
     email: yup.string().email().required('Please enter your email'),
     mailCheck: yup.bool().oneOf([true], 'Please Check Box'),
   });
 
   type IValuesType = {
-    firstname: string;
+    firstName: string;
     companyName: string;
-    lastname: string;
+    lastName: string;
     password: string;
     email: string;
     mailCheck: boolean;
   };
 
   const onSubmit = async (values: IValuesType) => {
-    console.log(values, 'hh');
-
-    const { email, password } = values;
+    const { email, password, firstName, lastName, companyName } = values;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await sendEmailVerification(userCredential.user);
+      setLoading(true);
+      const userDetails = { email, password, firstName, lastName, companyName };
+
+      const {
+        data: { data: token },
+      } = await api.post(endpoints.signup(), userDetails);
+
+      const userCredential = await signInWithCustomToken(auth, token);
+
+      enqueueSnackbar('Please verify your email!', { variant: 'success' });
+
+      // const actionCodeSettings = {
+      //   url: 'http://localhost:5173/verify-email',
+      // };
+
+      // send notification for email (still using this?)
+
+      // await sendEmailVerification(userCredential.user, actionCodeSettings);
+
+      //if successful, reroute to verification email page here.
 
       //TODO: Find out what user info should be saved
       const user: any = userCredential.user;
@@ -57,16 +71,17 @@ const CreateAccount: React.FC = () => {
 
       dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 
-      navigate('/private', { replace: true });
+      // navigate('/private', { replace: true });
 
-      localStorage.setItem('token', user.accessToken);
+      // localStorage.setItem('token', user.accessToken);
 
       //TODO: Redirect to a page
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
 
-    navigate('/signup/profileupdate', { replace: true });
+    // navigate('/signup/profileupdate', { replace: true });
   };
 
   const routeToLogin = () => {
@@ -75,9 +90,9 @@ const CreateAccount: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstname: '',
+      firstName: '',
       companyName: '',
-      lastname: '',
+      lastName: '',
       password: '',
       email: '',
       mailCheck: false,
@@ -143,7 +158,7 @@ const CreateAccount: React.FC = () => {
             <Grid container spacing={1}></Grid>
             <Grid item sm={6} xs={12} lg={6}>
               <ControlledTextField
-                name='firstname'
+                name='firstName'
                 label='First Name'
                 type='text'
                 formik={formik}
@@ -151,7 +166,7 @@ const CreateAccount: React.FC = () => {
             </Grid>
             <Grid item sm={6} xs={12} lg={6}>
               <ControlledTextField
-                name='lastname'
+                name='lastName'
                 label='Last Name'
                 formik={formik}
                 type='text'
@@ -205,24 +220,41 @@ const CreateAccount: React.FC = () => {
                 marginTop: '1rem',
               }}
             >
-              <Button
-                type='submit'
-                disableRipple
-                sx={{
-                  border: '1px solid #002147',
-                  color: 'white',
-                  background: '#002147',
-                  height: '3.1rem',
-                  width: '100%',
-                  '&:hover': {
-                    color: '#002147',
-                    background: '#FFFFFF',
-                    cursor: 'pointer',
-                  },
-                }}
-              >
-                Sign Up
-              </Button>
+              {loading ? (
+                <LoadingButton
+                  loading
+                  loadingPosition='center'
+                  variant='outlined'
+                  sx={{
+                    border: '1px solid #002147',
+                    borderRadius: '0.5rem',
+                    color: 'white',
+                    height: '3.1rem',
+                    width: '100%',
+                  }}
+                >
+                  Sign In
+                </LoadingButton>
+              ) : (
+                <Button
+                  type='submit'
+                  disableRipple
+                  sx={{
+                    border: '1px solid #002147',
+                    color: 'white',
+                    background: '#002147',
+                    height: '3.1rem',
+                    width: '100%',
+                    '&:hover': {
+                      color: '#002147',
+                      background: '#FFFFFF',
+                      cursor: 'pointer',
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              )}
             </Grid>
             <Grid
               item
