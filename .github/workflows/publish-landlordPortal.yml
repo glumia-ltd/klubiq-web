@@ -31,6 +31,8 @@ jobs:
           name: artifacts
           path: |
               apps/landlord-portal/dist
+              apps/landlord-portal/package.json
+              apps/landlord-portal/vite.config.js
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -55,16 +57,14 @@ jobs:
             cd ${{ secrets.TARGET_DIR }}
           SCRIPT_AFTER: |
             cd ${{ secrets.TARGET_DIR }}
-            cat << EOF > .env        
-              VITE_APIKEY=${{ secrets.FIREBASE_API_KEY }}
-              VITE_PROJECTID=${{ secrets.FIREBASE_PROJECT_ID }}
-              VITE_AUTHDOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}
-              VITE_STORAGEBUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
-              VITE_MESSAGINGSENDERID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-              VITE_APPID=${{ secrets.FIREBASE_APP_ID }}
-              VITE_MEASUREMENTID=${{ secrets.FIREBASE_MEASUREMENT_ID }}
-              VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
-            EOF
-            npm pkg delete scripts.prepare && npm ci --omit=dev && npm cache clean --force
-            pm2 serve ${{ secrets.TARGET_DIR }}/${{ secrets.SERVE_PATH }} ${{ vars.APP_PORT }} --name=${{ env.APP }} --watch
+            export VITE_APIKEY=${{ secrets.FIREBASE_API_KEY }}
+            export VITE_PROJECTID=${{ secrets.FIREBASE_PROJECT_ID }}
+            export VITE_AUTHDOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}
+            export VITE_STORAGEBUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
+            export VITE_MESSAGINGSENDERID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+            export VITE_APPID=${{ secrets.FIREBASE_APP_ID }}
+            export VITE_MEASUREMENTID=${{ secrets.FIREBASE_MEASUREMENT_ID }}
+            export VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
+            pm2 serve ${{ secrets.TARGET_DIR }}/${{ secrets.SERVE_PATH }} ${{ vars.APP_PORT }} --name=${{ env.APP }} --update-env --watch
     
+#npm ci --omit=dev && npm cache clean --force
