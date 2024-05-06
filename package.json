@@ -3,9 +3,12 @@
   "private": true,
   "author": "Glumia",
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
+    "buildLP": "turbo build --filter='./apps/landlord-portal'",
+    "buildAP": "turbo build --filter='./apps/admin-portal'",
+    "devLP": "turbo dev --filter='./apps/landlord-portal'",
+    "devAP": "turbo dev --filter='./apps/admin-portal'",
+    "lintAP": "turbo lint --filter='./apps/admin-portal'",
+    "lintLP": "turbo lint --filter='./apps/landlord-portal'",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

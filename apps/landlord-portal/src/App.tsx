@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ThemeContextProvider } from "./context/ThemeContext/ThemeContext";
+import { SnackbarProvider } from "notistack";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/RouterPaths";
+// import { useEffect } from 'react';
+// import { onAuthStateChanged } from 'firebase/auth';
+// import { auth } from './firebase';
+// import { saveUser } from './store/AuthStore/AuthSlice';
+// import { useDispatch } from 'react-redux';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   const listen = onAuthStateChanged(auth, (user: any) => {
+  //     if (user) {
+  //       console.log('auth state has changed', user.accessToken);
+  //       console.log('user email verified', user.emailVerified);
+  //       const userInfo = { email: user.email };
+  //       dispatch(saveUser({ user: userInfo, token: user.accessToken }));
+  //     } else {
+  //       console.log('no user found yet');
+  //     }
+  //   });
+
+  //   return () => listen();
+  // }, []);
+  
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeContextProvider>
+      <SnackbarProvider anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            dense
+            autoHideDuration={5000}
+      >
+        <RouterProvider router={router} />
+      </SnackbarProvider>
+    </ThemeContextProvider>
+  );
 }
 
-export default App
+export default App;
