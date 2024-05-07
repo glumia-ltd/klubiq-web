@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { env } from 'process';
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
-
-console.log('this is env', env.VITE_APIKEY);
-console.log('this is env', loadEnv);
 
 const manifestForPlugin: Partial<VitePWAOptions> = {
   registerType: "prompt",
