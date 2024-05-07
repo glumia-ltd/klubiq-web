@@ -30,6 +30,7 @@ jobs:
             apps/landlord-portal/src
             apps/landlord-portal/package.json
             apps/landlord-portal/vite.config.js
+            package-lock.json
   deploy:
     runs-on: ubuntu-latest
     needs: build
