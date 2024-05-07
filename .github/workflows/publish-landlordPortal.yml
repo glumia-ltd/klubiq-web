@@ -15,22 +15,28 @@ env:
   VITE_APPID: ${{ secrets.FIREBASE_APP_ID }}
   VITE_MEASUREMENTID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
   VITE_BASE_URL_DEV: ${{ vars.VITE_BASE_URL_DEV }}
+  NODE_ENV: ${{ vars.NODE_ENV }}
   APP: klubiq-landlord-portal
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Build Project
+        run: |
+          npm install
+          npm run buildLP
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: |
-            apps/landlord-portal/public
-            apps/landlord-portal/src
-            apps/landlord-portal/package.json
-            apps/landlord-portal/vite.config.js
-            package-lock.json
+            apps/landlord/-portal/dist
+  # apps/landlord-portal/public
+  # apps/landlord-portal/src
+  # apps/landlord-portal/package.json
+  # apps/landlord-portal/vite.config.js
+  # package-lock.json
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -52,18 +58,18 @@ jobs:
           SCRIPT_BEFORE: |
             sudo chown $USER ${{ secrets.TARGET_DIR }}
             cd ${{ secrets.TARGET_DIR }}
-          SCRIPT_AFTER: |
-            cd ${{ secrets.TARGET_DIR }}
-            export VITE_APIKEY=${{ secrets.FIREBASE_API_KEY }}
-            export VITE_PROJECTID=${{ secrets.FIREBASE_PROJECT_ID }}
-            export VITE_AUTHDOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}
-            export VITE_STORAGEBUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
-            export VITE_MESSAGINGSENDERID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-            export VITE_APPID=${{ secrets.FIREBASE_APP_ID }}
-            export VITE_MEASUREMENTID=${{ secrets.FIREBASE_MEASUREMENT_ID }}
-            export VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
-            export NODE_ENV=${{ vars.NODE_ENV }}
-            npm ci
-            npm run build:prod
+          # SCRIPT_AFTER: |
+          #   cd ${{ secrets.TARGET_DIR }}
+          #   export VITE_APIKEY=${{ secrets.FIREBASE_API_KEY }}
+          #   export VITE_PROJECTID=${{ secrets.FIREBASE_PROJECT_ID }}
+          #   export VITE_AUTHDOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          #   export VITE_STORAGEBUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          #   export VITE_MESSAGINGSENDERID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          #   export VITE_APPID=${{ secrets.FIREBASE_APP_ID }}
+          #   export VITE_MEASUREMENTID=${{ secrets.FIREBASE_MEASUREMENT_ID }}
+          #   export VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
+          #   export NODE_ENV=${{ vars.NODE_ENV }}
+          #   npm ci
+          #   npm run build:prod
 
 #npm ci --omit=dev && npm cache clean --force
