@@ -20,13 +20,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: |
-            apps/landlord-portal/public/
-            apps/landlord-portal/src/
+            apps/landlord-portal/public
+            apps/landlord-portal/src
             apps/landlord-portal/package.json
             apps/landlord-portal/vite.config.js
   deploy:
