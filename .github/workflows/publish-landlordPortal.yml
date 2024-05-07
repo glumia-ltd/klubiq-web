@@ -40,7 +40,6 @@ jobs:
         with:
           name: artifacts
           path: artifacts/
-
       - name: Deploy to Lightsail
         uses: easingthemes/ssh-deploy@main
         with:
