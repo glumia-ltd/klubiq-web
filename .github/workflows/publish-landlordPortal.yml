@@ -65,6 +65,6 @@ jobs:
             export VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
             export NODE_ENV=${{ vars.NODE_ENV }}
             npm ci
-            npm run build
+            npm run build:prod
 
 #npm ci --omit=dev && npm cache clean --force
