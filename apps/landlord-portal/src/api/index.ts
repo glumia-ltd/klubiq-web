@@ -4,7 +4,7 @@ import store from '../store';
 
 const api = axios.create({
   //TODO add base URL
-  baseURL: import.meta.env.NODE_ENV !== 'development' ? `${import.meta.env.VITE_BASE_URL_DEV}/api` : '/api',
+  baseURL: import.meta.env.NODE_ENV !== 'local' ? `${import.meta.env.VITE_BASE_URL_DEV}/api` : '/api',
 });
 
 // request config
