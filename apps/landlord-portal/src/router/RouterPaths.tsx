@@ -28,7 +28,7 @@ export const router = createBrowserRouter(
       <Route path='*' element={<Navigate to='/login' replace />} />
 
       <Route element={<PrivateRoute />}>
-        <Route path='/' element={<h1>This will contain protected route</h1>} />
+        <Route path='/private' element={<h1>This will contain protected route</h1>} />
       </Route>
     </Route>
   )
