@@ -3,7 +3,7 @@ import LoginLayout from '../../Layouts/LoginLayout';
 import {
   Button,
   Checkbox,
-  FormControlLabel,
+  // FormControlLabel,
   FormGroup,
   Grid,
   Typography,
@@ -203,15 +203,15 @@ const Login = () => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  justifyContent: 'end',
                 }}
               >
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
                     label='Remember this computer'
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
