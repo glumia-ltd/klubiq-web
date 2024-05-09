@@ -2,9 +2,9 @@
 import LoginLayout from '../../Layouts/LoginLayout';
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  // Checkbox,
+  // FormControlLabel,
+  // FormGroup,
   Grid,
   Typography,
 } from '@mui/material';
@@ -203,15 +203,15 @@ const Login = () => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  justifyContent: 'end',
                 }}
               >
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
                     label='Remember this computer'
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
