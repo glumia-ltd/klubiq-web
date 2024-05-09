@@ -13,7 +13,7 @@ import {
 const PrivateRoute = () => {
   const { token } = useSelector(getAuthState);
 
-  // const userToken = token || localStorage.getItem('token');
+  const userToken = token || localStorage.getItem('token');
 
   // console.log('token from private route', token);
 
@@ -40,7 +40,7 @@ const PrivateRoute = () => {
   //   return () => listen();
   // }, []);
 
-  return token ? <Outlet /> : <Navigate to={'/login'} replace={true} />;
+  return userToken ? <Outlet /> : <Navigate to={'/login'} replace={true} />;
 };
 
 export default PrivateRoute;
