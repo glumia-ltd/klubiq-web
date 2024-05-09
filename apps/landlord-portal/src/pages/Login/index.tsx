@@ -21,7 +21,7 @@ import {
 } from 'firebase/auth';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { firebaseResponseObject } from '../../helper/FirebaseResponse';
+import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 import { api, endpoints } from '../../api';
 
 const validationSchema = yup.object({

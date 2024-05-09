@@ -7,7 +7,7 @@ import { auth } from '../../firebase';
 import { applyActionCode } from 'firebase/auth';
 import successImage from '../../assets/images/circle-ok.svg';
 import errorImage from '../../assets/images/error.svg';
-import { firebaseResponseObject } from '../../helper/FirebaseResponse';
+import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 
 interface EmailVerificationProps {}
 
