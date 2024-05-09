@@ -22,7 +22,8 @@ import {
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
-import { api, endpoints } from '../../api';
+import { api } from '../../api';
+import { authEndpoints } from '../../helpers/endpoints';
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -63,7 +64,7 @@ const Login = () => {
       if (!user.emailVerified) {
         const requestBody = { email, firstName, lastName };
 
-        await api.post(endpoints.emailVerification(), requestBody);
+        await api.post(authEndpoints.emailVerification(), requestBody);
 
         setLoading(false);
 

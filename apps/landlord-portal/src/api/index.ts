@@ -1,15 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
+import { authEndpoints } from '../helpers/endpoints';
 // import store from '../store';
 
 const api = axios.create({
   //TODO add base URL
-  baseURL: import.meta.env.NODE_ENV !== 'local' ? `${import.meta.env.VITE_BASE_URL_DEV}/api` : '/api',
+  baseURL:
+    import.meta.env.NODE_ENV !== 'local'
+      ? `${import.meta.env.VITE_BASE_URL_DEV}/api`
+      : '/api',
 });
+
+const skippedEndpoints = [
+  authEndpoints.login(),
+  authEndpoints.signup(),
+  authEndpoints.emailVerification(),
+];
 
 // request config
 function AxiosConfig(config: any) {
   const token = localStorage.getItem('token');
+
+  console.log(config);
 
   config.headers = {};
 
@@ -19,9 +31,12 @@ function AxiosConfig(config: any) {
 
   config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 
-  config.headers['x-app-handler'] = 'klubiq-ui-dev';
+  config.headers['x-client-name'] = 'landlord-portal';
 
-  config.headers.Authorization = `Bearer ${token}`;
+  if (!skippedEndpoints.includes(config.url)) {
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log(`Bearer ${token}`);
+  }
 
   return config;
 }
@@ -58,11 +73,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export const endpoints = {
-  login: () => 'auth/login',
-  signup: () => 'auth/landlord-signup',
-  emailVerification: () => 'auth/verification/email',
-};
 
 export { api };

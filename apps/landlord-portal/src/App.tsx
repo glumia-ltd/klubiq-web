@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ThemeContextProvider } from "./context/ThemeContext/ThemeContext";
-import { SnackbarProvider } from "notistack";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./router/RouterPaths";
+import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
+import { SnackbarProvider } from 'notistack';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router/RouterPaths';
+
 // import { useEffect } from 'react';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { auth } from './firebase';
@@ -26,15 +27,16 @@ function App() {
 
   //   return () => listen();
   // }, []);
-  
+
   return (
     <ThemeContextProvider>
-      <SnackbarProvider anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            dense
-            autoHideDuration={5000}
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        dense
+        autoHideDuration={5000}
       >
         <RouterProvider router={router} />
       </SnackbarProvider>
