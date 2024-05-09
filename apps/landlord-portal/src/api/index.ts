@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import store from '../store';
+// import store from '../store';
 
 const api = axios.create({
   //TODO add base URL
@@ -9,7 +9,7 @@ const api = axios.create({
 
 // request config
 function AxiosConfig(config: any) {
-  const token = store.getState();
+  const token = localStorage.getItem('token');
 
   config.headers = {};
 

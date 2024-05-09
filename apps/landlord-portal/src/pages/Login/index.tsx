@@ -70,6 +70,7 @@ const Login = () => {
         enqueueSnackbar('Please verify your email!', { variant: 'success' });
       } else {
         enqueueSnackbar('That was easy!', { variant: 'success' });
+        navigate('/private', { replace: true });
       }
     } catch (error) {
       enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
