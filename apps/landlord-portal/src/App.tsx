@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ThemeContextProvider } from "./context/ThemeContext/ThemeContext";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./router/RouterPaths";
-import ControlledSnackbar from "./components/ControlledComponents/ControlledSnackbar";
+import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router/RouterPaths';
+import ControlledSnackbar from './components/ControlledComponents/ControlledSnackbar';
 // import { useEffect } from 'react';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { auth } from './firebase';
 
-import { useSelector } from "react-redux";
-import type { RootState } from "./store";
+import { useSelector } from 'react-redux';
+import type { RootState } from './store';
 function App() {
-  const { message } = useSelector((state: RootState) => state.snack);
+  const { message, severity } = useSelector((state: RootState) => state.snack);
   console.log(message);
   // useEffect(() => {
   //   const listen = onAuthStateChanged(auth, (user: any) => {
@@ -32,12 +32,13 @@ function App() {
       <RouterProvider router={router} />
       <ControlledSnackbar
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right',
         }}
         autoHideDuration={5000}
         key={message}
         message={message}
+        severity={severity}
       />
     </ThemeContextProvider>
   );

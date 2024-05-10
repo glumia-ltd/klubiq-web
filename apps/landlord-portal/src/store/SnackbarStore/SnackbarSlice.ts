@@ -1,29 +1,37 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '..';
-// import { snackbarType } from './snackBarType';
-type snackbarType = {
-    message: string
-    // messageId: number
-}
 
+type snackbarType = {
+  message: string;
+  severity: 'success' | 'info' | 'warning' | 'error';
+};
 
 const initialState: snackbarType = {
-    message: "",
-
-}
+  message: '',
+  severity: 'success',
+};
 
 const options = {
-    name: 'snack',
-    initialState,
-    reducers: {
-        openSnackbar: (state: snackbarType, action: PayloadAction<snackbarType>) => {
-            state.message = action.payload.message
-            // state.messageId = Math.random()
-        },
-        closeSnackbar: (state: snackbarType) => {
-            state.message = ""
-        },
+  name: 'snack',
+  initialState,
+  reducers: {
+    openSnackbar: (
+      state: snackbarType,
+      action: PayloadAction<snackbarType>
+    ) => {
+      //   state.message = action.payload.message;
+      // state.messageId = Math.random()
+
+      return {
+        ...state,
+        message: action.payload.message,
+        severity: action.payload.severity,
+      };
     },
+    closeSnackbar: (state: snackbarType) => {
+      return { ...state, message: '' };
+    },
+  },
 };
 
 const snackSlice = createSlice(options);
@@ -35,4 +43,3 @@ export const getSnackbarControl = (state: RootState) => state.snack;
 const snackbarReducer = snackSlice.reducer;
 
 export default snackbarReducer;
-
