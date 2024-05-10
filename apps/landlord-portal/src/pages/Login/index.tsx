@@ -117,7 +117,7 @@ const Login = () => {
 
   return (
     <LoginLayout handleSubmit={formik.handleSubmit}>
-      <Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: "33rem" }}>
+      <Grid item xs={12} sm={12} md={7} lg={6} sx={{ width: "33rem" }}>
         <Grid
           container
           sx={{

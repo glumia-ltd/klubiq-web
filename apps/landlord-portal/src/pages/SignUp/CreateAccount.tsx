@@ -107,7 +107,6 @@ const CreateAccount: React.FC = () => {
   });
 
   return (
-    <>
       <Grid
         container
         spacing={0}
@@ -122,7 +121,7 @@ const CreateAccount: React.FC = () => {
           item
           xs={12}
           sm={12}
-          md={6}
+          md={7}
           lg={6}
           spacing={0}
           sx={{
@@ -291,7 +290,7 @@ const CreateAccount: React.FC = () => {
           item
           xs={0}
           sm={0}
-          md={6}
+          md={5}
           lg={5}
           sx={{
             background: '#6699CC',
@@ -302,7 +301,6 @@ const CreateAccount: React.FC = () => {
           }}
         ></Grid>
       </Grid>
-    </>
   );
 };
 
