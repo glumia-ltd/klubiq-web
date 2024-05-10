@@ -19,12 +19,13 @@ import { useDispatch } from "react-redux";
 import {
   // sendEmailVerification,
   signInWithEmailAndPassword,
-} from "firebase/auth";
-import { useState } from "react";
-import { firebaseResponseObject } from "../../helpers/FirebaseResponse";
-import { api } from "../../api";
-import { authEndpoints } from "../../helpers/endpoints";
+} from 'firebase/auth';
+import { useState } from 'react';
+import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
+import { api } from '../../api';
+import { authEndpoints } from '../../helpers/endpoints';
 import { openSnackbar } from "../../store/SnackbarStore/SnackbarSlice";
+
 const validationSchema = yup.object({
   password: yup.string().required("Please enter your password"),
   email: yup.string().email().required("Please enter your email"),
@@ -219,9 +220,9 @@ const Login = () => {
                 mt={-1}
                 m={0.5}
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "end",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'end',
                 }}
               >
                 {/* <FormGroup>
