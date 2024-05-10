@@ -2,9 +2,9 @@
 import LoginLayout from "../../Layouts/LoginLayout";
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  // Checkbox,
+  // FormControlLabel,
+  // FormGroup,
   Grid,
   Typography,
 } from "@mui/material";
@@ -21,8 +21,9 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useState } from "react";
-import { firebaseResponseObject } from "../../helper/FirebaseResponse";
-import { api, endpoints } from "../../api";
+import { firebaseResponseObject } from "../../helpers/FirebaseResponse";
+import { api } from '../../api';
+import { authEndpoints } from "../../helpers/endpoints";
 import {
   openSnackbar,
   closeSnackbar,
@@ -65,7 +66,7 @@ const Login = () => {
       if (!user.emailVerified) {
         const requestBody = { email, firstName, lastName };
 
-        await api.post(endpoints.emailVerification(), requestBody);
+        await api.post(authEndpoints.emailVerification(), requestBody);
 
         setLoading(false);
         dispatch(openSnackbar({
@@ -79,6 +80,7 @@ const Login = () => {
           message: "That was easy",
         }))
         // enqueueSnackbar('That was easy!', { variant: 'success' });
+        navigate('/private', { replace: true });
       }
     } catch (error) {
     dispatch( openSnackbar({
@@ -215,15 +217,15 @@ const Login = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  justifyContent: "end",
                 }}
               >
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Remember this computer"
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{

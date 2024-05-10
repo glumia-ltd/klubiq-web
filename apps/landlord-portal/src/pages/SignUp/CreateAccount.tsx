@@ -11,7 +11,8 @@ import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
-import { api, endpoints } from '../../api';
+import { api } from '../../api';
+import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -48,7 +49,7 @@ const CreateAccount: React.FC = () => {
 
       const {
         data: { data: token },
-      } = await api.post(endpoints.signup(), userDetails);
+      } = await api.post(authEndpoints.signup(), userDetails);
 
       const userCredential = await signInWithCustomToken(auth, token);
 
@@ -113,12 +114,13 @@ const CreateAccount: React.FC = () => {
         onSubmit={formik.handleSubmit}
       >
         <Grid
+          container
           item
           xs={12}
-          sm={6}
+          sm={12}
           md={6}
           lg={6}
-          spacing={1}
+          spacing={0}
           sx={{
             alignContent: 'center',
           }}
@@ -126,10 +128,11 @@ const CreateAccount: React.FC = () => {
           <Grid
             container
             sx={{
-              width: '33rem',
-              margin: '2.7rem 11.6rem 0rem 7.5rem',
+              width: '36rem',
+              justifyContent: 'center',
+              margin: 'auto',
             }}
-            spacing={2}
+            spacing={1}
           >
             <Grid
               item
@@ -139,24 +142,23 @@ const CreateAccount: React.FC = () => {
               lg={12}
               sx={{ textAlign: 'center' }}
             >
-              <Typography variant='h2' color='#002147' mb='1.5rem'>
+              <Typography variant='h2' color='#002147' mb='3rem'>
                 Create a Klubiq account{' '}
               </Typography>
             </Grid>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               sm={12}
               md={12}
               lg={12}
-              sx={{ textAlign: 'center' }}
+              sx={{ textAlign: "center" }}
             >
-              <Typography variant='h6' color='#002147' mb='1.5rem'>
-                Sign Up and get 30 days free trial.{' '}
+              <Typography variant="h6" color="#002147" mb="1.5rem">
+                Sign Up and get 30 days free trial.{" "}
               </Typography>
-            </Grid>
-            <Grid container spacing={1}></Grid>
-            <Grid item sm={6} xs={12} lg={6}>
+            </Grid> */}
+            <Grid item xs={12} sm={12} md={6} lg={6}>
               <ControlledTextField
                 name='firstName'
                 label='First Name'
@@ -164,7 +166,7 @@ const CreateAccount: React.FC = () => {
                 formik={formik}
               />
             </Grid>
-            <Grid item sm={6} xs={12} lg={6}>
+            <Grid item sm={12} xs={12} md={6} lg={6}>
               <ControlledTextField
                 name='lastName'
                 label='Last Name'
@@ -265,8 +267,8 @@ const CreateAccount: React.FC = () => {
                 alignItems: 'center',
                 textAlign: 'center',
                 cursor: 'pointer',
+                marginTop: '1.2rem',
               }}
-              // onClick={goBackToLogin}
             >
               <Typography>
                 Already have an account?{' '}
@@ -283,8 +285,8 @@ const CreateAccount: React.FC = () => {
 
         <Grid
           item
-          xs={12}
-          sm={6}
+          xs={0}
+          sm={0}
           md={6}
           lg={5}
           sx={{

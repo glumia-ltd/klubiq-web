@@ -22,8 +22,8 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 
       <Grid
         item
-        xs={12}
-        sm={6}
+        xs={0}
+        sm={0}
         md={6}
         lg={5}
         sx={{
