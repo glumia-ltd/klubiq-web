@@ -17,6 +17,7 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
         height: '100vh',
       }}
       onSubmit={handleSubmit}
+      columnSpacing={{ xs: 1, sm: 1, md: 1 }}
     >
       {children}
 
