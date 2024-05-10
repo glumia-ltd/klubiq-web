@@ -4,7 +4,6 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import { useSnackbar } from 'notistack';
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
@@ -15,11 +14,11 @@ import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const CreateAccount: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object({
@@ -52,8 +51,13 @@ const CreateAccount: React.FC = () => {
       } = await api.post(authEndpoints.signup(), userDetails);
 
       const userCredential = await signInWithCustomToken(auth, token);
-
-      enqueueSnackbar('Please verify your email!', { variant: 'success' });
+      dispatch(
+        openSnackbar({
+          message: 'Please verify your email!',
+          severity: 'info',
+          isOpen:true
+        })
+      );
 
       // const actionCodeSettings = {
       //   url: 'http://localhost:5173/verify-email',
