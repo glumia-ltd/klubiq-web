@@ -2,14 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '..';
 // import { snackbarType } from './snackBarType';
 type snackbarType = {
-    isOpen: boolean,
-    message: string | {}
+    message: string
+    // messageId: number
 }
 
 
 const initialState: snackbarType = {
-    isOpen: false,
-    message: "" || {}
+    message: "",
+    // messageId: 1
+
 }
 
 const options = {
@@ -17,11 +18,10 @@ const options = {
     initialState,
     reducers: {
         openSnackbar: (state: snackbarType, action: PayloadAction<snackbarType>) => {
-            state.isOpen = true,
-                state.message = action.payload.message
+            state.message = action.payload.message
+            // state.messageId = Math.random()
         },
         closeSnackbar: (state: snackbarType) => {
-            state.isOpen = false
             state.message = ""
         },
     },

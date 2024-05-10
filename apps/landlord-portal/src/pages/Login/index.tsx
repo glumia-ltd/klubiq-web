@@ -70,13 +70,11 @@ const Login = () => {
 
         setLoading(false);
         dispatch(openSnackbar({
-          isOpen: true,
           message: "Please verify your email!",
         }))
         // enqueueSnackbar('Please verify your email!', { variant: 'success' });
       } else {
        dispatch( openSnackbar({
-          isOpen: true,
           message: "That was easy",
         }))
         // enqueueSnackbar('That was easy!', { variant: 'success' });
@@ -84,7 +82,6 @@ const Login = () => {
       }
     } catch (error) {
     dispatch( openSnackbar({
-        isOpen: true,
         message: "Please verify your email!",
       }))
       // enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
