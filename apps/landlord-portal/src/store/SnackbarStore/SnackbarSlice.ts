@@ -9,7 +9,6 @@ type snackbarType = {
 
 const initialState: snackbarType = {
     message: "",
-    // messageId: 1
 
 }
 
