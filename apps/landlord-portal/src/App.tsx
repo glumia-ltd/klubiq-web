@@ -10,8 +10,7 @@ import ControlledSnackbar from './components/ControlledComponents/ControlledSnac
 import { useSelector } from 'react-redux';
 import type { RootState } from './store';
 function App() {
-  const { message, severity } = useSelector((state: RootState) => state.snack);
-  console.log(message);
+  const { message, severity,isOpen } = useSelector((state: RootState) => state.snack);
   // useEffect(() => {
   //   const listen = onAuthStateChanged(auth, (user: any) => {
   //     if (user) {
@@ -39,6 +38,7 @@ function App() {
         key={message}
         message={message}
         severity={severity}
+        open={isOpen}
       />
     </ThemeContextProvider>
   );

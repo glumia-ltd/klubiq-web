@@ -1,18 +1,17 @@
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
-import { Alert } from '@mui/material';
+import Snackbar from "@mui/material/Snackbar";
+import { Alert } from "@mui/material";
+import { closeSnackbar } from "../../store/SnackbarStore/SnackbarSlice";
+import { useDispatch } from "react-redux";
 
 type Props = {
   message: string;
   autoHideDuration: number;
   anchorOrigin: {
-    vertical: 'top' | 'bottom';
-    horizontal: 'center' | 'left' | 'right';
+    vertical: "top" | "bottom";
+    horizontal: "center" | "left" | "right";
   };
-  severity: 'success' | 'info' | 'warning' | 'error';
+  severity: "success" | "info" | "warning" | "error";
+  open: boolean | undefined;
 };
 
 function ControlledSnackbar({
@@ -20,8 +19,9 @@ function ControlledSnackbar({
   autoHideDuration,
   anchorOrigin,
   severity,
+  open,
 }: Props): JSX.Element | null {
-  const [notiOpen, setNotiOpen] = useState(true);
+  const dispatch = useDispatch();
 
   if (!message) {
     return null;
@@ -29,40 +29,20 @@ function ControlledSnackbar({
 
   return (
     <Snackbar
-      open={notiOpen}
+      open={open}
       autoHideDuration={autoHideDuration}
-      onClose={() => setNotiOpen(false)}
-      message={message}
+      onClose={() => dispatch(closeSnackbar())}
       anchorOrigin={anchorOrigin}
+      sx={{
+        width: "100%",
+        fontFamily: "Maven Pro, sans-serif",
+        fontSize: "16px",
+      }}
     >
       <Alert
-        onClose={() => setNotiOpen(false)}
+        onClose={() => dispatch(closeSnackbar())}
         severity={severity}
-        variant='filled'
-        sx={{
-          width: '100%',
-          fontFamily: 'Maven Pro, sans-serif',
-          fontSize: '16px',
-        }}
-        action={
-          <>
-            <Button
-              color='secondary'
-              size='small'
-              onClick={() => setNotiOpen(false)}
-            >
-              Close
-            </Button>
-            <IconButton
-              size='small'
-              aria-label='close'
-              color='inherit'
-              onClick={() => setNotiOpen(false)}
-            >
-              <CloseIcon fontSize='small' />
-            </IconButton>
-          </>
-        }
+        variant="filled"
       >
         {message}
       </Alert>

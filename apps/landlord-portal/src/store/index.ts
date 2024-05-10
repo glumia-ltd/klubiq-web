@@ -10,7 +10,6 @@ const store = configureStore({
     snack: snackbarReducer,
   },
 });
-console.log(store.getState())
 
 export default store;
 
