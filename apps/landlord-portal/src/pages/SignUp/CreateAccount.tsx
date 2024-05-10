@@ -55,6 +55,7 @@ const CreateAccount: React.FC = () => {
         openSnackbar({
           message: 'Please verify your email!',
           severity: 'info',
+          isOpen:true
         })
       );
 
