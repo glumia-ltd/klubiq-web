@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
-// import store from '../store';
 
 const api = axios.create({
-  //TODO add base URL
   baseURL:
     import.meta.env.NODE_ENV !== 'local'
       ? `${import.meta.env.VITE_BASE_URL_DEV}/api`
@@ -46,23 +44,16 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    //TODO in case there is an error due to expired token. Get the status code from firebase.
-
+    const { status, data: { error: err, } } = error.response;
     if (
-      error.response.status &&
-      error.response.status > 400 &&
-      //TODO: Check the error message.
-      'expired token' in error.message.toLowerCase() &&
+      status && status > 400 &&
+      err.includes('expired token') &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-
-        //TODO: Confirm the response.
-
         const {
           data: {
             data: { access_token, refresh_token },
