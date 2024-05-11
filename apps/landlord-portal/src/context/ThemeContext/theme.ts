@@ -73,7 +73,6 @@ export const LightTheme: Theme = createTheme({
     MuiButtonGroup: {
       defaultProps: {
         disableRipple: true,
-
       },
     },
   },
@@ -215,7 +214,6 @@ export const DarkTheme: Theme = createTheme({
     MuiButtonGroup: {
       defaultProps: {
         disableRipple: true,
-
       },
     },
 
@@ -341,8 +339,6 @@ export const DarkTheme: Theme = createTheme({
     button: {
       textTransform: 'none',
       disableRipple: true,
-
     },
   },
 });
-

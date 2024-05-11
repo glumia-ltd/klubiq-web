@@ -6,7 +6,7 @@ import { RootState } from '..';
 const initialState: AuthType = {
   user: {},
   token: null,
-};
+};  
 
 const options = {
   name: 'auth',

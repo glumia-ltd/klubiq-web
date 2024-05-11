@@ -1,26 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import store from "../store";
-import { uuid } from "uuidv4";
+import { authEndpoints } from "../helpers/endpoints";
+// import store from '../store';
 
 const api = axios.create({
   //TODO add base URL
-  baseURL: "/",
+  baseURL:
+    import.meta.env.NODE_ENV !== "local"
+      ? `${import.meta.env.VITE_BASE_URL_DEV}/api`
+      : "/api",
 });
+
+const skippedEndpoints = [
+  authEndpoints.login(),
+  authEndpoints.signup(),
+  authEndpoints.emailVerification(),
+];
 
 // request config
 function AxiosConfig(config: any) {
-  const token = store.getState();
+  const token = localStorage.getItem("token");
+
+  console.log(config);
 
   config.headers = {};
 
-  config.headers["Content-Type"] = "application/json";
+  config.headers["content-type"] = "application/json";
 
-  config.headers["X-Correlation-Id"] = uuid();
+  config.headers["x-correlation-id"] = crypto.randomUUID();
 
-  config.headers["X-Client-Tzo"] = new Date().getTimezoneOffset();
+  config.headers["x-client-tzo"] = new Date().getTimezoneOffset();
 
-  config.headers.Authorization = `Bearer ${token}`;
+  config.headers["x-client-name"] = "landlord-portal";
+
+  if (!skippedEndpoints.includes(config.url)) {
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log(`Bearer ${token}`);
+  }
 
   return config;
 }
@@ -36,18 +52,27 @@ api.interceptors.response.use(
 
     //TODO in case there is an error due to expired token. Get the status code from firebase.
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response.status === 401 &&
+      //TODO: Check the error message.
+      error.message === "Invalid / expired token" &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       try {
-        //TODO get from firebase
-        // const refreshToken = '';
+        const refreshToken = localStorage.getItem("refreshToken");
 
-        // const response = await axios.post('/api/refresh-token', { refreshToken });
-        // const { token } = response.data;
+        //TODO: Confirm the response.
+
+        const response = await axios.post(authEndpoints.refreshToken(), {
+          refreshToken,
+        });
+
+        const token = response.data;
 
         // Retry the original request with the new token
-        // originalRequest.headers.Authorization = `Bearer ${token}`;
+        originalRequest.headers.Authorization = `Bearer ${token}`;
 
         return axios(originalRequest);
       } catch (error) {
@@ -57,9 +82,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export const endpoints = {
-  login: () => "/login",
-};
 
 export { api };

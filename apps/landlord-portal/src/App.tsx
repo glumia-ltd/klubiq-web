@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ThemeContextProvider } from "./context/ThemeContext/ThemeContext";
-import { SnackbarProvider } from "notistack";
-import { RouterProvider } from "react-router-dom";
-import { router } from "./router/RouterPaths";
+import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router/RouterPaths';
+import ControlledSnackbar from './components/ControlledComponents/ControlledSnackbar';
 // import { useEffect } from 'react';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { auth } from './firebase';
-// import { saveUser } from './store/AuthStore/AuthSlice';
-// import { useDispatch } from 'react-redux';
 
+import { useSelector } from 'react-redux';
+import type { RootState } from './store';
 function App() {
-  // const dispatch = useDispatch();
-
+  const { message, severity,isOpen } = useSelector((state: RootState) => state.snack);
   // useEffect(() => {
   //   const listen = onAuthStateChanged(auth, (user: any) => {
   //     if (user) {
@@ -26,18 +25,21 @@ function App() {
 
   //   return () => listen();
   // }, []);
-  
+
   return (
     <ThemeContextProvider>
-      <SnackbarProvider anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-            dense
-            autoHideDuration={5000}
-      >
-        <RouterProvider router={router} />
-      </SnackbarProvider>
+      <RouterProvider router={router} />
+      <ControlledSnackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        autoHideDuration={5000}
+        key={message}
+        message={message}
+        severity={severity}
+        open={isOpen}
+      />
     </ThemeContextProvider>
   );
 }

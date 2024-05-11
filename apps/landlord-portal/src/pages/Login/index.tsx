@@ -2,20 +2,29 @@
 import LoginLayout from "../../Layouts/LoginLayout";
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  // Checkbox,
+  // FormControlLabel,
+  // FormGroup,
   Grid,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import ControlledPasswordField from "../../components/ControlledComponents/ControlledPasswordField";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useSnackbar } from "notistack";
+import { useDispatch } from "react-redux";
+import {
+  // sendEmailVerification,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useState } from "react";
+import { firebaseResponseObject } from "../../helpers/FirebaseResponse";
+import { api } from "../../api";
+import { authEndpoints } from "../../helpers/endpoints";
+import { openSnackbar } from "../../store/SnackbarStore/SnackbarSlice";
 
 const validationSchema = yup.object({
   password: yup.string().required("Please enter your password"),
@@ -28,22 +37,65 @@ type IValuesType = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const onSubmit = async (values: IValuesType) => {
     const { email, password } = values;
 
     try {
+      setLoading(true);
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
+
       const user: any = userCredential.user;
-      enqueueSnackbar("That was easy!", { variant: "success" });
-      console.log(user.accessToken);
+
+      const userName = user.displayName.split(" ");
+      const firstName = userName[0];
+      const lastName = userName[1];
+
+      localStorage.setItem("token", user.accessToken);
+      localStorage.setItem("refreshToken", user.refreshToken);
+
+      if (!user.emailVerified) {
+        const requestBody = { email, firstName, lastName };
+
+        await api.post(authEndpoints.emailVerification(), requestBody);
+
+        setLoading(false);
+        dispatch(
+          openSnackbar({
+            message: "Please verify your email!",
+            severity: "info",
+            isOpen: true,
+          })
+        );
+      } else {
+        dispatch(
+          openSnackbar({
+            message: "That was easy",
+            severity: "success",
+            isOpen: true,
+          })
+        );
+        navigate("/private", { replace: true });
+      }
     } catch (error) {
-      console.log(error);
+      dispatch(
+        openSnackbar({
+          message:
+            firebaseResponseObject[(error as Error).message] ||
+            "An error occurred",
+          severity: "error",
+          isOpen: true,
+        })
+      );
+
+      setLoading(false);
     }
   };
 
@@ -60,7 +112,7 @@ const Login = () => {
   //   navigate('/signup', { replace: true });
   // };
   const routeToSignUp = () => {
-    navigate("/signup/createaccount", { replace: true });
+    navigate("/signup", { replace: true });
   };
 
   const routeToForgotPassword = () => {
@@ -69,7 +121,7 @@ const Login = () => {
 
   return (
     <LoginLayout handleSubmit={formik.handleSubmit}>
-      <Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: "33rem" }}>
+      <Grid item xs={12} sm={12} md={7} lg={6} sx={{ width: "33rem" }}>
         <Grid
           container
           sx={{
@@ -173,15 +225,15 @@ const Login = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  justifyContent: "end",
                 }}
               >
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Remember this computer"
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
@@ -206,24 +258,41 @@ const Login = () => {
                   marginTop: "1rem",
                 }}
               >
-                <Button
-                  type="submit"
-                  sx={{
-                    border: "1px solid #002147",
-                    borderRadius: "0.5rem",
-                    color: "white",
-                    background: "#002147",
-                    height: "3.1rem",
-                    width: "100%",
-                    "&:hover": {
-                      color: "#002147",
-                      background: "#FFFFFF",
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  Sign In
-                </Button>
+                {loading ? (
+                  <LoadingButton
+                    loading
+                    loadingPosition="center"
+                    variant="outlined"
+                    sx={{
+                      border: "1px solid #002147",
+                      borderRadius: "0.5rem",
+                      color: "white",
+                      height: "3.1rem",
+                      width: "100%",
+                    }}
+                  >
+                    Sign In
+                  </LoadingButton>
+                ) : (
+                  <Button
+                    type="submit"
+                    sx={{
+                      border: "1px solid #002147",
+                      borderRadius: "0.5rem",
+                      color: "white",
+                      background: "#002147",
+                      height: "3.1rem",
+                      width: "100%",
+                      "&:hover": {
+                        color: "#002147",
+                        background: "#FFFFFF",
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </Grid>
 
               <Grid
@@ -250,6 +319,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </Grid>
+      {/* <ControlledSnackbar/> */}
     </LoginLayout>
   );
 };
