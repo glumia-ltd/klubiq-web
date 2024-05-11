@@ -14,6 +14,8 @@ import SetPassword from '../pages/SetPassword';
 import ForgotPassword from '../pages/ForgotPassword';
 import UserProfileDetails from '../pages/UserProfileDetails';
 import EmailVerification from '../pages/EmailVerification';
+import PrivatePage from '../pages/PrivatePage/PrivatePage';
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -28,7 +30,7 @@ export const router = createBrowserRouter(
       <Route path='*' element={<Navigate to='/login' replace />} />
 
       <Route element={<PrivateRoute />}>
-        <Route path='/private' element={<h1>This will contain protected routes</h1>} />
+        <Route path='/private' element={<PrivatePage />} />
       </Route>
     </Route>
   )

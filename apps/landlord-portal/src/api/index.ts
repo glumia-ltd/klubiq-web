@@ -21,8 +21,6 @@ const skippedEndpoints = [
 function AxiosConfig(config: any) {
   const token = localStorage.getItem('token');
 
-  console.log(config);
-
   config.headers = {};
 
   config.headers['content-type'] = 'application/json';
@@ -35,7 +33,6 @@ function AxiosConfig(config: any) {
 
   if (!skippedEndpoints.includes(config.url)) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log(`Bearer ${token}`);
   }
 
   return config;
@@ -53,9 +50,10 @@ api.interceptors.response.use(
     //TODO in case there is an error due to expired token. Get the status code from firebase.
 
     if (
-      error.response.status === 401 &&
+      error.response.status &&
+      error.response.status > 400 &&
       //TODO: Check the error message.
-      error.message === 'Invalid / expired token' &&
+      'expired token' in error.message.toLowerCase() &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
@@ -65,14 +63,24 @@ api.interceptors.response.use(
 
         //TODO: Confirm the response.
 
-        const response = await axios.post(authEndpoints.refreshToken(), {
-          refreshToken,
-        });
+        const {
+          data: {
+            data: { access_token, refresh_token },
+          },
+        } = await axios.post(
+          `https://devapi.klubiq.com/api/${authEndpoints.refreshToken()}`,
+          {
+            refreshToken,
+          }
+        );
 
-        const token = response.data;
+        if (access_token && refresh_token) {
+          localStorage.setItem('token', access_token);
+          localStorage.setItem('refreshToken', refresh_token);
+        }
 
         // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Bearer ${token}`;
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
 
         return axios(originalRequest);
       } catch (error) {
