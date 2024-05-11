@@ -1,25 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
-import store from '../store';
-import { uuid } from 'uuidv4';
+import axios from "axios";
+import store from "../store";
+import { uuid } from "uuidv4";
 
 const api = axios.create({
   //TODO add base URL
-  baseURL: '/',
+  baseURL: "/",
 });
 
 // request config
 function AxiosConfig(config: any) {
-
   const token = store.getState();
 
   config.headers = {};
 
-  config.headers['Content-Type'] = 'application/json';
+  config.headers["Content-Type"] = "application/json";
 
-  config.headers['X-Correlation-Id'] = uuid();
+  config.headers["X-Correlation-Id"] = uuid();
 
-  config.headers['X-Client-Tzo'] = new Date().getTimezoneOffset();
+  config.headers["X-Client-Tzo"] = new Date().getTimezoneOffset();
 
   config.headers.Authorization = `Bearer ${token}`;
 
@@ -60,7 +59,7 @@ api.interceptors.response.use(
 );
 
 export const endpoints = {
-  login: () => '/login',
+  login: () => "/login",
 };
 
 export { api };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import LoginLayout from '../../Layouts/LoginLayout';
+import LoginLayout from "../../Layouts/LoginLayout";
 import {
   Button,
   Checkbox,
@@ -7,19 +7,19 @@ import {
   FormGroup,
   Grid,
   Typography,
-} from '@mui/material';
-import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+} from "@mui/material";
+import ControlledTextField from "../../components/ControlledComponents/ControlledTextField";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import ControlledPasswordField from "../../components/ControlledComponents/ControlledPasswordField";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useSnackbar } from "notistack";
 
 const validationSchema = yup.object({
-  password: yup.string().required('Please enter your password'),
-  email: yup.string().email().required('Please enter your email'),
+  password: yup.string().required("Please enter your password"),
+  email: yup.string().email().required("Please enter your email"),
 });
 type IValuesType = {
   password: string;
@@ -29,7 +29,6 @@ type IValuesType = {
 const Login = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
 
   const onSubmit = async (values: IValuesType) => {
     const { email, password } = values;
@@ -41,8 +40,8 @@ const Login = () => {
         password
       );
       const user: any = userCredential.user;
-      enqueueSnackbar('That was easy!',{ variant: "success" })     ;
-       console.log(user.accessToken);
+      enqueueSnackbar("That was easy!", { variant: "success" });
+      console.log(user.accessToken);
     } catch (error) {
       console.log(error);
     }
@@ -50,35 +49,38 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validationSchema,
     onSubmit,
   });
 
+  // const routeToSignUp = () => {
+  //   navigate('/signup', { replace: true });
+  // };
   const routeToSignUp = () => {
-    navigate('/signup', { replace: true });
+    navigate("/signup/createaccount", { replace: true });
   };
 
   const routeToForgotPassword = () => {
-    navigate('/forgotPassword', { replace: true });
+    navigate("/forgotPassword", { replace: true });
   };
 
   return (
     <LoginLayout handleSubmit={formik.handleSubmit}>
-      <Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: '33rem' }}>
+      <Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: "33rem" }}>
         <Grid
           container
           sx={{
-            height: '100vh',
-            justifyContent: 'center',
+            height: "100vh",
+            justifyContent: "center",
           }}
         >
           <Grid
             container
             sx={{
-              width: '33rem',
+              width: "33rem",
             }}
           >
             <Grid
@@ -89,16 +91,16 @@ const Login = () => {
               lg={12}
               mt={4}
               sx={{
-                textAlign: 'right',
+                textAlign: "right",
               }}
             >
               <Typography>
-                Are you a tenant?{' '}
+                Are you a tenant?{" "}
                 <span
                   style={{
-                    color: '#002147',
-                    fontWeight: '600',
-                    cursor: 'pointer',
+                    color: "#002147",
+                    fontWeight: "600",
+                    cursor: "pointer",
                   }}
                 >
                   Sign in here
@@ -109,7 +111,7 @@ const Login = () => {
             <Grid
               container
               sx={{
-                height: '25rem',
+                height: "25rem",
               }}
               mt={-15}
             >
@@ -121,10 +123,10 @@ const Login = () => {
                 lg={12}
                 mb={2}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
               >
-                <Typography variant='h3' sx={{ fontWeight: '700' }}>
+                <Typography variant="h3" sx={{ fontWeight: "700" }}>
                   Sign in
                 </Typography>
               </Grid>
@@ -136,7 +138,7 @@ const Login = () => {
                 lg={12}
                 mb={5}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
               >
                 <Typography>
@@ -146,18 +148,18 @@ const Login = () => {
 
               <Grid item sm={12} xs={12} lg={12}>
                 <ControlledTextField
-                  name='email'
-                  label='Email'
-                  type='email'
+                  name="email"
+                  label="Email"
+                  type="email"
                   formik={formik}
                 />
               </Grid>
 
               <Grid item sm={12} xs={12} lg={12}>
                 <ControlledPasswordField
-                  name='password'
-                  label='Password'
-                  type='password'
+                  name="password"
+                  label="Password"
+                  type="password"
                   formik={formik}
                 />
               </Grid>
@@ -169,23 +171,23 @@ const Login = () => {
                 mt={-1}
                 m={0.5}
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
-                    label='Remember this computer'
+                    label="Remember this computer"
                   />
                 </FormGroup>
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
-                    color: '#0096FF',
-                    fontWeight: '600',
-                    cursor: 'pointer',
+                    color: "#0096FF",
+                    fontWeight: "600",
+                    cursor: "pointer",
                   }}
                 >
                   Forgot password
@@ -199,24 +201,24 @@ const Login = () => {
                 lg={12}
                 // m={0.5}
                 sx={{
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  marginTop: '1rem',
+                  alignItems: "center",
+                  textAlign: "center",
+                  marginTop: "1rem",
                 }}
               >
                 <Button
-                  type='submit'
+                  type="submit"
                   sx={{
-                    border: '1px solid #002147',
-                    borderRadius: '0.5rem',
-                    color: 'white',
-                    background: '#002147',
-                    height: '3.1rem',
-                    width: '100%',
-                    '&:hover': {
-                      color: '#002147',
-                      background: '#FFFFFF',
-                      cursor: 'pointer',
+                    border: "1px solid #002147",
+                    borderRadius: "0.5rem",
+                    color: "white",
+                    background: "#002147",
+                    height: "3.1rem",
+                    width: "100%",
+                    "&:hover": {
+                      color: "#002147",
+                      background: "#FFFFFF",
+                      cursor: "pointer",
                     },
                   }}
                 >
@@ -231,15 +233,15 @@ const Login = () => {
                 lg={12}
                 mt={2}
                 sx={{
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  cursor: 'pointer',
+                  alignItems: "center",
+                  textAlign: "center",
+                  cursor: "pointer",
                 }}
                 onClick={routeToSignUp}
               >
                 <Typography>
-                  Don't have an account?{' '}
-                  <span style={{ color: '#002147', fontWeight: '600' }}>
+                  Don't have an account?{" "}
+                  <span style={{ color: "#002147", fontWeight: "600" }}>
                     Sign up
                   </span>
                 </Typography>
