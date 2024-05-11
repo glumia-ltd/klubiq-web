@@ -13,7 +13,11 @@ const options = {
   initialState,
   reducers: {
     saveUser: (state: AuthType, action: PayloadAction<AuthType>) => {
-      return { ...state, token: action.payload.token };
+      return {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.user,
+      };
     },
     removeUser: (state: AuthType) => {
       return { ...state, user: {}, token: null };

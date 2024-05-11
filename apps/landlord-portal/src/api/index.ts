@@ -1,15 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import store from '../store';
+import { authEndpoints } from '../helpers/endpoints';
 
 const api = axios.create({
-  //TODO add base URL
-  baseURL: import.meta.env.NODE_ENV !== 'local' ? `${import.meta.env.VITE_BASE_URL_DEV}/api` : '/api',
+  baseURL:
+    import.meta.env.NODE_ENV !== 'local'
+      ? `${import.meta.env.VITE_BASE_URL_DEV}/api`
+      : '/api',
 });
+
+const skippedEndpoints = [
+  authEndpoints.login(),
+  authEndpoints.signup(),
+  authEndpoints.emailVerification(),
+];
 
 // request config
 function AxiosConfig(config: any) {
-  const token = store.getState();
+  const token = localStorage.getItem('token');
 
   config.headers = {};
 
@@ -19,9 +27,11 @@ function AxiosConfig(config: any) {
 
   config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 
-  config.headers['x-app-handler'] = 'klubiq-ui-dev';
+  config.headers['x-client-name'] = 'landlord-portal';
 
-  config.headers.Authorization = `Bearer ${token}`;
+  if (!skippedEndpoints.includes(config.url)) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
   return config;
 }
@@ -34,21 +44,34 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    //TODO in case there is an error due to expired token. Get the status code from firebase.
-
-    if (error.response.status === 401 && !originalRequest._retry) {
+    const { status, data: { error: err, } } = error.response;
+    if (
+      status && status > 400 &&
+      err.includes('expired token') &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       try {
-        //TODO get from firebase
-        // const refreshToken = '';
+        const refreshToken = localStorage.getItem('refreshToken');
+        const {
+          data: {
+            data: { access_token, refresh_token },
+          },
+        } = await axios.post(
+          `https://devapi.klubiq.com/api/${authEndpoints.refreshToken()}`,
+          {
+            refreshToken,
+          }
+        );
 
-        // const response = await axios.post('/api/refresh-token', { refreshToken });
-        // const { token } = response.data;
+        if (access_token && refresh_token) {
+          localStorage.setItem('token', access_token);
+          localStorage.setItem('refreshToken', refresh_token);
+        }
 
         // Retry the original request with the new token
-        // originalRequest.headers.Authorization = `Bearer ${token}`;
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
 
         return axios(originalRequest);
       } catch (error) {
@@ -58,11 +81,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export const endpoints = {
-  login: () => 'auth/login',
-  signup: () => 'auth/landlord-signup',
-  emailVerification: () => 'auth/verification/email',
-};
 
 export { api };

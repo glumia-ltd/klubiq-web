@@ -2,9 +2,9 @@
 import LoginLayout from '../../Layouts/LoginLayout';
 import {
   Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
+  // Checkbox,
+  // FormControlLabel,
+  // FormGroup,
   Grid,
   Typography,
 } from '@mui/material';
@@ -15,14 +15,17 @@ import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
 import {
   // sendEmailVerification,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { firebaseResponseObject } from '../../helper/FirebaseResponse';
-import { api, endpoints } from '../../api';
+import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
+import { api } from '../../api';
+import { authEndpoints } from '../../helpers/endpoints';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { saveUser } from '../../store/AuthStore/AuthSlice';
 
 const validationSchema = yup.object({
   password: yup.string().required('Please enter your password'),
@@ -36,8 +39,7 @@ type IValuesType = {
 const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-
-  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   const onSubmit = async (values: IValuesType) => {
     const { email, password } = values;
@@ -53,6 +55,15 @@ const Login = () => {
 
       const user: any = userCredential.user;
 
+      console.log(user);
+
+      const payload = {
+        token: user.accessToken,
+        user,
+      };
+
+      dispatch(saveUser(payload));
+
       const userName = user.displayName.split(' ');
       const firstName = userName[0];
       const lastName = userName[1];
@@ -63,18 +74,37 @@ const Login = () => {
       if (!user.emailVerified) {
         const requestBody = { email, firstName, lastName };
 
-        await api.post(endpoints.emailVerification(), requestBody);
+        await api.post(authEndpoints.emailVerification(), requestBody);
 
         setLoading(false);
-
-        enqueueSnackbar('Please verify your email!', { variant: 'success' });
+        dispatch(
+          openSnackbar({
+            message: 'Please verify your email!',
+            severity: 'info',
+            isOpen: true,
+          })
+        );
       } else {
-        enqueueSnackbar('That was easy!', { variant: 'success' });
+        dispatch(
+          openSnackbar({
+            message: 'That was easy',
+            severity: 'success',
+            isOpen: true,
+          })
+        );
+        navigate('/private', { replace: true });
       }
     } catch (error) {
-      enqueueSnackbar(firebaseResponseObject[(error as Error).message], {
-        variant: 'error',
-      });
+      dispatch(
+        openSnackbar({
+          message:
+            firebaseResponseObject[(error as Error).message] ||
+            'An error occurred',
+          severity: 'error',
+          isOpen: true,
+        })
+      );
+
       setLoading(false);
     }
   };
@@ -98,7 +128,7 @@ const Login = () => {
 
   return (
     <LoginLayout handleSubmit={formik.handleSubmit}>
-      <Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: '33rem' }}>
+      <Grid item xs={12} sm={12} md={7} lg={6} sx={{ width: '33rem' }}>
         <Grid
           container
           sx={{
@@ -202,15 +232,15 @@ const Login = () => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  justifyContent: 'end',
                 }}
               >
-                <FormGroup>
+                {/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
-                    label='Remember this computer'
+                    label="Remember this computer"
                   />
-                </FormGroup>
+                </FormGroup> */}
                 <Typography
                   onClick={routeToForgotPassword}
                   style={{
@@ -296,6 +326,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </Grid>
+      {/* <ControlledSnackbar/> */}
     </LoginLayout>
   );
 };

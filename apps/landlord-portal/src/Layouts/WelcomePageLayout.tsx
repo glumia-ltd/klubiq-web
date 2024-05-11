@@ -39,6 +39,7 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
         >
           <Grid
             container
+            item
             xs={12}
             md={12}
             lg={12}

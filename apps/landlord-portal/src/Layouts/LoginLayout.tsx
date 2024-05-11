@@ -17,14 +17,15 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
         height: '100vh',
       }}
       onSubmit={handleSubmit}
+      columnSpacing={{ xs: 1, sm: 1, md: 1 }}
     >
       {children}
 
       <Grid
         item
-        xs={12}
-        sm={6}
-        md={6}
+        xs={0}
+        sm={0}
+        md={5}
         lg={5}
         sx={{
           background: '#6699CC',
