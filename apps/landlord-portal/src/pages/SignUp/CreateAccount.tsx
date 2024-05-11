@@ -90,9 +90,8 @@ const CreateAccount: React.FC = () => {
   };
 
   // const routeToLogin = () => {
-  //   navigate('/login', { replace: true });
+  //   navigate("/login", { replace: true });
   // };
-
   const routeToLogin = () => {
     navigate("/", { replace: true });
   };
@@ -113,11 +112,6 @@ const CreateAccount: React.FC = () => {
   return (
     <Grid
       container
-      item
-      xs={12}
-      sm={12}
-      md={7}
-      lg={6}
       spacing={0}
       sx={{
         justifyContent: "center",

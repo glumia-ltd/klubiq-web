@@ -112,7 +112,7 @@ const Login = () => {
   //   navigate('/signup', { replace: true });
   // };
   const routeToSignUp = () => {
-    navigate("/signup", { replace: true });
+    navigate("signup/createaccount", { replace: true });
   };
 
   const routeToForgotPassword = () => {
