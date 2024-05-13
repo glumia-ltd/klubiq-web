@@ -15,6 +15,12 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
       sx={{
         justifyContent: 'center',
         height: '100vh',
+        p: {
+          xs: 1,
+          sm: 1,
+          md: 1,
+          lg: 0,
+        }
       }}
       onSubmit={handleSubmit}
       columnSpacing={{ xs: 1, sm: 1, md: 1 }}
@@ -33,6 +39,7 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
           borderBottomLeftRadius: '1.3rem',
           height: '97vh',
           alignSelf: 'start',
+          display: {xs: 'none', md: 'block' } 
         }}
       ></Grid>
     </Grid>

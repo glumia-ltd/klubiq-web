@@ -58,7 +58,13 @@ export const LightTheme: Theme = createTheme({
     MuiGrid: {
       styleOverrides: {
         root: {
-          padding: '0rem!important',
+          // p:
+          // {
+          //   xs: '1rem!important',
+          //   sm: '1rem!important',
+          //   md: '0rem!important',
+          //   lg: '0rem!important',
+          // }
           // '&.Mui-disabled': {
           //     background: grey[100],
           // }
