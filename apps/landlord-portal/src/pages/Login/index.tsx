@@ -142,7 +142,7 @@ const Login = () => {
               width: '33rem',
             }}
           >
-            {/* <Grid
+            <Grid
               item
               xs={12}
               sm={12}
@@ -153,7 +153,7 @@ const Login = () => {
                 textAlign: 'right',
               }}
             >
-              <Typography>
+              {/* <Typography>
                 Are you a tenant?{' '}
                 <span
                   style={{
@@ -164,8 +164,8 @@ const Login = () => {
                 >
                   Sign in here
                 </span>
-              </Typography>
-            </Grid> */}
+              </Typography> */}
+            </Grid>
 
             <Grid
               container
@@ -232,7 +232,7 @@ const Login = () => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'end',
+                  justifyContent: 'start',
                 }}
               >
                 {/* <FormGroup>
