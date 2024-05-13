@@ -15,11 +15,13 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
         src: "/ios-192.png",
         sizes: "192x192",
         type: "image/png",
+        purpose: "monochrome",
       },
       {
         src: "/android-512.png",
         sizes: "512x512",
         type: "image/png",
+        purpose: "any",
       },
       {
         src: "/ios-180.png",
@@ -35,7 +37,7 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
       },
     ],
     theme_color: "#002147",
-    background_color: "#fffff",
+    background_color: "#FFFFFF",
     display: "standalone",
     scope: "/",
     start_url: "/",
