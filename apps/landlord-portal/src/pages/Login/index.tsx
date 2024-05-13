@@ -142,7 +142,7 @@ const Login = () => {
               width: '33rem',
             }}
           >
-            <Grid
+            {/* <Grid
               item
               xs={12}
               sm={12}
@@ -165,7 +165,7 @@ const Login = () => {
                   Sign in here
                 </span>
               </Typography>
-            </Grid>
+            </Grid> */}
 
             <Grid
               container
