@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: page
 spec:
-  title: Default page
-  alias:
-    - Dm3lQv8
+  title: page1
   display: shell
+  authorization:
+    allowAll: true
