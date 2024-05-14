@@ -5,11 +5,10 @@ import snackbarReducer from './SnackbarStore/SnackbarSlice';
 export type RootState = ReturnType<typeof store.getState>;
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    snack: snackbarReducer,
-  },
+	reducer: {
+		auth: authReducer,
+		snack: snackbarReducer,
+	},
 });
 
 export default store;
-

@@ -1,9 +1,9 @@
 export enum ThemeMode {
-  LIGHT = 'light',
-  DARK = 'dark',
+	LIGHT = 'light',
+	DARK = 'dark',
 }
 
 export type ThemeContextType = {
-  mode: ThemeMode;
-  switchMode: (mode: ThemeMode) => void;
+	mode: ThemeMode;
+	switchMode: (mode: ThemeMode) => void;
 };
