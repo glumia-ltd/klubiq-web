@@ -15,7 +15,7 @@ env:
   VITE_APPID: ${{ secrets.FIREBASE_APP_ID }}
   VITE_MEASUREMENTID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
   VITE_BASE_URL_DEV: ${{ vars.VITE_BASE_URL_DEV }}
-  NODE_ENV: ${{ vars.NODE_ENV }}
+  NODE_ENV: ${{ github.env }}
   APP: klubiq-landlord-portal
 jobs:
   build:
@@ -52,8 +52,8 @@ jobs:
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.LIGHTSAIL_SSH_CERT }}
-          SOURCE: "artifacts/"
-          EXCLUDE: "/node_modules/, node_modules, /node_modules"
+          SOURCE: 'artifacts/'
+          EXCLUDE: '/node_modules/, node_modules, /node_modules'
           TARGET: ${{ secrets.TARGET_DIR }}
           SCRIPT_BEFORE: |
             sudo chown $USER ${{ secrets.TARGET_DIR }}

@@ -19,7 +19,7 @@
                     "src": "/ios-180.png",
                     "sizes": "180x180",
                     "type": "image/png",
-                    "purpose": "apple touch icon"
+                    "purpose": "any"
                 },
                 {
                     "src": "/icon.png",
@@ -29,7 +29,7 @@
                 }
             ],
             "theme_color": "#002147",
-            "background_color": "#fffff",
+            "background_color": "#FFFFFF",
             "display": "standalone",
             "scope": "/",
             "start_url": "/",

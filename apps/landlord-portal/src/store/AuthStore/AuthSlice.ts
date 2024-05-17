@@ -4,21 +4,25 @@ import { AuthType } from './authType';
 import { RootState } from '..';
 
 const initialState: AuthType = {
-  user: {},
-  token: null,
-};  
+	user: {},
+	token: null,
+};
 
 const options = {
-  name: 'auth',
-  initialState,
-  reducers: {
-    saveUser: (state: AuthType, action: PayloadAction<AuthType>) => {
-      return { ...state, token: action.payload.token };
-    },
-    removeUser: (state: AuthType) => {
-      return { ...state, user: {}, token: null };
-    },
-  },
+	name: 'auth',
+	initialState,
+	reducers: {
+		saveUser: (state: AuthType, action: PayloadAction<AuthType>) => {
+			return {
+				...state,
+				token: action.payload.token,
+				user: action.payload.user,
+			};
+		},
+		removeUser: (state: AuthType) => {
+			return { ...state, user: {}, token: null };
+		},
+	},
 };
 
 const authSlice = createSlice(options);
