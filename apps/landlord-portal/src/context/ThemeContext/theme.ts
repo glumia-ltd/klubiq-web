@@ -1,5 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-
 export const LightTheme: Theme = createTheme({
 	palette: {
 		mode: 'light',
@@ -13,21 +12,11 @@ export const LightTheme: Theme = createTheme({
 			dark: '#FF6400',
 			contrastText: '#ffffff',
 		},
-		// primaryLight: {
-		//   main: "#6699CC",
-		//   dark: "#0C36A0",
-		//   contrastText: "#ffffff",
-		// },
+
 		background: {
 			default: '#ccdbee',
 			paper: '#FFFFFF',
 		},
-		// blue: {
-		//   main: "#002147",
-		// },
-		// black: {
-		//   main: "#1B1B1B",
-		// },
 	},
 	components: {
 		MuiListItemButton: {
@@ -39,22 +28,51 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				colorPrimary: {
 					backgroundColor: '#FFFFFF',
+					color: '#000000',
 				},
 			},
 		},
+		MuiDrawer: {
+			styleOverrides: {
+				paper: {
+					background: '#002147',
+					width: 270,
+				},
+			},
+		},
+		MuiListItemIcon: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF',
+				},
+			},
+		},
+		MuiListItemText: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF',
+					fontSize: '!1.5rem',
+				},
+			},
+		},
+
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
 					background: 'white',
 					height: '2.7rem',
 					borderRadius: '0.5rem',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
-
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					background: '#ffffff',
+					color: '#000000 !important',
+				},
+			},
+		},
 		MuiGrid: {
 			styleOverrides: {
 				root: {
@@ -71,6 +89,7 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
+
 		MuiButtonBase: {
 			defaultProps: {
 				disableRipple: true,
@@ -147,13 +166,7 @@ export const LightTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
-		// subtitle2lg: {
-		//   fontWeight: 500,
-		//   fontSize: "1rem",
-		//   lineHeight: 1.75,
-		//   fontFamily: "Maven Pro, sans-serif",
-		//   letterSpacing: 0,
-		// },
+
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
@@ -226,7 +239,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
-					backgroundColor: '#FFFFFF',
+					backgroundColor: '#002147',
 				},
 			},
 		},

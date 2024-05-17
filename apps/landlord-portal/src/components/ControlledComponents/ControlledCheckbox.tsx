@@ -39,50 +39,50 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 	// onFileSelect,
 	...props
 }) => {
-	return (
-		<Stack
-			sx={{
-				// justifyContent: "center",
-				m: 0,
-				minWidth: 230,
-				flexDirection: 'row',
-				...sx,
-			}}
-		>
-			<FormControl
-				required
-				error={(formik.touched[name] && formik.errors[name]) || ' '}
-				variant='standard'
-			>
-				<FormControlLabel
-					control={
-						<Checkbox
-							checked={props.value || formik.values[name]}
-							onChange={!disableOnChange ? formik.handleChange : undefined}
-							name={name}
-							id={name}
-							// error={
-							//   Boolean(prioritizeError) ||
-							//   (Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
-							// }
-						/>
-					}
-					label={label}
-					labelPlacement='end'
-					sx={{ mr: 5, mb: 0 }}
-					componentsProps={{
-						typography: {
-							fontSize: ' 16px',
-							fontWeight: 500,
-						},
-					}}
-				/>
-				<FormHelperText>
-					{(formik.touched[name] && formik.errors[name]) || ''}
-				</FormHelperText>{' '}
-			</FormControl>
-		</Stack>
-	);
+  return (
+    <Stack
+      sx={{
+        // justifyContent: "center",
+        m: 0,
+        minWidth: 230,
+        flexDirection: "row",
+        ...sx,
+      }}
+    >
+      <FormControl
+        required
+        error={(formik.touched[name] && formik.errors[name]) || " "}
+        variant="standard"
+      >
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={props.value || formik.values[name]}
+              onChange={!disableOnChange ? formik.handleChange : undefined}
+              name={name}
+              id={name}
+              // error={
+              //   Boolean(prioritizeError) ||
+              //   (Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
+              // }
+            />
+          }
+          label={label}
+          labelPlacement="end"
+          sx={{ mr: 5, mb: 0}}
+          componentsProps={{
+            typography: {
+              fontSize: " 16px",
+              fontWeight: 500,
+            },
+          }}
+        />
+        <FormHelperText sx={{marginLeft:"1.2rem"}}>
+          {(formik.touched[name] && formik.errors[name]) || ""}
+        </FormHelperText>{" "}
+      </FormControl>
+    </Stack>
+  );
 };
 
 export default ControlledCheckBox;
