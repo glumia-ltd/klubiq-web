@@ -1,13 +1,12 @@
 import {
-  Navigate,
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
+	Navigate,
+	Route,
+	createBrowserRouter,
+	createRoutesFromElements,
 } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import SignUp from "../pages/SignUpWelcomePage";
 import SignUpPage from "../pages/SignUp/CreateAccount";
-
 import Login from "../pages/Login";
 import LoginWelcomePage from "../pages/LoginWelcomePage";
 import SetPassword from "../pages/SetPassword";
@@ -24,17 +23,17 @@ import Maintenance from "../pages/Maintenance";
 import Lease from "../pages/Lease";
 import Properties from "../pages/Properties";
 export const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route>
-      <Route index path="/" element={<LoginWelcomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="signup/createaccount" element={<SignUpPage />} />
-      <Route path="/signup/profileupdate" element={<UserProfileDetails />} />
-      <Route path="/setPassword" element={<SetPassword />} />
-      <Route path="/forgotPassword" element={<ForgotPassword />} />
-      <Route path="/verify-email" element={<EmailVerification />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+	createRoutesFromElements(
+		<Route>
+			<Route index path="/" element={<LoginWelcomePage />} />
+			<Route path="/login" element={<Login />} />
+			<Route path="/signup" element={<SignUp />} />
+			<Route path="signup/createaccount" element={<SignUpPage />} />
+			<Route path="/signup/profileupdate" element={<UserProfileDetails />} />
+			<Route path="/setPassword" element={<SetPassword />} />
+			<Route path="/forgotPassword" element={<ForgotPassword />} />
+			<Route path="/verify-email" element={<EmailVerification />} />
+			<Route path="*" element={<Navigate to="/login" replace />} />
       <Route
         path="/dashboard"
         element={
@@ -91,9 +90,9 @@ export const router = createBrowserRouter(
           </ViewPort>
         }
       />
-      <Route element={<PrivateRoute />}>
-        <Route path="/private" element={<PrivatePage />} />
-      </Route>
-    </Route>
-  )
+			<Route element={<PrivateRoute />}>
+				<Route path="/private" element={<PrivatePage />} />
+			</Route>
+		</Route>,
+	),
 );

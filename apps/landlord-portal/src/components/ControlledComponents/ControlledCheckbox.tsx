@@ -1,43 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React from 'react';
 import {
-  Stack,
-  FormHelperText,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-} from "@mui/material";
-import { SxProps } from "@mui/material";
+	Stack,
+	FormHelperText,
+	Checkbox,
+	FormControl,
+	FormControlLabel,
+} from '@mui/material';
+import { SxProps } from '@mui/material';
 
 type ControlledCheckBoxProps = {
-  loading?: boolean;
-  formik: any;
-  sx?: SxProps;
-  InputProps?: any;
-  disableOnChange?: boolean;
-  label?: string;
-  name: string;
-  type?: string;
-  inFieldLabel?: boolean;
-  inputProps?: any;
-  prioritizeError?: any;
-  [key: string]: any;
+	loading?: boolean;
+	formik: any;
+	sx?: SxProps;
+	InputProps?: any;
+	disableOnChange?: boolean;
+	label?: string;
+	name: string;
+	type?: string;
+	inFieldLabel?: boolean;
+	inputProps?: any;
+	prioritizeError?: any;
+	[key: string]: any;
 };
 
 const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
-  // loading,
-  formik,
-  sx,
-  // InputProps,
-  disableOnChange,
-  label,
-  name,
-  // type,
-  // inFieldLabel,
-  // inputProps,
-  // prioritizeError,
-  // onFileSelect,
-  ...props
+	// loading,
+	formik,
+	sx,
+	// InputProps,
+	disableOnChange,
+	label,
+	name,
+	// type,
+	// inFieldLabel,
+	// inputProps,
+	// prioritizeError,
+	// onFileSelect,
+	...props
 }) => {
   return (
     <Stack
