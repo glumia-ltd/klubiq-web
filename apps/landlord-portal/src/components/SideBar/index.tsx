@@ -124,11 +124,11 @@ function SideBar() {
 							>
 								<ListItemButton
 									sx={{
-										minHeight: 30,
+										minHeight: 20,
 										justifyContent: open ? 'initial' : 'center',
 										px: 2.5,
-										my: 1,
-										py: 1.4,
+										my: 0.8,
+										py: 0.8,
 										marginLeft: open ? 4 : 3,
 									}}
 								>
@@ -140,7 +140,7 @@ function SideBar() {
 										}}
 									>
 										<SvgIcon
-											sx={{ fontSize: '30px' }}
+											sx={{ fontSize: '20px', width: '20px', height: '20px' }}
 											component={props.icon}
 											inheritViewBox
 										/>
