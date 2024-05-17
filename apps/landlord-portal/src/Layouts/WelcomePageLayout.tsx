@@ -17,7 +17,8 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
   handleLandLordClick,
   handleTenantClick,
   leftAlignTexts,
-}) => {
+}) => 
+  {
   return (
     <Grid
       container
@@ -27,7 +28,7 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
         height: '100vh',
       }}
     >
-      {
+      {/* {
         <Grid
           container
           spacing={0}
@@ -36,9 +37,9 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
             alignItems: 'flex-start',
             height: '100%',
           }}
-        >
+        > */}
           <Grid
-            container
+            // container
             item
             xs={12}
             md={12}
@@ -51,9 +52,10 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
               color: '#002147',
               height: '105px',
               padding: '0',
+              flexGrow:"1"
             }}
           >
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={6} md={12} lg={12}>
               <Typography
                 variant='h3'
                 mb={'18px'}
@@ -68,10 +70,10 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
               <Typography variant='h5'>{subText}</Typography>
             </Grid>
           </Grid>
-          <Grid container>
+          {/* <Grid container> */}
             <Grid
               item
-              xs={12}
+              xs={"auto"}
               sm={12}
               md={6}
               lg={6}
@@ -79,6 +81,7 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
                 display: 'flex',
                 justifyContent: 'right',
                 alignItems: 'flex-center',
+                
               }}
             >
               <Card
@@ -144,9 +147,9 @@ const WelcomePageLayout: FC<WelcomePageLayoutType> = ({
                 </Typography>
               </Card>
             </Grid>
-          </Grid>
-        </Grid>
-      }
+          {/* </Grid> */}
+        {/* </Grid>
+      } */}
     </Grid>
   );
 };

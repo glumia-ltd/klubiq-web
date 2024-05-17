@@ -77,7 +77,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
             },
           }}
         />
-        <FormHelperText >
+        <FormHelperText sx={{marginLeft:"1.2rem"}}>
           {(formik.touched[name] && formik.errors[name]) || ""}
         </FormHelperText>{" "}
       </FormControl>
