@@ -1,9 +1,7 @@
-import { Container } from "@mui/material"
+import { Container } from '@mui/material';
 
 const Support = () => {
-  return (
-    <Container maxWidth="xl">Support</Container>
-  )
-}
+	return <Container maxWidth='xl'>Support</Container>;
+};
 
-export default Support
+export default Support;

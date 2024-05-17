@@ -29,7 +29,6 @@ const NavBar = () => {
 				<Grid
 					container
 					spacing={1}
-					direction='row'
 					sx={{
 						display: 'flex',
 						justifyContent: 'space-between',
@@ -38,7 +37,6 @@ const NavBar = () => {
 					<Grid
 						item
 						container
-						direction='row'
 						sx={{
 							width: '50%',
 							alignItems: 'center',
@@ -62,7 +60,6 @@ const NavBar = () => {
 					<Grid
 						item
 						container
-						direction='row'
 						sx={{
 							width: '15%',
 							alignItems: 'center',
@@ -90,7 +87,6 @@ const NavBar = () => {
 
 					<Grid
 						item
-						direction='row'
 						sx={{
 							width: { lg: '25%', md: '20%', sm: '40%', xs: '40%' },
 							cursor: 'pointer',
@@ -106,6 +102,7 @@ const NavBar = () => {
 					>
 						<IconButton
 							size='large'
+							disableRipple
 							sx={{
 								backgroundColor: 'white',
 								padding: '1rem',

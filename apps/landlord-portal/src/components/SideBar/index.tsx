@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-const drawerWidth = 250;
+const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
 	width: drawerWidth,
@@ -114,7 +114,7 @@ function SideBar() {
 						)}
 					</IconButton>
 				</DrawerHeader>
-				<List sx={{ marginBottom: '60px' }}>
+				<List sx={{ marginBottom: '20px' }}>
 					{pathList.map((props, index) => (
 						<ListItem disablePadding key={index}>
 							<Link
@@ -155,69 +155,67 @@ function SideBar() {
 				</List>
 				<Stack
 					direction={{ xs: open ? 'row' : 'column' }}
-					spacing={{ xs: 1, sm: 1, md: 1 }}
+					spacing={{ xs: 1, sm: 1, md: 0 }}
 					sx={{
-						borderRadius: '10px',
-						width: open ? '225px' : '70px',
+						borderRadius: '15px',
+						width: open ? '200px' : '70px',
 						textAlign: 'center',
 						margin: 'auto',
-						// display: "flex",
-						justifyContent: 'center',
+						// display: 'flex',
+						// justifyContent: 'center',
 						background: '#ffffff',
-						padding: open ? '8px' : '3px',
+						padding: open ? '8px' : '0px',
 					}}
 				>
-					<Box sx={{ width: '100%' }}>
-						<Button
-							onClick={() => switchMode(ThemeMode.LIGHT)}
-							sx={{
-								color: '#002147',
-								width: open ? '100%' : '50%',
-								borderRadius: open ? '15px' : '20px',
-								padding: '10px',
+					<Button
+						onClick={() => switchMode(ThemeMode.LIGHT)}
+						sx={{
+							color: '#002147',
+							width: open ? '100%' : '50%',
+							borderRadius: open ? '15px' : '20px',
+							padding: '10px',
+							fontSize: '10px',
 
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
-								},
-							}}
-						>
-							{open ? (
-								<>
-									<LightModeIcon /> <h3>Light</h3>
-								</>
-							) : (
-								<LightModeIcon />
-							)}
-						</Button>
-					</Box>
-					<Box sx={{ width: '100%' }}>
-						<Button
-							onClick={() => switchMode(ThemeMode.DARK)}
-							sx={{
-								color: '#002147',
-								width: open ? '100%' : '50%',
-								borderRadius: open ? '15px' : '20px',
-								padding: '10px',
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
-								},
-							}}
-						>
-							{open ? (
-								<>
-									{' '}
-									<DarkModeIcon />
-									<h3>Dark</h3>
-								</>
-							) : (
-								<DarkModeIcon />
-							)}
-						</Button>
-					</Box>
+							'&:hover': {
+								color: '#ffffff',
+								background: '#002147',
+								cursor: 'pointer',
+							},
+						}}
+					>
+						{open ? (
+							<>
+								<LightModeIcon sx={{ fontSize: 20 }} /> <h3>Light</h3>
+							</>
+						) : (
+							<LightModeIcon />
+						)}
+					</Button>
+					<Button
+						onClick={() => switchMode(ThemeMode.DARK)}
+						sx={{
+							color: '#002147',
+							width: open ? '100%' : '50%',
+							borderRadius: open ? '15px' : '20px',
+							fontSize: '10px',
+							padding: '10px',
+							'&:hover': {
+								color: '#ffffff',
+								background: '#002147',
+								cursor: 'pointer',
+							},
+						}}
+					>
+						{open ? (
+							<>
+								{' '}
+								<DarkModeIcon sx={{ fontSize: 20 }} />
+								<h3>Dark</h3>
+							</>
+						) : (
+							<DarkModeIcon sx={{ fontSize: 20 }} />
+						)}
+					</Button>
 				</Stack>
 			</Drawer>
 		</Box>
