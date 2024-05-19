@@ -4,7 +4,8 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
+import { Link } from '@mui/material';
+// import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
@@ -59,40 +60,24 @@ const CreateAccount: React.FC = () => {
 				}),
 			);
 
-			// const actionCodeSettings = {
-			//   url: 'http://localhost:5173/verify-email',
-			// };
-
-			// send notification for email (still using this?)
-
-			// await sendEmailVerification(userCredential.user, actionCodeSettings);
-
-			//if successful, reroute to verification email page here.
-
-			//TODO: Find out what user info should be saved
 			const user: any = userCredential.user;
 
 			const userInfo = { email: user.email };
 
 			dispatch(saveUser({ user: userInfo, token: user.accessToken }));
-
-			// navigate('/private', { replace: true });
-
-			// localStorage.setItem('token', user.accessToken);
-
-			//TODO: Redirect to a page
 		} catch (error) {
 			setLoading(false);
 			console.log(error);
 		}
-
-		// navigate('/signup/profileupdate', { replace: true });
 	};
+
+	// const routeToLogin = () => {
+	// 	navigate('/login', { replace: true });
+	// };
 
 	const routeToLogin = () => {
-		navigate('/login', { replace: true });
+		navigate('/', { replace: true });
 	};
-
 	const formik = useFormik({
 		initialValues: {
 			firstName: '',
@@ -135,7 +120,7 @@ const CreateAccount: React.FC = () => {
 						justifyContent: 'center',
 						margin: 'auto',
 					}}
-					spacing={1}
+					spacing={0.5}
 				>
 					<Grid
 						item
@@ -146,26 +131,28 @@ const CreateAccount: React.FC = () => {
 						sx={{ textAlign: 'center' }}
 					>
 						<Typography variant='h2' color='#002147' mb='3rem'>
-							Create a Klubiq account{' '}
+							Create your Klubiq account
+						</Typography>
+						<Typography
+							color='#002147'
+							mt='-3rem'
+							mb='2rem'
+							sx={{
+								fontWeight: 500,
+								lineHeight: '30px',
+								textAlign: 'center',
+								fontSize: '18px',
+							}}
+						>
+							Sign up and get 30 days free trial.
 						</Typography>
 					</Grid>
-					{/* <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              sx={{ textAlign: "center" }}
-            >
-              <Typography variant="h6" color="#002147" mb="1.5rem">
-                Sign Up and get 30 days free trial.{" "}
-              </Typography>
-            </Grid> */}
 					<Grid item xs={12} sm={12} md={6} lg={6}>
 						<ControlledTextField
 							name='firstName'
 							label='First Name'
 							type='text'
+							placeholder='John'
 							formik={formik}
 						/>
 					</Grid>
@@ -173,6 +160,7 @@ const CreateAccount: React.FC = () => {
 						<ControlledTextField
 							name='lastName'
 							label='Last Name'
+							placeholder='Doe'
 							formik={formik}
 							type='text'
 						/>
@@ -182,6 +170,7 @@ const CreateAccount: React.FC = () => {
 						<ControlledTextField
 							name='companyName'
 							label='Company Name'
+							placeholder='Lyal Solutions'
 							type='text'
 							formik={formik}
 						/>
@@ -191,6 +180,7 @@ const CreateAccount: React.FC = () => {
 						<ControlledTextField
 							name='email'
 							label='Email '
+							placeholder='johndoe@example.com'
 							formik={formik}
 							type='email'
 						/>
@@ -205,14 +195,47 @@ const CreateAccount: React.FC = () => {
 						/>
 					</Grid>
 
-					<Grid item sm={12} xs={12} lg={12}>
+					{/* <Grid item sm={12} xs={12} lg={12}>
 						<ControlledCheckBox
 							name='mailCheck'
-							label='I agree to the Terms & Conditions'
-							type='text'
+label='I agree to the Terms & Conditions'
 							formik={formik}
 						/>
-					</Grid>
+					</Grid> */}
+
+					<Typography
+						color='#002147'
+						sx={{
+							fontWeight: 500,
+							textAlign: 'center',
+							width: '498px',
+							lineHeight: '22px',
+						}}
+					>
+						<span>By creating an account you are agreeing to our </span>
+						<Link
+							href='/terms-of-use'
+							sx={{
+								color: '#002147',
+								fontWeight: '700',
+								textDecoration: 'none',
+							}}
+						>
+							Terms of Use
+						</Link>
+						<span> and </span>
+						<Link
+							href='/privacy-policy'
+							sx={{
+								color: '#002147',
+								fontWeight: '700',
+								textDecoration: 'none',
+							}}
+						>
+							Privacy Policy
+						</Link>
+						<span>.</span>
+					</Typography>
 
 					<Grid
 						item
@@ -235,6 +258,7 @@ const CreateAccount: React.FC = () => {
 									borderRadius: '0.5rem',
 									color: 'white',
 									height: '3.1rem',
+									fontSize: '18px',
 									width: '100%',
 								}}
 							>
@@ -249,10 +273,12 @@ const CreateAccount: React.FC = () => {
 									color: 'white',
 									background: '#002147',
 									height: '3.1rem',
+									fontSize: '18px',
 									width: '100%',
+									borderRadius: '8px',
 									'&:hover': {
-										color: '#002147',
-										background: '#FFFFFF',
+										color: 'white',
+										background: '#6699CC',
 										cursor: 'pointer',
 									},
 								}}
