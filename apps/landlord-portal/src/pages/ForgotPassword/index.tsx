@@ -29,9 +29,7 @@ const ForgotPassword = () => {
 		setLoading(true);
 
 		try {
-			const response = await api.post(authEndpoints.resetPassword(), values);
-
-			console.log(response);
+			await api.post(authEndpoints.resetPassword(), values);
 
 			dispatch(
 				openSnackbar({
@@ -41,7 +39,13 @@ const ForgotPassword = () => {
 				}),
 			);
 		} catch (e) {
-			console.log(e);
+			dispatch(
+				openSnackbar({
+					message: 'An error occurred.',
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
 		} finally {
 			setLoading(false);
 		}
