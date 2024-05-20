@@ -118,10 +118,13 @@ const Login = () => {
 		onSubmit,
 	});
 
-	const routeToSignUp = () => {
-		navigate('/signup', { replace: true });
-	};
+	// const routeToSignUp = () => {
+	// 	navigate('/signup', { replace: true });
+	// };
 
+	const routeToSignUp = () => {
+		navigate('/signup/createaccount', { replace: true });
+	};
 	const routeToForgotPassword = () => {
 		navigate('/forgotPassword', { replace: true });
 	};
@@ -185,7 +188,7 @@ const Login = () => {
 									textAlign: 'center',
 								}}
 							>
-								<Typography variant='h3' sx={{ fontWeight: '700' }}>
+								<Typography variant='h1' sx={{ fontWeight: '700' }}>
 									Sign in
 								</Typography>
 							</Grid>
@@ -200,7 +203,13 @@ const Login = () => {
 									textAlign: 'center',
 								}}
 							>
-								<Typography>
+								<Typography
+									sx={{
+										fontWeight: 500,
+										lineHeight: '30px',
+										fontSize: '20px',
+									}}
+								>
 									Welcome back! Please enter your details.
 								</Typography>
 							</Grid>
@@ -210,6 +219,7 @@ const Login = () => {
 									name='email'
 									label='Email'
 									type='email'
+									placeholder='johndoe@example.com'
 									formik={formik}
 								/>
 							</Grid>
@@ -290,9 +300,10 @@ const Login = () => {
 											background: '#002147',
 											height: '3.1rem',
 											width: '100%',
+											fontSize: '18px',
 											'&:hover': {
-												color: '#002147',
-												background: '#FFFFFF',
+												color: '#FFFFFF',
+												background: '#6699CC',
 												cursor: 'pointer',
 											},
 										}}
@@ -317,7 +328,12 @@ const Login = () => {
 							>
 								<Typography>
 									Don't have an account?{' '}
-									<span style={{ color: '#002147', fontWeight: '600' }}>
+									<span
+										style={{
+											color: '#002147',
+											fontWeight: '600',
+										}}
+									>
 										Sign up
 									</span>
 								</Typography>

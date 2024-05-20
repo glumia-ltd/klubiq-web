@@ -21,7 +21,7 @@ const ForgotPassword = () => {
 	};
 
 	const routeToLogin = () => {
-		navigate('/login', { replace: true });
+		navigate('/', { replace: true });
 	};
 
 	const formik = useFormik({
@@ -98,9 +98,19 @@ const ForgotPassword = () => {
 								mb={5}
 								sx={{
 									textAlign: 'left',
+									marginTop: '-30px',
+									fontSize: '16px',
+									color: '#1B1B1B',
+									lineHeight: '22px',
 								}}
 							>
-								<Typography>
+								<Typography
+									sx={{
+										fontSize: '16px',
+										color: '#1B1B1B',
+										lineHeight: '22px',
+									}}
+								>
 									Don’t worry, happens to all of us. Enter your email below to
 									recover your password.
 								</Typography>
@@ -111,6 +121,7 @@ const ForgotPassword = () => {
 									name='email'
 									label='Enter your registered email'
 									type='email'
+									placeholder='enter your email'
 									formik={formik}
 								/>
 							</Grid>
@@ -131,13 +142,14 @@ const ForgotPassword = () => {
 									sx={{
 										border: '1px solid #002147',
 										borderRadius: '0.5rem',
+										fontSize: '18px',
 										color: 'white',
 										background: '#002147',
 										height: '3.1rem',
 										width: '100%',
 										'&:hover': {
-											color: '#002147',
-											background: '#FFFFFF',
+											color: '#FFFFFF',
+											background: '#6699CC',
 											cursor: 'pointer',
 										},
 									}}
