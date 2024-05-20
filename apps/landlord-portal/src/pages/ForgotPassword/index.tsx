@@ -5,6 +5,12 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useNavigate } from 'react-router-dom';
+import { authEndpoints } from '../../helpers/endpoints';
+import { api } from '../../api';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const validationSchema = yup.object({
 	email: yup.string().email().required('Please enter your email'),
@@ -16,8 +22,29 @@ type IValuesType = {
 
 const ForgotPassword = () => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const [loading, setLoading] = useState<boolean>(false);
+
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values);
+		setLoading(true);
+
+		try {
+			const response = await api.post(authEndpoints.resetPassword(), values);
+
+			console.log(response);
+
+			dispatch(
+				openSnackbar({
+					message: 'We have sent you an email.',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const routeToLogin = () => {
@@ -137,25 +164,40 @@ const ForgotPassword = () => {
 									textAlign: 'center',
 								}}
 							>
-								<Button
-									type='submit'
-									sx={{
-										border: '1px solid #002147',
-										borderRadius: '0.5rem',
-										fontSize: '18px',
-										color: 'white',
-										background: '#002147',
-										height: '3.1rem',
-										width: '100%',
-										'&:hover': {
-											color: '#FFFFFF',
-											background: '#6699CC',
-											cursor: 'pointer',
-										},
-									}}
-								>
-									Set Password
-								</Button>
+								{loading ? (
+									<LoadingButton
+										loading
+										loadingPosition='center'
+										variant='outlined'
+										sx={{
+											border: '1px solid #002147',
+											borderRadius: '0.5rem',
+											color: 'white',
+											height: '3.1rem',
+											width: '100%',
+										}}
+									/>
+								) : (
+									<Button
+										type='submit'
+										sx={{
+											border: '1px solid #002147',
+											borderRadius: '0.5rem',
+											fontSize: '18px',
+											color: 'white',
+											background: '#002147',
+											height: '3.1rem',
+											width: '100%',
+											'&:hover': {
+												color: '#FFFFFF',
+												background: '#6699CC',
+												cursor: 'pointer',
+											},
+										}}
+									>
+										Set Password
+									</Button>
+								)}
 							</Grid>
 						</Grid>
 					</Grid>

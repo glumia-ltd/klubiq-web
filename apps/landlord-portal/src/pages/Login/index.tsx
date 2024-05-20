@@ -55,8 +55,6 @@ const Login = () => {
 
 			const user: any = userCredential.user;
 
-			console.log(user);
-
 			const payload = {
 				token: user.accessToken,
 				user,
