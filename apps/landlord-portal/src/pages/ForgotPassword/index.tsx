@@ -283,7 +283,7 @@ const ForgotPassword = () => {
 									opacity: ' 0.75',
 									color: '#1B1B1B',
 									margin: 'auto',
-									mt: 2,
+									mt: 5,
 								}}
 							>
 								Instructions to reset your password have been sent to the email
