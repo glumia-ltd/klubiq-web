@@ -222,86 +222,82 @@ const ForgotPassword = () => {
 							top: '50%',
 							left: '50%',
 							transform: 'translate(-50%, -50%)',
-							width: '788px',
-							height: '338px',
+							width: '90%',
+							maxWidth: '788px',
 							bgcolor: 'background.paper',
 							borderRadius: '10px',
 							p: 4,
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'flex-start',
+							textAlign: 'left',
+							gap: '1rem',
 						}}
 					>
 						<img
 							onClick={handleClose}
 							src={cancelImage}
-							alt='success image'
-							width={'23px'}
-							height={'23px'}
+							alt='cancel'
 							style={{
 								position: 'absolute',
 								right: '20px',
 								top: '20px',
 								cursor: 'pointer',
+								width: '23px',
+								height: '23px',
 							}}
 						/>
 
-						<div>
-							<div
+						<div
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								width: '100%',
+							}}
+						>
+							<img
+								src={successImage}
+								alt='success'
 								style={{
-									display: 'flex',
-									position: 'relative',
-									alignItems: 'center',
-									justifyContent: 'center',
-									gap: '5px',
+									width: '32px',
+									height: '32px',
+									marginRight: '1rem',
 								}}
-							>
-								<img
-									src={successImage}
-									alt='success image'
-									width={'32px'}
-									height={'32px'}
-									style={{
-										position: 'absolute',
-										left: '55px',
-									}}
-								/>
+							/>
 
-								<Typography variant='h3' sx={{ fontWeight: '700' }}>
-									Password Reset Instructions Sent
-								</Typography>
-							</div>
-							<Typography
-								sx={{
-									fontWeight: '400',
-									fontSize: '18px',
-									maxWidth: '604px',
-									lineHeight: '28px',
-									opacity: ' 0.75',
-									color: '#1B1B1B',
-									margin: 'auto',
-									mt: 5,
-								}}
-							>
-								Instructions to reset your password have been sent to the email
-								provided. <br />
-								If you did not receive it, please contact us at{' '}
-								<a
-									href='mailto:support@glumia.com'
-									style={{
-										color: '#2573C1',
-										cursor: 'pointer',
-										textDecoration: 'none',
-									}}
-								>
-									support@glumia.com
-								</a>
+							<Typography variant='h3' sx={{ fontWeight: '700' }}>
+								Password Reset Instructions Sent
 							</Typography>
 						</div>
 
-						<Button
-							type='submit'
+						<Typography
 							sx={{
-								mt: 4,
-								position: 'absolute',
-								right: '90px',
+								fontWeight: '400',
+								fontSize: '18px',
+								lineHeight: '28px',
+								opacity: '0.75',
+								color: '#1B1B1B',
+							}}
+						>
+							Instructions to reset your password have been sent to the email
+							provided. <br />
+							If you did not receive it, please contact us at{' '}
+							<a
+								href='mailto:support@glumia.com'
+								style={{
+									color: '#2573C1',
+									cursor: 'pointer',
+									textDecoration: 'none',
+								}}
+							>
+								support@glumia.com
+							</a>
+							.
+						</Typography>
+
+						<Button
+							sx={{
+								mt: 2,
 								border: '1px solid #002147',
 								borderRadius: '0.5rem',
 								color: 'white',
@@ -310,6 +306,7 @@ const ForgotPassword = () => {
 								height: '40px',
 								width: '144px',
 								fontSize: '18px',
+								alignSelf: 'flex-end',
 								'&:hover': {
 									color: '#FFFFFF',
 									background: '#6699CC',
