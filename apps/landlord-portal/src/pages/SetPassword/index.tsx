@@ -64,7 +64,7 @@ const SetPassword = () => {
 								}}
 							>
 								<Typography variant='h3' sx={{ fontWeight: '700' }}>
-									Set a Password
+									Time for a Fresh Start!
 								</Typography>
 							</Grid>
 							<Grid
@@ -79,7 +79,7 @@ const SetPassword = () => {
 								}}
 							>
 								<Typography>
-									Please set a new password for your account.
+									Let's Secure Your Klubiq Account with a New Password.
 								</Typography>
 							</Grid>
 
@@ -122,10 +122,12 @@ const SetPassword = () => {
 										background: '#002147',
 										height: '3.1rem',
 										width: '100%',
+										fontSize: '18px',
 										'&:hover': {
-											color: '#002147',
-											background: '#FFFFFF',
+											color: '#FFFFFF',
+											background: '#6699CC',
 											cursor: 'pointer',
+											border: 'none',
 										},
 									}}
 								>

@@ -199,6 +199,7 @@ const ForgotPassword = () => {
 												color: '#FFFFFF',
 												background: '#6699CC',
 												cursor: 'pointer',
+												border: 'none',
 											},
 										}}
 									>

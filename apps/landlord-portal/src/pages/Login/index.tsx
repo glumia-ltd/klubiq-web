@@ -124,7 +124,7 @@ const Login = () => {
 		navigate('/signup/createaccount', { replace: true });
 	};
 	const routeToForgotPassword = () => {
-		navigate('/forgotPassword', { replace: true });
+		navigate('/forgot-password', { replace: true });
 	};
 
 	return (
@@ -303,6 +303,7 @@ const Login = () => {
 												color: '#FFFFFF',
 												background: '#6699CC',
 												cursor: 'pointer',
+												border: 'none',
 											},
 										}}
 									>
