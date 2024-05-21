@@ -36,13 +36,7 @@ const ForgotPassword = () => {
 
 			setOpenModal(true);
 
-			// dispatch(
-			// 	openSnackbar({
-			// 		message: 'We have sent you an email.',
-			// 		severity: 'info',
-			// 		isOpen: true,
-			// 	}),
-			// );
+			formik.resetForm();
 		} catch (e) {
 			dispatch(
 				openSnackbar({
