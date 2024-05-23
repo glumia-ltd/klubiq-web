@@ -45,6 +45,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
 	[theme.breakpoints.up('sm')]: {
 		width: `calc(${theme.spacing(16)} + 1px)`,
 	},
+	[theme.breakpoints.down('md')]: {
+		width: `calc(${theme.spacing(0)} + 1px)`,
+	},
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -93,6 +96,10 @@ function SideBar() {
 	useEffect(() => {
 		isMediumScreen ? setOpen(false) : setOpen(true);
 	}, [isMediumScreen]);
+	useEffect(() => {
+		isSmallScreen && setOpen(false);
+		console.log('smakk');
+	}, [isSmallScreen]);
 
 	return (
 		<Box>
