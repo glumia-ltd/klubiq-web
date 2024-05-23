@@ -21,8 +21,6 @@ const ViewPort = ({ children }: ViewPortProp) => {
 							padding: 2,
 							backgroundColor: '#F3F6F8',
 							backgroundSize: 'cover !important',
-							// backgroundReeat: "no-repeat",
-							backgroundAttachment: 'fixed',
 						}}
 					>
 						{children}

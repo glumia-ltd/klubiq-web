@@ -140,7 +140,7 @@ function SideBar() {
 										}}
 									>
 										<SvgIcon
-											sx={{ fontSize: '20px', width: '20px', height: '20px' }}
+											sx={{ fontSize: '30px', width: '30px', height: '30px' }}
 											component={props.icon}
 											inheritViewBox
 										/>

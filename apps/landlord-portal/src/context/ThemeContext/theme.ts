@@ -47,6 +47,14 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
+		MuiContainer: {
+			styleOverrides: {
+				root: {
+					// color: '#FFFFFF',
+					margin: '5px 60px',
+				},
+			},
+		},
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
