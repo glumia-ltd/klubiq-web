@@ -53,7 +53,7 @@ const TableChart = () => {
 			// 	},
 			// ]}
 			yAxis={[{ min: 0, max: 200 }]}
-			width={900}
+			maxWidth={900}
 			height={300}
 			bottomAxis={null}
 			topAxis={{

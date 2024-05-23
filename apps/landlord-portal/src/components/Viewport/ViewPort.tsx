@@ -11,7 +11,7 @@ type ViewPortProp = {
 const ViewPort = ({ children }: ViewPortProp) => {
 	return (
 		<NavToggleProvider>
-			<Box sx={{ display: 'flex' }}>
+			<Box sx={{ display: 'flex', flexGrow: 1 }}>
 				<Sidebar />
 				<Box display='flex' flexDirection='column' width='100%' height='100vh'>
 					<NavBar />

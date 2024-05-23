@@ -31,10 +31,17 @@ import Multichart from './Multichart';
 
 const DashBoard = () => {
 	return (
-		<Container maxWidth={false} sx={{ width: '1270px' }}>
+		<Container
+			maxWidth={false}
+			sx={{
+				width: '1270px',
+				margin: { xs: '2px', sm: '0px 0px', md: '5px 60px' },
+				paddingLeft: { sm: '0px' },
+			}}
+		>
 			<Grid container spacing={1} sx={{ display: 'flex' }}>
-				<Grid container item spacing={0} xs={9}>
-					<Grid item xs={4}>
+				<Grid container item spacing={1} xs={12} sm={9} md={9} lg={9}>
+					<Grid item xs={12} sm={4} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>
 							<Box
 								sx={{
@@ -78,7 +85,7 @@ const DashBoard = () => {
 							/> */}
 						</Card>
 					</Grid>
-					<Grid item xs={4}>
+					<Grid item xs={12} sm={4.5} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyleTwo}>
 							<Typography
 								fontSize='14px'
@@ -139,7 +146,7 @@ const DashBoard = () => {
 						</Card>
 					</Grid>
 
-					<Grid item xs={4}>
+					<Grid item xs={12} sm={4} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyleTwo}>
 							<Typography
 								fontSize='14px'
@@ -164,7 +171,68 @@ const DashBoard = () => {
 							</Typography>{' '}
 						</Card>
 					</Grid>
-					<Grid item xs={8}>
+
+					<Grid item xs={6} sm={5} md={4} lg={4}>
+						<Card sx={DashStyle.cardStyleFour}>
+							<Typography
+								fontSize='14px'
+								lineHeight={'20px'}
+								fontWeight={500}
+								mb={'1rem'}
+								textAlign='left'
+							>
+								Maintenance
+							</Typography>
+							<Typography fontSize='40px' fontWeight={800} lineHeight={'44px'}>
+								20
+							</Typography>
+							<Box
+								sx={{
+									display: 'flex',
+									textAlign: 'center',
+									marginTop: '20px',
+									alignItems: 'center',
+								}}
+							>
+								<Typography
+									fontSize='14px'
+									lineHeight={'20px'}
+									fontWeight={500}
+									alignItems={'center'}
+									color='#17B26A'
+									border={'1px solid #17B26A'}
+									justifyContent={'center'}
+									borderRadius={'20px'}
+									padding={'10px'}
+									width={'70px'}
+									height={'24px'}
+									display='flex'
+									mr={'15px'}
+									sx={{ backgroundColor: 'rgba(236,253,243)' }}
+								>
+									<ArrowUpwardIcon
+										sx={{
+											color: '#17B26A',
+											fontSize: '14px',
+											marginRight: '2px',
+										}}
+									/>
+									5.46%
+								</Typography>
+
+								<Typography
+									fontSize='14px'
+									lineHeight={'20px'}
+									fontWeight={400}
+									// mt="10px"
+								>
+									{' '}
+									Since last month
+								</Typography>
+							</Box>
+						</Card>
+					</Grid>
+					<Grid item xs={12} sm={12} md={8} lg={8}>
 						<Card sx={DashStyle.cardStyleThree}>
 							<Typography
 								fontSize='14px'
@@ -305,69 +373,9 @@ const DashBoard = () => {
 							</Box>
 						</Card>
 					</Grid>
-
-					<Grid item xs={4}>
-						<Card sx={DashStyle.cardStyleFour}>
-							<Typography
-								fontSize='14px'
-								lineHeight={'20px'}
-								fontWeight={500}
-								mb={'1rem'}
-								textAlign='left'
-							>
-								Maintenance
-							</Typography>
-							<Typography fontSize='40px' fontWeight={800} lineHeight={'44px'}>
-								20
-							</Typography>
-							<Box
-								sx={{
-									display: 'flex',
-									textAlign: 'center',
-									marginTop: '20px',
-									alignItems: 'center',
-								}}
-							>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									alignItems={'center'}
-									color='#17B26A'
-									border={'1px solid #17B26A'}
-									justifyContent={'center'}
-									borderRadius={'20px'}
-									padding={'10px'}
-									width={'70px'}
-									height={'24px'}
-									display='flex'
-									mr={'15px'}
-									sx={{ backgroundColor: 'rgba(236,253,243)' }}
-								>
-									<ArrowUpwardIcon
-										sx={{
-											color: '#17B26A',
-											fontSize: '14px',
-											marginRight: '2px',
-										}}
-									/>
-									5.46%
-								</Typography>
-
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={400}
-									// mt="10px"
-								>
-									{' '}
-									Since last month
-								</Typography>
-							</Box>
-						</Card>
-					</Grid>
 				</Grid>
-				<Grid container item xs={3}>
+
+				<Grid container item xs={6} sm={12} md={3}>
 					<Grid item xs={12}>
 						<Card sx={DashStyle.cardStyleFive}>
 							<ReportCard />
@@ -375,8 +383,9 @@ const DashBoard = () => {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid container spacing={0} sx={DashStyle.tableGridOne}>
-				<Grid item xs={7}>
+
+			<Grid container spacing={1} sx={DashStyle.tableGridOne}>
+				<Grid item xs={12} sm={12} md={7}>
 					<Typography
 						fontSize='14px'
 						lineHeight={'20px'}
@@ -434,10 +443,13 @@ const DashBoard = () => {
 
 				<Grid
 					item
-					xs={5}
+					xs={12}
+					sm={12}
+					md={5}
 					alignItems={'center'}
-					justifyContent={'space-between'}
+					justifyContent={{ sm: 'left', md: 'space-between' }}
 					display={'flex'}
+					width='484px'
 				>
 					<TextField
 						type='date'
@@ -448,7 +460,11 @@ const DashBoard = () => {
 					/>{' '}
 					<TrendingFlatIcon sx={{ fontSize: '30px' }} />
 					<TextField
-						sx={{ width: '180px', height: '44px' }}
+						sx={{
+							width: '180px',
+							height: '44px',
+							marginRight: { xs: '5px', sm: '30px', md: '0' },
+						}}
 						type='date'
 						size='medium'
 						name='Date'
@@ -469,12 +485,13 @@ const DashBoard = () => {
 						<SaveAltOutlinedIcon />
 					</Box>
 				</Grid>
-				<Grid item xs={12} md={12} lg={12} mt={'10px'}>
+
+				<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
 					<Card
 						elevation={0}
 						sx={{
-							width: '900px',
-							margin: 'auto',
+							minWidth: { xs: '400px', sm: '500px', md: '700px' },
+							margin: { xs: '', sm: '', md: 'auto' },
 						}}
 					>
 						<TableChart />

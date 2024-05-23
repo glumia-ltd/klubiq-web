@@ -38,12 +38,12 @@ const NavBar = () => {
 						item
 						container
 						sx={{
-							width: '50%',
+							width: { xs: '10%', sm: '5%', md: '30%', lg: '50%' },
 							alignItems: 'center',
 							display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'flex' },
 						}}
 					>
-						<Grid item xs={2} ml='2rem'>
+						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '2rem' }}>
 							<Typography
 								sx={{
 									textTransform: 'capitalize',
@@ -61,10 +61,11 @@ const NavBar = () => {
 						item
 						container
 						sx={{
-							width: '15%',
+							width: { xs: '50%', sm: '20%', md: '20%', lg: '15%' },
+							// width: '15%',
 							alignItems: 'center',
 							marginRight: '3rem',
-							display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' },
+							display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'flex' },
 						}}
 					>
 						<Grid item xs={3}>
@@ -72,7 +73,11 @@ const NavBar = () => {
 								id='input-with-icon-textfield'
 								// label="TextField"
 								placeholder='Search Transactions,customers'
-								sx={{ width: '320px', height: '44px', padding: '0 4 0 4' }}
+								sx={{
+									width: { sm: '280px', md: '320px' },
+									height: '44px',
+									padding: '0 4 0 4',
+								}}
 								InputProps={{
 									startAdornment: (
 										<InputAdornment position='start'>

@@ -13,14 +13,16 @@ const styles = {
 	},
 	cardStyleThree: {
 		height: '207px',
-		width: '590px',
+		width: { xs: '500px', sm: '500px', md: '590px' },
+
+		// width: '590px',
 		borderRadius: '25px',
 		padding: '24px',
 	},
 	cardStyleFour: {
-		height: '207px',
+		height: { sm: '183px', md: '207px' },
 		width: '274px',
-		textAlign: 'lefft',
+		textAlign: 'left',
 		padding: '24px',
 		borderRadius: '20px',
 	},
@@ -31,7 +33,7 @@ const styles = {
 		borderRadius: '20px',
 	},
 	tableGridOne: {
-		width: '1200px',
+		width: { xs: '500px', sm: '600px', md: '1200px' },
 		background: '#ffffff',
 		borderRadius: '5px',
 		padding: '24px',

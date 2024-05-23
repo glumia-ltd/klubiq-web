@@ -76,7 +76,9 @@ const Drawer = styled(MuiDrawer, {
 function SideBar() {
 	const [open, setOpen] = useState(false);
 	const theme = useTheme();
-	const isMediumScreen = useMediaQuery(theme.breakpoints.down('lg'));
+	const isMediumScreen = useMediaQuery(theme.breakpoints.down('xl'));
+	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
 	const { getPathList } = useContext(SectionContext);
 	const pathList = getPathList();
 	const { mode, switchMode } = useContext(ThemeContext);
