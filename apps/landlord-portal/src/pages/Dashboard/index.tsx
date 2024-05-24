@@ -69,15 +69,36 @@ const DashBoard = () => {
 									Total Properties{' '}
 								</Typography>{' '}
 								<Typography
-									fontSize='40px'
+									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 									fontWeight={800}
 									lineHeight={'44px'}
 								>
 									160
 								</Typography>
 							</Box>
-							<Box></Box>
-							
+
+							<Doughnut
+								data={data}
+								options={{
+									responsive: true,
+									plugins: {
+										legend: {
+											display: true,
+											position: 'left',
+											labels: {
+												usePointStyle: true,
+												boxHeight: 10,
+												boxWidth: 10,
+
+												font: {
+													size: 12,
+												},
+												textAlign: 'left',
+											},
+										},
+									},
+								}}
+							/>
 						</Card>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
@@ -92,7 +113,11 @@ const DashBoard = () => {
 								Today's Revenue
 							</Typography>
 
-							<Typography fontSize='40px' fontWeight={800} lineHeight={'44px'}>
+							<Typography
+								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+								fontWeight={800}
+								lineHeight={'44px'}
+							>
 								₦150,280.11
 							</Typography>
 							<Box
@@ -132,7 +157,6 @@ const DashBoard = () => {
 									fontSize='14px'
 									lineHeight={'20px'}
 									fontWeight={400}
-									// mt="10px"
 								>
 									{' '}
 									Up from yesterday
@@ -152,7 +176,11 @@ const DashBoard = () => {
 							>
 								Rent Overdue
 							</Typography>
-							<Typography fontSize='40px' fontWeight={800} lineHeight={'44px'}>
+							<Typography
+								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+								fontWeight={800}
+								lineHeight={'44px'}
+							>
 								<CalendarTodayIcon sx={{ color: '#FF0000' }} /> ₦0
 							</Typography>
 							<Typography
@@ -178,7 +206,11 @@ const DashBoard = () => {
 							>
 								Maintenance
 							</Typography>
-							<Typography fontSize='40px' fontWeight={800} lineHeight={'44px'}>
+							<Typography
+								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+								fontWeight={800}
+								lineHeight={'44px'}
+							>
 								20
 							</Typography>
 							<Box
@@ -247,7 +279,7 @@ const DashBoard = () => {
 								}}
 							>
 								<Typography
-									fontSize='40px'
+									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 									fontWeight={800}
 									lineHeight={'44px'}
 									mr={'30px'}
@@ -306,7 +338,12 @@ const DashBoard = () => {
 										}}
 									>
 										<Typography
-											fontSize='40px'
+											fontSize={{
+												sm: '24px',
+												md: '14px',
+												lg: '24px',
+												xl: '40px',
+											}}
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1rem'}
@@ -345,7 +382,12 @@ const DashBoard = () => {
 										}}
 									>
 										<Typography
-											fontSize='40px'
+											fontSize={{
+												sm: '24px',
+												md: '14px',
+												lg: '24px',
+												xl: '40px',
+											}}
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1.2rem'}
@@ -396,7 +438,7 @@ const DashBoard = () => {
 						>
 							<Typography
 								lineHeight={'44px'}
-								fontSize='40px'
+								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								mr='15px'
 							>
