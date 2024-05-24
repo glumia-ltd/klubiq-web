@@ -3,27 +3,21 @@ import Sidebar from '../SideBar';
 import Box from '@mui/system/Box';
 import { NavToggleProvider } from '../../context/NavToggleContext/NavToggleContext';
 import NavBar from '../NavBar/NavBar';
+
 type ViewPortProp = {
 	children: React.ReactNode;
-	noContainer?: boolean;
+	Container?: boolean;
 };
 
 const ViewPort = ({ children }: ViewPortProp) => {
 	return (
 		<NavToggleProvider>
-			<Box sx={{ display: 'flex', flexGrow: 1 }}>
+			<Box sx={{ display: 'flex', flexGrow: 1, backgroundColor: '#F3F6F8' }}>
 				<Sidebar />
-				<Box display='flex' flexDirection='column' width='100vw' height='100vh'>
+				<Box display='flex' flexDirection='column' maxWidth='100%'>
 					<NavBar />
-					<Box
-						sx={{
-							flexGrow: 1,
-							padding: 2,
-							backgroundColor: '#F3F6F8',
-							backgroundSize: 'cover !important',
-							overflow: 'auto',
-						}}
-					>
+					<Box maxWidth={'100%'} flexGrow={1}>
+						{' '}
 						{children}
 					</Box>
 				</Box>

@@ -31,19 +31,20 @@ const styles = {
 		width: '272px',
 		padding: '24px',
 		borderRadius: '20px',
+		marginLeft: '15px',
 	},
 	tableGridOne: {
-		width: { xs: '500px', sm: '600px', md: '1200px' },
+		width: {
+			xs: '400px',
+			sm: '600px',
+			md: '1200px',
+			lg: '1230px',
+			xl: '1260px',
+		},
 		background: '#ffffff',
-		borderRadius: '5px',
+		borderRadius: '20px',
 		padding: '24px',
 		marginTop: '0.5rem',
-	},
-	myBorder: {
-		border: '2px solid green',
-	},
-	myFont: {
-		color: 'blue',
 	},
 };
 export default styles;

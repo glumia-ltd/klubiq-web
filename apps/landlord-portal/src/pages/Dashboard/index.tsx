@@ -32,14 +32,18 @@ import Multichart from './Multichart';
 const DashBoard = () => {
 	return (
 		<Container
-			maxWidth={false}
+			maxWidth={'xl'}
 			sx={{
-				width: '1270px',
-				margin: { xs: '2px', sm: '0px 0px', md: '5px 60px' },
-				paddingLeft: { sm: '0px' },
+				flexGrow: 1,
+				// padding: '14px',
+				overflow: 'auto',
 			}}
 		>
-			<Grid container spacing={1} sx={{ display: 'flex' }}>
+			<Grid
+				container
+				spacing={1}
+				sx={{ display: 'flex', width: '1270px', padding: '3rem' }}
+			>
 				<Grid container item spacing={1} xs={12} sm={9} md={9} lg={9}>
 					<Grid item xs={12} sm={4} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>
@@ -344,7 +348,7 @@ const DashBoard = () => {
 										Net cash flow{' '}
 									</Typography>{' '}
 									<Box
-										style={{
+										sx={{
 											display: 'flex',
 											justifyContent: 'space-between',
 										}}
@@ -375,127 +379,124 @@ const DashBoard = () => {
 					</Grid>
 				</Grid>
 
-				<Grid container item xs={6} sm={12} md={3}>
-					<Grid item xs={12}>
-						<Card sx={DashStyle.cardStyleFive}>
-							<ReportCard />
-						</Card>
-					</Grid>
+				<Grid container item xs={12} sm={12} md={3}>
+					<Card sx={DashStyle.cardStyleFive}>
+						<ReportCard />
+					</Card>
 				</Grid>
-			</Grid>
-
-			<Grid container spacing={1} sx={DashStyle.tableGridOne}>
-				<Grid item xs={12} sm={12} md={7}>
-					<Typography
-						fontSize='14px'
-						lineHeight={'20px'}
-						fontWeight={500}
-						mb={'.5rem'}
-						textAlign='left'
-					>
-						Total Revenue{' '}
-					</Typography>
-					<Box
-						sx={{
-							display: 'flex',
-							textAlign: 'center',
-							// marginTop: '5px',
-							alignItems: 'center',
-						}}
-					>
+				<Grid container sx={DashStyle.tableGridOne}>
+					<Grid item xs={12} sm={12} md={7}>
 						<Typography
-							lineHeight={'44px'}
-							fontSize='40px'
-							fontWeight={800}
-							mr='15px'
-						>
-							{' '}
-							₦278,625.92{' '}
-						</Typography>
-
-						<Typography
-							sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
 							fontSize='14px'
 							lineHeight={'20px'}
 							fontWeight={500}
-							alignItems={'center'}
-							justifyContent={'center'}
-							textAlign={'center'}
-							color='#FF0000'
-							border={'1px solid #FF0000'}
-							borderRadius={'20px'}
-							padding={'2px'}
-							width={'64px'}
-							height={'24px'}
-							display='flex'
+							mb={'.5rem'}
+							textAlign='left'
 						>
-							<ArrowDownwardIcon
-								sx={{
-									color: '#FF0000',
-									fontSize: '15px',
-									marginRight: '2px',
-								}}
-							/>
-							2%
+							Total Revenue{' '}
 						</Typography>
-					</Box>
-				</Grid>
+						<Box
+							sx={{
+								display: 'flex',
+								textAlign: 'center',
+								// marginTop: '5px',
+								alignItems: 'center',
+							}}
+						>
+							<Typography
+								lineHeight={'44px'}
+								fontSize='40px'
+								fontWeight={800}
+								mr='15px'
+							>
+								{' '}
+								₦278,625.92{' '}
+							</Typography>
 
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={5}
-					alignItems={'center'}
-					justifyContent={{ sm: 'left', md: 'space-between' }}
-					display={'flex'}
-					width='484px'
-				>
-					<TextField
-						type='date'
-						size='medium'
-						name='Date'
-						value='date'
-						sx={{ width: '180px' }}
-					/>{' '}
-					<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-					<TextField
-						sx={{
-							width: '180px',
-							height: '44px',
-							marginRight: { xs: '5px', sm: '30px', md: '0' },
-						}}
-						type='date'
-						size='medium'
-						name='Date'
-						value='date'
-					/>{' '}
-					<Box
-						sx={{
-							border: '1px solid black',
-							padding: '8px, 16px, 8px, 16px',
-							width: '58px',
-							height: '48px',
-							borderRadius: '8px',
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
-						<SaveAltOutlinedIcon />
-					</Box>
-				</Grid>
+							<Typography
+								sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
+								fontSize='14px'
+								lineHeight={'20px'}
+								fontWeight={500}
+								alignItems={'center'}
+								justifyContent={'center'}
+								textAlign={'center'}
+								color='#FF0000'
+								border={'1px solid #FF0000'}
+								borderRadius={'20px'}
+								padding={'2px'}
+								width={'64px'}
+								height={'24px'}
+								display='flex'
+							>
+								<ArrowDownwardIcon
+									sx={{
+										color: '#FF0000',
+										fontSize: '15px',
+										marginRight: '2px',
+									}}
+								/>
+								2%
+							</Typography>
+						</Box>
+					</Grid>
 
-				<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
-					<Card
-						elevation={0}
-						sx={{
-							minWidth: { xs: '400px', sm: '500px', md: '700px' },
-							margin: { xs: '', sm: '', md: 'auto' },
-						}}
+					<Grid
+						item
+						xs={7}
+						sm={12}
+						md={5}
+						alignItems={'center'}
+						justifyContent={{ sm: 'left', md: 'space-between' }}
+						display={'flex'}
+						width='484px'
 					>
-						<TableChart />
-					</Card>
+						<TextField
+							type='date'
+							size='medium'
+							name='Date'
+							value='date'
+							sx={{ width: '180px' }}
+						/>{' '}
+						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+						<TextField
+							sx={{
+								width: '180px',
+								height: '44px',
+								marginRight: { xs: '5px', sm: '30px', md: '0' },
+							}}
+							type='date'
+							size='medium'
+							name='Date'
+							value='date'
+						/>{' '}
+						<Box
+							sx={{
+								border: '1px solid black',
+								padding: '8px, 16px, 8px, 16px',
+								width: '58px',
+								height: '48px',
+								borderRadius: '8px',
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<SaveAltOutlinedIcon />
+						</Box>
+					</Grid>
+
+					<Grid item xs={6} sm={12} md={12} lg={12} mt={'10px'}>
+						<Card
+							elevation={0}
+							sx={{
+								minWidth: { xs: '300px', sm: '500px', md: '700px' },
+								margin: { xs: '', sm: '', md: 'auto' },
+							}}
+						>
+							<TableChart />
+						</Card>
+					</Grid>
 				</Grid>
 			</Grid>
 		</Container>

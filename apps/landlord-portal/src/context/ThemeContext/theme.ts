@@ -57,14 +57,7 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-		MuiContainer: {
-			styleOverrides: {
-				root: {
-					// color: '#FFFFFF',
-					margin: '5px 60px',
-				},
-			},
-		},
+
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
@@ -88,22 +81,6 @@ export const LightTheme: Theme = createTheme({
 				root: {
 					background: '#ffffff',
 					color: '#000000 !important',
-				},
-			},
-		},
-		MuiGrid: {
-			styleOverrides: {
-				root: {
-					// p:
-					// {
-					//   xs: '1rem!important',
-					//   sm: '1rem!important',
-					//   md: '0rem!important',
-					//   lg: '0rem!important',
-					// }
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
