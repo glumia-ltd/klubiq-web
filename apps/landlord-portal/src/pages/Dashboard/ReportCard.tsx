@@ -14,7 +14,7 @@ const ReportCard = () => {
 		<Box overflow={'auto'} height='370px'>
 			<Box
 				sx={{
-					display: 'flex',
+					display: { xs: '', md: '', lg: 'flex' },
 					justifyContent: 'space-between',
 					alignItems: 'center',
 					marginBottom: '8px',
@@ -35,7 +35,7 @@ const ReportCard = () => {
 				<Box
 					key={index}
 					sx={{
-						display: 'flex',
+						display: { xs: 'box', sm: 'box', md: 'box', lg: 'flex' },
 						marginBottom: '15px',
 						alignItems: 'center',
 						padding: '.3rem',
@@ -47,7 +47,10 @@ const ReportCard = () => {
 						sx={{ border: '1px solid red', marginRight: '15px' }}
 					/>
 
-					<Typography textTransform={'capitalize'} textAlign={'right'}>
+					<Typography
+						textTransform={'capitalize'}
+						textAlign={{ sm: 'left', md: 'left', lg: 'right' }}
+					>
 						{data.name} sent a report
 					</Typography>
 				</Box>

@@ -16,18 +16,29 @@ import ReportCard from './ReportCard';
 // import { PieChart } from '@mui/x-charts/PieChart';
 import DashStyle from './DashStyle';
 import TableChart from './TableChart';
-import Multichart from './Multichart';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-// type DashProps = {}
-// const series = [
-// 	{
-// 		data: [
-// 			{ id: 0, value: 100, label: 'Occupied' },
-// 			{ id: 1, value: 100, label: 'Vacant' },
-// 			{ id: 2, value: 100, label: 'Maintenance' },
-// 		],
-// 	},
-// ];
+const data = {
+	labels: ['Occupied', 'Vacant', 'Maintenace'],
+	datasets: [
+		{
+			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
+
+			data: [21, 0, 0],
+		},
+
+		{
+			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
+			data: [0, 90, 0],
+		},
+		{
+			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
+			data: [0, 0, 7],
+		},
+	],
+};
 
 const DashBoard = () => {
 	return (
@@ -39,13 +50,9 @@ const DashBoard = () => {
 				overflow: 'auto',
 			}}
 		>
-			<Grid
-				container
-				spacing={1}
-				sx={{ display: 'flex', width: '1270px', padding: '3rem' }}
-			>
+			<Grid container spacing={1} sx={{ padding: '3rem' }}>
 				<Grid container item spacing={1} xs={12} sm={9} md={9} lg={9}>
-					<Grid item xs={12} sm={4} md={4} lg={4}>
+					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>
 							<Box
 								sx={{
@@ -69,27 +76,11 @@ const DashBoard = () => {
 									160
 								</Typography>
 							</Box>
-							<Multichart />
-							{/* <PieChart
-								margin={{ top: 1, bottom: 5, left: 135, right: 1 }}
-								series={series}
-								width={250}
-								height={120}
-								slotProps={{
-									legend: {
-										direction: 'column',
-										position: { vertical: 'middle', horizontal: 'left' },
-										padding: 0,
-										itemMarkWidth: 20,
-										itemMarkHeight: 11,
-										markGap: 5,
-										itemGap: 10,
-									},
-								}}
-							/> */}
+							<Box></Box>
+							
 						</Card>
 					</Grid>
-					<Grid item xs={12} sm={4.5} md={4} lg={4}>
+					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyleTwo}>
 							<Typography
 								fontSize='14px'
@@ -122,7 +113,7 @@ const DashBoard = () => {
 									justifyContent={'center'}
 									borderRadius={'20px'}
 									padding={'10px'}
-									width={'70px'}
+									// width={'70px'}
 									height={'24px'}
 									display='flex'
 									mr={'15px'}
@@ -150,7 +141,7 @@ const DashBoard = () => {
 						</Card>
 					</Grid>
 
-					<Grid item xs={12} sm={4} md={4} lg={4}>
+					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyleTwo}>
 							<Typography
 								fontSize='14px'
@@ -176,7 +167,7 @@ const DashBoard = () => {
 						</Card>
 					</Grid>
 
-					<Grid item xs={6} sm={5} md={4} lg={4}>
+					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyleFour}>
 							<Typography
 								fontSize='14px'
@@ -379,7 +370,7 @@ const DashBoard = () => {
 					</Grid>
 				</Grid>
 
-				<Grid container item xs={12} sm={12} md={3}>
+				<Grid container item xs={12} sm={3} md={3}>
 					<Card sx={DashStyle.cardStyleFive}>
 						<ReportCard />
 					</Card>
@@ -425,7 +416,7 @@ const DashBoard = () => {
 								border={'1px solid #FF0000'}
 								borderRadius={'20px'}
 								padding={'2px'}
-								width={'64px'}
+								// width={'64px'}
 								height={'24px'}
 								display='flex'
 							>
@@ -449,19 +440,13 @@ const DashBoard = () => {
 						alignItems={'center'}
 						justifyContent={{ sm: 'left', md: 'space-between' }}
 						display={'flex'}
-						width='484px'
+						// width='484px'
 					>
-						<TextField
-							type='date'
-							size='medium'
-							name='Date'
-							value='date'
-							sx={{ width: '180px' }}
-						/>{' '}
+						<TextField type='date' size='medium' name='Date' value='date' />{' '}
 						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
 						<TextField
 							sx={{
-								width: '180px',
+								// width: '180px',
 								height: '44px',
 								marginRight: { xs: '5px', sm: '30px', md: '0' },
 							}}
@@ -490,7 +475,7 @@ const DashBoard = () => {
 						<Card
 							elevation={0}
 							sx={{
-								minWidth: { xs: '300px', sm: '500px', md: '700px' },
+								// minWidth: { xs: '300px', sm: '500px', md: '700px' },
 								margin: { xs: '', sm: '', md: 'auto' },
 							}}
 						>
