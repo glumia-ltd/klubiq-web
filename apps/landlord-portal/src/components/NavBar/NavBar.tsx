@@ -38,9 +38,15 @@ const NavBar = () => {
 						item
 						container
 						sx={{
-							width: { xs: '10%', sm: '5%', md: '30%', lg: '50%' },
+							width: { xs: '30%', sm: '20%', md: '25%', lg: '50%', xl: '50%' },
 							alignItems: 'center',
-							display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'flex' },
+							display: {
+								xs: 'flex',
+								sm: 'flex',
+								md: 'flex',
+								lg: 'flex',
+								xl: '50%',
+							},
 						}}
 					>
 						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '2rem' }}>
@@ -61,11 +67,17 @@ const NavBar = () => {
 						item
 						container
 						sx={{
-							width: { xs: '50%', sm: '20%', md: '20%', lg: '15%' },
+							width: { xs: '20%', sm: '30%', md: '35%', lg: '19%', xl: '19%' },
 							// width: '15%',
 							alignItems: 'center',
 							marginRight: '3rem',
-							display: { xs: 'none', sm: 'flex', md: 'flex', lg: 'flex' },
+							display: {
+								xs: 'flex',
+								sm: 'flex',
+								md: 'flex',
+								lg: 'flex',
+								xl: 'flex',
+							},
 						}}
 					>
 						<Grid item xs={3}>
@@ -74,7 +86,7 @@ const NavBar = () => {
 								// label="TextField"
 								placeholder='Search Transactions,customers'
 								sx={{
-									width: { sm: '280px', md: '320px' },
+									width: { xs: '50px', sm: '250px', md: '320px' },
 									height: '44px',
 									padding: '0 4 0 4',
 								}}
@@ -93,7 +105,7 @@ const NavBar = () => {
 					<Grid
 						item
 						sx={{
-							width: { lg: '25%', md: '20%', sm: '40%', xs: '40%' },
+							width: { xs: '30%', sm: '40%', md: '20%', lg: '25%', xl: '25%' },
 							cursor: 'pointer',
 							alignItems: 'center',
 							justifyContent: {
@@ -102,7 +114,13 @@ const NavBar = () => {
 								sm: 'flex-end',
 								xs: 'flex-end',
 							},
-							display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'flex' },
+							display: {
+								xs: 'flex',
+								sm: 'flex',
+								md: 'flex',
+								lg: 'flex',
+								xl: 'flex',
+							},
 						}}
 					>
 						<IconButton
