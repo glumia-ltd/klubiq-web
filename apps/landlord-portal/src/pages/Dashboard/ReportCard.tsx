@@ -14,8 +14,13 @@ const ReportCard = () => {
 		<Box overflow={'auto'} height='370px'>
 			<Box
 				sx={{
-					display: { xs: '', md: '', lg: 'flex' },
-					justifyContent: 'space-between',
+					display: { xs: 'flex', md: 'block', lg: 'flex' },
+					justifyContent: {
+						xs: 'space-between',
+						md: 'flex-end',
+						lg: 'space-between',
+						xl: 'space-between',
+					},
 					alignItems: 'center',
 					marginBottom: '8px',
 				}}
@@ -23,7 +28,17 @@ const ReportCard = () => {
 				<Typography fontWeight={'800px'} fontSize={'16px'} lineHeight={'20px'}>
 					Report
 				</Typography>
-				<Button disableTouchRipple>
+				<Button
+					disableTouchRipple
+					sx={{
+						border: 'none',
+						// backgroundColor: 'transparent',
+						// textAlign:"left",
+						'&:hover': {
+							background: 'none',
+						},
+					}}
+				>
 					<AddCircleRoundedIcon />
 					<Typography fontWeight={'500px'} fontSize={'14x'} lineHeight={'20px'}>
 						Add Report
@@ -32,27 +47,42 @@ const ReportCard = () => {
 			</Box>
 
 			{CardData.map((data, index) => (
-				<Box
-					key={index}
-					sx={{
-						display: { xs: 'box', sm: 'box', md: 'box', lg: 'flex' },
-						marginBottom: '15px',
-						alignItems: 'center',
-						padding: '.3rem',
-					}}
-				>
-					<Avatar
-						alt='user'
-						src={user}
-						sx={{ border: '1px solid red', marginRight: '15px' }}
-					/>
-
-					<Typography
-						textTransform={'capitalize'}
-						textAlign={{ sm: 'left', md: 'left', lg: 'right' }}
+				<Box key={index} mb={2}>
+					<Box
+						sx={{
+							display: { xs: 'flex', sm: 'box', md: 'flex', lg: 'flex' },
+							alignItems: 'center',
+							justifyContent: {
+								xs: 'space-between',
+								sm: 'left',
+								md: 'left',
+								lg: 'left',
+								xl: 'left',
+							},
+							marginLeft: '10px',
+						}}
 					>
-						{data.name} sent a report
-					</Typography>
+						<Avatar alt='user' src={user} />
+
+						<Typography
+							textTransform={'capitalize'}
+							textAlign={{ xs: 'right', sm: 'left', md: 'left', lg: 'right' }}
+							ml={{ md: '10px', lg: '25px' }}
+						>
+							{data.name} sent a report
+						</Typography>
+					</Box>
+					<Button
+						sx={{
+							backgroundColor: 'transparent',
+							'&:hover': {
+								background: 'none',
+							},
+						}}
+						disableTouchRipple
+					>
+						<Typography>View</Typography>
+					</Button>
 				</Box>
 			))}
 		</Box>

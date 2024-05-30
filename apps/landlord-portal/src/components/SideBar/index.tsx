@@ -11,6 +11,8 @@ import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useLocation } from 'react-router-dom';
+
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -79,17 +81,18 @@ const Drawer = styled(MuiDrawer, {
 function SideBar() {
 	// const [open, setOpen] = useState(false);
 	const theme = useTheme();
-	const isMediumScreen = useMediaQuery(theme.breakpoints.down('xl'));
+	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
 	const { mode, switchMode } = useContext(ThemeContext);
 	const allContexts = () => useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
-
+	const { sidebarOpen, closeSidebar, openSidebar, toggleSidebar } =
+		allContexts();
 	const pathList = getPathList();
+	const { pathname } = useLocation();
 
 	useEffect(() => {
-		isMediumScreen ? closeSidebar : openSidebar;
+		isMediumScreen ? closeSidebar : sidebarOpen;
 	}, [isMediumScreen]);
 	useEffect(() => {
 		isSmallScreen && closeSidebar;
@@ -118,43 +121,66 @@ function SideBar() {
 				</IconButton>
 			</DrawerHeader>
 			<List sx={{ marginBottom: '20px' }}>
-				{pathList.map((props, index) => (
-					<ListItem disablePadding key={index}>
-						<Link
-							to={props.path}
-							relative='path'
-							style={{ textDecoration: 'none' }}
-						>
-							<ListItemButton
-								sx={{
-									minHeight: 20,
-									justifyContent: sidebarOpen ? 'initial' : 'center',
-									px: 2.5,
-									my: 0.8,
-									py: 0.8,
-									marginLeft: sidebarOpen ? 4 : 3,
-								}}
+				{pathList.map((props, index) => {
+					const path = props.path;
+					return (
+						<ListItem disablePadding key={index}>
+							<Link
+								to={props.path || ''}
+								relative='path'
+								style={{ textDecoration: 'none' }}
+								onClick={toggleSidebar}
 							>
-								<ListItemIcon
+								<ListItemButton
+									selected={path === pathname}
 									sx={{
-										minWidth: 0,
-										mr: sidebarOpen ? 3 : 'auto',
-										justifyContent: 'center',
+										minHeight: 20,
+										justifyContent: sidebarOpen ? 'initial' : 'center',
+										px: 2.5,
+										my: 0.8,
+										py: 0.8,
+										marginLeft: sidebarOpen ? 4 : 4,
+										width: sidebarOpen ? '200px' : '70px',
+										borderRadius: '10px',
+										'&:hover': {
+											bgcolor: 'rgba(255,255,255,0.6)',
+											color: 'rgba(255,255,255,0.5)',
+										},
+										'&.Mui-selected': {
+											bgcolor: 'white',
+											'& .MuiListItemIcon-root': {
+												color: 'primary.main',
+											},
+											'& .MuiListItemText-root': {
+												color: 'primary.main',
+											},
+											'&:hover': {
+												bgcolor: 'white',
+											},
+										},
 									}}
 								>
-									<SvgIcon
-										sx={{ fontSize: '30px', width: '30px', height: '30px' }}
-										component={props.icon}
-										inheritViewBox
-									/>
-								</ListItemIcon>
-								<ListItemText sx={{ opacity: sidebarOpen ? 1 : 0 }}>
-									{props.title}
-								</ListItemText>
-							</ListItemButton>
-						</Link>
-					</ListItem>
-				))}
+									<ListItemIcon
+										sx={{
+											minWidth: 0,
+											mr: sidebarOpen ? 3 : 'auto',
+											justifyContent: 'center',
+										}}
+									>
+										<SvgIcon
+											sx={{ fontSize: '30px', width: '30px', height: '30px' }}
+											component={props.icon}
+											inheritViewBox
+										/>
+									</ListItemIcon>
+									<ListItemText sx={{ opacity: sidebarOpen ? 1 : 0 }}>
+										{props.title}
+									</ListItemText>
+								</ListItemButton>
+							</Link>
+						</ListItem>
+					);
+				})}
 			</List>
 			<Stack
 				direction={{ xs: sidebarOpen ? 'row' : 'column' }}

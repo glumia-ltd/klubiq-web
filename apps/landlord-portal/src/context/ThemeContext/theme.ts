@@ -62,7 +62,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					color: '#FFFFFF',
-					fontSize: '!1.5rem',
+					fontSize: '1.5rem',
 				},
 			},
 		},

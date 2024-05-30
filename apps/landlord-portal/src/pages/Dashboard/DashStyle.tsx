@@ -28,19 +28,12 @@ const styles = {
 	},
 	cardStyleFive: {
 		height: '407px',
-		// width: '272px',
-		padding: '24px',
+		width: '100%',
+		padding: '25px',
 		borderRadius: '20px',
 		marginLeft: '15px',
 	},
 	tableGridOne: {
-		// width: {
-		// 	xs: '400px',
-		// 	sm: '600px',
-		// 	md: '1200px',
-		// 	lg: '1230px',
-		// 	xl: '1260px',
-		// },
 		background: '#ffffff',
 		borderRadius: '20px',
 		padding: '24px',
