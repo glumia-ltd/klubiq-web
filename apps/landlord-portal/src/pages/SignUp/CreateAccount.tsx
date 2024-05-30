@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Typography, Button } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { Link } from '@mui/material';
+import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
 // import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
@@ -14,7 +15,6 @@ import { useDispatch } from 'react-redux';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const CreateAccount: React.FC = () => {
@@ -249,42 +249,17 @@ label='I agree to the Terms & Conditions'
 						}}
 					>
 						{loading ? (
-							<LoadingButton
+							<LoadingSubmitButton
 								loading
 								loadingPosition='center'
 								variant='outlined'
-								sx={{
-									border: '1px solid #002147',
-									borderRadius: '0.5rem',
-									color: 'white',
-									height: '3.1rem',
-									fontSize: '18px',
-									width: '100%',
-								}}
-							>
-								Sign In
-							</LoadingButton>
-						) : (
-							<Button
-								type='submit'
-								disableRipple
-								sx={{
-									border: '1px solid #002147',
-									color: 'white',
-									background: '#002147',
-									height: '3.1rem',
-									fontSize: '18px',
-									width: '100%',
-									borderRadius: '8px',
-									'&:hover': {
-										color: 'white',
-										background: '#6699CC',
-										cursor: 'pointer',
-									},
-								}}
 							>
 								Sign Up
-							</Button>
+							</LoadingSubmitButton>
+						) : (
+							<SubmitButton type='submit' disableRipple>
+								Sign Up
+							</SubmitButton>
 						)}
 					</Grid>
 					<Grid
