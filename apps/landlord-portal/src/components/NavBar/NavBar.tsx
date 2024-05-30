@@ -1,5 +1,8 @@
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
+import { useContext } from 'react';
+import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import {
 	Grid,
 	AppBar,
@@ -13,12 +16,19 @@ import Logo from '../../assets/images/blueoctagon.png';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 const NavBar = () => {
+	const theme = useTheme();
+	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+	const allContext = () => useContext(Context);
+	const { toggleSidebar } = allContext();
+
 	const { pathname } = useLocation();
 	const section = pathname.split('/')[1];
-
 	return (
-		<AppBar position='static' elevation={1}>
+		<AppBar position='static' elevation={1} sx={{ width: '100%' }}>
 			<Toolbar
 				variant='regular'
 				sx={{
@@ -34,22 +44,48 @@ const NavBar = () => {
 						justifyContent: 'space-between',
 					}}
 				>
+					{isSmallScreen && (
+						<Grid
+							item
+							container
+							sx={{
+								width: { xs: '5%', sm: '5%', md: '5%' },
+								alignItems: 'center',
+								display: {
+									xs: 'flex',
+									sm: 'flex',
+									md: 'flex',
+								},
+							}}
+						>
+							<IconButton
+								sx={{ marginRight: '1rem' }}
+								onClick={toggleSidebar}
+								size={'large'}
+								edge='end'
+								color='inherit'
+								aria-label='menu'
+							>
+								<MenuIcon />
+							</IconButton>
+						</Grid>
+					)}
 					<Grid
 						item
 						container
 						sx={{
-							width: { xs: '30%', sm: '20%', md: '25%', lg: '50%', xl: '50%' },
+							width: { xs: '28%', sm: '15%', md: '20%', lg: '50%', xl: '50%' },
 							alignItems: 'center',
 							display: {
 								xs: 'flex',
 								sm: 'flex',
 								md: 'flex',
 								lg: 'flex',
-								xl: '50%',
+								xl: 'flex',
 							},
 						}}
 					>
-						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '2rem' }}>
+						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
 							<Typography
 								sx={{
 									textTransform: 'capitalize',
@@ -63,6 +99,7 @@ const NavBar = () => {
 							</Typography>
 						</Grid>
 					</Grid>
+
 					<Grid
 						item
 						container
@@ -70,7 +107,13 @@ const NavBar = () => {
 							width: { xs: '20%', sm: '30%', md: '35%', lg: '19%', xl: '19%' },
 							// width: '15%',
 							alignItems: 'center',
-							marginRight: '3rem',
+							marginRight: {
+								xs: '1rem',
+								sm: '1rem',
+								md: '3rem',
+								lg: '3rem',
+								xl: '3rem',
+							},
 							display: {
 								xs: 'flex',
 								sm: 'flex',

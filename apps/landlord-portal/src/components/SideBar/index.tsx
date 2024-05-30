@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -23,6 +23,7 @@ import {
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
+import { Context } from '../../context/NavToggleContext/NavToggleContext';
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -76,32 +77,27 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function SideBar() {
-	const [open, setOpen] = useState(false);
+	// const [open, setOpen] = useState(false);
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('xl'));
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
 	const { getPathList } = useContext(SectionContext);
-	const pathList = getPathList();
 	const { mode, switchMode } = useContext(ThemeContext);
+	const allContexts = () => useContext(Context);
+	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
 
-	const handleDrawerOpen = () => {
-		setOpen(true);
-	};
+	const pathList = getPathList();
 
-	const handleDrawerClose = () => {
-		setOpen(false);
-	};
 	useEffect(() => {
-		isMediumScreen ? setOpen(false) : setOpen(true);
+		isMediumScreen ? closeSidebar : openSidebar;
 	}, [isMediumScreen]);
 	useEffect(() => {
-		isSmallScreen && setOpen(false);
+		isSmallScreen && closeSidebar;
 		console.log('smakk');
 	}, [isSmallScreen]);
 
 	return (
-		<Drawer variant='permanent' open={open}>
+		<Drawer variant='permanent' open={sidebarOpen}>
 			<DrawerHeader
 				sx={{
 					display: 'flex',
@@ -109,8 +105,8 @@ function SideBar() {
 					justifyContent: 'center',
 				}}
 			>
-				<IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
-					{open ? (
+				<IconButton onClick={sidebarOpen ? closeSidebar : openSidebar}>
+					{sidebarOpen ? (
 						mode === ThemeMode.LIGHT ? (
 							<img src={Logo2} alt='logo' />
 						) : (
@@ -132,17 +128,17 @@ function SideBar() {
 							<ListItemButton
 								sx={{
 									minHeight: 20,
-									justifyContent: open ? 'initial' : 'center',
+									justifyContent: sidebarOpen ? 'initial' : 'center',
 									px: 2.5,
 									my: 0.8,
 									py: 0.8,
-									marginLeft: open ? 4 : 3,
+									marginLeft: sidebarOpen ? 4 : 3,
 								}}
 							>
 								<ListItemIcon
 									sx={{
 										minWidth: 0,
-										mr: open ? 3 : 'auto',
+										mr: sidebarOpen ? 3 : 'auto',
 										justifyContent: 'center',
 									}}
 								>
@@ -152,7 +148,7 @@ function SideBar() {
 										inheritViewBox
 									/>
 								</ListItemIcon>
-								<ListItemText sx={{ opacity: open ? 1 : 0 }}>
+								<ListItemText sx={{ opacity: sidebarOpen ? 1 : 0 }}>
 									{props.title}
 								</ListItemText>
 							</ListItemButton>
@@ -161,25 +157,25 @@ function SideBar() {
 				))}
 			</List>
 			<Stack
-				direction={{ xs: open ? 'row' : 'column' }}
+				direction={{ xs: sidebarOpen ? 'row' : 'column' }}
 				spacing={{ xs: 1, sm: 1, md: 0 }}
 				sx={{
 					borderRadius: '15px',
-					width: open ? '200px' : '70px',
+					width: sidebarOpen ? '200px' : '70px',
 					textAlign: 'center',
 					margin: 'auto',
 					// display: 'flex',
 					// justifyContent: 'center',
 					background: '#ffffff',
-					padding: open ? '8px' : '0px',
+					padding: sidebarOpen ? '8px' : '0px',
 				}}
 			>
 				<Button
 					onClick={() => switchMode(ThemeMode.LIGHT)}
 					sx={{
 						color: '#002147',
-						width: open ? '100%' : '50%',
-						borderRadius: open ? '15px' : '20px',
+						width: sidebarOpen ? '100%' : '50%',
+						borderRadius: sidebarOpen ? '15px' : '20px',
 						padding: '10px',
 						fontSize: '10px',
 
@@ -190,7 +186,7 @@ function SideBar() {
 						},
 					}}
 				>
-					{open ? (
+					{sidebarOpen ? (
 						<>
 							<LightModeIcon sx={{ fontSize: 20 }} /> <h3>Light</h3>
 						</>
@@ -202,8 +198,8 @@ function SideBar() {
 					onClick={() => switchMode(ThemeMode.DARK)}
 					sx={{
 						color: '#002147',
-						width: open ? '100%' : '50%',
-						borderRadius: open ? '15px' : '20px',
+						width: sidebarOpen ? '100%' : '50%',
+						borderRadius: sidebarOpen ? '15px' : '20px',
 						fontSize: '10px',
 						padding: '10px',
 						'&:hover': {
@@ -213,7 +209,7 @@ function SideBar() {
 						},
 					}}
 				>
-					{open ? (
+					{sidebarOpen ? (
 						<>
 							{' '}
 							<DarkModeIcon sx={{ fontSize: 20 }} />

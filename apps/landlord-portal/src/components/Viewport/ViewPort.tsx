@@ -14,7 +14,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 		<NavToggleProvider>
 			<Box sx={{ display: 'flex', flexGrow: 1, backgroundColor: '#F3F6F8' }}>
 				<Sidebar />
-				<Box display='flex' flexDirection='column' maxWidth='100%'>
+				<Box display='flex' flexDirection='column' width='100%'>
 					<NavBar />
 					<Box maxWidth={'100%'} flexGrow={1}>
 						{' '}
