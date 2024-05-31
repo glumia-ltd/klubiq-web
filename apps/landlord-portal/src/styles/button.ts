@@ -11,7 +11,7 @@ export const SubmitButton = styled(Button)<ButtonProps>(({ theme }) => ({
 	fontWeight: 'bold',
 	borderRadius: '0.5rem',
 	padding: '0.5rem 1rem',
-	textTransform: 'uppercase',
+	textTransform: 'capitalize',
 	'&:hover': {
 		backgroundColor: theme.palette.secondary.light,
 		cursor: 'pointer',
