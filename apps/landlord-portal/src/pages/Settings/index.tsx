@@ -1,10 +1,7 @@
-import { Container } from "@mui/material"
+import { Container } from '@mui/material';
 
 const Setting = () => {
-  return (
-    <Container maxWidth="xl">Setting</Container>
+	return <Container maxWidth='xl'>Setting</Container>;
+};
 
-  )
-}
-
-export default Setting
+export default Setting;
