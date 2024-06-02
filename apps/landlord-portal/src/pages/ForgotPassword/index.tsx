@@ -1,4 +1,4 @@
-import { SubmitButton } from '../../styles/button';
+import { LoadingSubmitButton, SubmitButton } from '../../styles/button';
 import { Box, Button, Grid, Modal, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import LoginLayout from '../../Layouts/LoginLayout';
@@ -11,7 +11,6 @@ import { api } from '../../api';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
 import successImage from '../../assets/images/circle-ok.svg';
 import cancelImage from '../../assets/images/cancel.svg';
 
@@ -172,7 +171,17 @@ const ForgotPassword = () => {
 									textAlign: 'center',
 								}}
 							>
-								<SubmitButton type='submit'>Set Password</SubmitButton>
+								{loading ? (
+									<LoadingSubmitButton
+										loading
+										loadingPosition='center'
+										variant='outlined'
+									>
+										Set Password
+									</LoadingSubmitButton>
+								) : (
+									<SubmitButton type='submit'> Set Password </SubmitButton>
+								)}
 							</Grid>
 						</Grid>
 					</Grid>
