@@ -30,10 +30,10 @@ export const router = createBrowserRouter(
 			{/* <Route path='/signup' element={<SignUp />} /> */}
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
-			<Route path='/setPassword' element={<SetPassword />} />
-			<Route path='/forgotPassword' element={<ForgotPassword />} />
+			<Route path='/reset-password' element={<SetPassword />} />
+			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
-			<Route path='*' element={<Navigate to='/login' replace />} />
+			<Route path='*' element={<Navigate to='/' replace />} />
 			<Route
 				path='/dashboard'
 				element={

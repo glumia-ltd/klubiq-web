@@ -54,8 +54,6 @@ const Login = () => {
 
 			const user: any = userCredential.user;
 
-			console.log(user);
-
 			const payload = {
 				token: user.accessToken,
 				user,
@@ -125,7 +123,7 @@ const Login = () => {
 		navigate('/signup/createaccount', { replace: true });
 	};
 	const routeToForgotPassword = () => {
-		navigate('/forgotPassword', { replace: true });
+		navigate('/forgot-password', { replace: true });
 	};
 
 	return (
