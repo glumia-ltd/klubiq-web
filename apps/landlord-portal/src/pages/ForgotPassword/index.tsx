@@ -1,4 +1,5 @@
-import { Button, Grid, Typography, Modal, Box } from '@mui/material';
+import { SubmitButton } from '../../styles/button';
+import { Box, Button, Grid, Modal, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import LoginLayout from '../../Layouts/LoginLayout';
 import { useFormik } from 'formik';
@@ -171,41 +172,7 @@ const ForgotPassword = () => {
 									textAlign: 'center',
 								}}
 							>
-								{loading ? (
-									<LoadingButton
-										loading
-										loadingPosition='center'
-										variant='outlined'
-										sx={{
-											border: '1px solid #002147',
-											borderRadius: '0.5rem',
-											color: 'white',
-											height: '3.1rem',
-											width: '100%',
-										}}
-									/>
-								) : (
-									<Button
-										type='submit'
-										sx={{
-											border: '1px solid #002147',
-											borderRadius: '0.5rem',
-											fontSize: '18px',
-											color: 'white',
-											background: '#002147',
-											height: '3.1rem',
-											width: '100%',
-											'&:hover': {
-												color: '#FFFFFF',
-												background: '#6699CC',
-												cursor: 'pointer',
-												border: 'none',
-											},
-										}}
-									>
-										Set Password
-									</Button>
-								)}
+								<SubmitButton type='submit'>Set Password</SubmitButton>
 							</Grid>
 						</Grid>
 					</Grid>

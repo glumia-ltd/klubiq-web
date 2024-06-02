@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../Layouts/LoginLayout';
+import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
 import {
-	Button,
 	// Checkbox,
 	// FormControlLabel,
 	// FormGroup,
 	Grid,
 	Typography,
 } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -274,41 +273,15 @@ const Login = () => {
 								}}
 							>
 								{loading ? (
-									<LoadingButton
+									<LoadingSubmitButton
 										loading
 										loadingPosition='center'
 										variant='outlined'
-										sx={{
-											border: '1px solid #002147',
-											borderRadius: '0.5rem',
-											color: 'white',
-											height: '3.1rem',
-											width: '100%',
-										}}
 									>
 										Sign In
-									</LoadingButton>
+									</LoadingSubmitButton>
 								) : (
-									<Button
-										type='submit'
-										sx={{
-											border: '1px solid #002147',
-											borderRadius: '0.5rem',
-											color: 'white',
-											background: '#002147',
-											height: '3.1rem',
-											width: '100%',
-											fontSize: '18px',
-											'&:hover': {
-												color: '#FFFFFF',
-												background: '#6699CC',
-												cursor: 'pointer',
-												border: 'none',
-											},
-										}}
-									>
-										Sign In
-									</Button>
+									<SubmitButton type='submit'> Sign In </SubmitButton>
 								)}
 							</Grid>
 

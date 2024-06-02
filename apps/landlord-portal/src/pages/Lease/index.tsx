@@ -1,9 +1,7 @@
-import { Container } from "@mui/material"
+import { Container } from '@mui/material';
 
 const Lease = () => {
-  return (
-    <Container maxWidth="xl">Lease</Container>
-  )
-}
+	return <Container maxWidth='xl'>Lease</Container>;
+};
 
-export default Lease
+export default Lease;

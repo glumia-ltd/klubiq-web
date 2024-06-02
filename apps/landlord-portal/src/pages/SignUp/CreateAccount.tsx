@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Typography, Button } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { Link } from '@mui/material';
+import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
 // import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
@@ -14,8 +15,8 @@ import { useDispatch } from 'react-redux';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+// import LoadingButton from '@mui/lab/LoadingButton';
 
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
@@ -199,14 +200,6 @@ const CreateAccount: React.FC = () => {
 							/>
 						</Grid>
 
-						{/* <Grid item sm={12} xs={12} lg={12}>
-						<ControlledCheckBox
-							name='mailCheck'
-label='I agree to the Terms & Conditions'
-							formik={formik}
-						/>
-					</Grid> */}
-
 						<Typography
 							color='#002147'
 							sx={{
@@ -239,6 +232,20 @@ label='I agree to the Terms & Conditions'
 								Privacy Policy
 							</Link>
 							<span>.</span>
+							Terms of Use
+							{/* </Link> */}
+							<span> and </span>
+							<Link
+								href='/privacy-policy'
+								sx={{
+									color: '#002147',
+									fontWeight: '700',
+									textDecoration: 'none',
+								}}
+							>
+								Privacy Policy
+							</Link>
+							<span>.</span>
 						</Typography>
 
 						<Grid
@@ -253,66 +260,18 @@ label='I agree to the Terms & Conditions'
 							}}
 						>
 							{loading ? (
-								<LoadingButton
+								<LoadingSubmitButton
 									loading
 									loadingPosition='center'
 									variant='outlined'
-									sx={{
-										border: '1px solid #002147',
-										borderRadius: '0.5rem',
-										color: 'white',
-										height: '3.1rem',
-										fontSize: '18px',
-										width: '100%',
-									}}
-								>
-									Sign In
-								</LoadingButton>
-							) : (
-								<Button
-									type='submit'
-									disableRipple
-									sx={{
-										border: '1px solid #002147',
-										color: 'white',
-										background: '#002147',
-										height: '3.1rem',
-										fontSize: '18px',
-										width: '100%',
-										borderRadius: '8px',
-										'&:hover': {
-											color: 'white',
-											background: '#6699CC',
-											cursor: 'pointer',
-											border: 'none',
-										},
-									}}
 								>
 									Sign Up
-								</Button>
+								</LoadingSubmitButton>
+							) : (
+								<SubmitButton type='submit' disableRipple>
+									Sign Up
+								</SubmitButton>
 							)}
-						</Grid>
-						<Grid
-							item
-							sm={12}
-							xs={12}
-							lg={12}
-							sx={{
-								alignItems: 'center',
-								textAlign: 'center',
-								cursor: 'pointer',
-								marginTop: '1.2rem',
-							}}
-						>
-							<Typography>
-								Already have an account?{' '}
-								<span
-									style={{ color: '#002147', fontWeight: '600' }}
-									onClick={routeToLogin}
-								>
-									Sign in
-								</span>
-							</Typography>
 						</Grid>
 					</Grid>
 				</Grid>
