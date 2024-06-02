@@ -33,7 +33,7 @@ export const router = createBrowserRouter(
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
-			<Route path='*' element={<Navigate to='/login' replace />} />
+			<Route path='*' element={<Navigate to='/' replace />} />
 			<Route
 				path='/dashboard'
 				element={
