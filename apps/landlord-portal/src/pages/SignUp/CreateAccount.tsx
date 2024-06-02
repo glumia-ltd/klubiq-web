@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { Link } from '@mui/material';
 import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
-// import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
@@ -16,7 +15,6 @@ import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-// import LoadingButton from '@mui/lab/LoadingButton';
 
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
@@ -74,10 +72,6 @@ const CreateAccount: React.FC = () => {
 			console.log(error);
 		}
 	};
-
-	// const routeToLogin = () => {
-	// 	navigate('/login', { replace: true });
-	// };
 
 	const routeToLogin = () => {
 		navigate('/', { replace: true });
@@ -272,6 +266,28 @@ const CreateAccount: React.FC = () => {
 									Sign Up
 								</SubmitButton>
 							)}
+						</Grid>
+						<Grid
+							item
+							sm={12}
+							xs={12}
+							lg={12}
+							sx={{
+								alignItems: 'center',
+								textAlign: 'center',
+								cursor: 'pointer',
+								marginTop: '1.2rem',
+							}}
+						>
+							<Typography>
+								Already have an account?{' '}
+								<span
+									style={{ color: '#002147', fontWeight: '600' }}
+									onClick={routeToLogin}
+								>
+									Sign in
+								</span>
+							</Typography>
 						</Grid>
 					</Grid>
 				</Grid>
