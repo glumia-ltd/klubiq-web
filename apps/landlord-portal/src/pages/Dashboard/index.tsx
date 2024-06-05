@@ -1,8 +1,6 @@
 import { Container } from '@mui/system';
 
-// type DashProps = {}
-
 const DashBoard = () => {
-	return <Container maxWidth='xl'>Dasnhnhhhhhhhhhh</Container>;
+	return <Container maxWidth='xl'></Container>;
 };
 export default DashBoard;
