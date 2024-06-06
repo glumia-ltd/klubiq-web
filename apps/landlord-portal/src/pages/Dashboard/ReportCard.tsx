@@ -63,26 +63,27 @@ const ReportCard = () => {
 						}}
 					>
 						<Avatar alt='user' src={user} />
-
-						<Typography
-							textTransform={'capitalize'}
-							textAlign={{ xs: 'right', sm: 'left', md: 'left', lg: 'right' }}
-							ml={{ md: '10px', lg: '25px' }}
-						>
-							{data.name} sent a report
-						</Typography>
+						<Box sx={{ textAlign: 'left' }}>
+							<Typography
+								textTransform={'capitalize'}
+								// textAlign={{ xs: 'right', sm: 'left', md: 'left', lg: 'right' }}
+								// ml={{ md: '10px', lg: '25px' }}
+							>
+								{data.name} sent a report
+							</Typography>
+							<Button
+								sx={{
+									backgroundColor: 'transparent',
+									'&:hover': {
+										background: 'none',
+									},
+								}}
+								disableTouchRipple
+							>
+								View{' '}
+							</Button>
+						</Box>
 					</Box>
-					<Button
-						sx={{
-							backgroundColor: 'transparent',
-							'&:hover': {
-								background: 'none',
-							},
-						}}
-						disableTouchRipple
-					>
-						<Typography>View</Typography>
-					</Button>
 				</Box>
 			))}
 		</Box>

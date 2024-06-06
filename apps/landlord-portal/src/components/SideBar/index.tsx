@@ -129,7 +129,6 @@ function SideBar() {
 								to={props.path || ''}
 								relative='path'
 								style={{ textDecoration: 'none' }}
-								onClick={toggleSidebar}
 							>
 								<ListItemButton
 									selected={path === pathname}
@@ -159,6 +158,7 @@ function SideBar() {
 											},
 										},
 									}}
+									onClick={openSidebar}
 								>
 									<ListItemIcon
 										sx={{

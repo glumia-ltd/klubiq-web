@@ -45,12 +45,16 @@ const DashBoard = () => {
 		<Container
 			maxWidth={'xl'}
 			sx={{
-				flexGrow: 1,
+				// flexGrow: 1,
 				// padding: '14px',
 				overflow: 'auto',
 			}}
 		>
-			<Grid container spacing={1} sx={{ padding: '3rem' }}>
+			<Grid
+				container
+				spacing={1}
+				sx={{ padding: { xs: '0.5rem', md: '1rem', lg: '1rem', xl: '1.5rem' } }}
+			>
 				<Grid container item spacing={1} xs={12} sm={9} md={9} lg={9}>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>

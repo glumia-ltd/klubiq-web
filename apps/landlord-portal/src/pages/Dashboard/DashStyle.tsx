@@ -16,7 +16,7 @@ const styles = {
 		// width: { xs: '500px', sm: '500px', md: '590px' },
 
 		// width: '590px',
-		borderRadius: '25px',
+		borderRadius: '20px',
 		padding: '24px',
 	},
 	cardStyleFour: {
