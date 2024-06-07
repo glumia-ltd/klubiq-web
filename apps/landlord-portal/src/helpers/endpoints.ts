@@ -4,5 +4,6 @@ export const authEndpoints = {
 	emailVerification: () => 'auth/email-verification-link',
 	refreshToken: () => 'auth/exchange-refresh-token',
 	getUserByFbid: () => `auth/user`,
-	resetPassword: () => `auth/reset-password-link`,
+	sendResetPasswordEmail: () => `auth/reset-password-link`,
+	resetPassword: () => `auth/reset-password`,
 };
