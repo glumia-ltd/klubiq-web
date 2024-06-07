@@ -13,11 +13,13 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ReportCard from './ReportCard';
-// import { PieChart } from '@mui/x-charts/PieChart';
 import DashStyle from './DashStyle';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { useContext } from 'react';
+import { ThemeMode } from '../../context/ThemeContext/themeTypes';
+import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const data = {
@@ -41,21 +43,29 @@ const data = {
 };
 
 const DashBoard = () => {
+	const { mode } = useContext(ThemeContext);
+
 	return (
 		<Container
 			maxWidth={'xl'}
 			sx={{
-				// flexGrow: 1,
-				// padding: '14px',
 				overflow: 'auto',
 			}}
 		>
 			<Grid
 				container
 				spacing={1}
-				sx={{ padding: { xs: '0.5rem', md: '1rem', lg: '1rem', xl: '1.5rem' } }}
+				sx={{
+					padding: {
+						xs: '0.5rem',
+						sm: '0.5rem',
+						md: '1rem',
+						lg: '1rem',
+						xl: '1.5rem',
+					},
+				}}
 			>
-				<Grid container item spacing={1} xs={12} sm={9} md={9} lg={9}>
+				<Grid container item spacing={1} xs={12} sm={8} md={8} lg={9}>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>
 							<Box
@@ -111,7 +121,7 @@ const DashBoard = () => {
 								fontSize='14px'
 								lineHeight={'20px'}
 								fontWeight={500}
-								mb={'1rem'}
+								mb={{ sm: '0.5rem', md: '0.5rem', lg: '1rem' }}
 								textAlign='left'
 							>
 								Today's Revenue
@@ -128,7 +138,7 @@ const DashBoard = () => {
 								sx={{
 									display: 'flex',
 									textAlign: 'center',
-									marginTop: '35px',
+									marginTop: { xs: '35px', md: '28px', lg: '35px' },
 									alignItems: 'center',
 								}}
 							>
@@ -145,7 +155,7 @@ const DashBoard = () => {
 									// width={'70px'}
 									height={'24px'}
 									display='flex'
-									mr={'15px'}
+									mr={{ xs: '15px', md: '5px', lg: '15px' }}
 									sx={{ backgroundColor: 'rgba(236,253,243)' }}
 								>
 									<ArrowUpwardIcon
@@ -221,7 +231,7 @@ const DashBoard = () => {
 								sx={{
 									display: 'flex',
 									textAlign: 'center',
-									marginTop: '20px',
+									marginTop: { xs: '35px', md: '28px', lg: '35px' },
 									alignItems: 'center',
 								}}
 							>
@@ -416,12 +426,24 @@ const DashBoard = () => {
 					</Grid>
 				</Grid>
 
-				<Grid container item xs={12} sm={3} md={3}>
-					<Card sx={DashStyle.cardStyleFive}>
-						<ReportCard />
-					</Card>
+				<Grid container item xs={12} sm={4} md={4} lg={3}>
+					<ReportCard />
 				</Grid>
-				<Grid container sx={DashStyle.tableGridOne}>
+
+				<Grid
+					container
+					item
+					xs={12}
+					md={12}
+					lg={12}
+					sx={{
+						background: mode === ThemeMode.LIGHT ? '#ffffff' : '#000000',
+						borderRadius: '20px',
+						padding: '24px',
+						marginTop: '0.5rem',
+						boxShadow: ' 0 4px 8px 0 rgba(0,0,0,0.2)',
+					}}
+				>
 					<Grid item xs={12} sm={12} md={7}>
 						<Typography
 							fontSize='14px'
@@ -484,7 +506,7 @@ const DashBoard = () => {
 						sm={12}
 						md={5}
 						alignItems={'center'}
-						justifyContent={{ sm: 'left', md: 'space-between' }}
+						justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 						display={'flex'}
 						// width='484px'
 					>
@@ -505,12 +527,13 @@ const DashBoard = () => {
 							sx={{
 								border: '1px solid black',
 								padding: '8px, 16px, 8px, 16px',
-								width: '58px',
-								height: '48px',
+								width: '50px',
+								height: '35px',
 								borderRadius: '8px',
 								display: 'flex',
 								justifyContent: 'center',
 								alignItems: 'center',
+								marginLeft: { xs: '0', sm: '13rem', md: '0' },
 							}}
 						>
 							<SaveAltOutlinedIcon />
@@ -518,15 +541,7 @@ const DashBoard = () => {
 					</Grid>
 
 					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
-						<Card
-							elevation={0}
-							sx={{
-								// minWidth: { xs: '300px', sm: '500px', md: '700px' },
-								margin: { xs: '', sm: '', md: 'auto' },
-							}}
-						>
-							<TableChart />
-						</Card>
+						<TableChart />
 					</Grid>
 				</Grid>
 			</Grid>

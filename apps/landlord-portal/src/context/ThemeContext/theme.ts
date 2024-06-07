@@ -185,6 +185,16 @@ export const LightTheme: Theme = createTheme({
 });
 
 export const DarkTheme: Theme = createTheme({
+	breakpoints: {
+		values: {
+			xs: 0,
+			sm: 600,
+			md: 900,
+			lg: 1200,
+			xl: 1536,
+		},
+	},
+
 	palette: {
 		mode: 'dark',
 		primary: {
@@ -197,21 +207,11 @@ export const DarkTheme: Theme = createTheme({
 			dark: '#FF6400',
 			contrastText: '#ffffff',
 		},
-		// primaryLight: {
-		//   main: "#6699CC",
-		//   dark: "#0C36A0",
-		//   contrastText: "#ffffff",
-		// },
+
 		background: {
 			default: '#ccdbee',
-			paper: '#FFFFFF',
+			paper: '#000000',
 		},
-		// blue: {
-		//   main: "#002147",
-		// },
-		// black: {
-		//   main: "#1B1B1B",
-		// },
 	},
 	components: {
 		MuiListItemButton: {
@@ -219,6 +219,7 @@ export const DarkTheme: Theme = createTheme({
 				disableRipple: true,
 			},
 		},
+
 		MuiButtonBase: {
 			defaultProps: {
 				disableRipple: true,
@@ -234,14 +235,23 @@ export const DarkTheme: Theme = createTheme({
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
-					backgroundColor: '#002147',
+					background: '#000000',
+					color: '#ffffff',
+				},
+			},
+		},
+		MuiDrawer: {
+			styleOverrides: {
+				paper: {
+					background: '#000000',
+					width: 270,
 				},
 			},
 		},
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
-					background: 'white',
+					background: '#000000',
 					height: '2.7rem',
 					borderRadius: '0.5rem',
 					// '&.Mui-disabled': {
@@ -250,17 +260,24 @@ export const DarkTheme: Theme = createTheme({
 				},
 			},
 		},
-
-		MuiGrid: {
+		MuiListItemText: {
 			styleOverrides: {
 				root: {
-					padding: '0rem!important',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
+					color: '#FFFFFF',
+					fontSize: '1.5rem',
 				},
 			},
 		},
+		// MuiGrid: {
+		// 	styleOverrides: {
+		// 		root: {
+		// 			padding: '0rem!important',
+		// 			// '&.Mui-disabled': {
+		// 			//     background: grey[100],
+		// 			// }
+		// 		},
+		// 	},
+		// },
 	},
 
 	typography: {

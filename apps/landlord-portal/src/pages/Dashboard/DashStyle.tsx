@@ -1,43 +1,31 @@
 const styles = {
 	cardStyle: {
 		height: '183px',
-		// width: '274px',
 		padding: '15px',
 		borderRadius: '20px',
 	},
 	cardStyleTwo: {
 		height: '183px',
-		// width: '274px',
-		padding: '24px',
+		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '20px',
 	},
 	cardStyleThree: {
 		height: '207px',
-		// width: { xs: '500px', sm: '500px', md: '590px' },
-
-		// width: '590px',
 		borderRadius: '20px',
-		padding: '24px',
+		padding: { xs: '1rem', sm: '10px', md: '20px', lg: '24px' },
 	},
 	cardStyleFour: {
 		height: { sm: '183px', md: '207px' },
-		// width: '274px',
 		textAlign: 'left',
-		padding: '24px',
+		padding: { xs: '24px', sm: '10px', md: '20px', lg: '24px' },
 		borderRadius: '20px',
 	},
 	cardStyleFive: {
-		height: '407px',
 		width: '100%',
-		padding: '25px',
+		padding: { xs: '2.5rem', sm: '10px', md: '20px', lg: '24px' },
 		borderRadius: '20px',
-		marginLeft: '15px',
-	},
-	tableGridOne: {
-		background: '#ffffff',
-		borderRadius: '20px',
-		padding: '24px',
-		marginTop: '0.5rem',
+		overflow: 'auto',
+		height: { xs: '400px', sm: '100%', md: '400px', lg: '400px ' },
 	},
 };
 export default styles;

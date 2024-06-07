@@ -18,7 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 const NavBar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -44,37 +44,11 @@ const NavBar = () => {
 						justifyContent: 'space-between',
 					}}
 				>
-					{isSmallScreen && (
-						<Grid
-							item
-							container
-							sx={{
-								width: { xs: '5%', sm: '5%', md: '5%' },
-								alignItems: 'center',
-								display: {
-									xs: 'flex',
-									sm: 'flex',
-									md: 'flex',
-								},
-							}}
-						>
-							<IconButton
-								sx={{ marginRight: '1rem' }}
-								onClick={toggleSidebar}
-								size={'large'}
-								edge='end'
-								color='inherit'
-								aria-label='menu'
-							>
-								<MenuIcon />
-							</IconButton>
-						</Grid>
-					)}
 					<Grid
 						item
 						container
 						sx={{
-							width: { xs: '28%', sm: '15%', md: '20%', lg: '50%', xl: '50%' },
+							width: { xs: '30%', sm: '50%', md: '50%', lg: '50%', xl: '50%' },
 							alignItems: 'center',
 							display: {
 								xs: 'flex',
@@ -85,13 +59,24 @@ const NavBar = () => {
 							},
 						}}
 					>
+						{isSmallScreen && (
+							<IconButton
+								// sx={{ marginRight: '1rem' }}
+								onClick={toggleSidebar}
+								size={'large'}
+								edge='end'
+								color='inherit'
+								aria-label='menu'
+							>
+								<MenuIcon />
+							</IconButton>
+						)}
 						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
 							<Typography
 								sx={{
 									textTransform: 'capitalize',
 									fontWeight: '500',
 									fontSize: '18px',
-									color: 'black',
 								}}
 							>
 								{' '}
@@ -102,53 +87,8 @@ const NavBar = () => {
 
 					<Grid
 						item
-						container
 						sx={{
-							width: { xs: '20%', sm: '30%', md: '35%', lg: '19%', xl: '19%' },
-							// width: '15%',
-							alignItems: 'center',
-							marginRight: {
-								xs: '1rem',
-								sm: '1rem',
-								md: '3rem',
-								lg: '3rem',
-								xl: '3rem',
-							},
-							display: {
-								xs: 'flex',
-								sm: 'flex',
-								md: 'flex',
-								lg: 'flex',
-								xl: 'flex',
-							},
-						}}
-					>
-						<Grid item xs={3}>
-							<TextField
-								id='input-with-icon-textfield'
-								// label="TextField"
-								placeholder='Search Transactions,customers'
-								sx={{
-									width: { xs: '50px', sm: '250px', md: '320px' },
-									height: '44px',
-									padding: '0 4 0 4',
-								}}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position='start'>
-											<SearchIcon />
-										</InputAdornment>
-									),
-								}}
-								variant='outlined'
-							/>{' '}
-						</Grid>
-					</Grid>
-
-					<Grid
-						item
-						sx={{
-							width: { xs: '30%', sm: '40%', md: '20%', lg: '25%', xl: '25%' },
+							width: { xs: '70%', sm: '50%', md: '50%', lg: '50%', xl: '50%' },
 							cursor: 'pointer',
 							alignItems: 'center',
 							justifyContent: {
@@ -166,23 +106,50 @@ const NavBar = () => {
 							},
 						}}
 					>
+						<TextField
+							id='input-with-icon-textfield'
+							placeholder='Search Transactions,customers'
+							sx={{
+								width: { xs: '50px', sm: '250px', md: '320px' },
+								height: '44px',
+								padding: '0 4 0 4',
+								border: { xs: 'none' },
+								'& fieldset': {
+									border: isSmallScreen ? 'none' : undefined,
+								},
+								//
+							}}
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position='start'>
+										<SearchIcon />
+									</InputAdornment>
+								),
+							}}
+							variant='outlined'
+						/>{' '}
 						<IconButton
 							size='large'
 							disableRipple
 							sx={{
-								backgroundColor: 'white',
+								backgroundColor: 'transparent',
 								padding: '1rem',
 								borderRadius: '10px',
 							}}
-							// onClick={Navigate}
 						>
 							<Badge badgeContent={'2'} color='error'>
-								<NotificationsIcon
+								<NotificationsNoneOutlinedIcon
 									sx={{ color: '#075450', width: '28px', height: '28px' }}
 								/>
 							</Badge>
 						</IconButton>
-						<Typography sx={{ fontSize: '12px', fontWeight: '700' }}>
+						<Typography
+							sx={{
+								fontSize: '12px',
+								fontWeight: '700',
+								display: { xs: 'none', sm: 'none', md: 'flex' },
+							}}
+						>
 							{' '}
 							Feyisetan <br />
 							manager
@@ -191,10 +158,7 @@ const NavBar = () => {
 							edge='end'
 							disableRipple
 							sx={{ color: 'black' }}
-							// aria-label='account of current user'
-							// aria-controls={menuId}
 							aria-haspopup='true'
-							// onClick={handleProfileMenuOpen}
 						>
 							<Avatar
 								alt='Remy Sharp'

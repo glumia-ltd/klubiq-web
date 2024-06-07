@@ -5,8 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import Logo from '../../assets/images/lightshort.svg';
-import Logo2 from '../../assets/images/lightslant.svg';
-import DarkLogo from '../../assets/images/Frame 1000006803.png';
+import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -57,7 +56,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 	alignItems: 'center',
 	justifyContent: 'flex-end',
 	padding: theme.spacing(0, 1),
-	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
 }));
 
@@ -79,15 +77,13 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function SideBar() {
-	// const [open, setOpen] = useState(false);
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
 	const { mode, switchMode } = useContext(ThemeContext);
 	const allContexts = () => useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar, toggleSidebar } =
-		allContexts();
+	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
 	const pathList = getPathList();
 	const { pathname } = useLocation();
 
@@ -96,11 +92,15 @@ function SideBar() {
 	}, [isMediumScreen]);
 	useEffect(() => {
 		isSmallScreen && closeSidebar;
-		console.log('smakk');
 	}, [isSmallScreen]);
 
 	return (
-		<Drawer variant='permanent' open={sidebarOpen}>
+		<Drawer
+			variant='permanent'
+			open={sidebarOpen}
+			onMouseEnter={openSidebar}
+			onMouseLeave={closeSidebar}
+		>
 			<DrawerHeader
 				sx={{
 					display: 'flex',
@@ -111,10 +111,16 @@ function SideBar() {
 				<IconButton onClick={sidebarOpen ? closeSidebar : openSidebar}>
 					{sidebarOpen ? (
 						mode === ThemeMode.LIGHT ? (
-							<img src={Logo2} alt='logo' />
+							<img
+								src={Logo2}
+								alt='logo'
+								style={{ width: '50px', height: '50px' }}
+							/>
 						) : (
-							<img src={DarkLogo} alt='logos' />
+							<img src={Logo2} alt='logos' />
 						)
+					) : mode === ThemeMode.DARK ? (
+						<img src={Logo} alt='logo' />
 					) : (
 						<img src={Logo} alt='logo' />
 					)}
@@ -158,7 +164,10 @@ function SideBar() {
 											},
 										},
 									}}
+									// onMouseEnter={openSidebar}
+									// onMouseLeave={closeSidebar}
 									onClick={openSidebar}
+									onDoubleClick={closeSidebar}
 								>
 									<ListItemIcon
 										sx={{

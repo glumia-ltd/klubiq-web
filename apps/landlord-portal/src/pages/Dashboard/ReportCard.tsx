@@ -1,6 +1,8 @@
-import { Button, Typography, Box, Avatar } from '@mui/material';
+import { Button, Typography, Box, Avatar, Card } from '@mui/material';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import user from '../../assets/manImage.svg';
+import DashStyle from './DashStyle';
+
 const CardData = [
 	{ name: 'feyi', id: '1' },
 	{ name: 'Dayo', id: '2' },
@@ -11,18 +13,18 @@ const CardData = [
 
 const ReportCard = () => {
 	return (
-		<Box overflow={'auto'} height='370px'>
+		<Card sx={DashStyle.cardStyleFive}>
 			<Box
 				sx={{
-					display: { xs: 'flex', md: 'block', lg: 'flex' },
+					display: { xs: 'flex', md: 'flex', lg: 'flex' },
 					justifyContent: {
 						xs: 'space-between',
-						md: 'flex-end',
+						md: 'space-between',
 						lg: 'space-between',
 						xl: 'space-between',
 					},
 					alignItems: 'center',
-					marginBottom: '8px',
+					marginBottom: '18px',
 				}}
 			>
 				<Typography fontWeight={'800px'} fontSize={'16px'} lineHeight={'20px'}>
@@ -32,8 +34,7 @@ const ReportCard = () => {
 					disableTouchRipple
 					sx={{
 						border: 'none',
-						// backgroundColor: 'transparent',
-						// textAlign:"left",
+
 						'&:hover': {
 							background: 'none',
 						},
@@ -50,23 +51,26 @@ const ReportCard = () => {
 				<Box key={index} mb={2}>
 					<Box
 						sx={{
-							display: { xs: 'flex', sm: 'box', md: 'flex', lg: 'flex' },
-							alignItems: 'center',
-							justifyContent: {
-								xs: 'space-between',
-								sm: 'left',
-								md: 'left',
-								lg: 'left',
-								xl: 'left',
-							},
-							marginLeft: '10px',
+							display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'flex' },
+							alignItems: 'left',
 						}}
 					>
-						<Avatar alt='user' src={user} />
-						<Box sx={{ textAlign: 'left' }}>
+						<Box mr={{ xs: '2.5rem', sm: '0.5rem', md: '0.5rem', lg: '3rem' }}>
+							<Avatar
+								alt='user'
+								sx={{ width: '50px', height: '50px' }}
+								src={user}
+							/>
+						</Box>
+						<Box>
 							<Typography
 								textTransform={'capitalize'}
-								// textAlign={{ xs: 'right', sm: 'left', md: 'left', lg: 'right' }}
+								textAlign={{
+									xs: 'center',
+									sm: 'center',
+									md: 'center',
+									lg: 'right',
+								}}
 								// ml={{ md: '10px', lg: '25px' }}
 							>
 								{data.name} sent a report
@@ -80,13 +84,13 @@ const ReportCard = () => {
 								}}
 								disableTouchRipple
 							>
-								View{' '}
+								<Typography>View</Typography>
 							</Button>
 						</Box>
 					</Box>
 				</Box>
 			))}
-		</Box>
+		</Card>
 	);
 };
 
