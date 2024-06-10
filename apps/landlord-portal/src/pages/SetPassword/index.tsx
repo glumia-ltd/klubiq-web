@@ -1,4 +1,5 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { SubmitButton } from '../../styles/button';
 import LoginLayout from '../../Layouts/LoginLayout';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
 import { useFormik } from 'formik';
@@ -64,7 +65,7 @@ const SetPassword = () => {
 								}}
 							>
 								<Typography variant='h3' sx={{ fontWeight: '700' }}>
-									Set a Password
+									Time for a Fresh Start!
 								</Typography>
 							</Grid>
 							<Grid
@@ -79,7 +80,7 @@ const SetPassword = () => {
 								}}
 							>
 								<Typography>
-									Please set a new password for your account.
+									Let's Secure Your Klubiq Account with a New Password.
 								</Typography>
 							</Grid>
 
@@ -113,24 +114,7 @@ const SetPassword = () => {
 									marginTop: '1rem',
 								}}
 							>
-								<Button
-									type='submit'
-									sx={{
-										border: '1px solid #002147',
-										borderRadius: '0.5rem',
-										color: 'white',
-										background: '#002147',
-										height: '3.1rem',
-										width: '100%',
-										'&:hover': {
-											color: '#002147',
-											background: '#FFFFFF',
-											cursor: 'pointer',
-										},
-									}}
-								>
-									Set Password
-								</Button>
+								<SubmitButton type='submit'>Set Password</SubmitButton>
 							</Grid>
 						</Grid>
 					</Grid>

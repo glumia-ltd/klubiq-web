@@ -6,13 +6,10 @@ import {
 	useMediaQuery,
 	Theme,
 	Button,
-	Container,
 	Typography,
 } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-const theme = createTheme();
 
 const ResponsiveTextFieldWithModal: React.FC = () => {
 	const [open, setOpen] = useState(false);
