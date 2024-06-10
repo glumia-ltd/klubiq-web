@@ -239,6 +239,7 @@ export const DarkTheme: Theme = createTheme({
 				colorPrimary: {
 					background: '#000000',
 					color: '#ffffff',
+					boxShadow: '0px 0px 0px 1px #C0C0C0',
 				},
 			},
 		},

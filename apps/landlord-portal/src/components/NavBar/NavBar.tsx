@@ -19,7 +19,7 @@ const NavBar = () => {
 	const { pathname } = useLocation();
 	const section = pathname.split('/')[1];
 	return (
-		<AppBar position='static' elevation={1} sx={{ width: '100%' }}>
+		<AppBar position='static' elevation={2} sx={{ width: '100%' }}>
 			<Toolbar
 				variant='regular'
 				sx={{
