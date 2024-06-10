@@ -26,7 +26,7 @@ const SetPassword = () => {
 	const navigate = useNavigate();
 
 	const email = searchParams.get('email');
-	// const continueUrl = searchParams.get('continueUrl');
+	const oobCode = searchParams.get('oobCode');
 
 	const onSubmit = async (values: IValuesType) => {
 		const { password } = values;
@@ -34,6 +34,7 @@ const SetPassword = () => {
 		const body = {
 			email,
 			password,
+			oobCode,
 		};
 
 		try {
