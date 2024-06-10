@@ -48,7 +48,7 @@ const ReportCard = () => {
 			</Box>
 
 			{CardData.map((data, index) => (
-				<Box key={index} mb={2}>
+				<Box key={index} mb={1} textAlign={'center'}>
 					<Box
 						sx={{
 							display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'flex' },
