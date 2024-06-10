@@ -20,8 +20,10 @@ const ViewPort = ({ children }: ViewPortProp) => {
 				sx={{
 					display: 'flex',
 					flexGrow: 1,
-					backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#000000',
 					overflow: 'hidden',
+					'&.MuiBox-root': {
+						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#000000',
+					},
 				}}
 			>
 				<Sidebar />

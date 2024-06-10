@@ -439,9 +439,13 @@ const DashBoard = () => {
 					sx={{
 						background: mode === ThemeMode.LIGHT ? '#ffffff' : '#000000',
 						borderRadius: '20px',
-						padding: '24px',
+						padding: { xs: '10px', sm: '20px', md: '24px', lg: '24px' },
 						marginTop: '0.5rem',
-						boxShadow: ' 0 4px 8px 0 rgba(0,0,0,0.2)',
+						transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+						backgroundImage:
+							'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+						boxShadow:
+							'0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)',
 					}}
 				>
 					<Grid item xs={12} sm={12} md={7}>

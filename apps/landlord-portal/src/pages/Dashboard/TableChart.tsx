@@ -2,7 +2,14 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Box } from '@mui/material';
 const TableChart = () => {
 	return (
-		<Box padding={'2rem  100px'}>
+		<Box
+			padding={{
+				xs: '8px  25px',
+				sm: '16px 50px',
+				md: '32px 100px',
+				lg: '32px  100px',
+			}}
+		>
 			<BarChart
 				borderRadius={10}
 				series={[

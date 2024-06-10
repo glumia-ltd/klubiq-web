@@ -3,22 +3,13 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext } from 'react';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-import {
-	Grid,
-	AppBar,
-	IconButton,
-	Avatar,
-	Badge,
-	TextField,
-} from '@mui/material';
+import { Grid, AppBar, IconButton, Avatar, Badge } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Logo from '../../assets/images/blueoctagon.png';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 const NavBar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -106,28 +97,7 @@ const NavBar = () => {
 							},
 						}}
 					>
-						<TextField
-							id='input-with-icon-textfield'
-							placeholder='Search Transactions,customers'
-							sx={{
-								width: { xs: '50px', sm: '250px', md: '320px' },
-								height: '44px',
-								padding: '0 4 0 4',
-								border: { xs: 'none' },
-								'& fieldset': {
-									border: isSmallScreen ? 'none' : undefined,
-								},
-								//
-							}}
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'>
-										<SearchIcon />
-									</InputAdornment>
-								),
-							}}
-							variant='outlined'
-						/>{' '}
+						<ResponsiveTextFieldWithModal />
 						<IconButton
 							size='large'
 							disableRipple
