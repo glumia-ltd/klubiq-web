@@ -3,6 +3,7 @@ export const authEndpoints = {
 	signup: () => 'auth/landlord-signup',
 	emailVerification: () => 'auth/email-verification-link',
 	refreshToken: () => 'auth/exchange-refresh-token',
-	getUserByFbid: (uid: string) => `auth/user/${uid}`,
-	resetPassword: () => `auth/reset-password-link`,
+	getUserByFbid: () => `auth/user`,
+	sendResetPasswordEmail: () => `auth/reset-password-link`,
+	resetPassword: () => `auth/reset-password`,
 };
