@@ -389,12 +389,7 @@ const DashBoard = () => {
 									>
 										Net cash flow{' '}
 									</Typography>{' '}
-									<Box
-										sx={{
-											display: 'flex',
-											justifyContent: 'space-between',
-										}}
-									>
+									<Box>
 										<Typography
 											fontSize={{
 												sm: '24px',
@@ -437,7 +432,7 @@ const DashBoard = () => {
 					md={12}
 					lg={12}
 					sx={{
-						background: mode === ThemeMode.LIGHT ? '#ffffff' : '#000000',
+						background: mode === ThemeMode.LIGHT ? '#ffffff' : '#161616',
 						borderRadius: '20px',
 						padding: { xs: '10px', sm: '20px', md: '24px', lg: '24px' },
 						marginTop: '0.5rem',

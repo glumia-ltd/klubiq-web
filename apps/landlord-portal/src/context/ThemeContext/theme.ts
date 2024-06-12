@@ -212,7 +212,7 @@ export const DarkTheme: Theme = createTheme({
 
 		background: {
 			default: '#ccdbee',
-			paper: '#000000',
+			paper: '#0D0D0D',
 		},
 	},
 	components: {
@@ -237,7 +237,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
-					background: '#000000',
+					background: '#0D0D0D',
 					color: '#ffffff',
 					boxShadow: '0px 0px 0px 1px #C0C0C0',
 				},
@@ -246,7 +246,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiDrawer: {
 			styleOverrides: {
 				paper: {
-					background: '#000000',
+					background: '#0F0F0F',
 					width: 270,
 				},
 			},
@@ -271,20 +271,33 @@ export const DarkTheme: Theme = createTheme({
 				},
 			},
 		},
-		// MuiGrid: {
-		// 	styleOverrides: {
-		// 		root: {
-		// 			padding: '0rem!important',
-		// 			// '&.Mui-disabled': {
-		// 			//     background: grey[100],
-		// 			// }
-		// 		},
-		// 	},
-		// },
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					background: '#0DODOD',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					background: '#161616',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
 	},
 
 	typography: {
 		fontFamily: 'Maven Pro, sans-serif',
+		// allVariants: {
+		// 	color: "#BBD9FF"
+		//   },
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
@@ -321,6 +334,7 @@ export const DarkTheme: Theme = createTheme({
 			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
+
 		body1: {
 			fontWeight: 400,
 			fontSize: '1rem',
@@ -347,13 +361,7 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
-		// subtitle2lg: {
-		//   fontWeight: 500,
-		//   fontSize: "1rem",
-		//   lineHeight: 1.75,
-		//   fontFamily: "Maven Pro, sans-serif",
-		//   letterSpacing: 0,
-		// },
+
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',

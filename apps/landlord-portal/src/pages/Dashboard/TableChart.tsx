@@ -33,7 +33,7 @@ const TableChart = () => {
 				]}
 				xAxis={[
 					{
-						categoryGapRatio: 0.7,
+						categoryGapRatio: 0.8,
 						scaleType: 'band',
 						data: [
 							'Jan',
@@ -49,7 +49,7 @@ const TableChart = () => {
 							'Nov',
 							'Dec',
 						],
-						// barGapRatio: 0.8
+						// barGapRatio: 7.8
 					},
 				]}
 				// yAxis={[

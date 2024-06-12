@@ -22,7 +22,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 					flexGrow: 1,
 					overflow: 'hidden',
 					'&.MuiBox-root': {
-						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#000000',
+						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
 					},
 				}}
 			>
