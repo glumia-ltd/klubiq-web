@@ -389,7 +389,12 @@ const DashBoard = () => {
 									>
 										Net cash flow{' '}
 									</Typography>{' '}
-									<Box>
+									<Box
+										sx={{
+											display: 'flex',
+											justifyContent: 'space-between',
+										}}
+									>
 										<Typography
 											fontSize={{
 												sm: '24px',
