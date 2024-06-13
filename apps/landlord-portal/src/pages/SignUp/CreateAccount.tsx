@@ -226,10 +226,10 @@ const CreateAccount: React.FC = () => {
 								Privacy Policy
 							</Link>
 							<span>.</span>
-							Terms of Use
+							{/* Terms of Use */}
 							{/* </Link> */}
-							<span> and </span>
-							<Link
+							{/* <span> and </span> */}
+							{/* <Link
 								href='/privacy-policy'
 								sx={{
 									color: '#002147',
@@ -238,8 +238,8 @@ const CreateAccount: React.FC = () => {
 								}}
 							>
 								Privacy Policy
-							</Link>
-							<span>.</span>
+							</Link> */}
+							{/* <span>.</span> */}
 						</Typography>
 
 						<Grid
