@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import Logo from '../../assets/images/lightshort.svg';
-import Logo2 from '../../assets/images/lightslant.svg';
-import DarkLogo from '../../assets/images/Frame 1000006803.png';
+import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useLocation } from 'react-router-dom';
+
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -21,10 +21,12 @@ import {
 	List,
 	Button,
 	Stack,
+	Typography,
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-const drawerWidth = 250;
+import { Context } from '../../context/NavToggleContext/NavToggleContext';
+const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
 	width: drawerWidth,
@@ -45,15 +47,17 @@ const closedMixin = (theme: Theme): CSSObject => ({
 	[theme.breakpoints.up('sm')]: {
 		width: `calc(${theme.spacing(16)} + 1px)`,
 	},
+	[theme.breakpoints.down('md')]: {
+		width: `calc(${theme.spacing(0)} + 1px)`,
+	},
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'flex-end',
-	padding: theme.spacing(0, 1),
-	// necessary for content to be below app bar
-	...theme.mixins.toolbar,
+	// display: 'flex',
+	// alignItems: 'center',
+	// justifyContent: 'flex-end',
+	// padding: theme.spacing(0, 1),
+	// ...theme.mixins.toolbar,
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -74,153 +78,176 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function SideBar() {
-	const [open, setOpen] = useState(false);
 	const theme = useTheme();
-	const isMediumScreen = useMediaQuery(theme.breakpoints.down('lg'));
+	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
-	const pathList = getPathList();
 	const { mode, switchMode } = useContext(ThemeContext);
+	const allContexts = () => useContext(Context);
+	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
+	const pathList = getPathList();
+	const { pathname } = useLocation();
 
-	const handleDrawerOpen = () => {
-		setOpen(true);
-	};
-
-	const handleDrawerClose = () => {
-		setOpen(false);
-	};
 	useEffect(() => {
-		isMediumScreen ? setOpen(false) : setOpen(true);
+		isMediumScreen ? closeSidebar : sidebarOpen;
 	}, [isMediumScreen]);
+	useEffect(() => {
+		isSmallScreen && closeSidebar;
+	}, [isSmallScreen]);
 
 	return (
-		<Box>
-			<Drawer variant='permanent' open={open}>
-				<DrawerHeader
-					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					<IconButton onClick={open ? handleDrawerClose : handleDrawerOpen}>
-						{open ? (
-							mode === ThemeMode.LIGHT ? (
-								<img src={Logo2} alt='logo' />
-							) : (
-								<img src={DarkLogo} alt='logos' />
-							)
-						) : (
-							<img src={Logo} alt='logo' />
-						)}
-					</IconButton>
-				</DrawerHeader>
-				<List sx={{ marginBottom: '60px' }}>
-					{pathList.map((props, index) => (
+		<Drawer
+			variant='permanent'
+			open={sidebarOpen}
+			onMouseEnter={openSidebar}
+			onMouseLeave={closeSidebar}
+		>
+			<DrawerHeader
+				sx={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'flex-start',
+					gap: '8px',
+					padding: '30px',
+				}}
+			>
+				<IconButton style={{ height: '50px' }}>
+					<img src={Logo2} alt='logo' />
+				</IconButton>
+				<Typography color={'#ffffff'} fontSize={'24px'} fontWeight={'600'}>
+					{sidebarOpen ? 'KLUBIQ' : ''}
+				</Typography>
+			</DrawerHeader>
+			<List sx={{ marginBottom: '20px' }}>
+				{pathList.map((props, index) => {
+					const path = props.path;
+					return (
 						<ListItem disablePadding key={index}>
 							<Link
-								to={props.path}
+								to={props.path || ''}
 								relative='path'
 								style={{ textDecoration: 'none' }}
 							>
 								<ListItemButton
+									selected={path === pathname}
 									sx={{
 										minHeight: 20,
-										justifyContent: open ? 'initial' : 'center',
+										justifyContent: sidebarOpen ? 'initial' : 'center',
 										px: 2.5,
 										my: 0.8,
 										py: 0.8,
-										marginLeft: open ? 4 : 3,
+										marginLeft: sidebarOpen ? 4 : 4,
+										width: sidebarOpen ? '200px' : '70px',
+										borderRadius: '10px',
+										'&:hover': {
+											bgcolor: 'rgba(255,255,255,0.6)',
+											color: 'rgba(255,255,255,0.5)',
+										},
+										'&.Mui-selected': {
+											bgcolor: 'white',
+											'& .MuiListItemIcon-root': {
+												color: 'primary.main',
+											},
+											'& .MuiListItemText-root': {
+												color: 'primary.main',
+											},
+											'&:hover': {
+												bgcolor: 'white',
+											},
+										},
 									}}
+									// onMouseEnter={openSidebar}
+									// onMouseLeave={closeSidebar}
+									onClick={openSidebar}
+									onDoubleClick={closeSidebar}
 								>
 									<ListItemIcon
 										sx={{
 											minWidth: 0,
-											mr: open ? 3 : 'auto',
+											mr: sidebarOpen ? 3 : 'auto',
 											justifyContent: 'center',
 										}}
 									>
 										<SvgIcon
-											sx={{ fontSize: '20px', width: '20px', height: '20px' }}
+											sx={{ fontSize: '30px', width: '30px', height: '30px' }}
 											component={props.icon}
 											inheritViewBox
 										/>
 									</ListItemIcon>
-									<ListItemText sx={{ opacity: open ? 1 : 0 }}>
+									<ListItemText sx={{ opacity: sidebarOpen ? 1 : 0 }}>
 										{props.title}
 									</ListItemText>
 								</ListItemButton>
 							</Link>
 						</ListItem>
-					))}
-				</List>
-				<Stack
-					direction={{ xs: open ? 'row' : 'column' }}
-					spacing={{ xs: 1, sm: 1, md: 1 }}
+					);
+				})}
+			</List>
+			<Stack
+				direction={{ xs: sidebarOpen ? 'row' : 'column' }}
+				spacing={{ xs: 1, sm: 1, md: 0 }}
+				sx={{
+					borderRadius: '15px',
+					width: sidebarOpen ? '200px' : '70px',
+					textAlign: 'center',
+					margin: 'auto',
+					// display: 'flex',
+					// justifyContent: 'center',
+					background: '#ffffff',
+					padding: sidebarOpen ? '8px' : '0px',
+				}}
+			>
+				<Button
+					onClick={() => switchMode(ThemeMode.LIGHT)}
 					sx={{
-						borderRadius: '10px',
-						width: open ? '225px' : '70px',
-						textAlign: 'center',
-						margin: 'auto',
-						// display: "flex",
-						justifyContent: 'center',
-						background: '#ffffff',
-						padding: open ? '8px' : '3px',
+						color: '#002147',
+						width: sidebarOpen ? '100%' : '50%',
+						borderRadius: sidebarOpen ? '15px' : '20px',
+						padding: '10px',
+						fontSize: '10px',
+
+						'&:hover': {
+							color: '#ffffff',
+							background: '#002147',
+							cursor: 'pointer',
+						},
 					}}
 				>
-					<Box sx={{ width: '100%' }}>
-						<Button
-							onClick={() => switchMode(ThemeMode.LIGHT)}
-							sx={{
-								color: '#002147',
-								width: open ? '100%' : '50%',
-								borderRadius: open ? '15px' : '20px',
-								padding: '10px',
-
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
-								},
-							}}
-						>
-							{open ? (
-								<>
-									<LightModeIcon /> <h3>Light</h3>
-								</>
-							) : (
-								<LightModeIcon />
-							)}
-						</Button>
-					</Box>
-					<Box sx={{ width: '100%' }}>
-						<Button
-							onClick={() => switchMode(ThemeMode.DARK)}
-							sx={{
-								color: '#002147',
-								width: open ? '100%' : '50%',
-								borderRadius: open ? '15px' : '20px',
-								padding: '10px',
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
-								},
-							}}
-						>
-							{open ? (
-								<>
-									{' '}
-									<DarkModeIcon />
-									<h3>Dark</h3>
-								</>
-							) : (
-								<DarkModeIcon />
-							)}
-						</Button>
-					</Box>
-				</Stack>
-			</Drawer>
-		</Box>
+					{sidebarOpen ? (
+						<>
+							<LightModeIcon sx={{ fontSize: 20 }} /> <h3>Light</h3>
+						</>
+					) : (
+						<LightModeIcon />
+					)}
+				</Button>
+				<Button
+					onClick={() => switchMode(ThemeMode.DARK)}
+					sx={{
+						color: '#002147',
+						width: sidebarOpen ? '100%' : '50%',
+						borderRadius: sidebarOpen ? '15px' : '20px',
+						fontSize: '10px',
+						padding: '10px',
+						'&:hover': {
+							color: '#ffffff',
+							background: '#002147',
+							cursor: 'pointer',
+						},
+					}}
+				>
+					{sidebarOpen ? (
+						<>
+							{' '}
+							<DarkModeIcon sx={{ fontSize: 20 }} />
+							<h3>Dark</h3>
+						</>
+					) : (
+						<DarkModeIcon sx={{ fontSize: 20 }} />
+					)}
+				</Button>
+			</Stack>
+		</Drawer>
 	);
 }
 

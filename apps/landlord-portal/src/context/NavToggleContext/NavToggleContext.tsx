@@ -1,16 +1,24 @@
-import React, { useState, useCallback } from 'react';
-type NavProps = {
-	children: React.ReactNode;
-};
+import { useState, useCallback, createContext, ReactNode } from 'react';
 
-export const Context = React.createContext({
+interface ContextValue {
+	toggleSidebar: () => void;
+	openSidebar: () => void;
+	closeSidebar: () => void;
+	sidebarOpen: boolean;
+}
+
+export const Context = createContext<ContextValue>({
 	toggleSidebar: () => {},
 	openSidebar: () => {},
 	closeSidebar: () => {},
 	sidebarOpen: false,
 });
 
-export const NavToggleProvider = (props: NavProps) => {
+interface NavToggleProviderProps {
+	children: ReactNode;
+}
+
+export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	const closeSidebar = useCallback(() => setSidebarOpen(false), []);
@@ -19,12 +27,12 @@ export const NavToggleProvider = (props: NavProps) => {
 
 	const toggleSidebar = useCallback(() => setSidebarOpen((prev) => !prev), []);
 
-	const value = {
+	const value: ContextValue = {
 		toggleSidebar,
 		openSidebar,
 		closeSidebar,
 		sidebarOpen,
 	};
 
-	return <Context.Provider value={value}>{props.children}</Context.Provider>;
+	return <Context.Provider value={value}>{children}</Context.Provider>;
 };

@@ -1,32 +1,36 @@
 import React from 'react';
 import Sidebar from '../SideBar';
 import Box from '@mui/system/Box';
+import { useContext } from 'react';
 import { NavToggleProvider } from '../../context/NavToggleContext/NavToggleContext';
 import NavBar from '../NavBar/NavBar';
+import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
+import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 type ViewPortProp = {
 	children: React.ReactNode;
-	noContainer?: boolean;
+	Container?: boolean;
 };
 
 const ViewPort = ({ children }: ViewPortProp) => {
+	const { mode } = useContext(ThemeContext);
+
 	return (
 		<NavToggleProvider>
-			<Box sx={{ display: 'flex', flexGrow: 1 }}>
+			<Box
+				sx={{
+					display: 'flex',
+					flexGrow: 1,
+					overflow: 'hidden',
+					'&.MuiBox-root': {
+						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
+					},
+				}}
+			>
 				<Sidebar />
 				<Box display='flex' flexDirection='column' width='100%'>
 					<NavBar />
-					<Box
-						sx={{
-							flexGrow: 1,
-							padding: 2,
-							overflow: 'auto',
-							// background: "#F3F6F8",
-							// backgroundSize: "cover !important",
-							// backgroundRepeat: "no-repeat",
-							// minHeight: "100vh",
-							// backgroundAttachment: "fixed",
-						}}
-					>
+					<Box width={'100%'} flexGrow={1}>
+						{' '}
 						{children}
 					</Box>
 				</Box>
