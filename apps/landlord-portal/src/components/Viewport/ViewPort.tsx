@@ -30,10 +30,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 				<Sidebar />
 				<Box display='flex' flexDirection='column' width='100%'>
 					<NavBar />
-					<Box width={'100%'} flexGrow={1}>
-						{' '}
-						{children}
-					</Box>
+					<Box width={'100%'}> {children}</Box>
 				</Box>
 			</Box>
 		</NavToggleProvider>

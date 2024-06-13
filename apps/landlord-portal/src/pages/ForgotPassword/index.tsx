@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 		setLoading(true);
 
 		try {
-			await api.post(authEndpoints.resetPassword(), values);
+			await api.post(authEndpoints.sendResetPasswordEmail(), values);
 
 			setOpenModal(true);
 

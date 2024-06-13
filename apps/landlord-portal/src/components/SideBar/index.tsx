@@ -4,7 +4,6 @@ import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
-import Logo from '../../assets/images/lightshort.svg';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -53,12 +52,12 @@ const closedMixin = (theme: Theme): CSSObject => ({
 	},
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-	// display: 'flex',
-	// alignItems: 'center',
-	// justifyContent: 'flex-end',
-	// padding: theme.spacing(0, 1),
-	// ...theme.mixins.toolbar,
+const DrawerHeader = styled('div')(() => ({
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'flex-start',
+	gap: '8px',
+	padding: '30px',
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -83,7 +82,7 @@ function SideBar() {
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
-	const { mode, switchMode } = useContext(ThemeContext);
+	const { switchMode } = useContext(ThemeContext);
 	const allContexts = () => useContext(Context);
 	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
 	const pathList = getPathList();
@@ -192,8 +191,6 @@ function SideBar() {
 					width: sidebarOpen ? '200px' : '70px',
 					textAlign: 'center',
 					margin: 'auto',
-					// display: 'flex',
-					// justifyContent: 'center',
 					background: '#ffffff',
 					padding: sidebarOpen ? '8px' : '0px',
 				}}

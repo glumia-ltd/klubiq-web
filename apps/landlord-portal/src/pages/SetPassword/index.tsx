@@ -2,8 +2,13 @@ import { Grid, Typography } from '@mui/material';
 import { SubmitButton } from '../../styles/button';
 import LoginLayout from '../../Layouts/LoginLayout';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { authEndpoints } from '../../helpers/endpoints';
+import { api } from '../../api';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -16,8 +21,45 @@ type IValuesType = {
 };
 
 const SetPassword = () => {
+	const [searchParams] = useSearchParams();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const email = searchParams.get('email');
+	const oobCode = searchParams.get('oobCode');
+
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values);
+		const { password } = values;
+
+		const body = {
+			email,
+			password,
+			oobCode,
+		};
+
+		try {
+			await api.post(authEndpoints.resetPassword(), body);
+
+			dispatch(
+				openSnackbar({
+					message: 'Password successfully updated',
+					severity: 'success',
+					isOpen: true,
+				}),
+			);
+
+			formik.resetForm();
+
+			navigate('/', { replace: true });
+		} catch (e) {
+			dispatch(
+				openSnackbar({
+					message: 'An error occurred.',
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+		}
 	};
 
 	const formik = useFormik({
