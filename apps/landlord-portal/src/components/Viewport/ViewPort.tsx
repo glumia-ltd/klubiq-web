@@ -4,6 +4,7 @@ import Box from '@mui/system/Box';
 import { useContext } from 'react';
 import { NavToggleProvider } from '../../context/NavToggleContext/NavToggleContext';
 import NavBar from '../NavBar/NavBar';
+
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 type ViewPortProp = {

@@ -34,6 +34,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
 		duration: theme.transitions.duration.enteringScreen,
 	}),
 	overflowX: 'hidden',
+	alignItems: 'center',
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
