@@ -4,8 +4,8 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
-import { Link } from '@mui/material';
 import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
+import { BoldTextLink } from '../../styles/links';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../../firebase';
@@ -204,42 +204,10 @@ const CreateAccount: React.FC = () => {
 							}}
 						>
 							<span>By creating an account you are agreeing to our </span>
-							<Link
-								href='/terms-of-use'
-								sx={{
-									color: '#002147',
-									fontWeight: '700',
-									textDecoration: 'none',
-								}}
-							>
-								Terms of Use
-							</Link>
+							<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
 							<span> and </span>
-							<Link
-								href='/privacy-policy'
-								sx={{
-									color: '#002147',
-									fontWeight: '700',
-									textDecoration: 'none',
-								}}
-							>
-								Privacy Policy
-							</Link>
+							<BoldTextLink href='/privacy-policy'>Privacy Policy</BoldTextLink>
 							<span>.</span>
-							{/* Terms of Use */}
-							{/* </Link> */}
-							{/* <span> and </span> */}
-							{/* <Link
-								href='/privacy-policy'
-								sx={{
-									color: '#002147',
-									fontWeight: '700',
-									textDecoration: 'none',
-								}}
-							>
-								Privacy Policy
-							</Link> */}
-							{/* <span>.</span> */}
 						</Typography>
 
 						<Grid
