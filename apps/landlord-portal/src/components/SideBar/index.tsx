@@ -21,6 +21,7 @@ import {
 	List,
 	Button,
 	Stack,
+	Typography,
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
@@ -53,11 +54,11 @@ const closedMixin = (theme: Theme): CSSObject => ({
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'flex-end',
-	padding: theme.spacing(0, 1),
-	...theme.mixins.toolbar,
+	// display: 'flex',
+	// alignItems: 'center',
+	// justifyContent: 'flex-end',
+	// padding: theme.spacing(0, 1),
+	// ...theme.mixins.toolbar,
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -106,26 +107,17 @@ function SideBar() {
 				sx={{
 					display: 'flex',
 					alignItems: 'center',
-					justifyContent: 'center',
+					justifyContent: 'flex-start',
+					gap: '8px',
+					padding: '30px',
 				}}
 			>
-				<IconButton onClick={sidebarOpen ? closeSidebar : openSidebar}>
-					{sidebarOpen ? (
-						mode === ThemeMode.LIGHT ? (
-							<img
-								src={Logo2}
-								alt='logo'
-								style={{ width: '50px', height: '50px' }}
-							/>
-						) : (
-							<img src={Logo2} alt='logos' />
-						)
-					) : mode === ThemeMode.DARK ? (
-						<img src={Logo} alt='logo' />
-					) : (
-						<img src={Logo} alt='logo' />
-					)}
+				<IconButton style={{ height: '50px' }}>
+					<img src={Logo2} alt='logo' />
 				</IconButton>
+				<Typography color={'#ffffff'} fontSize={'24px'} fontWeight={'600'}>
+					{sidebarOpen ? 'KLUBIQ' : ''}
+				</Typography>
 			</DrawerHeader>
 			<List sx={{ marginBottom: '20px' }}>
 				{pathList.map((props, index) => {
