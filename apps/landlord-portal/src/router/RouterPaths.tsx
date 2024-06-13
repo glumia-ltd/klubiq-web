@@ -5,7 +5,6 @@ import {
 	createRoutesFromElements,
 } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
-import SignUp from '../pages/SignUpWelcomePage';
 import SignUpPage from '../pages/SignUp/CreateAccount';
 import Login from '../pages/Login';
 // import LoginWelcomePage from '../pages/LoginWelcomePage';

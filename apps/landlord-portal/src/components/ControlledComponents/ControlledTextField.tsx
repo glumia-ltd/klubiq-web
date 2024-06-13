@@ -11,7 +11,7 @@ import { SxProps } from '@mui/material';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
-	formik: any;
+	formik?: any;
 	sx?: SxProps;
 	InputProps?: any;
 	disableOnChange?: boolean;

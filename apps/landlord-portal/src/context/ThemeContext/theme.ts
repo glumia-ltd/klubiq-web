@@ -1,5 +1,15 @@
 import { Theme, createTheme } from '@mui/material';
 export const LightTheme: Theme = createTheme({
+	breakpoints: {
+		values: {
+			xs: 0,
+			sm: 600,
+			md: 900,
+			lg: 1200,
+			xl: 1536,
+		},
+	},
+
 	palette: {
 		mode: 'light',
 		primary: {
@@ -49,11 +59,12 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
+
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
 					color: '#FFFFFF',
-					fontSize: '!1.5rem',
+					fontSize: '1.5rem',
 				},
 			},
 		},
@@ -72,22 +83,6 @@ export const LightTheme: Theme = createTheme({
 				root: {
 					background: '#ffffff',
 					color: '#000000 !important',
-				},
-			},
-		},
-		MuiGrid: {
-			styleOverrides: {
-				root: {
-					// p:
-					// {
-					//   xs: '1rem!important',
-					//   sm: '1rem!important',
-					//   md: '0rem!important',
-					//   lg: '0rem!important',
-					// }
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
@@ -192,6 +187,16 @@ export const LightTheme: Theme = createTheme({
 });
 
 export const DarkTheme: Theme = createTheme({
+	breakpoints: {
+		values: {
+			xs: 0,
+			sm: 600,
+			md: 900,
+			lg: 1200,
+			xl: 1536,
+		},
+	},
+
 	palette: {
 		mode: 'dark',
 		primary: {
@@ -204,21 +209,11 @@ export const DarkTheme: Theme = createTheme({
 			dark: '#FF6400',
 			contrastText: '#ffffff',
 		},
-		// primaryLight: {
-		//   main: "#6699CC",
-		//   dark: "#0C36A0",
-		//   contrastText: "#ffffff",
-		// },
+
 		background: {
 			default: '#ccdbee',
-			paper: '#FFFFFF',
+			paper: '#0D0D0D',
 		},
-		// blue: {
-		//   main: "#002147",
-		// },
-		// black: {
-		//   main: "#1B1B1B",
-		// },
 	},
 	components: {
 		MuiListItemButton: {
@@ -226,6 +221,7 @@ export const DarkTheme: Theme = createTheme({
 				disableRipple: true,
 			},
 		},
+
 		MuiButtonBase: {
 			defaultProps: {
 				disableRipple: true,
@@ -241,14 +237,24 @@ export const DarkTheme: Theme = createTheme({
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
-					backgroundColor: '#002147',
+					background: '#0D0D0D',
+					color: '#ffffff',
+					boxShadow: '0px 0px 0px 1px #C0C0C0',
+				},
+			},
+		},
+		MuiDrawer: {
+			styleOverrides: {
+				paper: {
+					background: '#0F0F0F',
+					width: 270,
 				},
 			},
 		},
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
-					background: 'white',
+					background: '#000000',
 					height: '2.7rem',
 					borderRadius: '0.5rem',
 					// '&.Mui-disabled': {
@@ -257,11 +263,28 @@ export const DarkTheme: Theme = createTheme({
 				},
 			},
 		},
-
-		MuiGrid: {
+		MuiListItemText: {
 			styleOverrides: {
 				root: {
-					padding: '0rem!important',
+					color: '#FFFFFF',
+					fontSize: '1.5rem',
+				},
+			},
+		},
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					background: '#0DODOD',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					background: '#161616',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
@@ -272,6 +295,9 @@ export const DarkTheme: Theme = createTheme({
 
 	typography: {
 		fontFamily: 'Maven Pro, sans-serif',
+		// allVariants: {
+		// 	color: "#BBD9FF"
+		//   },
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
@@ -308,6 +334,7 @@ export const DarkTheme: Theme = createTheme({
 			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
+
 		body1: {
 			fontWeight: 400,
 			fontSize: '1rem',
@@ -334,13 +361,7 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
-		// subtitle2lg: {
-		//   fontWeight: 500,
-		//   fontSize: "1rem",
-		//   lineHeight: 1.75,
-		//   fontFamily: "Maven Pro, sans-serif",
-		//   letterSpacing: 0,
-		// },
+
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
