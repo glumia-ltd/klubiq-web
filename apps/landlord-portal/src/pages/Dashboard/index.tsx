@@ -44,7 +44,6 @@ const data = {
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
-
 	return (
 		<Container
 			maxWidth={'xl'}
@@ -86,6 +85,7 @@ const DashBoard = () => {
 									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 									fontWeight={800}
 									lineHeight={'44px'}
+									variant='h6'
 								>
 									160
 								</Typography>
@@ -131,6 +131,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								lineHeight={'44px'}
+								variant='h6'
 							>
 								₦150,280.11
 							</Typography>
@@ -191,11 +192,31 @@ const DashBoard = () => {
 								Rent Overdue
 							</Typography>
 							<Typography
-								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+								fontSize={{
+									xs: '24px',
+									sm: '24px',
+									md: '14px',
+									lg: '24px',
+									xl: '40px',
+								}}
 								fontWeight={800}
 								lineHeight={'44px'}
+								variant='h6'
+								alignItems={'center'}
 							>
-								<CalendarTodayIcon sx={{ color: '#FF0000' }} /> ₦0
+								<CalendarTodayIcon
+									sx={{
+										color: '#FF0000',
+										fontSize: {
+											xs: '29px',
+											sm: '20px',
+											md: '17px',
+											lg: '29px',
+											xl: '29px',
+										},
+									}}
+								/>{' '}
+								₦0
 							</Typography>
 							<Typography
 								fontSize='14px'
@@ -224,6 +245,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								lineHeight={'44px'}
+								variant='h6'
 							>
 								20
 							</Typography>
@@ -297,6 +319,7 @@ const DashBoard = () => {
 									fontWeight={800}
 									lineHeight={'44px'}
 									mr={'30px'}
+									variant='h6'
 								>
 									23%
 								</Typography>
@@ -353,6 +376,7 @@ const DashBoard = () => {
 									>
 										<Typography
 											fontSize={{
+												xs: '14px',
 												sm: '24px',
 												md: '14px',
 												lg: '24px',
@@ -361,6 +385,7 @@ const DashBoard = () => {
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1rem'}
+											variant='h6'
 										>
 											₦91,00.42{' '}
 										</Typography>
@@ -397,6 +422,7 @@ const DashBoard = () => {
 									>
 										<Typography
 											fontSize={{
+												xs: '14px',
 												sm: '24px',
 												md: '14px',
 												lg: '24px',
@@ -405,6 +431,7 @@ const DashBoard = () => {
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1.2rem'}
+											variant='h6'
 										>
 											₦91,420.9{' '}
 										</Typography>
@@ -432,20 +459,27 @@ const DashBoard = () => {
 
 				<Grid
 					container
-					item
-					xs={12}
-					md={12}
-					lg={12}
+					// item
+					// xs={12}
+					// md={12}
+					// lg={12}
 					sx={{
-						background: mode === ThemeMode.LIGHT ? '#ffffff' : '#161616',
+						background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
 						borderRadius: '20px',
-						padding: { xs: '10px', sm: '20px', md: '24px', lg: '24px' },
+						padding: {
+							xs: '20px',
+							sm: '20px',
+							md: '24px',
+							lg: '25px',
+							xl: '25px',
+						},
 						marginTop: '0.5rem',
 						transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-						backgroundImage:
-							'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
+
 						boxShadow:
-							'0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)',
+							mode === ThemeMode.LIGHT
+								? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
+								: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 					}}
 				>
 					<Grid item xs={12} sm={12} md={7}>
@@ -471,6 +505,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								mr='15px'
+								variant='h6'
 							>
 								{' '}
 								₦278,625.92{' '}
@@ -488,7 +523,7 @@ const DashBoard = () => {
 								border={'1px solid #FF0000'}
 								borderRadius={'20px'}
 								padding={'2px'}
-								// width={'64px'}
+								width={'54px'}
 								height={'24px'}
 								display='flex'
 							>
@@ -518,7 +553,6 @@ const DashBoard = () => {
 						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
 						<TextField
 							sx={{
-								// width: '180px',
 								height: '44px',
 								marginRight: { xs: '5px', sm: '30px', md: '0' },
 							}}
@@ -529,9 +563,9 @@ const DashBoard = () => {
 						/>{' '}
 						<Box
 							sx={{
-								border: '1px solid black',
-								padding: '8px, 16px, 8px, 16px',
-								width: '50px',
+								border: '1px solid ',
+								padding: '8px, 12px, 8px, 12px',
+								width: '45px',
 								height: '35px',
 								borderRadius: '8px',
 								display: 'flex',

@@ -8,6 +8,7 @@ const styles = {
 		height: '183px',
 		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '20px',
+		alignItems: 'center',
 	},
 	cardStyleThree: {
 		height: '207px',

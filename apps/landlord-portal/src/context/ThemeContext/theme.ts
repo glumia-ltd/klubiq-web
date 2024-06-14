@@ -200,14 +200,13 @@ export const DarkTheme: Theme = createTheme({
 	palette: {
 		mode: 'dark',
 		primary: {
-			main: '#002147',
+			main: '#0088F0',
 			light: '#0096FF',
 			dark: '#1F305E',
 		},
 		secondary: {
-			main: '#FFD700',
+			main: '#0D0D0D',
 			dark: '#FF6400',
-			contrastText: '#ffffff',
 		},
 
 		background: {
@@ -238,8 +237,8 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				colorPrimary: {
 					background: '#0D0D0D',
-					color: '#ffffff',
-					boxShadow: '0px 0px 0px 1px #C0C0C0',
+					color: '#FFFFFF',
+					boxShadow: '0px 0px 0px 1px #6699CC',
 				},
 			},
 		},
@@ -254,12 +253,13 @@ export const DarkTheme: Theme = createTheme({
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
-					background: '#000000',
+					background: '#0F0F0F',
 					height: '2.7rem',
 					borderRadius: '0.5rem',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
+					color: '#FFFFF',
 				},
 			},
 		},
@@ -281,10 +281,33 @@ export const DarkTheme: Theme = createTheme({
 				},
 			},
 		},
+		MuiDialog: {
+			styleOverrides: {
+				paper: {
+					background: '#0DODOD',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
 		MuiCard: {
 			styleOverrides: {
 				root: {
 					background: '#161616',
+					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					// boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19)",
+
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
@@ -329,10 +352,11 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
-			fontWeight: 600,
-			fontSize: '1rem',
-			lineHeight: 1,
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
+			color: '#BBD9FF',
 		},
 
 		body1: {
