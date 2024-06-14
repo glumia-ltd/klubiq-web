@@ -1,4 +1,5 @@
 import { Theme, createTheme, duration } from '@mui/material';
+import { padding } from '@mui/system';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -23,6 +24,12 @@ const transitionsTheme = {
 		easeIn: 'ease-in',
 		// The sharp curve is used by objects that may return to the screen at any time.
 		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+	},
+};
+
+const cardsRoot = {
+	root: {
+		padding: '0.5rem 1rem',
 	},
 };
 export const LightTheme: Theme = createTheme({
@@ -94,7 +101,13 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					...cardsRoot,
+				},
+			},
+		},
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
@@ -287,7 +300,7 @@ export const DarkTheme: Theme = createTheme({
 				},
 				paper: {
 					display: 'flex',
-					background: '#002147',
+					background: '#0D0D0D',
 					alignItems: 'center',
 					maxWidth: '250px',
 					minWidth: '100px',
