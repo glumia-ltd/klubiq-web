@@ -69,7 +69,7 @@ const DrawerChildren = styled('div')(({ theme }) => ({
 	flexDirection: 'column',
 	width: '80%',
 	gap: '20px',
-	padding: theme.spacing(3),
+	padding: theme.spacing(1, 3),
 	alignItems: 'center',
 }));
 
