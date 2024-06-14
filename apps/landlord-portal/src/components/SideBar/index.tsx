@@ -69,7 +69,7 @@ const DrawerChildren = styled('div')(({ theme }) => ({
 	flexDirection: 'column',
 	width: '80%',
 	gap: '20px',
-	padding: theme.spacing(1, 3),
+	padding: theme.spacing(1, 2),
 	alignItems: 'center',
 }));
 
@@ -192,9 +192,9 @@ function SideBar() {
 											>
 												<SvgIcon
 													sx={{
-														fontSize: '30px',
-														width: '30px',
-														height: '30px',
+														fontSize: '20px',
+														width: '20px',
+														height: '20px',
 													}}
 													component={props.icon}
 													inheritViewBox
