@@ -1,4 +1,30 @@
 import { Theme, createTheme } from '@mui/material';
+const transitionsTheme = {
+	duration: {
+		shortest: 150,
+		shorter: 200,
+		short: 250,
+		// most basic recommended timing
+		standard: 300,
+		// this is to be used in complex animations
+		complex: 375,
+		// recommended when something is entering screen
+		enteringScreen: 400,
+		// recommended when something is leaving screen
+		leavingScreen: 300,
+	},
+	easing: {
+		// This is the most common easing curve.
+		easeInOut: 'ease-in-out',
+		// Objects enter the screen at full velocity from off-screen and
+		// slowly decelerate to a resting point.
+		easeOut: 'ease-out',
+		// Objects leave the screen at full velocity. They do not decelerate when off-screen.
+		easeIn: 'ease-in',
+		// The sharp curve is used by objects that may return to the screen at any time.
+		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+	},
+};
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -27,7 +53,7 @@ export const LightTheme: Theme = createTheme({
 
 		background: {
 			default: '#ccdbee',
-			paper: '#FFFFFF',
+			paper: '#F3F6F8',
 		},
 	},
 	components: {
@@ -46,9 +72,18 @@ export const LightTheme: Theme = createTheme({
 		},
 		MuiDrawer: {
 			styleOverrides: {
+				docked: {
+					maxWidth: '250px',
+					minWidth: '100px',
+				},
 				paper: {
+					display: 'flex',
 					background: '#002147',
-					width: 270,
+					alignItems: 'center',
+					maxWidth: '250px',
+					minWidth: '100px',
+					overflowX: 'hidden',
+					msOverflowY: 'auto',
 				},
 			},
 		},
@@ -184,6 +219,7 @@ export const LightTheme: Theme = createTheme({
 			textTransform: 'none',
 		},
 	},
+	transitions: transitionsTheme,
 });
 
 export const DarkTheme: Theme = createTheme({
@@ -244,9 +280,18 @@ export const DarkTheme: Theme = createTheme({
 		},
 		MuiDrawer: {
 			styleOverrides: {
+				docked: {
+					maxWidth: '250px',
+					minWidth: '100px',
+				},
 				paper: {
-					background: '#0F0F0F',
-					width: 270,
+					display: 'flex',
+					background: '#OFOFOF',
+					alignItems: 'center',
+					maxWidth: '250px',
+					minWidth: '100px',
+					overflowX: 'hidden',
+					msOverflowY: 'auto',
 				},
 			},
 		},
