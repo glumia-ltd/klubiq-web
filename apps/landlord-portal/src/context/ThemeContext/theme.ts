@@ -179,9 +179,9 @@ export const LightTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 400,
-			fontSize: '0.875rem',
-			lineHeight: 1.6,
+			fontWeight: 600,
+			fontSize: '14px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
@@ -214,6 +214,12 @@ export const LightTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
+		dashboardTypography: {
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+		},
 
 		button: {
 			textTransform: 'none',
@@ -243,6 +249,7 @@ export const DarkTheme: Theme = createTheme({
 		secondary: {
 			main: '#0D0D0D',
 			dark: '#FF6400',
+			light: '#BBD9FF',
 		},
 
 		background: {
@@ -250,6 +257,7 @@ export const DarkTheme: Theme = createTheme({
 			paper: '#0D0D0D',
 		},
 	},
+
 	components: {
 		MuiListItemButton: {
 			defaultProps: {
@@ -330,6 +338,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				paper: {
 					background: '#0DODOD',
+					backgroundImage: 'none',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
@@ -401,7 +410,6 @@ export const DarkTheme: Theme = createTheme({
 			// fontSize: '1rem',
 			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
-			color: '#BBD9FF',
 		},
 
 		body1: {
@@ -411,9 +419,9 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 400,
-			fontSize: '0.875rem',
-			lineHeight: 1.6,
+			fontWeight: 600,
+			fontSize: '14px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
@@ -446,10 +454,17 @@ export const DarkTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
-
+		dashboardTypography: {
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+			color: '#BBD9FF',
+		},
 		button: {
 			textTransform: 'none',
 			disableRipple: true,
 		},
 	},
+	transitions: transitionsTheme,
 });

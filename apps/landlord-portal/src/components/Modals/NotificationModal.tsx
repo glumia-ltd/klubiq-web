@@ -16,6 +16,7 @@ import {
 	Button,
 	Tooltip,
 } from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -29,7 +30,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '45m',
 				actionText: 'View Invoice',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/manImage.svg',
 			},
 			{
 				status: 'success',
@@ -37,7 +38,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '45m',
 				actionText: 'View Invoice',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/manImage.svg',
 			},
 			{
 				status: 'success',
@@ -45,7 +46,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '45m',
 				actionText: 'View Invoice',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/manImage.svg',
 			},
 		],
 	},
@@ -58,7 +59,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '20h',
 				actionText: '',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/images/blueoctagon.png',
 			},
 			{
 				status: 'error',
@@ -66,7 +67,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '10h',
 				actionText: 'View payment info',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/images/blueoctagon.png',
 			},
 			{
 				status: 'info',
@@ -74,7 +75,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '23h',
 				actionText: '',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/images/blueoctagon.png',
 			},
 		],
 	},
@@ -87,7 +88,7 @@ const notifications = [
 				description: 'Apt 1011 Mayfairs Gardens',
 				time: '45m',
 				actionText: 'View Invoice',
-				avatar: 'https://via.placeholder.com/40',
+				avatar: '../../assets/images/blueoctagon.png',
 			},
 		],
 	},
@@ -100,7 +101,13 @@ interface NotificationModalProps {
 const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
 	// const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) => {
 	return (
-		<Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
+		<Dialog
+			open={open}
+			onClose={onClose}
+			maxWidth='sm'
+			fullWidth
+			sx={{ backgroundImage: 'none' }}
+		>
 			<DialogTitle>
 				<Box
 					sx={{
@@ -145,7 +152,10 @@ const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
 										</ListItemAvatar>
 										<ListItemText
 											primary={
-												<Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+												<Typography
+													variant='body2'
+													sx={{ fontWeight: 'bold', color: 'text.secondary' }}
+												>
 													{item.title}
 												</Typography>
 											}
@@ -164,18 +174,16 @@ const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
 														{item.time}
 													</Typography>
 													{item.actionText && (
-														<Typography
-															variant='body2'
+														<Button
+															// variant='body2'
 															sx={{
-																color:
-																	item.status === 'error'
-																		? 'error.main'
-																		: 'primary.main',
+																color: 'primary.main',
+
 																mt: 1,
 															}}
 														>
 															{item.actionText}
-														</Typography>
+														</Button>
 													)}
 												</>
 											}

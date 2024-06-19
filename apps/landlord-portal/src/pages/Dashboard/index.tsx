@@ -85,7 +85,7 @@ const DashBoard = () => {
 									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 									fontWeight={800}
 									lineHeight={'44px'}
-									variant='h6'
+									variant='dashboardTypography'
 								>
 									160
 								</Typography>
@@ -131,7 +131,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								lineHeight={'44px'}
-								variant='h6'
+								variant='dashboardTypography'
 							>
 								₦150,280.11
 							</Typography>
@@ -201,7 +201,7 @@ const DashBoard = () => {
 								}}
 								fontWeight={800}
 								lineHeight={'44px'}
-								variant='h6'
+								variant='dashboardTypography'
 								alignItems={'center'}
 							>
 								<CalendarTodayIcon
@@ -245,7 +245,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								lineHeight={'44px'}
-								variant='h6'
+								variant='dashboardTypography'
 							>
 								20
 							</Typography>
@@ -319,7 +319,7 @@ const DashBoard = () => {
 									fontWeight={800}
 									lineHeight={'44px'}
 									mr={'30px'}
-									variant='h6'
+									variant='dashboardTypography'
 								>
 									23%
 								</Typography>
@@ -385,7 +385,7 @@ const DashBoard = () => {
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1rem'}
-											variant='h6'
+											variant='dashboardTypography'
 										>
 											₦91,00.42{' '}
 										</Typography>
@@ -431,7 +431,7 @@ const DashBoard = () => {
 											fontWeight={800}
 											lineHeight={'44px'}
 											mr={'1.2rem'}
-											variant='h6'
+											variant='dashboardTypography'
 										>
 											₦91,420.9{' '}
 										</Typography>
@@ -505,7 +505,7 @@ const DashBoard = () => {
 								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
 								fontWeight={800}
 								mr='15px'
-								variant='h6'
+								variant='dashboardTypography'
 							>
 								{' '}
 								₦278,625.92{' '}

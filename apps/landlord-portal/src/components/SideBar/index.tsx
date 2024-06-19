@@ -25,19 +25,12 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-const drawerWidth = {
-	smallOpen: 200,
-	smallClosed: 0,
-	largeOpen: 230,
-	largeClosed: 70,
-};
-
-const transitionedMixin = (theme: Theme): CSSObject => ({
-	transition: theme.transitions.create('width', {
-		easing: theme.transitions.easing.easeInOut,
-		duration: theme.transitions.duration.enteringScreen,
-	}),
-});
+// const drawerWidth = {
+// 	smallOpen: 200,
+// 	smallClosed: 0,
+// 	largeOpen: 230,
+// 	largeClosed: 70,
+// };
 
 // const closedMixin = (theme: Theme): CSSObject => ({
 // 	// transition: theme.transitions.create('width', {
@@ -54,46 +47,6 @@ const transitionedMixin = (theme: Theme): CSSObject => ({
 // 	},
 // });
 
-const DrawerHeader = styled('div')(() => ({
-	display: 'flex',
-	alignItems: 'center',
-	alignSelf: 'flex-start',
-}));
-const ThemeSwitcher = styled('div')(() => ({
-	position: 'fixed',
-	bottom: '24px',
-}));
-const DrawerChildren = styled('div')(({ theme }) => ({
-	display: 'flex',
-	flexDirection: 'column',
-	width: '80%',
-	gap: '20px',
-	padding: theme.spacing(1, 2),
-	alignItems: 'center',
-}));
-
-const Drawer = styled(MuiDrawer, {
-	shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-	'& .MuiDrawer-paper': {
-		width: 'inherit',
-	},
-	...transitionedMixin(theme),
-	...(open && {
-		[theme.breakpoints.up('sm')]: {
-			width: `${drawerWidth.largeOpen}px`,
-		},
-		[theme.breakpoints.down('sm')]: {
-			width: `${drawerWidth.smallOpen}px`,
-		},
-	}),
-	...(!open && {
-		[theme.breakpoints.down('sm')]: {
-			width: `${drawerWidth.smallClosed}px`,
-		},
-	}),
-}));
-
 function SideBar() {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -101,17 +54,63 @@ function SideBar() {
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode } = useContext(ThemeContext);
 	const allContexts = () => useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
+	const { sidebarOpen, closeSidebar, openSidebar, drawerWidth } = allContexts();
 	const pathList = getPathList();
 	const { pathname } = useLocation();
+	const transitionedMixin = (theme: Theme): CSSObject => ({
+		transition: theme.transitions.create('width', {
+			easing: theme.transitions.easing.easeInOut,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	});
+	const DrawerHeader = styled('div')(({}) => ({
+		display: 'flex',
+		alignItems: 'center',
+		alignSelf: 'flex-start',
+	}));
+	const ThemeSwitcher = styled('div')(({}) => ({
+		position: 'fixed',
+		bottom: '24px',
+	}));
+	const DrawerChildren = styled('div')(({}) => ({
+		display: 'flex',
+		flexDirection: 'column',
+		width: '80%',
+		gap: '20px',
+		padding: theme.spacing(1, 2),
+		alignItems: 'center',
+	}));
 
+	const Drawer = styled(MuiDrawer, {
+		shouldForwardProp: (prop) => prop !== 'open',
+	})(({ theme, open }) => ({
+		'& .MuiDrawer-paper': {
+			width: 'inherit',
+		},
+		...transitionedMixin(theme),
+		...(open && {
+			[theme.breakpoints.up('sm')]: {
+				width: `${drawerWidth.largeOpen}px`,
+			},
+			[theme.breakpoints.down('sm')]: {
+				width: `${drawerWidth.smallOpen}px`,
+			},
+		}),
+		...(!open && {
+			[theme.breakpoints.down('sm')]: {
+				width: `${drawerWidth.smallClosed}px`,
+			},
+		}),
+	}));
 	useEffect(() => {
 		isMediumScreen ? closeSidebar : sidebarOpen;
 	}, [isMediumScreen]);
 	useEffect(() => {
 		isSmallScreen && closeSidebar;
 	}, [isSmallScreen]);
-
+	if (isMediumScreen && !sidebarOpen) {
+		return null;
+	}
 	return (
 		<Drawer
 			variant='permanent'

@@ -1,20 +1,22 @@
-import { Button, Typography, Box, Avatar, Card } from '@mui/material';
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import user from '../../assets/manImage.svg';
+// import { Button, Typography, Box, Avatar, Card } from '@mui/material';
+// import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+// import user from '../../assets/manImage.svg';
 import DashStyle from './DashStyle';
-
-const CardData = [
-	{ name: 'feyi', id: '1' },
-	{ name: 'Dayo', id: '2' },
-	{ name: 'feyi', id: '3' },
-	{ name: 'ife', id: '4' },
-	{ name: 'Amaka', id: '5' },
-];
+import { Typography, Card } from '@mui/material';
+// const CardData = [
+// 	{ name: 'feyi', id: '1' },
+// 	{ name: 'Dayo', id: '2' },
+// 	{ name: 'feyi', id: '3' },
+// 	{ name: 'ife', id: '4' },
+// 	{ name: 'Amaka', id: '5' },
+// ];
 
 const ReportCard = () => {
 	return (
 		<Card sx={DashStyle.cardStyleFive}>
-			<Box
+			<Typography variant='h6'>In progress</Typography>
+
+			{/* <Box
 				sx={{
 					display: { xs: 'flex', md: 'flex', lg: 'flex' },
 					justifyContent: {
@@ -89,7 +91,7 @@ const ReportCard = () => {
 						</Box>
 					</Box>
 				</Box>
-			))}
+			))} */}
 		</Card>
 	);
 };

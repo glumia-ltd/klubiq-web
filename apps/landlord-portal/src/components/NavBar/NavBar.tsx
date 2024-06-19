@@ -15,14 +15,25 @@ import user from '../../assets/manImage.svg';
 const NavBar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const allContext = () => useContext(Context);
-	const { toggleSidebar } = allContext();
+	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
 	const [isModalOpen, setOpenModal] = useState(false);
 
 	const { pathname } = useLocation();
 	const section = pathname.split('/')[1];
+	const currentDrawerWidth = sidebarOpen
+		? isSmallScreen
+			? drawerWidth.smallOpen
+			: drawerWidth.largeOpen
+		: isSmallScreen
+			? drawerWidth.smallClosed
+			: drawerWidth.largeClosed;
+
 	return (
-		<AppBar position='static' elevation={2} sx={{ width: '100%' }}>
+		<AppBar
+			position='fixed'
+			elevation={2}
+			sx={{ width: `calc(100% - ${currentDrawerWidth}px)` }}
+		>
 			<Toolbar
 				variant='regular'
 				sx={{
