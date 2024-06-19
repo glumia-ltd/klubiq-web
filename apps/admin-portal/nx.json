@@ -21,5 +21,10 @@
 			"!{projectRoot}/**/*.spec.[jt]s"
 		]
 	},
-	"nxCloudAccessToken": "NTAzMzMxNDYtZWE3Ni00M2RhLTg2ODMtOTQ0NmE5YzE1OTVkfHJlYWQtd3JpdGU="
+	"nxCloudAccessToken": "NTAzMzMxNDYtZWE3Ni00M2RhLTg2ODMtOTQ0NmE5YzE1OTVkfHJlYWQtd3JpdGU=",
+	"generators": {
+		"@nx/angular:component": {
+			"style": "css"
+		}
+	}
 }

@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use './stylesm3-theme.scss' as klubiq-theme;
+
+@include mat.core();
+
+$theme: klubiq-theme.$dark-theme;
+html {
+  @include mat.all-component-themes($theme);
+    body {
+        height: 100%;
+        margin: 0;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+      }
+}
+
+
+
