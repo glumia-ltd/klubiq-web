@@ -247,7 +247,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				paper: {
 					background: '#0F0F0F',
-					width: 270,
+					// width: 270,
 				},
 			},
 		},
