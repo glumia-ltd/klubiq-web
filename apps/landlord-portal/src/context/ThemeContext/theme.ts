@@ -360,7 +360,6 @@ export const DarkTheme: Theme = createTheme({
 				root: {
 					background: '#161616',
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
-					// boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19)",
 
 					// '&.Mui-disabled': {
 					//     background: grey[100],

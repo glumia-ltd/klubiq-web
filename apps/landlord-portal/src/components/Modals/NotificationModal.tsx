@@ -18,8 +18,7 @@ import {
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 const notifications = [
 	{
 		date: 'Today',
@@ -191,7 +190,7 @@ const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
 										<ListItemSecondaryAction>
 											<Tooltip title='More options'>
 												<IconButton edge='end'>
-													<MoreVertIcon />
+													<MoreHorizIcon />
 												</IconButton>
 											</Tooltip>
 										</ListItemSecondaryAction>

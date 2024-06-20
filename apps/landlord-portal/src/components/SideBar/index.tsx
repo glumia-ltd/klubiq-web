@@ -1,16 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useLocation } from 'react-router-dom';
-
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -25,54 +22,37 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-// const drawerWidth = {
-// 	smallOpen: 200,
-// 	smallClosed: 0,
-// 	largeOpen: 230,
-// 	largeClosed: 70,
-// };
-
-// const closedMixin = (theme: Theme): CSSObject => ({
-// 	// transition: theme.transitions.create('width', {
-// 	// 	easing: theme.transitions.easing.easeInOut,
-// 	// 	duration: theme.transitions.duration.leavingScreen,
-// 	// }),
-// 	//flexDirection: 'column',
-// 	width: `70px`,
-// 	[theme.breakpoints.up('sm')]: {
-// 		width: `70px`,
-// 	},
-// 	[theme.breakpoints.down('sm')]: {
-// 		width: `50px`,
-// 	},
-// });
 
 function SideBar() {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
-	const { switchMode } = useContext(ThemeContext);
-	const allContexts = () => useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar, drawerWidth } = allContexts();
+	const { switchMode, mode } = useContext(ThemeContext);
+	const allContexts = useContext(Context);
+	const { sidebarOpen, closeSidebar, openSidebar, drawerWidth } = allContexts;
 	const pathList = getPathList();
 	const { pathname } = useLocation();
+
 	const transitionedMixin = (theme: Theme): CSSObject => ({
 		transition: theme.transitions.create('width', {
 			easing: theme.transitions.easing.easeInOut,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
 	});
-	const DrawerHeader = styled('div')(({}) => ({
+
+	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
 		alignItems: 'center',
 		alignSelf: 'flex-start',
 	}));
-	const ThemeSwitcher = styled('div')(({}) => ({
+
+	const ThemeSwitcher = styled('div')(() => ({
 		position: 'fixed',
 		bottom: '24px',
 	}));
-	const DrawerChildren = styled('div')(({}) => ({
+
+	const DrawerChildren = styled('div')(() => ({
 		display: 'flex',
 		flexDirection: 'column',
 		width: '80%',
@@ -102,15 +82,19 @@ function SideBar() {
 			},
 		}),
 	}));
+
 	useEffect(() => {
-		isMediumScreen ? closeSidebar : sidebarOpen;
-	}, [isMediumScreen]);
+		isMediumScreen ? closeSidebar() : sidebarOpen;
+	}, [isMediumScreen, closeSidebar, sidebarOpen]);
+
 	useEffect(() => {
-		isSmallScreen && closeSidebar;
-	}, [isSmallScreen]);
+		isSmallScreen && closeSidebar();
+	}, [isSmallScreen, closeSidebar]);
+
 	if (isMediumScreen && !sidebarOpen) {
 		return null;
 	}
+
 	return (
 		<Drawer
 			variant='permanent'
@@ -128,9 +112,7 @@ function SideBar() {
 					}}
 				>
 					<DrawerHeader>
-						<IconButton
-						//style={{ height: '30px' }}
-						>
+						<IconButton>
 							<img src={Logo2} height={'40px'} alt='logo' />
 						</IconButton>
 						<Typography variant='h4' color={'#ffffff'}>
@@ -156,8 +138,6 @@ function SideBar() {
 												minHeight: 20,
 												justifyContent: sidebarOpen ? 'initial' : 'center',
 												my: 0.8,
-
-												//idth: sidebarOpen ? '200px' : '70px',
 												borderRadius: '10px',
 												'&:hover': {
 													bgcolor: 'rgba(255,255,255,0.6)',
@@ -176,8 +156,6 @@ function SideBar() {
 													},
 												},
 											}}
-											// onMouseEnter={openSidebar}
-											// onMouseLeave={closeSidebar}
 											onClick={openSidebar}
 											onDoubleClick={closeSidebar}
 										>
@@ -220,7 +198,9 @@ function SideBar() {
 						<Button
 							onClick={() => switchMode(ThemeMode.LIGHT)}
 							sx={{
-								color: '#002147',
+								color: mode === ThemeMode.LIGHT ? '#ffffff' : '#002147',
+								background:
+									mode === ThemeMode.LIGHT ? '#002147' : 'transparent',
 								borderRadius: sidebarOpen ? '15px' : '20px',
 								padding: '10px',
 								fontSize: '10px',
@@ -243,7 +223,8 @@ function SideBar() {
 						<Button
 							onClick={() => switchMode(ThemeMode.DARK)}
 							sx={{
-								color: '#002147',
+								color: mode === ThemeMode.DARK ? '#ffffff' : '#002147',
+								background: mode === ThemeMode.DARK ? '#002147' : 'transparent',
 								borderRadius: sidebarOpen ? '15px' : '20px',
 								fontSize: '10px',
 								padding: '10px',
