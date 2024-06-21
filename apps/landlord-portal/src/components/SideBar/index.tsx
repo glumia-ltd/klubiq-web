@@ -26,7 +26,7 @@ import { Context } from '../../context/NavToggleContext/NavToggleContext';
 function SideBar() {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+	// const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
@@ -84,12 +84,12 @@ function SideBar() {
 	}));
 
 	useEffect(() => {
-		isMediumScreen ? closeSidebar() : sidebarOpen;
+		isMediumScreen ? closeSidebar : sidebarOpen;
 	}, [isMediumScreen, closeSidebar, sidebarOpen]);
 
-	useEffect(() => {
-		isSmallScreen && closeSidebar();
-	}, [isSmallScreen, closeSidebar]);
+	// useEffect(() => {
+	// 	isSmallScreen && closeSidebar();
+	// }, [isSmallScreen, closeSidebar]);
 
 	if (isMediumScreen && !sidebarOpen) {
 		return null;

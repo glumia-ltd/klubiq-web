@@ -1,7 +1,7 @@
 const styles = {
 	cardStyle: {
 		height: '183px',
-		padding: '15px',
+		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '20px',
 	},
 	cardStyleTwo: {

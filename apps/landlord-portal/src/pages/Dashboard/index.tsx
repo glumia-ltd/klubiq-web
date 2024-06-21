@@ -16,30 +16,16 @@ import ReportCard from './ReportCard';
 import DashStyle from './DashStyle';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
 import { useContext } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
+import { PropertiesGuage } from '../../components/PropertiesGuage';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const data = {
-	labels: ['Occupied', 'Vacant', 'Maintenace'],
-	datasets: [
-		{
-			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
-
-			data: [21, 0, 0],
-		},
-
-		{
-			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
-			data: [0, 90, 0],
-		},
-		{
-			backgroundColor: ['#6EC03C', '#D108A5', '#0088F0'],
-			data: [0, 0, 7],
-		},
-	],
+	category1: 75,
+	category2: 50,
+	category3: 30,
 };
 
 const DashBoard = () => {
@@ -90,29 +76,16 @@ const DashBoard = () => {
 									160
 								</Typography>
 							</Box>
-
-							<Doughnut
-								data={data}
-								options={{
-									responsive: true,
-									plugins: {
-										legend: {
-											display: true,
-											position: 'left',
-											labels: {
-												usePointStyle: true,
-												boxHeight: 10,
-												boxWidth: 10,
-
-												font: {
-													size: 12,
-												},
-												textAlign: 'left',
-											},
-										},
-									},
-								}}
-							/>
+							<Box display={'flex'} justifyContent={'center'}>
+								<PropertiesGuage
+									data={data}
+									width={350}
+									height={120}
+									colors={['#6EC03C', '#D108A5', '#0088F0']}
+									legend={true}
+									legendPosition='left'
+								/>
+							</Box>
 						</Card>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
