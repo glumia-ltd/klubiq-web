@@ -50,6 +50,7 @@ function SideBar() {
 	const ThemeSwitcher = styled('div')(() => ({
 		position: 'fixed',
 		bottom: '24px',
+		// height:"90px"
 	}));
 
 	const DrawerChildren = styled('div')(() => ({
@@ -190,9 +191,12 @@ function SideBar() {
 					<Stack
 						direction={{ xs: sidebarOpen ? 'row' : 'column' }}
 						sx={{
-							borderRadius: '15px',
+							borderRadius: '10px',
 							background: '#ffffff',
-							padding: sidebarOpen ? '4px 8px' : '0px',
+							padding: sidebarOpen ? '8px 8px' : '0.9px',
+							height: sidebarOpen ? '60px' : '96px',
+							gap: '8px',
+							alignItems: 'center',
 						}}
 					>
 						<Button
@@ -201,14 +205,17 @@ function SideBar() {
 								color: mode === ThemeMode.LIGHT ? '#ffffff' : '#002147',
 								background:
 									mode === ThemeMode.LIGHT ? '#002147' : 'transparent',
-								borderRadius: sidebarOpen ? '15px' : '20px',
-								padding: '10px',
+								borderRadius: sidebarOpen ? '18px' : '18px',
+								padding: sidebarOpen ? '10px' : '0px',
 								fontSize: '10px',
-
+								height: '36px',
+								width: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
+									height: '36px',
+									width: '44px',
 								},
 							}}
 						>
@@ -225,13 +232,17 @@ function SideBar() {
 							sx={{
 								color: mode === ThemeMode.DARK ? '#ffffff' : '#002147',
 								background: mode === ThemeMode.DARK ? '#002147' : 'transparent',
-								borderRadius: sidebarOpen ? '15px' : '20px',
+								borderRadius: sidebarOpen ? '18px' : '18px',
 								fontSize: '10px',
-								padding: '10px',
+								padding: sidebarOpen ? '10px' : '0px',
+								height: '36px',
+								width: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
+									height: '36px',
+									width: '44px',
 								},
 							}}
 						>

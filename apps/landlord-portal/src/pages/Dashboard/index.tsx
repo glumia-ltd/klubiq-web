@@ -64,6 +64,8 @@ const DashBoard = () => {
 									fontSize='14px'
 									lineHeight={'20px'}
 									fontWeight={500}
+									mb={{ sm: '0.5rem', md: '0.5rem', lg: '1rem' }}
+									textAlign='left'
 								>
 									Total Properties{' '}
 								</Typography>{' '}
@@ -76,11 +78,19 @@ const DashBoard = () => {
 									160
 								</Typography>
 							</Box>
-							<Box display={'flex'} justifyContent={'center'}>
+							<Box
+								display={'flex'}
+								justifyContent={'center'}
+								width={{ sm: '200px', md: '180px', lg: '256px', xl: '286px' }}
+								// width={'286px'}
+								height={'100px'}
+							>
 								<PropertiesGuage
 									data={data}
-									width={350}
-									height={120}
+									// width={{ sm: 300, md: 300, lg: 300, xl: 300 }}
+
+									width={300}
+									height={100}
 									colors={['#6EC03C', '#D108A5', '#0088F0']}
 									legend={true}
 									legendPosition='left'
@@ -164,33 +174,40 @@ const DashBoard = () => {
 							>
 								Rent Overdue
 							</Typography>
-							<Typography
-								fontSize={{
-									xs: '24px',
-									sm: '24px',
-									md: '14px',
-									lg: '24px',
-									xl: '40px',
-								}}
-								fontWeight={800}
-								lineHeight={'44px'}
-								variant='dashboardTypography'
-								alignItems={'center'}
-							>
+							<Box display={'flex'} alignItems={'center'}>
 								<CalendarTodayIcon
 									sx={{
 										color: '#FF0000',
-										fontSize: {
-											xs: '29px',
-											sm: '20px',
-											md: '17px',
-											lg: '29px',
-											xl: '29px',
-										},
+										// fontSize: {
+										// 	xs: '29px',
+										// 	sm: '20px',
+										// 	md: '17px',
+										// 	lg: '29px',
+										// 	xl: '20px',
+
+										// },
+										gap: '10px',
+										width: '24px',
+										height: ' 24px',
+										padding: '4px',
 									}}
 								/>{' '}
-								₦0
-							</Typography>
+								<Typography
+									fontSize={{
+										xs: '24px',
+										sm: '24px',
+										md: '14px',
+										lg: '24px',
+										xl: '40px',
+									}}
+									fontWeight={800}
+									lineHeight={'44px'}
+									variant='dashboardTypography'
+									alignItems={'center'}
+								>
+									₦0
+								</Typography>
+							</Box>
 							<Typography
 								fontSize='14px'
 								lineHeight={'20px'}
@@ -226,7 +243,7 @@ const DashBoard = () => {
 								sx={{
 									display: 'flex',
 									textAlign: 'center',
-									marginTop: { xs: '35px', md: '28px', lg: '35px' },
+									marginTop: { xs: '35px', md: '28px', lg: '20px' },
 									alignItems: 'center',
 								}}
 							>
@@ -440,11 +457,11 @@ const DashBoard = () => {
 						background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
 						borderRadius: '20px',
 						padding: {
-							xs: '20px',
+							xs: '24px',
 							sm: '20px',
 							md: '24px',
-							lg: '25px',
-							xl: '25px',
+							lg: '24px',
+							xl: '24px',
 						},
 						marginTop: '0.5rem',
 						transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',

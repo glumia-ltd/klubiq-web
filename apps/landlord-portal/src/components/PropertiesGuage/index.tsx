@@ -29,19 +29,21 @@ export const PropertiesGuage = ({
 	];
 
 	const legendComponent = legend && (
-		<Box mt={2} ml={0.5}>
+		<Box mt={2}>
 			{categories.map((category, index) => (
 				<Box key={index} display='flex' alignItems='center' mb={1}>
 					<Box
 						sx={{
-							width: { sm: 16, md: 10, lg: 16 },
-							height: { sm: 16, md: 10, lg: 16 },
+							width: { xs: 16, sm: 12, md: 14, lg: 16 },
+							height: { xs: 16, sm: 12, md: 14, lg: 16 },
 							backgroundColor: category.color,
 							borderRadius: '50%',
 							mr: 1,
 						}}
 					/>
-					<Typography sx={{ fontSize: { sm: '14px', md: '10px', lg: '14px' } }}>
+					<Typography
+						sx={{ fontSize: { xs: '14', sm: '10px', md: '10px', lg: '14px' } }}
+					>
 						{category.label}
 					</Typography>
 				</Box>
@@ -152,7 +154,7 @@ export const PropertiesGuage = ({
 					: 'column'
 			}
 			alignItems='center'
-			justifyContent='center'
+			justifyContent='space-between'
 			height={height}
 			width={width}
 			position='relative'
