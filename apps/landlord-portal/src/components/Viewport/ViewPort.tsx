@@ -4,6 +4,7 @@ import Box from '@mui/system/Box';
 import { useContext } from 'react';
 import { NavToggleProvider } from '../../context/NavToggleContext/NavToggleContext';
 import NavBar from '../NavBar/NavBar';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 type ViewPortProp = {
@@ -16,6 +17,8 @@ const ViewPort = ({ children }: ViewPortProp) => {
 
 	return (
 		<NavToggleProvider>
+			<CssBaseline />
+
 			<Box
 				sx={{
 					display: 'flex',
@@ -27,9 +30,9 @@ const ViewPort = ({ children }: ViewPortProp) => {
 				}}
 			>
 				<Sidebar />
-				<Box display='flex' flexDirection='column' width='100%'>
+				<Box display='flex' flexGrow={1} flexDirection='column' width={'100%'}>
 					<NavBar />
-					<Box width={'100%'} flexGrow={1}>
+					<Box width={'100%'} mt={'80px'}>
 						{' '}
 						{children}
 					</Box>

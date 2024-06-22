@@ -62,7 +62,7 @@ const TableChart = () => {
 				// ]}
 				yAxis={[{ min: 0, max: 200 }]}
 				maxWidth={900}
-				height={300}
+				height={360}
 				bottomAxis={null}
 				topAxis={{
 					disableTicks: true,
