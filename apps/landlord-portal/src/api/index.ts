@@ -16,9 +16,14 @@ const skippedEndpoints = [
 	authEndpoints.emailVerification(),
 ];
 
+const storedSession = sessionStorage.getItem(
+	firebaseResponseObject.sessionStorage || '',
+);
+const storedSessionObject = JSON.parse(storedSession || '');
+
 // request config
 function AxiosConfig(config: any) {
-	const token = localStorage.getItem('token');
+	const token = storedSessionObject?.stsTokenManager.accessToken;
 
 	config.headers = {};
 
@@ -59,12 +64,6 @@ api.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const storedSession = sessionStorage.getItem(
-					firebaseResponseObject.sessionStorage || '',
-				);
-
-				const storedSessionObject = JSON.parse(storedSession || '');
-
 				const refreshToken = storedSessionObject?.stsTokenManager.refreshToken;
 				const {
 					data: {

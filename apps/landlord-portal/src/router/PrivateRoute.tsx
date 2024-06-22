@@ -13,8 +13,6 @@ import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 const PrivateRoute = () => {
 	const { token } = useSelector(getAuthState);
 
-	console.log(token);
-
 	const sessionStorageKey = firebaseResponseObject.sessionStorage!;
 
 	const response = JSON.parse(sessionStorage.getItem(sessionStorageKey) || '');
