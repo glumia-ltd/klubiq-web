@@ -1,25 +1,39 @@
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { Grid, AppBar, IconButton, Avatar, Badge } from '@mui/material';
 import { useLocation } from 'react-router-dom';
-import Logo from '../../assets/images/blueoctagon.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
+import NotificationModal from '../../components/Modals/NotificationModal';
+import user from '../../assets/manImage.svg';
+
 const NavBar = () => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const allContext = () => useContext(Context);
-	const { toggleSidebar } = allContext();
+	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
+	const [isModalOpen, setOpenModal] = useState(false);
 
 	const { pathname } = useLocation();
 	const section = pathname.split('/')[1];
+	const currentDrawerWidth = sidebarOpen
+		? isSmallScreen
+			? drawerWidth.smallOpen
+			: drawerWidth.largeOpen
+		: isSmallScreen
+			? drawerWidth.smallClosed
+			: drawerWidth.largeClosed;
+
 	return (
-		<AppBar position='static' elevation={2} sx={{ width: '100%' }}>
+		<AppBar
+			position='fixed'
+			elevation={2}
+			sx={{ width: `calc(100% - ${currentDrawerWidth}px)` }}
+		>
 			<Toolbar
 				variant='regular'
 				sx={{
@@ -106,6 +120,9 @@ const NavBar = () => {
 								padding: '1rem',
 								borderRadius: '10px',
 							}}
+							onClick={() => {
+								setOpenModal(true);
+							}}
 						>
 							<Badge badgeContent={'2'} color='error'>
 								<NotificationsNoneOutlinedIcon
@@ -132,7 +149,7 @@ const NavBar = () => {
 						>
 							<Avatar
 								alt='Remy Sharp'
-								src={Logo}
+								src={user}
 								sx={{
 									width: '40px',
 									height: '40px',
@@ -144,6 +161,14 @@ const NavBar = () => {
 					</Grid>
 				</Grid>
 			</Toolbar>
+			{isModalOpen && (
+				<NotificationModal
+					open={isModalOpen}
+					onClose={() => {
+						setOpenModal(false);
+					}}
+				/>
+			)}
 		</AppBar>
 	);
 };

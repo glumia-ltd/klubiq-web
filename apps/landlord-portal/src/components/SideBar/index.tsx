@@ -1,17 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
-import Logo from '../../assets/images/lightshort.svg';
+import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useLocation } from 'react-router-dom';
-
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -26,92 +22,79 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-const drawerWidth = {
-	smallOpen: 200,
-	smallClosed: 0,
-	largeOpen: 230,
-	largeClosed: 70,
-};
-
-const transitionedMixin = (theme: Theme): CSSObject => ({
-	transition: theme.transitions.create('width', {
-		easing: theme.transitions.easing.easeInOut,
-		duration: theme.transitions.duration.enteringScreen,
-	}),
-});
-
-// const closedMixin = (theme: Theme): CSSObject => ({
-// 	// transition: theme.transitions.create('width', {
-// 	// 	easing: theme.transitions.easing.easeInOut,
-// 	// 	duration: theme.transitions.duration.leavingScreen,
-// 	// }),
-// 	//flexDirection: 'column',
-// 	width: `70px`,
-// 	[theme.breakpoints.up('sm')]: {
-// 		width: `70px`,
-// 	},
-// 	[theme.breakpoints.down('sm')]: {
-// 		width: `50px`,
-// 	},
-// });
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-	display: 'flex',
-	alignItems: 'center',
-	alignSelf: 'flex-start',
-}));
-const ThemeSwitcher = styled('div')(({ theme }) => ({
-	position: 'fixed',
-	bottom: '24px',
-}));
-const DrawerChildren = styled('div')(({ theme }) => ({
-	display: 'flex',
-	flexDirection: 'column',
-	width: '80%',
-	gap: '20px',
-	padding: theme.spacing(1, 2),
-	alignItems: 'center',
-}));
-
-const Drawer = styled(MuiDrawer, {
-	shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-	'& .MuiDrawer-paper': {
-		width: 'inherit',
-	},
-	...transitionedMixin(theme),
-	...(open && {
-		[theme.breakpoints.up('sm')]: {
-			width: `${drawerWidth.largeOpen}px`,
-		},
-		[theme.breakpoints.down('sm')]: {
-			width: `${drawerWidth.smallOpen}px`,
-		},
-	}),
-	...(!open && {
-		[theme.breakpoints.down('sm')]: {
-			width: `${drawerWidth.smallClosed}px`,
-		},
-	}),
-}));
 
 function SideBar() {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+	// const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
-	const { mode, switchMode } = useContext(ThemeContext);
-	const allContexts = () => useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar } = allContexts();
+	const { switchMode, mode } = useContext(ThemeContext);
+	const allContexts = useContext(Context);
+	const { sidebarOpen, closeSidebar, openSidebar, drawerWidth } = allContexts;
 	const pathList = getPathList();
 	const { pathname } = useLocation();
 
+	const transitionedMixin = (theme: Theme): CSSObject => ({
+		transition: theme.transitions.create('width', {
+			easing: theme.transitions.easing.easeInOut,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	});
+
+	const DrawerHeader = styled('div')(() => ({
+		display: 'flex',
+		alignItems: 'center',
+		alignSelf: 'flex-start',
+	}));
+
+	const ThemeSwitcher = styled('div')(() => ({
+		position: 'fixed',
+		bottom: '24px',
+		// height:"90px"
+	}));
+
+	const DrawerChildren = styled('div')(() => ({
+		display: 'flex',
+		flexDirection: 'column',
+		width: '80%',
+		gap: '20px',
+		padding: theme.spacing(1, 2),
+		alignItems: 'center',
+	}));
+
+	const Drawer = styled(MuiDrawer, {
+		shouldForwardProp: (prop) => prop !== 'open',
+	})(({ theme, open }) => ({
+		'& .MuiDrawer-paper': {
+			width: 'inherit',
+		},
+		...transitionedMixin(theme),
+		...(open && {
+			[theme.breakpoints.up('sm')]: {
+				width: `${drawerWidth.largeOpen}px`,
+			},
+			[theme.breakpoints.down('sm')]: {
+				width: `${drawerWidth.smallOpen}px`,
+			},
+		}),
+		...(!open && {
+			[theme.breakpoints.down('sm')]: {
+				width: `${drawerWidth.smallClosed}px`,
+			},
+		}),
+	}));
+
 	useEffect(() => {
 		isMediumScreen ? closeSidebar : sidebarOpen;
-	}, [isMediumScreen]);
-	useEffect(() => {
-		isSmallScreen && closeSidebar;
-	}, [isSmallScreen]);
+	}, [isMediumScreen, closeSidebar, sidebarOpen]);
+
+	// useEffect(() => {
+	// 	isSmallScreen && closeSidebar();
+	// }, [isSmallScreen, closeSidebar]);
+
+	if (isMediumScreen && !sidebarOpen) {
+		return null;
+	}
 
 	return (
 		<Drawer
@@ -130,9 +113,7 @@ function SideBar() {
 					}}
 				>
 					<DrawerHeader>
-						<IconButton
-						//style={{ height: '30px' }}
-						>
+						<IconButton>
 							<img src={Logo2} height={'40px'} alt='logo' />
 						</IconButton>
 						<Typography variant='h4' color={'#ffffff'}>
@@ -158,8 +139,6 @@ function SideBar() {
 												minHeight: 20,
 												justifyContent: sidebarOpen ? 'initial' : 'center',
 												my: 0.8,
-
-												//idth: sidebarOpen ? '200px' : '70px',
 												borderRadius: '10px',
 												'&:hover': {
 													bgcolor: 'rgba(255,255,255,0.6)',
@@ -178,8 +157,6 @@ function SideBar() {
 													},
 												},
 											}}
-											// onMouseEnter={openSidebar}
-											// onMouseLeave={closeSidebar}
 											onClick={openSidebar}
 											onDoubleClick={closeSidebar}
 										>
@@ -214,23 +191,31 @@ function SideBar() {
 					<Stack
 						direction={{ xs: sidebarOpen ? 'row' : 'column' }}
 						sx={{
-							borderRadius: '15px',
+							borderRadius: '10px',
 							background: '#ffffff',
-							padding: sidebarOpen ? '4px 8px' : '0px',
+							padding: sidebarOpen ? '8px 8px' : '0.9px',
+							height: sidebarOpen ? '60px' : '96px',
+							gap: '8px',
+							alignItems: 'center',
 						}}
 					>
 						<Button
 							onClick={() => switchMode(ThemeMode.LIGHT)}
 							sx={{
-								color: '#002147',
-								borderRadius: sidebarOpen ? '15px' : '20px',
-								padding: '10px',
+								color: mode === ThemeMode.LIGHT ? '#ffffff' : '#002147',
+								background:
+									mode === ThemeMode.LIGHT ? '#002147' : 'transparent',
+								borderRadius: sidebarOpen ? '18px' : '18px',
+								padding: sidebarOpen ? '10px' : '0px',
 								fontSize: '10px',
-
+								height: '36px',
+								width: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
+									height: '36px',
+									width: '44px',
 								},
 							}}
 						>
@@ -245,14 +230,19 @@ function SideBar() {
 						<Button
 							onClick={() => switchMode(ThemeMode.DARK)}
 							sx={{
-								color: '#002147',
-								borderRadius: sidebarOpen ? '15px' : '20px',
+								color: mode === ThemeMode.DARK ? '#ffffff' : '#002147',
+								background: mode === ThemeMode.DARK ? '#002147' : 'transparent',
+								borderRadius: sidebarOpen ? '18px' : '18px',
 								fontSize: '10px',
-								padding: '10px',
+								padding: sidebarOpen ? '10px' : '0px',
+								height: '36px',
+								width: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
+									height: '36px',
+									width: '44px',
 								},
 							}}
 						>
