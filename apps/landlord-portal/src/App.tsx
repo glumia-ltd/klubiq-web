@@ -19,8 +19,6 @@ function App() {
 	useEffect(() => {
 		const listen = onAuthStateChanged(auth, (user: any) => {
 			if (user) {
-				// console.log('auth state has changed', user.accessToken);
-				// console.log('user email verified', user.emailVerified);
 				const userInfo = { email: user.email };
 				dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 			} else {
