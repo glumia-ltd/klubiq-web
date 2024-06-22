@@ -19,11 +19,12 @@ const skippedEndpoints = [
 const storedSession = sessionStorage.getItem(
 	firebaseResponseObject.sessionStorage || '',
 );
-const storedSessionObject = JSON.parse(storedSession || '');
+const storedSessionObject = storedSession && JSON.parse(storedSession);
 
 // request config
+
 function AxiosConfig(config: any) {
-	const token = storedSessionObject?.stsTokenManager.accessToken;
+	const token = storedSessionObject?.stsTokenManager?.accessToken;
 
 	config.headers = {};
 
