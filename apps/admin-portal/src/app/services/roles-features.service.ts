@@ -16,10 +16,10 @@ import * as env from '../../environments/environment';
 	providedIn: 'root',
 })
 export class RolesFeaturesService {
-	roles = signal<Role | null>(null);
-	orgRoles = signal<OrgRole | null>(null);
-	features = signal<any | null>(null);
-	featurePermissions = signal<any | null>(null);
+	roles = signal<Role[]>([]);
+	orgRoles = signal<OrgRole[]>([]);
+	features = signal<any[]>([]);
+	featurePermissions = signal<any[]>([]);
 
 	constructor(
 		private router: Router,

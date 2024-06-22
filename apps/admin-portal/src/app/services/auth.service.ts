@@ -77,6 +77,7 @@ export class AuthService implements OnInit {
 			.signOut()
 			.then(() => {
 				this.isUserSignedIn.set(false);
+				this.clearSessionData();
 				console.log('User logged out');
 			})
 			.catch((error) => {

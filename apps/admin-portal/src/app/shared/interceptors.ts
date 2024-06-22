@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { LoaderService } from '../services/loader.service';
 
 export function authInterceptor(
@@ -34,7 +34,10 @@ export function loaderInterceptor(
 				loaderService.hideLoader();
 				console.log(req.url, 'returned a response with status', event.status);
 			}
+		}),
+		catchError((error) => {
 			loaderService.hideLoader();
+			return throwError(() => error);
 		}),
 	);
 }

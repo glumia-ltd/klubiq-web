@@ -19,14 +19,6 @@ export class DashboardComponent implements OnInit {
 	// @Input() features: any[] | null = null;
 	// @Input() featurePermissions: any[] | null = null;
 
-	roles: Signal<Role | null> = computed(() =>
-		this.rolesFeaturesService.roles(),
-	);
-
-	orgRoles: Signal<OrgRole | null> = computed(() =>
-		this.rolesFeaturesService.orgRoles(),
-	);
-
 	features: Signal<any | null> = computed(() =>
 		this.rolesFeaturesService.features(),
 	);

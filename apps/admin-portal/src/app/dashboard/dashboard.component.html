@@ -2,6 +2,11 @@
 <div class="container">
   <h2>{{title}}</h2>
   <div>
-    {{roles() | json}}
+    <h3>Features</h3>
+    {{features() | json}}
+  </div>
+  <div>
+    <h3>Feature Permissions</h3>
+    {{featurePermissions() | json}}
   </div>
 </div>
