@@ -59,10 +59,19 @@ api.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const refreshToken = localStorage.getItem('refreshToken');
+				const storedSession = sessionStorage.getItem(
+					firebaseResponseObject.sessionStorage || '',
+				);
+
+				const storedSessionObject = JSON.parse(storedSession || '');
+
+				const refreshToken = storedSessionObject?.stsTokenManager.refreshToken;
 				const {
 					data: {
-						data: { access_token, refresh_token },
+						data: {
+							access_token,
+							// refresh_token
+						},
 					},
 				} = await axios.post(
 					`https://devapi.klubiq.com/api/${authEndpoints.refreshToken()}`,
@@ -71,10 +80,10 @@ api.interceptors.response.use(
 					},
 				);
 
-				if (access_token && refresh_token) {
-					localStorage.setItem('token', access_token);
-					localStorage.setItem('refreshToken', refresh_token);
-				}
+				// if (access_token && refresh_token) {
+				// 	localStorage.setItem('token', access_token);
+				// 	localStorage.setItem('refreshToken', refresh_token);
+				// }
 
 				// Retry the original request with the new token
 				originalRequest.headers.Authorization = `Bearer ${access_token}`;
