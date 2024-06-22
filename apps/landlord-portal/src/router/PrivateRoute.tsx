@@ -4,6 +4,7 @@ import {
 	getAuthState,
 	// saveUser
 } from '../store/AuthStore/AuthSlice';
+import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 // import { useEffect, useState } from 'react';
 // import { onAuthStateChanged } from 'firebase/auth';
 // import { useDispatch } from 'react-redux';
@@ -12,7 +13,13 @@ import {
 const PrivateRoute = () => {
 	const { token } = useSelector(getAuthState);
 
-	const userToken = token || localStorage.getItem('token');
+	console.log(token);
+
+	const sessionStorageKey = firebaseResponseObject.sessionStorage!;
+
+	const response = JSON.parse(sessionStorage.getItem(sessionStorageKey) || '');
+
+	const userToken = token || response.stsTokenManager.accessToken;
 
 	// console.log('token from private route', token);
 

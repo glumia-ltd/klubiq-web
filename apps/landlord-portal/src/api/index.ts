@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
+import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 
 const api = axios.create({
 	baseURL:
@@ -46,12 +47,13 @@ api.interceptors.response.use(
 		const originalRequest = error.config;
 		const {
 			status,
-			data: { error: err },
+			data: { message },
 		} = error.response;
+
 		if (
 			status &&
 			status > 400 &&
-			err.includes('expired token') &&
+			message?.includes('expired token') &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
