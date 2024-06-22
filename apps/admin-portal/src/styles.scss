@@ -4,14 +4,21 @@
 
 @include mat.core();
 
-$theme: klubiq-theme.$dark-theme;
+$darkTheme: klubiq-theme.$dark-theme;
+$lightTheme: klubiq-theme.$light-theme;
 html {
-  @include mat.all-component-themes($theme);
-    body {
-        height: 100%;
-        margin: 0;
-        font-family: Roboto, "Helvetica Neue", sans-serif;
-      }
+  body {
+  @include mat.all-component-themes($lightTheme);
+  //@include mat.all-component-colors($darkTheme);
+    height: 100%;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    mat-sidenav {
+      @include mat.all-component-colors($darkTheme);
+
+    }
+  }
+
 }
 
 

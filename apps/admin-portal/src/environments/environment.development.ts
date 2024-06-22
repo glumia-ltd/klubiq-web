@@ -10,4 +10,5 @@ export const environment = {
 		measurementId: process.env['KLB_FIREBASE_MEASUREMENTID'],
 	},
 	apiUrl: process.env['KLB_API_URL'],
+	appName: 'Klubiq Admin Portal',
 };

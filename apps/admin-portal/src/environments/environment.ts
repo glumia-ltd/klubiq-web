@@ -9,5 +9,6 @@ export const environment = {
 		appId: process.env['KLB_FIREBASE_APPID'],
 		measurementId: process.env['KLB_FIREBASE_MEASUREMENTID'],
 	},
-	apiUrl: process.env['KLB_API_URL'],
+	apiUrl: 'https://devapi.klubiq.com/',
+	appName: 'Klubiq Admin Portal',
 };

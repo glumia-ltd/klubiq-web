@@ -1,11 +1,35 @@
-<mat-toolbar>
-</mat-toolbar>
 
-<mat-drawer-container class="example-container">
-  <mat-drawer mode="side" opened>Drawer content</mat-drawer>
-  <mat-drawer-content>
-    <section>
+<main>
+  <mat-toolbar *ngIf="isUserSignedIn()" color="primary" class="toolbar">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1>{{title}}</h1>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button aria-label="notifications icon button">
+      <mat-icon>notifications</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="work work_alert icon button">
+      <mat-icon>work_alert</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="account icon button">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="container">
+    <mat-sidenav class="sidenav" #snav  mode="side" [opened]="isUserSignedIn()">
+      <app-side-nav></app-side-nav>
+    </mat-sidenav>
+    <mat-sidenav-content class="content">
+      <div *ngIf="isLoading()" class="loading-overlay">
+        <mat-progress-bar mode="query"></mat-progress-bar>
+      </div>
       <router-outlet></router-outlet>
-    </section>
-  </mat-drawer-content>
-</mat-drawer-container>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</main>
+
+
+
