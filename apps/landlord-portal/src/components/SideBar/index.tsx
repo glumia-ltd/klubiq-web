@@ -195,8 +195,10 @@ function SideBar() {
 							background: '#ffffff',
 							padding: sidebarOpen ? '8px 8px' : '0.9px',
 							height: sidebarOpen ? '60px' : '96px',
+							width: sidebarOpen ? 'auto' : '60px',
 							gap: '8px',
 							alignItems: 'center',
+							justifyContent: 'space-around',
 						}}
 					>
 						<Button
@@ -208,14 +210,15 @@ function SideBar() {
 								borderRadius: sidebarOpen ? '18px' : '18px',
 								padding: sidebarOpen ? '10px' : '0px',
 								fontSize: '10px',
+								marginTop: sidebarOpen ? '0px' : '8px',
 								height: '36px',
-								width: '44px',
+								minWidth: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
 									height: '36px',
-									width: '44px',
+									minWidth: '44px',
 								},
 							}}
 						>
@@ -235,14 +238,15 @@ function SideBar() {
 								borderRadius: sidebarOpen ? '18px' : '18px',
 								fontSize: '10px',
 								padding: sidebarOpen ? '10px' : '0px',
+								marginBottom: sidebarOpen ? '0px' : '8px',
 								height: '36px',
-								width: '44px',
+								minWidth: '44px',
 								'&:hover': {
 									color: '#ffffff',
 									background: '#002147',
 									cursor: 'pointer',
 									height: '36px',
-									width: '44px',
+									minWidth: '44px',
 								},
 							}}
 						>
