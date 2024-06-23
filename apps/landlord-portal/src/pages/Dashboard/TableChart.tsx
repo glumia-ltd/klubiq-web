@@ -1,7 +1,44 @@
 import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { AxisScaleConfig } from '@mui/x-charts/internals';
 
 const TableChart = () => {
+	const xAxisConfig: AxisScaleConfig = {
+		band: {
+			scaleType: 'band',
+			scale: Number,
+			categoryGapRatio: 0.8,
+			barGapRatio: 0,
+		},
+		point: {
+			scaleType: 'point',
+			scale: Number,
+		},
+		log: {
+			scaleType: 'log',
+			scale: Number,
+		},
+		pow: {
+			scaleType: 'pow',
+			scale: Number,
+		},
+		sqrt: {
+			scaleType: 'sqrt',
+			scale: Number,
+		},
+		time: {
+			scaleType: 'time',
+			scale: Date,
+		},
+		utc: {
+			scaleType: 'utc',
+			scale: String,
+		},
+		linear: {
+			scaleType: 'linear',
+			scale: Number,
+		},
+	};
 	return (
 		<Box
 			padding={{
@@ -29,6 +66,7 @@ const TableChart = () => {
 				]}
 				xAxis={[
 					{
+						...xAxisConfig.band,
 						scaleType: 'band',
 						data: [
 							'Jan',
@@ -44,18 +82,8 @@ const TableChart = () => {
 							'Nov',
 							'Dec',
 						],
-						categoryGapRatio: 0.8,
-						// barGapRatio: 7.8
 					},
 				]}
-				// yAxis={[
-				// 	{
-				// 		scaleType: 'linear',
-				// 		data: { min: 0, max: 1000 },
-				// 		// valueFormatter: (value) =>
-				// 		// 	`${(value / 1000).toLocaleString()}m`,
-				// 	},
-				// ]}
 				yAxis={[{ min: 0, max: 200 }]}
 				//maxWidth={900}
 				height={360}
