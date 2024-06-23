@@ -35,6 +35,8 @@ const DashBoard = () => {
 			maxWidth={'xl'}
 			sx={{
 				overflow: 'auto',
+				paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+				paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 			}}
 		>
 			<Grid container spacing={2}>
@@ -66,24 +68,17 @@ const DashBoard = () => {
 									160
 								</Typography>
 							</Box>
-							<Box
-								display={'flex'}
-								justifyContent={'center'}
-								width={{ sm: '200px', md: '180px', lg: '256px', xl: '286px' }}
-								// width={'286px'}
-								height={'100px'}
-							>
-								<PropertiesGuage
-									data={data}
-									// width={{ sm: 300, md: 300, lg: 300, xl: 300 }}
+							<PropertiesGuage
+								data={data}
+								//width={{ sm: 300, md: 300, lg: 300, xl: 300 }}
 
-									width={300}
-									height={100}
-									colors={['#6EC03C', '#D108A5', '#0088F0']}
-									legend={true}
-									legendPosition='left'
-								/>
-							</Box>
+								//width={'100'}
+								width={null}
+								height={100}
+								colors={['#6EC03C', '#D108A5', '#0088F0']}
+								legend={true}
+								legendPosition='left'
+							/>
 						</Card>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={4}>

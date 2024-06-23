@@ -3,7 +3,14 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useState } from 'react';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-import { Grid, AppBar, IconButton, Avatar, Badge } from '@mui/material';
+import {
+	Grid,
+	AppBar,
+	IconButton,
+	Avatar,
+	Badge,
+	Divider,
+} from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -119,6 +126,7 @@ const NavBar = () => {
 								backgroundColor: 'transparent',
 								padding: '1rem',
 								borderRadius: '10px',
+								marginRight: '1rem',
 							}}
 							onClick={() => {
 								setOpenModal(true);
@@ -130,7 +138,14 @@ const NavBar = () => {
 								/>
 							</Badge>
 						</IconButton>
+						<Divider
+							orientation='vertical'
+							variant='middle'
+							color={theme.palette.primary.main}
+							flexItem
+						/>
 						<Typography
+							ml={1}
 							sx={{
 								fontSize: '12px',
 								fontWeight: '700',

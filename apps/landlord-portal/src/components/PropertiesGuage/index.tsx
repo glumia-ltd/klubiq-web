@@ -10,7 +10,7 @@ export const PropertiesGuage = ({
 	legendPosition,
 }: {
 	data: { [key: string]: number };
-	width: number;
+	width: number | null;
 	height: number;
 	colors: string[];
 	legend?: boolean;
@@ -18,7 +18,7 @@ export const PropertiesGuage = ({
 }) => {
 	const { category1, category2, category3 } = data;
 
-	const size = Math.min(width, height);
+	const size = Math.min(width ?? 300, height);
 	const midSize = size * 0.7;
 	const smallSize = size * 0.45;
 
@@ -69,7 +69,7 @@ export const PropertiesGuage = ({
 				size={size}
 				sx={{
 					position: 'absolute',
-					left: `calc(50% - ${size / 2}px)`,
+					left: `calc(50% - ${size / 2 - 10}px)`,
 					top: `calc(50% - ${size / 2}px)`,
 					[`& .${gaugeClasses.valueText}`]: {
 						fontSize: 0,
@@ -99,7 +99,7 @@ export const PropertiesGuage = ({
 				size={midSize}
 				sx={{
 					position: 'absolute',
-					left: `calc(50% - ${midSize / 2}px)`,
+					left: `calc(50% - ${midSize / 2 - 10}px)`,
 					top: `calc(50% - ${midSize / 2}px)`,
 					[`& .${gaugeClasses.valueText}`]: {
 						fontSize: 0,
@@ -129,7 +129,7 @@ export const PropertiesGuage = ({
 				size={smallSize}
 				sx={{
 					position: 'absolute',
-					left: `calc(50% - ${smallSize / 2}px)`,
+					left: `calc(50% - ${smallSize / 2 - 10}px)`,
 					top: `calc(50% - ${smallSize / 2}px)`,
 					[`& .${gaugeClasses.valueText}`]: {
 						fontSize: 0,
@@ -156,7 +156,7 @@ export const PropertiesGuage = ({
 			alignItems='center'
 			justifyContent='space-between'
 			height={height}
-			width={width}
+			width={width ? width : 'inherit'}
 			position='relative'
 		>
 			{legendPosition === 'top' && legendComponent}
