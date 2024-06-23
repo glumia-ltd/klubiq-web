@@ -1,0 +1,244 @@
+{
+  "version": "6.0",
+  "nxVersion": "19.3.0",
+  "deps": {
+    "@angular/animations": "^18.0.0",
+    "@angular/cdk": "~18.0.3",
+    "@angular/common": "^18.0.0",
+    "@angular/compiler": "^18.0.0",
+    "@angular/core": "^18.0.0",
+    "@angular/forms": "^18.0.0",
+    "@angular/material": "^18.0.3",
+    "@angular/platform-browser": "^18.0.0",
+    "@angular/platform-browser-dynamic": "^18.0.0",
+    "@angular/router": "^18.0.0",
+    "dotenv": "^16.4.5",
+    "firebase": "^10.12.2",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.3",
+    "@angular-devkit/build-angular": "^18.0.4",
+    "@angular-devkit/core": "^18.0.4",
+    "@angular-devkit/schematics": "^18.0.4",
+    "@angular/cli": "^18.0.4",
+    "@angular/compiler-cli": "^18.0.0",
+    "@nx/angular": "19.3.0",
+    "@nx/workspace": "19.3.0",
+    "@schematics/angular": "^18.0.4",
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^20.14.4",
+    "jasmine-core": "~5.1.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "nx": "^19.3.0",
+    "typescript": "~5.4.2"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [],
+    "projectFileMap": {
+      "admin-portal": [
+        {
+          "file": ".editorconfig",
+          "hash": "6686520031028425313"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "17153310792528541874"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "14075834438752640208"
+        },
+        {
+          "file": ".vscode/launch.json",
+          "hash": "17038929134016848735"
+        },
+        {
+          "file": ".vscode/tasks.json",
+          "hash": "5336636969995539451"
+        },
+        {
+          "file": "README.md",
+          "hash": "9111547653109482150"
+        },
+        {
+          "file": "nx.json",
+          "hash": "12713756199764474914"
+        },
+        {
+          "file": "package.json",
+          "hash": "11488603626030761109"
+        },
+        {
+          "file": "plugins/env-var-plugin.js",
+          "hash": "2491725110249999726"
+        },
+        {
+          "file": "project.json",
+          "hash": "9835582144458012235"
+        },
+        {
+          "file": "public/favicon.ico",
+          "hash": "4713924222848601954"
+        },
+        {
+          "file": "src/app/app.component.html",
+          "hash": "15026932852825999696"
+        },
+        {
+          "file": "src/app/app.component.scss",
+          "hash": "10960826750947064016"
+        },
+        {
+          "file": "src/app/app.component.spec.ts",
+          "hash": "2913569459275328082"
+        },
+        {
+          "file": "src/app/app.component.ts",
+          "hash": "1291838857066894732"
+        },
+        {
+          "file": "src/app/app.config.ts",
+          "hash": "14187971797009854628"
+        },
+        {
+          "file": "src/app/app.routes.ts",
+          "hash": "18410104154966479321"
+        },
+        {
+          "file": "src/app/auth/auth-container.component.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/auth/login.component.ts",
+          "hash": "16614642830653916618"
+        },
+        {
+          "file": "src/app/auth/sign-up.component.ts",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/dashboard/dashboard.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/dashboard/dashboard.component.html",
+          "hash": "6017729915169544450"
+        },
+        {
+          "file": "src/app/dashboard/dashboard.component.spec.ts",
+          "hash": "8659709292140471192"
+        },
+        {
+          "file": "src/app/dashboard/dashboard.component.ts",
+          "hash": "17029344860176788677"
+        },
+        {
+          "file": "src/app/nav/side-nav/side-nav.component.ts",
+          "hash": "8179450829766401021"
+        },
+        {
+          "file": "src/app/services/auth.service.spec.ts",
+          "hash": "17514366894268377205"
+        },
+        {
+          "file": "src/app/services/auth.service.ts",
+          "hash": "14980422056407050017"
+        },
+        {
+          "file": "src/app/services/loader.service.ts",
+          "hash": "16474696359693603037"
+        },
+        {
+          "file": "src/app/services/roles-features.service.ts",
+          "hash": "12782469514521478849"
+        },
+        {
+          "file": "src/app/services/user.service.ts",
+          "hash": "13633218540689075858"
+        },
+        {
+          "file": "src/app/shared/index.ts",
+          "hash": "3756187706924495609"
+        },
+        {
+          "file": "src/app/shared/interceptors.ts",
+          "hash": "65960226434969309"
+        },
+        {
+          "file": "src/app/shared/models/api-response.ts",
+          "hash": "4175069416078051164"
+        },
+        {
+          "file": "src/app/shared/models/auth.model.ts",
+          "hash": "17637720797522240927"
+        },
+        {
+          "file": "src/app/shared/models/role.model.ts",
+          "hash": "4078388983613526855"
+        },
+        {
+          "file": "src/app/shared/models/user.model.ts",
+          "hash": "6501112147861033357"
+        },
+        {
+          "file": "src/environments/environment.development.ts",
+          "hash": "15619936701465264654"
+        },
+        {
+          "file": "src/environments/environment.ts",
+          "hash": "4798003937504780887"
+        },
+        {
+          "file": "src/index.html",
+          "hash": "12211036447829086266"
+        },
+        {
+          "file": "src/main.ts",
+          "hash": "4743077523257756265"
+        },
+        {
+          "file": "src/styles.scss",
+          "hash": "4688781985280194"
+        },
+        {
+          "file": "src/stylesm3-theme.scss",
+          "hash": "10769895181010858128"
+        },
+        {
+          "file": "src/types.d.ts",
+          "hash": "11239806114974031958"
+        },
+        {
+          "file": "tsconfig.app.json",
+          "hash": "6271408073812576402"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "4424765108011853411"
+        },
+        {
+          "file": "tsconfig.spec.json",
+          "hash": "8918301549046766373"
+        },
+        {
+          "file": "src/app/roles/org-roles/org-roles.component.ts",
+          "hash": "9569892647951889631"
+        },
+        {
+          "file": "src/app/roles/roles-container.component.ts",
+          "hash": "14858537538598096174"
+        },
+        {
+          "file": "src/app/roles/system-roles/system-roles.component.ts",
+          "hash": "14352562021350590641"
+        }
+      ]
+    }
+  }
+}
