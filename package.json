@@ -1,19 +1,26 @@
 {
   "name": "klubiq-web",
+  "version": "0.0.1",
+  "description": "klubiq-web project",
   "private": true,
-  "author": "Glumia",
+  "author": "Glumia Solutions",
   "scripts": {
     "buildLP": "turbo build --filter='./apps/landlord-portal'",
     "buildAP": "turbo build --filter='./apps/admin-portal'",
     "devLP": "turbo dev --filter='./apps/landlord-portal'",
-    "devAP": "turbo dev --filter='./apps/admin-portal'",
+    "startAP": "turbo start --filter='./apps/admin-portal'",
+    "resetAP": "turbo reset --filter='./apps/admin-portal'",
     "lintAP": "turbo lint --filter='./apps/admin-portal'",
     "lintLP": "turbo lint --filter='./apps/landlord-portal'",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "node .husky/install.mjs"
   },
   "devDependencies": {
+    "@nx/angular": "^19.3.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },
