@@ -37,20 +37,8 @@ const DashBoard = () => {
 				overflow: 'auto',
 			}}
 		>
-			<Grid
-				container
-				spacing={1}
-				sx={{
-					padding: {
-						xs: '0.5rem',
-						sm: '0.5rem',
-						md: '1rem',
-						lg: '1rem',
-						xl: '1.5rem',
-					},
-				}}
-			>
-				<Grid container item spacing={1} xs={12} sm={8} md={8} lg={9}>
+			<Grid container spacing={2}>
+				<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={DashStyle.cardStyle}>
 							<Box
@@ -446,131 +434,131 @@ const DashBoard = () => {
 				<Grid container item xs={12} sm={4} md={4} lg={3}>
 					<ReportCard />
 				</Grid>
+			</Grid>
 
-				<Grid
-					container
-					// item
-					// xs={12}
-					// md={12}
-					// lg={12}
-					sx={{
-						background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
-						borderRadius: '20px',
-						padding: {
-							xs: '24px',
-							sm: '20px',
-							md: '24px',
-							lg: '24px',
-							xl: '24px',
-						},
-						marginTop: '0.5rem',
-						transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+			<Grid
+				container
+				// item
+				// xs={12}
+				// md={12}
+				// lg={12}
+				sx={{
+					background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
+					borderRadius: '20px',
+					padding: {
+						xs: '24px',
+						sm: '20px',
+						md: '24px',
+						lg: '24px',
+						xl: '24px',
+					},
+					marginTop: '1rem',
+					transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
 
-						boxShadow:
-							mode === ThemeMode.LIGHT
-								? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
-								: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
-					}}
-				>
-					<Grid item xs={12} sm={12} md={7}>
+					boxShadow:
+						mode === ThemeMode.LIGHT
+							? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
+							: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+				}}
+			>
+				<Grid item xs={12} sm={12} md={7}>
+					<Typography
+						fontSize='14px'
+						lineHeight={'20px'}
+						fontWeight={500}
+						mb={'.5rem'}
+						textAlign='left'
+					>
+						Total Revenue{' '}
+					</Typography>
+					<Box
+						sx={{
+							display: 'flex',
+							textAlign: 'center',
+							// marginTop: '5px',
+							alignItems: 'center',
+						}}
+					>
 						<Typography
+							lineHeight={'44px'}
+							fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+							fontWeight={800}
+							mr='15px'
+							variant='dashboardTypography'
+						>
+							{' '}
+							₦278,625.92{' '}
+						</Typography>
+
+						<Typography
+							sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
 							fontSize='14px'
 							lineHeight={'20px'}
 							fontWeight={500}
-							mb={'.5rem'}
-							textAlign='left'
+							alignItems={'center'}
+							justifyContent={'center'}
+							textAlign={'center'}
+							color='#FF0000'
+							border={'1px solid #FF0000'}
+							borderRadius={'20px'}
+							padding={'2px'}
+							width={'54px'}
+							height={'24px'}
+							display='flex'
 						>
-							Total Revenue{' '}
+							<ArrowDownwardIcon
+								sx={{
+									color: '#FF0000',
+									fontSize: '15px',
+									marginRight: '2px',
+								}}
+							/>
+							2%
 						</Typography>
-						<Box
-							sx={{
-								display: 'flex',
-								textAlign: 'center',
-								// marginTop: '5px',
-								alignItems: 'center',
-							}}
-						>
-							<Typography
-								lineHeight={'44px'}
-								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
-								fontWeight={800}
-								mr='15px'
-								variant='dashboardTypography'
-							>
-								{' '}
-								₦278,625.92{' '}
-							</Typography>
+					</Box>
+				</Grid>
 
-							<Typography
-								sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
-								fontSize='14px'
-								lineHeight={'20px'}
-								fontWeight={500}
-								alignItems={'center'}
-								justifyContent={'center'}
-								textAlign={'center'}
-								color='#FF0000'
-								border={'1px solid #FF0000'}
-								borderRadius={'20px'}
-								padding={'2px'}
-								width={'54px'}
-								height={'24px'}
-								display='flex'
-							>
-								<ArrowDownwardIcon
-									sx={{
-										color: '#FF0000',
-										fontSize: '15px',
-										marginRight: '2px',
-									}}
-								/>
-								2%
-							</Typography>
-						</Box>
-					</Grid>
-
-					<Grid
-						item
-						xs={12}
-						sm={12}
-						md={5}
-						alignItems={'center'}
-						justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
-						display={'flex'}
-						// width='484px'
+				<Grid
+					item
+					xs={12}
+					sm={12}
+					md={5}
+					alignItems={'center'}
+					justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
+					display={'flex'}
+					// width='484px'
+				>
+					<TextField type='date' size='medium' name='Date' value='date' />{' '}
+					<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+					<TextField
+						sx={{
+							height: '44px',
+							marginRight: { xs: '5px', sm: '30px', md: '0' },
+						}}
+						type='date'
+						size='medium'
+						name='Date'
+						value='date'
+					/>{' '}
+					<Box
+						sx={{
+							border: '1px solid ',
+							padding: '8px, 12px, 8px, 12px',
+							width: '45px',
+							height: '35px',
+							borderRadius: '8px',
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							marginLeft: { xs: '0', sm: '13rem', md: '0' },
+						}}
 					>
-						<TextField type='date' size='medium' name='Date' value='date' />{' '}
-						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-						<TextField
-							sx={{
-								height: '44px',
-								marginRight: { xs: '5px', sm: '30px', md: '0' },
-							}}
-							type='date'
-							size='medium'
-							name='Date'
-							value='date'
-						/>{' '}
-						<Box
-							sx={{
-								border: '1px solid ',
-								padding: '8px, 12px, 8px, 12px',
-								width: '45px',
-								height: '35px',
-								borderRadius: '8px',
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								marginLeft: { xs: '0', sm: '13rem', md: '0' },
-							}}
-						>
-							<SaveAltOutlinedIcon />
-						</Box>
-					</Grid>
+						<SaveAltOutlinedIcon />
+					</Box>
+				</Grid>
 
-					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
-						<TableChart />
-					</Grid>
+				<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
+					<TableChart />
 				</Grid>
 			</Grid>
 		</Container>

@@ -1,5 +1,6 @@
-import { BarChart } from '@mui/x-charts/BarChart';
 import { Box } from '@mui/material';
+import { BarChart } from '@mui/x-charts/BarChart';
+
 const TableChart = () => {
 	return (
 		<Box
@@ -33,7 +34,6 @@ const TableChart = () => {
 				]}
 				xAxis={[
 					{
-						categoryGapRatio: 0.8,
 						scaleType: 'band',
 						data: [
 							'Jan',
@@ -49,6 +49,7 @@ const TableChart = () => {
 							'Nov',
 							'Dec',
 						],
+						//categoryGapRatio: 0.8,
 						// barGapRatio: 7.8
 					},
 				]}
@@ -61,7 +62,7 @@ const TableChart = () => {
 				// 	},
 				// ]}
 				yAxis={[{ min: 0, max: 200 }]}
-				maxWidth={900}
+				//maxWidth={900}
 				height={360}
 				bottomAxis={null}
 				topAxis={{

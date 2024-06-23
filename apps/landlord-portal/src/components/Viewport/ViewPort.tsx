@@ -32,7 +32,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 				<Sidebar />
 				<Box display='flex' flexGrow={1} flexDirection='column' width={'100%'}>
 					<NavBar />
-					<Box width={'100%'} mt={'80px'}>
+					<Box width={'100%'} mt={'110px'} mb={'50px'}>
 						{' '}
 						{children}
 					</Box>
