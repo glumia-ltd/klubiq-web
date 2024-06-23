@@ -16,7 +16,6 @@
     "prepare": "node .husky/install.mjs"
   },
   "devDependencies": {
-    "@nx/angular": "^19.3.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "husky": "^9.0.11",
