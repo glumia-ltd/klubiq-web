@@ -6,7 +6,8 @@
     "start": "nx serve",
     "build": "nx build",
     "watch": "nx build --watch --configuration development",
-    "test": "nx test"
+    "test": "nx test",
+    "reset": "nx reset"
   },
   "private": true,
   "dependencies": {
@@ -33,7 +34,7 @@
     "@angular/cli": "^18.0.4",
     "@angular/compiler-cli": "^18.0.0",
     "@angular/material": "^18.0.3",
-    "@nx/angular": "19.3.0",
+    "@nx/angular": "^19.3.1",
     "@nx/workspace": "19.3.0",
     "@schematics/angular": "^18.0.4",
     "@types/jasmine": "~5.1.0",
@@ -44,7 +45,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "nx": "^19.3.0",
+    "nx": "19.3.1",
     "typescript": "~5.4.2"
-  }
+  },
+  "nx": {}
 }
