@@ -86,7 +86,7 @@ const Login = () => {
 						isOpen: true,
 					}),
 				);
-				navigate('/private', { replace: true });
+				navigate('/dashboard', { replace: true });
 			}
 		} catch (error) {
 			dispatch(
