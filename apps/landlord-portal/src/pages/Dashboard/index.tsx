@@ -126,7 +126,6 @@ const DashBoard = () => {
 										justifyContent={'center'}
 										borderRadius={'20px'}
 										padding={'10px'}
-										// width={'70px'}
 										height={'24px'}
 										display='flex'
 										mr={{ xs: '15px', md: '5px', lg: '15px' }}
@@ -168,14 +167,6 @@ const DashBoard = () => {
 									<CalendarTodayIcon
 										sx={{
 											color: '#FF0000',
-											// fontSize: {
-											// 	xs: '29px',
-											// 	sm: '20px',
-											// 	md: '17px',
-											// 	lg: '29px',
-											// 	xl: '20px',
-
-											// },
 											gap: '10px',
 											width: '24px',
 											height: ' 24px',
@@ -267,7 +258,6 @@ const DashBoard = () => {
 										fontSize='14px'
 										lineHeight={'20px'}
 										fontWeight={400}
-										// mt="10px"
 									>
 										{' '}
 										Since last month
@@ -380,7 +370,6 @@ const DashBoard = () => {
 												fontSize='14px'
 												lineHeight={'20px'}
 												fontWeight={500}
-												// textAlign='left'
 												color='#17B26A'
 												mr={'1rem'}
 											>
@@ -426,7 +415,6 @@ const DashBoard = () => {
 												fontSize='14px'
 												lineHeight={'20px'}
 												fontWeight={500}
-												// textAlign='left'
 												color='#17B26A'
 											>
 												8.1%
@@ -445,10 +433,6 @@ const DashBoard = () => {
 
 				<Grid
 					container
-					// item
-					// xs={12}
-					// md={12}
-					// lg={12}
 					sx={{
 						background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
 						borderRadius: '20px',
@@ -482,7 +466,6 @@ const DashBoard = () => {
 							sx={{
 								display: 'flex',
 								textAlign: 'center',
-								// marginTop: '5px',
 								alignItems: 'center',
 							}}
 						>
@@ -533,7 +516,6 @@ const DashBoard = () => {
 						alignItems={'center'}
 						justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 						display={'flex'}
-						// width='484px'
 					>
 						<TextField type='date' size='medium' name='Date' value='date' />{' '}
 						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
