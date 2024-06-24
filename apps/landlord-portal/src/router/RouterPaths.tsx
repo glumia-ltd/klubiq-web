@@ -33,14 +33,14 @@ export const router = createBrowserRouter(
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
-			<Route
+			{/* <Route
 				path='/dashboard'
 				element={
 					<ViewPort>
 						<DashBoard />
 					</ViewPort>
 				}
-			/>
+			/> */}
 			<Route
 				path='/properties'
 				element={
@@ -90,7 +90,7 @@ export const router = createBrowserRouter(
 				}
 			/>
 			<Route element={<PrivateRoute />}>
-				<Route path='/private' element={<PrivatePage />} />
+				<Route path='/dashboard' element={<DashBoard />} />
 			</Route>
 		</Route>,
 	),
