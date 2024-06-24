@@ -30,13 +30,14 @@ export const router = createBrowserRouter(
 			<Route path='*' element={<Navigate to='/' replace />} />
 
 			<Route path='/properties' element={<Properties />} />
-			<Route path='/lease' element={<Lease />} />
-			<Route path='/maintenance' element={<Maintenance />} />
-			<Route path='/message' element={<Message />} />
-			<Route path='/support' element={<Support />} />
-			<Route path='/settings' element={<Setting />} />
+
 			<Route element={<PrivateRoute />}>
 				<Route path='/dashboard' element={<DashBoard />} />
+				<Route path='/lease' element={<Lease />} />
+				<Route path='/maintenance' element={<Maintenance />} />
+				<Route path='/message' element={<Message />} />
+				<Route path='/support' element={<Support />} />
+				<Route path='/settings' element={<Setting />} />
 			</Route>
 		</Route>,
 	),
