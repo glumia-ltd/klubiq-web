@@ -1,7 +1,12 @@
 import { Container } from '@mui/material';
+import ViewPort from '../../components/Viewport/ViewPort';
 
 const Setting = () => {
-	return <Container maxWidth='xl'>Setting</Container>;
+	return (
+		<ViewPort>
+			<Container maxWidth='xl'>Setting</Container>
+		</ViewPort>
+	);
 };
 
 export default Setting;
