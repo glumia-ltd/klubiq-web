@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PathList from '../../helpers/PathList';
 type SectionProps = {
 	children: React.ReactNode;
@@ -9,12 +9,9 @@ export const SectionContext = React.createContext({
 });
 
 export const SectionProvider = ({ children }: SectionProps) => {
-	const getPathList = useMemo(
-		() => () => {
-			return PathList;
-		},
-		[],
-	);
+	const getPathList = () => {
+		return PathList;
+	};
 
 	const value = {
 		PathList,
