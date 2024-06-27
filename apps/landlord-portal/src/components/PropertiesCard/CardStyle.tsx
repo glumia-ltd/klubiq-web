@@ -1,6 +1,6 @@
 const styles = {
 	card: {
-		height: '252px',
+		height: '290px',
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
 		maxWidth: '320px',
@@ -8,9 +8,10 @@ const styles = {
 		alignItems: 'center',
 		cursor: 'pointer',
 		textAlign: 'center',
+		border: '1px solid',
 	},
 	selectedCard: {
-		height: '282px',
+		height: '290px',
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
 		border: '1px solid #002147',
