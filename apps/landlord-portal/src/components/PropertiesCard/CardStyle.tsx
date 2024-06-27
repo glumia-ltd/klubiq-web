@@ -8,7 +8,6 @@ const styles = {
 		alignItems: 'center',
 		cursor: 'pointer',
 		textAlign: 'center',
-		border: '1px solid',
 	},
 	selectedCard: {
 		height: '290px',
