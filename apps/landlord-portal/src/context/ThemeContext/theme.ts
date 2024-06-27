@@ -49,6 +49,7 @@ export const LightTheme: Theme = createTheme({
 			light: '#6699CC',
 			dark: '#FF6400',
 			contrastText: '#ffffff',
+			// dark:""
 		},
 
 		background: {
@@ -138,8 +139,8 @@ export const LightTheme: Theme = createTheme({
 		fontFamily: 'Maven Pro, sans-serif',
 		h1: {
 			fontWeight: 600,
-			fontSize: '3rem',
-			lineHeight: 1.5,
+			fontSize: '20px',
+			lineHeight: '24px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
@@ -169,19 +170,19 @@ export const LightTheme: Theme = createTheme({
 		h6: {
 			fontWeight: 600,
 			fontSize: '1rem',
-			lineHeight: 1,
+			lineHeight: '24px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body1: {
-			fontWeight: 400,
-			fontSize: '1rem',
-			lineHeight: 1,
+			fontWeight: 500,
+			fontSize: '24px',
+			lineHeight: '32px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 600,
-			fontSize: '14px',
-			lineHeight: '20px',
+			fontWeight: 400,
+			fontSize: '18px',
+			lineHeight: '28px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
@@ -376,8 +377,8 @@ export const DarkTheme: Theme = createTheme({
 		//   },
 		h1: {
 			fontWeight: 600,
-			fontSize: '3rem',
-			lineHeight: 1.5,
+			fontSize: '20px',
+			lineHeight: '24px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
@@ -412,15 +413,15 @@ export const DarkTheme: Theme = createTheme({
 		},
 
 		body1: {
-			fontWeight: 400,
-			fontSize: '1rem',
-			lineHeight: 1,
+			fontWeight: 500,
+			fontSize: '24px',
+			lineHeight: '32px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 600,
-			fontSize: '14px',
-			lineHeight: '20px',
+			fontWeight: 400,
+			fontSize: '18px',
+			lineHeight: '28px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
