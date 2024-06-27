@@ -5,7 +5,7 @@ import PropertyLayoutStyle from './PropertyLayoutStyle';
 import myImage1 from '../assets/images/house.svg';
 import myImage3 from '../assets/images/emojione-monotone_houses.svg';
 import myImage2 from '../assets/images/emojione-monotone_office-building.svg';
-type Props = {};
+// type Props = {};
 interface CardData {
 	id: number;
 	title: string;
@@ -14,11 +14,11 @@ interface CardData {
 	src: string;
 	alt: string;
 }
-const PropertyCategoryLayout = (props: Props) => {
+const PropertyCategoryLayout = () => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 	const handleCardClick = (id: number) => {
-		console.log('Card clicked', id);
-		setSelectedCard(id);
+		setSelectedCard((prevId) => (prevId === id ? null : id));
+		console.log('Selected card ID:', id === selectedCard ? null : id);
 	};
 
 	const data: CardData[] = [
@@ -58,6 +58,7 @@ const PropertyCategoryLayout = (props: Props) => {
 						gutterBottom
 						textTransform={'capitalize'}
 						mb={'24px'}
+						sx={PropertyLayoutStyle.header}
 					>
 						Property Category
 					</Typography>

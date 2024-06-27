@@ -29,14 +29,20 @@ const PropertiesCard = ({
 		>
 			<Stack direction='column' spacing={3}>
 				<Box>
-					<img src={src} alt={alt} style={{ width: '60px', height: '60px' }} />
+					<Box component='img' src={src} alt={alt} sx={CardStyle.imageStyle} />
 				</Box>
-				<Typography variant='body1' color='text.primary'>
+				<Typography variant='body1' color='text.primary' sx={CardStyle.header}>
 					{heading}
 				</Typography>
-				<Typography variant='body2' color='text.primary'>
-					{subtext}{' '}
-				</Typography>
+				<Box>
+					<Typography
+						variant='body2'
+						color='text.primary'
+						sx={CardStyle.subtext}
+					>
+						{subtext}{' '}
+					</Typography>
+				</Box>
 			</Stack>
 		</Card>
 	);
