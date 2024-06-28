@@ -42,7 +42,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				placeholder='Search Transactions,customers'
 				sx={{
 					width: { xs: '50px', sm: '250px', md: '320px' },
-					height: '44px',
+					height: '45px',
 					padding: '0 4 0 4',
 					border: { xs: 'none' },
 					'& fieldset': {
@@ -55,6 +55,10 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 							<SearchIcon />
 						</InputAdornment>
 					),
+
+					sx: {
+						height: '45px',
+					},
 				}}
 				variant='outlined'
 			/>

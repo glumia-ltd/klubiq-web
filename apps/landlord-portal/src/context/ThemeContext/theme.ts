@@ -109,7 +109,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: 'white',
-					height: '2.7rem',
+					// height: '45px',
 					borderRadius: '0.5rem',
 				},
 			},
@@ -308,7 +308,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: '#0F0F0F',
-					height: '2.7rem',
+					// height: '2.7rem',
 					borderRadius: '0.5rem',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
@@ -406,7 +406,7 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
-			fontWeight: 800,
+			fontWeight: 600,
 			// fontSize: '1rem',
 			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',

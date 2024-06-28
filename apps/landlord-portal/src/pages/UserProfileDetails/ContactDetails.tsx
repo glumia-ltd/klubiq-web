@@ -67,6 +67,11 @@ const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
 					type='text'
 					formik={formik}
 					disabled
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item sm={12} xs={12} lg={12}>
@@ -75,6 +80,11 @@ const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
 					label='Phone Number'
 					formik={formik}
 					type='text'
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item sm={12} xs={12} lg={12}>
@@ -83,6 +93,11 @@ const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
 					label='Addresss'
 					type='text'
 					formik={formik}
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item sm={12} xs={12} lg={12}>

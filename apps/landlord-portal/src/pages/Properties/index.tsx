@@ -1,11 +1,13 @@
 import { Container } from '@mui/material';
 import ViewPort from '../../components/Viewport/ViewPort';
-import PropertyCategoryLayout from '../../Layouts/PropertyCategoryLayout';
+import PropertyCategoryLayout from '../../Layouts/PropertiesCategoryLayout';
+import PropertiesFormLayout from '../../Layouts/PropertiesFormLayout';
 const Property = () => {
 	return (
 		<ViewPort>
 			<Container maxWidth='xl'>
-				<PropertyCategoryLayout />
+				{/* <PropertyCategoryLayout /> */}
+				<PropertiesFormLayout />
 			</Container>
 		</ViewPort>
 	);

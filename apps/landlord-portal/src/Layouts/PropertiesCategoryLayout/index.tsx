@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import PropertiesCard from '../components/PropertiesCard';
+import PropertiesCard from '../../components/PropertiesCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyLayoutStyle';
-import myImage1 from '../assets/images/house.svg';
-import myImage3 from '../assets/images/emojione-monotone_houses.svg';
-import myImage2 from '../assets/images/emojione-monotone_office-building.svg';
+import myImage1 from '../../assets/images/house.svg';
+import myImage3 from '../../assets/images/emojione-monotone_houses.svg';
+import myImage2 from '../../assets/images/emojione-monotone_office-building.svg';
 // type Props = {};
 interface CardData {
 	id: number;
