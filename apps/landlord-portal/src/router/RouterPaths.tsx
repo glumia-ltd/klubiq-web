@@ -29,7 +29,18 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
 
-			<Route path='/properties' element={<Properties />} />
+			<Route path='/properties/*' element={<Properties />}>
+				<Route
+					path='property-category'
+					element={<h1>This is property category</h1>}
+				/>
+				<Route
+					path='property-details'
+					element={<h1>This is property details</h1>}
+				/>
+
+				<Route path='*' element={<Navigate to='/' replace />} />
+			</Route>
 
 			<Route element={<PrivateRoute />}>
 				<Route path='/dashboard' element={<DashBoard />} />
