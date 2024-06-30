@@ -1,3 +1,5 @@
+import { borderRadius } from '@mui/system';
+
 const styles = {
 	containerStyle: {
 		overflow: 'auto',
@@ -30,6 +32,27 @@ const styles = {
 		background: '#ffffff',
 		fontSize: '14px',
 		minWidth: '9rem',
+		minHeight: '2rem',
+	},
+
+	stepperContainer: {
+		width: '80%',
+		margin: '51px auto',
+	},
+
+	buttonContainer: {
+		display: 'flex',
+		gap: '16px',
+		justifyContent: 'flex-end',
+	},
+
+	directionButton: {
+		display: 'flex',
+		width: '11.25rem',
+		height: '2.5rem',
+		padding: '0.5rem 0.9rem',
+		borderRadius: '0.6rem',
+		gap: '0.6rem',
 	},
 };
 

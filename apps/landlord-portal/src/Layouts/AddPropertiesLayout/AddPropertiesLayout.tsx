@@ -2,6 +2,9 @@ import { Button, Container, Grid, Typography } from '@mui/material';
 import { FC, ReactElement } from 'react';
 import styles from './AddPropertiesStyle';
 import leftArrow from '../../assets/images/arrow-left.svg';
+import { CustomStepper } from '../../components/CustomStepper';
+import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 
 export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	children,
@@ -25,8 +28,24 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						<Typography>Save draft</Typography>
 					</Button>
 				</Grid>
+
+				<Grid sx={styles.stepperContainer}>
+					<CustomStepper />
+				</Grid>
 			</Grid>
+
 			{children}
+
+			<Grid sx={styles.buttonContainer}>
+				<Button variant='text' sx={styles.directionButton}>
+					<LeftArrowIcon />
+					<Typography>Previous</Typography>
+				</Button>
+				<Button variant='contained' sx={styles.directionButton}>
+					<Typography>Next</Typography>
+					<RightArrowIcon />
+				</Button>
+			</Grid>
 		</Container>
 	);
 };
