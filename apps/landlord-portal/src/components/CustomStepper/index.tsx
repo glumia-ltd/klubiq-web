@@ -8,13 +8,7 @@ import {
 	stepConnectorClasses,
 } from '@mui/material';
 import { HomeIcon } from '../Icons/HomeIcon';
-
-const steps = [
-	'Property Category',
-	'Property Details',
-	'Unit Type',
-	'Bank Account',
-];
+import { FC } from 'react';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { completed?: boolean; active?: boolean };
@@ -72,9 +66,12 @@ const LineConnector = styled(StepConnector)(() => ({
 	},
 }));
 
-export const CustomStepper = () => {
+export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
+	active,
+	steps,
+}) => {
 	return (
-		<Stepper alternativeLabel activeStep={2} connector={<LineConnector />}>
+		<Stepper alternativeLabel activeStep={active} connector={<LineConnector />}>
 			{steps.map((label) => {
 				return (
 					<Step key={label}>
