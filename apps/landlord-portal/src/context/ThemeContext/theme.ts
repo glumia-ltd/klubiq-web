@@ -388,13 +388,13 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h3: {
-			fontWeight: 600,
-			fontSize: '2rem',
-			lineHeight: 1.5,
+			fontWeight: 400,
+			fontSize: '10px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h4: {
-			fontWeight: 600,
+			fontWeight: 400,
 			fontSize: '1.5rem',
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
@@ -408,7 +408,7 @@ export const DarkTheme: Theme = createTheme({
 		h6: {
 			fontWeight: 600,
 			// fontSize: '1rem',
-			// lineHeight: 1,
+			lineHeight: '24px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 
@@ -420,8 +420,8 @@ export const DarkTheme: Theme = createTheme({
 		},
 		body2: {
 			fontWeight: 400,
-			fontSize: '18px',
-			lineHeight: '28px',
+			fontSize: '20px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {

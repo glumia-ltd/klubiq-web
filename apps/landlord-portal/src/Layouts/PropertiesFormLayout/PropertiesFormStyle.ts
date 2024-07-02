@@ -28,7 +28,6 @@ const styles = {
 		textAlign: 'center',
 	},
 	icon: {
-		// fontSize:"40px",
 		width: '40px',
 		height: '40px',
 	},
