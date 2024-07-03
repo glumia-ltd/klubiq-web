@@ -34,10 +34,10 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 						</Typography>
 					</Grid>
 					<Grid item xs={12}>
-						<FormControl>
+						<FormControl sx={styles.formControl}>
 							<RadioGroup defaultValue={defaultValue} onChange={onChange}>
 								{options.map((option, index) => (
-									<Grid item xs={12} key={index} sx={styles.box}>
+									<Grid container xs={12} key={index} sx={styles.box}>
 										<FormControlLabel
 											value={option.value}
 											control={<Radio />}
@@ -45,7 +45,7 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 											sx={styles.radioLabel}
 										/>
 										<Typography variant='body2' sx={styles.subText}>
-											{option.subtext}
+											{option?.subtext}
 										</Typography>
 									</Grid>
 								))}
