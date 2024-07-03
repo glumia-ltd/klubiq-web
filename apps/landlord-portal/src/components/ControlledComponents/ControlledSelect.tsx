@@ -39,7 +39,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 			sx={{
 				justifyContent: 'center',
 				m: 0.1,
-				minWidth: 50,
+				minWidth: 230,
 				...sx,
 			}}
 			spacing={1.2}

@@ -220,7 +220,7 @@ const GeneralInfo: React.FC = () => {
 								formik={formik}
 								inputProps={{
 									sx: {
-										height: '40px',
+										muiOutlinedInput: '40px',
 									},
 								}}
 							/>
@@ -234,7 +234,7 @@ const GeneralInfo: React.FC = () => {
 								options={states}
 								inputProps={{
 									sx: {
-										height: '40px',
+										muiOutlinedInput: '40px',
 									},
 								}}
 							/>
@@ -246,7 +246,7 @@ const GeneralInfo: React.FC = () => {
 								formik={formik}
 								inputProps={{
 									sx: {
-										height: '40px',
+										muiOutlinedInput: '40px',
 									},
 								}}
 							/>
