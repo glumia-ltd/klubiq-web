@@ -37,7 +37,7 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 						<FormControl sx={styles.formControl}>
 							<RadioGroup defaultValue={defaultValue} onChange={onChange}>
 								{options.map((option, index) => (
-									<Grid container xs={12} key={index} sx={styles.box}>
+									<Grid container item xs={12} key={index} sx={styles.box}>
 										<FormControlLabel
 											value={option.value}
 											control={<Radio />}

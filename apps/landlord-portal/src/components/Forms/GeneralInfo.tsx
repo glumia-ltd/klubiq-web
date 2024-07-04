@@ -135,6 +135,7 @@ const GeneralInfo: React.FC = () => {
 		const unitToClone = { ...formik.values.units[index] };
 		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
 	};
+
 	// const removeUnit = (index: number) => {
 	// 	const units = [...formik.values.units];
 	// 	units.splice(index, 1);

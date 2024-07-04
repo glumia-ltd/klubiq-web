@@ -1,5 +1,3 @@
-import { display, minWidth } from '@mui/system';
-
 const styles = {
 	card: {
 		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
@@ -33,7 +31,7 @@ const styles = {
 		},
 	},
 	box: {
-		border: '1px solid #1B1B1B',
+		border: '1px solid',
 		padding: { xs: '10px', sm: '10px', md: '14px', lg: '16px' },
 		marginBottom: '15px',
 		borderRadius: '8px',
