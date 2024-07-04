@@ -132,6 +132,14 @@ export const LightTheme: Theme = createTheme({
 				disableRipple: true,
 			},
 		},
+		MuiStep: {
+			styleOverrides: {
+				root: {
+					padding: '0px',
+					fontWeight: '100',
+				},
+			},
+		},
 	},
 
 	typography: {

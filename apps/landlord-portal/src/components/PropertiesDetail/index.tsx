@@ -21,7 +21,7 @@ const optionTwo = [
 	{ value: 'one', label: 'Single Unit' },
 	{ value: 'other', label: 'Multi Unit' },
 ];
-const PropertiesDetailsForm = (props: Props) => {
+const UnitType = (props: Props) => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
@@ -45,4 +45,4 @@ const PropertiesDetailsForm = (props: Props) => {
 	);
 };
 
-export default PropertiesDetailsForm;
+export default UnitType;

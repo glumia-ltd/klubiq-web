@@ -9,10 +9,11 @@ import {
 } from '@mui/material';
 import { HomeIcon } from '../Icons/HomeIcon';
 import { FC } from 'react';
+import { styles } from './styles';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { completed?: boolean; active?: boolean };
-}>(({ ownerState }) => ({
+}>(({ theme, ownerState }) => ({
 	backgroundColor: '#fff',
 	zIndex: 1,
 	width: 56,
@@ -22,15 +23,27 @@ const StepIconRoot = styled('div')<{
 	justifyContent: 'center',
 	alignItems: 'center',
 	border: '1px solid #333',
+
 	...(ownerState.active && {
 		backgroundColor: '#fff',
 		color: '#002147',
 		border: '3px solid #002147',
+		fontWeight: '900',
 	}),
 	...(ownerState.completed && {
 		backgroundColor: '#002147',
 		color: '#fff',
+		fontWeight: '700',
 	}),
+
+	[theme.breakpoints.down('sm')]: {
+		width: 46,
+		height: 46,
+	},
+	[theme.breakpoints.down('xs')]: {
+		width: 36,
+		height: 36,
+	},
 }));
 
 const StepIcon = (props: StepIconProps) => {
@@ -71,11 +84,25 @@ export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
 	steps,
 }) => {
 	return (
-		<Stepper alternativeLabel activeStep={active} connector={<LineConnector />}>
+		<Stepper
+			alternativeLabel
+			activeStep={active}
+			connector={<LineConnector />}
+			sx={styles.stepper}
+		>
 			{steps.map((label) => {
 				return (
 					<Step key={label}>
-						<StepLabel StepIconComponent={StepIcon}>{label}</StepLabel>
+						<StepLabel
+							StepIconComponent={StepIcon}
+							sx={{
+								'& .MuiStepLabel-label': {
+									fontWeight: 'normal',
+								},
+							}}
+						>
+							{label}
+						</StepLabel>
 					</Step>
 				);
 			})}
