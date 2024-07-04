@@ -16,7 +16,6 @@ import {
 	Button,
 	Tooltip,
 } from '@mui/material';
-
 import CloseIcon from '@mui/icons-material/Close';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 const notifications = [
