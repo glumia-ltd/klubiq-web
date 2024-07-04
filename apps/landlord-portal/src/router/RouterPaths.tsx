@@ -17,7 +17,7 @@ import Support from '../pages/Support';
 import Message from '../pages/Message';
 import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
-import Properties from '../pages/Properties';
+import Properties from '../pages/PropertiesPage';
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
