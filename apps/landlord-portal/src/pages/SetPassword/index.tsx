@@ -132,6 +132,11 @@ const SetPassword = () => {
 									label='Password'
 									type='password'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 
@@ -141,6 +146,11 @@ const SetPassword = () => {
 									label='Confirm password'
 									type='password'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 

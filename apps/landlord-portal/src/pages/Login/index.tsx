@@ -215,6 +215,11 @@ const Login = () => {
 									type='email'
 									placeholder='johndoe@example.com'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 
@@ -224,6 +229,11 @@ const Login = () => {
 									label='Password'
 									type='password'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 							<Grid
