@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropertiesCard from '../../components/PropertiesCard';
 import { Grid, Typography, Card } from '@mui/material';
-import PropertyLayoutStyle from './PropertyLayoutStyle';
+import PropertyLayoutStyle from './PropertyCategoryStyle';
 import myImage1 from '../../assets/images/house.svg';
 import myImage3 from '../../assets/images/emojione-monotone_houses.svg';
 import myImage2 from '../../assets/images/emojione-monotone_office-building.svg';
@@ -14,7 +14,7 @@ interface CardData {
 	src: string;
 	alt: string;
 }
-const PropertyCategoryLayout = () => {
+const PropertyCategory = () => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 	const handleCardClick = (id: number) => {
 		setSelectedCard((prevId) => (prevId === id ? null : id));
@@ -83,4 +83,4 @@ const PropertyCategoryLayout = () => {
 	);
 };
 
-export default PropertyCategoryLayout;
+export default PropertyCategory;

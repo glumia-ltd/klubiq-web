@@ -1,15 +1,15 @@
 import { Container } from '@mui/material';
 import ViewPort from '../../components/Viewport/ViewPort';
-import PropertiesDetailsForm from '../../Layouts/PropertiesDetail';
-// import PropertyCategoryLayout from '../../Layouts/PropertiesCategoryLayout';
-// import PropertiesFormLayout from '../../Layouts/PropertiesFormLayout';
+import { AddPropertiesLayout } from '../../Layouts/AddPropertiesLayout/AddPropertiesLayout';
+import { Outlet } from 'react-router-dom';
+
 const Property = () => {
 	return (
 		<ViewPort>
 			<Container maxWidth='xl'>
-				{/* <PropertyCategoryLayout /> */}
-				{/* <PropertiesFormLayout /> */}
-				<PropertiesDetailsForm />
+				<AddPropertiesLayout>
+					<Outlet />
+				</AddPropertiesLayout>
 			</Container>
 		</ViewPort>
 	);

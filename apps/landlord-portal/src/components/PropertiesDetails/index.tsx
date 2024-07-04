@@ -1,9 +1,9 @@
 import { Grid, Card, IconButton, Box, Typography } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
-import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import PropertiesFormStyle from './PropertiesFormStyle';
+import ControlledSelect from '../ControlledComponents/ControlledSelect';
+import ControlledTextField from '../ControlledComponents/ControlledTextField';
+import PropertiesFormStyle from './PropertiesDetailsStyle';
 import { useState, useEffect } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 // import { Delete } from '@mui/icons-material';
@@ -26,7 +26,7 @@ type formValues = {
 	propertyImage: string[];
 };
 
-const PropertiesFormLayout = () => {
+const PropertiesDetails = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 
 	const property = [
@@ -210,4 +210,4 @@ const PropertiesFormLayout = () => {
 	);
 };
 
-export default PropertiesFormLayout;
+export default PropertiesDetails;
