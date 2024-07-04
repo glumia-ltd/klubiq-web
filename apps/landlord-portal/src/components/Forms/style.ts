@@ -12,6 +12,7 @@ const styles = {
 		minHeight: '26px',
 		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
 		borderRadius: '8px',
+		width: '100%',
 		// maxWidth: '1150px',
 		alignItems: 'center',
 		JustifyContent: 'center',
@@ -30,6 +31,7 @@ const styles = {
 		fontSize: { xs: '13px', sm: '16px', md: '15px', lg: '16px' },
 		lineHeight: { xs: '20px', sm: '20px', md: '20px', lg: '20px' },
 		fontWeight: '600px',
+		marginBottom: '15px',
 	},
 	addButton: {
 		display: 'flex',
@@ -48,18 +50,22 @@ const styles = {
 		justifyContent: 'space-between',
 		height: '34px',
 		alignItems: 'center',
-		// width:"1084px",
-		// padding: "0",
+		width: '100%',
+		padding: { xs: '10px', sm: '10px', md: '10px', lg: '15px' },
 		// border: "1px  solid",
 		elevation: 'none',
 		borderRadius: '0',
 	},
 	boxContent: {
-		maxWidth: '1088px',
 		border: '1px  solid',
-		padding: '2px',
 		marginBottom: '15px',
-		// padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
+		alignItems: 'left',
+	},
+
+	cardContent: {
+		// maxWidth: '1088px',
+		marginBottom: '15px',
+		padding: { xs: '10px', sm: '10px', md: '15px', lg: '15px' },
 	},
 };
 export default styles;

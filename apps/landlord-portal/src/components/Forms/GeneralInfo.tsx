@@ -7,11 +7,12 @@ import {
 	FormControlLabel,
 	Checkbox,
 	Dialog,
+	Box,
 } from '@mui/material';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
 // import DeleteIcon from '@mui/icons-material/Delete';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BedIcon from '@mui/icons-material/Bed';
 import BathtubIcon from '@mui/icons-material/Bathtub';
 import * as yup from 'yup';
@@ -22,6 +23,7 @@ import ControlledSelect from '../../components/ControlledComponents/ControlledSe
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
+import cloneIcon from '../../assets/images/Vector.svg';
 
 const validationSchema = yup.object({
 	streetAddress: yup.string().required('This field is required'),
@@ -32,7 +34,7 @@ const validationSchema = yup.object({
 	state: yup.string().required('Select an option'),
 	units: yup.array().of(
 		yup.object({
-			name: yup.string().required('Required'),
+			description: yup.string().required('Required'),
 			beds: yup
 				.number()
 				.required('Required')
@@ -59,7 +61,7 @@ type FormValues = {
 	state: string;
 	city: string;
 	units: {
-		name: string;
+		description: string;
 		beds: number;
 		baths: number;
 		guestBaths: number;
@@ -80,7 +82,7 @@ const countries = CountryList.map((item) => ({
 
 const GeneralInfo: React.FC = () => {
 	const [open, setOpen] = useState(false);
-	const [currentUnitIndex, setCurrentUnitIndex] = useState(0);
+	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
 
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
@@ -92,7 +94,6 @@ const GeneralInfo: React.FC = () => {
 	const onSubmit = async (values: FormValues) => {
 		console.log(values, 'val');
 	};
-
 	const formik = useFormik({
 		initialValues: {
 			streetAddress: '',
@@ -103,10 +104,10 @@ const GeneralInfo: React.FC = () => {
 			city: '',
 			units: [
 				{
-					name: 'Unit 1',
-					beds: 5,
-					baths: 5,
-					guestBaths: 1,
+					description: '',
+					beds: 0,
+					baths: 0,
+					guestBaths: 0,
 					floorPlan: '',
 					amenities: [],
 				},
@@ -120,7 +121,7 @@ const GeneralInfo: React.FC = () => {
 		formik.setFieldValue('units', [
 			...formik.values.units,
 			{
-				name: '',
+				description: '',
 				beds: 0,
 				baths: 0,
 				guestBaths: 0,
@@ -130,6 +131,10 @@ const GeneralInfo: React.FC = () => {
 		]);
 	};
 
+	const cloneUnit = (index: number) => {
+		const unitToClone = { ...formik.values.units[index] };
+		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
+	};
 	// const removeUnit = (index: number) => {
 	// 	const units = [...formik.values.units];
 	// 	units.splice(index, 1);
@@ -146,7 +151,7 @@ const GeneralInfo: React.FC = () => {
 	];
 
 	const renderAmenities = () => {
-		if (formik.values.units[currentUnitIndex]) {
+		if (currentUnitIndex !== null && formik.values.units[currentUnitIndex]) {
 			return amenitiesOptions.map((amenity) => (
 				<FormControlLabel
 					key={amenity}
@@ -154,7 +159,9 @@ const GeneralInfo: React.FC = () => {
 						<Checkbox
 							name={`units.${currentUnitIndex}.amenities`}
 							value={amenity}
-							//   checked={formik.values.units[currentUnitIndex].amenities.includes(amenity)}
+							// checked={
+							// 	formik.values.units[currentUnitIndex]?.amenities.includes(amenity) || false
+							//   }
 							onChange={formik.handleChange}
 						/>
 					}
@@ -164,10 +171,11 @@ const GeneralInfo: React.FC = () => {
 		}
 		return null;
 	};
+	console.log(formik.values, 'val3');
 
 	return (
 		<Grid container spacing={1}>
-			<Grid xs={12}>
+			<Grid container>
 				<Card sx={styles.card}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
@@ -255,7 +263,7 @@ const GeneralInfo: React.FC = () => {
 				</Card>
 			</Grid>
 
-			<Grid xs={12}>
+			<Grid container>
 				<Card sx={styles.cardTwo}>
 					<Grid container spacing={0}>
 						<Grid item xs={12} sx={styles.addButton}>
@@ -264,55 +272,65 @@ const GeneralInfo: React.FC = () => {
 							</Button>
 						</Grid>
 						{formik.values.units.map((unit, index) => (
-							<Grid container spacing={0} key={index} sx={styles.boxContent}>
-								<Grid item xs={12}>
-									<Card sx={styles.titleDiv}>
-										<Typography
-											fontWeight={'500'}
-											fontSize={'16px'}
-											variant='h6'
-										>
-											Title
-										</Typography>
-										<IconButton edge='end'>
-											<MoreHorizIcon />
-										</IconButton>
-									</Card>
-								</Grid>
-								<Grid item xs={12}>
-									<Typography variant='h6' sx={styles.subText}>
-										Unit number or name
-									</Typography>
-								</Grid>
-								<Grid item xs={12} md={12}>
-									<ControlledTextField
-										name={`units.${index}.name`}
-										label='Description'
-										formik={formik}
-										inputProps={{
-											sx: {
-												height: '40px',
-											},
-										}}
-									/>
-								</Grid>
-								<Grid item xs={12}>
-									<Typography variant='h6' sx={styles.subText}>
-										Unit Details
-									</Typography>
-								</Grid>
+							<Grid container spacing={0} key={index}>
+								<Grid container spacing={0} sx={styles.boxContent}>
+									<Grid item xs={12}>
+										<Card sx={styles.titleDiv}>
+											<Typography
+												fontWeight={'500'}
+												fontSize={'16px'}
+												variant='h6'
+											>
+												Title
+											</Typography>
+											<Box>
+												<IconButton edge='end'>
+													<ExpandLessIcon />
+												</IconButton>
+												<IconButton edge='end'>
+													<MoreVertIcon />
+												</IconButton>
+											</Box>
+										</Card>
+									</Grid>
+									<Grid container spacing={0} sx={styles.cardContent}>
+										<Grid item xs={12}>
+											<Typography variant='h6' sx={styles.subText}>
+												Unit number or name
+											</Typography>
+										</Grid>
+										<Grid item xs={12} md={12}>
+											<Typography fontWeight={400} fontSize={'14px'}>
+												Description{' '}
+											</Typography>
+											<ControlledTextField
+												name={`units.${index}.description`}
+												// label='Description'
+												formik={formik}
+												inputProps={{
+													sx: {
+														height: '40px',
+													},
+												}}
+											/>
+										</Grid>
+										<Grid item xs={12}>
+											<Typography variant='h6' sx={styles.subText}>
+												Unit Details
+											</Typography>
+										</Grid>
 
-								<Grid item xs={6} sx={styles.unitIcon}>
-									<IconButton onClick={() => handleOpen(index)}>
-										<BedIcon />
-										<Typography>{unit.beds}</Typography>
-									</IconButton>
-									<IconButton onClick={() => handleOpen(index)}>
-										<BathtubIcon />
-										<Typography>{unit.baths}</Typography>
-									</IconButton>
-								</Grid>
-								{/* <Grid item xs={12}>
+										<Grid item xs={6} sx={styles.unitIcon}>
+											<IconButton onClick={() => handleOpen(index)}>
+												<BedIcon />
+												<Typography>{unit.beds}</Typography>
+											</IconButton>
+											<IconButton onClick={() => handleOpen(index)}>
+												<BathtubIcon />
+												<Typography>{unit.baths}</Typography>
+											</IconButton>
+										</Grid>
+										{/* <Grid item xs={12}>
 									<Button
 										variant='outlined'
 										color='secondary'
@@ -322,6 +340,18 @@ const GeneralInfo: React.FC = () => {
 										Remove Unit
 									</Button>
 								</Grid> */}
+									</Grid>
+								</Grid>
+								<Grid item xs={12}>
+									<IconButton onClick={() => cloneUnit(index)}>
+										<img
+											src={cloneIcon}
+											alt='icon'
+											style={{ marginRight: '5px' }}
+										/>
+										<Typography fontSize={'14px'}>Clone</Typography>
+									</IconButton>
+								</Grid>
 							</Grid>
 						))}
 					</Grid>{' '}
