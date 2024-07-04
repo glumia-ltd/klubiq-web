@@ -48,8 +48,8 @@ const styles = {
 
 	directionButton: {
 		display: 'flex',
-		width: '11.25rem',
-		height: '2.5rem',
+		width: { xs: '7rem', sm: '9rem', md: '11rem', lg: '11.25rem' },
+		height: { xs: '2rem', sm: '2rem', md: '2.5rem', lg: '2.5rem' },
 		padding: '0.5rem 0.9rem',
 		borderRadius: '0.6rem',
 		gap: '0.6rem',
