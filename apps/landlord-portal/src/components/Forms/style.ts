@@ -1,3 +1,5 @@
+import { borderRadius } from '@mui/system';
+
 const styles = {
 	card: {
 		minHeight: '26px',
@@ -66,6 +68,10 @@ const styles = {
 		// maxWidth: '1088px',
 		marginBottom: '15px',
 		padding: { xs: '10px', sm: '10px', md: '15px', lg: '15px' },
+	},
+	cloneButton: {
+		borderRadius: '20px',
+		marginBottom: '5px',
 	},
 };
 export default styles;

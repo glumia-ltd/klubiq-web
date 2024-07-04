@@ -344,7 +344,10 @@ const GeneralInfo: React.FC = () => {
 									</Grid>
 								</Grid>
 								<Grid item xs={12}>
-									<IconButton onClick={() => cloneUnit(index)}>
+									<IconButton
+										onClick={() => cloneUnit(index)}
+										sx={styles.cloneButton}
+									>
 										<img
 											src={cloneIcon}
 											alt='icon'
