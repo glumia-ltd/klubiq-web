@@ -13,7 +13,7 @@ const styles = {
 		height: '290px',
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
-		border: '1px solid #002147',
+		outline: '1px solid #002147',
 		cursor: 'pointer',
 		maxWidth: '320px',
 		justifyContent: 'center',
