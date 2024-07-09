@@ -1,9 +1,9 @@
 const CardStyle = {
 	columnCard: {
-		minHeight: { xs: '300px', sm: '350px', md: '400px', lg: '500px' },
+		minHeight: { xs: '300px', sm: '350px', md: '500px', lg: '500px' },
 		padding: { xs: '20px', sm: '16px', md: '16px', lg: '16px' },
 		borderRadius: '10px',
-		maxWidth: { xs: '400px', sm: '360px', md: '320px', lg: '362px' },
+		maxWidth: { xs: '400px', sm: '362px', md: '360px', lg: '362px' },
 		border: '0.5px',
 		textAlign: 'left',
 	},
@@ -29,15 +29,15 @@ const CardStyle = {
 		fontWeight: '700',
 	},
 	bottomText: {
-		fontSize: { xs: '13px', sm: '14px', md: '14px', lg: '14px' },
+		fontSize: { xs: '13px', sm: '14px', md: '16px', lg: '16px' },
 		lineHeight: { xs: '15px', sm: '14px', md: '20px', lg: '20px' },
-		fontWeight: '600',
+		fontWeight: '600px',
 	},
 	columnImage: {
-		minWidth: { xs: '150px', sx: '300px', md: '200px', lg: '330px' },
+		minWidth: { xs: '150px', sx: '300px', md: '100px', lg: '330px' },
 		borderRadius: '3px',
 
-		maxHeight: { xs: '110px', sx: '200px', md: '200px', lg: '200px' },
+		maxHeight: { xs: '110px', sx: '250px', md: '200px', lg: '200px' },
 	},
 	rowImage: {
 		// maxWidth: { xs: "100%", sx: "400px", md: "400px", lg: "400px" },
@@ -61,33 +61,37 @@ const CardStyle = {
 		display: 'flex',
 		textAlign: 'left',
 		alignItems: 'center',
-		marginBottom: '6px',
+		marginBottom: '12px',
 		justifyContent: 'space-between',
 	},
 	content: {
 		alignItems: 'right',
 		padding: '0px',
-		marginBottom: '6px',
+		marginBottom: '12px',
 	},
 	buttonTwoDiv: {
 		display: 'flex',
 		justifyContent: 'flex-end',
+		cursor: 'pointer',
 	},
 	buttonTwo: {
 		borderBottom: '1px solid ',
-		paddingBottom: '0px',
-		marginBottom: '0px',
 		fontsize: '16px',
-		fontWeight: '500px',
+		fontWeight: '600px',
 	},
 	button: {
 		borderRadius: '12px',
 		width: '64px',
 		height: '26px',
-		padding: '4px',
+		padding: '8px',
 		fontSize: '12px',
 		fontWeight: '500px',
 		gap: '10px',
+	},
+	lastBox: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
 };
 

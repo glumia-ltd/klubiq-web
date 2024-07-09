@@ -7,6 +7,7 @@ import {
 	Grid,
 	Button,
 	Box,
+	Link,
 } from '@mui/material';
 import CardStyle from './CardStyle';
 import LocationIcon from '../../assets/images/Location.svg';
@@ -39,11 +40,11 @@ const ViewPropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
 	return (
 		<Card sx={layout === 'column' ? CardStyle.columnCard : CardStyle.rowCard}>
-			<Grid container direction={layout} spacing={1}>
-				<Grid item xs={12} sm={layout === 'row' ? 12 : 12}>
+			<Grid container direction={layout} spacing={2}>
+				<Grid item xs={12}>
 					<Typography variant='h1' sx={CardStyle.headerText}>
-						Residential Housing{' '}
-					</Typography>{' '}
+						Residential Housing
+					</Typography>
 				</Grid>
 				<Grid
 					item
@@ -76,51 +77,52 @@ const ViewPropertyCard: React.FC<PropertyCardProps> = ({
 							<Button
 								variant='contained'
 								color={status === 'For Sale' ? 'error' : 'success'}
-								// background={status === 'For Sale' ? 'error' : 'primary'}
 								sx={CardStyle.button}
 							>
 								{status}
-							</Button>{' '}
+							</Button>
 						</Box>
-						<Box sx={CardStyle.iconDiv}>
-							<img src={LocationIcon} alt='icon' style={CardStyle.iconSize} />{' '}
-							<Typography
-								variant='body2'
-								color='text.secondary'
-								// alignItems={'center'}
-							>
+						<Box sx={CardStyle.iconDiv} height='30px'>
+							<img src={LocationIcon} alt='icon' style={CardStyle.iconSize} />
+							<Typography variant='body2' color='text.secondary'>
 								{address}
 							</Typography>
 						</Box>
-
 						<Box sx={CardStyle.iconDiv}>
-							<img src={BedIcon} alt='icon' style={CardStyle.iconSize} />{' '}
-							<Typography variant='body2' color='text.secondary' mr={1.5}>
+							<img src={BedIcon} alt='icon' style={CardStyle.iconSize} />
+							<Typography variant='body2' color='text.secondary' mr={0.5}>
 								{bedrooms} Bedrooms
 							</Typography>
-							<img src={BathroomIcon} alt='icon' style={CardStyle.iconSize} />{' '}
+							<img src={BathroomIcon} alt='icon' style={CardStyle.iconSize} />
 							<Typography variant='body2' color='text.secondary'>
 								{bathrooms} Bathrooms
 							</Typography>
 						</Box>
 						<Box sx={CardStyle.iconDiv}>
-							<img src={FloorIcon} alt='icon' style={CardStyle.iconSize} />{' '}
+							<img src={FloorIcon} alt='icon' style={CardStyle.iconSize} />
 							<Typography variant='body2' color='text.secondary' mr={0.5}>
 								{sqm} sqm
 							</Typography>
 						</Box>
-
-						<Typography
-							variant='h4'
-							sx={CardStyle.bottomText}
-							color='text.primary'
-							mb='15px'
-						>
-							{type}
-						</Typography>
-						<Box sx={{ width: '100%', borderBottom: '1px solid black' }} />
-						<Box sx={CardStyle.buttonTwoDiv}>
-							<Button sx={CardStyle.buttonTwo}>View Properties</Button>{' '}
+						<Box sx={layout === 'row' ? CardStyle.lastBox : {}}>
+							<Typography
+								variant='h4'
+								sx={CardStyle.bottomText}
+								color='text.primary'
+								mb='15px'
+							>
+								{type}
+							</Typography>
+							<Box
+								sx={{
+									width: layout === 'column' ? '100%' : 'none',
+									borderBottom: layout === 'column' ? '1px solid' : 'none',
+									mb: layout === 'column' ? 1 : 0,
+								}}
+							/>
+							<Box sx={CardStyle.buttonTwoDiv}>
+								<Link sx={CardStyle.buttonTwo}>View Properties</Link>
+							</Box>
 						</Box>
 					</CardContent>
 				</Grid>
