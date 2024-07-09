@@ -22,6 +22,7 @@ import Properties from '../pages/Properties';
 import PropertyCategory from '../components/PropertiesCategory';
 import PropertiesDetails from '../components/PropertiesDetails';
 import UnitType from '../components/PropertiesDetail';
+import Filter from '../components/Filter/Filter';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -34,13 +35,15 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
 
+			<Route path='/properties' element={<Filter />} />
+
 			<Route path='/properties/*' element={<Properties />}>
-				<Route index path='property-category' element={<PropertyCategory />} />
+				<Route path='property-category' element={<PropertyCategory />} />
 				<Route path='property-details' element={<PropertiesDetails />} />
 				<Route path='unit-type' element={<UnitType />} />
 				<Route path='bank-account' element={<h1>Page in development</h1>} />
 
-				<Route path='*' element={<Navigate to='/' replace />} />
+				<Route path='*' element={<Navigate to='/properties' replace />} />
 			</Route>
 
 			<Route element={<PrivateRoute />}>
