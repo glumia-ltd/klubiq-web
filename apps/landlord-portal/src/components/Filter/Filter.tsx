@@ -14,12 +14,10 @@ import {
 	Modal,
 	Box,
 	FormControl,
-	FormLabel,
 	RadioGroup,
 	FormControlLabel,
 	Radio,
 	Divider,
-	Checkbox,
 } from '@mui/material';
 
 import { styles } from './style';
@@ -70,6 +68,8 @@ const Filter = () => {
 
 	const [currentTitle, setCurrentTitle] = useState<string>();
 
+	const ArrayOfSelectedTitles = Object.keys(selectedTitle);
+
 	const [modalStyle, setModalStyle] = useState<{
 		[key: string]: string | number;
 	}>({});
@@ -104,13 +104,30 @@ const Filter = () => {
 		setCurrentTitle('');
 	};
 
-	console.log(selectedTitle);
+	const handleRemoveFilter = (filterTitle: string) => {
+		const updatedFilters = selectedTitle;
+		delete updatedFilters[filterTitle];
+
+		setCurrentTitle('');
+		setSelectedTitle({ ...updatedFilters });
+	};
 
 	return (
 		<Stack direction='row' spacing={2} alignItems='center'>
 			{displayOptions.map((entry) => {
 				const { title, options } = entry;
-				return (
+				console.log(ArrayOfSelectedTitles.includes(title));
+
+				return ArrayOfSelectedTitles.includes(title) ? (
+					<Grid style={styles.selectedButtonStyle}>
+						<div style={styles.selectedButtonContainer}>
+							<Typography sx={styles.text}>{title}</Typography>
+							<div onClick={() => handleRemoveFilter(title)}>
+								<img src={cancel} alt='filter button icon' />
+							</div>
+						</div>
+					</Grid>
+				) : (
 					<Grid key={title} sx={{ position: 'relative' }}>
 						<Grid>
 							<div
@@ -212,12 +229,6 @@ const Filter = () => {
 								</Modal>
 							</div>
 						</Grid>
-						{/* <Grid style={styles.selectedButtonStyle}>
-							<div style={styles.selectedButtonContainer}>
-								<Typography sx={styles.text}>{title}</Typography>
-								<img src={cancel} alt='filter button icon' />
-							</div>
-						</Grid> */}
 					</Grid>
 				);
 			})}

@@ -15,6 +15,7 @@ export const styles = {
 		gap: '8px',
 	},
 	selectedButtonStyle: {
+		marginTop: '10px',
 		background: '#002147',
 		display: 'flex',
 		borderRadius: '8px 0px 0px 8px',
@@ -26,9 +27,8 @@ export const styles = {
 		fontSize: '16px',
 		color: '#002147',
 		backgroundColor: '#fff',
-		lineHeight: '24px',
 		borderRadius: '10px',
-		padding: '4px 6px',
+		padding: '4px 4px',
 	},
 
 	labelWithIcon: {
