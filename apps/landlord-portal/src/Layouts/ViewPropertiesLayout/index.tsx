@@ -28,9 +28,6 @@ const properties = [
 const ViewPropertyLayout = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 
-	//   const toggleLayout = () => {
-	//     setLayout(prevLayout => (prevLayout === 'row' ? 'column' : 'row'));
-	//   };
 	const toggleLayout = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
 	};
