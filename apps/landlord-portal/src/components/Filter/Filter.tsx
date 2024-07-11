@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 
 import reverse from '../../assets/images/reverse.svg';
 import ascend from '../../assets/images/alpha-asc.svg';
@@ -29,51 +29,25 @@ type OptionsType = {
 	multiSelect?: boolean;
 }[];
 
-const displayOptions: OptionsType = [
-	{ title: 'Display', options: [{ label: 'All' }, { label: 'Archived' }] },
-	{
-		title: 'Purpose',
-		options: [{ label: 'All' }, { label: 'Lease' }, { label: 'Sell' }],
-	},
-	{
-		title: 'Unit type',
-		options: [{ label: 'Single Unit' }, { label: 'Multi Unit' }],
-	},
-	{
-		title: 'Sorting options',
-		options: [
-			{ label: 'Recently updated', icon: topBottom },
-			{ label: 'Newest', icon: reverse },
-			{ label: 'Oldest', icon: reverse },
-			{ label: 'Property name (A -> Z)', icon: ascend },
-			{ label: 'Property name (Z -> A)', icon: ascend },
-		],
-	},
-	{
-		title: 'Property Type',
-		options: [
-			{ label: 'Apartment' },
-			{ label: 'Duplex' },
-			{ label: 'Bungalow' },
-			{ label: 'Land' },
-			{ label: 'Terrace' },
-		],
-		multiSelect: true,
-	},
-];
+type selectedFilters = Record<string, string | string[]>;
 
-const Filter = () => {
-	const [selectedTitle, setSelectedTitle] = useState<
-		Record<string, string | string[]>
-	>({});
+type FilterType = {
+	filterList: OptionsType;
+	getFilterResult: (result: selectedFilters) => void;
+};
+
+type ModalStyleType = {
+	[key: string]: string | number;
+};
+
+const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
+	const [selectedTitle, setSelectedTitle] = useState<selectedFilters>({});
 
 	const [currentTitle, setCurrentTitle] = useState<string>();
 
 	const ArrayOfSelectedTitles = Object.keys(selectedTitle);
 
-	const [modalStyle, setModalStyle] = useState<{
-		[key: string]: string | number;
-	}>({});
+	const [modalStyle, setModalStyle] = useState<ModalStyleType>({});
 
 	const divRef = useRef<Record<string, HTMLDivElement>>({});
 
@@ -103,28 +77,29 @@ const Filter = () => {
 
 	const handleCloseModal = () => {
 		setCurrentTitle('');
+
+		getFilterResult(selectedTitle);
 	};
 
 	const handleRemoveFilter = (filterTitle: string) => {
 		const updatedFilters = selectedTitle;
 		delete updatedFilters[filterTitle];
 
-		setCurrentTitle('');
-		setSelectedTitle({ ...updatedFilters });
-	};
+		getFilterResult({ ...updatedFilters });
 
-	console.log(divRef);
+		setSelectedTitle({ ...updatedFilters });
+		setCurrentTitle('');
+	};
 
 	return (
 		<Stack direction='row' spacing={2} alignItems='center'>
-			{displayOptions.map((entry) => {
+			{filterList.map((entry) => {
 				const { title, options } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
 					<Grid style={styles.selectedState} key={title}>
 						<div
 							ref={(element) => {
-								console.log('selected State', element);
 								if (element) {
 									divRef.current[title] = element;
 								} else {
@@ -141,10 +116,13 @@ const Filter = () => {
 							</div>
 						</div>
 
-						<div style={styles.selectedButtonDropDown}>
+						<div
+							style={styles.selectedButtonDropDown}
+							onClick={() => handleButtonClick(title)}
+						>
 							<Typography>{selectedTitle[title]}</Typography>
 
-							<div onClick={() => handleButtonClick(title)}>
+							<div>
 								<img
 									src={dropdown}
 									alt='filter button icon'

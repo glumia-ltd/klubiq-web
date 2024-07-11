@@ -24,6 +24,51 @@ import PropertiesDetails from '../components/PropertiesDetails';
 import UnitType from '../components/PropertiesDetail';
 import Filter from '../components/Filter/Filter';
 
+import reverse from '../assets/images/reverse.svg';
+import ascend from '../assets/images/alpha-asc.svg';
+import topBottom from '../assets/images/top-bottom.svg';
+
+type OptionsType = {
+	title: string;
+	options: { label: string; icon?: string }[];
+	multiSelect?: boolean;
+}[];
+
+const displayOptions: OptionsType = [
+	{ title: 'Display', options: [{ label: 'All' }, { label: 'Archived' }] },
+	{
+		title: 'Purpose',
+		options: [{ label: 'All' }, { label: 'Lease' }, { label: 'Sell' }],
+	},
+	{
+		title: 'Unit type',
+		options: [{ label: 'Single Unit' }, { label: 'Multi Unit' }],
+	},
+	{
+		title: 'Sorting options',
+		options: [
+			{ label: 'Recently updated', icon: topBottom },
+			{ label: 'Newest', icon: reverse },
+			{ label: 'Oldest', icon: reverse },
+			{ label: 'Property name (A -> Z)', icon: ascend },
+			{ label: 'Property name (Z -> A)', icon: ascend },
+		],
+	},
+	{
+		title: 'Property Type',
+		options: [
+			{ label: 'Apartment' },
+			{ label: 'Duplex' },
+			{ label: 'Bungalow' },
+			{ label: 'Land' },
+			{ label: 'Terrace' },
+		],
+		multiSelect: true,
+	},
+];
+
+type selectedFilters = Record<string, string | string[]>;
+
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
@@ -35,7 +80,15 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
 
-			<Route path='/properties' element={<Filter />} />
+			<Route
+				path='/properties'
+				element={
+					<Filter
+						filterList={displayOptions}
+						getFilterResult={(value: selectedFilters) => console.log(value)}
+					/>
+				}
+			/>
 
 			<Route path='/properties/*' element={<Properties />}>
 				<Route path='property-category' element={<PropertyCategory />} />
