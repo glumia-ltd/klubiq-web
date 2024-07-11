@@ -14,6 +14,13 @@ export const styles = {
 		alignItems: 'center',
 		gap: '8px',
 	},
+
+	selectedState: {
+		display: 'flex',
+		gap: '1px',
+		fontSize: '16px',
+	},
+
 	selectedButtonStyle: {
 		marginTop: '10px',
 		background: '#002147',
@@ -21,6 +28,28 @@ export const styles = {
 		borderRadius: '8px 0px 0px 8px',
 		cursor: 'pointer',
 		padding: '8px',
+	},
+
+	selectedButtonDropDown: {
+		cursor: 'pointer',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		gap: '8px',
+		marginTop: '10px',
+		padding: '8px',
+		color: '#fff',
+		borderRadius: '0px 8px 8px 0px',
+		background: '#002147',
+	},
+
+	dropdownIcon: {
+		display: 'flex',
+		alignItems: 'flex-end',
+		height: '20px',
+		width: '20px',
+		alignSelf: 'center',
+		margin: 'auto auto',
 	},
 
 	text: {
@@ -35,5 +64,24 @@ export const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+
+	applyButtonStyle: {
+		bgcolor: '#001F4B',
+		color: '#fff',
+		width: '70%',
+		margin: '0 auto',
+		borderRadius: '10px',
+		padding: '8px 14px',
+	},
+	modalBackgroundStyle: {
+		position: 'absolute',
+		padding: 2,
+		minWidth: 300,
+		border: '1px solid #001F4B',
+		borderRadius: 2,
+		backgroundColor: '#fff',
+		display: 'flex',
+		flexDirection: 'column',
 	},
 };

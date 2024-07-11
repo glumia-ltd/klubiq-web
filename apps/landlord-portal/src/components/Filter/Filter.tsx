@@ -5,6 +5,7 @@ import ascend from '../../assets/images/alpha-asc.svg';
 import topBottom from '../../assets/images/top-bottom.svg';
 import plus from '../../assets/images/plus.svg';
 import cancel from '../../assets/images/cancel-button.svg';
+import dropdown from '../../assets/images/dropdown.svg';
 
 import {
 	Grid,
@@ -112,19 +113,112 @@ const Filter = () => {
 		setSelectedTitle({ ...updatedFilters });
 	};
 
+	console.log(divRef);
+
 	return (
 		<Stack direction='row' spacing={2} alignItems='center'>
 			{displayOptions.map((entry) => {
 				const { title, options } = entry;
-				console.log(ArrayOfSelectedTitles.includes(title));
 
 				return ArrayOfSelectedTitles.includes(title) ? (
-					<Grid style={styles.selectedButtonStyle}>
-						<div style={styles.selectedButtonContainer}>
-							<Typography sx={styles.text}>{title}</Typography>
-							<div onClick={() => handleRemoveFilter(title)}>
-								<img src={cancel} alt='filter button icon' />
+					<Grid style={styles.selectedState} key={title}>
+						<div
+							ref={(element) => {
+								console.log('selected State', element);
+								if (element) {
+									divRef.current[title] = element;
+								} else {
+									delete divRef.current[title];
+								}
+							}}
+							style={styles.selectedButtonStyle}
+						>
+							<div style={styles.selectedButtonContainer}>
+								<Typography sx={styles.text}>{title}</Typography>
+								<div onClick={() => handleRemoveFilter(title)}>
+									<img src={cancel} alt='filter button icon' />
+								</div>
 							</div>
+						</div>
+
+						<div style={styles.selectedButtonDropDown}>
+							<Typography>{selectedTitle[title]}</Typography>
+
+							<div onClick={() => handleButtonClick(title)}>
+								<img
+									src={dropdown}
+									alt='filter button icon'
+									style={styles.dropdownIcon}
+								/>
+							</div>
+						</div>
+
+						<div
+							ref={(element) => {
+								if (element) {
+									modalRef.current[title] = element;
+								} else {
+									delete modalRef.current[title];
+								}
+							}}
+						>
+							<Modal open={title === currentTitle}>
+								<Box
+									sx={{
+										...styles.modalBackgroundStyle,
+										...modalStyle,
+									}}
+								>
+									<Typography
+										variant='h4'
+										sx={{
+											color: '#001F4B',
+											marginBottom: 2,
+											lineHeight: '28px',
+										}}
+									>
+										{title}
+									</Typography>
+									<FormControl component='fieldset'>
+										<RadioGroup
+											value={selectedTitle[title]}
+											onChange={(e) =>
+												setSelectedTitle({
+													...selectedTitle,
+													[title]: e.target.value,
+												})
+											}
+										>
+											{options.map((option) => {
+												const { label, icon } = option;
+
+												const labelWithIcon = (
+													<span style={styles.labelWithIcon}>
+														<img src={icon} alt='label icon' /> {label}
+													</span>
+												);
+
+												return (
+													<FormControlLabel
+														key={label}
+														value={label}
+														control={<Radio />}
+														label={icon ? labelWithIcon : label}
+													/>
+												);
+											})}
+										</RadioGroup>
+									</FormControl>
+									<Divider sx={{ marginY: 2 }} />
+									<Button
+										variant='contained'
+										sx={styles.applyButtonStyle}
+										onClick={handleCloseModal}
+									>
+										Apply
+									</Button>
+								</Box>
+							</Modal>
 						</div>
 					</Grid>
 				) : (
@@ -145,88 +239,6 @@ const Filter = () => {
 								>
 									<img src={plus} alt='filter button icon' /> {title}
 								</Button>
-							</div>
-
-							<div
-								ref={(element) => {
-									if (element) {
-										modalRef.current[title] = element;
-									} else {
-										delete modalRef.current[title];
-									}
-								}}
-							>
-								<Modal open={title === currentTitle}>
-									<Box
-										sx={{
-											position: 'absolute',
-											padding: 2,
-											minWidth: 300,
-											border: '1px solid #001F4B',
-											borderRadius: 2,
-											backgroundColor: '#fff',
-											display: 'flex',
-											flexDirection: 'column',
-											...modalStyle,
-										}}
-									>
-										<Typography
-											variant='h4'
-											sx={{
-												color: '#001F4B',
-												marginBottom: 2,
-												lineHeight: '28px',
-											}}
-										>
-											{title}
-										</Typography>
-										<FormControl component='fieldset'>
-											<RadioGroup
-												value={selectedTitle[title]}
-												onChange={(e) =>
-													setSelectedTitle({
-														...selectedTitle,
-														[title]: e.target.value,
-													})
-												}
-											>
-												{options.map((option) => {
-													const { label, icon } = option;
-
-													const labelWithIcon = (
-														<span style={styles.labelWithIcon}>
-															<img src={icon} alt='label icon' /> {label}
-														</span>
-													);
-
-													return (
-														<FormControlLabel
-															key={label}
-															value={label}
-															control={<Radio />}
-															label={icon ? labelWithIcon : label}
-														/>
-													);
-												})}
-											</RadioGroup>
-										</FormControl>
-										<Divider sx={{ marginY: 2 }} />
-										<Button
-											variant='contained'
-											sx={{
-												bgcolor: '#001F4B',
-												color: '#fff',
-												width: '70%',
-												margin: '0 auto',
-												borderRadius: '10px',
-												padding: '8px 14px',
-											}}
-											onClick={handleCloseModal}
-										>
-											Apply
-										</Button>
-									</Box>
-								</Modal>
 							</div>
 						</Grid>
 					</Grid>
