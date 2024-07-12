@@ -17,11 +17,13 @@ import Support from '../pages/Support';
 import Message from '../pages/Message';
 import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
-import Properties from '../pages/Properties';
+import AddProperties from '../pages/AddProperties';
 
 import PropertyCategory from '../components/PropertiesCategory';
 import PropertiesDetails from '../components/PropertiesDetails';
 import UnitType from '../components/PropertiesDetail';
+
+import Properties from '../pages/Properties';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -34,13 +36,15 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
 
-			<Route path='/properties/*' element={<Properties />}>
-				<Route index path='property-category' element={<PropertyCategory />} />
+			<Route path='/properties' element={<Properties />} />
+
+			<Route path='/properties/*' element={<AddProperties />}>
+				<Route path='property-category' element={<PropertyCategory />} />
 				<Route path='property-details' element={<PropertiesDetails />} />
 				<Route path='unit-type' element={<UnitType />} />
 				<Route path='bank-account' element={<h1>Page in development</h1>} />
 
-				<Route path='*' element={<Navigate to='/' replace />} />
+				<Route path='*' element={<Navigate to='/properties' replace />} />
 			</Route>
 
 			<Route element={<PrivateRoute />}>

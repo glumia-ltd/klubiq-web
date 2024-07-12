@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PropertiesCard from '../../components/PropertiesCard';
+import PropertyCategoryCard from '../PropertyCategoryCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
 import myImage1 from '../../assets/images/house.svg';
@@ -65,7 +65,7 @@ const PropertyCategory = () => {
 				</Grid>
 				{data.map((item) => (
 					<Grid item xs={4} sm={4} md={4} key={item.id}>
-						<PropertiesCard
+						<PropertyCategoryCard
 							key={item.id}
 							heading={item.title}
 							subtext={item.description}
