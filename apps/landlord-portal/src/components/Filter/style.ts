@@ -1,12 +1,9 @@
-import { maxHeight, minHeight } from '@mui/system';
-
 export const styles = {
 	buttonStyle: {
 		display: 'flex',
 		gap: '8px',
 		padding: '8px',
 		outline: '1px dashed #002147',
-		// marginTop: '10px',
 		borderRadius: '8px',
 	},
 
