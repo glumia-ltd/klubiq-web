@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	Grid,
 	Button,
@@ -21,9 +21,20 @@ import { data, filterOptions } from './data';
 const Properties = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 
+	const inputRef = useRef<HTMLElement>(null);
+
 	const toggleLayout = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
 	};
+
+	useEffect(() => {
+		if (inputRef.current) {
+			const inputElement: HTMLInputElement | null =
+				inputRef.current.querySelector('.MuiInputBase-input');
+
+			inputElement && inputElement.focus();
+		}
+	}, []);
 
 	return (
 		<ViewPort>
@@ -44,6 +55,7 @@ const Properties = () => {
 							<SearchIcon />
 						</IconButton>
 						<InputBase
+							ref={inputRef}
 							sx={{ ml: 1, flex: 1 }}
 							placeholder='Search Properties'
 							inputProps={{ 'aria-label': 'search properties' }}

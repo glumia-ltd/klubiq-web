@@ -1,10 +1,12 @@
+import { maxHeight, minHeight } from '@mui/system';
+
 export const styles = {
 	buttonStyle: {
 		display: 'flex',
 		gap: '8px',
-		padding: '8px ',
+		padding: '8px',
 		outline: '1px dashed #002147',
-		marginTop: '10px',
+		// marginTop: '10px',
 		borderRadius: '8px',
 	},
 
@@ -18,16 +20,21 @@ export const styles = {
 	selectedState: {
 		display: 'flex',
 		gap: '1px',
-		fontSize: '16px',
+	},
+
+	filterContainer: {
+		display: 'flex',
+		alignItems: 'center',
+		minHeight: '45px',
+		marginTop: '16px',
 	},
 
 	selectedButtonStyle: {
-		marginTop: '10px',
 		background: '#002147',
 		display: 'flex',
 		borderRadius: '8px 0px 0px 8px',
 		cursor: 'pointer',
-		padding: '8px',
+		padding: '8px 8px',
 	},
 
 	selectedButtonDropDown: {
@@ -36,7 +43,7 @@ export const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 		gap: '8px',
-		marginTop: '10px',
+
 		padding: '8px',
 		color: '#fff',
 		borderRadius: '0px 8px 8px 0px',

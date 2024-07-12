@@ -93,7 +93,12 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	};
 
 	return (
-		<Stack direction='row' spacing={2} alignItems='center'>
+		<Stack
+			direction='row'
+			spacing={2}
+			alignItems='center'
+			sx={styles.filterContainer}
+		>
 			{filterList.map((entry) => {
 				const { title, options } = entry;
 
