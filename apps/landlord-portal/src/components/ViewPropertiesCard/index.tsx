@@ -115,7 +115,7 @@ const ViewPropertyCard: React.FC<PropertyCardProps> = ({
 							</Typography>
 							<Box
 								sx={{
-									width: layout === 'column' ? '100%' : 'none',
+									width: layout === 'column' ? '100%' : '0',
 									borderBottom: layout === 'column' ? '1px solid' : 'none',
 									mb: layout === 'column' ? 1 : 0,
 								}}
