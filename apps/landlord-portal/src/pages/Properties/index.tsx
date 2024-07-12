@@ -36,13 +36,11 @@ const Properties = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [allProperties, setAllProperties] = useState<PropertyType>(data);
 	const [filter, setFilter] = useState<Record<string, string | string[]>>({});
-	console.log(filter);
+	const [searchText, setSearchText] = useState('');
 
 	const purpose = filter?.Purpose;
 	const unitType = filter['Unit type'];
 	const propertyType = filter['Property Type'];
-
-	console.log(purpose, unitType, propertyType);
 
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
 
@@ -107,6 +105,8 @@ const Properties = () => {
 							sx={{ ml: 1, flex: 1 }}
 							placeholder='Search Properties'
 							inputProps={{ 'aria-label': 'search properties' }}
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
 						/>
 					</Paper>
 				</Grid>

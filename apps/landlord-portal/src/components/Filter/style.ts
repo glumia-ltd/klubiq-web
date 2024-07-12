@@ -23,7 +23,7 @@ export const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		minHeight: '45px',
-		marginTop: '16px',
+		margin: '16px 0px 16px 0px',
 	},
 
 	selectedButtonStyle: {
