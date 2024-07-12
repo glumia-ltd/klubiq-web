@@ -18,8 +18,56 @@ import { styles } from './styles';
 
 import { data, filterOptions } from './data';
 
+type PropertyType = {
+	title: string;
+	address: string;
+	bedrooms: number;
+	bathrooms: number;
+	sqm: number;
+	type: string;
+	status: string;
+	image: string;
+	propertyType: string;
+	unitType: string;
+	purpose: string;
+}[];
+
 const Properties = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
+	const [allProperties, setAllProperties] = useState<PropertyType>(data);
+	const [filter, setFilter] = useState<Record<string, string | string[]>>({});
+	console.log(filter);
+
+	const purpose = filter?.Purpose;
+	const unitType = filter['Unit type'];
+	const propertyType = filter['Property Type'];
+
+	console.log(purpose, unitType, propertyType);
+
+	const filterObjectHasProperties = Object.keys(filter).length > 0;
+
+	const filteredProperties = allProperties
+		.filter((property) => {
+			if (purpose) {
+				return property.purpose === purpose;
+			} else {
+				return property;
+			}
+		})
+		.filter((property) => {
+			if (unitType) {
+				return property.unitType === unitType;
+			} else {
+				return property;
+			}
+		})
+		.filter((property) => {
+			if (propertyType) {
+				return property.propertyType === propertyType;
+			} else {
+				return property;
+			}
+		});
 
 	const inputRef = useRef<HTMLElement>(null);
 
@@ -66,26 +114,33 @@ const Properties = () => {
 				<Grid sx={styles.filterContainer}>
 					<Filter
 						filterList={filterOptions}
-						getFilterResult={(options) => console.log(options)}
+						getFilterResult={(options) => setFilter(options)}
 					/>
 				</Grid>
 
-				<Typography sx={styles.filterResultText}>
-					<span style={styles.filterResultNumber}>700</span> {`Result`} Found
-				</Typography>
+				{filterObjectHasProperties ? (
+					<Typography sx={styles.filterResultText}>
+						<span style={styles.filterResultNumber}>
+							{filteredProperties.length}
+						</span>{' '}
+						{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
+					</Typography>
+				) : null}
 
 				<Grid container spacing={1}>
-					{data.map((property, index) => (
-						<Grid
-							item
-							xs={12}
-							sm={layout === 'row' ? 12 : 6}
-							md={layout === 'row' ? 12 : 4}
-							key={index}
-						>
-							<PropertyCard {...property} layout={layout} />
-						</Grid>
-					))}
+					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
+						(property, index) => (
+							<Grid
+								item
+								xs={12}
+								sm={layout === 'row' ? 12 : 6}
+								md={layout === 'row' ? 12 : 4}
+								key={index}
+							>
+								<PropertyCard {...property} layout={layout} />
+							</Grid>
+						),
+					)}
 				</Grid>
 			</Grid>
 		</ViewPort>
