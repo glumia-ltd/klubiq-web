@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Grid, Button, Paper, IconButton, InputBase } from '@mui/material';
+import {
+	Grid,
+	Button,
+	Paper,
+	IconButton,
+	InputBase,
+	Typography,
+} from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import SearchIcon from '@mui/icons-material/Search';
@@ -50,6 +57,10 @@ const Properties = () => {
 						getFilterResult={(options) => console.log(options)}
 					/>
 				</Grid>
+
+				<Typography sx={styles.filterResultText}>
+					<span style={styles.filterResultNumber}>700</span> {`Result`} Found
+				</Typography>
 
 				<Grid container spacing={1}>
 					{data.map((property, index) => (

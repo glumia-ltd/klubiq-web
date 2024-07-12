@@ -58,13 +58,14 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 		const modalPosition = modalRef?.current[title]?.getBoundingClientRect();
 
 		const buttonLeft = buttonPosition?.left || 0;
+		const buttonTop = buttonPosition?.top || 0;
 		const buttonHeight = buttonPosition?.height || 0;
 		const modalWidth = modalPosition?.width || 0;
 		const center = buttonLeft - modalWidth / 2;
 
 		const position = {
 			left: `${center}px`,
-			top: `${buttonHeight ? buttonHeight + 20 : 10}px`,
+			top: `${buttonTop ? buttonTop + (buttonHeight + 10) : 10}px`,
 		};
 
 		setCurrentTitle(title);

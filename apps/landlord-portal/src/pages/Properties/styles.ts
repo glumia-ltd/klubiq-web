@@ -1,4 +1,4 @@
-import { borderRadius } from '@mui/system';
+import { borderRadius, fontSize, fontWeight, lineHeight } from '@mui/system';
 
 export const styles = {
 	container: {
@@ -30,5 +30,16 @@ export const styles = {
 
 	filterContainer: {
 		mt: '10px',
+	},
+
+	filterResultText: {
+		color: '#1B1B1B',
+		fontSize: '18px',
+		m: '20px 0px',
+	},
+	filterResultNumber: {
+		fontSize: '32px',
+		fontWeight: 700,
+		lineHeight: '38px',
 	},
 };
