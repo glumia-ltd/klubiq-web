@@ -2,7 +2,7 @@ import { Card, Typography, Box } from '@mui/material';
 import CardStyle from './CardStyle';
 import { Stack } from '@mui/system';
 
-type PropertiesCardProps = {
+type PropertyCategoryCardProps = {
 	heading?: string;
 	subtext?: string;
 	onClick: (id: number) => void;
@@ -12,7 +12,7 @@ type PropertiesCardProps = {
 	alt: string;
 };
 
-const PropertiesCard = ({
+const PropertyCategoryCard = ({
 	heading,
 	subtext,
 	onClick,
@@ -20,7 +20,7 @@ const PropertiesCard = ({
 	isSelected,
 	alt,
 	src,
-}: PropertiesCardProps) => {
+}: PropertyCategoryCardProps) => {
 	return (
 		<Card
 			elevation={0}
@@ -48,4 +48,4 @@ const PropertiesCard = ({
 	);
 };
 
-export default PropertiesCard;
+export default PropertyCategoryCard;

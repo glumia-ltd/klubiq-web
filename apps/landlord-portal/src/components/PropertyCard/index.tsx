@@ -27,7 +27,7 @@ interface PropertyCardProps {
 	layout: 'row' | 'column';
 }
 
-const ViewPropertyCard: React.FC<PropertyCardProps> = ({
+const PropertyCard: React.FC<PropertyCardProps> = ({
 	title,
 	address,
 	bedrooms,
@@ -131,4 +131,4 @@ const ViewPropertyCard: React.FC<PropertyCardProps> = ({
 	);
 };
 
-export default ViewPropertyCard;
+export default PropertyCard;
