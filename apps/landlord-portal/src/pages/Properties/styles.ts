@@ -1,5 +1,3 @@
-import { borderRadius, fontSize, fontWeight, lineHeight } from '@mui/system';
-
 export const styles = {
 	container: {
 		padding: '2rem 6rem',
