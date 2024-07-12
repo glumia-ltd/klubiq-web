@@ -1,3 +1,5 @@
+import { borderRadius } from '@mui/system';
+
 export const styles = {
 	container: {
 		padding: '2rem 6rem',
@@ -14,5 +16,19 @@ export const styles = {
 		padding: '8px 16px',
 		borderRadius: '10px',
 		gap: '8px',
+	},
+	inputStyle: {
+		p: '2px 4px',
+		display: 'flex',
+		alignItems: 'center',
+		border: '1px solid #262626',
+		borderRadius: '10px',
+		backgroundColor: 'transparent',
+		boxShadow: 'none',
+		marginTop: '32px',
+	},
+
+	filterContainer: {
+		mt: '10px',
 	},
 };

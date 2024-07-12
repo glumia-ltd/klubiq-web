@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Paper, IconButton, InputBase } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnIcon from '@mui/icons-material/GridOn';
+import SearchIcon from '@mui/icons-material/Search';
 import PropertyCard from '../../components/PropertyCard';
 import ViewPort from '../../components/Viewport/ViewPort';
 import Filter from '../../components/Filter/Filter';
@@ -30,10 +31,25 @@ const Properties = () => {
 					</Button>
 				</Grid>
 
-				<Filter
-					filterList={filterOptions}
-					getFilterResult={(options) => console.log(options)}
-				/>
+				<Grid>
+					<Paper component='form' sx={styles.inputStyle}>
+						<IconButton aria-label='search'>
+							<SearchIcon />
+						</IconButton>
+						<InputBase
+							sx={{ ml: 1, flex: 1 }}
+							placeholder='Search Properties'
+							inputProps={{ 'aria-label': 'search properties' }}
+						/>
+					</Paper>
+				</Grid>
+
+				<Grid sx={styles.filterContainer}>
+					<Filter
+						filterList={filterOptions}
+						getFilterResult={(options) => console.log(options)}
+					/>
+				</Grid>
 
 				<Grid container spacing={1}>
 					{data.map((property, index) => (
