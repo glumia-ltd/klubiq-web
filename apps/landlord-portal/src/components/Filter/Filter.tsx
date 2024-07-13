@@ -1,8 +1,4 @@
 import { FC, useRef, useState } from 'react';
-
-import reverse from '../../assets/images/reverse.svg';
-import ascend from '../../assets/images/alpha-asc.svg';
-import topBottom from '../../assets/images/top-bottom.svg';
 import plus from '../../assets/images/plus.svg';
 import cancel from '../../assets/images/cancel-button.svg';
 import dropdown from '../../assets/images/dropdown.svg';
