@@ -1,8 +1,5 @@
 import { FC, useRef, useState } from 'react';
 
-import reverse from '../../assets/images/reverse.svg';
-import ascend from '../../assets/images/alpha-asc.svg';
-import topBottom from '../../assets/images/top-bottom.svg';
 import plus from '../../assets/images/plus.svg';
 import cancel from '../../assets/images/cancel-button.svg';
 import dropdown from '../../assets/images/dropdown.svg';
@@ -10,7 +7,6 @@ import dropdown from '../../assets/images/dropdown.svg';
 import {
 	Grid,
 	Button,
-	Stack,
 	Typography,
 	Modal,
 	Box,
@@ -93,9 +89,11 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	};
 
 	return (
-		<Stack
-			direction='row'
-			spacing={2}
+		<Grid
+			container
+			spacing={1}
+			// direction='row'
+			// spacing={2}
 			alignItems='center'
 			sx={styles.filterContainer}
 		>
@@ -103,7 +101,14 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 				const { title, options } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
-					<Grid style={styles.selectedState} key={title}>
+					<Grid
+						item
+						xs={4}
+						sm={3}
+						md={2.4}
+						style={styles.selectedState}
+						key={title}
+					>
 						<div
 							ref={(element) => {
 								if (element) {
@@ -206,29 +211,27 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						</div>
 					</Grid>
 				) : (
-					<Grid key={title} sx={{ position: 'relative' }}>
-						<Grid>
-							<div
-								ref={(element) => {
-									if (element) {
-										divRef.current[title] = element;
-									} else {
-										delete divRef.current[title];
-									}
-								}}
+					<Grid item xs={4} sm={4} md={2.4} lg={2.1} key={title}>
+						<div
+							ref={(element) => {
+								if (element) {
+									divRef.current[title] = element;
+								} else {
+									delete divRef.current[title];
+								}
+							}}
+						>
+							<Button
+								sx={styles.buttonStyle}
+								onClick={() => handleButtonClick(title)}
 							>
-								<Button
-									sx={styles.buttonStyle}
-									onClick={() => handleButtonClick(title)}
-								>
-									<img src={plus} alt='filter button icon' /> {title}
-								</Button>
-							</div>
-						</Grid>
+								<img src={plus} alt='filter button icon' /> {title}
+							</Button>
+						</div>
 					</Grid>
 				);
 			})}
-		</Stack>
+		</Grid>
 	);
 };
 

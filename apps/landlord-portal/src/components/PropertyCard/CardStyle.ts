@@ -1,15 +1,16 @@
 const CardStyle = {
 	columnCard: {
 		minHeight: { xs: '300px', sm: '350px', md: '500px', lg: '500px' },
-		padding: { xs: '20px', sm: '16px', md: '16px', lg: '16px' },
+		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '10px',
-		maxWidth: { xs: '400px', sm: '362px', md: '360px', lg: '362px' },
+		maxWidth: { xs: '100%', sm: '362px', md: '360px', lg: '362px' },
 		border: '0.5px',
 		textAlign: 'left',
 	},
 	rowCard: {
 		width: '100%',
-		maxWidth: { xs: '500px', sm: '650px', md: '100%', lg: '100%' },
+		maxWidth: { xs: '100%', sm: '650px', md: '100%', lg: '100%' },
+
 		padding: { xs: '20px', sm: '32px', md: '32px', lg: '32px' },
 		// maxHeight: { xs: "500px", sm: "250px", md: "250px", lg: "245px" },
 		borderRadius: '10px',
@@ -33,8 +34,13 @@ const CardStyle = {
 		lineHeight: { xs: '15px', sm: '14px', md: '20px', lg: '20px' },
 		fontWeight: '600px',
 	},
+	text: {
+		fontSize: { xs: '16px', sm: '14px', md: '16px', lg: '16px' },
+		lineHeight: { xs: '15px', sm: '14px', md: '20px', lg: '20px' },
+		fontWeight: '600px',
+	},
 	columnImage: {
-		minWidth: { xs: '150px', sx: '300px', md: '100px', lg: '330px' },
+		// minWidth: { xs: '150px', sx: '300px', md: '100px', lg: '330px' },
 		borderRadius: '3px',
 
 		maxHeight: { xs: '110px', sx: '250px', md: '200px', lg: '200px' },
@@ -47,6 +53,7 @@ const CardStyle = {
 		borderRadius: '3px',
 	},
 	iconSize: {
+		// width: { xs: '100%', sm: '100%', md: '100%', lg: '152px' },
 		width: '24px',
 		height: '24px',
 		marginLeft: '-4px',

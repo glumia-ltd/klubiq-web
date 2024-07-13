@@ -6,6 +6,7 @@ import {
 	IconButton,
 	InputBase,
 	Typography,
+	Container,
 } from '@mui/material';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnIcon from '@mui/icons-material/GridOn';
@@ -84,57 +85,63 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			<Grid sx={styles.container}>
-				<Grid sx={styles.buttons}>
-					<div onClick={toggleLayout}>
-						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
-					</div>
-					<Button variant='contained' sx={styles.addPropertyButton}>
-						<LeftArrowIcon />
-						Add New Property
-					</Button>
-				</Grid>
+			<Container maxWidth={'xl'} sx={styles.container}>
+				<Grid container spacing={2}>
+					<Grid item xs={12} sx={styles.buttons}>
+						<div onClick={toggleLayout}>
+							{layout === 'column' ? (
+								<FormatListBulletedIcon />
+							) : (
+								<GridOnIcon />
+							)}
+						</div>
+						<Button variant='contained' sx={styles.addPropertyButton}>
+							<LeftArrowIcon />
+							Add New Property
+						</Button>
+					</Grid>
 
-				<Grid>
-					<Paper component='form' sx={styles.inputStyle}>
-						<IconButton aria-label='search'>
-							<SearchIcon />
-						</IconButton>
-						<InputBase
-							ref={inputRef}
-							sx={{ ml: 1, flex: 1 }}
-							placeholder='Search Properties'
-							inputProps={{ 'aria-label': 'search properties' }}
-							value={searchText}
-							onChange={(e) => setSearchText(e.target.value)}
+					<Grid item xs={12}>
+						<Paper component='form' sx={styles.inputStyle}>
+							<IconButton aria-label='search'>
+								<SearchIcon />
+							</IconButton>
+							<InputBase
+								ref={inputRef}
+								sx={{ ml: 1, flex: 1, width: '100%' }}
+								placeholder='Search Properties'
+								inputProps={{ 'aria-label': 'search properties' }}
+								value={searchText}
+								onChange={(e) => setSearchText(e.target.value)}
+							/>
+						</Paper>
+					</Grid>
+
+					<Grid item xs={12} sx={styles.filterContainer}>
+						<Filter
+							filterList={filterOptions}
+							getFilterResult={(options) => setFilter(options)}
 						/>
-					</Paper>
-				</Grid>
+					</Grid>
+					<Grid xs={12}>
+						{filterObjectHasProperties ? (
+							<Typography sx={styles.filterResultText}>
+								<span style={styles.filterResultNumber}>
+									{filteredProperties.length}
+								</span>{' '}
+								{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
+							</Typography>
+						) : null}
+					</Grid>
 
-				<Grid sx={styles.filterContainer}>
-					<Filter
-						filterList={filterOptions}
-						getFilterResult={(options) => setFilter(options)}
-					/>
-				</Grid>
-
-				{filterObjectHasProperties ? (
-					<Typography sx={styles.filterResultText}>
-						<span style={styles.filterResultNumber}>
-							{filteredProperties.length}
-						</span>{' '}
-						{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
-					</Typography>
-				) : null}
-
-				<Grid container spacing={1}>
 					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
 						(property, index) => (
 							<Grid
 								item
 								xs={12}
 								sm={layout === 'row' ? 12 : 6}
-								md={layout === 'row' ? 12 : 4}
+								md={layout === 'row' ? 12 : 6}
+								lg={layout === 'row' ? 12 : 4}
 								key={index}
 							>
 								<PropertyCard {...property} layout={layout} />
@@ -142,7 +149,7 @@ const Properties = () => {
 						),
 					)}
 				</Grid>
-			</Grid>
+			</Container>
 		</ViewPort>
 	);
 };
