@@ -24,6 +24,7 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
+import { color } from '@mui/system';
 
 const validationSchema = yup.object({
 	streetAddress: yup.string().required('This field is required'),
@@ -353,7 +354,7 @@ const GeneralInfo: React.FC = () => {
 											alt='icon'
 											style={{ marginRight: '5px' }}
 										/>
-										<Typography fontSize={'14px'}>Clone</Typography>
+										<Typography sx={styles.cloneText}>Clone</Typography>
 									</IconButton>
 								</Grid>
 							</Grid>

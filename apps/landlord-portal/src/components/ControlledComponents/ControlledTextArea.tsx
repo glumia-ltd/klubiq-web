@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import {
-	TextField,
 	Stack,
 	Typography,
 	InputAdornment,
 	CircularProgress,
+	TextareaAutosize,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
 
@@ -25,7 +25,7 @@ type ControlledTextFieldProps = {
 	color?: string;
 };
 
-const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
+const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 	loading,
 	formik,
 	sx,
@@ -67,7 +67,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					{label}
 				</Typography>
 			)}
-			<TextField
+			<TextareaAutosize
 				fullWidth
 				id={name}
 				name={name}
@@ -103,4 +103,4 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	);
 };
 
-export default ControlledTextField;
+export default ControlledTextArea;

@@ -1,3 +1,5 @@
+import { fontWeight } from '@mui/system';
+
 const styles = {
 	card: {
 		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
@@ -13,6 +15,7 @@ const styles = {
 		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '24px' },
 		textTransform: 'uppercase',
 		marginBottom: '15px',
+		color: '#002147',
 	},
 	radioLabel: {
 		'& .MuiFormControlLabel-label': {
