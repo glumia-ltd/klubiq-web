@@ -98,6 +98,10 @@ export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
 							sx={{
 								'& .MuiStepLabel-label': {
 									fontWeight: 'normal',
+									color: 'primary.main',
+								},
+								'& .Mui-completed ': {
+									fontWeight: 'bold',
 								},
 							}}
 						>
