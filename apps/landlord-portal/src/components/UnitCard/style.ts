@@ -48,7 +48,7 @@ export const styles = {
 
 	additionalInfoContainer: {
 		display: 'flex',
-		gap: '7rem',
+		gap: '10rem',
 		marginTop: '32px',
 	},
 	additionalInfoText: {
