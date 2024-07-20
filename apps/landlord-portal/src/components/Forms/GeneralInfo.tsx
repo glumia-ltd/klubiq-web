@@ -175,7 +175,6 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 		}
 		return null;
 	};
-	console.log(formik.values, 'val3');
 
 	return (
 		<Grid container spacing={1}>
@@ -192,11 +191,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								name='streetAddress'
 								label='Street Address'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						{selectedUnitType === 'one' && (
@@ -205,11 +204,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 									name='apartment'
 									label='Apartment, suite etc  '
 									formik={formik}
-									inputProps={{
-										sx: {
-											height: '40px',
-										},
-									}}
+									// inputProps={{
+									// 	sx: {
+									// 		height: '40px',
+									// 	},
+									// }}
 								/>
 							</Grid>
 						)}
@@ -221,11 +220,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								type='text'
 								formik={formik}
 								options={countries}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -233,11 +232,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								name='postalCode'
 								label='Postal Code'
 								formik={formik}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -247,11 +246,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								type='text'
 								formik={formik}
 								options={states}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -259,11 +258,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								name='city'
 								label='City'
 								formik={formik}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 					</Grid>
@@ -321,11 +320,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 													name={`units.${index}.description`}
 													// label='Description'
 													formik={formik}
-													inputProps={{
-														sx: {
-															height: '40px',
-														},
-													}}
+													// inputProps={{
+													// 	sx: {
+													// 		height: '40px',
+													// 	},
+													// }}
 												/>
 											</Grid>
 											<Grid item xs={12}>
@@ -386,11 +385,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								label='Bedrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -399,11 +398,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								label='Bathrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -412,11 +411,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								label='Guest Bathrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -424,11 +423,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								name={`units.${currentUnitIndex}.floorPlan`}
 								label='Floor Plan'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12}>
