@@ -269,82 +269,82 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 					</Grid>
 				</Card>
 			</Grid>
+			{selectedUnitType === 'other' && (
+				<Grid container>
+					<Card sx={styles.cardTwo}>
+						<Grid container spacing={0}>
+							{selectedUnitType === 'other' && (
+								<Grid item xs={12} sx={styles.addButton}>
+									<Button
+										color='primary'
+										onClick={addUnit}
+										startIcon={<AddIcon />}
+									>
+										Add Unit
+									</Button>
+								</Grid>
+							)}
 
-			<Grid container>
-				<Card sx={styles.cardTwo}>
-					<Grid container spacing={0}>
-						{selectedUnitType === 'other' && (
-							<Grid item xs={12} sx={styles.addButton}>
-								<Button
-									color='primary'
-									onClick={addUnit}
-									startIcon={<AddIcon />}
-								>
-									Add Unit
-								</Button>
-							</Grid>
-						)}
-
-						{formik.values.units.map((unit, index) => (
-							<Grid container spacing={0} key={index}>
-								<Grid container spacing={0} sx={styles.boxContent}>
-									<Grid item xs={12}>
-										<Card sx={styles.titleDiv}>
-											<Typography
-												fontWeight={'500'}
-												fontSize={'16px'}
-												variant='h6'
-											>
-												Title
-											</Typography>
-											<Box>
-												<IconButton edge='end'>
-													<ExpandLessIcon />
-												</IconButton>
-												<IconButton edge='end'>
-													<MoreVertIcon />
-												</IconButton>
-											</Box>
-										</Card>
-									</Grid>
-									<Grid container spacing={0} sx={styles.cardContent}>
+							{formik.values.units.map((unit, index) => (
+								<Grid container spacing={0} key={index}>
+									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
-											<Typography variant='h6' sx={styles.subText}>
-												Unit number or name
-											</Typography>
+											<Card sx={styles.titleDiv}>
+												<Typography
+													fontWeight={'500'}
+													fontSize={'16px'}
+													variant='h6'
+												>
+													Title
+												</Typography>
+												<Box>
+													<IconButton edge='end'>
+														<ExpandLessIcon />
+													</IconButton>
+													<IconButton edge='end'>
+														<MoreVertIcon />
+													</IconButton>
+												</Box>
+											</Card>
 										</Grid>
-										<Grid item xs={12} md={12}>
-											<Typography fontWeight={400} fontSize={'14px'}>
-												Description{' '}
-											</Typography>
-											<ControlledTextField
-												name={`units.${index}.description`}
-												// label='Description'
-												formik={formik}
-												inputProps={{
-													sx: {
-														height: '40px',
-													},
-												}}
-											/>
-										</Grid>
-										<Grid item xs={12}>
-											<Typography variant='h6' sx={styles.subText}>
-												Unit Details
-											</Typography>
-										</Grid>
+										<Grid container spacing={0} sx={styles.cardContent}>
+											<Grid item xs={12}>
+												<Typography variant='h6' sx={styles.subText}>
+													Unit number or name
+												</Typography>
+											</Grid>
+											<Grid item xs={12} md={12}>
+												<Typography fontWeight={400} fontSize={'14px'}>
+													Description{' '}
+												</Typography>
+												<ControlledTextField
+													name={`units.${index}.description`}
+													// label='Description'
+													formik={formik}
+													inputProps={{
+														sx: {
+															height: '40px',
+														},
+													}}
+												/>
+											</Grid>
+											<Grid item xs={12}>
+												<Typography variant='h6' sx={styles.subText}>
+													Unit Details
+												</Typography>
+											</Grid>
 
-										<Grid item xs={6} sx={styles.unitIcon}>
-											<IconButton onClick={() => handleOpen(index)}>
-												<BedIcon />
-												<Typography>{unit.beds}</Typography>
-											</IconButton>
-											<IconButton onClick={() => handleOpen(index)}>
-												<BathtubIcon />
-												<Typography>{unit.baths}</Typography>
-											</IconButton>
-										</Grid>
-										{/* <Grid item xs={12}>
+											<Grid item xs={6} sx={styles.unitIcon}>
+												<IconButton onClick={() => handleOpen(index)}>
+													<BedIcon />
+													<Typography>{unit.beds}</Typography>
+												</IconButton>
+												<IconButton onClick={() => handleOpen(index)}>
+													<BathtubIcon />
+													<Typography>{unit.baths}</Typography>
+												</IconButton>
+											</Grid>
+											{/* <Grid item xs={12}>
 									<Button
 										variant='outlined'
 										color='secondary'
@@ -354,26 +354,27 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 										Remove Unit
 									</Button>
 								</Grid> */}
+										</Grid>
+									</Grid>
+									<Grid item xs={12}>
+										<IconButton
+											onClick={() => cloneUnit(index)}
+											sx={styles.cloneButton}
+										>
+											<img
+												src={cloneIcon}
+												alt='icon'
+												style={{ marginRight: '5px' }}
+											/>
+											<Typography sx={styles.cloneText}>Clone</Typography>
+										</IconButton>
 									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<IconButton
-										onClick={() => cloneUnit(index)}
-										sx={styles.cloneButton}
-									>
-										<img
-											src={cloneIcon}
-											alt='icon'
-											style={{ marginRight: '5px' }}
-										/>
-										<Typography sx={styles.cloneText}>Clone</Typography>
-									</IconButton>
-								</Grid>
-							</Grid>
-						))}
-					</Grid>{' '}
-				</Card>
-			</Grid>
+							))}
+						</Grid>{' '}
+					</Card>
+				</Grid>
+			)}
 
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
