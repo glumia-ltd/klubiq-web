@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -52,6 +52,9 @@ const validationSchema = yup.object({
 		}),
 	),
 });
+type CardProps = {
+	selectedUnitType?: string;
+};
 
 type FormValues = {
 	streetAddress: string;
@@ -80,7 +83,7 @@ const countries = CountryList.map((item) => ({
 	label: item.name,
 }));
 
-const GeneralInfo: React.FC = () => {
+const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
 
@@ -196,18 +199,21 @@ const GeneralInfo: React.FC = () => {
 								}}
 							/>
 						</Grid>
-						<Grid item xs={12}>
-							<ControlledTextField
-								name='apartment'
-								label='Apartment, suite etc  '
-								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
-							/>
-						</Grid>
+						{selectedUnitType === 'one' && (
+							<Grid item xs={12}>
+								<ControlledTextField
+									name='apartment'
+									label='Apartment, suite etc  '
+									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
+								/>
+							</Grid>
+						)}
+
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
 								name='country'
@@ -267,11 +273,18 @@ const GeneralInfo: React.FC = () => {
 			<Grid container>
 				<Card sx={styles.cardTwo}>
 					<Grid container spacing={0}>
-						<Grid item xs={12} sx={styles.addButton}>
-							<Button color='primary' onClick={addUnit} startIcon={<AddIcon />}>
-								Add Unit
-							</Button>
-						</Grid>
+						{selectedUnitType === 'other' && (
+							<Grid item xs={12} sx={styles.addButton}>
+								<Button
+									color='primary'
+									onClick={addUnit}
+									startIcon={<AddIcon />}
+								>
+									Add Unit
+								</Button>
+							</Grid>
+						)}
+
 						{formik.values.units.map((unit, index) => (
 							<Grid container spacing={0} key={index}>
 								<Grid container spacing={0} sx={styles.boxContent}>

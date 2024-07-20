@@ -212,7 +212,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						</div>
 					</Grid>
 				) : (
-					<Stack direction='row' spacing={2} key={title} ml={'5px'}>
+					<Stack direction='row' spacing={2} key={title} ml={'15px'}>
 						<div
 							ref={(element) => {
 								if (element) {

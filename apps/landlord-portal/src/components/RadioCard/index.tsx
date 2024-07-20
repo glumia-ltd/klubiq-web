@@ -17,13 +17,15 @@ type Props = {
 	options: RadioOption[];
 	defaultValue?: string;
 	headerText?: string;
-	onChange?: (
-		event: React.ChangeEvent<HTMLInputElement>,
-		value: string,
-	) => void;
+	onChange?: (value: string) => void;
 };
 
 const index = ({ options, defaultValue, headerText, onChange }: Props) => {
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (onChange) {
+			onChange(event.target.value);
+		}
+	};
 	return (
 		<Grid container spacing={1}>
 			<Card sx={styles.card}>
@@ -35,7 +37,7 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 					</Grid>
 					<Grid item xs={12}>
 						<FormControl sx={styles.formControl}>
-							<RadioGroup defaultValue={defaultValue} onChange={onChange}>
+							<RadioGroup defaultValue={defaultValue} onChange={handleChange}>
 								{options.map((option, index) => (
 									<Grid container item xs={12} key={index} sx={styles.box}>
 										<FormControlLabel
