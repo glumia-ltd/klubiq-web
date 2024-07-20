@@ -2,7 +2,6 @@ import { Grid } from '@mui/material';
 import RadioCard from '../../components/RadioCard/';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
 
-type Props = {};
 const options = [
 	{
 		value: 'one',
@@ -21,7 +20,7 @@ const optionTwo = [
 	{ value: 'one', label: 'Single Unit' },
 	{ value: 'other', label: 'Multi Unit' },
 ];
-const UnitType = (props: Props) => {
+const UnitType = () => {
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>

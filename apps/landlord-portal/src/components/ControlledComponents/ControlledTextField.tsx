@@ -13,6 +13,7 @@ type ControlledTextFieldProps = {
 	loading?: boolean;
 	formik?: any;
 	sx?: SxProps;
+	sxTwo?: SxProps;
 	InputProps?: any;
 	disableOnChange?: boolean;
 	label?: string;
@@ -39,6 +40,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	prioritizeError,
 	onFileSelect,
 	color,
+	sxTwo,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +100,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 				}
 				inputProps={inputProps}
 				{...props}
+				sx={sxTwo}
 			/>
 		</Stack>
 	);

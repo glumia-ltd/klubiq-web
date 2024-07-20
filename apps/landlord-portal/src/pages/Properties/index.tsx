@@ -85,71 +85,65 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			<Container maxWidth={'xl'} sx={styles.container}>
-				<Grid container spacing={2}>
-					<Grid item xs={12} sx={styles.buttons}>
-						<div onClick={toggleLayout}>
-							{layout === 'column' ? (
-								<FormatListBulletedIcon />
-							) : (
-								<GridOnIcon />
-							)}
-						</div>
-						<Button variant='contained' sx={styles.addPropertyButton}>
-							<LeftArrowIcon />
-							Add New Property
-						</Button>
-					</Grid>
-
-					<Grid item xs={12}>
-						<Paper component='form' sx={styles.inputStyle}>
-							<IconButton aria-label='search'>
-								<SearchIcon />
-							</IconButton>
-							<InputBase
-								ref={inputRef}
-								sx={{ ml: 1, flex: 1, width: '100%' }}
-								placeholder='Search Properties'
-								inputProps={{ 'aria-label': 'search properties' }}
-								value={searchText}
-								onChange={(e) => setSearchText(e.target.value)}
-							/>
-						</Paper>
-					</Grid>
-
-					<Grid item xs={12} sx={styles.filterContainer}>
-						<Filter
-							filterList={filterOptions}
-							getFilterResult={(options) => setFilter(options)}
-						/>
-					</Grid>
-					<Grid xs={12}>
-						{filterObjectHasProperties ? (
-							<Typography sx={styles.filterResultText}>
-								<span style={styles.filterResultNumber}>
-									{filteredProperties.length}
-								</span>{' '}
-								{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
-							</Typography>
-						) : null}
-					</Grid>
-
-					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
-						(property, index) => (
-							<Grid
-								item
-								xs={12}
-								sm={layout === 'row' ? 12 : 6}
-								md={layout === 'row' ? 12 : 6}
-								lg={layout === 'row' ? 12 : 4}
-								key={index}
-							>
-								<PropertyCard {...property} layout={layout} />
-							</Grid>
-						),
-					)}
+			<Grid container spacing={2} sx={styles.container}>
+				<Grid item xs={12} sx={styles.buttons}>
+					<div onClick={toggleLayout}>
+						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
+					</div>
+					<Button variant='contained' sx={styles.addPropertyButton}>
+						<LeftArrowIcon />
+						Add New Property
+					</Button>
 				</Grid>
-			</Container>
+
+				<Grid item xs={12}>
+					<Paper component='form' sx={styles.inputStyle}>
+						<IconButton aria-label='search'>
+							<SearchIcon />
+						</IconButton>
+						<InputBase
+							ref={inputRef}
+							sx={{ ml: 1, flex: 1, width: '100%' }}
+							placeholder='Search Properties'
+							inputProps={{ 'aria-label': 'search properties' }}
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
+						/>
+					</Paper>
+				</Grid>
+
+				<Grid item xs={12} sx={styles.filterContainer}>
+					<Filter
+						filterList={filterOptions}
+						getFilterResult={(options) => setFilter(options)}
+					/>
+				</Grid>
+				<Grid xs={12}>
+					{filterObjectHasProperties ? (
+						<Typography sx={styles.filterResultText}>
+							<span style={styles.filterResultNumber}>
+								{filteredProperties.length}
+							</span>{' '}
+							{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
+						</Typography>
+					) : null}
+				</Grid>
+
+				{(filterObjectHasProperties ? filteredProperties : allProperties).map(
+					(property, index) => (
+						<Grid
+							item
+							xs={12}
+							sm={layout === 'row' ? 12 : 6}
+							md={layout === 'row' ? 12 : 6}
+							lg={layout === 'row' ? 12 : 4}
+							key={index}
+						>
+							<PropertyCard {...property} layout={layout} />
+						</Grid>
+					),
+				)}
+			</Grid>
 		</ViewPort>
 	);
 };

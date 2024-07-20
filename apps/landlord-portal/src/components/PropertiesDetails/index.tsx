@@ -125,9 +125,13 @@ const PropertiesDetails = () => {
 								name='description'
 								label='DESCRIPTION'
 								formik={formik}
-								multiline
 								type='text'
 								minRows={8}
+								sxTwo={{
+									'& .MuiOutlinedInput-root': {
+										height: '442px',
+									},
+								}}
 							/>
 						</Grid>
 					</Grid>

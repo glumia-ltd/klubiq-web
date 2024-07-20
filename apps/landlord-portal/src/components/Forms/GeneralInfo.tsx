@@ -24,7 +24,6 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
-import { color } from '@mui/system';
 
 const validationSchema = yup.object({
 	streetAddress: yup.string().required('This field is required'),

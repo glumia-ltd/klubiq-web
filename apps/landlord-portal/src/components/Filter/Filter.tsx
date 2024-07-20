@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 
 import { styles } from './style';
+import { Stack } from '@mui/system';
 
 type OptionsType = {
 	title: string;
@@ -211,7 +212,12 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						</div>
 					</Grid>
 				) : (
-					<Grid item xs={4} sm={4} md={2.4} lg={2.1} key={title}>
+					<Stack
+						direction='row'
+						spacing={2}
+						key={title}
+						border={'1px solid red'}
+					>
 						<div
 							ref={(element) => {
 								if (element) {
@@ -228,7 +234,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								<img src={plus} alt='filter button icon' /> {title}
 							</Button>
 						</div>
-					</Grid>
+					</Stack>
 				);
 			})}
 		</Grid>
