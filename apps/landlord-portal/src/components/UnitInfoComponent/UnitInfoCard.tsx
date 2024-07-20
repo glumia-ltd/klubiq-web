@@ -46,9 +46,6 @@ const UnitInfoCard = () => {
 					<Grid
 						item
 						xs={3}
-						sm={}
-						md={3}
-						lg={3}
 						key={index}
 						sx={{
 							textAlign: 'center',

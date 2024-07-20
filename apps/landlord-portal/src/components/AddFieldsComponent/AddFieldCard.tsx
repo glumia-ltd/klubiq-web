@@ -19,7 +19,7 @@ const AddFieldCard = ({
 	return (
 		<Card sx={style.contentdiv}>
 			<Grid container spacing={1}>
-				<Grid item xs={3} sx={style.content}>
+				<Grid item xs={6} sm={6} md={3} lg={3} sx={style.content}>
 					<Box component='img' src={Icon} alt={'icon'} sx={style.imageStyle} />
 					<Box>
 						<Typography variant='h6' sx={style.headerText}>
@@ -31,7 +31,7 @@ const AddFieldCard = ({
 						</Typography>
 					</Box>
 				</Grid>
-				<Grid item xs={9} sx={style.lastBox}>
+				<Grid item xs={6} sm={6} md={9} lg={9} sx={style.lastBox}>
 					<Button onClick={onClick} sx={style.button}>
 						{description}
 						Add tenant

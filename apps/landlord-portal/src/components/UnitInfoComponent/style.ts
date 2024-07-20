@@ -1,8 +1,10 @@
 const style = {
 	headerText: {
-		fontSize: { xs: '13px', sm: '14px', md: '14px', lg: '16px' },
+		fontSize: { xs: '10px', sm: '14px', md: '14px', lg: '16px' },
 		lineHeight: { xs: '20px', sm: '24px', md: '24px', lg: '24px' },
-		margin: '10px',
+		marginTop: '10px',
+		marginBottom: '5px',
+
 		fontWeight: '500',
 	},
 	subText: {
