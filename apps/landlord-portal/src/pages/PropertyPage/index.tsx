@@ -12,10 +12,10 @@ import ViewPort from '../../components/Viewport/ViewPort';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UnitCard } from '../../components/UnitCard/UnitCard';
 import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
+import { Overview } from '../../components/Overview/Overview';
 import propertyImage from '../../assets/images/propertyImage.png';
-import editImage from '../../assets/images/edit.svg';
 import { styles } from './style';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 const stackedImages = [
 	propertyImage,
@@ -25,20 +25,10 @@ const stackedImages = [
 ];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 
+const initialText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo`;
+
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
-	const [needsTruncation, setNeedsTruncation] = useState<boolean>(false);
-	const [truncateText, setTruncateText] = useState<boolean>(true);
-
-	const overviewContentRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (overviewContentRef.current) {
-			const element = overviewContentRef.current;
-
-			setNeedsTruncation(element.scrollHeight > element.clientHeight);
-		}
-	}, [truncateText]);
 
 	const handleTabChange = (
 		_event: React.SyntheticEvent<Element, Event>,
@@ -47,9 +37,6 @@ const PropertyPage = () => {
 		setTabValue(newValue);
 	};
 
-	const toggleTextView = () => {
-		setTruncateText((prev) => !prev);
-	};
 	return (
 		<ViewPort>
 			<Grid sx={styles.container}>
@@ -103,43 +90,7 @@ const PropertyPage = () => {
 					tabValue={tabValue}
 					allTabs={allTabs}
 				/>
-
-				<Grid container sx={styles.overviewStyle}>
-					<Typography variant='h3'>Overview</Typography>
-					<img
-						src={editImage}
-						alt='edit image '
-						style={styles.editImageStyle}
-					/>
-
-					<Grid sx={styles.overviewTextContainer}>
-						<Typography
-							ref={overviewContentRef}
-							sx={{
-								overflow: 'hidden',
-								display: '-webkit-box',
-								WebkitBoxOrient: 'vertical',
-								WebkitLineClamp: truncateText ? 2 : 'none',
-								textOverflow: 'clip',
-								...styles.overviewContent,
-							}}
-						>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-							eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-							enim ad minim veniam, quis nostrud exercitation ullamco laboris
-							nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex
-							ea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing
-							elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-							aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-							laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut
-							aliquip ex ea commodo commodo
-						</Typography>
-
-						<Button onClick={toggleTextView} sx={styles.buttonStyle}>
-							{truncateText ? 'Read more' : 'Hide Text'}
-						</Button>
-					</Grid>
-				</Grid>
+				<Overview initialText={initialText} />
 			</Grid>
 		</ViewPort>
 	);

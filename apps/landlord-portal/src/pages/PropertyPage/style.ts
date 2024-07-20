@@ -49,34 +49,4 @@ export const styles = {
 		fontSize: '12px',
 		fontWeight: '',
 	},
-	overviewStyle: {
-		marginTop: '32px',
-		padding: '0px 24px',
-		display: 'flex',
-		gap: '8px',
-		alignItems: 'center',
-	},
-	editImageStyle: {
-		cursor: 'pointer',
-	},
-	overviewTextContainer: {
-		display: 'flex',
-		flexDirection: 'column',
-	},
-
-	overviewContent: {
-		marginTop: '16px',
-		lineHeight: '24px',
-	},
-
-	readMoreStyle: {
-		lineHeight: '24px',
-		cursor: 'pointer',
-		alignSelf: 'flex-end',
-	},
-	buttonStyle: {
-		maxWidth: '150px',
-		borderRadius: '8px',
-		marginTop: '5px',
-	},
 };
