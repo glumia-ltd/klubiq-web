@@ -25,12 +25,14 @@ const styles = {
 		height: { xs: '20px', sm: '36px', md: '50px', lg: '60px' },
 	},
 	header: {
+		fontWeight: '500',
 		fontSize: { xs: '11px', sm: '18px', md: '24px', lg: '24px' },
 		lineHeight: { xs: '11px', sm: '18px', md: '15px', lg: '32px' },
 	},
 	subtext: {
 		fontSize: { xs: '12px', sm: '15px', md: '18px', lg: '18px' },
 		lineHeight: { xs: '11px', sm: '18px', md: '18px', lg: '28px' },
+		fontWeight: '400px',
 	},
 };
 export default styles;

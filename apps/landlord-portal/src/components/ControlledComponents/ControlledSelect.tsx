@@ -21,6 +21,7 @@ type ControlledSelectProps = {
 	options: { value: any; label: string }[];
 	inFieldLabel?: boolean;
 	[key: string]: any;
+	color?: string;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -32,6 +33,8 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	disableOnChange,
 	options,
 	inFieldLabel,
+	color,
+
 	...props
 }) => {
 	return (
@@ -45,7 +48,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'}>
+				<Typography fontWeight={500} fontSize={'16px'} color={color}>
 					{label}
 				</Typography>
 			)}

@@ -31,12 +31,12 @@ const PropertyCategoryCard = ({
 				<Box>
 					<Box component='img' src={src} alt={alt} sx={CardStyle.imageStyle} />
 				</Box>
-				<Typography variant='body1' color='text.primary' sx={CardStyle.header}>
+				<Typography variant='body2' color='text.primary' sx={CardStyle.header}>
 					{heading}
 				</Typography>
 				<Box>
 					<Typography
-						variant='body2'
+						// variant='body2'
 						color='text.primary'
 						sx={CardStyle.subtext}
 					>

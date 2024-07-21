@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -52,6 +52,9 @@ const validationSchema = yup.object({
 		}),
 	),
 });
+type CardProps = {
+	selectedUnitType?: string;
+};
 
 type FormValues = {
 	streetAddress: string;
@@ -80,7 +83,7 @@ const countries = CountryList.map((item) => ({
 	label: item.name,
 }));
 
-const GeneralInfo: React.FC = () => {
+const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
 
@@ -172,7 +175,6 @@ const GeneralInfo: React.FC = () => {
 		}
 		return null;
 	};
-	console.log(formik.values, 'val3');
 
 	return (
 		<Grid container spacing={1}>
@@ -189,25 +191,28 @@ const GeneralInfo: React.FC = () => {
 								name='streetAddress'
 								label='Street Address'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
-						<Grid item xs={12}>
-							<ControlledTextField
-								name='apartment'
-								label='Apartment, suite etc  '
-								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
-							/>
-						</Grid>
+						{selectedUnitType === 'one' && (
+							<Grid item xs={12}>
+								<ControlledTextField
+									name='apartment'
+									label='Apartment, suite etc  '
+									formik={formik}
+									// inputProps={{
+									// 	sx: {
+									// 		height: '40px',
+									// 	},
+									// }}
+								/>
+							</Grid>
+						)}
+
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
 								name='country'
@@ -215,11 +220,11 @@ const GeneralInfo: React.FC = () => {
 								type='text'
 								formik={formik}
 								options={countries}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -227,11 +232,11 @@ const GeneralInfo: React.FC = () => {
 								name='postalCode'
 								label='Postal Code'
 								formik={formik}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -241,11 +246,11 @@ const GeneralInfo: React.FC = () => {
 								type='text'
 								formik={formik}
 								options={states}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
@@ -253,85 +258,92 @@ const GeneralInfo: React.FC = () => {
 								name='city'
 								label='City'
 								formik={formik}
-								inputProps={{
-									sx: {
-										muiOutlinedInput: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		muiOutlinedInput: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 					</Grid>
 				</Card>
 			</Grid>
+			{selectedUnitType === 'other' && (
+				<Grid container>
+					<Card sx={styles.cardTwo}>
+						<Grid container spacing={0}>
+							{selectedUnitType === 'other' && (
+								<Grid item xs={12} sx={styles.addButton}>
+									<Button
+										color='primary'
+										onClick={addUnit}
+										startIcon={<AddIcon />}
+									>
+										Add Unit
+									</Button>
+								</Grid>
+							)}
 
-			<Grid container>
-				<Card sx={styles.cardTwo}>
-					<Grid container spacing={0}>
-						<Grid item xs={12} sx={styles.addButton}>
-							<Button color='primary' onClick={addUnit} startIcon={<AddIcon />}>
-								Add Unit
-							</Button>
-						</Grid>
-						{formik.values.units.map((unit, index) => (
-							<Grid container spacing={0} key={index}>
-								<Grid container spacing={0} sx={styles.boxContent}>
-									<Grid item xs={12}>
-										<Card sx={styles.titleDiv}>
-											<Typography
-												fontWeight={'500'}
-												fontSize={'16px'}
-												variant='h6'
-											>
-												Title
-											</Typography>
-											<Box>
-												<IconButton edge='end'>
-													<ExpandLessIcon />
-												</IconButton>
-												<IconButton edge='end'>
-													<MoreVertIcon />
-												</IconButton>
-											</Box>
-										</Card>
-									</Grid>
-									<Grid container spacing={0} sx={styles.cardContent}>
+							{formik.values.units.map((unit, index) => (
+								<Grid container spacing={0} key={index}>
+									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
-											<Typography variant='h6' sx={styles.subText}>
-												Unit number or name
-											</Typography>
+											<Card sx={styles.titleDiv}>
+												<Typography
+													fontWeight={'500'}
+													fontSize={'16px'}
+													variant='h6'
+												>
+													Title
+												</Typography>
+												<Box>
+													<IconButton edge='end'>
+														<ExpandLessIcon />
+													</IconButton>
+													<IconButton edge='end'>
+														<MoreVertIcon />
+													</IconButton>
+												</Box>
+											</Card>
 										</Grid>
-										<Grid item xs={12} md={12}>
-											<Typography fontWeight={400} fontSize={'14px'}>
-												Description{' '}
-											</Typography>
-											<ControlledTextField
-												name={`units.${index}.description`}
-												// label='Description'
-												formik={formik}
-												inputProps={{
-													sx: {
-														height: '40px',
-													},
-												}}
-											/>
-										</Grid>
-										<Grid item xs={12}>
-											<Typography variant='h6' sx={styles.subText}>
-												Unit Details
-											</Typography>
-										</Grid>
+										<Grid container spacing={0} sx={styles.cardContent}>
+											<Grid item xs={12}>
+												<Typography variant='h6' sx={styles.subText}>
+													Unit number or name
+												</Typography>
+											</Grid>
+											<Grid item xs={12} md={12}>
+												<Typography fontWeight={400} fontSize={'14px'}>
+													Description{' '}
+												</Typography>
+												<ControlledTextField
+													name={`units.${index}.description`}
+													// label='Description'
+													formik={formik}
+													// inputProps={{
+													// 	sx: {
+													// 		height: '40px',
+													// 	},
+													// }}
+												/>
+											</Grid>
+											<Grid item xs={12}>
+												<Typography variant='h6' sx={styles.subText}>
+													Unit Details
+												</Typography>
+											</Grid>
 
-										<Grid item xs={6} sx={styles.unitIcon}>
-											<IconButton onClick={() => handleOpen(index)}>
-												<BedIcon />
-												<Typography>{unit.beds}</Typography>
-											</IconButton>
-											<IconButton onClick={() => handleOpen(index)}>
-												<BathtubIcon />
-												<Typography>{unit.baths}</Typography>
-											</IconButton>
-										</Grid>
-										{/* <Grid item xs={12}>
+											<Grid item xs={6} sx={styles.unitIcon}>
+												<IconButton onClick={() => handleOpen(index)}>
+													<BedIcon />
+													<Typography>{unit.beds}</Typography>
+												</IconButton>
+												<IconButton onClick={() => handleOpen(index)}>
+													<BathtubIcon />
+													<Typography>{unit.baths}</Typography>
+												</IconButton>
+											</Grid>
+											{/* <Grid item xs={12}>
 									<Button
 										variant='outlined'
 										color='secondary'
@@ -341,26 +353,27 @@ const GeneralInfo: React.FC = () => {
 										Remove Unit
 									</Button>
 								</Grid> */}
+										</Grid>
+									</Grid>
+									<Grid item xs={12}>
+										<IconButton
+											onClick={() => cloneUnit(index)}
+											sx={styles.cloneButton}
+										>
+											<img
+												src={cloneIcon}
+												alt='icon'
+												style={{ marginRight: '5px' }}
+											/>
+											<Typography sx={styles.cloneText}>Clone</Typography>
+										</IconButton>
 									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<IconButton
-										onClick={() => cloneUnit(index)}
-										sx={styles.cloneButton}
-									>
-										<img
-											src={cloneIcon}
-											alt='icon'
-											style={{ marginRight: '5px' }}
-										/>
-										<Typography fontSize={'14px'}>Clone</Typography>
-									</IconButton>
-								</Grid>
-							</Grid>
-						))}
-					</Grid>{' '}
-				</Card>
-			</Grid>
+							))}
+						</Grid>{' '}
+					</Card>
+				</Grid>
+			)}
 
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
@@ -372,11 +385,11 @@ const GeneralInfo: React.FC = () => {
 								label='Bedrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -385,11 +398,11 @@ const GeneralInfo: React.FC = () => {
 								label='Bathrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -398,11 +411,11 @@ const GeneralInfo: React.FC = () => {
 								label='Guest Bathrooms'
 								type='number'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
@@ -410,11 +423,11 @@ const GeneralInfo: React.FC = () => {
 								name={`units.${currentUnitIndex}.floorPlan`}
 								label='Floor Plan'
 								formik={formik}
-								inputProps={{
-									sx: {
-										height: '40px',
-									},
-								}}
+								// inputProps={{
+								// 	sx: {
+								// 		height: '40px',
+								// 	},
+								// }}
 							/>
 						</Grid>
 						<Grid item xs={12}>
