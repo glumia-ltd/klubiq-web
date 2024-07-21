@@ -4,6 +4,12 @@ import {
 	Chip,
 	Grid,
 	SvgIcon,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
 	Typography,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
@@ -22,6 +28,8 @@ import IconThree from '../../assets/images/people.svg';
 import IconFour from '../../assets/images/lasthouse.svg';
 import { styles } from './style';
 import { useState } from 'react';
+import aisha from '../../assets/images/aisha.jpg';
+import bukky from '../../assets/images/bukky.png';
 
 const stackedImages = [
 	propertyImage,
@@ -58,6 +66,42 @@ const data = [
 	},
 ];
 
+type ColumnType = { id: string; label: string };
+type RowType = {
+	id: string;
+	tenant: { name: string; image: string };
+	phone: string;
+	email: string;
+	startDate: string;
+	cutOffDate: string;
+};
+
+const columns: ColumnType[] = [
+	{ id: 'tenant', label: 'Tenant' },
+	{ id: 'phone', label: 'Phone' },
+	{ id: 'email', label: 'Email' },
+	{ id: 'startDate', label: 'Start Date' },
+	{ id: 'cutOffDate', label: 'Cut-off date' },
+];
+const tableBodyRows: RowType[] = [
+	{
+		id: 'fadfasdfasd',
+		tenant: { name: 'Aisha Rohni', image: aisha },
+		phone: '0701234567',
+		email: 'aishar@yahoo.com',
+		startDate: 'April 4, 2024',
+		cutOffDate: 'May 4, 2024',
+	},
+	{
+		id: 'fadfasdfaadvadvd',
+		tenant: { name: 'Bukky King', image: bukky },
+		phone: '0805277558',
+		email: 'bking@gmail.com',
+		startDate: 'July 29, 2023',
+		cutOffDate: 'July 29, 2025',
+	},
+];
+
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 
@@ -67,6 +111,8 @@ const PropertyPage = () => {
 	) => {
 		setTabValue(newValue);
 	};
+
+	const handleAddTenant = () => {};
 
 	return (
 		<ViewPort>
@@ -133,6 +179,87 @@ const PropertyPage = () => {
 					<Overview initialText={initialText} />
 
 					<Grid sx={styles.addfieldStyle}>
+						<Grid sx={styles.tenantTableContainer}>
+							<TableContainer>
+								<Table stickyHeader aria-label='sticky table'>
+									<TableHead>
+										<TableRow>
+											<TableCell
+												align='left'
+												colSpan={2}
+												sx={{ ...styles.tableCell }}
+											>
+												Tenant
+											</TableCell>
+											<TableCell
+												align='right'
+												colSpan={3}
+												sx={styles.tableCell}
+											>
+												<Grid item xs={6} sm={6} md={9} lg={9}>
+													<Button
+														onClick={handleAddTenant}
+														sx={styles.tableButton}
+													>
+														Add Tenant
+													</Button>
+												</Grid>
+											</TableCell>
+										</TableRow>
+
+										<TableRow>
+											{columns.map((column) => (
+												<TableCell
+													key={column.label}
+													align={'center'}
+													sx={styles.tableHeaderCellStyle}
+												>
+													{column.label}
+												</TableCell>
+											))}
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{tableBodyRows.map((row) => {
+											return (
+												<TableRow
+													hover
+													role='checkbox'
+													tabIndex={-1}
+													key={row.id}
+												>
+													{columns.map((column) => {
+														const key: string = column.id;
+														const value = row[key as keyof RowType];
+
+														return (
+															<TableCell
+																key={column.id}
+																align={'center'}
+																sx={styles.tableBodyStyle}
+															>
+																{typeof value === 'string' ? (
+																	value
+																) : (
+																	<span style={styles.tenantInfoStyle}>
+																		<img
+																			src={value.image}
+																			alt='tenant picture'
+																		/>{' '}
+																		{value.name}
+																	</span>
+																)}
+															</TableCell>
+														);
+													})}
+												</TableRow>
+											);
+										})}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Grid>
+
 						<AddFieldCard
 							heading={'Add Tenant'}
 							subtext={'Add tenants to your property'}
