@@ -21,6 +21,7 @@ import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
 import { UnitCard } from '../../components/UnitCard/UnitCard';
 import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
 import { Overview } from '../../components/Overview/Overview';
+import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
 import propertyImage from '../../assets/images/propertyImage.png';
 import HouseIcon from '../../assets/images/home.svg';
 import IconTwo from '../../assets/images/home2.svg';
@@ -179,86 +180,13 @@ const PropertyPage = () => {
 					<Overview initialText={initialText} />
 
 					<Grid sx={styles.addfieldStyle}>
-						<Grid sx={styles.tenantTableContainer}>
-							<TableContainer>
-								<Table stickyHeader aria-label='sticky table'>
-									<TableHead>
-										<TableRow>
-											<TableCell
-												align='left'
-												colSpan={2}
-												sx={{ ...styles.tableCell }}
-											>
-												Tenant
-											</TableCell>
-											<TableCell
-												align='right'
-												colSpan={3}
-												sx={styles.tableCell}
-											>
-												<Grid item xs={6} sm={6} md={9} lg={9}>
-													<Button
-														onClick={handleAddTenant}
-														sx={styles.tableButton}
-													>
-														Add Tenant
-													</Button>
-												</Grid>
-											</TableCell>
-										</TableRow>
-
-										<TableRow>
-											{columns.map((column) => (
-												<TableCell
-													key={column.label}
-													align={'center'}
-													sx={styles.tableHeaderCellStyle}
-												>
-													{column.label}
-												</TableCell>
-											))}
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{tableBodyRows.map((row) => {
-											return (
-												<TableRow
-													hover
-													role='checkbox'
-													tabIndex={-1}
-													key={row.id}
-												>
-													{columns.map((column) => {
-														const key: string = column.id;
-														const value = row[key as keyof RowType];
-
-														return (
-															<TableCell
-																key={column.id}
-																align={'center'}
-																sx={styles.tableBodyStyle}
-															>
-																{typeof value === 'string' ? (
-																	value
-																) : (
-																	<span style={styles.tenantInfoStyle}>
-																		<img
-																			src={value.image}
-																			alt='tenant picture'
-																		/>{' '}
-																		{value.name}
-																	</span>
-																)}
-															</TableCell>
-														);
-													})}
-												</TableRow>
-											);
-										})}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</Grid>
+						<TenantAndLeaseTable
+							title='Tenat'
+							buttonText='Add Tenant'
+							handleAdd={handleAddTenant}
+							columns={columns}
+							tableBodyRows={tableBodyRows}
+						/>
 
 						<AddFieldCard
 							heading={'Add Tenant'}
