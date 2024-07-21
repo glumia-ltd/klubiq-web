@@ -17,6 +17,7 @@ import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 
 import { data, filterOptions } from './data';
+import { useNavigate } from 'react-router-dom';
 
 type PropertyType = {
 	title: string;
@@ -37,6 +38,7 @@ const Properties = () => {
 	const [allProperties, setAllProperties] = useState<PropertyType>(data);
 	const [filter, setFilter] = useState<Record<string, string | string[]>>({});
 	const [searchText, setSearchText] = useState('');
+	const navigate = useNavigate();
 
 	const purpose = filter?.Purpose;
 	const unitType = filter['Unit type'];
@@ -73,6 +75,10 @@ const Properties = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
 	};
 
+	const handleAddProperties = () => {
+		navigate('/properties/property-category');
+	};
+
 	useEffect(() => {
 		if (inputRef.current) {
 			const inputElement: HTMLInputElement | null =
@@ -89,7 +95,11 @@ const Properties = () => {
 					<div onClick={toggleLayout}>
 						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
 					</div>
-					<Button variant='contained' sx={styles.addPropertyButton}>
+					<Button
+						variant='contained'
+						sx={styles.addPropertyButton}
+						onClick={handleAddProperties}
+					>
 						<LeftArrowIcon />
 						Add New Property
 					</Button>
@@ -127,7 +137,7 @@ const Properties = () => {
 					</Typography>
 				) : null}
 
-				<Grid container spacing={1}>
+				<Grid container spacing={1.5} mt={3} pl={0.5}>
 					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
 						(property, index) => (
 							<Grid

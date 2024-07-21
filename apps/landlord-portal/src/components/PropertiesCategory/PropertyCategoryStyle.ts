@@ -8,6 +8,9 @@ const styles = {
 	header: {
 		fontSize: { xs: '13px', sm: '18px', md: '20px', lg: '20px' },
 		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '24px' },
+		color: '#002147',
+		textTransform: 'uppercase',
+		fontWeight: 600,
 	},
 };
 export default styles;

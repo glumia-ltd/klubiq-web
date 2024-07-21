@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import RadioCard from '../../components/RadioCard/';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
+import { useState } from 'react';
 
-type Props = {};
 const options = [
 	{
 		value: 'one',
@@ -21,7 +21,11 @@ const optionTwo = [
 	{ value: 'one', label: 'Single Unit' },
 	{ value: 'other', label: 'Multi Unit' },
 ];
-const UnitType = (props: Props) => {
+const UnitType = () => {
+	const [selectedUnitType, setSelectedUnitType] = useState('one');
+	const handleUnitTypeChange = (value: string) => {
+		setSelectedUnitType(value);
+	};
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
@@ -29,6 +33,7 @@ const UnitType = (props: Props) => {
 					headerText='UNIT TYPE'
 					options={options}
 					defaultValue='one'
+					onChange={handleUnitTypeChange}
 				/>
 			</Grid>
 			<Grid item xs={12}>
@@ -36,10 +41,11 @@ const UnitType = (props: Props) => {
 					headerText='PROPERTY purpose'
 					options={optionTwo}
 					defaultValue='one'
+					onChange={handleUnitTypeChange}
 				/>
 			</Grid>
 			<Grid item xs={12}>
-				<GeneralInfo />
+				<GeneralInfo selectedUnitType={selectedUnitType} />
 			</Grid>
 		</Grid>
 	);
