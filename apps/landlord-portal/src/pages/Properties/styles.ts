@@ -1,12 +1,6 @@
 export const styles = {
 	container: {
 		padding: '2rem 6rem',
-		// paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
-		// paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
-		// paddingLeft: { xs: '1.5rem', sm: '0.5rem', md: '0rem', lg: '0rem' },
-		// paddingRight: { xs: '1.5rem', sm: '0.5rem', md: '0rem', lg: '0rem' },
-
-		overflow: 'auto',
 	},
 	buttons: {
 		cursor: 'pointer',
