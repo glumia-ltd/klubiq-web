@@ -17,8 +17,6 @@ import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 
 import { data, filterOptions } from './data';
-import UnitInfoCard from '../../components/UnitInfoComponent/UnitInfoCard';
-import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
 
 type PropertyType = {
 	title: string;
@@ -111,12 +109,6 @@ const Properties = () => {
 							onChange={(e) => setSearchText(e.target.value)}
 						/>
 					</Paper>
-				</Grid>
-				<Grid item xs={12}>
-					<UnitInfoCard />
-				</Grid>
-				<Grid item xs={12}>
-					<AddFieldCard />
 				</Grid>
 
 				<Grid item xs={12} sx={styles.filterContainer}>
