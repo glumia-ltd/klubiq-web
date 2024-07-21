@@ -137,7 +137,7 @@ const Properties = () => {
 					</Typography>
 				) : null}
 
-				<Grid container spacing={1}>
+				<Grid container spacing={1.5} mt={3}>
 					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
 						(property, index) => (
 							<Grid
