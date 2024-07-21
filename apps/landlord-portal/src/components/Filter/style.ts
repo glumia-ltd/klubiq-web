@@ -2,7 +2,7 @@ export const styles = {
 	buttonStyle: {
 		display: 'flex',
 		gap: '8px',
-		padding: { xs: '8px', sm: '5px', md: '6px', lg: '8px' },
+		padding: '8px',
 		outline: '1px dashed #002147',
 		borderRadius: '8px',
 	},
@@ -20,10 +20,10 @@ export const styles = {
 	},
 
 	filterContainer: {
+		display: 'flex',
 		alignItems: 'center',
 		minHeight: '45px',
 		margin: '16px 0px 16px 0px',
-		width: { xs: '100%', sm: '79%', md: '75%:', lg: '59%' },
 	},
 
 	selectedButtonStyle: {
@@ -57,7 +57,7 @@ export const styles = {
 	},
 
 	text: {
-		fontSize: { xs: '16px', sm: '10px', md: '14px', lg: '16px' },
+		fontSize: '16px',
 		color: '#002147',
 		backgroundColor: '#fff',
 		borderRadius: '10px',
