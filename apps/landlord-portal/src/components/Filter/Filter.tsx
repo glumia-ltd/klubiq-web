@@ -1,5 +1,4 @@
 import { FC, useRef, useState } from 'react';
-
 import plus from '../../assets/images/plus.svg';
 import cancel from '../../assets/images/cancel-button.svg';
 import dropdown from '../../assets/images/dropdown.svg';
@@ -7,6 +6,7 @@ import dropdown from '../../assets/images/dropdown.svg';
 import {
 	Grid,
 	Button,
+	Stack,
 	Typography,
 	Modal,
 	Box,
@@ -18,7 +18,6 @@ import {
 } from '@mui/material';
 
 import { styles } from './style';
-import { Stack } from '@mui/system';
 
 type OptionsType = {
 	title: string;
@@ -90,11 +89,9 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	};
 
 	return (
-		<Grid
-			container
-			spacing={1}
-			// direction='row'
-			// spacing={2}
+		<Stack
+			direction='row'
+			spacing={2}
 			alignItems='center'
 			sx={styles.filterContainer}
 		>
@@ -102,14 +99,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 				const { title, options } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
-					<Grid
-						item
-						xs={4}
-						sm={3}
-						md={2.4}
-						style={styles.selectedState}
-						key={title}
-					>
+					<Grid style={styles.selectedState} key={title}>
 						<div
 							ref={(element) => {
 								if (element) {
@@ -212,27 +202,29 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						</div>
 					</Grid>
 				) : (
-					<Stack direction='row' spacing={2} key={title} ml={'15px'}>
-						<div
-							ref={(element) => {
-								if (element) {
-									divRef.current[title] = element;
-								} else {
-									delete divRef.current[title];
-								}
-							}}
-						>
-							<Button
-								sx={styles.buttonStyle}
-								onClick={() => handleButtonClick(title)}
+					<Grid key={title} sx={{ position: 'relative' }}>
+						<Grid>
+							<div
+								ref={(element) => {
+									if (element) {
+										divRef.current[title] = element;
+									} else {
+										delete divRef.current[title];
+									}
+								}}
 							>
-								<img src={plus} alt='filter button icon' /> {title}
-							</Button>
-						</div>
-					</Stack>
+								<Button
+									sx={styles.buttonStyle}
+									onClick={() => handleButtonClick(title)}
+								>
+									<img src={plus} alt='filter button icon' /> {title}
+								</Button>
+							</div>
+						</Grid>
+					</Grid>
 				);
 			})}
-		</Grid>
+		</Stack>
 	);
 };
 
