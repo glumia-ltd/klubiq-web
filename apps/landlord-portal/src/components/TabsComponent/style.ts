@@ -1,7 +1,7 @@
 export const styles = {
 	tabStyle: {
 		display: 'flex',
-		marginTop: '32px',
+		padding: '16px',
 	},
 
 	tabsContainer: {

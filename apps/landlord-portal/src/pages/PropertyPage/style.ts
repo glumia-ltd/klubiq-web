@@ -1,3 +1,5 @@
+import { borderRadius, display } from '@mui/system';
+
 export const styles = {
 	container: {
 		padding: '25px 90px',
@@ -48,5 +50,21 @@ export const styles = {
 		color: 'primary.contrastText',
 		fontSize: '12px',
 		fontWeight: '',
+	},
+
+	firstCardContainer: {
+		backgroundColor: '#fff',
+		borderRadius: '8px',
+	},
+
+	unitInfoCardStyle: {
+		marginTop: '32px',
+	},
+
+	addfieldStyle: {
+		marginTop: '32px',
+		display: 'flex',
+		flexDirection: 'column',
+		gap: '16px',
 	},
 };

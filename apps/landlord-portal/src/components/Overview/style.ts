@@ -51,7 +51,7 @@ export const styles = {
 		padding: '8px 12px',
 		borderRadius: '10px',
 		backgroundColor: '#ffffff',
-		minWidth: '160px',
+		maxWidth: '144px',
 		alignSelf: 'flex-end',
 	},
 };

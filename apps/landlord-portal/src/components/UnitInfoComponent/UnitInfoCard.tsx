@@ -1,9 +1,6 @@
 import { Grid, Typography, Box, Card } from '@mui/material';
-import HouseIcon from '../../assets/images/home.svg';
-import IconTwo from '../../assets/images/home2.svg';
-import IconThree from '../../assets/images/people.svg';
-import IconFour from '../../assets/images/lasthouse.svg';
 import style from './style';
+import { FC } from 'react';
 
 interface DataItem {
 	icon?: JSX.Element;
@@ -13,32 +10,7 @@ interface DataItem {
 	imgSrc?: string;
 }
 
-const data: DataItem[] = [
-	{
-		label: 'UNIT',
-		value: 1,
-		imgSrc: HouseIcon,
-	},
-	{
-		label: 'VACANT UNIT',
-		value: 1,
-		valueColor: 'green',
-		imgSrc: IconTwo,
-	},
-	{
-		label: 'TENANT',
-		value: 0,
-		imgSrc: IconThree,
-	},
-	{
-		label: 'MAINTENANCE REQUEST',
-		value: 0,
-		valueColor: 'red',
-		imgSrc: IconFour,
-	},
-];
-
-const UnitInfoCard = () => {
+const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
 	return (
 		<Card sx={style.contentdiv}>
 			<Grid container spacing={1}>
