@@ -54,4 +54,15 @@ export const styles = {
 		maxWidth: '144px',
 		alignSelf: 'flex-end',
 	},
+
+	showHideTextStyle: {
+		background: '#fff',
+		width: '144px',
+		height: '32px',
+		padding: '6px 8px, 6px 8px',
+		borderRadius: '8px',
+		textAlign: 'center',
+		alignSelf: 'flex-end',
+		marginTop: '16px',
+	},
 };

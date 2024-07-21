@@ -141,16 +141,13 @@ const PropertyPage = () => {
 						</Typography>
 					</Breadcrumbs>
 				</Grid>
-
 				<Grid sx={styles.actionButtonContainerStyle}>
 					<Button sx={styles.actionButtonStyle}>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
 				</Grid>
-
 				<Chip sx={styles.chipStyle} label={'For Rent'} />
-
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={propertyImage}
@@ -172,34 +169,41 @@ const PropertyPage = () => {
 				</Grid>
 
 				{/* OVERVIEW CONTENT */}
-				<Grid>
-					<Grid sx={styles.unitInfoCardStyle}>
-						<UnitInfoCard data={data} />
+				{(tabValue === 0 || tabValue === 1) && (
+					<Grid>
+						<Grid sx={styles.unitInfoCardStyle}>
+							<UnitInfoCard data={data} />
+						</Grid>
+
+						<Overview initialText={initialText} />
+
+						<Grid sx={styles.addfieldStyle}>
+							{tabValue !== 1 && (
+								<>
+									<TenantAndLeaseTable
+										title='Tenat'
+										buttonText='Add Tenant'
+										handleAdd={handleAddTenant}
+										columns={columns}
+										tableBodyRows={tableBodyRows}
+									/>
+
+									<AddFieldCard
+										heading={'Add Tenant'}
+										subtext={'Add tenants to your property'}
+										description={'Add Tenant'}
+									/>
+								</>
+							)}
+
+							<AddFieldCard
+								heading={'Add Lease'}
+								subtext={'Add lease to your property'}
+								description={'Add Lease'}
+							/>
+						</Grid>
 					</Grid>
-
-					<Overview initialText={initialText} />
-
-					<Grid sx={styles.addfieldStyle}>
-						<TenantAndLeaseTable
-							title='Tenat'
-							buttonText='Add Tenant'
-							handleAdd={handleAddTenant}
-							columns={columns}
-							tableBodyRows={tableBodyRows}
-						/>
-
-						<AddFieldCard
-							heading={'Add Tenant'}
-							subtext={'Add tenants to your property'}
-							description={'Add Tenant'}
-						/>
-						<AddFieldCard
-							heading={'Add Lease'}
-							subtext={'Add lease to your property'}
-							description={'Add Lease'}
-						/>
-					</Grid>
-				</Grid>
+				)}
 			</Grid>
 		</ViewPort>
 	);
