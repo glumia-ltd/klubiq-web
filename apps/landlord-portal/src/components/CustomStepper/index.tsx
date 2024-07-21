@@ -106,7 +106,6 @@ export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
 								},
 								'& .Mui-active ': {
 									fontWeight: 'bold',
-									color: 'primary.main',
 								},
 							}}
 						>
