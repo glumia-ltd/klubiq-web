@@ -12,10 +12,11 @@ const Maintenance = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 
 	const validationSchema = yup.object({
-		propertyName: yup.string().required('Please enter the property name'),
+		title: yup.string().required('This field is required'),
+		unit: yup.string().required('This field is required'),
+		category: yup.string().required('Select an option'),
 		description: yup.string().required('This field is required'),
-		propertyType: yup.string().required('Select an option'),
-		propertyImage: yup
+		photo: yup
 			.array()
 			.min(1, 'You need to upload at least one image')
 			.max(4, 'You can upload a maximum of 4 images')
@@ -23,10 +24,11 @@ const Maintenance = () => {
 	});
 
 	type formValues = {
-		propertyName: string;
+		category: string;
+		unit: string;
+		title: string;
 		description: string;
-		propertyType: string;
-		propertyImage: string[];
+		photo: string[];
 	};
 
 	const property = [
@@ -46,10 +48,11 @@ const Maintenance = () => {
 
 	const formik = useFormik({
 		initialValues: {
+			category: '',
+			unit: '',
+			title: '',
 			description: '',
-			propertyName: '',
-			propertyType: '',
-			propertyImage: [],
+			photo: [],
 		},
 		validationSchema,
 		onSubmit,
@@ -60,17 +63,20 @@ const Maintenance = () => {
 			const fileArray = Array.from(files).map((file) =>
 				URL.createObjectURL(file),
 			);
-			formik.setFieldValue('propertyImage', [
-				...formik.values.propertyImage,
-				...fileArray,
-			]);
+			formik.setFieldValue('photo', [...formik.values.photo, ...fileArray]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 		}
 	};
 
 	return (
 		<FormLayout Header='MAINTENANCE INFORMATION' sx={style.card}>
-			<Grid container spacing={1} sx={style.content}>
+			<Grid
+				container
+				spacing={1}
+				sx={style.content}
+				component='form'
+				onSubmit={formik.handleSubmit}
+			>
 				<Grid item xs={6}>
 					<ControlledSelect
 						name='category'
