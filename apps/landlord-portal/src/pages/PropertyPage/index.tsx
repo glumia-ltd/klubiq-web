@@ -23,6 +23,7 @@ import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
 import { Overview } from '../../components/Overview/Overview';
 import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
 import propertyImage from '../../assets/images/propertyImage.png';
+import addMaintenance from '../../assets/images/addMaintenance.svg';
 import HouseIcon from '../../assets/images/home.svg';
 import IconTwo from '../../assets/images/home2.svg';
 import IconThree from '../../assets/images/people.svg';
@@ -248,13 +249,21 @@ const PropertyPage = () => {
 											/>
 										</TableCell>
 										<TableCell align='right' colSpan={3} sx={styles.tableCell}>
-											<Grid item xs={6} sm={6} md={9} lg={9}>
-												<Button
+											<Grid
+												item
+												xs={6}
+												sm={6}
+												md={9}
+												lg={9}
+												sx={styles.addMaintenance}
+											>
+												<img src={addMaintenance} alt='add maintenance image' />
+												<Typography
 													onClick={handleCreateDocument}
-													sx={styles.tableButton}
+													sx={styles.addMaintenanceText}
 												>
-													{/* {buttonText} */}
-												</Button>
+													Create Request
+												</Typography>
 											</Grid>
 										</TableCell>
 									</TableRow>
