@@ -1,54 +1,29 @@
-import { Card, Grid, Typography } from '@mui/material';
-import { Children } from 'react';
+import { Card, Grid, Typography, SxProps } from '@mui/material';
+import style from './style';
 
-type Props = {};
+type Props = {
+	children: React.ReactNode;
+	Header?: string;
+	sx?: SxProps;
+};
 
-const FormLayout = (props: Props) => {
+const FormLayout = ({ children, Header, sx }: Props) => {
 	return (
 		<Grid container spacing={1} alignItems='center' justifyContent={'center'}>
-			<Card
-				sx={{
-					border: '1px solid red',
-					// backgroundColor: 'primary.main',
-					// color: 'white',
-					width: '100%',
-					maxWidth: '810px',
-				}}
-			>
+			<Card sx={sx}>
 				{' '}
 				<Grid container spacing={1}>
-					<Grid
-						item
-						xs={12}
-						sx={{
-							border: '1px solid red',
-							backgroundColor: 'primary.main',
-							color: 'white',
-							width: '100%',
-							maxWidth: '810px',
-							height: '100px',
-							borderRadius: '0px, 0px, 3px, 0px',
-						}}
-					>
-						<Typography>here ,{/* {Header} */}</Typography>
+					<Grid item xs={12} sx={style.headerContainer}>
+						<Typography sx={style.header}>{Header}</Typography>
 					</Grid>
 					<Grid
 						item
 						xs={12}
 						sx={{
-							border: '1px solid red',
-							// backgroundColor: 'primary.main',
-							// color: 'white',
-							// width: '100%',
-							// maxWidth: '810px',
-							height: '1034px',
 							borderRadius: '0px, 0px, 3px, 0px',
 						}}
 					>
-						{/* {Children} */}
-						<Grid container spacing={0}>
-							here we are
-						</Grid>
+						{children}
 					</Grid>
 				</Grid>
 			</Card>

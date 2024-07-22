@@ -65,9 +65,6 @@ const Login = () => {
 			const firstName = userName[0];
 			const lastName = userName[1];
 
-			localStorage.setItem('token', user.accessToken);
-			localStorage.setItem('refreshToken', user.refreshToken);
-
 			if (!user.emailVerified) {
 				const requestBody = { email, firstName, lastName };
 
@@ -89,7 +86,7 @@ const Login = () => {
 						isOpen: true,
 					}),
 				);
-				navigate('/private', { replace: true });
+				navigate('/dashboard', { replace: true });
 			}
 		} catch (error) {
 			dispatch(
@@ -218,6 +215,11 @@ const Login = () => {
 									type='email'
 									placeholder='johndoe@example.com'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 
@@ -227,6 +229,11 @@ const Login = () => {
 									label='Password'
 									type='password'
 									formik={formik}
+									inputProps={{
+										sx: {
+											height: '40px',
+										},
+									}}
 								/>
 							</Grid>
 							<Grid

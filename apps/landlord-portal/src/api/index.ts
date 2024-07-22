@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
+import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 
 const api = axios.create({
 	baseURL:
@@ -15,9 +16,15 @@ const skippedEndpoints = [
 	authEndpoints.emailVerification(),
 ];
 
+const storedSession = sessionStorage.getItem(
+	firebaseResponseObject.sessionStorage || '',
+);
+const storedSessionObject = storedSession && JSON.parse(storedSession);
+
 // request config
+
 function AxiosConfig(config: any) {
-	const token = localStorage.getItem('token');
+	const token = storedSessionObject?.stsTokenManager?.accessToken;
 
 	config.headers = {};
 
@@ -46,21 +53,25 @@ api.interceptors.response.use(
 		const originalRequest = error.config;
 		const {
 			status,
-			data: { error: err },
+			data: { message },
 		} = error.response;
+
 		if (
 			status &&
 			status > 400 &&
-			err.includes('expired token') &&
+			message?.includes('expired token') &&
 			!originalRequest._retry
 		) {
 			originalRequest._retry = true;
 
 			try {
-				const refreshToken = localStorage.getItem('refreshToken');
+				const refreshToken = storedSessionObject?.stsTokenManager.refreshToken;
 				const {
 					data: {
-						data: { access_token, refresh_token },
+						data: {
+							access_token,
+							// refresh_token
+						},
 					},
 				} = await axios.post(
 					`https://devapi.klubiq.com/api/${authEndpoints.refreshToken()}`,
@@ -69,10 +80,10 @@ api.interceptors.response.use(
 					},
 				);
 
-				if (access_token && refresh_token) {
-					localStorage.setItem('token', access_token);
-					localStorage.setItem('refreshToken', refresh_token);
-				}
+				// if (access_token && refresh_token) {
+				// 	localStorage.setItem('token', access_token);
+				// 	localStorage.setItem('refreshToken', refresh_token);
+				// }
 
 				// Retry the original request with the new token
 				originalRequest.headers.Authorization = `Bearer ${access_token}`;

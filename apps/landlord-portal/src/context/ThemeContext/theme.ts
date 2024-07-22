@@ -1,4 +1,30 @@
 import { Theme, createTheme } from '@mui/material';
+const transitionsTheme = {
+	duration: {
+		shortest: 150,
+		shorter: 200,
+		short: 250,
+		// most basic recommended timing
+		standard: 300,
+		// this is to be used in complex animations
+		complex: 375,
+		// recommended when something is entering screen
+		enteringScreen: 400,
+		// recommended when something is leaving screen
+		leavingScreen: 300,
+	},
+	easing: {
+		// This is the most common easing curve.
+		easeInOut: 'ease-in-out',
+		// Objects enter the screen at full velocity from off-screen and
+		// slowly decelerate to a resting point.
+		easeOut: 'ease-out',
+		// Objects leave the screen at full velocity. They do not decelerate when off-screen.
+		easeIn: 'ease-in',
+		// The sharp curve is used by objects that may return to the screen at any time.
+		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
+	},
+};
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -27,7 +53,7 @@ export const LightTheme: Theme = createTheme({
 
 		background: {
 			default: '#ccdbee',
-			paper: '#FFFFFF',
+			paper: '#F3F6F8',
 		},
 	},
 	components: {
@@ -46,9 +72,18 @@ export const LightTheme: Theme = createTheme({
 		},
 		MuiDrawer: {
 			styleOverrides: {
+				docked: {
+					maxWidth: '250px',
+					minWidth: '100px',
+				},
 				paper: {
+					display: 'flex',
 					background: '#002147',
-					width: 270,
+					alignItems: 'center',
+					maxWidth: '250px',
+					minWidth: '100px',
+					overflowX: 'hidden',
+					msOverflowY: 'auto',
 				},
 			},
 		},
@@ -97,6 +132,14 @@ export const LightTheme: Theme = createTheme({
 				disableRipple: true,
 			},
 		},
+		MuiStep: {
+			styleOverrides: {
+				root: {
+					padding: '0px',
+					fontWeight: '100',
+				},
+			},
+		},
 	},
 
 	typography: {
@@ -144,9 +187,9 @@ export const LightTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 400,
-			fontSize: '0.875rem',
-			lineHeight: 1.6,
+			fontWeight: 600,
+			fontSize: '14px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
@@ -179,11 +222,18 @@ export const LightTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
+		dashboardTypography: {
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+		},
 
 		button: {
 			textTransform: 'none',
 		},
 	},
+	transitions: transitionsTheme,
 });
 
 export const DarkTheme: Theme = createTheme({
@@ -200,14 +250,14 @@ export const DarkTheme: Theme = createTheme({
 	palette: {
 		mode: 'dark',
 		primary: {
-			main: '#002147',
+			main: '#0088F0',
 			light: '#0096FF',
 			dark: '#1F305E',
 		},
 		secondary: {
-			main: '#FFD700',
+			main: '#0D0D0D',
 			dark: '#FF6400',
-			contrastText: '#ffffff',
+			light: '#BBD9FF',
 		},
 
 		background: {
@@ -215,6 +265,7 @@ export const DarkTheme: Theme = createTheme({
 			paper: '#0D0D0D',
 		},
 	},
+
 	components: {
 		MuiListItemButton: {
 			defaultProps: {
@@ -238,28 +289,38 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				colorPrimary: {
 					background: '#0D0D0D',
-					color: '#ffffff',
-					boxShadow: '0px 0px 0px 1px #C0C0C0',
+					color: '#FFFFFF',
+					boxShadow: '0px 0px 0px 1px #6699CC',
 				},
 			},
 		},
 		MuiDrawer: {
 			styleOverrides: {
+				docked: {
+					maxWidth: '250px',
+					minWidth: '100px',
+				},
 				paper: {
-					background: '#0F0F0F',
-					width: 270,
+					display: 'flex',
+					background: '#OFOFOF',
+					alignItems: 'center',
+					maxWidth: '250px',
+					minWidth: '100px',
+					overflowX: 'hidden',
+					msOverflowY: 'auto',
 				},
 			},
 		},
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
-					background: '#000000',
+					background: '#0F0F0F',
 					height: '2.7rem',
 					borderRadius: '0.5rem',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
+					color: '#FFFFF',
 				},
 			},
 		},
@@ -281,10 +342,33 @@ export const DarkTheme: Theme = createTheme({
 				},
 			},
 		},
+		MuiDialog: {
+			styleOverrides: {
+				paper: {
+					background: '#0DODOD',
+					backgroundImage: 'none',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
+		},
 		MuiCard: {
 			styleOverrides: {
 				root: {
 					background: '#161616',
+					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
@@ -329,9 +413,9 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
-			fontWeight: 600,
-			fontSize: '1rem',
-			lineHeight: 1,
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 
@@ -342,9 +426,9 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 400,
-			fontSize: '0.875rem',
-			lineHeight: 1.6,
+			fontWeight: 600,
+			fontSize: '14px',
+			lineHeight: '20px',
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
@@ -377,10 +461,17 @@ export const DarkTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
-
+		dashboardTypography: {
+			fontWeight: 800,
+			// fontSize: '1rem',
+			// lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+			color: '#BBD9FF',
+		},
 		button: {
 			textTransform: 'none',
 			disableRipple: true,
 		},
 	},
+	transitions: transitionsTheme,
 });

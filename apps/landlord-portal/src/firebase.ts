@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { browserSessionPersistence, getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_APIKEY,
@@ -11,6 +11,14 @@ const firebaseConfig = {
 	measurementId: import.meta.env.VITE_MEASUREMENTID,
 };
 
-const app = initializeApp(firebaseConfig);
+console.log(import.meta.env.VITE_APPLICATION_NAME);
+const app = initializeApp(
+	firebaseConfig,
+	import.meta.env.VITE_APPLICATION_NAME,
+);
 
-export const auth = getAuth(app);
+const auth = getAuth(app);
+
+auth.setPersistence(browserSessionPersistence);
+
+export { auth };
