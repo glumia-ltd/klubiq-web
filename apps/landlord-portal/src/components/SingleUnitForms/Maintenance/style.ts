@@ -40,6 +40,10 @@ const style = {
 		display: 'flex',
 		height: '278px',
 		borderRadius: '10px',
+		'&:hover': {
+			borderColor: '#1b1b1b',
+			cursor: 'pointer',
+		},
 	},
 	buttonGrid: {
 		justifyContent: 'flex-end',
