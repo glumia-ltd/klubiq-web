@@ -103,8 +103,16 @@ const tableBodyRows: RowType[] = [
 	},
 ];
 
+const totalMaintenanceRequests = 3;
+
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
+	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
+
+	const maintenanceTabs = [
+		'All Requests',
+		`Active Request (${totalMaintenanceRequests})`,
+	];
 
 	const handleTabChange = (
 		_event: React.SyntheticEvent<Element, Event>,
@@ -114,6 +122,15 @@ const PropertyPage = () => {
 	};
 
 	const handleAddTenant = () => {};
+
+	const handleCreateDocument = () => {};
+
+	const handleMaintenanceTabChange = (
+		_event: React.SyntheticEvent<Element, Event>,
+		newValue: number,
+	) => {
+		setMaintenanceTabValue(newValue);
+	};
 
 	return (
 		<ViewPort>
@@ -168,7 +185,7 @@ const PropertyPage = () => {
 					/>
 				</Grid>
 
-				{/* OVERVIEW CONTENT */}
+				{/* OVERVIEW AND LEASE CONTENTS */}
 				{(tabValue === 0 || tabValue === 1) && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
@@ -202,6 +219,94 @@ const PropertyPage = () => {
 								description={'Add Lease'}
 							/>
 						</Grid>
+					</Grid>
+				)}
+
+				{/* MAINTENANCE TAB */}
+
+				{tabValue === 2 && (
+					<Grid
+						sx={{
+							marginTop: '20px',
+							...styles.tenantTableContainer,
+							padding: '10px',
+						}}
+					>
+						<TableContainer>
+							<Table stickyHeader aria-label='sticky table'>
+								<TableHead>
+									<TableRow>
+										<TableCell
+											align='left'
+											colSpan={4}
+											sx={{ ...styles.tableCell }}
+										>
+											<TabsComponent
+												handleTabChange={handleMaintenanceTabChange}
+												tabValue={maintenanceTabValue}
+												allTabs={maintenanceTabs}
+											/>
+										</TableCell>
+										<TableCell align='right' colSpan={3} sx={styles.tableCell}>
+											<Grid item xs={6} sm={6} md={9} lg={9}>
+												<Button
+													onClick={handleCreateDocument}
+													sx={styles.tableButton}
+												>
+													{/* {buttonText} */}
+												</Button>
+											</Grid>
+										</TableCell>
+									</TableRow>
+
+									<TableRow>
+										{columns.map((column) => (
+											<TableCell
+												key={column.label}
+												align={'center'}
+												sx={styles.tableHeaderCellStyle}
+											>
+												{column.label}
+											</TableCell>
+										))}
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{tableBodyRows.map((row) => {
+										return (
+											<TableRow
+												hover
+												role='checkbox'
+												tabIndex={-1}
+												key={row.id}
+											>
+												{columns.map((column) => {
+													const key: string = column.id;
+													const value = row[key as keyof RowType];
+
+													return (
+														<TableCell
+															key={column.id}
+															align={'center'}
+															sx={styles.tableBodyStyle}
+														>
+															{typeof value === 'string' ? (
+																value
+															) : (
+																<span style={styles.tenantInfoStyle}>
+																	<img src={value.image} alt='tenant picture' />{' '}
+																	{value.name}
+																</span>
+															)}
+														</TableCell>
+													);
+												})}
+											</TableRow>
+										);
+									})}
+								</TableBody>
+							</Table>
+						</TableContainer>
 					</Grid>
 				)}
 			</Grid>
