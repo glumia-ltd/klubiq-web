@@ -9,21 +9,28 @@ import Logo from '../../../assets/images/info.svg';
 
 const AddLeaseForm = () => {
 	const validationSchema = yup.object({
-		propertyName: yup.string().required('Please enter the property name'),
-		description: yup.string().required('This field is required'),
-		propertyType: yup.string().required('Select an option'),
-		propertyImage: yup
-			.array()
-			.min(1, 'You need to upload at least one image')
-			.max(4, 'You can upload a maximum of 4 images')
-			.required('Images are required'),
+		nickName: yup.string().required('field is required'),
+		// description: yup.string().required('This field is required'),
+		unit: yup.string().required('Select an option'),
+		propertyName: yup.string().required('Select an option'),
+		tenant: yup.string().required('Select an option'),
+		rentAmount: yup.string().required('field is required'),
+		depositAmount: yup.string().required('field is required'),
+		frequency: yup.string().required('field is required'),
+		startDate: yup.string().required('field is required'),
+		endDate: yup.string().required('field is required'),
 	});
 
 	type formValues = {
+		endDate: string;
+		startDate: string;
+		frequency: string;
+		rentAmount: string;
+		depositAmount: string;
+		nickname: string;
 		propertyName: string;
-		description: string;
-		propertyType: string;
-		propertyImage: string[];
+		unit: string;
+		tenant: string;
 	};
 
 	const property = [
@@ -43,10 +50,15 @@ const AddLeaseForm = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			description: '',
+			endDate: '',
+			startDate: '',
+			frequency: '',
+			rentAmount: '',
+			depositAmount: '',
+			nickname: '',
 			propertyName: '',
-			propertyType: '',
-			propertyImage: [],
+			unit: '',
+			tenant: '',
 		},
 		validationSchema,
 		onSubmit,
@@ -57,7 +69,7 @@ const AddLeaseForm = () => {
 			<Grid container spacing={0} sx={style.content}>
 				<Grid item xs={12}>
 					<ControlledTextField
-						name='description'
+						name='nickname'
 						label='Lease Nickname'
 						formik={formik}
 						type='text'
@@ -65,49 +77,34 @@ const AddLeaseForm = () => {
 				</Grid>
 				<Grid item xs={12}>
 					<ControlledSelect
-						name='propertyType'
+						name='propertyName'
 						label='Property Name'
 						type='text'
 						formik={formik}
 						options={property}
-						inputProps={{
-							sx: {
-								height: '40px',
-							},
-						}}
 					/>
 				</Grid>
-				<Grid item xs={12}>
+				{/* <Grid item xs={12}>
 					<ControlledSelect
-						name='propertyType'
+						name='unit'
 						label='Unit '
 						type='text'
 						formik={formik}
 						options={property}
-						inputProps={{
-							sx: {
-								height: '40px',
-							},
-						}}
 					/>
-				</Grid>
+				</Grid> */}
 				<Grid item xs={12}>
 					<ControlledSelect
-						name='propertyType'
+						name='tenant'
 						label='Tenant'
 						type='text'
 						formik={formik}
 						options={property}
-						inputProps={{
-							sx: {
-								height: '40px',
-							},
-						}}
 					/>
 				</Grid>
 				<Grid xs={12}>
 					<ControlledTextField
-						name='description'
+						name='rentAmount'
 						label='Rent Amount '
 						formik={formik}
 						type='text'
@@ -119,11 +116,6 @@ const AddLeaseForm = () => {
 						label='Deposit Amount'
 						type='text'
 						formik={formik}
-						inputProps={{
-							sx: {
-								height: '40px',
-							},
-						}}
 					/>
 				</Grid>
 				<Grid item xs={6}>

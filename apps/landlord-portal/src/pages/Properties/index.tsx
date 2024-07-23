@@ -19,6 +19,7 @@ import FormLayout from '../../Layouts/FormLayout';
 import { data, filterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
 import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
+import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 
 type PropertyType = {
 	title: string;
@@ -155,7 +156,7 @@ const Properties = () => {
 				</Grid>
 			</Grid> */}
 
-			<Maintenance />
+			<AddUnit />
 		</ViewPort>
 	);
 };
