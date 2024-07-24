@@ -1,6 +1,6 @@
 const style = {
 	card: {
-		border: '1px solid red',
+		// border: '1px solid red',
 		// backgroundColor: 'primary.main',
 		// color: 'white',
 		width: '100%',

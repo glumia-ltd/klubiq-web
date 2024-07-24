@@ -33,8 +33,7 @@ import { styles } from './style';
 import { useState } from 'react';
 import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import aisha from '../../assets/images/aisha.jpg';
-import bukky from '../../assets/images/bukky.png';
+import { useNavigate } from 'react-router-dom';
 
 const stackedImages = [
 	propertyImage,
@@ -89,22 +88,22 @@ const columns: ColumnType[] = [
 	{ id: 'cutOffDate', label: 'Cut-off date' },
 ];
 const tableBodyRows: RowType[] = [
-	{
-		id: 'fadfasdfasd',
-		tenant: { name: 'Aisha Rohni', image: aisha },
-		phone: '0701234567',
-		email: 'aishar@yahoo.com',
-		startDate: 'April 4, 2024',
-		cutOffDate: 'May 4, 2024',
-	},
-	{
-		id: 'fadfasdfaadvadvd',
-		tenant: { name: 'Bukky King', image: bukky },
-		phone: '0805277558',
-		email: 'bking@gmail.com',
-		startDate: 'July 29, 2023',
-		cutOffDate: 'July 29, 2025',
-	},
+	// {
+	// 	id: 'fadfasdfasd',
+	// 	tenant: { name: 'Aisha Rohni', image: aisha },
+	// 	phone: '0701234567',
+	// 	email: 'aishar@yahoo.com',
+	// 	startDate: 'April 4, 2024',
+	// 	cutOffDate: 'May 4, 2024',
+	// },
+	// {
+	// 	id: 'fadfasdfaadvadvd',
+	// 	tenant: { name: 'Bukky King', image: bukky },
+	// 	phone: '0805277558',
+	// 	email: 'bking@gmail.com',
+	// 	startDate: 'July 29, 2023',
+	// 	cutOffDate: 'July 29, 2025',
+	// },
 ];
 
 const totalMaintenanceRequests = 3;
@@ -112,6 +111,7 @@ const totalMaintenanceRequests = 3;
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
+	const navigate = useNavigate();
 
 	const maintenanceTabs = [
 		`Active Request (${totalMaintenanceRequests})`,
@@ -125,7 +125,13 @@ const PropertyPage = () => {
 		setTabValue(newValue);
 	};
 
-	const handleAddTenant = () => {};
+	const handleAddTenantCard = () => {
+		navigate('/properties/add-tenant');
+	};
+
+	const handleAddLeaseCard = () => {
+		navigate('');
+	};
 
 	const handleCreateDocument = () => {};
 
@@ -203,27 +209,35 @@ const PropertyPage = () => {
 						<Grid sx={styles.addfieldStyle}>
 							{tabValue !== 1 && (
 								<>
-									<TenantAndLeaseTable
-										title='Tenat'
-										buttonText='Add Tenant'
-										handleAdd={handleAddTenant}
-										columns={columns}
-										tableBodyRows={tableBodyRows}
-									/>
+									{tableBodyRows.length > 0 && (
+										<TenantAndLeaseTable
+											title='Tenat'
+											buttonText='Add Tenant'
+											handleAdd={handleAddTenantCard}
+											columns={columns}
+											tableBodyRows={tableBodyRows}
+										/>
+									)}
 
-									<AddFieldCard
-										heading={'Add Tenant'}
-										subtext={'Add tenants to your property'}
-										description={'Add Tenant'}
-									/>
+									{!tableBodyRows?.length && (
+										<AddFieldCard
+											heading={'Add Tenant'}
+											subtext={'Add tenants to your property'}
+											description={'Add Tenant'}
+											onClick={handleAddTenantCard}
+										/>
+									)}
 								</>
 							)}
 
-							<AddFieldCard
-								heading={'Add Lease'}
-								subtext={'Add lease to your property'}
-								description={'Add Lease'}
-							/>
+							{!tableBodyRows?.length && (
+								<AddFieldCard
+									heading={'Add Lease'}
+									subtext={'Add lease to your property'}
+									description={'Add Lease'}
+									onClick={handleAddLeaseCard}
+								/>
+							)}
 						</Grid>
 					</Grid>
 				)}

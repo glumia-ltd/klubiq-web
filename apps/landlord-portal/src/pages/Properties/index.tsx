@@ -92,7 +92,7 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			{/* <Grid sx={styles.container}>
+			<Grid sx={styles.container}>
 				<Grid sx={styles.buttons}>
 					<div onClick={toggleLayout}>
 						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
@@ -154,9 +154,7 @@ const Properties = () => {
 						),
 					)}
 				</Grid>
-			</Grid> */}
-
-			<AddUnit />
+			</Grid>
 		</ViewPort>
 	);
 };

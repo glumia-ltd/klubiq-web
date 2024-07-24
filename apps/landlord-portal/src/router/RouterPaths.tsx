@@ -19,6 +19,7 @@ import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
 import AddProperties from '../pages/AddProperties';
 import PropertyPage from '../pages/PropertyPage';
+import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 
 import PropertyCategory from '../components/PropertiesCategory';
 import PropertiesDetails from '../components/PropertiesDetails';
@@ -40,6 +41,8 @@ export const router = createBrowserRouter(
 			<Route path='/properties' element={<Properties />} />
 
 			<Route path='/properties/:slug' element={<PropertyPage />} />
+
+			<Route path='/properties/add-tenant' element={<AddTenantPage />} />
 
 			<Route path='/properties/*' element={<AddProperties />}>
 				<Route path='property-category' element={<PropertyCategory />} />
