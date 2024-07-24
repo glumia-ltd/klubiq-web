@@ -1,6 +1,7 @@
 import {
 	borderRadius,
 	display,
+	fontSize,
 	fontWeight,
 	lineHeight,
 	maxHeight,
@@ -156,5 +157,63 @@ export const styles = {
 		'&:hover': {
 			backgroundColor: 'primary.main',
 		},
+	},
+
+	uploadDocumentContainer: {
+		display: 'flex',
+		justifyContent: 'space-between',
+	},
+
+	documentTitleContainer: {
+		display: 'flex',
+		flexDirection: 'column',
+		gap: '16px',
+	},
+
+	addDocumentText: {
+		textDecoration: 'underline',
+	},
+
+	uploadDocumentText: {
+		display: 'flex',
+		alignItems: 'center',
+		gap: '4px',
+	},
+
+	documentBoxContainer: {
+		display: 'flex',
+		justifyContent: 'center',
+		marginTop: '32px',
+		padding: '63px',
+	},
+
+	documentBox: {
+		cursor: 'pointer',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '40%',
+		border: '1px dashed #002147',
+	},
+
+	documentUploadIcon: {
+		height: '100px',
+		width: '100px',
+	},
+
+	documentText: {
+		margin: '5px auto',
+		fontSize: '20px',
+	},
+
+	documentSubText: {
+		fontSize: '14px',
+	},
+
+	noDocumentsStyle: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		flexDirection: 'column',
 	},
 };
