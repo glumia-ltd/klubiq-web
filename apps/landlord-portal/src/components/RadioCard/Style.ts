@@ -1,5 +1,3 @@
-import { fontWeight } from '@mui/system';
-
 const styles = {
 	card: {
 		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },

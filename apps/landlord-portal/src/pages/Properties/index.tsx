@@ -15,9 +15,11 @@ import ViewPort from '../../components/Viewport/ViewPort';
 import Filter from '../../components/Filter/Filter';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-
+import FormLayout from '../../Layouts/FormLayout';
 import { data, filterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
+import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
+import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 
 type PropertyType = {
 	title: string;
@@ -90,7 +92,7 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			<Grid sx={styles.container}>
+			{/* <Grid sx={styles.container}>
 				<Grid sx={styles.buttons}>
 					<div onClick={toggleLayout}>
 						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
@@ -152,7 +154,9 @@ const Properties = () => {
 						),
 					)}
 				</Grid>
-			</Grid>
+			</Grid> */}
+
+			<AddUnit />
 		</ViewPort>
 	);
 };
