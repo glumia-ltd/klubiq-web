@@ -1,22 +1,23 @@
 import { Grid } from '@mui/material';
-import AddTenant from '../../components/SingleUnitForms/TenantForm/AddTenant';
+import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
 import ViewPort from '../../components/Viewport/ViewPort';
 
-const AddTenantPage = () => {
+const AddMaintenancePage = () => {
 	return (
 		<ViewPort>
 			<Grid
 				sx={{
-					height: '90vh',
+					minHeight: '90vh',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
+					padding: '20px',
 				}}
 			>
-				<AddTenant />
+				<Maintenance />
 			</Grid>
 		</ViewPort>
 	);
 };
 
-export default AddTenantPage;
+export default AddMaintenancePage;

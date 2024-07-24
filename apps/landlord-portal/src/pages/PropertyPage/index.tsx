@@ -126,11 +126,15 @@ const PropertyPage = () => {
 	};
 
 	const handleAddTenantCard = () => {
-		navigate('/properties/add-tenant');
+		navigate('/properties/12345/add-tenant');
 	};
 
 	const handleAddLeaseCard = () => {
-		navigate('');
+		navigate('/properties/12345/add-lease');
+	};
+
+	const handleCreateMaintenance = () => {
+		navigate('/properties/12345/add-maintenance');
 	};
 
 	const handleCreateDocument = () => {};
@@ -278,7 +282,7 @@ const PropertyPage = () => {
 											>
 												<img src={addMaintenance} alt='add maintenance image' />
 												<Typography
-													onClick={handleCreateDocument}
+													onClick={handleCreateMaintenance}
 													sx={styles.addMaintenanceText}
 												>
 													Create Request
@@ -346,7 +350,10 @@ const PropertyPage = () => {
 										No Results Found
 									</Typography>
 
-									<Button sx={styles.createMaintenceButton}>
+									<Button
+										sx={styles.createMaintenceButton}
+										onClick={handleCreateMaintenance}
+									>
 										<MaintenanceIcon height={20} />
 
 										<Typography variant='h6'>
