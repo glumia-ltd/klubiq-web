@@ -1,4 +1,11 @@
-import { borderRadius, display, fontWeight, maxHeight } from '@mui/system';
+import {
+	borderRadius,
+	display,
+	fontWeight,
+	lineHeight,
+	maxHeight,
+	minHeight,
+} from '@mui/system';
 
 export const styles = {
 	container: {
@@ -118,5 +125,36 @@ export const styles = {
 	},
 	addMaintenanceText: {
 		textDecoration: 'underline',
+	},
+
+	emptyDataInfo: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+	},
+
+	emptyDataText: {
+		display: 'flex',
+		padding: '16px',
+		justifyContent: 'center',
+		borderBottom: '1px solid #B8D9FF',
+		width: '100%',
+		fontSize: '20px',
+	},
+
+	createMaintenceButton: {
+		display: 'flex',
+		gap: '8px',
+		borderRadius: '10px',
+		width: '40%',
+		fontSize: '25px',
+		backgroundColor: 'primary.main',
+		padding: '8px 16px',
+		marginTop: '30px',
+		color: '#fff',
+
+		'&:hover': {
+			backgroundColor: 'primary.main',
+		},
 	},
 };

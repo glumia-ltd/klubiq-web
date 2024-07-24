@@ -30,6 +30,7 @@ import IconThree from '../../assets/images/people.svg';
 import IconFour from '../../assets/images/lasthouse.svg';
 import { styles } from './style';
 import { useState } from 'react';
+import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
 
@@ -86,22 +87,22 @@ const columns: ColumnType[] = [
 	{ id: 'cutOffDate', label: 'Cut-off date' },
 ];
 const tableBodyRows: RowType[] = [
-	{
-		id: 'fadfasdfasd',
-		tenant: { name: 'Aisha Rohni', image: aisha },
-		phone: '0701234567',
-		email: 'aishar@yahoo.com',
-		startDate: 'April 4, 2024',
-		cutOffDate: 'May 4, 2024',
-	},
-	{
-		id: 'fadfasdfaadvadvd',
-		tenant: { name: 'Bukky King', image: bukky },
-		phone: '0805277558',
-		email: 'bking@gmail.com',
-		startDate: 'July 29, 2023',
-		cutOffDate: 'July 29, 2025',
-	},
+	// {
+	// 	id: 'fadfasdfasd',
+	// 	tenant: { name: 'Aisha Rohni', image: aisha },
+	// 	phone: '0701234567',
+	// 	email: 'aishar@yahoo.com',
+	// 	startDate: 'April 4, 2024',
+	// 	cutOffDate: 'May 4, 2024',
+	// },
+	// {
+	// 	id: 'fadfasdfaadvadvd',
+	// 	tenant: { name: 'Bukky King', image: bukky },
+	// 	phone: '0805277558',
+	// 	email: 'bking@gmail.com',
+	// 	startDate: 'July 29, 2023',
+	// 	cutOffDate: 'July 29, 2025',
+	// },
 ];
 
 const totalMaintenanceRequests = 3;
@@ -111,8 +112,8 @@ const PropertyPage = () => {
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
 
 	const maintenanceTabs = [
-		'All Requests',
 		`Active Request (${totalMaintenanceRequests})`,
+		'All Requests',
 	];
 
 	const handleTabChange = (
@@ -280,43 +281,67 @@ const PropertyPage = () => {
 										))}
 									</TableRow>
 								</TableHead>
-								<TableBody>
-									{tableBodyRows.map((row) => {
-										return (
-											<TableRow
-												hover
-												role='checkbox'
-												tabIndex={-1}
-												key={row.id}
-											>
-												{columns.map((column) => {
-													const key: string = column.id;
-													const value = row[key as keyof RowType];
 
-													return (
-														<TableCell
-															key={column.id}
-															align={'center'}
-															sx={styles.tableBodyStyle}
-														>
-															{typeof value === 'string' ? (
-																value
-															) : (
-																<span style={styles.tenantInfoStyle}>
-																	<img src={value.image} alt='tenant picture' />{' '}
-																	{value.name}
-																</span>
-															)}
-														</TableCell>
-													);
-												})}
-											</TableRow>
-										);
-									})}
+								<TableBody>
+									{maintenanceTabValue === 0 &&
+										tableBodyRows.map((row) => {
+											return (
+												<TableRow
+													hover
+													role='checkbox'
+													tabIndex={-1}
+													key={row.id}
+												>
+													{columns.map((column) => {
+														const key: string = column.id;
+														const value = row[key as keyof RowType];
+
+														return (
+															<TableCell
+																key={column.id}
+																align={'center'}
+																sx={styles.tableBodyStyle}
+															>
+																{typeof value === 'string' ? (
+																	value
+																) : (
+																	<span style={styles.tenantInfoStyle}>
+																		<img
+																			src={value.image}
+																			alt='tenant picture'
+																		/>{' '}
+																		{value.name}
+																	</span>
+																)}
+															</TableCell>
+														);
+													})}
+												</TableRow>
+											);
+										})}
 								</TableBody>
 							</Table>
+							<Grid item sx={styles.emptyDataInfo}>
+								<Typography sx={styles.emptyDataText} fontWeight={500}>
+									No Results Found
+								</Typography>
+
+								<Button sx={styles.createMaintenceButton}>
+									<MaintenanceIcon height={20} />
+
+									<Typography variant='h6'>
+										Create Maintenance Request
+									</Typography>
+								</Button>
+							</Grid>
 						</TableContainer>
 					</Grid>
+				)}
+
+				{/* DOCUMENT TAB */}
+
+				{tabValue === 3 && (
+					<Grid sx={{ marginTop: '20px' }}>This is the document tab</Grid>
 				)}
 			</Grid>
 		</ViewPort>
