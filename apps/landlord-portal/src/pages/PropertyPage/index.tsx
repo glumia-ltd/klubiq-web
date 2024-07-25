@@ -258,6 +258,8 @@ const PropertyPage = () => {
 					</Grid>
 				)}
 
+				{/* Multi unit */}
+
 				{propertyType === 'multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
