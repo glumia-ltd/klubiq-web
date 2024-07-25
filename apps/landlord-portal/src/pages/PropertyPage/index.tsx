@@ -35,6 +35,9 @@ import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { useNavigate } from 'react-router-dom';
 
+import aisha from '../../assets/images/aisha.jpg';
+import bukky from '../../assets/images/bukky.png';
+
 const stackedImages = [
 	propertyImage,
 	propertyImage,
@@ -88,22 +91,22 @@ const columns: ColumnType[] = [
 	{ id: 'cutOffDate', label: 'Cut-off date' },
 ];
 const tableBodyRows: RowType[] = [
-	// {
-	// 	id: 'fadfasdfasd',
-	// 	tenant: { name: 'Aisha Rohni', image: aisha },
-	// 	phone: '0701234567',
-	// 	email: 'aishar@yahoo.com',
-	// 	startDate: 'April 4, 2024',
-	// 	cutOffDate: 'May 4, 2024',
-	// },
-	// {
-	// 	id: 'fadfasdfaadvadvd',
-	// 	tenant: { name: 'Bukky King', image: bukky },
-	// 	phone: '0805277558',
-	// 	email: 'bking@gmail.com',
-	// 	startDate: 'July 29, 2023',
-	// 	cutOffDate: 'July 29, 2025',
-	// },
+	{
+		id: 'fadfasdfasd',
+		tenant: { name: 'Aisha Rohni', image: aisha },
+		phone: '0701234567',
+		email: 'aishar@yahoo.com',
+		startDate: 'April 4, 2024',
+		cutOffDate: 'May 4, 2024',
+	},
+	{
+		id: 'fadfasdfaadvadvd',
+		tenant: { name: 'Bukky King', image: bukky },
+		phone: '0805277558',
+		email: 'bking@gmail.com',
+		startDate: 'July 29, 2023',
+		cutOffDate: 'July 29, 2025',
+	},
 ];
 
 const totalMaintenanceRequests = 3;
@@ -111,6 +114,7 @@ const totalMaintenanceRequests = 3;
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
+	const [propertyType, setPropertyType] = useState('multi');
 	const navigate = useNavigate();
 
 	const maintenanceTabs = [
@@ -147,6 +151,8 @@ const PropertyPage = () => {
 	};
 
 	const handleFileChange = () => {};
+
+	const handleAddUnit = () => {};
 
 	return (
 		<ViewPort>
@@ -194,15 +200,65 @@ const PropertyPage = () => {
 						additionalImages={stackedImages}
 					/>
 
-					<TabsComponent
-						handleTabChange={handleTabChange}
-						tabValue={tabValue}
-						allTabs={allTabs}
-					/>
+					{/* Render conditionally based on property type */}
+
+					{propertyType === 'single' && (
+						<TabsComponent
+							handleTabChange={handleTabChange}
+							tabValue={tabValue}
+							allTabs={allTabs}
+						/>
+					)}
 				</Grid>
 
-				{/* OVERVIEW AND LEASE CONTENTS */}
-				{(tabValue === 0 || tabValue === 1) && (
+				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
+				{propertyType === 'single' && (tabValue === 0 || tabValue === 1) && (
+					<Grid>
+						<Grid sx={styles.unitInfoCardStyle}>
+							<UnitInfoCard data={data} />
+						</Grid>
+
+						<Overview initialText={initialText} />
+
+						{
+							<Grid sx={styles.addfieldStyle}>
+								{tabValue !== 1 && (
+									<>
+										{tableBodyRows.length > 0 && (
+											<TenantAndLeaseTable
+												title='Tenat'
+												buttonText='Add Tenant'
+												handleAdd={handleAddTenantCard}
+												columns={columns}
+												tableBodyRows={tableBodyRows}
+											/>
+										)}
+
+										{!tableBodyRows?.length && (
+											<AddFieldCard
+												heading={'Add Tenant'}
+												subtext={'Add tenants to your property'}
+												description={'Add Tenant'}
+												onClick={handleAddTenantCard}
+											/>
+										)}
+									</>
+								)}
+
+								{!tableBodyRows?.length && (
+									<AddFieldCard
+										heading={'Add Lease'}
+										subtext={'Add lease to your property'}
+										description={'Add Lease'}
+										onClick={handleAddLeaseCard}
+									/>
+								)}
+							</Grid>
+						}
+					</Grid>
+				)}
+
+				{propertyType === 'multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
 							<UnitInfoCard data={data} />
@@ -211,37 +267,22 @@ const PropertyPage = () => {
 						<Overview initialText={initialText} />
 
 						<Grid sx={styles.addfieldStyle}>
-							{tabValue !== 1 && (
-								<>
-									{tableBodyRows.length > 0 && (
-										<TenantAndLeaseTable
-											title='Tenat'
-											buttonText='Add Tenant'
-											handleAdd={handleAddTenantCard}
-											columns={columns}
-											tableBodyRows={tableBodyRows}
-										/>
-									)}
-
-									{!tableBodyRows?.length && (
-										<AddFieldCard
-											heading={'Add Tenant'}
-											subtext={'Add tenants to your property'}
-											description={'Add Tenant'}
-											onClick={handleAddTenantCard}
-										/>
-									)}
-								</>
-							)}
-
-							{!tableBodyRows?.length && (
-								<AddFieldCard
-									heading={'Add Lease'}
-									subtext={'Add lease to your property'}
-									description={'Add Lease'}
-									onClick={handleAddLeaseCard}
+							{tableBodyRows.length > 0 && (
+								<TenantAndLeaseTable
+									title='Tenat'
+									buttonText='Add Tenant'
+									handleAdd={handleAddTenantCard}
+									columns={columns}
+									tableBodyRows={tableBodyRows}
+									showSecondHeader={false}
 								/>
 							)}
+							<AddFieldCard
+								heading={'Add Unit'}
+								subtext={'Add units to this property'}
+								description={'Add Unit'}
+								onClick={handleAddUnit}
+							/>
 						</Grid>
 					</Grid>
 				)}

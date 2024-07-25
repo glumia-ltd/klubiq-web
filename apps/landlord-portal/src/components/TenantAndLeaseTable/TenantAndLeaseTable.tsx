@@ -27,6 +27,7 @@ type TenantAndLeaseTableProps = {
 	buttonText: string;
 	columns: ColumnType[];
 	tableBodyRows: RowType[];
+	showSecondHeader?: boolean;
 };
 
 export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
@@ -35,6 +36,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 	buttonText,
 	columns,
 	tableBodyRows,
+	showSecondHeader = true,
 }) => {
 	return (
 		<Grid sx={styles.tenantTableContainer}>
@@ -53,18 +55,19 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 								</Grid>
 							</TableCell>
 						</TableRow>
-
-						<TableRow>
-							{columns.map((column) => (
-								<TableCell
-									key={column.label}
-									align={'center'}
-									sx={styles.tableHeaderCellStyle}
-								>
-									{column.label}
-								</TableCell>
-							))}
-						</TableRow>
+						{showSecondHeader && (
+							<TableRow>
+								{columns.map((column) => (
+									<TableCell
+										key={column.label}
+										align={'center'}
+										sx={styles.tableHeaderCellStyle}
+									>
+										{column.label}
+									</TableCell>
+								))}
+							</TableRow>
+						)}
 					</TableHead>
 					<TableBody>
 						{tableBodyRows.map((row) => {
