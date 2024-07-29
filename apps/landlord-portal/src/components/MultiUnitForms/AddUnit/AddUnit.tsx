@@ -12,6 +12,7 @@ import ControlledTextField from '../../ControlledComponents/ControlledTextField'
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import cloneIcon from '../../../assets/images/Vector.svg';
+import ControlledNumberField from '../../ControlledComponents/ControlledNumberField';
 
 const AddUnit = () => {
 	const validationSchema = yup.object({
@@ -73,7 +74,7 @@ const AddUnit = () => {
 					/>
 				</Grid>
 				<Grid item xs={6}>
-					<ControlledTextField
+					<ControlledNumberField
 						name='bed'
 						label='Bedroom'
 						formik={formik}
@@ -81,7 +82,7 @@ const AddUnit = () => {
 					/>
 				</Grid>{' '}
 				<Grid item xs={6}>
-					<ControlledTextField
+					<ControlledNumberField
 						name='bath'
 						label='Bathroom'
 						formik={formik}
@@ -89,7 +90,7 @@ const AddUnit = () => {
 					/>
 				</Grid>{' '}
 				<Grid item xs={6}>
-					<ControlledTextField
+					<ControlledNumberField
 						name='guestBath'
 						label='Guest Bathroom'
 						formik={formik}
@@ -97,7 +98,7 @@ const AddUnit = () => {
 					/>
 				</Grid>
 				<Grid item xs={6}>
-					<ControlledTextField
+					<ControlledNumberField
 						name='plan'
 						label='Floor Plan'
 						formik={formik}

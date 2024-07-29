@@ -124,7 +124,11 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 					(formik.touched[name] && formik.errors[name]) ||
 					' '
 				}
-				inputProps={inputProps}
+				inputProps={{
+					style: { textAlign: 'center' },
+					...inputProps,
+				}}
+				// inputProps={inputProps}
 				{...props}
 				sx={sxTwo}
 			/>
