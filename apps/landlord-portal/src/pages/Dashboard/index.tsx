@@ -12,25 +12,113 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ReportCard from './ReportCard';
 import DashStyle from './DashStyle';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import ViewPort from '../../components/Viewport/ViewPort';
+import { dashboardEndpoints } from '../../helpers/endpoints';
+import { DashboardMetricsType } from '../../type';
+import { api } from '../../api';
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
-	category1: 75,
-	category2: 50,
-	category3: 30,
-};
+const POSITIVE = 'positive';
+const NEGATIVE = 'negative';
+const NEUTRAL = 'neutral';
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
+
+	const [dashboardMetrics, setDashboardMetrics] =
+		useState<DashboardMetricsType | null>(null);
+
+	const indicatorColor = (changeIndicator?: string) =>
+		changeIndicator === POSITIVE
+			? '#17B26A'
+			: changeIndicator === NEGATIVE
+				? '#FF0000'
+				: '#49a0e3';
+
+	const indicatorBackground = (changeIndicator?: string) =>
+		changeIndicator === POSITIVE
+			? 'rgba(236,253,243)'
+			: changeIndicator === NEGATIVE
+				? 'rgba(255, 0, 0, 0.1)'
+				: '#c2daed';
+
+	const indicatorText = (changeIndicator?: string) =>
+		changeIndicator === POSITIVE
+			? 'Up from yesterday'
+			: changeIndicator === NEGATIVE
+				? 'Down from yesterday'
+				: 'No changes from yesterday';
+
+	const data = {
+		occupied: dashboardMetrics?.propertyMetrics.occupiedUnits || 0,
+		vacant: dashboardMetrics?.propertyMetrics.vacantUnits || 0,
+		maintenance: dashboardMetrics?.propertyMetrics.maintenanceUnits || 0,
+	};
+
+	console.log(dashboardMetrics);
+
+	const getDashboardMetrics = async () => {
+		try {
+			const {
+				data: { data },
+			} = await api.get(dashboardEndpoints.getKlubiqMetrics());
+
+			setDashboardMetrics(data);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	useEffect(() => {
+		getDashboardMetrics();
+	}, []);
+
+	const showChangeArrow = (changeIndicator?: string) => {
+		if (changeIndicator === POSITIVE) {
+			return (
+				<ArrowUpwardIcon
+					sx={{
+						color: '#17B26A',
+						fontSize: '14px',
+						marginRight: '2px',
+					}}
+				/>
+			);
+		} else if (changeIndicator === NEGATIVE) {
+			return (
+				<ArrowDownwardIcon
+					sx={{
+						color: '#FF0000',
+						fontSize: '15px',
+						marginRight: '2px',
+					}}
+				/>
+			);
+		} else {
+			return null;
+		}
+	};
+
+	const showTrendArrow = (changeIndicator?: string) => {
+		if (changeIndicator === POSITIVE) {
+			return <TrendingUpIcon sx={{ color: '#17B26A' }} />;
+		} else if (changeIndicator === NEGATIVE) {
+			return <TrendingDownIcon sx={{ color: '#FF0000' }} />;
+		} else {
+			return null;
+		}
+	};
+
 	return (
 		<ViewPort>
 			<Container
@@ -72,14 +160,11 @@ const DashBoard = () => {
 										lineHeight={'44px'}
 										variant='dashboardTypography'
 									>
-										160
+										{dashboardMetrics?.propertyMetrics.totalProperties || 0}
 									</Typography>
 								</Box>
 								<PropertiesGuage
 									data={data}
-									//width={{ sm: 300, md: 300, lg: 300, xl: 300 }}
-
-									//width={'100'}
 									width={null}
 									height={100}
 									colors={['#6EC03C', '#D108A5', '#0088F0']}
@@ -106,7 +191,7 @@ const DashBoard = () => {
 									lineHeight={'44px'}
 									variant='dashboardTypography'
 								>
-									₦150,280.11
+									₦{dashboardMetrics?.transactionMetrics.todaysRevenue || 0}
 								</Typography>
 								<Box
 									sx={{
@@ -121,32 +206,43 @@ const DashBoard = () => {
 										lineHeight={'20px'}
 										fontWeight={500}
 										alignItems={'center'}
-										color='#17B26A'
-										border={'1px solid #17B26A'}
+										color={indicatorColor(
+											dashboardMetrics?.transactionMetrics
+												.dailyRevenueChangeIndicator,
+										)}
+										border={`1px solid ${indicatorColor(dashboardMetrics?.transactionMetrics.dailyRevenueChangeIndicator)}`}
 										justifyContent={'center'}
 										borderRadius={'20px'}
 										padding={'10px'}
 										height={'24px'}
 										display='flex'
 										mr={{ xs: '15px', md: '5px', lg: '15px' }}
-										sx={{ backgroundColor: 'rgba(236,253,243)' }}
+										sx={{
+											backgroundColor: indicatorBackground(
+												dashboardMetrics?.transactionMetrics
+													.dailyRevenueChangeIndicator,
+											),
+										}}
 									>
-										<ArrowUpwardIcon
-											sx={{
-												color: '#17B26A',
-												fontSize: '14px',
-												marginRight: '2px',
-											}}
-										/>
-										10%
+										{showChangeArrow(
+											dashboardMetrics?.transactionMetrics
+												.dailyRevenueChangeIndicator,
+										)}
+										{
+											dashboardMetrics?.transactionMetrics
+												.dailyRevenuePercentageDifference
+										}
+										%
 									</Typography>
 									<Typography
 										fontSize='14px'
 										lineHeight={'20px'}
 										fontWeight={400}
 									>
-										{' '}
-										Up from yesterday
+										{indicatorText(
+											dashboardMetrics?.transactionMetrics
+												.dailyRevenueChangeIndicator,
+										)}
 									</Typography>
 								</Box>
 							</Card>
@@ -186,7 +282,9 @@ const DashBoard = () => {
 										variant='dashboardTypography'
 										alignItems={'center'}
 									>
-										₦0
+										₦
+										{dashboardMetrics?.propertyMetrics.rentOverdue
+											?.overDueRentSum || 0}
 									</Typography>
 								</Box>
 								<Typography
@@ -195,76 +293,13 @@ const DashBoard = () => {
 									fontWeight={400}
 									mt={'2rem'}
 								>
-									{' '}
-									0 overdue
+									{dashboardMetrics?.propertyMetrics.rentOverdue
+										?.overDueLeaseCount || 0}{' '}
+									overdue
 								</Typography>{' '}
 							</Card>
 						</Grid>
 
-						<Grid item xs={12} sm={6} md={4} lg={4}>
-							<Card sx={DashStyle.cardStyleFour}>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									mb={'1rem'}
-									textAlign='left'
-								>
-									Maintenance
-								</Typography>
-								<Typography
-									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
-									fontWeight={800}
-									lineHeight={'44px'}
-									variant='dashboardTypography'
-								>
-									20
-								</Typography>
-								<Box
-									sx={{
-										display: 'flex',
-										textAlign: 'center',
-										marginTop: { xs: '35px', md: '28px', lg: '20px' },
-										alignItems: 'center',
-									}}
-								>
-									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={500}
-										alignItems={'center'}
-										color='#17B26A'
-										border={'1px solid #17B26A'}
-										justifyContent={'center'}
-										borderRadius={'20px'}
-										padding={'10px'}
-										width={'70px'}
-										height={'24px'}
-										display='flex'
-										mr={'15px'}
-										sx={{ backgroundColor: 'rgba(236,253,243)' }}
-									>
-										<ArrowUpwardIcon
-											sx={{
-												color: '#17B26A',
-												fontSize: '14px',
-												marginRight: '2px',
-											}}
-										/>
-										5.46%
-									</Typography>
-
-									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={400}
-									>
-										{' '}
-										Since last month
-									</Typography>
-								</Box>
-							</Card>
-						</Grid>
 						<Grid item xs={12} sm={12} md={8} lg={8}>
 							<Card sx={DashStyle.cardStyleThree}>
 								<Typography
@@ -296,7 +331,7 @@ const DashBoard = () => {
 										mr={'30px'}
 										variant='dashboardTypography'
 									>
-										23%
+										{dashboardMetrics?.propertyMetrics.occupancyRate || 0}%
 									</Typography>
 
 									<Typography
@@ -306,23 +341,30 @@ const DashBoard = () => {
 										alignItems={'center'}
 										justifyContent={'center'}
 										textAlign={'center'}
-										color='#FF0000'
-										border={'1px solid #FF0000'}
+										color={indicatorColor(
+											dashboardMetrics?.propertyMetrics
+												.occupancyRateChangeIndicator,
+										)}
+										border={`1px solid ${indicatorColor(dashboardMetrics?.propertyMetrics.occupancyRateChangeIndicator)}`}
 										borderRadius={'20px'}
 										padding={'2px'}
 										width={'54px'}
 										height={'24px'}
 										display='flex'
-										sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
+										sx={{
+											backgroundColor: indicatorBackground(
+												dashboardMetrics?.propertyMetrics
+													.occupancyRateChangeIndicator,
+											),
+										}}
 									>
-										<ArrowDownwardIcon
-											sx={{
-												color: '#FF0000',
-												fontSize: '15px',
-												marginRight: '2px',
-											}}
-										/>
-										2%
+										{showChangeArrow(
+											dashboardMetrics?.propertyMetrics
+												.occupancyRateChangeIndicator,
+										)}
+										{dashboardMetrics?.propertyMetrics
+											.occupancyRatePercentageDifference || 0}
+										%
 									</Typography>
 								</Box>
 								<Box
@@ -362,10 +404,13 @@ const DashBoard = () => {
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
-												₦91,00.42{' '}
+												₦{dashboardMetrics?.transactionMetrics.totalExpenses}
 											</Typography>
 
-											<TrendingUpIcon sx={{ color: '#17B26A' }} />
+											{showTrendArrow(
+												dashboardMetrics?.revenueMetrics.changeIndicator,
+											)}
+
 											<Typography
 												fontSize='14px'
 												lineHeight={'20px'}
@@ -373,7 +418,11 @@ const DashBoard = () => {
 												color='#17B26A'
 												mr={'1rem'}
 											>
-												6.6%
+												{
+													dashboardMetrics?.transactionMetrics
+														.totalExpensesPercentageDifference
+												}
+												%
 											</Typography>
 										</Box>
 									</Box>
@@ -407,20 +456,103 @@ const DashBoard = () => {
 												mr={'1.2rem'}
 												variant='dashboardTypography'
 											>
-												₦91,420.9{' '}
+												₦{dashboardMetrics?.transactionMetrics.netCashFlow}
 											</Typography>
 
-											<TrendingUpIcon sx={{ color: '#17B26A' }} />
+											{showTrendArrow(
+												dashboardMetrics?.revenueMetrics.changeIndicator,
+											)}
 											<Typography
 												fontSize='14px'
 												lineHeight={'20px'}
 												fontWeight={500}
 												color='#17B26A'
 											>
-												8.1%
+												{
+													dashboardMetrics?.transactionMetrics
+														.netCashFlowPercentageDifference
+												}
+												%
 											</Typography>
 										</Box>
 									</Box>
+								</Box>
+							</Card>
+						</Grid>
+
+						<Grid item xs={12} sm={6} md={4} lg={4}>
+							<Card sx={DashStyle.cardStyleFour}>
+								<Typography
+									fontSize='14px'
+									lineHeight={'20px'}
+									fontWeight={500}
+									mb={'1rem'}
+									textAlign='left'
+								>
+									Maintenance
+								</Typography>
+								<Typography
+									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
+									fontWeight={800}
+									lineHeight={'44px'}
+									variant='dashboardTypography'
+								>
+									{dashboardMetrics?.propertyMetrics.maintenanceUnits || 0}
+								</Typography>
+								<Box
+									sx={{
+										display: 'flex',
+										textAlign: 'center',
+										marginTop: { xs: '35px', md: '28px', lg: '20px' },
+										alignItems: 'center',
+									}}
+								>
+									<Typography
+										fontSize='14px'
+										lineHeight={'20px'}
+										fontWeight={500}
+										alignItems={'center'}
+										color={indicatorColor(
+											dashboardMetrics?.propertyMetrics
+												.maintenanceUnitsChangeIndicator,
+										)}
+										border={`1px solid ${indicatorColor(
+											dashboardMetrics?.propertyMetrics
+												.maintenanceUnitsChangeIndicator,
+										)}`}
+										justifyContent={'center'}
+										borderRadius={'20px'}
+										padding={'10px'}
+										width={'70px'}
+										height={'24px'}
+										display='flex'
+										mr={'15px'}
+										sx={{
+											backgroundColor: indicatorBackground(
+												dashboardMetrics?.propertyMetrics
+													.maintenanceUnitsChangeIndicator,
+											),
+										}}
+									>
+										{showChangeArrow(
+											dashboardMetrics?.propertyMetrics
+												.maintenanceUnitsChangeIndicator,
+										)}
+										{
+											dashboardMetrics?.propertyMetrics
+												.maintenanceUnitsPercentageDifference
+										}
+										%
+									</Typography>
+
+									<Typography
+										fontSize='14px'
+										lineHeight={'20px'}
+										fontWeight={400}
+									>
+										{' '}
+										Since last month
+									</Typography>
 								</Box>
 							</Card>
 						</Grid>
@@ -477,33 +609,37 @@ const DashBoard = () => {
 								variant='dashboardTypography'
 							>
 								{' '}
-								₦278,625.92{' '}
+								₦{dashboardMetrics?.revenueMetrics.totalRevenueLast12Months}
 							</Typography>
 
 							<Typography
-								sx={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}
+								sx={{
+									backgroundColor: indicatorBackground(
+										dashboardMetrics?.revenueMetrics.changeIndicator,
+									),
+								}}
 								fontSize='14px'
 								lineHeight={'20px'}
 								fontWeight={500}
 								alignItems={'center'}
 								justifyContent={'center'}
 								textAlign={'center'}
-								color='#FF0000'
-								border={'1px solid #FF0000'}
+								color={indicatorColor(
+									dashboardMetrics?.revenueMetrics.changeIndicator,
+								)}
+								border={`1px solid ${indicatorColor(
+									dashboardMetrics?.revenueMetrics.changeIndicator,
+								)}`}
 								borderRadius={'20px'}
 								padding={'2px'}
 								width={'54px'}
 								height={'24px'}
 								display='flex'
 							>
-								<ArrowDownwardIcon
-									sx={{
-										color: '#FF0000',
-										fontSize: '15px',
-										marginRight: '2px',
-									}}
-								/>
-								2%
+								{showChangeArrow(
+									dashboardMetrics?.revenueMetrics.changeIndicator,
+								)}
+								{dashboardMetrics?.revenueMetrics.percentageDifference}%
 							</Typography>
 						</Box>
 					</Grid>

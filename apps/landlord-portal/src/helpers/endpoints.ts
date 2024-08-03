@@ -7,3 +7,7 @@ export const authEndpoints = {
 	sendResetPasswordEmail: () => `auth/reset-password-link`,
 	resetPassword: () => `auth/reset-password`,
 };
+
+export const dashboardEndpoints = {
+	getKlubiqMetrics: () => '/dashboard/metrics',
+};
