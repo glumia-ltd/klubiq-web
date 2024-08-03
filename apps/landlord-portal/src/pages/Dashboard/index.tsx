@@ -29,6 +29,7 @@ import {
 	indicatorText,
 	showChangeArrow,
 	showTrendArrow,
+	initialDashboardMetrics,
 } from './dashboardUtils';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -37,7 +38,7 @@ const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
 
 	const [dashboardMetrics, setDashboardMetrics] =
-		useState<DashboardMetricsType | null>(null);
+		useState<DashboardMetricsType>(initialDashboardMetrics);
 
 	const data = {
 		occupied: dashboardMetrics?.propertyMetrics.occupiedUnits || 0,

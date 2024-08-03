@@ -21,7 +21,7 @@ export type RevenueMetricsType = {
 	maxRevenue: number;
 	monthlyRevenues: number[];
 	percentageDifference: number;
-	revenueChart: { xAxisData: []; seriesData: [] };
+	revenueChart: { xAxisData: number[]; seriesData: number[] };
 	totalRevenueLast12Months: number;
 };
 
