@@ -7,12 +7,10 @@ import {
 	TextField,
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -25,39 +23,21 @@ import { dashboardEndpoints } from '../../helpers/endpoints';
 import { DashboardMetricsType } from '../../type';
 import { api } from '../../api';
 import { styles } from './style';
+import {
+	indicatorColor,
+	indicatorBackground,
+	indicatorText,
+	showChangeArrow,
+	showTrendArrow,
+} from './dashboardUtils';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-const POSITIVE = 'positive';
-const NEGATIVE = 'negative';
-const NEUTRAL = 'neutral';
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
 
 	const [dashboardMetrics, setDashboardMetrics] =
 		useState<DashboardMetricsType | null>(null);
-
-	const indicatorColor = (changeIndicator?: string) =>
-		changeIndicator === POSITIVE
-			? '#17B26A'
-			: changeIndicator === NEGATIVE
-				? '#FF0000'
-				: '#49a0e3';
-
-	const indicatorBackground = (changeIndicator?: string) =>
-		changeIndicator === POSITIVE
-			? 'rgba(236,253,243)'
-			: changeIndicator === NEGATIVE
-				? 'rgba(255, 0, 0, 0.1)'
-				: '#c2daed';
-
-	const indicatorText = (changeIndicator?: string) =>
-		changeIndicator === POSITIVE
-			? 'Up from yesterday'
-			: changeIndicator === NEGATIVE
-				? 'Down from yesterday'
-				: 'No changes from yesterday';
 
 	const data = {
 		occupied: dashboardMetrics?.propertyMetrics.occupiedUnits || 0,
@@ -71,7 +51,7 @@ const DashBoard = () => {
 		try {
 			const {
 				data: { data },
-			} = await api.get(dashboardEndpoints.getKlubiqMetrics());
+			} = await api.get(dashboardEndpoints.getDashboardMetrics());
 
 			setDashboardMetrics(data);
 		} catch (e) {
@@ -82,42 +62,6 @@ const DashBoard = () => {
 	useEffect(() => {
 		getDashboardMetrics();
 	}, []);
-
-	const showChangeArrow = (changeIndicator?: string) => {
-		if (changeIndicator === POSITIVE) {
-			return (
-				<ArrowUpwardIcon
-					sx={{
-						color: '#17B26A',
-						fontSize: '14px',
-						marginRight: '2px',
-					}}
-				/>
-			);
-		} else if (changeIndicator === NEGATIVE) {
-			return (
-				<ArrowDownwardIcon
-					sx={{
-						color: '#FF0000',
-						fontSize: '15px',
-						marginRight: '2px',
-					}}
-				/>
-			);
-		} else {
-			return null;
-		}
-	};
-
-	const showTrendArrow = (changeIndicator?: string) => {
-		if (changeIndicator === POSITIVE) {
-			return <TrendingUpIcon sx={{ color: '#17B26A' }} />;
-		} else if (changeIndicator === NEGATIVE) {
-			return <TrendingDownIcon sx={{ color: '#FF0000' }} />;
-		} else {
-			return null;
-		}
-	};
 
 	return (
 		<ViewPort>
@@ -378,18 +322,8 @@ const DashBoard = () => {
 				<Grid
 					container
 					sx={{
+						...styles.totalRevenueStyle,
 						background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
-						borderRadius: '20px',
-						padding: {
-							xs: '24px',
-							sm: '20px',
-							md: '24px',
-							lg: '24px',
-							xl: '24px',
-						},
-						marginTop: '1rem',
-						transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-
 						boxShadow:
 							mode === ThemeMode.LIGHT
 								? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
@@ -397,56 +331,28 @@ const DashBoard = () => {
 					}}
 				>
 					<Grid item xs={12} sm={12} md={7}>
-						<Typography
-							fontSize='14px'
-							lineHeight={'20px'}
-							fontWeight={500}
-							mb={'.5rem'}
-							textAlign='left'
-						>
-							Total Revenue{' '}
-						</Typography>
-						<Box
-							sx={{
-								display: 'flex',
-								textAlign: 'center',
-								alignItems: 'center',
-							}}
-						>
+						<Typography sx={styles.typoStyle}>Total Revenue </Typography>
+						<Box display={'flex'} textAlign={'center'} alignItems={'center'}>
 							<Typography
-								lineHeight={'44px'}
-								fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
-								fontWeight={800}
-								mr='15px'
+								sx={styles.occupancyTextStyle}
 								variant='dashboardTypography'
 							>
-								{' '}
 								₦{dashboardMetrics?.revenueMetrics.totalRevenueLast12Months}
 							</Typography>
 
 							<Typography
 								sx={{
+									...styles.changeTypographyStyle,
 									backgroundColor: indicatorBackground(
 										dashboardMetrics?.revenueMetrics.changeIndicator,
 									),
+									color: indicatorColor(
+										dashboardMetrics?.revenueMetrics.changeIndicator,
+									),
+									border: `1px solid ${indicatorColor(
+										dashboardMetrics?.revenueMetrics.changeIndicator,
+									)}`,
 								}}
-								fontSize='14px'
-								lineHeight={'20px'}
-								fontWeight={500}
-								alignItems={'center'}
-								justifyContent={'center'}
-								textAlign={'center'}
-								color={indicatorColor(
-									dashboardMetrics?.revenueMetrics.changeIndicator,
-								)}
-								border={`1px solid ${indicatorColor(
-									dashboardMetrics?.revenueMetrics.changeIndicator,
-								)}`}
-								borderRadius={'20px'}
-								padding={'2px'}
-								width={'54px'}
-								height={'24px'}
-								display='flex'
 							>
 								{showChangeArrow(
 									dashboardMetrics?.revenueMetrics.changeIndicator,
@@ -476,20 +382,8 @@ const DashBoard = () => {
 							size='medium'
 							name='Date'
 							value='date'
-						/>{' '}
-						<Box
-							sx={{
-								border: '1px solid ',
-								padding: '8px, 12px, 8px, 12px',
-								width: '45px',
-								height: '35px',
-								borderRadius: '8px',
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								marginLeft: { xs: '0', sm: '13rem', md: '0' },
-							}}
-						>
+						/>
+						<Box sx={styles.downloadButtonStyle}>
 							<SaveAltOutlinedIcon />
 						</Box>
 					</Grid>

@@ -9,5 +9,5 @@ export const authEndpoints = {
 };
 
 export const dashboardEndpoints = {
-	getKlubiqMetrics: () => '/dashboard/metrics',
+	getDashboardMetrics: () => '/dashboard/metrics',
 };

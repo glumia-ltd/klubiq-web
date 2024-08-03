@@ -131,7 +131,7 @@ export const styles = {
 			lg: '24px',
 			xl: '40px',
 		},
-		fontWeight: '800',
+		fontWeight: 800,
 		lineHeight: '44px',
 		mr: '30px',
 	},
@@ -141,5 +141,30 @@ export const styles = {
 		justifyContent: 'space-between',
 		textAlign: 'left',
 		marginTop: '12px',
+	},
+
+	totalRevenueStyle: {
+		borderRadius: '20px',
+		padding: {
+			xs: '24px',
+			sm: '20px',
+			md: '24px',
+			lg: '24px',
+			xl: '24px',
+		},
+		marginTop: '1rem',
+		transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+	},
+
+	downloadButtonStyle: {
+		border: '1px solid ',
+		padding: '8px, 12px, 8px, 12px',
+		width: '45px',
+		height: '35px',
+		borderRadius: '8px',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginLeft: { xs: '0', sm: '13rem', md: '0' },
 	},
 };
