@@ -14,7 +14,6 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import ReportCard from './ReportCard';
-import DashStyle from './DashStyle';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useContext, useEffect, useState } from 'react';
@@ -25,6 +24,7 @@ import ViewPort from '../../components/Viewport/ViewPort';
 import { dashboardEndpoints } from '../../helpers/endpoints';
 import { DashboardMetricsType } from '../../type';
 import { api } from '../../api';
+import { styles } from './style';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -121,43 +121,17 @@ const DashBoard = () => {
 
 	return (
 		<ViewPort>
-			<Container
-				maxWidth={'xl'}
-				sx={{
-					overflow: 'auto',
-					paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
-					paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
-				}}
-			>
+			<Container maxWidth={'xl'} sx={styles.containerStyle}>
 				<Grid container spacing={2}>
 					<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
 						<Grid item xs={12} sm={6} md={4} lg={4}>
-							<Card sx={DashStyle.cardStyle}>
-								<Box
-									sx={{
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'space-between',
-									}}
-								>
-									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={500}
-										mb={{ sm: '0.5rem', md: '0.5rem', lg: '1rem' }}
-										textAlign='left'
-									>
+							<Card sx={styles.cardStyle}>
+								<Box sx={styles.boxStyle}>
+									<Typography sx={styles.typoStyle}>
 										Total Properties{' '}
 									</Typography>{' '}
 									<Typography
-										fontSize={{
-											sm: '24px',
-											md: '14px',
-											lg: '24px',
-											xl: '40px',
-										}}
-										fontWeight={800}
-										lineHeight={'44px'}
+										sx={styles.valueTextStyle}
 										variant='dashboardTypography'
 									>
 										{dashboardMetrics?.propertyMetrics.totalProperties || 0}
@@ -174,50 +148,25 @@ const DashBoard = () => {
 							</Card>
 						</Grid>
 						<Grid item xs={12} sm={6} md={4} lg={4}>
-							<Card sx={DashStyle.cardStyleTwo}>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									mb={{ sm: '0.5rem', md: '0.5rem', lg: '1rem' }}
-									textAlign='left'
-								>
-									Today's Revenue
-								</Typography>
+							<Card sx={styles.cardStyleTwo}>
+								<Typography sx={styles.typoStyle}>Today's Revenue</Typography>
 
 								<Typography
-									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
-									fontWeight={800}
-									lineHeight={'44px'}
+									sx={styles.revenueTextStyle}
 									variant='dashboardTypography'
 								>
 									₦{dashboardMetrics?.transactionMetrics.todaysRevenue || 0}
 								</Typography>
-								<Box
-									sx={{
-										display: 'flex',
-										textAlign: 'center',
-										marginTop: { xs: '35px', md: '28px', lg: '35px' },
-										alignItems: 'center',
-									}}
-								>
+								<Box sx={styles.changeArrowBoxStyle}>
 									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={500}
-										alignItems={'center'}
-										color={indicatorColor(
-											dashboardMetrics?.transactionMetrics
-												.dailyRevenueChangeIndicator,
-										)}
-										border={`1px solid ${indicatorColor(dashboardMetrics?.transactionMetrics.dailyRevenueChangeIndicator)}`}
-										justifyContent={'center'}
-										borderRadius={'20px'}
-										padding={'10px'}
-										height={'24px'}
-										display='flex'
-										mr={{ xs: '15px', md: '5px', lg: '15px' }}
 										sx={{
+											...styles.changeTypographyStyle,
+											color: indicatorColor(
+												dashboardMetrics?.transactionMetrics
+													.dailyRevenueChangeIndicator,
+											),
+											border: `1px solid ${indicatorColor(dashboardMetrics?.transactionMetrics.dailyRevenueChangeIndicator)}`,
+
 											backgroundColor: indicatorBackground(
 												dashboardMetrics?.transactionMetrics
 													.dailyRevenueChangeIndicator,
@@ -249,109 +198,46 @@ const DashBoard = () => {
 						</Grid>
 
 						<Grid item xs={12} sm={6} md={4} lg={4}>
-							<Card sx={DashStyle.cardStyleTwo}>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									mb={'1rem'}
-									textAlign='left'
-								>
-									Rent Overdue
-								</Typography>
+							<Card sx={styles.cardStyleTwo}>
+								<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
 								<Box display={'flex'} alignItems={'center'}>
-									<CalendarTodayIcon
-										sx={{
-											color: '#FF0000',
-											gap: '10px',
-											width: '24px',
-											height: ' 24px',
-											padding: '4px',
-										}}
-									/>{' '}
+									<CalendarTodayIcon sx={styles.calendarTodayStyle} />
 									<Typography
-										fontSize={{
-											xs: '24px',
-											sm: '24px',
-											md: '14px',
-											lg: '24px',
-											xl: '40px',
-										}}
-										fontWeight={800}
-										lineHeight={'44px'}
+										sx={styles.overdueTextStyle}
 										variant='dashboardTypography'
-										alignItems={'center'}
 									>
 										₦
 										{dashboardMetrics?.propertyMetrics.rentOverdue
 											?.overDueRentSum || 0}
 									</Typography>
 								</Box>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={400}
-									mt={'2rem'}
-								>
+								<Typography sx={styles.overdueTypo}>
 									{dashboardMetrics?.propertyMetrics.rentOverdue
-										?.overDueLeaseCount || 0}{' '}
+										?.overDueLeaseCount || 0}
 									overdue
-								</Typography>{' '}
+								</Typography>
 							</Card>
 						</Grid>
 
 						<Grid item xs={12} sm={12} md={8} lg={8}>
-							<Card sx={DashStyle.cardStyleThree}>
-								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									mb={'1rem'}
-									textAlign='left'
-								>
-									Occupancy Rate{' '}
-								</Typography>{' '}
-								<Box
-									sx={{
-										display: 'flex',
-										textAlign: 'center',
-										alignItems: 'center',
-										marginBottom: '1rem',
-									}}
-								>
+							<Card sx={styles.cardStyleThree}>
+								<Typography sx={styles.typoStyle}>Occupancy Rate </Typography>{' '}
+								<Box sx={styles.occupancyBoxStyle}>
 									<Typography
-										fontSize={{
-											sm: '24px',
-											md: '14px',
-											lg: '24px',
-											xl: '40px',
-										}}
-										fontWeight={800}
-										lineHeight={'44px'}
-										mr={'30px'}
+										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
 										{dashboardMetrics?.propertyMetrics.occupancyRate || 0}%
 									</Typography>
 
 									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={500}
-										alignItems={'center'}
-										justifyContent={'center'}
-										textAlign={'center'}
-										color={indicatorColor(
-											dashboardMetrics?.propertyMetrics
-												.occupancyRateChangeIndicator,
-										)}
-										border={`1px solid ${indicatorColor(dashboardMetrics?.propertyMetrics.occupancyRateChangeIndicator)}`}
-										borderRadius={'20px'}
-										padding={'2px'}
-										width={'54px'}
-										height={'24px'}
-										display='flex'
 										sx={{
+											...styles.changeTypographyStyle,
+											color: indicatorColor(
+												dashboardMetrics?.propertyMetrics
+													.occupancyRateChangeIndicator,
+											),
+											border: `1px solid ${indicatorColor(dashboardMetrics?.propertyMetrics.occupancyRateChangeIndicator)}`,
 											backgroundColor: indicatorBackground(
 												dashboardMetrics?.propertyMetrics
 													.occupancyRateChangeIndicator,
@@ -367,40 +253,14 @@ const DashBoard = () => {
 										%
 									</Typography>
 								</Box>
-								<Box
-									sx={{
-										display: 'flex',
-										justifyContent: 'space-between',
-										textAlign: 'left',
-										marginTop: '12px',
-									}}
-								>
+								<Box sx={styles.totalExpensesStyle}>
 									<Box>
-										<Typography
-											fontSize='14px'
-											lineHeight={'20px'}
-											fontWeight={500}
-											mb={'0.5rem'}
-											textAlign='left'
-										>
-											Total expenses{' '}
-										</Typography>{' '}
-										<Box
-											style={{
-												display: 'flex',
-												justifyContent: 'space-between',
-											}}
-										>
+										<Typography sx={styles.typoStyle}>
+											Total expenses
+										</Typography>
+										<Box sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}>
 											<Typography
-												fontSize={{
-													xs: '14px',
-													sm: '24px',
-													md: '14px',
-													lg: '24px',
-													xl: '40px',
-												}}
-												fontWeight={800}
-												lineHeight={'44px'}
+												sx={styles.overdueTextStyle}
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
@@ -412,11 +272,13 @@ const DashBoard = () => {
 											)}
 
 											<Typography
-												fontSize='14px'
-												lineHeight={'20px'}
-												fontWeight={500}
-												color='#17B26A'
-												mr={'1rem'}
+												sx={{
+													...styles.typoStyle,
+													color: indicatorColor(
+														dashboardMetrics?.transactionMetrics
+															.totalExpensesChangeIndicator,
+													),
+												}}
 											>
 												{
 													dashboardMetrics?.transactionMetrics
@@ -428,32 +290,11 @@ const DashBoard = () => {
 									</Box>
 
 									<Box>
-										<Typography
-											fontSize='14px'
-											lineHeight={'20px'}
-											fontWeight={500}
-											mb={'0.5rem'}
-											textAlign='left'
-										>
-											Net cash flow{' '}
-										</Typography>{' '}
-										<Box
-											sx={{
-												display: 'flex',
-												justifyContent: 'space-between',
-											}}
-										>
+										<Typography sx={styles.typoStyle}>Net cash flow</Typography>
+										<Box display={'flex'} justifyContent={'space-between'}>
 											<Typography
-												fontSize={{
-													xs: '14px',
-													sm: '24px',
-													md: '14px',
-													lg: '24px',
-													xl: '40px',
-												}}
-												fontWeight={800}
-												lineHeight={'44px'}
-												mr={'1.2rem'}
+												sx={styles.overdueTextStyle}
+												mr={'1rem'}
 												variant='dashboardTypography'
 											>
 												₦{dashboardMetrics?.transactionMetrics.netCashFlow}
@@ -463,10 +304,13 @@ const DashBoard = () => {
 												dashboardMetrics?.revenueMetrics.changeIndicator,
 											)}
 											<Typography
-												fontSize='14px'
-												lineHeight={'20px'}
-												fontWeight={500}
-												color='#17B26A'
+												sx={{
+													...styles.typoStyle,
+													color: indicatorColor(
+														dashboardMetrics?.transactionMetrics
+															.netCashFlowChangeIndicator,
+													),
+												}}
 											>
 												{
 													dashboardMetrics?.transactionMetrics
@@ -481,53 +325,26 @@ const DashBoard = () => {
 						</Grid>
 
 						<Grid item xs={12} sm={6} md={4} lg={4}>
-							<Card sx={DashStyle.cardStyleFour}>
+							<Card sx={styles.cardStyleFour}>
+								<Typography sx={styles.typoStyle}>Maintenance</Typography>
 								<Typography
-									fontSize='14px'
-									lineHeight={'20px'}
-									fontWeight={500}
-									mb={'1rem'}
-									textAlign='left'
-								>
-									Maintenance
-								</Typography>
-								<Typography
-									fontSize={{ sm: '24px', md: '14px', lg: '24px', xl: '40px' }}
-									fontWeight={800}
-									lineHeight={'44px'}
+									sx={styles.overdueTextStyle}
 									variant='dashboardTypography'
 								>
 									{dashboardMetrics?.propertyMetrics.maintenanceUnits || 0}
 								</Typography>
-								<Box
-									sx={{
-										display: 'flex',
-										textAlign: 'center',
-										marginTop: { xs: '35px', md: '28px', lg: '20px' },
-										alignItems: 'center',
-									}}
-								>
+								<Box sx={styles.changeArrowBoxStyle}>
 									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={500}
-										alignItems={'center'}
-										color={indicatorColor(
-											dashboardMetrics?.propertyMetrics
-												.maintenanceUnitsChangeIndicator,
-										)}
-										border={`1px solid ${indicatorColor(
-											dashboardMetrics?.propertyMetrics
-												.maintenanceUnitsChangeIndicator,
-										)}`}
-										justifyContent={'center'}
-										borderRadius={'20px'}
-										padding={'10px'}
-										width={'70px'}
-										height={'24px'}
-										display='flex'
-										mr={'15px'}
 										sx={{
+											...styles.changeTypographyStyle,
+											color: indicatorColor(
+												dashboardMetrics?.propertyMetrics
+													.maintenanceUnitsChangeIndicator,
+											),
+											border: `1px solid ${indicatorColor(
+												dashboardMetrics?.propertyMetrics
+													.maintenanceUnitsChangeIndicator,
+											)}`,
 											backgroundColor: indicatorBackground(
 												dashboardMetrics?.propertyMetrics
 													.maintenanceUnitsChangeIndicator,
@@ -545,12 +362,7 @@ const DashBoard = () => {
 										%
 									</Typography>
 
-									<Typography
-										fontSize='14px'
-										lineHeight={'20px'}
-										fontWeight={400}
-									>
-										{' '}
+									<Typography sx={{ ...styles.overdueTypo, mt: 0 }}>
 										Since last month
 									</Typography>
 								</Box>
