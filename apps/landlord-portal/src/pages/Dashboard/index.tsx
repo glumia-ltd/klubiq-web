@@ -31,6 +31,7 @@ import {
 	showTrendArrow,
 	initialDashboardMetrics,
 } from './dashboardUtils';
+import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -89,13 +90,17 @@ const DashBoard = () => {
 		maintenance: maintenanceUnits || 0,
 	};
 
-	console.log(dashboardMetrics);
-
 	const getDashboardMetrics = async () => {
 		try {
+			console.log(
+				sessionStorage.getItem(firebaseResponseObject.sessionStorage || ''),
+			);
+
 			const {
 				data: { data },
 			} = await api.get(dashboardEndpoints.getDashboardMetrics());
+
+			console.log(data);
 
 			setDashboardMetrics(data);
 		} catch (e) {
@@ -122,7 +127,7 @@ const DashBoard = () => {
 										sx={styles.valueTextStyle}
 										variant='dashboardTypography'
 									>
-										{totalProperties || 0}
+										{totalUnits || 0}
 									</Typography>
 								</Box>
 								<PropertiesGuage
@@ -143,7 +148,11 @@ const DashBoard = () => {
 									sx={styles.revenueTextStyle}
 									variant='dashboardTypography'
 								>
-									₦{todaysRevenue || 0}
+									{' '}
+									₦
+									{todaysRevenue && todaysRevenue > 0
+										? todaysRevenue.toFixed(2)
+										: todaysRevenue || 0}
 								</Typography>
 								<Box sx={styles.changeArrowBoxStyle}>
 									<Typography
@@ -158,7 +167,7 @@ const DashBoard = () => {
 										}}
 									>
 										{showChangeArrow(dailyRevenueChangeIndicator)}
-										{dailyRevenuePercentageDifference}%
+										{dailyRevenuePercentageDifference.toFixed(1)}%
 									</Typography>
 									<Typography
 										fontSize='14px'
@@ -198,7 +207,7 @@ const DashBoard = () => {
 										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{occupancyRate || 0}%
+										{occupancyRate?.toFixed(1) || 0}%
 									</Typography>
 
 									<Typography
@@ -212,7 +221,7 @@ const DashBoard = () => {
 										}}
 									>
 										{showChangeArrow(occupancyRateChangeIndicator)}
-										{occupancyRatePercentageDifference || 0}%
+										{occupancyRatePercentageDifference.toFixed(1) || 0}%
 									</Typography>
 								</Box>
 								<Box sx={styles.totalExpensesStyle}>
@@ -226,7 +235,10 @@ const DashBoard = () => {
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
-												₦{totalExpenses}
+												₦
+												{totalExpenses && totalExpenses > 0
+													? totalExpenses.toFixed(2)
+													: totalExpenses}
 											</Typography>
 
 											{showTrendArrow(changeIndicator)}
@@ -237,7 +249,7 @@ const DashBoard = () => {
 													color: indicatorColor(totalExpensesChangeIndicator),
 												}}
 											>
-												{totalExpensesPercentageDifference}%
+												{totalExpensesPercentageDifference.toFixed(1)}%
 											</Typography>
 										</Box>
 									</Box>
@@ -250,7 +262,10 @@ const DashBoard = () => {
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
-												₦{netCashFlow}
+												₦
+												{netCashFlow && netCashFlow > 0
+													? netCashFlow.toFixed(2)
+													: netCashFlow}
 											</Typography>
 
 											{showTrendArrow(changeIndicator)}
@@ -260,7 +275,7 @@ const DashBoard = () => {
 													color: indicatorColor(netCashFlowChangeIndicator),
 												}}
 											>
-												{netCashFlowPercentageDifference}%
+												{netCashFlowPercentageDifference.toFixed(1)}%
 											</Typography>
 										</Box>
 									</Box>
@@ -291,7 +306,7 @@ const DashBoard = () => {
 										}}
 									>
 										{showChangeArrow(maintenanceUnitsChangeIndicator)}
-										{maintenanceUnitsPercentageDifference}%
+										{maintenanceUnitsPercentageDifference.toFixed(1)}%
 									</Typography>
 
 									<Typography sx={{ ...styles.overdueTypo, mt: 0 }}>
@@ -337,7 +352,7 @@ const DashBoard = () => {
 								}}
 							>
 								{showChangeArrow(changeIndicator)}
-								{percentageDifference}%
+								{percentageDifference.toFixed(1)}%
 							</Typography>
 						</Box>
 					</Grid>

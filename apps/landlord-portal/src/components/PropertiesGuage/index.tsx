@@ -16,16 +16,16 @@ export const PropertiesGuage = ({
 	legend?: boolean;
 	legendPosition?: 'top' | 'bottom' | 'left' | 'right';
 }) => {
-	const { category1, category2, category3 } = data;
+	const { occupied, vacant, maintenance } = data;
 
 	const size = Math.min(width ?? 300, height);
 	const midSize = size * 0.7;
 	const smallSize = size * 0.45;
 
 	const categories = [
-		{ label: 'Category 1', value: category1, color: colors[0] },
-		{ label: 'Category 2', value: category2, color: colors[1] },
-		{ label: 'Category 3', value: category3, color: colors[2] },
+		{ label: 'Occupied', value: occupied, color: colors[0] },
+		{ label: 'Vacant', value: vacant, color: colors[1] },
+		{ label: 'Maintenance', value: maintenance, color: colors[2] },
 	];
 
 	const legendComponent = legend && (
@@ -44,7 +44,15 @@ export const PropertiesGuage = ({
 					<Typography
 						sx={{ fontSize: { xs: '14', sm: '10px', md: '10px', lg: '14px' } }}
 					>
-						{category.label}
+						{category.label}{' '}
+						<span
+							style={{
+								fontWeight: 600,
+								color: 'primary.main',
+							}}
+						>
+							{category.value}
+						</span>
 					</Typography>
 				</Box>
 			))}
@@ -64,7 +72,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={size}
 				height={size}
-				value={category1}
+				value={occupied}
 				cornerRadius='50%'
 				size={size}
 				sx={{
@@ -94,7 +102,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={midSize}
 				height={midSize}
-				value={category2}
+				value={vacant}
 				cornerRadius='50%'
 				size={midSize}
 				sx={{
@@ -124,7 +132,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={smallSize}
 				height={smallSize}
-				value={category3}
+				value={maintenance}
 				cornerRadius='50%'
 				size={smallSize}
 				sx={{

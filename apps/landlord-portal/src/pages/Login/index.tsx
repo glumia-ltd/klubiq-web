@@ -46,47 +46,46 @@ const Login = () => {
 		try {
 			setLoading(true);
 
-			const userCredential = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password,
-			);
+			const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-			const user: any = userCredential.user;
+			const userToken: any = await user.getIdTokenResult();
 
-			const payload = {
-				token: user.accessToken,
-				user,
-			};
+			if (userToken) {
+				console.log(user);
+				// const payload = {
+				// 	token: user.accessToken,
+				// 	user,
+				// };
 
-			dispatch(saveUser(payload));
+				// dispatch(saveUser(payload));
 
-			const userName = user.displayName.split(' ');
-			const firstName = userName[0];
-			const lastName = userName[1];
+				const userName = user?.displayName?.split(' ');
+				const firstName = userName && userName[0];
+				const lastName = userName && userName[1];
 
-			if (!user.emailVerified) {
-				const requestBody = { email, firstName, lastName };
+				if (!user.emailVerified) {
+					const requestBody = { email, firstName, lastName };
 
-				await api.post(authEndpoints.emailVerification(), requestBody);
+					await api.post(authEndpoints.emailVerification(), requestBody);
 
-				setLoading(false);
-				dispatch(
-					openSnackbar({
-						message: 'Please verify your email!',
-						severity: 'info',
-						isOpen: true,
-					}),
-				);
-			} else {
-				dispatch(
-					openSnackbar({
-						message: 'That was easy',
-						severity: 'success',
-						isOpen: true,
-					}),
-				);
-				navigate('/dashboard', { replace: true });
+					setLoading(false);
+					dispatch(
+						openSnackbar({
+							message: 'Please verify your email!',
+							severity: 'info',
+							isOpen: true,
+						}),
+					);
+				} else {
+					dispatch(
+						openSnackbar({
+							message: 'That was easy',
+							severity: 'success',
+							isOpen: true,
+						}),
+					);
+					navigate('/dashboard', { replace: true });
+				}
 			}
 		} catch (error) {
 			dispatch(
