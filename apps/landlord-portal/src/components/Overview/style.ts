@@ -51,7 +51,18 @@ export const styles = {
 		padding: '8px 12px',
 		borderRadius: '10px',
 		backgroundColor: '#ffffff',
-		minWidth: '160px',
+		maxWidth: '144px',
 		alignSelf: 'flex-end',
+	},
+
+	showHideTextStyle: {
+		background: '#fff',
+		width: '144px',
+		height: '32px',
+		padding: '6px 8px, 6px 8px',
+		borderRadius: '8px',
+		textAlign: 'center',
+		alignSelf: 'flex-end',
+		marginTop: '16px',
 	},
 };

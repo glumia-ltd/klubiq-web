@@ -14,6 +14,7 @@ import LocationIcon from '../../assets/images/Location.svg';
 import BathroomIcon from '../../assets/images/Bathroom.svg';
 import FloorIcon from '../../assets/images/Floorplan.svg';
 import BedIcon from '../../assets/images/Bedroom.svg';
+import { useNavigate } from 'react-router-dom';
 
 interface PropertyCardProps {
 	title: string;
@@ -38,6 +39,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	image,
 	layout,
 }) => {
+	const navigate = useNavigate();
+
+	const handleViewProperty = () => {
+		navigate('/properties/12345');
+	};
+
 	return (
 		<Grid container direction={layout} spacing={1}>
 			<Card sx={layout === 'column' ? CardStyle.columnCard : CardStyle.rowCard}>
@@ -139,7 +146,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										mb: layout === 'column' ? 1 : 0,
 									}}
 								/>
-								<Box sx={CardStyle.buttonTwoDiv}>
+								<Box sx={CardStyle.buttonTwoDiv} onClick={handleViewProperty}>
 									<Link sx={CardStyle.buttonTwo}>View Properties</Link>
 								</Box>
 							</Box>

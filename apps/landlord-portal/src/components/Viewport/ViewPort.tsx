@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from '../SideBar';
 import Box from '@mui/system/Box';
 import { useContext } from 'react';
@@ -7,6 +7,7 @@ import NavBar from '../NavBar/NavBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
+import { useLocation } from 'react-router-dom';
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
@@ -14,6 +15,12 @@ type ViewPortProp = {
 
 const ViewPort = ({ children }: ViewPortProp) => {
 	const { mode } = useContext(ThemeContext);
+
+	const { pathname } = useLocation();
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [pathname]);
 
 	return (
 		<NavToggleProvider>
