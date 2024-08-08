@@ -15,6 +15,7 @@ const style = {
 	contentdiv: {
 		width: '100%',
 		padding: { xs: '10px', sm: '16px', md: '16px', lg: '16px' },
+		borderRadius: '8px',
 		// padding: "0px 16px 0px 16px"
 	},
 	imageStyle: {

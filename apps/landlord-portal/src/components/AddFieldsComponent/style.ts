@@ -35,6 +35,10 @@ const style = {
 		padding: '6px 8px, 6px 8px',
 		borderRadius: '8px',
 		textAlign: 'center',
+
+		'&:hover': {
+			background: '#002147',
+		},
 	},
 	lastBox: {
 		display: 'flex',

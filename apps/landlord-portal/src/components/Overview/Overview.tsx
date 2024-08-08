@@ -83,7 +83,7 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 				)}
 
 				{!showTextField ? (
-					<Button onClick={toggleTextView} sx={styles.saveTextButton}>
+					<Button onClick={toggleTextView} sx={styles.showHideTextStyle}>
 						{truncateText ? 'Read more' : 'Hide Text'}
 					</Button>
 				) : (

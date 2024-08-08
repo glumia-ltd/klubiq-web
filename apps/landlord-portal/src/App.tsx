@@ -32,6 +32,7 @@ function App() {
 	return (
 		<ThemeContextProvider>
 			<RouterProvider router={router} />
+
 			<ControlledSnackbar
 				anchorOrigin={{
 					vertical: 'top',

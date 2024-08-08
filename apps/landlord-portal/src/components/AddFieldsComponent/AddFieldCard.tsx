@@ -1,6 +1,7 @@
 import { Grid, Typography, Box, Card, Button } from '@mui/material';
 import style from './style';
 import Icon from '../../assets/images/contact.svg';
+import { FC } from 'react';
 
 type CardProps = {
 	heading?: string;
@@ -10,7 +11,7 @@ type CardProps = {
 	onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
-const AddFieldCard = ({
+const AddFieldCard: FC<CardProps> = ({
 	heading,
 	subtext,
 	onClick,
@@ -24,17 +25,15 @@ const AddFieldCard = ({
 					<Box>
 						<Typography variant='h6' sx={style.headerText}>
 							{heading}
-							Add Tenant
 						</Typography>
 						<Typography variant='subtitle1' sx={style.subText}>
-							{subtext} Add lease to your property
+							{subtext}
 						</Typography>
 					</Box>
 				</Grid>
 				<Grid item xs={6} sm={6} md={9} lg={9} sx={style.lastBox}>
 					<Button onClick={onClick} sx={style.button}>
 						{description}
-						Add tenant
 					</Button>
 				</Grid>
 			</Grid>
