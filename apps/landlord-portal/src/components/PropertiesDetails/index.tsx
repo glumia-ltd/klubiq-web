@@ -124,10 +124,11 @@ const PropertiesDetails = () => {
 								color='#002147'
 								name='description'
 								label='DESCRIPTION'
+								placeholder='Describe your property'
 								formik={formik}
 								type='text'
 								multiline
-								minRows={12}
+								minRows={20}
 								sxTwo={{
 									'& .MuiOutlinedInput-root': {
 										height: 'max-content',
