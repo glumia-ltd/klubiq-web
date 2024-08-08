@@ -15,11 +15,10 @@ import ViewPort from '../../components/Viewport/ViewPort';
 import Filter from '../../components/Filter/Filter';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-import FormLayout from '../../Layouts/FormLayout';
 import { data, filterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
-import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
-import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
+import PropertiesSkeleton from './PropertiesSkeleton';
+import AddProperties from '../AddProperties';
 
 type PropertyType = {
 	title: string;
@@ -41,7 +40,7 @@ const Properties = () => {
 	const [filter, setFilter] = useState<Record<string, string | string[]>>({});
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
-
+	const [loading, setLoading] = useState<boolean>(true);
 	const purpose = filter?.Purpose;
 	const unitType = filter['Unit type'];
 	const propertyType = filter['Property Type'];
@@ -88,60 +87,70 @@ const Properties = () => {
 
 			inputElement && inputElement.focus();
 		}
+		setTimeout(() => setLoading(false), 20000);
 	}, []);
 
 	return (
 		<ViewPort>
-			{/* <Grid sx={styles.container}>
-				<Grid sx={styles.buttons}>
-					<div onClick={toggleLayout}>
-						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
-					</div>
-					<Button
-						variant='contained'
-						sx={styles.addPropertyButton}
-						onClick={handleAddProperties}
-					>
-						<LeftArrowIcon />
-						Add New Property
-					</Button>
-				</Grid>
+			{/* {loading ? (
+				<PropertiesSkeleton />
+			) : (
+				<Grid sx={styles.container}>
+					<Grid sx={styles.buttons}>
+						<div onClick={toggleLayout}>
+							{layout === 'column' ? (
+								<FormatListBulletedIcon />
+							) : (
+								<GridOnIcon />
+							)}
+						</div>
+						<Button
+							variant='contained'
+							sx={styles.addPropertyButton}
+							onClick={handleAddProperties}
+						>
+							<LeftArrowIcon />
+							Add New Property
+						</Button>
+					</Grid>
 
-				<Grid>
-					<Paper component='form' sx={styles.inputStyle}>
-						<IconButton aria-label='search'>
-							<SearchIcon />
-						</IconButton>
-						<InputBase
-							ref={inputRef}
-							sx={{ ml: 1, flex: 1 }}
-							placeholder='Search Properties'
-							inputProps={{ 'aria-label': 'search properties' }}
-							value={searchText}
-							onChange={(e) => setSearchText(e.target.value)}
+					<Grid>
+						<Paper component='form' sx={styles.inputStyle}>
+							<IconButton aria-label='search'>
+								<SearchIcon />
+							</IconButton>
+							<InputBase
+								ref={inputRef}
+								sx={{ ml: 1, flex: 1 }}
+								placeholder='Search Properties'
+								inputProps={{ 'aria-label': 'search properties' }}
+								value={searchText}
+								onChange={(e) => setSearchText(e.target.value)}
+							/>
+						</Paper>
+					</Grid>
+
+					<Grid sx={styles.filterContainer}>
+						<Filter
+							filterList={filterOptions}
+							getFilterResult={(options) => setFilter(options)}
 						/>
-					</Paper>
-				</Grid>
+					</Grid>
 
-				<Grid sx={styles.filterContainer}>
-					<Filter
-						filterList={filterOptions}
-						getFilterResult={(options) => setFilter(options)}
-					/>
-				</Grid>
+					{filterObjectHasProperties ? (
+						<Typography sx={styles.filterResultText}>
+							<span style={styles.filterResultNumber}>
+								{filteredProperties.length}
+							</span>{' '}
+							{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
+						</Typography>
+					) : null}
 
-				{filterObjectHasProperties ? (
-					<Typography sx={styles.filterResultText}>
-						<span style={styles.filterResultNumber}>
-							{filteredProperties.length}
-						</span>{' '}
-						{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
-					</Typography>
-				) : null}
-
-				<Grid container spacing={1.5} mt={3} pl={0.5}>
-					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
-						(property, index) => (
+					<Grid container spacing={1.5} mt={3} pl={0.5}>
+						{(filterObjectHasProperties
+							? filteredProperties
+							: allProperties
+						).map((property, index) => (
 							<Grid
 								item
 								xs={12}
@@ -151,12 +160,11 @@ const Properties = () => {
 							>
 								<PropertyCard {...property} layout={layout} />
 							</Grid>
-						),
-					)}
+						))}
+					</Grid>
 				</Grid>
-			</Grid> */}
-
-			<AddUnit />
+			)} */}
+			<AddProperties />
 		</ViewPort>
 	);
 };

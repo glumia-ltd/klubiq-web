@@ -84,5 +84,23 @@ const style = {
 		lineHeight: { xs: '18px', sm: '18px', md: '18px', lg: '18px' },
 		fontWeight: 400,
 	},
+	skeleton: {
+		marginTop: '25px',
+	},
+	boxTwo: {
+		display: 'flex',
+		justifyContent: 'space-between',
+	},
+
+	boxThree: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	boxOne: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
 };
 export default style;

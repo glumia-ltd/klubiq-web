@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropertyCategoryCard from '../PropertyCategoryCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
@@ -20,7 +20,10 @@ const PropertyCategory = () => {
 		setSelectedCard((prevId) => (prevId === id ? null : id));
 		console.log('Selected card ID:', id === selectedCard ? null : id);
 	};
-
+	const [loading, setLoading] = useState<boolean>(true);
+	useEffect(() => {
+		setTimeout(() => setLoading(false), 20000);
+	}, []);
 	const data: CardData[] = [
 		{
 			id: 1,

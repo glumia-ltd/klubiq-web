@@ -16,6 +16,9 @@ const style = {
 		height: '100px',
 		borderRadius: '0px, 0px, 3px, 0px',
 	},
+	skeleton: {
+		marginTop: '25px',
+	},
 	content: {
 		padding: '24px',
 	},
