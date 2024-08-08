@@ -92,7 +92,7 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			{/* {loading ? (
+			{loading ? (
 				<PropertiesSkeleton />
 			) : (
 				<Grid sx={styles.container}>
@@ -163,8 +163,7 @@ const Properties = () => {
 						))}
 					</Grid>
 				</Grid>
-			)} */}
-			<AddProperties />
+			)}
 		</ViewPort>
 	);
 };
