@@ -18,7 +18,6 @@ import { styles } from './styles';
 import { data, filterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
 import PropertiesSkeleton from './PropertiesSkeleton';
-import AddProperties from '../AddProperties';
 
 type PropertyType = {
 	title: string;
