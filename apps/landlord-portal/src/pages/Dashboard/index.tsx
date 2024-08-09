@@ -31,7 +31,6 @@ import {
 	showTrendArrow,
 	initialDashboardMetrics,
 } from './dashboardUtils';
-import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -92,15 +91,9 @@ const DashBoard = () => {
 
 	const getDashboardMetrics = async () => {
 		try {
-			console.log(
-				sessionStorage.getItem(firebaseResponseObject.sessionStorage || ''),
-			);
-
 			const {
 				data: { data },
 			} = await api.get(dashboardEndpoints.getDashboardMetrics());
-
-			console.log(data);
 
 			setDashboardMetrics(data);
 		} catch (e) {
