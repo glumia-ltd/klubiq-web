@@ -17,6 +17,8 @@ export const PropertiesGuage = ({
 	legendPosition?: 'top' | 'bottom' | 'left' | 'right';
 }) => {
 	const { occupied, vacant, maintenance } = data;
+	const total = occupied! + vacant! + maintenance!;
+	const convertToPercentage = (value = 0) => (value! / total) * 100;
 
 	const size = Math.min(width ?? 300, height);
 	const midSize = size * 0.7;
@@ -72,7 +74,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={size}
 				height={size}
-				value={occupied}
+				value={convertToPercentage(occupied)}
 				cornerRadius='50%'
 				size={size}
 				sx={{
@@ -102,7 +104,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={midSize}
 				height={midSize}
-				value={vacant}
+				value={convertToPercentage(vacant)}
 				cornerRadius='50%'
 				size={midSize}
 				sx={{
@@ -132,7 +134,7 @@ export const PropertiesGuage = ({
 			<Gauge
 				width={smallSize}
 				height={smallSize}
-				value={maintenance}
+				value={convertToPercentage(maintenance)}
 				cornerRadius='50%'
 				size={smallSize}
 				sx={{

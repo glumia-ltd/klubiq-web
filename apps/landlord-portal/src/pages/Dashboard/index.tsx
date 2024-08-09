@@ -89,6 +89,8 @@ const DashBoard = () => {
 		maintenance: maintenanceUnits || 0,
 	};
 
+	const seriesData = revenueChart.seriesData;
+
 	const getDashboardMetrics = async () => {
 		try {
 			const {
@@ -187,7 +189,7 @@ const DashBoard = () => {
 								</Box>
 								<Typography sx={styles.overdueTypo}>
 									{rentOverdue?.overDueLeaseCount || 0}
-									overdue
+									<span style={{ marginLeft: '5px' }}>overdue</span>
 								</Typography>
 							</Card>
 						</Grid>
@@ -234,7 +236,7 @@ const DashBoard = () => {
 													: totalExpenses}
 											</Typography>
 
-											{showTrendArrow(changeIndicator)}
+											{showTrendArrow(totalExpensesChangeIndicator)}
 
 											<Typography
 												sx={{
@@ -255,13 +257,12 @@ const DashBoard = () => {
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
-												₦
 												{netCashFlow && netCashFlow > 0
-													? netCashFlow.toFixed(2)
-													: netCashFlow}
+													? `₦${netCashFlow.toFixed(2)}`
+													: `- ₦${(-1 * netCashFlow!).toFixed(2)}`}
 											</Typography>
 
-											{showTrendArrow(changeIndicator)}
+											{showTrendArrow(netCashFlowChangeIndicator)}
 											<Typography
 												sx={{
 													...styles.typoStyle,
@@ -333,7 +334,7 @@ const DashBoard = () => {
 								sx={styles.occupancyTextStyle}
 								variant='dashboardTypography'
 							>
-								₦{totalRevenueLast12Months}
+								₦{totalRevenueLast12Months.toFixed(2)}
 							</Typography>
 
 							<Typography
@@ -377,7 +378,24 @@ const DashBoard = () => {
 					</Grid>
 
 					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
-						<TableChart />
+						<TableChart
+							seriesData={seriesData}
+							maxRevenue={revenueMetrics?.maxRevenue}
+							xAxisData={[
+								'Jan',
+								'Feb',
+								'Mar',
+								'Apr',
+								'May',
+								'Jun',
+								'Jul',
+								'Aug',
+								'Sep',
+								'Oct',
+								'Nov',
+								'Dec',
+							]}
+						/>
 					</Grid>
 				</Grid>
 			</Container>

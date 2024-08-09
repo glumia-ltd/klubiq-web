@@ -16,12 +16,19 @@ export type PropertyMetricsType = {
 	vacantUnits: number;
 };
 
+export type SeriesDataType = {
+	data: number[];
+	label: string;
+	stack?: string;
+	color?: string;
+}[];
+
 export type RevenueMetricsType = {
 	changeIndicator: string;
 	maxRevenue: number;
 	monthlyRevenues: number[];
 	percentageDifference: number;
-	revenueChart: { xAxisData: number[]; seriesData: number[] };
+	revenueChart: { xAxisData: string[]; seriesData: SeriesDataType };
 	totalRevenueLast12Months: number;
 };
 

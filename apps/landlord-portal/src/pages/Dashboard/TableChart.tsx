@@ -1,8 +1,16 @@
 import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { AxisScaleConfig } from '@mui/x-charts/internals';
+import { SeriesDataType } from '../../type';
+import { FC } from 'react';
 
-const TableChart = () => {
+type xAxisDataType = string[];
+
+const TableChart: FC<{
+	seriesData: SeriesDataType;
+	xAxisData: xAxisDataType;
+	maxRevenue?: number;
+}> = ({ seriesData, xAxisData, maxRevenue }) => {
 	const xAxisConfig: AxisScaleConfig = {
 		band: {
 			scaleType: 'band',
@@ -41,6 +49,7 @@ const TableChart = () => {
 	};
 	return (
 		<Box
+			sx={{ border: '2px solid green' }}
 			padding={{
 				xs: '8px  25px',
 				sm: '16px 50px',
@@ -50,43 +59,16 @@ const TableChart = () => {
 		>
 			<BarChart
 				borderRadius={8}
-				series={[
-					{
-						data: [13, 24, 51, 63, 52, 20, 15, 20, 25, 30, 45, 60],
-						stack: 'A',
-						label: 'Property Sales',
-						color: '#002147',
-					},
-					{
-						data: [4, 3, 16, 56, 82, 10, 11, 12, 30, 39, 34, 50],
-						stack: 'A',
-						label: 'Property Rental',
-						color: '#6699CC',
-					},
-				]}
+				series={seriesData}
 				xAxis={[
 					{
 						...xAxisConfig.band,
 						scaleType: 'band',
-						data: [
-							'Jan',
-							'Feb',
-							'Mar',
-							'Apr',
-							'May',
-							'Jun',
-							'Jul',
-							'Aug',
-							'Sep',
-							'Oct',
-							'Nov',
-							'Dec',
-						],
+						data: xAxisData,
 					},
 				]}
-				yAxis={[{ min: 0, max: 200 }]}
-				//maxWidth={900}
-				height={360}
+				yAxis={[{ min: 0, max: maxRevenue, scaleType: 'linear' }]}
+				height={400}
 				bottomAxis={null}
 				topAxis={{
 					disableTicks: true,
@@ -100,13 +82,14 @@ const TableChart = () => {
 					disableLine: true,
 					labelStyle: {
 						fontSize: '12px',
+						padding: '25px',
 					},
 				}}
 				slotProps={{
 					legend: {
 						direction: 'row',
 						position: { vertical: 'bottom', horizontal: 'middle' },
-						padding: 0,
+						padding: 10,
 						itemMarkWidth: 20,
 						itemMarkHeight: 11,
 						markGap: 5,
