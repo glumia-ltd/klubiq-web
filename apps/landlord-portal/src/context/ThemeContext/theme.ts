@@ -232,6 +232,15 @@ export const LightTheme: Theme = createTheme({
 		button: {
 			textTransform: 'none',
 		},
+		link: {
+			textTransform: 'none',
+			disableRipple: true,
+			fontWeight: 600,
+			fontSize: '1rem',
+			textDecoration: 'underline',
+			cursor: 'pointer',
+			pointerEvents: 'auto',
+		},
 	},
 	transitions: transitionsTheme,
 });
@@ -471,6 +480,15 @@ export const DarkTheme: Theme = createTheme({
 		button: {
 			textTransform: 'none',
 			disableRipple: true,
+		},
+		link: {
+			textTransform: 'none',
+			disableRipple: true,
+			fontWeight: 600,
+			fontSize: '1rem',
+			textDecoration: 'underline',
+			cursor: 'pointer',
+			pointerEvents: 'auto',
 		},
 	},
 	transitions: transitionsTheme,

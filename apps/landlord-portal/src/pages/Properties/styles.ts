@@ -1,6 +1,6 @@
 export const styles = {
 	container: {
-		padding: '2rem 6rem',
+		padding: { xs: '2rem 1.5rem', sm: '2rem 6rem' },
 	},
 	buttons: {
 		cursor: 'pointer',

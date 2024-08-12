@@ -15,5 +15,6 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Typography' {
 	interface TypographyPropsVariantOverrides {
 		dashboardTypography: true;
+		link: true;
 	}
 }
