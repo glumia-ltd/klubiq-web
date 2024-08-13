@@ -129,11 +129,10 @@ const CreateAccount: React.FC = () => {
 							lg={12}
 							sx={{ textAlign: 'center' }}
 						>
-							<Typography variant='h2' color='#002147' mb='3rem'>
+							<Typography variant='h2' mb='3rem'>
 								Create your Klubiq account
 							</Typography>
 							<Typography
-								color='#002147'
 								mt='-3rem'
 								mb='2rem'
 								sx={{
@@ -141,6 +140,7 @@ const CreateAccount: React.FC = () => {
 									lineHeight: '30px',
 									textAlign: 'center',
 									fontSize: '18px',
+									display: 'none',
 								}}
 							>
 								Sign up and get 30 days free trial.
@@ -151,7 +151,7 @@ const CreateAccount: React.FC = () => {
 								name='firstName'
 								label='First Name'
 								type='text'
-								placeholder='John'
+								placeholder='Enter your first'
 								formik={formik}
 							/>
 						</Grid>
@@ -159,7 +159,7 @@ const CreateAccount: React.FC = () => {
 							<ControlledTextField
 								name='lastName'
 								label='Last Name'
-								placeholder='Doe'
+								placeholder='Enter your last name'
 								formik={formik}
 								type='text'
 							/>
@@ -169,7 +169,7 @@ const CreateAccount: React.FC = () => {
 							<ControlledTextField
 								name='companyName'
 								label='Company Name'
-								placeholder='Lyal Solutions'
+								placeholder='Enter your company name'
 								type='text'
 								formik={formik}
 							/>
@@ -179,7 +179,7 @@ const CreateAccount: React.FC = () => {
 							<ControlledTextField
 								name='email'
 								label='Email '
-								placeholder='johndoe@example.com'
+								placeholder='Enter your email address'
 								formik={formik}
 								type='email'
 							/>
@@ -190,12 +190,12 @@ const CreateAccount: React.FC = () => {
 								name='password'
 								label='Password'
 								type='password'
+								placeholder='Enter your password'
 								formik={formik}
 							/>
 						</Grid>
 
 						<Typography
-							color='#002147'
 							sx={{
 								fontWeight: 500,
 								textAlign: 'center',
@@ -249,12 +249,7 @@ const CreateAccount: React.FC = () => {
 						>
 							<Typography>
 								Already have an account?{' '}
-								<span
-									style={{ color: '#002147', fontWeight: '600' }}
-									onClick={routeToLogin}
-								>
-									Sign in
-								</span>
+								<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
 							</Typography>
 						</Grid>
 					</Grid>
