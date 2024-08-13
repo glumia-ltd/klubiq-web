@@ -2,14 +2,10 @@ const CardContainer = {
 	borderRadius: '10px',
 	boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
 	transition: 'transform 0.3s ease-in-out',
-	// '&:hover': {
-	// 	transform: 'scale(1.05)',
-	// },
 };
 
 const CardStyle = {
 	cardContainerColumn: {
-		width: '400px',
 		...CardContainer,
 	},
 	cardContainerRow: {

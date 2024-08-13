@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-	//Grid,
 	Stack,
 	Box,
 	Button,
@@ -97,7 +96,15 @@ const Properties = () => {
 		<ViewPort>
 			<Box>
 				<Grid container rowSpacing={2} sx={styles.container}>
-					<Grid xs display='flex' justifyContent={'end'} alignItems={'center'}>
+					<Grid
+						xs
+						display='flex'
+						justifyContent={{
+							xs: 'flex-start',
+							md: 'flex-end',
+						}}
+						alignItems={'center'}
+					>
 						<Stack
 							sx={{
 								cursor: 'pointer',
@@ -159,17 +166,13 @@ const Properties = () => {
 							) : null}
 						</Grid>
 
-						<Grid container spacing={3.5} mt={2}>
+						<Grid container spacing={3}>
 							{(filterObjectHasProperties
 								? filteredProperties
 								: allProperties
 							).map((property, index) => (
 								<Grid
-									container
 									xs={12}
-									width={'100%'}
-									rowSpacing={2}
-									columnSpacing={2}
 									sm={layout === 'row' ? 12 : 6}
 									md={layout === 'row' ? 12 : 4}
 									lg={layout === 'row' ? 12 : 3}
@@ -182,71 +185,6 @@ const Properties = () => {
 					</Grid>
 				</Grid>
 			</Box>
-
-			{/* FEYI'S CODE */}
-			<Grid sx={styles.container}>
-				<Grid sx={styles.buttons}>
-					<div onClick={toggleLayout}>
-						{layout === 'column' ? <FormatListBulletedIcon /> : <GridOnIcon />}
-					</div>
-					<Button
-						variant='contained'
-						sx={styles.addPropertyButton}
-						onClick={handleAddProperties}
-					>
-						<LeftArrowIcon />
-						Add New Property
-					</Button>
-				</Grid>
-
-				<Grid>
-					<Paper component='form' sx={styles.inputStyle}>
-						<IconButton aria-label='search'>
-							<SearchIcon />
-						</IconButton>
-						<InputBase
-							ref={inputRef}
-							sx={{ ml: 1, flex: 1 }}
-							placeholder='Search Properties'
-							inputProps={{ 'aria-label': 'search properties' }}
-							value={searchText}
-							onChange={(e) => setSearchText(e.target.value)}
-						/>
-					</Paper>
-				</Grid>
-
-				<Grid sx={styles.filterContainer}>
-					<Filter
-						filterList={filterOptions}
-						getFilterResult={(options) => setFilter(options)}
-					/>
-				</Grid>
-
-				{filterObjectHasProperties ? (
-					<Typography sx={styles.filterResultText}>
-						<span style={styles.filterResultNumber}>
-							{filteredProperties.length}
-						</span>{' '}
-						{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
-					</Typography>
-				) : null}
-
-				<Grid container spacing={1.5} mt={3} pl={0.5}>
-					{(filterObjectHasProperties ? filteredProperties : allProperties).map(
-						(property, index) => (
-							<Grid
-								item
-								xs={12}
-								sm={layout === 'row' ? 12 : 6}
-								md={layout === 'row' ? 12 : 4}
-								key={index}
-							>
-								<PropertyCard {...property} layout={layout} />
-							</Grid>
-						),
-					)}
-				</Grid>
-			</Grid>
 		</ViewPort>
 	);
 };
