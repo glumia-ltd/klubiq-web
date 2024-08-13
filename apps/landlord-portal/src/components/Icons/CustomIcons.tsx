@@ -70,4 +70,106 @@ const FloorPlan = createSvgIcon(
 	</svg>,
 	'FloorPlan',
 );
-export { Place, Bedroom, Bathroom, FloorPlan };
+
+const Plus = createSvgIcon(
+	<svg
+		width='13'
+		height='13'
+		viewBox='0 0 13 13'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<path
+			id='Vector'
+			d='M12 6.85714H6.85714V12H5.14286V6.85714H0V5.14286H5.14286V0H6.85714V5.14286H12V6.85714Z'
+			fill='currentColor'
+			fill-opacity='0.8'
+		/>
+	</svg>,
+	'Plus',
+);
+
+const TopBottom = createSvgIcon(
+	<svg
+		width='32'
+		height='32'
+		viewBox='0 0 32 32'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<g id='top-bottom'>
+			<path
+				id='Vector 1'
+				d='M10 11.5H20.4498C20.9353 11.5 21.136 12.1221 20.742 12.4058L10.758 19.5942C10.364 19.8779 10.5647 20.5 11.0502 20.5H21.5M21.5 20.5L19 18M21.5 20.5L19 23'
+				stroke='currentColor'
+			/>
+		</g>
+	</svg>,
+	'TopBottom',
+);
+
+const AscendIcon = createSvgIcon(
+	<svg
+		width='32'
+		height='32'
+		viewBox='0 0 32 32'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<g id='alpha-asc'>
+			<path
+				id='Union'
+				fill-rule='evenodd'
+				clip-rule='evenodd'
+				d='M10.8966 9L9 14H10.0695L10.4488 13H12.5819L12.92 14H13.9756L12.2852 9H10.8966ZM12.2438 12L11.5767 10.0266L10.8281 12H12.2438Z'
+				fill='currentColor'
+			/>
+			<path
+				id='Vector 7'
+				d='M9.5 18.5L13.5 18.5V18.7695L10 22.2162V22.5H14'
+				stroke='currentColor'
+				stroke-miterlimit='4.25735'
+			/>
+			<path
+				id='Vector 10'
+				d='M20.5 23L20.5 9M20.5 9L23.5 12M20.5 9L17.5 12'
+				stroke='currentColor'
+			/>
+		</g>
+	</svg>,
+	'AscendIcon',
+);
+
+const ReverseIcon = createSvgIcon(
+	<svg
+		width='32'
+		height='32'
+		viewBox='0 0 32 32'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<g id='reverse'>
+			<path
+				id='Vector 13'
+				d='M17.5 11L15.5 9M17.5 11L15.5 13M17.5 11H14C12.8333 11 10.5 11.7 10.5 14.5C10.5 17.3 10.5 20.25 10.5 21.75'
+				stroke='currentColor'
+			/>
+			<path
+				id='Vector 14'
+				d='M14.5 20.75L16.5 22.75M14.5 20.75L16.5 18.75M14.5 20.75H18C19.1667 20.75 21.5 20.05 21.5 17.25C21.5 14.45 21.5 11.5 21.5 10'
+				stroke='currentColor'
+			/>
+		</g>
+	</svg>,
+	'ReverseIcon',
+);
+export {
+	Place,
+	Bedroom,
+	Bathroom,
+	FloorPlan,
+	Plus,
+	TopBottom,
+	AscendIcon,
+	ReverseIcon,
+};

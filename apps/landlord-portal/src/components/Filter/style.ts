@@ -3,7 +3,6 @@ export const styles = {
 		display: 'flex',
 		gap: '8px',
 		padding: '8px',
-		outline: '1px dashed #002147',
 		borderRadius: '8px',
 	},
 
@@ -27,7 +26,6 @@ export const styles = {
 	},
 
 	selectedButtonStyle: {
-		background: '#002147',
 		display: 'flex',
 		borderRadius: '8px 0px 0px 8px',
 		cursor: 'pointer',
@@ -44,7 +42,6 @@ export const styles = {
 		padding: '8px',
 		color: '#fff',
 		borderRadius: '0px 8px 8px 0px',
-		background: '#002147',
 	},
 
 	dropdownIcon: {
@@ -58,7 +55,7 @@ export const styles = {
 
 	text: {
 		fontSize: '16px',
-		color: '#002147',
+		color: 'primary.main',
 		backgroundColor: '#fff',
 		borderRadius: '10px',
 		padding: '4px 4px',
@@ -71,7 +68,7 @@ export const styles = {
 	},
 
 	applyButtonStyle: {
-		bgcolor: '#001F4B',
+		bgcolor: 'primary.main',
 		color: '#fff',
 		width: '70%',
 		margin: '0 auto',
@@ -82,9 +79,9 @@ export const styles = {
 		position: 'absolute',
 		padding: 2,
 		minWidth: 300,
-		border: '1px solid #001F4B',
+		border: '1px solid primary.light',
 		borderRadius: 2,
-		backgroundColor: '#fff',
+		backgroundColor: 'background.paper',
 		display: 'flex',
 		flexDirection: 'column',
 	},
