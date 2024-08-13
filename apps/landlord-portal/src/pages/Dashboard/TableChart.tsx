@@ -9,7 +9,7 @@ type xAxisDataType = string[];
 const TableChart: FC<{
 	seriesData: SeriesDataType;
 	xAxisData: xAxisDataType;
-	maxRevenue?: number;
+	maxRevenue: number;
 }> = ({ seriesData, xAxisData, maxRevenue }) => {
 	const xAxisConfig: AxisScaleConfig = {
 		band: {
@@ -49,7 +49,6 @@ const TableChart: FC<{
 	};
 	return (
 		<Box
-			sx={{ border: '2px solid green' }}
 			padding={{
 				xs: '8px  25px',
 				sm: '16px 50px',
@@ -58,6 +57,7 @@ const TableChart: FC<{
 			}}
 		>
 			<BarChart
+				sx={{ padding: '10px' }}
 				borderRadius={8}
 				series={seriesData}
 				xAxis={[
@@ -67,7 +67,9 @@ const TableChart: FC<{
 						data: xAxisData,
 					},
 				]}
-				yAxis={[{ min: 0, max: maxRevenue, scaleType: 'linear' }]}
+				yAxis={[
+					{ min: 0, max: maxRevenue + maxRevenue * 0.2, label: 'Amount (₦)' },
+				]}
 				height={400}
 				bottomAxis={null}
 				topAxis={{
@@ -82,7 +84,6 @@ const TableChart: FC<{
 					disableLine: true,
 					labelStyle: {
 						fontSize: '12px',
-						padding: '25px',
 					},
 				}}
 				slotProps={{

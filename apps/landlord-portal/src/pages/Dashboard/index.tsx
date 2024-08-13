@@ -89,8 +89,6 @@ const DashBoard = () => {
 		maintenance: maintenanceUnits || 0,
 	};
 
-	const seriesData = revenueChart.seriesData;
-
 	const getDashboardMetrics = async () => {
 		try {
 			const {
@@ -144,10 +142,7 @@ const DashBoard = () => {
 									variant='dashboardTypography'
 								>
 									{' '}
-									₦
-									{todaysRevenue && todaysRevenue > 0
-										? todaysRevenue.toFixed(2)
-										: todaysRevenue || 0}
+									₦{todaysRevenue.toFixed(2)}
 								</Typography>
 								<Box sx={styles.changeArrowBoxStyle}>
 									<Typography
@@ -184,7 +179,7 @@ const DashBoard = () => {
 										sx={styles.overdueTextStyle}
 										variant='dashboardTypography'
 									>
-										₦{rentOverdue?.overDueRentSum || 0}
+										₦{rentOverdue?.overDueRentSum.toFixed(2)}
 									</Typography>
 								</Box>
 								<Typography sx={styles.overdueTypo}>
@@ -230,10 +225,7 @@ const DashBoard = () => {
 												mr={'1rem'}
 												variant='dashboardTypography'
 											>
-												₦
-												{totalExpenses && totalExpenses > 0
-													? totalExpenses.toFixed(2)
-													: totalExpenses}
+												₦{totalExpenses.toFixed(2)}
 											</Typography>
 
 											{showTrendArrow(totalExpensesChangeIndicator)}
@@ -259,7 +251,9 @@ const DashBoard = () => {
 											>
 												{netCashFlow && netCashFlow > 0
 													? `₦${netCashFlow.toFixed(2)}`
-													: `- ₦${(-1 * netCashFlow!).toFixed(2)}`}
+													: netCashFlow && netCashFlow < 0
+														? `- ₦${(-1 * netCashFlow!).toFixed(2)}`
+														: `₦0.00`}
 											</Typography>
 
 											{showTrendArrow(netCashFlowChangeIndicator)}
@@ -379,22 +373,9 @@ const DashBoard = () => {
 
 					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
 						<TableChart
-							seriesData={seriesData}
+							seriesData={revenueChart.seriesData}
 							maxRevenue={revenueMetrics?.maxRevenue}
-							xAxisData={[
-								'Jan',
-								'Feb',
-								'Mar',
-								'Apr',
-								'May',
-								'Jun',
-								'Jul',
-								'Aug',
-								'Sep',
-								'Oct',
-								'Nov',
-								'Dec',
-							]}
+							xAxisData={revenueChart.xAxisData}
 						/>
 					</Grid>
 				</Grid>
