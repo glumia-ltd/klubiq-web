@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../Layouts/LoginLayout';
 import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
+import { BoldTextLink } from '../../styles/links';
 import {
 	// Checkbox,
 	// FormControlLabel,
@@ -212,7 +213,7 @@ const Login = () => {
 									name='email'
 									label='Email'
 									type='email'
-									placeholder='johndoe@example.com'
+									placeholder='Enter your email address'
 									formik={formik}
 									inputProps={{
 										sx: {
@@ -227,6 +228,7 @@ const Login = () => {
 									name='password'
 									label='Password'
 									type='password'
+									placeholder='Enter your password'
 									formik={formik}
 									inputProps={{
 										sx: {
@@ -254,15 +256,8 @@ const Login = () => {
                     label="Remember this computer"
                   />
                 </FormGroup> */}
-								<Typography
-									onClick={routeToForgotPassword}
-									style={{
-										color: '#0096FF',
-										fontWeight: '600',
-										cursor: 'pointer',
-									}}
-								>
-									Forgot password
+								<Typography onClick={routeToForgotPassword}>
+									<BoldTextLink>Forgot password</BoldTextLink>
 								</Typography>
 							</Grid>
 
@@ -305,15 +300,7 @@ const Login = () => {
 								onClick={routeToSignUp}
 							>
 								<Typography>
-									Don't have an account?{' '}
-									<span
-										style={{
-											color: '#002147',
-											fontWeight: '600',
-										}}
-									>
-										Sign up
-									</span>
+									Don't have an account? <BoldTextLink>Sign up</BoldTextLink>
 								</Typography>
 							</Grid>
 						</Grid>

@@ -15,7 +15,7 @@ export const SubmitButton = styled(Button)<ButtonProps>(({ theme }) => ({
 	'&:hover': {
 		backgroundColor: theme.palette.secondary.light,
 		cursor: 'pointer',
-		color: theme.palette.primary.contrastText,
+		color: theme.palette.background.paper,
 	},
 }));
 

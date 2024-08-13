@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import { fontSize } from '@mui/system';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -24,6 +25,21 @@ const transitionsTheme = {
 		// The sharp curve is used by objects that may return to the screen at any time.
 		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
 	},
+};
+const cardHeaderStyle = {
+	fontWeight: 600,
+	fontSize: '0.875rem',
+	lineHeight: 1.5,
+};
+const cardContentTextStyle = {
+	fontWeight: 400,
+	fontSize: '0.75rem',
+	lineHeight: 1,
+};
+const cardTitleStyle = {
+	fontWeight: 700,
+	fontSize: '1rem',
+	lineHeight: 2,
 };
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
@@ -228,9 +244,26 @@ export const LightTheme: Theme = createTheme({
 			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
-
 		button: {
 			textTransform: 'none',
+		},
+		link: {
+			textTransform: 'none',
+			fontWeight: 600,
+			fontSize: '1rem',
+			textDecoration: 'underline',
+			cursor: 'pointer',
+			pointerEvents: 'auto',
+		},
+		cardHeader: {
+			...cardHeaderStyle,
+		},
+		cardContentText: {
+			...cardContentTextStyle,
+		},
+
+		cardTitle: {
+			...cardTitleStyle,
 		},
 	},
 	transitions: transitionsTheme,
@@ -368,6 +401,7 @@ export const DarkTheme: Theme = createTheme({
 				root: {
 					background: '#161616',
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					border: '1px solid rgba(211, 217, 223, 0.5)',
 
 					// '&.Mui-disabled': {
 					//     background: grey[100],
@@ -471,6 +505,23 @@ export const DarkTheme: Theme = createTheme({
 		button: {
 			textTransform: 'none',
 			disableRipple: true,
+		},
+		link: {
+			textTransform: 'none',
+			fontWeight: 600,
+			fontSize: '1rem',
+			textDecoration: 'underline',
+			cursor: 'pointer',
+			pointerEvents: 'auto',
+		},
+		cardHeader: {
+			...cardHeaderStyle,
+		},
+		cardContentText: {
+			...cardContentTextStyle,
+		},
+		cardTitle: {
+			...cardTitleStyle,
 		},
 	},
 	transitions: transitionsTheme,
