@@ -11,7 +11,7 @@ import {
 	Chip,
 	Avatar,
 } from '@mui/material';
-import * as KlubiqIcons from '../custom-icons';
+import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
 import { useNavigate } from 'react-router-dom';
 
