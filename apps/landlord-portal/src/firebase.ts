@@ -19,6 +19,7 @@ const app = initializeApp(
 	import.meta.env.VITE_APPLICATION_NAME,
 );
 self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_RECAPTCHA_DEBUG_TOKEN;
+
 const appCheck = initializeAppCheck(app, {
 	provider: new ReCaptchaV3Provider(recaptchaSiteKey),
 	isTokenAutoRefreshEnabled: true,
