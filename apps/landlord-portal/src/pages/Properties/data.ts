@@ -1,6 +1,9 @@
-import reverse from '../../assets/images/reverse.svg';
-import ascend from '../../assets/images/alpha-asc.svg';
-import topBottom from '../../assets/images/top-bottom.svg';
+import {
+	TopBottom,
+	AscendIcon,
+	ReverseIcon,
+} from '../../components/Icons/CustomIcons';
+import { OptionsType } from '../../components/Filter/Filter';
 
 export const data = [
 	{
@@ -70,12 +73,6 @@ export const data = [
 	},
 ];
 
-export type OptionsType = {
-	title: string;
-	options: { label: string; icon?: string }[];
-	multiSelect?: boolean;
-}[];
-
 export const filterOptions: OptionsType = [
 	{ title: 'Display', options: [{ label: 'All' }, { label: 'Archived' }] },
 	{
@@ -89,11 +86,23 @@ export const filterOptions: OptionsType = [
 	{
 		title: 'Sorting options',
 		options: [
-			{ label: 'Recently updated', icon: topBottom },
-			{ label: 'Newest', icon: reverse },
-			{ label: 'Oldest', icon: reverse },
-			{ label: 'Property name (A -> Z)', icon: ascend },
-			{ label: 'Property name (Z -> A)', icon: ascend },
+			{ label: 'Recently updated', Icon: TopBottom },
+			{
+				label: 'Newest',
+				Icon: ReverseIcon,
+			},
+			{
+				label: 'Oldest',
+				Icon: ReverseIcon,
+			},
+			{
+				label: 'Property name (A -> Z)',
+				Icon: AscendIcon,
+			},
+			{
+				label: 'Property name (Z -> A)',
+				Icon: AscendIcon,
+			},
 		],
 	},
 	{

@@ -1,7 +1,8 @@
 import { FC, useRef, useState } from 'react';
-import plus from '../../assets/images/plus.svg';
+import { Plus } from '../Icons/CustomIcons';
 import cancel from '../../assets/images/cancel-button.svg';
 import dropdown from '../../assets/images/dropdown.svg';
+import { useTheme } from '@mui/material/styles';
 
 import {
 	Grid,
@@ -19,9 +20,9 @@ import {
 
 import { styles } from './style';
 
-type OptionsType = {
+export type OptionsType = {
 	title: string;
-	options: { label: string; icon?: string }[];
+	options: { label: string; Icon?: any }[];
 	multiSelect?: boolean;
 }[];
 
@@ -48,6 +49,8 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	const divRef = useRef<Record<string, HTMLDivElement>>({});
 
 	const modalRef = useRef<Record<string, HTMLDivElement>>({});
+
+	const theme = useTheme();
 
 	const handleButtonClick = (title: string) => {
 		const buttonPosition = divRef?.current[title]?.getBoundingClientRect();
@@ -102,7 +105,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 				const { title, options } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
-					<Grid style={styles.selectedState} key={title}>
+					<Grid sx={styles.selectedState} key={title}>
 						<div
 							ref={(element) => {
 								if (element) {
@@ -111,7 +114,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 									delete divRef.current[title];
 								}
 							}}
-							style={styles.selectedButtonStyle}
+							style={{
+								...styles.selectedButtonStyle,
+								background: `${theme.palette.primary.main}`,
+							}}
 						>
 							<div style={styles.selectedButtonContainer}>
 								<Typography sx={styles.text}>{title}</Typography>
@@ -122,7 +128,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						</div>
 
 						<div
-							style={styles.selectedButtonDropDown}
+							style={{
+								...styles.selectedButtonDropDown,
+								background: `${theme.palette.primary.main}`,
+							}}
 							onClick={() => handleButtonClick(title)}
 						>
 							<Typography>{selectedTitle[title]}</Typography>
@@ -155,7 +164,6 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 									<Typography
 										variant='h4'
 										sx={{
-											color: '#001F4B',
 											marginBottom: 2,
 											lineHeight: '28px',
 										}}
@@ -173,11 +181,12 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 											}
 										>
 											{options.map((option) => {
-												const { label, icon } = option;
+												const { label, Icon } = option;
 
 												const labelWithIcon = (
 													<span style={styles.labelWithIcon}>
-														<img src={icon} alt='label icon' /> {label}
+														<Icon />
+														{label}
 													</span>
 												);
 
@@ -186,7 +195,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 														key={label}
 														value={label}
 														control={<Radio />}
-														label={icon ? labelWithIcon : label}
+														label={Icon ? labelWithIcon : label}
 													/>
 												);
 											})}
@@ -217,10 +226,14 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								}}
 							>
 								<Button
-									sx={styles.buttonStyle}
+									sx={{
+										...styles.buttonStyle,
+										outline: `1px dashed ${theme.palette.primary.main}`,
+									}}
 									onClick={() => handleButtonClick(title)}
 								>
-									<img src={plus} alt='filter button icon' /> {title}
+									<Plus sx={{ height: '14px' }} />
+									{title}
 								</Button>
 							</div>
 						</Grid>

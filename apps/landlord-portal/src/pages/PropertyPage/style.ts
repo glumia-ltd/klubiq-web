@@ -1,13 +1,3 @@
-import {
-	borderRadius,
-	display,
-	fontSize,
-	fontWeight,
-	lineHeight,
-	maxHeight,
-	minHeight,
-} from '@mui/system';
-
 export const styles = {
 	container: {
 		padding: '25px 90px',
