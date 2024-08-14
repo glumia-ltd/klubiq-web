@@ -13,7 +13,7 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import ViewPort from '../../components/Viewport/ViewPort';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { DashboardMetricsType } from '../../type';
+import { DashboardMetricsType, RevenueReportType } from '../../type';
 import { api } from '../../api';
 import { styles } from './style';
 import {
@@ -33,6 +33,9 @@ const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
 	const [firstDay, setFirstDay] = useState<Dayjs | null>(null);
 	const [secondDay, setSecondDay] = useState<Dayjs | null>(null);
+	const [revenueReport, setRevenueReport] = useState<RevenueReportType | null>(
+		null,
+	);
 	const dispatch = useDispatch();
 
 	const [dashboardMetrics, setDashboardMetrics] =
@@ -99,6 +102,26 @@ const DashBoard = () => {
 		}
 	};
 
+	const getRevenueReportData = async () => {
+		if (!firstDay?.isValid() || !secondDay?.isValid()) {
+			setRevenueReport(null);
+			return;
+		}
+
+		const startDate = firstDay?.toISOString();
+		const endDate = secondDay?.toISOString();
+		try {
+			const {
+				data: { data },
+			} = await api.get(
+				dashboardEndpoints.getRevenueReport(startDate, endDate),
+			);
+			setRevenueReport(data);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	useEffect(() => {
 		getDashboardMetrics();
 	}, []);
@@ -117,9 +140,11 @@ const DashBoard = () => {
 				setSecondDay(null);
 
 				return;
+			} else {
+				getRevenueReportData();
 			}
-
-			console.log(firstDay.toISOString(), secondDay.toISOString());
+		} else if (!firstDay && !secondDay) {
+			setRevenueReport(null);
 		}
 	}, [firstDay, secondDay]);
 
@@ -346,19 +371,41 @@ const DashBoard = () => {
 								sx={styles.occupancyTextStyle}
 								variant='dashboardTypography'
 							>
-								₦{totalRevenueLast12Months.toFixed(2)}
+								₦
+								{revenueReport
+									? revenueReport.totalRevenueLast12Months.toFixed(2)
+									: totalRevenueLast12Months.toFixed(2)}
 							</Typography>
 
 							<Typography
 								sx={{
 									...styles.changeTypographyStyle,
-									backgroundColor: indicatorBackground(changeIndicator),
-									color: indicatorColor(changeIndicator),
-									border: `1px solid ${indicatorColor(changeIndicator)}`,
+									backgroundColor: indicatorBackground(
+										revenueReport
+											? revenueReport.changeIndicator
+											: changeIndicator,
+									),
+									color: indicatorColor(
+										revenueReport
+											? revenueReport.changeIndicator
+											: changeIndicator,
+									),
+									border: `1px solid ${indicatorColor(
+										revenueReport
+											? revenueReport.changeIndicator
+											: changeIndicator,
+									)}`,
 								}}
 							>
-								{showChangeArrow(changeIndicator)}
-								{percentageDifference.toFixed(1)}%
+								{showChangeArrow(
+									revenueReport
+										? revenueReport.changeIndicator
+										: changeIndicator,
+								)}
+								{revenueReport
+									? revenueReport.percentageDifference.toFixed(1)
+									: percentageDifference.toFixed(1)}
+								%
 							</Typography>
 						</Box>
 					</Grid>
@@ -413,9 +460,21 @@ const DashBoard = () => {
 
 					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
 						<TableChart
-							seriesData={revenueChart.seriesData}
-							maxRevenue={revenueMetrics?.maxRevenue}
-							xAxisData={revenueChart.xAxisData}
+							seriesData={
+								revenueReport
+									? revenueReport?.revenueChart?.seriesData
+									: revenueChart?.seriesData
+							}
+							maxRevenue={
+								revenueReport
+									? revenueReport?.maxRevenue
+									: revenueMetrics?.maxRevenue
+							}
+							xAxisData={
+								revenueReport
+									? revenueReport?.revenueChart?.xAxisData
+									: revenueChart?.xAxisData
+							}
 						/>
 					</Grid>
 				</Grid>

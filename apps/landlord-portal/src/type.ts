@@ -49,3 +49,20 @@ export type DashboardMetricsType = {
 	revenueMetrics: RevenueMetricsType;
 	transactionMetrics: TransactionMetricsType;
 };
+
+export type RevenueReportType = {
+	maxRevenue: number;
+	monthlyRevenues: {
+		month: string;
+		revenue: {
+			[key: string]: number;
+		};
+	}[];
+	totalRevenueLast12Months: number;
+	percentageDifference: number;
+	changeIndicator: string;
+	revenueChart: {
+		xAxisData: string[];
+		seriesData: SeriesDataType;
+	};
+};
