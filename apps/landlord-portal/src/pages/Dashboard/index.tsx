@@ -1,16 +1,9 @@
-import {
-	Container,
-	Grid,
-	Card,
-	Typography,
-	Box,
-	TextField,
-} from '@mui/material';
+import { Container, Grid, Card, Typography, Box } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
-
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -31,11 +24,16 @@ import {
 	showTrendArrow,
 	initialDashboardMetrics,
 } from './dashboardUtils';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
+	const [firstDay, setFirstDay] = useState<Dayjs | null>(null);
+	const [secondDay, setSecondDay] = useState<Dayjs | null>(null);
+	const dispatch = useDispatch();
 
 	const [dashboardMetrics, setDashboardMetrics] =
 		useState<DashboardMetricsType>(initialDashboardMetrics);
@@ -104,6 +102,26 @@ const DashBoard = () => {
 	useEffect(() => {
 		getDashboardMetrics();
 	}, []);
+
+	useEffect(() => {
+		if (firstDay && secondDay) {
+			if (secondDay.subtract(6, 'months').isBefore(firstDay)) {
+				dispatch(
+					openSnackbar({
+						message: 'Your selected date range is less than 6 months! ',
+						severity: 'info',
+						isOpen: true,
+					}),
+				);
+				setFirstDay(null);
+				setSecondDay(null);
+
+				return;
+			}
+
+			console.log(firstDay.toISOString(), secondDay.toISOString());
+		}
+	}, [firstDay, secondDay]);
 
 	return (
 		<ViewPort>
@@ -354,18 +372,40 @@ const DashBoard = () => {
 						justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 						display={'flex'}
 					>
-						<TextField type='date' size='medium' name='Date' value='date' />{' '}
-						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-						<TextField
-							sx={{
-								height: '44px',
-								marginRight: { xs: '5px', sm: '30px', md: '0' },
+						<DatePicker
+							value={firstDay}
+							maxDate={
+								!secondDay
+									? dayjs().subtract(1, 'year')
+									: secondDay.subtract(1, 'year')
+							}
+							onChange={(date) => {
+								setFirstDay(dayjs(date));
+								setSecondDay(dayjs(date).add(1, 'year'));
 							}}
-							type='date'
-							size='medium'
-							name='Date'
-							value='date'
+							format='DD/MM/YYYY'
+							slotProps={{
+								inputAdornment: {
+									position: 'start',
+								},
+							}}
 						/>
+						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+						<DatePicker
+							value={secondDay}
+							maxDate={dayjs()}
+							onChange={(date) => {
+								setSecondDay(dayjs(date));
+								setFirstDay(dayjs(date).subtract(1, 'year'));
+							}}
+							format='DD/MM/YYYY'
+							slotProps={{
+								inputAdornment: {
+									position: 'start',
+								},
+							}}
+						/>
+
 						<Box sx={styles.downloadButtonStyle}>
 							<SaveAltOutlinedIcon />
 						</Box>

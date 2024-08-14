@@ -165,6 +165,6 @@ export const styles = {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginLeft: { xs: '0', sm: '13rem', md: '0' },
+		marginLeft: { xs: '0', sm: '13rem', md: '2rem', lg: '2rem', xl: '2rem' },
 	},
 };

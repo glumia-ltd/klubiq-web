@@ -8,6 +8,8 @@ import { auth } from './firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from './store';
 import { saveUser } from './store/AuthStore/AuthSlice';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 
 function App() {
 	const { message, severity, isOpen } = useSelector(
@@ -31,7 +33,9 @@ function App() {
 
 	return (
 		<ThemeContextProvider>
-			<RouterProvider router={router} />
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<RouterProvider router={router} />
+			</LocalizationProvider>
 
 			<ControlledSnackbar
 				anchorOrigin={{
