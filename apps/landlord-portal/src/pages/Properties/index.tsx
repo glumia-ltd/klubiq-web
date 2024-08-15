@@ -175,7 +175,8 @@ const Properties = () => {
 									xs={12}
 									sm={layout === 'row' ? 12 : 6}
 									md={layout === 'row' ? 12 : 4}
-									lg={layout === 'row' ? 12 : 3}
+									lg={layout === 'row' ? 12 : 4}
+									xl={layout === 'row' ? 12 : 3}
 									key={index}
 								>
 									<PropertyCard {...property} layout={layout} />
