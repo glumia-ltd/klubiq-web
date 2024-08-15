@@ -17,7 +17,13 @@ const styles = {
 		alignItems: 'center',
 		JustifyContent: 'center',
 	},
-
+	borders: {
+		borderRadius: '5px',
+	},
+	cardContent: {
+		display: 'flex',
+		justifyContent: 'center',
+	},
 	typo: {
 		fontSize: { xs: '13px', sm: '16px', md: '16px', lg: '20px' },
 		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '24px' },

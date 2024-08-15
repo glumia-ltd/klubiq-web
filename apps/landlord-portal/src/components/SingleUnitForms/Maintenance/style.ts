@@ -80,5 +80,8 @@ const style = {
 		lineHeight: { xs: '18px', sm: '18px', md: '18px', lg: '18px' },
 		fontWeight: 400,
 	},
+	skeleton: {
+		marginTop: '25px',
+	},
 };
 export default style;
