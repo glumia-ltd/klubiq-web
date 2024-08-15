@@ -1,13 +1,17 @@
-import { Grid, Skeleton, Container, Box } from '@mui/material';
+import { Grid, Skeleton, Container, Box, Card } from '@mui/material';
 import { styles } from './style';
-
+import { useContext } from 'react';
+import { ThemeMode } from '../../context/ThemeContext/themeTypes';
+import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 const DashBoardSkeleton = () => {
+	const { mode } = useContext(ThemeContext);
+
 	return (
-		<Container maxWidth={'xl'} sx={styles.skeletonCon}>
+		<Container maxWidth={'xl'} sx={styles.containerStyle}>
 			<Grid container spacing={2}>
 				<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
-						<Box sx={styles.cardStyle}>
+						<Card sx={styles.cardStyle}>
 							<Box sx={styles.boxStyle}>
 								<Skeleton variant='text' sx={styles.typoStyle} width='35%' />
 								<Skeleton
@@ -47,15 +51,15 @@ const DashBoardSkeleton = () => {
 									<Skeleton variant='circular' width={100} height={100} />
 								</div>
 							</Box>
-						</Box>
+						</Card>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
-						<Box sx={styles.cardStyle} mt='15px'>
+						<Card sx={styles.cardStyleTwo}>
 							<Box>
 								<Skeleton
 									variant='text'
 									height={10}
-									width='100%'
+									width='40%'
 									sx={styles.typoStyle}
 								/>
 								<Skeleton
@@ -76,15 +80,15 @@ const DashBoardSkeleton = () => {
 
 								<Skeleton variant='text' height={10} width='60%' />
 							</Box>
-						</Box>
+						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4} lg={4}>
-						<Box sx={styles.cardStyle} mt='15px'>
+						<Card sx={styles.cardStyleTwo}>
 							<Skeleton
 								variant='text'
 								height={10}
-								width='100%'
+								width='40%'
 								sx={styles.typoStyle}
 							/>{' '}
 							<Box display={'flex'} alignItems={'center'}>
@@ -92,18 +96,18 @@ const DashBoardSkeleton = () => {
 									variant='rectangular'
 									style={styles.calendarTodayStyle}
 								/>
-								<Skeleton variant='text' height={30} width='45%' />
+								<Skeleton variant='text' height={30} width='35%' />
 							</Box>
 							<Box mt='2.5rem'>
-								<Skeleton variant='text' height={10} width='80%' />
+								<Skeleton variant='text' height={10} width='43%' />
 							</Box>
-						</Box>
+						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={12} md={8} lg={8}>
-						<Box sx={styles.cardStyleThree} mt='15px'>
-							<Skeleton variant='text' height={15} width='100%' />
-							<Box sx={styles.occupancyBoxStyle} mt={'25px'}>
+						<Card sx={styles.cardStyleThree}>
+							<Skeleton variant='text' height={15} width='40%' />
+							<Box sx={styles.occupancyBoxStyle}>
 								<Skeleton
 									variant='text'
 									height={20}
@@ -117,10 +121,13 @@ const DashBoardSkeleton = () => {
 									sx={styles.icons}
 								/>{' '}
 							</Box>
-							<Box sx={styles.totalExpensesStyle}>
+							<Box sx={styles.totalExpensesStyle} mt='150px'>
 								<Box>
 									<Skeleton variant='text' height={12} width='80%' />
-									<Box sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}>
+									<Box
+										sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}
+										mt='25px'
+									>
 										<Skeleton variant='text' height={25} width='240px' />
 
 										<Skeleton variant='text' height={15} width='50px' />
@@ -129,17 +136,21 @@ const DashBoardSkeleton = () => {
 
 								<Box>
 									<Skeleton variant='text' height={12} width='80%' />
-									<Box display={'flex'} justifyContent={'space-between'}>
+									<Box
+										display={'flex'}
+										justifyContent={'space-between'}
+										mt='25px'
+									>
 										<Skeleton variant='text' height={20} width='240px' />
 										<Skeleton variant='text' height={15} width='50px' />
 									</Box>
 								</Box>
 							</Box>
-						</Box>
+						</Card>
 					</Grid>
 
-					<Grid item xs={12} sm={6} md={4} lg={4} mt='15px'>
-						<Box sx={styles.cardStyleFour}>
+					<Grid item xs={12} sm={6} md={4} lg={4}>
+						<Card sx={styles.cardStyleFour}>
 							<Box>
 								<Skeleton
 									variant='text'
@@ -165,20 +176,28 @@ const DashBoardSkeleton = () => {
 
 								<Skeleton variant='text' height={10} width='60%' />
 							</Box>
-						</Box>
+						</Card>
 					</Grid>
 				</Grid>
 
 				<Grid container item xs={12} sm={4} md={4} lg={3}>
-					<Skeleton
-						variant='rectangular'
-						sx={styles.cardStyleFive}
-						width='100%'
-					/>
+					<Card sx={styles.cardStyleFive}>
+						<Skeleton variant='rounded' width='100%' height='100%' />
+					</Card>
 				</Grid>
 			</Grid>
 
-			<Grid container>
+			<Grid
+				container
+				sx={{
+					...styles.totalRevenueStyle,
+					background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
+					boxShadow:
+						mode === ThemeMode.LIGHT
+							? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
+							: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+				}}
+			>
 				<Grid item xs={12} sm={12} md={7}>
 					<Skeleton variant='text' height={15} width='20%' />
 					<Box
@@ -212,11 +231,11 @@ const DashBoardSkeleton = () => {
 					justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 					display={'flex'}
 				>
-					<Skeleton variant='rectangular' height={25} width='25%' />
+					<Skeleton variant='rounded' height={35} width='35%' />
 					<Skeleton variant='text' height={15} width='5%' />
-					<Skeleton variant='rectangular' height={25} width='25%' />
+					<Skeleton variant='rounded' height={35} width='35%' />
 
-					<Skeleton variant='rectangular' height={25} width='8%' />
+					<Skeleton variant='rounded' height={25} width='8%' />
 				</Grid>
 
 				<Grid
