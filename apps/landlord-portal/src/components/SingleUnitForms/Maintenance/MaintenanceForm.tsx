@@ -1,15 +1,16 @@
 import FormLayout from '../../../Layouts/FormLayout';
-import { Grid, Typography, Box, Button } from '@mui/material';
+import { Grid, Typography, Box, Button, Skeleton } from '@mui/material';
 import style from './style';
 import ControlledTextField from '../../ControlledComponents/ControlledTextField';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Maintenance = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const validationSchema = yup.object({
 		title: yup.string().required('This field is required'),
@@ -67,99 +68,129 @@ const Maintenance = () => {
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 		}
 	};
-
+	useEffect(() => {
+		setTimeout(() => setLoading(false), 20000);
+	}, []);
 	return (
 		<FormLayout Header='MAINTENANCE INFORMATION' sx={style.card}>
-			<Grid
-				container
-				spacing={1}
-				sx={style.content}
-				component='form'
-				onSubmit={formik.handleSubmit}
-			>
-				<Grid item xs={6}>
-					<ControlledSelect
-						name='category'
-						label='Issue Category'
-						type='text'
-						formik={formik}
-						options={property}
-					/>
-				</Grid>
-				<Grid item xs={6}>
-					<ControlledTextField
-						name='unit'
-						label='Unit'
-						formik={formik}
-						type='text'
-					/>
-				</Grid>
+			{loading ? (
+				<Grid container spacing={1} sx={style.content}>
+					<Grid item xs={6}>
+						<Skeleton variant='text' height={25} width='50%' />
+						<Skeleton variant='rectangular' height={30} width='100%' />
+					</Grid>
+					<Grid item xs={6}>
+						<Skeleton variant='text' height={25} width='50%' />
+						<Skeleton variant='rectangular' height={30} width='100%' />
+					</Grid>
+					<Grid item xs={12} sx={style.skeleton}>
+						<Skeleton variant='text' height={25} width='50%' />
 
-				<Grid xs={12}>
-					<ControlledTextField
-						name='title'
-						label='Issue Title'
-						formik={formik}
-						type='text'
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<ControlledTextField
-						color='#002147'
-						name='description'
-						label='Issue Description'
-						formik={formik}
-						type='text'
-						multiline
-						minRows={12}
-						placeholder='Describe maintenace isssue'
-						sxTwo={{
-							'& .MuiOutlinedInput-root': {
-								height: 'max-content',
-							},
-						}}
-					/>
-				</Grid>
-				<Grid item xs={12} sm={12} md={12} lg={12}>
-					<Box sx={style.box}>
-						<Box
-							component='label'
-							htmlFor='upload-photo'
-							display='flex'
-							alignItems='center'
-							// justifyContent='center'
-							width='250px'
-							height='170px'
-							border='1px dashed #ccc'
-							style={{ cursor: 'pointer' }}
-						>
-							<Box sx={style.uploadBox}>
-								<CloudUploadOutlinedIcon sx={style.icon} />
+						<Skeleton variant='rectangular' height={230} width='100%' />
+					</Grid>
+					<Grid item xs={12} sx={style.skeleton}>
+						<Skeleton variant='text' height={25} width='50%' />
 
-								<Typography sx={style.typo}>
-									Upload or drag photo here
-								</Typography>
+						<Skeleton variant='rectangular' height={230} width='100%' />
+					</Grid>
+
+					<Grid item xs={12} sx={style.buttonGrid}>
+						<Skeleton variant='rectangular' height={65} width='30%' />
+						<Skeleton variant='rectangular' height={65} width='20%' />
+					</Grid>
+				</Grid>
+			) : (
+				<Grid
+					container
+					spacing={1}
+					sx={style.content}
+					component='form'
+					onSubmit={formik.handleSubmit}
+				>
+					<Grid item xs={6}>
+						<ControlledSelect
+							name='category'
+							label='Issue Category'
+							type='text'
+							formik={formik}
+							options={property}
+						/>
+					</Grid>
+					<Grid item xs={6}>
+						<ControlledTextField
+							name='unit'
+							label='Unit'
+							formik={formik}
+							type='text'
+						/>
+					</Grid>
+
+					<Grid xs={12}>
+						<ControlledTextField
+							name='title'
+							label='Issue Title'
+							formik={formik}
+							type='text'
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<ControlledTextField
+							color='#002147'
+							name='description'
+							label='Issue Description'
+							formik={formik}
+							type='text'
+							multiline
+							minRows={12}
+							placeholder='Describe maintenace isssue'
+							sxTwo={{
+								'& .MuiOutlinedInput-root': {
+									height: 'max-content',
+								},
+							}}
+						/>
+					</Grid>
+					<Grid item xs={12} sm={12} md={12} lg={12}>
+						<Box sx={style.box}>
+							<Box
+								component='label'
+								htmlFor='upload-photo'
+								display='flex'
+								alignItems='center'
+								// justifyContent='center'
+								width='250px'
+								height='170px'
+								border='1px dashed #ccc'
+								style={{ cursor: 'pointer' }}
+							>
+								<Box sx={style.uploadBox}>
+									<CloudUploadOutlinedIcon sx={style.icon} />
+
+									<Typography sx={style.typo}>
+										Upload or drag photo here
+									</Typography>
+								</Box>
+
+								<input
+									type='file'
+									id='upload-photo'
+									style={{ display: 'none' }}
+									multiple
+									accept='image/png, image/jpeg'
+									onChange={handleFileChange}
+								/>
 							</Box>
-
-							<input
-								type='file'
-								id='upload-photo'
-								style={{ display: 'none' }}
-								multiple
-								accept='image/png, image/jpeg'
-								onChange={handleFileChange}
-							/>
 						</Box>
-					</Box>
+					</Grid>
+					<Grid item xs={12} sx={style.buttonGrid}>
+						<Button sx={style.plainButton}>Cancel </Button>
+						<Button type='submit' sx={style.blueButton}>
+							Create Request{' '}
+						</Button>
+					</Grid>
+					<Grid item xs={6}></Grid>
 				</Grid>
-				<Grid item xs={12} sx={style.buttonGrid}>
-					<Button sx={style.plainButton}>Cancel </Button>
-					<Button type='submit' sx={style.blueButton}>
-						Create Request{' '}
-					</Button>
-				</Grid>
-				<Grid item xs={6}></Grid>
-			</Grid>
+			)}
 		</FormLayout>
 	);
 };

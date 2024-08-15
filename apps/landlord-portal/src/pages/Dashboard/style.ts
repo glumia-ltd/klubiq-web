@@ -59,7 +59,9 @@ export const styles = {
 		fontWeight: 800,
 		lineHeight: '44px',
 	},
-
+	skeletonCon: {
+		height: '100vh',
+	},
 	revenueTextStyle: {
 		fontSize: {
 			sm: '24px',
@@ -76,6 +78,9 @@ export const styles = {
 		textAlign: 'center',
 		marginTop: { xs: '35px', md: '28px', lg: '35px' },
 		alignItems: 'center',
+	},
+	icons: {
+		marginRight: '15px',
 	},
 	changeTypographyStyle: {
 		fontSize: '14px',

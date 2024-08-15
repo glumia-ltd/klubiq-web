@@ -6,9 +6,17 @@ const styles = {
 		fontSize: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		color: 'primary.main',
 	},
+	firstDiv: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		marginBottom: '20px',
+		alignItem: 'center',
+		gap: { xs: '0.1rem', sm: '0.1rem', md: '0.9rem', lg: '1.25rem' },
+	},
 	addPropertiesContainer: {
 		display: 'flex',
 		justifyContent: 'space-between',
+		alignItem: 'center',
 	},
 	addPropertiesContent: {
 		display: 'flex',
@@ -54,6 +62,20 @@ const styles = {
 		padding: '0.5rem 0.9rem',
 		borderRadius: '0.6rem',
 		gap: '0.6rem',
+	},
+
+	buttonBorder: {
+		borderRadius: '5px',
+		width: '200px',
+		height: 40,
+		marginLeft: '10px',
+	},
+
+	boxThree: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		mb: '51px',
 	},
 };
 

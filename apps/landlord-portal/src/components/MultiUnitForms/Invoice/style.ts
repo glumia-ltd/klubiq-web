@@ -82,5 +82,8 @@ const style = {
 			cursor: 'pointer',
 		},
 	},
+	skeleton: {
+		marginTop: '25px',
+	},
 };
 export default style;
