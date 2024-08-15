@@ -55,21 +55,20 @@ export class AuthService implements OnInit {
 	}
 
 	async loginUser(loginData: Login): Promise<any> {
-		await signInWithEmailAndPassword(
-			this.firebaseClientAuth,
-			loginData.email,
-			loginData.password,
-		)
-			.then(async (userCredential) => {
-				// Signed in
-				userCredential.user.getIdTokenResult().then((result) => {
-					this.currentUser.set(userCredential.user);
-					this.getUserProfile();
-				});
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		try {
+			const { user } = await signInWithEmailAndPassword(
+				this.firebaseClientAuth,
+				loginData.email,
+				loginData.password,
+			);
+			const tokenResult = await user.getIdTokenResult();
+			if (tokenResult) {
+				this.currentUser.set(user);
+				this.getUserProfile();
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async logoutUser() {

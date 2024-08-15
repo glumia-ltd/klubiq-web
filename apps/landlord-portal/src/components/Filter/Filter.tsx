@@ -91,8 +91,11 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	return (
 		<Stack
 			direction='row'
-			spacing={2}
-			alignItems='center'
+			useFlexGap
+			flexWrap='wrap'
+			spacing={{ xs: 1, sm: 2 }}
+			alignItems={{ xs: 'flex-start', sm: 'center' }}
+			justifyContent={'flex-start'}
 			sx={styles.filterContainer}
 		>
 			{filterList.map((entry) => {

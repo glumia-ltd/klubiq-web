@@ -1,6 +1,6 @@
 export const styles = {
 	container: {
-		padding: '2rem 6rem',
+		padding: { xs: '2rem 1.5rem', sm: '2rem 6rem' },
 	},
 	buttons: {
 		cursor: 'pointer',
@@ -66,17 +66,24 @@ export const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	rowCard: {
-		width: '100%',
-		maxWidth: { xs: '100%', sm: '650px', md: '100%', lg: '370px' },
+	// rowCard: {
+	// 	width: '100%',
+	// 	maxWidth: { xs: '100%', sm: '650px', md: '100%', lg: '370px' },
 
-		padding: { xs: '20px', sm: '32px', md: '32px', lg: '32px' },
-		height: { xs: '500px', sm: '500px', md: '550px', lg: '502px' },
-		borderRadius: '10px',
-		display: 'flex',
-		justifyContent: 'center',
-		textAlign: 'left',
-		alignItems: 'center',
+	// 	padding: { xs: '20px', sm: '32px', md: '32px', lg: '32px' },
+	// 	height: { xs: '500px', sm: '500px', md: '550px', lg: '502px' },
+	// 	borderRadius: '10px',
+	// 	display: 'flex',
+	// 	justifyContent: 'center',
+	// 	textAlign: 'left',
+	// 	alignItems: 'center',
+	// },
+	skeletonImage: {
+		width: '',
+		height: '240px',
+		marginTop: '1rem',
+		borderRadius: '0.5rem',
+		marginBottom: '15px',
 	},
 	borders: {
 		borderRadius: '5px',
@@ -98,5 +105,9 @@ export const styles = {
 		justifyContent: 'flex-end',
 		marginBottom: '10px',
 		alignItems: 'center',
+	},
+	skeletonText: {
+		borderRadius: '5px',
+		marginBottom: '15px',
 	},
 };

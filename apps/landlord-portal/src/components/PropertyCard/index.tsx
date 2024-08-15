@@ -3,17 +3,16 @@ import {
 	Card,
 	CardContent,
 	CardMedia,
+	Stack,
+	CardActions,
 	Typography,
-	Grid,
-	Button,
+	Paper,
 	Box,
-	Link,
+	Chip,
+	Avatar,
 } from '@mui/material';
+import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
-import LocationIcon from '../../assets/images/Location.svg';
-import BathroomIcon from '../../assets/images/Bathroom.svg';
-import FloorIcon from '../../assets/images/Floorplan.svg';
-import BedIcon from '../../assets/images/Bedroom.svg';
 import { useNavigate } from 'react-router-dom';
 
 interface PropertyCardProps {
@@ -40,121 +39,205 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	layout,
 }) => {
 	const navigate = useNavigate();
-
 	const handleViewProperty = () => {
 		navigate('/properties/12345');
 	};
+	return layout === 'column' ? (
+		<Card sx={CardStyle.cardContainerColumn}>
+			<CardContent
+				sx={{
+					padding: '1.5rem 1rem',
+				}}
+			>
+				<Typography variant='cardHeader' noWrap={true}>
+					{type}
+				</Typography>
+				<CardMedia
+					component='img'
+					sx={{
+						marginTop: '1rem',
+						height: '15rem',
+						objectFit: 'cover',
+						borderRadius: '0.5rem',
+					}}
+					image={image}
+					alt={title}
+				/>
+				<Stack
+					sx={{
+						paddingTop: '1rem',
+					}}
+					direction='row'
+					spacing={2}
+					justifyContent='space-between'
+				>
+					<Typography variant='cardTitle' noWrap={true}>
+						{title}
+					</Typography>
+					<Chip
+						label={status}
+						color={status === 'For Sale' ? 'error' : 'success'}
+					></Chip>
+				</Stack>
+				<Stack
+					sx={{
+						paddingTop: '0.875rem',
+					}}
+					direction='row'
+					spacing={1}
+					justifyContent='flex-start'
+					alignItems='center'
+				>
+					<KlubiqIcons.Place
+						sx={{
+							color: 'text.primary',
+						}}
+					/>
+					<Typography variant='cardContentText' noWrap={true}>
+						{address}
+					</Typography>
+				</Stack>
+				<Stack
+					sx={{
+						paddingTop: '0.5rem',
+					}}
+					direction='row'
+					spacing={1}
+					justifyContent='flex-start'
+					alignItems='center'
+				>
+					<KlubiqIcons.Bedroom
+						sx={{
+							color: 'text.primary',
+						}}
+					/>
+					<Typography variant='cardContentText' noWrap={true}>
+						{bedrooms} Bedrooms
+					</Typography>
 
-	return (
-		<Grid container direction={layout} spacing={1}>
-			<Card sx={layout === 'column' ? CardStyle.columnCard : CardStyle.rowCard}>
-				<Grid container direction={layout} spacing={1}>
-					<Grid item xs={12}>
-						<Typography variant='h1' sx={CardStyle.headerText}>
-							Residential Housing
-						</Typography>
-					</Grid>
-					<Grid
-						item
-						xs={layout === 'row' ? 4 : 12}
-						sm={layout === 'row' ? 4 : 12}
-						md={layout === 'row' ? 3 : 12}
-						lg={layout === 'row' ? 2 : 12}
-					>
-						<CardMedia
-							component='img'
-							sx={
-								layout === 'column' ? CardStyle.columnImage : CardStyle.rowImage
-							}
-							image={image}
-							alt={title}
-						/>
-					</Grid>
-					<Grid
-						item
-						xs={layout === 'row' ? 8 : 12}
-						sm={layout === 'row' ? 8 : 12}
-						md={layout === 'row' ? 9 : 12}
-						lg={layout === 'row' ? 10 : 12}
-					>
-						<CardContent sx={CardStyle.content}>
-							<Box sx={CardStyle.contentdiv}>
-								<Typography variant='h6' sx={CardStyle.subText}>
-									{title}
-								</Typography>
-								<Button
-									variant='contained'
-									color={status === 'For Sale' ? 'error' : 'success'}
-									sx={CardStyle.button}
-								>
-									{status}
-								</Button>
-							</Box>
-							<Box sx={CardStyle.iconDiv} height='30px'>
-								<img src={LocationIcon} alt='icon' style={CardStyle.iconSize} />
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									sx={CardStyle.text}
-								>
-									{address}
-								</Typography>
-							</Box>
-							<Box sx={CardStyle.iconDiv}>
-								<img src={BedIcon} alt='icon' style={CardStyle.iconSize} />
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									mr={0.5}
-									sx={CardStyle.text}
-								>
-									{bedrooms} Bedrooms
-								</Typography>
-								<img src={BathroomIcon} alt='icon' style={CardStyle.iconSize} />
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									sx={CardStyle.text}
-								>
-									{bathrooms} Bathrooms
-								</Typography>
-							</Box>
-							<Box sx={CardStyle.iconDiv}>
-								<img src={FloorIcon} alt='icon' style={CardStyle.iconSize} />
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									mr={0.5}
-									sx={CardStyle.text}
-								>
-									{sqm} sqm
-								</Typography>
-							</Box>
-							<Box sx={layout === 'row' ? CardStyle.lastBox : {}}>
-								<Typography
-									variant='h4'
-									sx={CardStyle.bottomText}
-									color='text.primary'
-									mb='15px'
-								>
-									{type}
-								</Typography>
-								<Box
-									sx={{
-										width: layout === 'column' ? '100%' : '0',
-										borderBottom: layout === 'column' ? '1px solid' : 'none',
-										mb: layout === 'column' ? 1 : 0,
-									}}
-								/>
-								<Box sx={CardStyle.buttonTwoDiv} onClick={handleViewProperty}>
-									<Link sx={CardStyle.buttonTwo}>View Properties</Link>
-								</Box>
-							</Box>
-						</CardContent>
-					</Grid>
-				</Grid>
-			</Card>
-		</Grid>
+					<KlubiqIcons.Bathroom
+						sx={{
+							color: 'text.primary',
+						}}
+					/>
+					<Typography variant='cardContentText' noWrap={true}>
+						{bathrooms} Bathrooms
+					</Typography>
+				</Stack>
+				<Stack
+					sx={{
+						paddingTop: '0.5rem',
+					}}
+					direction='row'
+					spacing={1}
+					justifyContent='flex-start'
+					alignItems='center'
+				>
+					<KlubiqIcons.FloorPlan
+						sx={{
+							color: 'text.primary',
+						}}
+					/>
+					<Typography variant='cardContentText' noWrap={true}>
+						{sqm} sqm
+					</Typography>
+				</Stack>
+				<Stack
+					sx={{
+						paddingTop: '1rem',
+					}}
+					direction='row'
+					spacing={1}
+				>
+					<Typography variant='cardHeader' noWrap={true}>
+						{type}: <Typography variant='cardContentText'>{sqm} sqm</Typography>
+					</Typography>
+				</Stack>
+			</CardContent>
+			<Box pl={2} pr={2}>
+				<hr></hr>
+			</Box>
+
+			<CardActions
+				sx={{
+					paddingTop: '2rem',
+					paddingBottom: '2rem',
+					display: 'flex',
+					justifyContent: 'flex-end',
+				}}
+				disableSpacing
+			>
+				<Typography variant='link'>View Properties</Typography>
+			</CardActions>
+		</Card>
+	) : (
+		<Paper sx={CardStyle.cardContainerRow} variant='elevation'>
+			<Stack
+				sx={{
+					padding: '1rem',
+				}}
+				spacing={1}
+			>
+				<Typography variant='cardHeader'>{type}</Typography>
+				<Stack direction='row' spacing={2}>
+					<Box width={'160px'} height={'100px'}>
+						<Avatar alt={title} src={image} sx={CardStyle.rowImage} />
+					</Box>
+					<Stack pt={1} width={'100%'} spacing={1.5}>
+						<Stack direction='row' spacing={1} justifyContent='space-between'>
+							<Typography variant='cardTitle'>{title}</Typography>
+							<Chip
+								size='small'
+								label={status}
+								color={status === 'For Sale' ? 'error' : 'success'}
+							></Chip>
+						</Stack>
+						<Stack
+							direction='row'
+							justifyContent='flex-start'
+							alignItems='center'
+						>
+							<KlubiqIcons.Place
+								sx={{
+									color: 'text.primary',
+								}}
+							/>
+							<Typography variant='cardContentText'>{address}</Typography>
+						</Stack>
+						<Stack
+							direction='row'
+							spacing={1}
+							justifyContent='flex-start'
+							alignItems='center'
+						>
+							<KlubiqIcons.Bedroom
+								sx={{
+									color: 'text.primary',
+								}}
+							/>
+							<Typography variant='cardContentText'>
+								{bedrooms} Bedrooms
+							</Typography>
+							<KlubiqIcons.Bathroom
+								sx={{
+									color: 'text.primary',
+								}}
+							/>
+							<Typography variant='cardContentText'>
+								{bathrooms} Bathrooms
+							</Typography>
+						</Stack>
+						<Stack direction='row' spacing={1} justifyContent='space-between'>
+							<Typography variant='cardHeader'>
+								{type}:{' '}
+								<Typography variant='cardContentText'>{sqm} sqm</Typography>
+							</Typography>
+							<Typography variant='link'>View Properties</Typography>
+						</Stack>
+					</Stack>
+				</Stack>
+			</Stack>
+		</Paper>
 	);
 };
 

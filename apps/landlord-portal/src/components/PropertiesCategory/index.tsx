@@ -57,11 +57,7 @@ const PropertyCategory = () => {
 			{loading ? (
 				<Grid container spacing={3}>
 					<Grid item xs={12}>
-						<Skeleton variant='text' height={15} width='100%' />
-					</Grid>
-					<Grid item xs={12}>
 						<Skeleton variant='text' height={25} width='50%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
 					</Grid>
 					{data.map((item) => (
 						<Grid item xs={4} sm={4} md={4} key={item.id}>

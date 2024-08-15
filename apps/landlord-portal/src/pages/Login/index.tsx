@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../Layouts/LoginLayout';
 import { SubmitButton, LoadingSubmitButton } from '../../styles/button';
+import { BoldTextLink } from '../../styles/links';
 import {
 	// Checkbox,
 	// FormControlLabel,
@@ -46,47 +47,46 @@ const Login = () => {
 		try {
 			setLoading(true);
 
-			const userCredential = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password,
-			);
+			const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-			const user: any = userCredential.user;
+			const userToken: any = await user.getIdTokenResult();
 
-			const payload = {
-				token: user.accessToken,
-				user,
-			};
+			if (userToken) {
+				console.log(user);
+				// const payload = {
+				// 	token: user.accessToken,
+				// 	user,
+				// };
 
-			dispatch(saveUser(payload));
+				// dispatch(saveUser(payload));
 
-			const userName = user.displayName.split(' ');
-			const firstName = userName[0];
-			const lastName = userName[1];
+				const userName = user?.displayName?.split(' ');
+				const firstName = userName && userName[0];
+				const lastName = userName && userName[1];
 
-			if (!user.emailVerified) {
-				const requestBody = { email, firstName, lastName };
+				if (!user.emailVerified) {
+					const requestBody = { email, firstName, lastName };
 
-				await api.post(authEndpoints.emailVerification(), requestBody);
+					await api.post(authEndpoints.emailVerification(), requestBody);
 
-				setLoading(false);
-				dispatch(
-					openSnackbar({
-						message: 'Please verify your email!',
-						severity: 'info',
-						isOpen: true,
-					}),
-				);
-			} else {
-				dispatch(
-					openSnackbar({
-						message: 'That was easy',
-						severity: 'success',
-						isOpen: true,
-					}),
-				);
-				navigate('/dashboard', { replace: true });
+					setLoading(false);
+					dispatch(
+						openSnackbar({
+							message: 'Please verify your email!',
+							severity: 'info',
+							isOpen: true,
+						}),
+					);
+				} else {
+					dispatch(
+						openSnackbar({
+							message: 'That was easy',
+							severity: 'success',
+							isOpen: true,
+						}),
+					);
+					navigate('/dashboard', { replace: true });
+				}
 			}
 		} catch (error) {
 			dispatch(
@@ -213,7 +213,7 @@ const Login = () => {
 									name='email'
 									label='Email'
 									type='email'
-									placeholder='johndoe@example.com'
+									placeholder='Enter your email address'
 									formik={formik}
 									inputProps={{
 										sx: {
@@ -228,6 +228,7 @@ const Login = () => {
 									name='password'
 									label='Password'
 									type='password'
+									placeholder='Enter your password'
 									formik={formik}
 									inputProps={{
 										sx: {
@@ -255,15 +256,8 @@ const Login = () => {
                     label="Remember this computer"
                   />
                 </FormGroup> */}
-								<Typography
-									onClick={routeToForgotPassword}
-									style={{
-										color: '#0096FF',
-										fontWeight: '600',
-										cursor: 'pointer',
-									}}
-								>
-									Forgot password
+								<Typography onClick={routeToForgotPassword}>
+									<BoldTextLink>Forgot password</BoldTextLink>
 								</Typography>
 							</Grid>
 
@@ -306,15 +300,7 @@ const Login = () => {
 								onClick={routeToSignUp}
 							>
 								<Typography>
-									Don't have an account?{' '}
-									<span
-										style={{
-											color: '#002147',
-											fontWeight: '600',
-										}}
-									>
-										Sign up
-									</span>
+									Don't have an account? <BoldTextLink>Sign up</BoldTextLink>
 								</Typography>
 							</Grid>
 						</Grid>

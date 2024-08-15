@@ -13,7 +13,7 @@ const styles = {
 		fontWeight: 600,
 	},
 	newCard: {
-		height: '350px',
+		height: '290px',
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
 	},
