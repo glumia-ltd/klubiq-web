@@ -157,7 +157,6 @@ export const styles = {
 	},
 
 	downloadButtonStyle: {
-		border: '1px solid ',
 		padding: '8px, 12px, 8px, 12px',
 		width: '45px',
 		height: '35px',
@@ -165,6 +164,10 @@ export const styles = {
 		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
+		backgroundColor: 'background.paper',
 		marginLeft: { xs: '0', sm: '13rem', md: '2rem', lg: '2rem', xl: '2rem' },
+		'&:hover': {
+			backgroundColor: 'background.paper',
+		},
 	},
 };

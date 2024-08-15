@@ -22,6 +22,8 @@ import { data, filterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
 import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
 import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
+import { api } from '../../api';
+import { propertiesEndpoints } from '../../helpers/endpoints';
 
 type PropertyType = {
 	title: string;
@@ -83,6 +85,18 @@ const Properties = () => {
 		navigate('/properties/property-category');
 	};
 
+	const getAllProperties = async () => {
+		try {
+			const {
+				data: { data },
+			} = await api.get(propertiesEndpoints.getProperties());
+
+			console.log(data);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	useEffect(() => {
 		if (inputRef.current) {
 			const inputElement: HTMLInputElement | null =
@@ -90,6 +104,10 @@ const Properties = () => {
 
 			inputElement && inputElement.focus();
 		}
+	}, []);
+
+	useEffect(() => {
+		getAllProperties();
 	}, []);
 
 	return (

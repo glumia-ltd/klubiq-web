@@ -72,6 +72,26 @@ export const LightTheme: Theme = createTheme({
 		},
 	},
 	components: {
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					// color: '#002147',
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+				outlined: {
+					borderColor: '#002147',
+					color: '#002147',
+					opacity: '0.8',
+					'&:hover': {
+						opacity: '1',
+						color: '#002147',
+						border: '1.6px solid #002147',
+					},
+				},
+			},
+		},
 		MuiListItemButton: {
 			defaultProps: {
 				disableTouchRipple: true,
@@ -352,7 +372,7 @@ export const DarkTheme: Theme = createTheme({
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
-					color: '#FFFFF',
+					color: '#FFFFFF',
 				},
 			},
 		},
@@ -393,8 +413,19 @@ export const DarkTheme: Theme = createTheme({
 					//     background: grey[100],
 					// }
 				},
+				outlined: {
+					borderColor: '#FFFFFF',
+					color: '#FFFFFF',
+					opacity: '0.3',
+					'&:hover': {
+						opacity: '1',
+						color: '#FFFFFF',
+						border: '1.6px solid #FFFFFF',
+					},
+				},
 			},
 		},
+
 		MuiCard: {
 			styleOverrides: {
 				root: {

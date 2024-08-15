@@ -12,4 +12,9 @@ export const dashboardEndpoints = {
 	getDashboardMetrics: () => '/dashboard/metrics',
 	getRevenueReport: (startDate: string, endDate: string) =>
 		`/dashboard/revenue-report?startDate=${startDate}&endDate=${endDate}`,
+	downloadReport: () => '/dashboard/download-revenue-report',
+};
+
+export const propertiesEndpoints = {
+	getProperties: () => '/properties',
 };

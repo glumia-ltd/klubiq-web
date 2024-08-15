@@ -1,4 +1,4 @@
-import { Container, Grid, Card, Typography, Box } from '@mui/material';
+import { Container, Grid, Card, Typography, Box, Button } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
@@ -26,13 +26,16 @@ import {
 } from './dashboardUtils';
 import { useDispatch } from 'react-redux';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { AxiosRequestConfig } from 'axios';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
-	const [firstDay, setFirstDay] = useState<Dayjs | null>(null);
-	const [secondDay, setSecondDay] = useState<Dayjs | null>(null);
+	const [firstDay, setFirstDay] = useState<Dayjs | null>(
+		dayjs().subtract(11, 'months'),
+	);
+	const [secondDay, setSecondDay] = useState<Dayjs | null>(dayjs());
 	const [revenueReport, setRevenueReport] = useState<RevenueReportType | null>(
 		null,
 	);
@@ -108,8 +111,8 @@ const DashBoard = () => {
 			return;
 		}
 
-		const startDate = firstDay?.toISOString();
-		const endDate = secondDay?.toISOString();
+		const startDate = firstDay?.format('YYYY-MM-DD');
+		const endDate = secondDay?.format('YYYY-MM-DD');
 		try {
 			const {
 				data: { data },
@@ -147,6 +150,56 @@ const DashBoard = () => {
 			setRevenueReport(null);
 		}
 	}, [firstDay, secondDay]);
+
+	const handleDownload = async () => {
+		if (!firstDay?.isValid() || !secondDay?.isValid()) {
+			return;
+		}
+		const headers = { 'Content-Type': 'blob' };
+
+		const config: AxiosRequestConfig = {
+			method: 'POST',
+			responseType: 'arraybuffer',
+			headers,
+		};
+
+		const startDate = firstDay?.format('YYYY-MM-DD');
+		const endDate = secondDay?.format('YYYY-MM-DD');
+
+		try {
+			const response = await api.post<ArrayBuffer>(
+				dashboardEndpoints.downloadReport(),
+				{
+					startDate,
+					endDate,
+				},
+				config,
+			);
+
+			const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
+			const url = URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', outputFilename);
+			document.body.appendChild(link);
+			link.click();
+
+			dispatch(
+				openSnackbar({
+					message:
+						"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const addCurrency = (arr: number[]) => {
+		return arr.map((value) => `₦ ${value}`);
+	};
 
 	return (
 		<ViewPort>
@@ -420,15 +473,16 @@ const DashBoard = () => {
 						display={'flex'}
 					>
 						<DatePicker
+							defaultValue={dayjs().subtract(11, 'months')}
 							value={firstDay}
 							maxDate={
 								!secondDay
-									? dayjs().subtract(1, 'year')
-									: secondDay.subtract(1, 'year')
+									? dayjs().subtract(11, 'months')
+									: secondDay.subtract(11, 'months')
 							}
 							onChange={(date) => {
 								setFirstDay(dayjs(date));
-								setSecondDay(dayjs(date).add(1, 'year'));
+								setSecondDay(dayjs(date).add(11, 'months'));
 							}}
 							format='DD/MM/YYYY'
 							slotProps={{
@@ -439,11 +493,12 @@ const DashBoard = () => {
 						/>
 						<TrendingFlatIcon sx={{ fontSize: '30px' }} />
 						<DatePicker
+							defaultValue={dayjs()}
 							value={secondDay}
 							maxDate={dayjs()}
 							onChange={(date) => {
 								setSecondDay(dayjs(date));
-								setFirstDay(dayjs(date).subtract(1, 'year'));
+								setFirstDay(dayjs(date).subtract(11, 'months'));
 							}}
 							format='DD/MM/YYYY'
 							slotProps={{
@@ -453,9 +508,13 @@ const DashBoard = () => {
 							}}
 						/>
 
-						<Box sx={styles.downloadButtonStyle}>
-							<SaveAltOutlinedIcon />
-						</Box>
+						<Button
+							sx={styles.downloadButtonStyle}
+							variant='outlined'
+							onClick={handleDownload}
+						>
+							<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
+						</Button>
 					</Grid>
 
 					<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
