@@ -35,12 +35,15 @@ const Properties = () => {
 		null,
 	);
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const [updateFilter, setUpdateFilter] = useState(false);
 	const [filterOptions, setFilterOptions] = useState(initialFilterOptions);
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
+
+	const filterLength = Object.keys(filter).length || 0;
 
 	const inputRef = useRef<HTMLElement>(null);
 
@@ -61,7 +64,7 @@ const Properties = () => {
 					data: { pageData },
 				},
 			} = await api.get(propertiesEndpoints.getProperties(), {
-				params: filterObjectHasProperties ? filter : DEFAULT_PARAMS,
+				params: { ...filter, ...DEFAULT_PARAMS },
 			});
 
 			setAllProperties(pageData);
@@ -98,6 +101,9 @@ const Properties = () => {
 
 	useEffect(() => {
 		getAllProperties();
+	}, [updateFilter]);
+
+	useEffect(() => {
 		getPropertiesMetaData();
 	}, []);
 
@@ -166,6 +172,7 @@ const Properties = () => {
 									filterList={filterOptions}
 									getFilterResult={(options) => {
 										setFilter(options);
+										setUpdateFilter((prev) => !prev);
 									}}
 								/>
 							</Grid>
