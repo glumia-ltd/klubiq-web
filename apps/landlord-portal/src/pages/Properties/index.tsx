@@ -25,24 +25,15 @@ import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 import { api } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesSkeleton from './PropertiesSkeleton';
+import { PropertyDataType } from '../../type';
 
-type PropertyType = {
-	title: string;
-	address: string;
-	bedrooms: number;
-	bathrooms: number;
-	sqm: number;
-	type: string;
-	status: string;
-	image: string;
-	propertyType: string;
-	unitType: string;
-	purpose: string;
-}[];
+const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
 const Properties = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
-	const [allProperties, setAllProperties] = useState<PropertyType>(data);
+	const [allProperties, setAllProperties] = useState<PropertyDataType[] | null>(
+		null,
+	);
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [filterOptions, setFilterOptions] = useState(initialFilterOptions);
 	const [searchText, setSearchText] = useState('');
@@ -52,6 +43,8 @@ const Properties = () => {
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
 
 	const inputRef = useRef<HTMLElement>(null);
+
+	console.log(allProperties);
 
 	const toggleLayout = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
@@ -64,12 +57,14 @@ const Properties = () => {
 	const getAllProperties = async () => {
 		try {
 			const {
-				data: { data },
+				data: {
+					data: { pageData },
+				},
 			} = await api.get(propertiesEndpoints.getProperties(), {
-				params: { filter },
+				params: filterObjectHasProperties ? filter : DEFAULT_PARAMS,
 			});
 
-			setAllProperties(data);
+			setAllProperties(pageData);
 
 			console.log(data);
 		} catch (e) {
@@ -178,15 +173,16 @@ const Properties = () => {
 								{filterObjectHasProperties ? (
 									<Typography sx={styles.filterResultText}>
 										<span style={styles.filterResultNumber}>
-											{allProperties.length}
+											{allProperties?.length}
 										</span>{' '}
-										{`Result${allProperties.length > 1 ? 's' : ''}`} Found
+										{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
+										Found
 									</Typography>
 								) : null}
 							</Grid>
 
 							<Grid container spacing={3}>
-								{allProperties.map((property, index) => (
+								{allProperties?.map((property, index) => (
 									<Grid
 										xs={12}
 										sm={layout === 'row' ? 12 : 6}
@@ -195,7 +191,7 @@ const Properties = () => {
 										xl={layout === 'row' ? 12 : 3}
 										key={index}
 									>
-										<PropertyCard {...property} layout={layout} />
+										<PropertyCard propertyData={property} layout={layout} />
 									</Grid>
 								))}
 							</Grid>

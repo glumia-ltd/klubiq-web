@@ -1,9 +1,4 @@
 import { OptionsType } from '../../components/Filter/Filter';
-import {
-	ReverseIcon,
-	AscendIcon,
-	TopBottom,
-} from '../../components/Icons/CustomIcons';
 
 export const data = [
 	{
@@ -18,58 +13,6 @@ export const data = [
 		propertyType: 'Bungalow',
 		unitType: 'Multi Unit',
 		purpose: 'Sell',
-	},
-	{
-		title: 'Landmark Estate',
-		address: 'Engineering Close, off Idowu Street, Victoria Island, Lagos',
-		bedrooms: 5,
-		bathrooms: 5,
-		sqm: 800,
-		type: 'Residential Housing',
-		status: 'For Rent',
-		image: '../../../src/assets/images/Rectangle 157.jpg',
-		propertyType: 'Duplex',
-		unitType: 'Single Unit',
-		purpose: 'Lease',
-	},
-	{
-		title: 'Next Estate',
-		address: 'Engineering Close, off Idowu Street, Victoria Island, Lagos',
-		bedrooms: 5,
-		bathrooms: 5,
-		sqm: 800,
-		type: 'Residential Housing',
-		status: 'For Rent',
-		image: '../../../src/assets/images/Rectangle 157.jpg',
-		propertyType: 'Apartment',
-		unitType: 'Single Unit',
-		purpose: 'Lease',
-	},
-	{
-		title: 'Terrace Estate',
-		address: 'Engineering Close, off Idowu Street, Victoria Island, Lagos',
-		bedrooms: 5,
-		bathrooms: 5,
-		sqm: 800,
-		type: 'Residential Housing',
-		status: 'For Rent',
-		image: '../../../src/assets/images/Rectangle 157.jpg',
-		propertyType: 'Terrace',
-		unitType: 'Multi Unit',
-		purpose: 'Sell',
-	},
-	{
-		title: 'Land Estate',
-		address: 'Engineering Close, off Idowu Street, Victoria Island, Lagos',
-		bedrooms: 5,
-		bathrooms: 5,
-		sqm: 800,
-		type: 'Residential Housing',
-		status: 'For Rent',
-		image: '../../../src/assets/images/Rectangle 157.jpg',
-		propertyType: 'Land',
-		unitType: 'Single Unit',
-		purpose: 'Lease',
 	},
 ];
 
