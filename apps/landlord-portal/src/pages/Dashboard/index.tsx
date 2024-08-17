@@ -203,10 +203,6 @@ const DashBoard = () => {
 		}
 	};
 
-	const addCurrency = (arr: number[]) => {
-		return arr.map((value) => `₦ ${value}`);
-	};
-
 	return (
 		<ViewPort>
 			{loading ? (

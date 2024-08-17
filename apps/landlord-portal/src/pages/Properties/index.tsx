@@ -86,6 +86,9 @@ const Properties = () => {
 	};
 
 	const getAllProperties = async () => {
+		const filterUnitType = unitType ? `unitType=${unitType}` : '';
+		const filterPurpose = purpose ? `` : '';
+		// const buildQuery =
 		try {
 			const {
 				data: { data },
