@@ -52,7 +52,7 @@ export default ({ mode }: { mode: any }) => {
 	return defineConfig({
 		plugins: [react(), VitePWA(manifestForPlugin)],
 		optimizeDeps: {
-			include: ['react', 'react-dom'],
+			include: ['react', 'react-dom', 'material-ui'],
 		},
 		server: {
 			proxy: {

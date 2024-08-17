@@ -1,9 +1,9 @@
-import {
-	TopBottom,
-	AscendIcon,
-	ReverseIcon,
-} from '../../components/Icons/CustomIcons';
 import { OptionsType } from '../../components/Filter/Filter';
+import {
+	ReverseIcon,
+	AscendIcon,
+	TopBottom,
+} from '../../components/Icons/CustomIcons';
 
 export const data = [
 	{
@@ -74,46 +74,12 @@ export const data = [
 ];
 
 export const filterOptions: OptionsType = [
-	{ title: 'Display', options: [{ label: 'All' }, { label: 'Archived' }] },
 	{
-		title: 'Purpose',
-		options: [{ label: 'All' }, { label: 'Lease' }, { label: 'Sell' }],
-	},
-	{
-		title: 'Unit type',
-		options: [{ label: 'Single Unit' }, { label: 'Multi Unit' }],
-	},
-	{
-		title: 'Sorting options',
+		id: '',
+		title: '',
 		options: [
-			{ label: 'Recently updated', Icon: TopBottom },
-			{
-				label: 'Newest',
-				Icon: ReverseIcon,
-			},
-			{
-				label: 'Oldest',
-				Icon: ReverseIcon,
-			},
-			{
-				label: 'Property name (A -> Z)',
-				Icon: AscendIcon,
-			},
-			{
-				label: 'Property name (Z -> A)',
-				Icon: AscendIcon,
-			},
+			{ label: '', Icon: '', value: '' },
+			{ label: '', Icon: '', value: '' },
 		],
-	},
-	{
-		title: 'Property Type',
-		options: [
-			{ label: 'Apartment' },
-			{ label: 'Duplex' },
-			{ label: 'Bungalow' },
-			{ label: 'Land' },
-			{ label: 'Terrace' },
-		],
-		multiSelect: true,
 	},
 ];

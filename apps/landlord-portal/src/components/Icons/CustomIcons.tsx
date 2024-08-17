@@ -119,8 +119,8 @@ const AscendIcon = createSvgIcon(
 		<g id='alpha-asc'>
 			<path
 				id='Union'
-				fill-rule='evenodd'
-				clip-rule='evenodd'
+				fillRule='evenodd'
+				clipRule='evenodd'
 				d='M10.8966 9L9 14H10.0695L10.4488 13H12.5819L12.92 14H13.9756L12.2852 9H10.8966ZM12.2438 12L11.5767 10.0266L10.8281 12H12.2438Z'
 				fill='currentColor'
 			/>
@@ -128,7 +128,7 @@ const AscendIcon = createSvgIcon(
 				id='Vector 7'
 				d='M9.5 18.5L13.5 18.5V18.7695L10 22.2162V22.5H14'
 				stroke='currentColor'
-				stroke-miterlimit='4.25735'
+				strokeMiterlimit='4.25735'
 			/>
 			<path
 				id='Vector 10'
