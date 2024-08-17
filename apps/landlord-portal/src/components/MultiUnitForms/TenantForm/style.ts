@@ -11,7 +11,9 @@ const style = {
 		gap: '16px',
 		marginBottom: '15px',
 	},
-
+	skeleton: {
+		marginTop: '25px',
+	},
 	infotypo: {
 		fontSize: { xs: '13px', sm: '12px', md: '14px', lg: '14px' },
 		lineHeight: { xs: '18px', sm: '18px', md: '18px', lg: '20px' },
@@ -33,6 +35,19 @@ const style = {
 	},
 	formControl: {
 		width: '100%',
+	},
+	boxTwo: {
+		display: 'flex',
+		// justifyContent:"space-between"
+	},
+	box: {
+		display: 'flex',
+		justifyContent: 'center',
+	},
+	boxThree: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	blueButton: {
 		border: '1px solid #002147',
