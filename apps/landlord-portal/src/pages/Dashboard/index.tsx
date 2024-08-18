@@ -1,16 +1,9 @@
-import {
-	Container,
-	Grid,
-	Card,
-	Typography,
-	Box,
-	TextField,
-} from '@mui/material';
+import { Container, Grid, Card, Typography, Box, Button } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
-
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -20,7 +13,7 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import ViewPort from '../../components/Viewport/ViewPort';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { DashboardMetricsType } from '../../type';
+import { DashboardMetricsType, RevenueReportType } from '../../type';
 import { api } from '../../api';
 import { styles } from './style';
 import {
@@ -31,13 +24,26 @@ import {
 	showTrendArrow,
 	initialDashboardMetrics,
 } from './dashboardUtils';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { AxiosRequestConfig } from 'axios';
 import DashBoardSkeleton from './DashBoardSkeleton';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DashBoard = () => {
 	const { mode } = useContext(ThemeContext);
+	const [firstDay, setFirstDay] = useState<Dayjs | null>(
+		dayjs().subtract(11, 'months'),
+	);
+	const [secondDay, setSecondDay] = useState<Dayjs | null>(dayjs());
+	const [revenueReport, setRevenueReport] = useState<RevenueReportType | null>(
+		null,
+	);
+
 	const [loading, setLoading] = useState<boolean>(true);
+
+	const dispatch = useDispatch();
 
 	const [dashboardMetrics, setDashboardMetrics] =
 		useState<DashboardMetricsType>(initialDashboardMetrics);
@@ -98,16 +104,104 @@ const DashBoard = () => {
 			} = await api.get(dashboardEndpoints.getDashboardMetrics());
 
 			setDashboardMetrics(data);
+
+			setLoading(false);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const getRevenueReportData = async () => {
+		if (!firstDay?.isValid() || !secondDay?.isValid()) {
+			setRevenueReport(null);
+			return;
+		}
+
+		const startDate = firstDay?.format('YYYY-MM-DD');
+		const endDate = secondDay?.format('YYYY-MM-DD');
+		try {
+			const {
+				data: { data },
+			} = await api.get(
+				dashboardEndpoints.getRevenueReport(startDate, endDate),
+			);
+			setRevenueReport(data);
 		} catch (e) {
 			console.log(e);
 		}
 	};
 
 	useEffect(() => {
-		setTimeout(() => setLoading(false), 2000);
-
 		getDashboardMetrics();
 	}, []);
+
+	useEffect(() => {
+		if (firstDay && secondDay) {
+			if (secondDay.subtract(6, 'months').isBefore(firstDay)) {
+				dispatch(
+					openSnackbar({
+						message: 'Your selected date range is less than 6 months! ',
+						severity: 'info',
+						isOpen: true,
+					}),
+				);
+				setFirstDay(null);
+				setSecondDay(null);
+
+				return;
+			} else {
+				getRevenueReportData();
+			}
+		} else if (!firstDay && !secondDay) {
+			setRevenueReport(null);
+		}
+	}, [firstDay, secondDay]);
+
+	const handleDownload = async () => {
+		if (!firstDay?.isValid() || !secondDay?.isValid()) {
+			return;
+		}
+		const headers = { 'Content-Type': 'blob' };
+
+		const config: AxiosRequestConfig = {
+			method: 'POST',
+			responseType: 'arraybuffer',
+			headers,
+		};
+
+		const startDate = firstDay?.format('YYYY-MM-DD');
+		const endDate = secondDay?.format('YYYY-MM-DD');
+
+		try {
+			const response = await api.post<ArrayBuffer>(
+				dashboardEndpoints.downloadReport(),
+				{
+					startDate,
+					endDate,
+				},
+				config,
+			);
+
+			const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
+			const url = URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', outputFilename);
+			document.body.appendChild(link);
+			link.click();
+
+			dispatch(
+				openSnackbar({
+					message:
+						"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	return (
 		<ViewPort>
@@ -339,19 +433,41 @@ const DashBoard = () => {
 									sx={styles.occupancyTextStyle}
 									variant='dashboardTypography'
 								>
-									₦{totalRevenueLast12Months.toFixed(2)}
+									₦
+									{revenueReport
+										? revenueReport.totalRevenueLast12Months.toFixed(2)
+										: totalRevenueLast12Months.toFixed(2)}
 								</Typography>
 
 								<Typography
 									sx={{
 										...styles.changeTypographyStyle,
-										backgroundColor: indicatorBackground(changeIndicator),
-										color: indicatorColor(changeIndicator),
-										border: `1px solid ${indicatorColor(changeIndicator)}`,
+										backgroundColor: indicatorBackground(
+											revenueReport
+												? revenueReport.changeIndicator
+												: changeIndicator,
+										),
+										color: indicatorColor(
+											revenueReport
+												? revenueReport.changeIndicator
+												: changeIndicator,
+										),
+										border: `1px solid ${indicatorColor(
+											revenueReport
+												? revenueReport.changeIndicator
+												: changeIndicator,
+										)}`,
 									}}
 								>
-									{showChangeArrow(changeIndicator)}
-									{percentageDifference.toFixed(1)}%
+									{showChangeArrow(
+										revenueReport
+											? revenueReport.changeIndicator
+											: changeIndicator,
+									)}
+									{revenueReport
+										? revenueReport.percentageDifference.toFixed(1)
+										: percentageDifference.toFixed(1)}
+									%
 								</Typography>
 							</Box>
 						</Grid>
@@ -365,28 +481,68 @@ const DashBoard = () => {
 							justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 							display={'flex'}
 						>
-							<TextField type='date' size='medium' name='Date' value='date' />{' '}
-							<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-							<TextField
-								sx={{
-									height: '44px',
-									marginRight: { xs: '5px', sm: '30px', md: '0' },
+							<DatePicker
+								defaultValue={dayjs().subtract(11, 'months')}
+								value={firstDay}
+								maxDate={
+									!secondDay
+										? dayjs().subtract(11, 'months')
+										: secondDay.subtract(11, 'months')
+								}
+								onChange={(date) => {
+									setFirstDay(dayjs(date));
+									setSecondDay(dayjs(date).add(11, 'months'));
 								}}
-								type='date'
-								size='medium'
-								name='Date'
-								value='date'
+								format='DD/MM/YYYY'
+								slotProps={{
+									inputAdornment: {
+										position: 'start',
+									},
+								}}
 							/>
-							<Box sx={styles.downloadButtonStyle}>
-								<SaveAltOutlinedIcon />
-							</Box>
+							<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+							<DatePicker
+								defaultValue={dayjs()}
+								value={secondDay}
+								maxDate={dayjs()}
+								onChange={(date) => {
+									setSecondDay(dayjs(date));
+									setFirstDay(dayjs(date).subtract(11, 'months'));
+								}}
+								format='DD/MM/YYYY'
+								slotProps={{
+									inputAdornment: {
+										position: 'start',
+									},
+								}}
+							/>
+
+							<Button
+								sx={styles.downloadButtonStyle}
+								variant='outlined'
+								onClick={handleDownload}
+							>
+								<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
+							</Button>
 						</Grid>
 
 						<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
 							<TableChart
-								seriesData={revenueChart.seriesData}
-								maxRevenue={revenueMetrics?.maxRevenue}
-								xAxisData={revenueChart.xAxisData}
+								seriesData={
+									revenueReport
+										? revenueReport?.revenueChart?.seriesData
+										: revenueChart?.seriesData
+								}
+								maxRevenue={
+									revenueReport
+										? revenueReport?.maxRevenue
+										: revenueMetrics?.maxRevenue
+								}
+								xAxisData={
+									revenueReport
+										? revenueReport?.revenueChart?.xAxisData
+										: revenueChart?.xAxisData
+								}
 							/>
 						</Grid>
 					</Grid>

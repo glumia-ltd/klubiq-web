@@ -25,25 +25,25 @@ const DashBoardSkeleton = () => {
 									<Skeleton
 										variant='text'
 										sx={styles.valueTextStyle}
-										width='70px'
+										width='5rem'
 										height={15}
 									/>
 									<Skeleton
 										variant='text'
 										sx={styles.valueTextStyle}
-										width='70px'
+										width='5rem'
 										height={15}
 									/>{' '}
 									<Skeleton
 										variant='text'
 										sx={styles.valueTextStyle}
-										width='70px'
+										width='5rem'
 										height={15}
 									/>{' '}
 									<Skeleton
 										variant='text'
 										sx={styles.valueTextStyle}
-										width='70px'
+										width='5rem'
 										height={15}
 									/>
 								</div>
@@ -58,7 +58,7 @@ const DashBoardSkeleton = () => {
 							<Box>
 								<Skeleton
 									variant='text'
-									height={10}
+									height={15}
 									width='40%'
 									sx={styles.typoStyle}
 								/>

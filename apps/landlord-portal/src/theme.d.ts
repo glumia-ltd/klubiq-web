@@ -8,6 +8,8 @@ declare module '@mui/material/styles' {
 		cardHeader: React.CSSProperties;
 		cardContentText: React.CSSProperties;
 		cardTitle: React.CSSProperties;
+		filterResultText: React.CSSProperties;
+		filterResultNumber: React.CSSProperties;
 	}
 
 	interface TypographyVariantsOptions {
@@ -16,6 +18,18 @@ declare module '@mui/material/styles' {
 		cardHeader: React.CSSProperties;
 		cardContentText: React.CSSProperties;
 		cardTitle: React.CSSProperties;
+		filterResultText: React.CSSProperties;
+		filterResultNumber: React.CSSProperties;
+	}
+
+	interface ChipVariants {
+		rent: React.CSSProperties;
+		sale: React.CSSProperties;
+	}
+
+	interface ChipVariantsOptions {
+		rent: React.CSSProperties;
+		sale: React.CSSProperties;
 	}
 }
 
@@ -27,5 +41,14 @@ declare module '@mui/material/Typography' {
 		cardHeader: true;
 		cardContentText: true;
 		cardTitle: true;
+		filterResultText: true;
+		filterResultNumber: true;
+	}
+}
+
+declare module '@mui/material/Chip' {
+	interface ChipPropsVariantOverrides {
+		rent: true;
+		sale: true;
 	}
 }

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
+import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../components/ControlledComponents/ControlledPasswordField';
@@ -15,11 +16,25 @@ import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { useState } from 'react';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { filter, find, orderBy } from 'lodash';
+import countries from '../../helpers/countries-meta.json';
 
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
+	type CountryType = {
+		name: string;
+		code: string;
+		dialCode: string;
+		currency: string;
+		currencySymbol: string;
+	};
+	const activeCountries: CountryType[] = orderBy(
+		filter(countries, ['active', true]),
+		'priority',
+		'asc',
+	) as CountryType[];
 
 	const validationSchema = yup.object({
 		firstName: yup.string().required('This field is required'),
@@ -27,6 +42,7 @@ const CreateAccount: React.FC = () => {
 		lastName: yup.string().required('This field is required'),
 		password: yup.string().required('Please enter your password'),
 		email: yup.string().email().required('Please enter your email'),
+		country: yup.string().required('This field is required'),
 	});
 
 	type IValuesType = {
@@ -36,16 +52,26 @@ const CreateAccount: React.FC = () => {
 		password: string;
 		email: string;
 		mailCheck: boolean;
+		country: string | undefined;
 	};
 
 	const onSubmit = async (values: IValuesType) => {
 		console.log('submit clicked');
-		const { email, password, firstName, lastName, companyName } = values;
+		const { email, password, firstName, lastName, companyName, country } =
+			values;
+		const selectedCountry = find(activeCountries, ['code', country]);
 
 		try {
 			setLoading(true);
 
-			const userDetails = { email, password, firstName, lastName, companyName };
+			const userDetails = {
+				email,
+				password,
+				firstName,
+				lastName,
+				companyName,
+				organizationCountry: selectedCountry,
+			};
 
 			const {
 				data: { data: token },
@@ -84,8 +110,18 @@ const CreateAccount: React.FC = () => {
 			password: '',
 			email: '',
 			mailCheck: false,
+			country: activeCountries[0]?.code,
 		},
-		validationSchema,
+		enableReinitialize: true,
+		validateOnChange: true,
+		validateOnBlur: true,
+		validateOnMount: true,
+		isInitialValid: false,
+		validationSchema: {
+			validate: (values: IValuesType) => {
+				return validationSchema.isValidSync(values);
+			},
+		},
 		onSubmit,
 	});
 
@@ -174,7 +210,18 @@ const CreateAccount: React.FC = () => {
 								formik={formik}
 							/>
 						</Grid>
-
+						<Grid item sm={12} xs={12} lg={12}>
+							<ControlledSelect
+								name='country'
+								label='Select Country'
+								placeholder='Select Country'
+								formik={formik}
+								options={activeCountries.map((country) => ({
+									value: country.code,
+									label: country.name,
+								}))}
+							/>
+						</Grid>
 						<Grid item sm={12} xs={12} lg={12}>
 							<ControlledTextField
 								name='email'

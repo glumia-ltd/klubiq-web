@@ -78,14 +78,22 @@ const Login = () => {
 						}),
 					);
 				} else {
-					dispatch(
-						openSnackbar({
-							message: 'That was easy',
-							severity: 'success',
-							isOpen: true,
-						}),
-					);
-					navigate('/dashboard', { replace: true });
+					const profile = await api.get(authEndpoints.getUserByFbid());
+					if (profile.data) {
+						const payload = {
+							token: userToken,
+							user: profile.data,
+						};
+						dispatch(saveUser(payload));
+					} else {
+						throw new Error('User not found');
+					}
+					openSnackbar({
+						message: 'That was easy',
+						severity: 'success',
+						isOpen: true,
+					}),
+						navigate('/dashboard', { replace: true });
 				}
 			}
 		} catch (error) {
