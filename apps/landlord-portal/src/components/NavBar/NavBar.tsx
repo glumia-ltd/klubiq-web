@@ -19,12 +19,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
-import user from '../../assets/manImage.svg';
 import { startCase } from 'lodash';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
-	console.log('KLUBIQ USER: ', user);
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
@@ -158,8 +156,8 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							{user.data.firstName ?? 'Kl'} <br />
-							{startCase(user.data.companyRole) ?? ''}
+							{user?.data?.firstName ?? 'Klubiq User'} <br />
+							{startCase(user?.data?.companyRole) ?? 'Demo'}
 						</Typography>
 						<IconButton
 							edge='end'
@@ -168,8 +166,8 @@ const NavBar = () => {
 							aria-haspopup='true'
 						>
 							<Avatar
-								alt={user.data.firstName}
-								src={user.data.profilePicUrl}
+								alt={user?.data?.firstName ?? 'K'}
+								src={user?.data?.profilePicUrl ?? ''}
 								sx={{
 									width: '40px',
 									height: '40px',
