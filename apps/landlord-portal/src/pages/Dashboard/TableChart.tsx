@@ -2,7 +2,9 @@ import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { AxisScaleConfig } from '@mui/x-charts/internals';
 import { SeriesDataType } from '../../type';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { FC } from 'react';
+import { useScreenSize } from '../../helpers/useScreenSize';
 
 type xAxisDataType = string[];
 
@@ -11,6 +13,10 @@ const TableChart: FC<{
 	xAxisData: xAxisDataType;
 	maxRevenue: number;
 }> = ({ seriesData, xAxisData, maxRevenue }) => {
+	const { width } = useScreenSize();
+
+	const valueFormatter = (value: number) => `₦ ${value / 1000}k`;
+
 	const xAxisConfig: AxisScaleConfig = {
 		band: {
 			scaleType: 'band',
@@ -56,49 +62,117 @@ const TableChart: FC<{
 				lg: '32px  100px',
 			}}
 		>
-			<BarChart
-				sx={{ padding: '10px' }}
-				borderRadius={8}
-				series={seriesData}
-				xAxis={[
-					{
-						...xAxisConfig.band,
-						scaleType: 'band',
-						data: xAxisData,
-					},
-				]}
-				yAxis={[
-					{ min: 0, max: maxRevenue + maxRevenue * 0.2, label: 'Amount (₦)' },
-				]}
-				height={400}
-				bottomAxis={null}
-				topAxis={{
-					disableTicks: true,
-					disableLine: true,
-					labelStyle: {
-						fontSize: '12px',
-					},
-				}}
-				leftAxis={{
-					disableTicks: true,
-					disableLine: true,
-					labelStyle: {
-						fontSize: '12px',
-					},
-				}}
-				slotProps={{
-					legend: {
-						direction: 'row',
-						position: { vertical: 'bottom', horizontal: 'middle' },
-						padding: 10,
-						itemMarkWidth: 20,
-						itemMarkHeight: 11,
-						markGap: 5,
-						itemGap: 10,
-					},
-					loadingOverlay: { message: 'Data should be available soon.' },
-				}}
-			/>
+			{width > 500 ? (
+				<BarChart
+					sx={{
+						padding: '15px',
+						[`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+							transform: 'translateX(-2.5rem)',
+							marginRight: '2rem',
+						},
+					}}
+					borderRadius={8}
+					series={seriesData}
+					xAxis={[
+						{
+							...xAxisConfig.band,
+							scaleType: 'band',
+							data: xAxisData,
+						},
+					]}
+					yAxis={[
+						{
+							min: 0,
+							max: maxRevenue + maxRevenue * 0.2,
+
+							valueFormatter,
+						},
+					]}
+					height={400}
+					bottomAxis={null}
+					topAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					leftAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					slotProps={{
+						legend: {
+							direction: 'row',
+							position: { vertical: 'bottom', horizontal: 'middle' },
+							padding: 10,
+							itemMarkWidth: 20,
+							itemMarkHeight: 11,
+							markGap: 5,
+							itemGap: 10,
+						},
+						loadingOverlay: { message: 'Data should be available soon.' },
+					}}
+				/>
+			) : (
+				<BarChart
+					sx={{
+						padding: '15px',
+						[`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+							transform: 'translateX(-2.5rem)',
+							marginRight: '2rem',
+						},
+					}}
+					borderRadius={8}
+					series={seriesData}
+					xAxis={[
+						{
+							...xAxisConfig.band,
+							scaleType: 'band',
+							data: xAxisData,
+						},
+					]}
+					yAxis={[
+						{
+							min: 0,
+							max: maxRevenue + maxRevenue * 0.2,
+
+							valueFormatter,
+						},
+					]}
+					height={400}
+					bottomAxis={null}
+					topAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					leftAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					slotProps={{
+						legend: {
+							direction: 'row',
+							position: { vertical: 'bottom', horizontal: 'middle' },
+							padding: 10,
+							itemMarkWidth: 20,
+							itemMarkHeight: 11,
+							markGap: 5,
+							itemGap: 10,
+						},
+						loadingOverlay: { message: 'Data should be available soon.' },
+					}}
+				/>
+			)}
 		</Box>
 	);
 };

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import {
 	Stack,
 	Box,
@@ -14,64 +15,39 @@ import GridOnIcon from '@mui/icons-material/GridOn';
 import SearchIcon from '@mui/icons-material/Search';
 import PropertyCard from '../../components/PropertyCard';
 import ViewPort from '../../components/Viewport/ViewPort';
-import Filter from '../../components/Filter/Filter';
+import Filter, { OptionsType } from '../../components/Filter/Filter';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-import { data, filterOptions } from './data';
+import { data, filterOptions as initialFilterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
+import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
+import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
+import { api } from '../../api';
+import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesSkeleton from './PropertiesSkeleton';
+import { PropertyDataType } from '../../type';
 
-type PropertyType = {
-	title: string;
-	address: string;
-	bedrooms: number;
-	bathrooms: number;
-	sqm: number;
-	type: string;
-	status: string;
-	image: string;
-	propertyType: string;
-	unitType: string;
-	purpose: string;
-}[];
+const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
 const Properties = () => {
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
-	const [allProperties, setAllProperties] = useState<PropertyType>(data);
-	const [filter, setFilter] = useState<Record<string, string | string[]>>({});
+	const [allProperties, setAllProperties] = useState<PropertyDataType[] | null>(
+		null,
+	);
+	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const [updateFilter, setUpdateFilter] = useState(false);
+	const [filterOptions, setFilterOptions] = useState(initialFilterOptions);
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
-	const purpose = filter?.Purpose;
-	const unitType = filter['Unit type'];
-	const propertyType = filter['Property Type'];
 
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
 
-	const filteredProperties = allProperties
-		.filter((property) => {
-			if (purpose) {
-				return property.purpose === purpose;
-			} else {
-				return property;
-			}
-		})
-		.filter((property) => {
-			if (unitType) {
-				return property.unitType === unitType;
-			} else {
-				return property;
-			}
-		})
-		.filter((property) => {
-			if (propertyType) {
-				return property.propertyType === propertyType;
-			} else {
-				return property;
-			}
-		});
+	const filterLength = Object.keys(filter).length || 0;
 
 	const inputRef = useRef<HTMLElement>(null);
+
+	console.log(allProperties);
 
 	const toggleLayout = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
@@ -81,6 +57,38 @@ const Properties = () => {
 		navigate('/properties/property-category');
 	};
 
+	const getAllProperties = async () => {
+		try {
+			const {
+				data: {
+					data: { pageData },
+				},
+			} = await api.get(propertiesEndpoints.getProperties(), {
+				params: { ...filter, ...DEFAULT_PARAMS },
+			});
+
+			setAllProperties(pageData);
+
+			console.log(data);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const getPropertiesMetaData = async () => {
+		try {
+			const {
+				data: { data },
+			} = await api.get(propertiesEndpoints.getPropertiesMetaData());
+
+			const { filterOptions } = data;
+
+			setFilterOptions(filterOptions);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	useEffect(() => {
 		if (inputRef.current) {
 			const inputElement: HTMLInputElement | null =
@@ -88,7 +96,15 @@ const Properties = () => {
 
 			inputElement && inputElement.focus();
 		}
-		setTimeout(() => setLoading(false), 20000);
+		setTimeout(() => setLoading(false), 1000);
+	}, []);
+
+	useEffect(() => {
+		getAllProperties();
+	}, [updateFilter]);
+
+	useEffect(() => {
+		getPropertiesMetaData();
 	}, []);
 
 	return (
@@ -154,25 +170,26 @@ const Properties = () => {
 							<Grid xs={12}>
 								<Filter
 									filterList={filterOptions}
-									getFilterResult={(options) => setFilter(options)}
+									getFilterResult={(options) => {
+										setFilter(options);
+										setUpdateFilter((prev) => !prev);
+									}}
 								/>
 							</Grid>
 							<Grid xs={12}>
 								{filterObjectHasProperties ? (
 									<Typography sx={styles.filterResultText}>
 										<span style={styles.filterResultNumber}>
-											{filteredProperties.length}
+											{allProperties?.length}
 										</span>{' '}
-										{`Result${filteredProperties.length > 1 ? 's' : ''}`} Found
+										{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
+										Found
 									</Typography>
 								) : null}
 							</Grid>
 
 							<Grid container spacing={3}>
-								{(filterObjectHasProperties
-									? filteredProperties
-									: allProperties
-								).map((property, index) => (
+								{allProperties?.map((property, index) => (
 									<Grid
 										xs={12}
 										sm={layout === 'row' ? 12 : 6}
@@ -181,7 +198,7 @@ const Properties = () => {
 										xl={layout === 'row' ? 12 : 3}
 										key={index}
 									>
-										<PropertyCard {...property} layout={layout} />
+										<PropertyCard propertyData={property} layout={layout} />
 									</Grid>
 								))}
 							</Grid>

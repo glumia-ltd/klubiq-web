@@ -3,6 +3,11 @@ import { Plus } from '../Icons/CustomIcons';
 import cancel from '../../assets/images/cancel-button.svg';
 import dropdown from '../../assets/images/dropdown.svg';
 import { useTheme } from '@mui/material/styles';
+import {
+	TopBottom,
+	AscendIcon,
+	ReverseIcon,
+} from '../../components/Icons/CustomIcons';
 
 import {
 	Grid,
@@ -20,13 +25,27 @@ import {
 
 import { styles } from './style';
 
+const ICONS: Record<string, any> = {
+	TopBottom,
+	AscendIcon,
+	ReverseIcon,
+};
+
+export type DropdownOption = {
+	label: string;
+	Icon?: any;
+	value: string | number;
+	order?: string;
+};
+
 export type OptionsType = {
+	id: string;
 	title: string;
-	options: { label: string; Icon?: any }[];
+	options: DropdownOption[];
 	multiSelect?: boolean;
 }[];
 
-type selectedFilters = Record<string, string | string[]>;
+type selectedFilters = Record<string, string | number>;
 
 type FilterType = {
 	filterList: OptionsType;
@@ -40,6 +59,8 @@ type ModalStyleType = {
 const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	const [selectedTitle, setSelectedTitle] = useState<selectedFilters>({});
 
+	const [selectedId, setSelectedId] = useState<selectedFilters>({});
+
 	const [currentTitle, setCurrentTitle] = useState<string>();
 
 	const ArrayOfSelectedTitles = Object.keys(selectedTitle);
@@ -52,7 +73,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 
 	const theme = useTheme();
 
-	const handleButtonClick = (title: string) => {
+	const handleButtonClick = (title: string, id = '') => {
 		const buttonPosition = divRef?.current[title]?.getBoundingClientRect();
 		const modalPosition = modalRef?.current[title]?.getBoundingClientRect();
 
@@ -78,14 +99,23 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 	const handleCloseModal = () => {
 		setCurrentTitle('');
 
-		getFilterResult(selectedTitle);
+		getFilterResult(selectedId);
 	};
 
-	const handleRemoveFilter = (filterTitle: string) => {
-		const updatedFilters = selectedTitle;
-		delete updatedFilters[filterTitle];
+	const getValue = (options: DropdownOption[], value: string) => {
+		const data = options.find((option) => option.label === value);
+		return data as DropdownOption;
+	};
 
-		getFilterResult({ ...updatedFilters });
+	const handleRemoveFilter = (filterTitle: string, id: string) => {
+		const updatedFilters = selectedTitle;
+		const updatedId = selectedId;
+		delete updatedFilters[filterTitle];
+		delete updatedId[id];
+
+		// getFilterResult({ ...updatedFilters });
+
+		getFilterResult({ ...updatedId });
 
 		setSelectedTitle({ ...updatedFilters });
 		setCurrentTitle('');
@@ -102,7 +132,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 			sx={styles.filterContainer}
 		>
 			{filterList.map((entry) => {
-				const { title, options } = entry;
+				const { title, options, id } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
 					<Grid sx={styles.selectedState} key={title}>
@@ -121,7 +151,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 						>
 							<div style={styles.selectedButtonContainer}>
 								<Typography sx={styles.text}>{title}</Typography>
-								<div onClick={() => handleRemoveFilter(title)}>
+								<div onClick={() => handleRemoveFilter(title, id)}>
 									<img src={cancel} alt='filter button icon' />
 								</div>
 							</div>
@@ -132,7 +162,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								...styles.selectedButtonDropDown,
 								background: `${theme.palette.primary.main}`,
 							}}
-							onClick={() => handleButtonClick(title)}
+							onClick={() => handleButtonClick(title, id)}
 						>
 							<Typography>{selectedTitle[title]}</Typography>
 
@@ -173,19 +203,35 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 									<FormControl component='fieldset'>
 										<RadioGroup
 											value={selectedTitle[title]}
-											onChange={(e) =>
+											onChange={(e) => {
+												const option = getValue(options, e.target.value);
 												setSelectedTitle({
 													...selectedTitle,
 													[title]: e.target.value,
-												})
-											}
+												});
+
+												if ('order' in option) {
+													setSelectedId({
+														...selectedId,
+														order: option.order || 'ASC',
+														[id]: option.value,
+													});
+												} else {
+													setSelectedId({
+														...selectedId,
+														[id]: option.value,
+													});
+												}
+											}}
 										>
 											{options.map((option) => {
 												const { label, Icon } = option;
 
+												const LabelIcon = ICONS[Icon];
+
 												const labelWithIcon = (
 													<span style={styles.labelWithIcon}>
-														<Icon />
+														<LabelIcon />
 														{label}
 													</span>
 												);
@@ -230,7 +276,9 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 										...styles.buttonStyle,
 										outline: `1px dashed ${theme.palette.primary.main}`,
 									}}
-									onClick={() => handleButtonClick(title)}
+									onClick={() => {
+										handleButtonClick(title, id);
+									}}
 								>
 									<Plus sx={{ height: '14px' }} />
 									{title}
