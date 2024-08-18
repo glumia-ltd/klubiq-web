@@ -1,7 +1,7 @@
 // import { Button, Typography, Box, Avatar, Card } from '@mui/material';
 // import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 // import user from '../../assets/manImage.svg';
-import DashStyle from './DashStyle';
+import { styles } from './style';
 import { Typography, Card } from '@mui/material';
 // const CardData = [
 // 	{ name: 'feyi', id: '1' },
@@ -13,7 +13,7 @@ import { Typography, Card } from '@mui/material';
 
 const ReportCard = () => {
 	return (
-		<Card sx={DashStyle.cardStyleFive}>
+		<Card sx={styles.cardStyleFive}>
 			<Typography variant='h6'>In progress</Typography>
 
 			{/* <Box

@@ -13,6 +13,7 @@ type ControlledTextFieldProps = {
 	loading?: boolean;
 	formik?: any;
 	sx?: SxProps;
+	sxTwo?: SxProps;
 	InputProps?: any;
 	disableOnChange?: boolean;
 	label?: string;
@@ -22,6 +23,7 @@ type ControlledTextFieldProps = {
 	inputProps?: any;
 	prioritizeError?: any;
 	[key: string]: any;
+	color?: string;
 };
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
@@ -37,6 +39,8 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	inputProps,
 	prioritizeError,
 	onFileSelect,
+	color,
+	sxTwo,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +58,15 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 			sx={{
 				justifyContent: 'center',
 				minWidth: 150,
-				m: 0.5,
+				// m: 0.1,
+				m: 0.3,
 				flexDirection: 'column',
 				...sx,
 			}}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'}>
+				<Typography fontWeight={500} fontSize={'16px'} color={color}>
 					{label}
 				</Typography>
 			)}
@@ -96,6 +101,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 				}
 				inputProps={inputProps}
 				{...props}
+				sx={sxTwo}
 			/>
 		</Stack>
 	);

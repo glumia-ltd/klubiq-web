@@ -51,6 +51,9 @@ export default ({ mode }: { mode: any }) => {
 	// https://vitejs.dev/config/
 	return defineConfig({
 		plugins: [react(), VitePWA(manifestForPlugin)],
+		optimizeDeps: {
+			include: ['react', 'react-dom', 'material-ui'],
+		},
 		server: {
 			proxy: {
 				'/api': {

@@ -1,5 +1,5 @@
-import { useEffect, useContext } from 'react';
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
+import { useEffect, useContext } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
@@ -26,7 +26,6 @@ import { Context } from '../../context/NavToggleContext/NavToggleContext';
 function SideBar() {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-	// const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
@@ -50,7 +49,6 @@ function SideBar() {
 	const ThemeSwitcher = styled('div')(() => ({
 		position: 'fixed',
 		bottom: '24px',
-		// height:"90px"
 	}));
 
 	const DrawerChildren = styled('div')(() => ({
@@ -88,13 +86,14 @@ function SideBar() {
 		isMediumScreen ? closeSidebar : sidebarOpen;
 	}, [isMediumScreen, closeSidebar, sidebarOpen]);
 
-	// useEffect(() => {
-	// 	isSmallScreen && closeSidebar();
-	// }, [isSmallScreen, closeSidebar]);
-
 	if (isMediumScreen && !sidebarOpen) {
 		return null;
 	}
+
+	const handleLinkClick = (title: string) => {
+		if (title !== 'Logout') return;
+		sessionStorage.clear();
+	};
 
 	return (
 		<Drawer
@@ -126,6 +125,7 @@ function SideBar() {
 							return (
 								<ListItem disablePadding key={index}>
 									<Link
+										onClick={() => handleLinkClick(props.title)}
 										to={props.path || ''}
 										relative='path'
 										style={{
@@ -157,8 +157,6 @@ function SideBar() {
 													},
 												},
 											}}
-											onClick={openSidebar}
-											onDoubleClick={closeSidebar}
 										>
 											<ListItemIcon
 												sx={{

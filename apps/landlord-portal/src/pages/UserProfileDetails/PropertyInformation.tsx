@@ -81,6 +81,11 @@ const PropertyInformation: React.FC = () => {
 					label='Property Name'
 					type='text'
 					formik={formik}
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item sm={12} xs={12} md={12} lg={12}>
@@ -89,6 +94,11 @@ const PropertyInformation: React.FC = () => {
 					label='Property Type'
 					formik={formik}
 					type='text'
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item xs={12} sm={12} md={12} lg={12} sx={{ textAlign: 'left' }}>
@@ -106,6 +116,11 @@ const PropertyInformation: React.FC = () => {
 					type='text'
 					formik={formik}
 					options={country}
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item xs={12} sm={12} md={6} lg={6}>
@@ -115,6 +130,11 @@ const PropertyInformation: React.FC = () => {
 					type='text'
 					formik={formik}
 					options={states}
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item xs={12} sm={12} md={6} lg={6}>
@@ -131,6 +151,11 @@ const PropertyInformation: React.FC = () => {
 					label='Street'
 					type='text'
 					formik={formik}
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid item xs={12} sm={12} md={6} lg={6}>
@@ -139,6 +164,11 @@ const PropertyInformation: React.FC = () => {
 					label='Postal Code'
 					formik={formik}
 					type='email'
+					inputProps={{
+						sx: {
+							height: '40px',
+						},
+					}}
 				/>
 			</Grid>
 			<Grid

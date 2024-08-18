@@ -2,6 +2,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import {
 	Grid,
@@ -17,9 +19,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
-import user from '../../assets/manImage.svg';
+import { startCase } from 'lodash';
 
 const NavBar = () => {
+	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
@@ -153,8 +156,8 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							Feyisetan <br />
-							manager
+							{user?.data?.firstName ?? 'Klubiq User'} <br />
+							{startCase(user?.data?.companyRole) ?? 'Demo'}
 						</Typography>
 						<IconButton
 							edge='end'
@@ -163,8 +166,8 @@ const NavBar = () => {
 							aria-haspopup='true'
 						>
 							<Avatar
-								alt='Remy Sharp'
-								src={user}
+								alt={user?.data?.firstName ?? 'K'}
+								src={user?.data?.profilePicUrl ?? ''}
 								sx={{
 									width: '40px',
 									height: '40px',

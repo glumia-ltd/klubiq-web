@@ -1,8 +1,22 @@
 import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { AxisScaleConfig } from '@mui/x-charts/internals';
+import { SeriesDataType } from '../../type';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { FC } from 'react';
+import { useScreenSize } from '../../helpers/useScreenSize';
 
-const TableChart = () => {
+type xAxisDataType = string[];
+
+const TableChart: FC<{
+	seriesData: SeriesDataType;
+	xAxisData: xAxisDataType;
+	maxRevenue: number;
+}> = ({ seriesData, xAxisData, maxRevenue }) => {
+	const { width } = useScreenSize();
+
+	const valueFormatter = (value: number) => `₦ ${value / 1000}k`;
+
 	const xAxisConfig: AxisScaleConfig = {
 		band: {
 			scaleType: 'band',
@@ -48,73 +62,117 @@ const TableChart = () => {
 				lg: '32px  100px',
 			}}
 		>
-			<BarChart
-				borderRadius={8}
-				series={[
-					{
-						data: [13, 24, 51, 63, 52, 20, 15, 20, 25, 30, 45, 60],
-						stack: 'A',
-						label: 'Property Sales',
-						color: '#002147',
-					},
-					{
-						data: [4, 3, 16, 56, 82, 10, 11, 12, 30, 39, 34, 50],
-						stack: 'A',
-						label: 'Property Rental',
-						color: '#6699CC',
-					},
-				]}
-				xAxis={[
-					{
-						...xAxisConfig.band,
-						scaleType: 'band',
-						data: [
-							'Jan',
-							'Feb',
-							'Mar',
-							'Apr',
-							'May',
-							'Jun',
-							'Jul',
-							'Aug',
-							'Sep',
-							'Oct',
-							'Nov',
-							'Dec',
-						],
-					},
-				]}
-				yAxis={[{ min: 0, max: 200 }]}
-				//maxWidth={900}
-				height={360}
-				bottomAxis={null}
-				topAxis={{
-					disableTicks: true,
-					disableLine: true,
-					labelStyle: {
-						fontSize: '12px',
-					},
-				}}
-				leftAxis={{
-					disableTicks: true,
-					disableLine: true,
-					labelStyle: {
-						fontSize: '12px',
-					},
-				}}
-				slotProps={{
-					legend: {
-						direction: 'row',
-						position: { vertical: 'bottom', horizontal: 'middle' },
-						padding: 0,
-						itemMarkWidth: 20,
-						itemMarkHeight: 11,
-						markGap: 5,
-						itemGap: 10,
-					},
-					loadingOverlay: { message: 'Data should be available soon.' },
-				}}
-			/>
+			{width > 500 ? (
+				<BarChart
+					sx={{
+						padding: '15px',
+						[`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+							transform: 'translateX(-2.5rem)',
+							marginRight: '2rem',
+						},
+					}}
+					borderRadius={8}
+					series={seriesData}
+					xAxis={[
+						{
+							...xAxisConfig.band,
+							scaleType: 'band',
+							data: xAxisData,
+						},
+					]}
+					yAxis={[
+						{
+							min: 0,
+							max: maxRevenue + maxRevenue * 0.2,
+
+							valueFormatter,
+						},
+					]}
+					height={400}
+					bottomAxis={null}
+					topAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					leftAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					slotProps={{
+						legend: {
+							direction: 'row',
+							position: { vertical: 'bottom', horizontal: 'middle' },
+							padding: 10,
+							itemMarkWidth: 20,
+							itemMarkHeight: 11,
+							markGap: 5,
+							itemGap: 10,
+						},
+						loadingOverlay: { message: 'Data should be available soon.' },
+					}}
+				/>
+			) : (
+				<BarChart
+					sx={{
+						padding: '15px',
+						[`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+							transform: 'translateX(-2.5rem)',
+							marginRight: '2rem',
+						},
+					}}
+					borderRadius={8}
+					series={seriesData}
+					xAxis={[
+						{
+							...xAxisConfig.band,
+							scaleType: 'band',
+							data: xAxisData,
+						},
+					]}
+					yAxis={[
+						{
+							min: 0,
+							max: maxRevenue + maxRevenue * 0.2,
+
+							valueFormatter,
+						},
+					]}
+					height={400}
+					bottomAxis={null}
+					topAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					leftAxis={{
+						disableTicks: true,
+						disableLine: true,
+						labelStyle: {
+							fontSize: '12px',
+						},
+					}}
+					slotProps={{
+						legend: {
+							direction: 'row',
+							position: { vertical: 'bottom', horizontal: 'middle' },
+							padding: 10,
+							itemMarkWidth: 20,
+							itemMarkHeight: 11,
+							markGap: 5,
+							itemGap: 10,
+						},
+						loadingOverlay: { message: 'Data should be available soon.' },
+					}}
+				/>
+			)}
 		</Box>
 	);
 };
