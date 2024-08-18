@@ -40,6 +40,15 @@ const cardTitleStyle = {
 	fontSize: '1rem',
 	lineHeight: 2,
 };
+const filterResultTextStyle = {
+	fontSize: '1.125rem',
+	fontWeight: 700,
+};
+const filterResultCountStyle = {
+	fontSize: '3rem',
+	fontWeight: 700,
+	lineHeight: '2.375rem',
+};
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -151,8 +160,17 @@ export const LightTheme: Theme = createTheme({
 		MuiPaper: {
 			styleOverrides: {
 				root: {
-					background: '#ffffff',
+					//background: '#ffffff',
 					color: '#000000 !important',
+				},
+			},
+		},
+
+		MuiCard: {
+			styleOverrides: {
+				root: {
+					background: '#ffffff',
+					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
 		},
@@ -175,8 +193,25 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
+		MuiChip: {
+			variants: [
+				{
+					props: { variant: 'rent' },
+					style: {
+						backgroundColor: '#0096FF',
+						color: '#FFFFFF',
+					},
+				},
+				{
+					props: { variant: 'sale' },
+					style: {
+						backgroundColor: '#FF0000',
+						color: '#FFFFFF',
+					},
+				},
+			],
+		},
 	},
-
 	typography: {
 		fontFamily: 'Maven Pro, sans-serif',
 		h1: {
@@ -284,6 +319,12 @@ export const LightTheme: Theme = createTheme({
 		cardTitle: {
 			...cardTitleStyle,
 		},
+		filterResultText: {
+			...filterResultTextStyle,
+		},
+		filterResultNumber: {
+			...filterResultCountStyle,
+		},
 	},
 	transitions: transitionsTheme,
 });
@@ -387,7 +428,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiPaper: {
 			styleOverrides: {
 				root: {
-					background: '#0DODOD',
+					//background: '#0DODOD',
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
@@ -431,11 +472,7 @@ export const DarkTheme: Theme = createTheme({
 				root: {
 					background: '#161616',
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
-					border: '1px solid rgba(211, 217, 223, 0.5)',
-
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
+					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},
 		},
@@ -552,6 +589,12 @@ export const DarkTheme: Theme = createTheme({
 		},
 		cardTitle: {
 			...cardTitleStyle,
+		},
+		filterResultText: {
+			...filterResultTextStyle,
+		},
+		filterResultNumber: {
+			...filterResultCountStyle,
 		},
 	},
 	transitions: transitionsTheme,

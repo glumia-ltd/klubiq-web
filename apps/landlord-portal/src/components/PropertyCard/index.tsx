@@ -63,10 +63,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					</Typography>
 					<Chip
 						label={propertyData?.purpose.name}
-						color={
-							propertyData?.purpose.name?.toLowerCase().includes('sale')
-								? 'error'
-								: 'success'
+						variant={
+							propertyData?.purpose.name?.toLowerCase() === 'rent'
+								? 'rent'
+								: 'sale'
 						}
 					></Chip>
 				</Stack>
@@ -199,7 +199,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 			</CardActions>
 		</Card>
 	) : (
-		<Paper sx={CardStyle.cardContainerRow} variant='elevation'>
+		<Card sx={CardStyle.cardContainerRow}>
 			<Stack
 				sx={{
 					padding: '1rem',
@@ -221,10 +221,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							<Chip
 								size='small'
 								label={propertyData?.purpose.name}
-								color={
-									propertyData?.purpose.name?.toLowerCase().includes('sale')
-										? 'error'
-										: 'success'
+								variant={
+									propertyData?.purpose.name?.toLowerCase() === 'rent'
+										? 'rent'
+										: 'sale'
 								}
 							></Chip>
 						</Stack>
@@ -310,7 +310,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					</Stack>
 				</Stack>
 			</Stack>
-		</Paper>
+		</Card>
 	);
 };
 

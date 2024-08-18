@@ -9,6 +9,7 @@ import {
 	InputBase,
 	Typography,
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnIcon from '@mui/icons-material/GridOn';
@@ -30,6 +31,7 @@ import { PropertyDataType } from '../../type';
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
 const Properties = () => {
+	const isMobile = useMediaQuery('(max-width: 500px)');
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [allProperties, setAllProperties] = useState<PropertyDataType[] | null>(
 		null,
@@ -115,7 +117,7 @@ const Properties = () => {
 				<Box>
 					<Grid container rowSpacing={2} sx={styles.container}>
 						<Grid
-							xs
+							xs={12}
 							display='flex'
 							justifyContent={{
 								xs: 'flex-start',
@@ -132,13 +134,15 @@ const Properties = () => {
 								spacing={2}
 								alignItems={'center'}
 							>
-								<div onClick={toggleLayout}>
-									{layout === 'column' ? (
-										<FormatListBulletedIcon />
-									) : (
-										<GridOnIcon />
-									)}
-								</div>
+								{!isMobile && (
+									<div onClick={toggleLayout}>
+										{layout === 'column' ? (
+											<FormatListBulletedIcon />
+										) : (
+											<GridOnIcon />
+										)}
+									</div>
+								)}
 								<Button
 									variant='contained'
 									sx={styles.addPropertyButton}
@@ -150,7 +154,7 @@ const Properties = () => {
 							</Stack>
 						</Grid>
 
-						<Grid container rowSpacing={0.5}>
+						<Grid xs={12} container rowSpacing={1}>
 							<Grid xs={12}>
 								<Paper component='form' sx={styles.inputStyle}>
 									<IconButton aria-label='search'>
@@ -176,19 +180,19 @@ const Properties = () => {
 									}}
 								/>
 							</Grid>
-							<Grid xs={12}>
+							<Grid xs={12} mb={3}>
 								{filterObjectHasProperties ? (
-									<Typography sx={styles.filterResultText}>
-										<span style={styles.filterResultNumber}>
+									<Typography variant='filterResultText'>
+										<Typography variant='filterResultNumber'>
 											{allProperties?.length}
-										</span>{' '}
+										</Typography>{' '}
 										{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
 										Found
 									</Typography>
 								) : null}
 							</Grid>
 
-							<Grid container spacing={3}>
+							<Grid xs={12} container spacing={3}>
 								{allProperties?.map((property, index) => (
 									<Grid
 										xs={12}
@@ -198,7 +202,10 @@ const Properties = () => {
 										xl={layout === 'row' ? 12 : 3}
 										key={index}
 									>
-										<PropertyCard propertyData={property} layout={layout} />
+										<PropertyCard
+											propertyData={property}
+											layout={isMobile ? 'column' : layout}
+										/>
 									</Grid>
 								))}
 							</Grid>

@@ -2,6 +2,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import {
 	Grid,
@@ -18,8 +20,11 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
 import user from '../../assets/manImage.svg';
+import { startCase } from 'lodash';
 
 const NavBar = () => {
+	const { user } = useSelector(getAuthState);
+	console.log('KLUBIQ USER: ', user);
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
@@ -153,8 +158,8 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							Feyisetan <br />
-							manager
+							{user.data.firstName ?? 'Kl'} <br />
+							{startCase(user.data.companyRole) ?? ''}
 						</Typography>
 						<IconButton
 							edge='end'
@@ -163,8 +168,8 @@ const NavBar = () => {
 							aria-haspopup='true'
 						>
 							<Avatar
-								alt='Remy Sharp'
-								src={user}
+								alt={user.data.firstName}
+								src={user.data.profilePicUrl}
 								sx={{
 									width: '40px',
 									height: '40px',
