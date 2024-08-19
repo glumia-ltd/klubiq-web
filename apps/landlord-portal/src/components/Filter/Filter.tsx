@@ -75,10 +75,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 
 	const theme = useTheme();
 
-	const handleButtonClick = (
-		title: string,
-		//, id = ''
-	) => {
+	const handleButtonClick = (title: string) => {
 		const buttonPosition = divRef?.current[title]?.getBoundingClientRect();
 		const modalPosition = modalRef?.current[title]?.getBoundingClientRect();
 
@@ -117,8 +114,6 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 		const updatedId = selectedId;
 		delete updatedFilters[filterTitle];
 		delete updatedId[id];
-
-		// getFilterResult({ ...updatedFilters });
 
 		getFilterResult({ ...updatedId });
 
@@ -167,12 +162,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								...styles.selectedButtonDropDown,
 								background: `${theme.palette.primary.main}`,
 							}}
-							onClick={() =>
-								handleButtonClick(
-									title,
-									//, id
-								)
-							}
+							onClick={() => handleButtonClick(title)}
 						>
 							<Typography>{selectedTitle[title]}</Typography>
 
@@ -287,10 +277,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 										outline: `1px dashed ${theme.palette.primary.main}`,
 									}}
 									onClick={() => {
-										handleButtonClick(
-											title,
-											//, id
-										);
+										handleButtonClick(title);
 									}}
 								>
 									<Plus sx={{ height: '14px' }} />
