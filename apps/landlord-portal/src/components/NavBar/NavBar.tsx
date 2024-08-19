@@ -156,8 +156,8 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							{user?.data?.firstName ?? 'Klubiq User'} <br />
-							{startCase(user?.data?.companyRole) ?? 'Demo'}
+							{user?.firstName ?? 'Klubiq User'} <br />
+							{startCase(user?.companyRole) ?? 'Demo'}
 						</Typography>
 						<IconButton
 							edge='end'
@@ -166,8 +166,8 @@ const NavBar = () => {
 							aria-haspopup='true'
 						>
 							<Avatar
-								alt={user?.data?.firstName ?? 'K'}
-								src={user?.data?.profilePicUrl ?? ''}
+								alt={user?.firstName ?? 'K'}
+								src={user?.profilePicUrl ?? ''}
 								sx={{
 									width: '40px',
 									height: '40px',

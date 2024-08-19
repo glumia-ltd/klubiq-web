@@ -1,5 +1,7 @@
+import { UserProfile } from '../../shared/auth-types';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type AuthType = {
-	user: any;
+	user: UserProfile;
 	token: string | null;
 };

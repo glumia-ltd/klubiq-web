@@ -78,7 +78,7 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 	return (
 		<Provider value={{ mode, switchMode }}>
 			<ThemeProvider theme={muiTheme}>
-				<Paper elevation={0} sx={{ height: '100vh' }} square>
+				<Paper elevation={0} square>
 					{children}
 				</Paper>
 			</ThemeProvider>

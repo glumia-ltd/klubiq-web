@@ -131,18 +131,26 @@ const CreateAccount: React.FC = () => {
 				component='form'
 				container
 				spacing={0}
+				justifyContent={'space-around'}
 				sx={{
-					justifyContent: 'center',
+					p: {
+						xs: 2,
+						sm: 1,
+						md: 1,
+						lg: 1,
+					},
 				}}
 				onSubmit={formik.handleSubmit}
+				columnSpacing={{ xs: 1, sm: 1, md: 1 }}
 			>
 				<Grid
 					container
 					item
 					xs={12}
 					sm={12}
-					md={7}
-					lg={6}
+					md={4}
+					lg={4}
+					xl={5}
 					spacing={0}
 					sx={{
 						alignContent: 'center',
@@ -151,7 +159,6 @@ const CreateAccount: React.FC = () => {
 					<Grid
 						container
 						sx={{
-							width: '36rem',
 							justifyContent: 'center',
 							margin: 'auto',
 						}}
@@ -310,6 +317,7 @@ const CreateAccount: React.FC = () => {
 					lg={5}
 					sx={{
 						background: '#6699CC',
+						display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 						borderBottomRightRadius: '1.3rem',
 						borderBottomLeftRadius: '1.3rem',
 						height: '97vh',

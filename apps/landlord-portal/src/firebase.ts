@@ -13,12 +13,12 @@ const firebaseConfig = {
 };
 const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
-console.log(import.meta.env.VITE_APPLICATION_NAME);
 const app = initializeApp(
 	firebaseConfig,
 	import.meta.env.VITE_APPLICATION_NAME,
 );
-self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_RECAPTCHA_DEBUG_TOKEN;
+(self as any).FIREBASE_APPCHECK_DEBUG_TOKEN =
+	import.meta.env.VITE_RECAPTCHA_DEBUG_TOKEN;
 
 const appCheck = initializeAppCheck(app, {
 	provider: new ReCaptchaV3Provider(recaptchaSiteKey),
@@ -26,7 +26,6 @@ const appCheck = initializeAppCheck(app, {
 });
 
 const auth = getAuth(app);
-
 auth.setPersistence(browserSessionPersistence);
 
-export { auth };
+export { auth, appCheck };
