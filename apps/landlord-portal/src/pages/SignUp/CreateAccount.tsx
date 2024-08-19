@@ -94,10 +94,12 @@ const CreateAccount: React.FC = () => {
 			dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 		} catch (error) {
 			setLoading(false);
-			console.log(error);
+			const errorMessage = (error as Error).message.includes('code 424')
+				? 'Your credentials are invalid. Please try again with new credentials.'
+				: (error as Error).message;
 			dispatch(
 				openSnackbar({
-					message: `${(error as Error).message}`,
+					message: errorMessage,
 					severity: 'error',
 					isOpen: true,
 				}),
