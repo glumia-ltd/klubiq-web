@@ -114,7 +114,10 @@ const totalMaintenanceRequests = 3;
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
-	const [propertyType, setPropertyType] = useState('multi');
+	const [
+		propertyType,
+		//, setPropertyType
+	] = useState('multi');
 	const navigate = useNavigate();
 
 	const maintenanceTabs = [

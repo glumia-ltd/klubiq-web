@@ -9,7 +9,8 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { useState, useEffect } from 'react';
 
 const Maintenance = () => {
-	const [passportFiles, setPassportFiles] = useState<File[]>([]);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+	// const [passportFiles, setPassportFiles] = useState<File[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const validationSchema = yup.object({
@@ -65,7 +66,7 @@ const Maintenance = () => {
 				URL.createObjectURL(file),
 			);
 			formik.setFieldValue('photo', [...formik.values.photo, ...fileArray]);
-			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
+			//setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 		}
 	};
 	useEffect(() => {

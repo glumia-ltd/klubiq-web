@@ -25,7 +25,7 @@ import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
+// import { saveUser } from '../../store/AuthStore/AuthSlice';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -78,16 +78,6 @@ const Login = () => {
 						}),
 					);
 				} else {
-					const profile = await api.get(authEndpoints.getUserByFbid());
-					if (profile.data) {
-						const payload = {
-							token: userToken,
-							user: profile.data,
-						};
-						dispatch(saveUser(payload));
-					} else {
-						throw new Error('User not found');
-					}
 					openSnackbar({
 						message: 'That was easy',
 						severity: 'success',

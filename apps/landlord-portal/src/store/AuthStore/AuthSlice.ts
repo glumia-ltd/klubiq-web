@@ -2,9 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit/react';
 import { AuthType } from './authType';
 import { RootState } from '..';
+import { UserProfile } from '../../shared/auth-types';
 
 const initialState: AuthType = {
-	user: {},
+	user: {} as UserProfile,
 	token: null,
 };
 

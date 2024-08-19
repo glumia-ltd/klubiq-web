@@ -16,17 +16,17 @@ import GridOnIcon from '@mui/icons-material/GridOn';
 import SearchIcon from '@mui/icons-material/Search';
 import PropertyCard from '../../components/PropertyCard';
 import ViewPort from '../../components/Viewport/ViewPort';
-import Filter, { OptionsType } from '../../components/Filter/Filter';
+import Filter from '../../components/Filter/Filter'; //, { OptionsType }
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 import { data, filterOptions as initialFilterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
-import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
-import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
+// import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
+// import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 import { api } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesSkeleton from './PropertiesSkeleton';
-import { PropertyDataType } from '../../type';
+import { PropertyDataType } from '../../shared/type';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
@@ -45,7 +45,7 @@ const Properties = () => {
 
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
 
-	const filterLength = Object.keys(filter).length || 0;
+	//const filterLength = Object.keys(filter).length || 0;
 
 	const inputRef = useRef<HTMLElement>(null);
 

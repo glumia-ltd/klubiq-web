@@ -30,5 +30,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@mui/x-data-grid": "^7.13.0"
+  }
 }
