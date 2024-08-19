@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { AxisScaleConfig } from '@mui/x-charts/internals';
-import { SeriesDataType } from '../../type';
+import { SeriesDataType } from '../../shared/type';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { FC } from 'react';
 import { useScreenSize } from '../../helpers/useScreenSize';

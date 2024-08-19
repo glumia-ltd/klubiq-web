@@ -3,8 +3,8 @@ import React from 'react';
 import {
 	Stack,
 	Typography,
-	InputAdornment,
-	CircularProgress,
+	// InputAdornment,
+	// CircularProgress,
 	TextareaAutosize,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
@@ -26,27 +26,34 @@ type ControlledTextFieldProps = {
 };
 
 const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
-	loading,
+	//loading,
 	formik,
 	sx,
-	InputProps,
+	//InputProps,
 	disableOnChange,
 	label,
 	name,
 	type,
 	inFieldLabel,
-	inputProps,
+	//inputProps,
 	prioritizeError,
 	onFileSelect,
 	color,
 	...props
 }) => {
-	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const onChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+	) => {
 		if (disableOnChange) {
 			return;
 		}
-		if (type === 'file') {
-			onFileSelect?.(e.target.files);
+		if (e.target instanceof HTMLInputElement && type === 'file') {
+			const files = e.target.files;
+			if (files) {
+				// Handle file input
+				console.log(files);
+				onFileSelect?.(e.target.files);
+			}
 		}
 		formik.handleChange(e);
 	};
@@ -68,37 +75,34 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 				</Typography>
 			)}
 			<TextareaAutosize
-				fullWidth
 				id={name}
 				name={name}
-				size='small'
-				variant='outlined'
-				label={inFieldLabel && label}
-				type={type || 'text'}
 				value={
 					(props.value !== undefined && props.value) || formik.values[name]
 				}
 				onChange={onChange}
-				error={
-					Boolean(prioritizeError) ||
-					(Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
-				}
-				InputProps={{
-					endAdornment: loading ? (
-						<InputAdornment position='end'>
-							<CircularProgress size={20} />
-						</InputAdornment>
-					) : undefined,
-					...InputProps,
-				}}
-				helperText={
-					prioritizeError ||
-					(formik.touched[name] && formik.errors[name]) ||
-					' '
-				}
-				inputProps={inputProps}
+				// InputProps={{
+				// 	endAdornment: loading ? (
+				// 		<InputAdornment position='end'>
+				// 			<CircularProgress size={20} />
+				// 		</InputAdornment>
+				// 	) : undefined,
+				// 	...InputProps,
+				// }}
+				// helperText={
+				// 	prioritizeError ||
+				// 	(formik.touched[name] && formik.errors[name]) ||
+				// 	' '
+				// }
+				// inputProps={inputProps}
 				{...props}
 			/>
+			{Boolean(prioritizeError) ||
+				(Boolean(formik.touched[name]) && Boolean(formik.errors[name]) && (
+					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+						{label}
+					</Typography>
+				))}
 		</Stack>
 	);
 };

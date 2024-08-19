@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useRef, useState } from 'react';
 import { Plus } from '../Icons/CustomIcons';
 import cancel from '../../assets/images/cancel-button.svg';
@@ -73,7 +75,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 
 	const theme = useTheme();
 
-	const handleButtonClick = (title: string, id = '') => {
+	const handleButtonClick = (
+		title: string,
+		//, id = ''
+	) => {
 		const buttonPosition = divRef?.current[title]?.getBoundingClientRect();
 		const modalPosition = modalRef?.current[title]?.getBoundingClientRect();
 
@@ -162,7 +167,12 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								...styles.selectedButtonDropDown,
 								background: `${theme.palette.primary.main}`,
 							}}
-							onClick={() => handleButtonClick(title, id)}
+							onClick={() =>
+								handleButtonClick(
+									title,
+									//, id
+								)
+							}
 						>
 							<Typography>{selectedTitle[title]}</Typography>
 
@@ -277,7 +287,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 										outline: `1px dashed ${theme.palette.primary.main}`,
 									}}
 									onClick={() => {
-										handleButtonClick(title, id);
+										handleButtonClick(
+											title,
+											//, id
+										);
 									}}
 								>
 									<Plus sx={{ height: '14px' }} />

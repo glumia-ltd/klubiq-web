@@ -13,7 +13,7 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import ViewPort from '../../components/Viewport/ViewPort';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { DashboardMetricsType, RevenueReportType } from '../../type';
+import { DashboardMetricsType, RevenueReportType } from '../../shared/type';
 import { api } from '../../api';
 import { styles } from './style';
 import {
@@ -54,17 +54,17 @@ const DashBoard = () => {
 	const {
 		maintenanceUnits,
 		maintenanceUnitsChangeIndicator,
-		maintenanceUnitsLastMonth,
+		//maintenanceUnitsLastMonth,
 		maintenanceUnitsPercentageDifference,
-		multiUnits,
+		//multiUnits,
 		occupancyRate,
 		occupancyRateChangeIndicator,
-		occupancyRateLastMonth,
+		//occupancyRateLastMonth,
 		occupancyRatePercentageDifference,
 		occupiedUnits,
 		rentOverdue,
-		singleUnits,
-		totalProperties,
+		//singleUnits,
+		//totalProperties,
 		totalUnits,
 		vacantUnits,
 	} = propertyMetrics;
@@ -74,7 +74,7 @@ const DashBoard = () => {
 		dailyRevenuePercentageDifference,
 		netCashFlow,
 		netCashFlowChangeIndicator,
-		netCashFlowLastMonth,
+		//netCashFlowLastMonth,
 		netCashFlowPercentageDifference,
 		todaysRevenue,
 		totalExpenses,
@@ -84,8 +84,8 @@ const DashBoard = () => {
 
 	const {
 		changeIndicator,
-		maxRevenue,
-		monthlyRevenues,
+		//maxRevenue,
+		//monthlyRevenues,
 		percentageDifference,
 		revenueChart,
 		totalRevenueLast12Months,
