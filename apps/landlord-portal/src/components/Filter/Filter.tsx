@@ -273,7 +273,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 								}}
 							>
 								<Button
-									disabled={!disable}
+									disabled={disable}
 									sx={{
 										...styles.buttonStyle,
 										outline: `1px dashed ${theme.palette.primary.main}`,
