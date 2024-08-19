@@ -52,13 +52,14 @@ type selectedFilters = Record<string, string | number>;
 type FilterType = {
 	filterList: OptionsType;
 	getFilterResult: (result: selectedFilters) => void;
+	disable?: boolean;
 };
 
 type ModalStyleType = {
 	[key: string]: string | number;
 };
 
-const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
+const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 	const [selectedTitle, setSelectedTitle] = useState<selectedFilters>({});
 
 	const [selectedId, setSelectedId] = useState<selectedFilters>({});
@@ -272,6 +273,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								}}
 							>
 								<Button
+									disabled={!disable}
 									sx={{
 										...styles.buttonStyle,
 										outline: `1px dashed ${theme.palette.primary.main}`,

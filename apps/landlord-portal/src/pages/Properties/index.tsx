@@ -44,7 +44,7 @@ const Properties = () => {
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
-	// const [filterLoading, setFilterLoading] = useState<boolean>(true);
+	const [initialLoading, setInitialLoading] = useState<boolean>(true);
 
 	const filterObjectHasProperties = Object.keys(filter).length > 0;
 	const filterObjectHasOnlyOrderProperty =
@@ -54,6 +54,8 @@ const Properties = () => {
 
 	const showFilterResultOnlyWhenFiltered =
 		filterObjectHasProperties && !filterObjectHasOnlyOrderProperty;
+
+	const checkIfProperties = !!allProperties?.length;
 
 	const inputRef = useRef<HTMLElement>(null);
 
@@ -76,7 +78,6 @@ const Properties = () => {
 			});
 
 			setAllProperties(pageData);
-			// setFilterLoading(false);
 			setLoading(false);
 		} catch (e) {
 			console.log(e);
@@ -92,7 +93,6 @@ const Properties = () => {
 			const { filterOptions } = data;
 
 			setFilterOptions(filterOptions);
-			// setFilterLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -108,13 +108,13 @@ const Properties = () => {
 	}, []);
 
 	useEffect(() => {
-		// setFilterLoading(true);
 		setLoading(true);
 		getAllProperties();
 	}, [updateFilter]);
 
 	useEffect(() => {
 		getPropertiesMetaData();
+		setInitialLoading(false);
 	}, []);
 
 	return (
@@ -139,7 +139,7 @@ const Properties = () => {
 							spacing={2}
 							alignItems={'center'}
 						>
-							{!isMobile && (
+							{checkIfProperties && !isMobile && (
 								<div onClick={toggleLayout}>
 									{layout === 'column' ? (
 										<FormatListBulletedIcon />
@@ -178,7 +178,7 @@ const Properties = () => {
 
 						<Grid xs={12}>
 							{
-								// 	loading ? (
+								// 	initialLoading ? (
 								// 	<FilterSkeleton />
 								// ) :
 								<Filter
@@ -187,6 +187,7 @@ const Properties = () => {
 										setFilter(options);
 										setUpdateFilter((prev) => !prev);
 									}}
+									disable={checkIfProperties}
 								/>
 							}
 						</Grid>
@@ -199,6 +200,7 @@ const Properties = () => {
 												variant='rectangular'
 												height={40}
 												width={'15%'}
+												sx={{ borderRadius: '8px' }}
 											/>
 										</Typography>{' '}
 									</Typography>
