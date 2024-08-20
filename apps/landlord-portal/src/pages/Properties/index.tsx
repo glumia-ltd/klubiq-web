@@ -98,7 +98,7 @@ const Properties = () => {
 			const { filterOptions } = data;
 
 			setFilterOptions(filterOptions);
-			setInitialLoading(false);
+			// setInitialLoading(false);
 		} catch (e) {
 			console.log(e);
 		}

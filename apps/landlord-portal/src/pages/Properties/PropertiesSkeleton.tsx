@@ -73,13 +73,12 @@ export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
 					</Grid>
 
 					<Grid
-						xs={12}
 						container
 						spacing={3}
 						columnGap={3}
 						padding={3}
 						mt={5}
-						display={'flex'}
+						sx={{ border: '2px solid green' }}
 					>
 						{[1, 2, 3, 4, 5]?.map((index) => (
 							<Grid
