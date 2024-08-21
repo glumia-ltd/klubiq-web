@@ -1,20 +1,20 @@
 export const styles = {
 	mainCardContainerStyle: {
-		backgroundColor: '#FFF',
 		marginTop: '24px',
 		borderRadius: '8px',
 		padding: '16px',
+		// color:'primary.main'
 	},
 
 	mainCardStyle: {
 		display: 'flex',
 		gap: '24px',
 		padding: '16px',
-		backgroundColor: '#FFF',
 	},
 
 	mainPictureStyle: {
 		minHeight: '182px',
+		borderRadius: '8px',
 	},
 	propertyDetailsStyle: {
 		flexGrow: 2,
@@ -26,13 +26,13 @@ export const styles = {
 	},
 
 	propertyHeaderText: {
+		// color:'primary.main',
 		lineHeight: '0.7',
 	},
 	reducedTextStyle: {
 		marginTop: '8px',
 		display: 'flex',
 		alignItems: 'center',
-		color: '#1B1B1BB2',
 		fontSize: '12px',
 	},
 
@@ -66,8 +66,8 @@ export const styles = {
 	},
 
 	additionalChipText: {
-		backgroundColor: '#0C36A01A',
-		color: '#0C36A0',
+		// backgroundColor: 'background.paper',
+		// color: '#0C36A0',
 		fontWeight: 600,
 	},
 	stackedImagesContainer: {

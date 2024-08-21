@@ -99,6 +99,16 @@ export const LightTheme: Theme = createTheme({
 						border: '1.6px solid #002147',
 					},
 				},
+				text: {
+					background: '#ffffff',
+					color: '#002147',
+					opacity: '0.8',
+					'&:hover': {
+						opacity: '1',
+						color: '#002147',
+						border: '1.6px solid #FFFFFF',
+					},
+				},
 			},
 		},
 		MuiListItemButton: {
@@ -207,6 +217,13 @@ export const LightTheme: Theme = createTheme({
 					style: {
 						backgroundColor: '#FF0000',
 						color: '#FFFFFF',
+					},
+				},
+				{
+					props: { variant: 'propertyType' },
+					style: {
+						backgroundColor: '#0C36A01A',
+						color: '#0C36A0',
 					},
 				},
 			],
@@ -462,6 +479,17 @@ export const DarkTheme: Theme = createTheme({
 						opacity: '1',
 						color: '#FFFFFF',
 						border: '1.6px solid #FFFFFF',
+					},
+				},
+				text: {
+					background: '#fdfdfd',
+					color: '#002147',
+					opacity: '0.8',
+					'&:hover': {
+						opacity: '1',
+						// color: '#002147',
+						// border: '1.6px solid #fdfdfd',
+						background: '#fdfdfd',
 					},
 				},
 			},

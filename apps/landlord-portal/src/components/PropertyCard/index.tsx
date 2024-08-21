@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
-//import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
+import { useNavigate } from 'react-router-dom';
 
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
@@ -24,11 +24,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	propertyData,
 	layout,
 }) => {
-	//const navigate = useNavigate();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-	// const handleViewProperty = () => {
-	// 	navigate('/properties/12345');
-	// };
+	const navigate = useNavigate();
+
+	const handleViewProperty = () => {
+		navigate('/properties/12345');
+	};
+
 	return layout === 'column' ? (
 		<Card sx={CardStyle.cardContainerColumn}>
 			<CardContent
@@ -194,6 +195,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent: 'flex-end',
 				}}
 				disableSpacing
+				onClick={handleViewProperty}
 			>
 				<Typography variant='link'>View Properties</Typography>
 			</CardActions>

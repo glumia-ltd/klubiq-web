@@ -3,6 +3,7 @@ import {
 	Breadcrumbs,
 	Button,
 	Chip,
+	Container,
 	Grid,
 	SvgIcon,
 	Table,
@@ -15,7 +16,6 @@ import {
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ViewPort from '../../components/Viewport/ViewPort';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import UnitInfoCard from '../../components/UnitInfoComponent/UnitInfoCard';
 import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
@@ -158,8 +158,8 @@ const PropertyPage = () => {
 	const handleAddUnit = () => {};
 
 	return (
-		<ViewPort>
-			<Grid sx={styles.container}>
+		<Container maxWidth={'xl'} sx={styles.container}>
+			<Grid>
 				<Grid>
 					<Breadcrumbs
 						separator={
@@ -184,7 +184,7 @@ const PropertyPage = () => {
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button sx={styles.actionButtonStyle}>
+					<Button variant='text' sx={styles.actionButtonStyle}>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
@@ -534,7 +534,7 @@ const PropertyPage = () => {
 					</TableContainer>
 				)}
 			</Grid>
-		</ViewPort>
+		</Container>
 	);
 };
 
