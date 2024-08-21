@@ -1,22 +1,33 @@
-import { Button, Grid, IconButton, InputBase, Paper } from '@mui/material';
-import { Box, Stack } from '@mui/system';
-import SearchIcon from '@mui/icons-material/Search';
-import { styles } from './styles';
-import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
-import { FilterSkeleton } from './FilterSkeleton';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import GridOnIcon from '@mui/icons-material/GridOn';
-import PropertiesCardSkeleton from './PropertiesCardSkeleton';
-import { FC } from 'react';
+import { useState } from 'react';
 
-export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
-	layout,
-}) => {
+import {
+	Stack,
+	Box,
+	Button,
+	Paper,
+	IconButton,
+	InputBase,
+} from '@mui/material';
+
+import Grid from '@mui/material/Unstable_Grid2';
+
+import SearchIcon from '@mui/icons-material/Search';
+
+import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+import { styles } from './styles';
+
+import PropertiesCardSkeleton from './PropertiesCardSkeleton';
+
+import { FilterSkeleton } from './FilterSkeleton';
+import { Container } from '@mui/system';
+
+export const PropertiesSkeleton = () => {
+	const [layout] = useState<'row' | 'column'>('column');
+
 	return (
-		<Box>
-			<Grid container rowSpacing={2} sx={styles.container}>
+		<Container maxWidth={'xl'} sx={styles.container}>
+			<Grid container rowSpacing={2}>
 				<Grid
-					mt={2}
 					xs={12}
 					display='flex'
 					justifyContent={{
@@ -34,15 +45,6 @@ export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
 						spacing={2}
 						alignItems={'center'}
 					>
-						{
-							<div>
-								{layout === 'column' ? (
-									<FormatListBulletedIcon />
-								) : (
-									<GridOnIcon />
-								)}
-							</div>
-						}
 						<Button variant='contained' sx={styles.addPropertyButton}>
 							<LeftArrowIcon />
 							Add New Property
@@ -50,7 +52,7 @@ export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
 					</Stack>
 				</Grid>
 
-				<Grid xs={12} container rowSpacing={1} mt={2}>
+				<Grid xs={12} container rowSpacing={1}>
 					<Grid xs={12}>
 						<Paper component='form' sx={styles.inputStyle}>
 							<IconButton aria-label='search'>
@@ -64,22 +66,24 @@ export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
 						</Paper>
 					</Grid>
 
-					<Grid mt={3} xs={12} display={'flex'} gap={1}>
-						<FilterSkeleton />
-						<FilterSkeleton />
-						<FilterSkeleton />
-						<FilterSkeleton />
-						<FilterSkeleton />
+					<Grid xs={12}>
+						<Stack
+							direction='row'
+							useFlexGap
+							flexWrap='wrap'
+							spacing={{ xs: 1, sm: 2 }}
+							alignItems={{ xs: 'flex-start', sm: 'center' }}
+							justifyContent={'flex-start'}
+							sx={styles.filterSkeletonContainer}
+						>
+							{[1, 2, 3, 4, 5].map((filter) => (
+								<FilterSkeleton key={filter} />
+							))}
+						</Stack>
 					</Grid>
+					<Grid xs={12} mb={3}></Grid>
 
-					<Grid
-						container
-						spacing={3}
-						columnGap={3}
-						padding={3}
-						mt={5}
-						sx={{ border: '2px solid green' }}
-					>
+					<Grid xs={12} container spacing={3}>
 						{[1, 2, 3, 4, 5]?.map((index) => (
 							<Grid
 								xs={12}
@@ -89,12 +93,12 @@ export const PropertiesSkeleton: FC<{ layout: 'row' | 'column' }> = ({
 								xl={layout === 'row' ? 12 : 3}
 								key={index}
 							>
-								{<PropertiesCardSkeleton layout={layout} />}
+								<PropertiesCardSkeleton layout={layout} />
 							</Grid>
 						))}
 					</Grid>
 				</Grid>
 			</Grid>
-		</Box>
+		</Container>
 	);
 };

@@ -24,10 +24,10 @@ const PropertiesCardSkeleton: FC<{ layout: 'column' | 'row' }> = ({
 				<Typography variant='cardHeader' noWrap={true}>
 					<Skeleton width={'50%'} height={15} />
 				</Typography>
-				<Skeleton width={'100%'} height={300} />
+				<Skeleton height={300} />
 				<Stack direction='row' spacing={2} justifyContent='space-between'>
 					<Typography variant='cardTitle' noWrap={true}>
-						<Skeleton width={'100%'} height={15} variant='rectangular' />
+						<Skeleton height={15} variant='rectangular' />
 					</Typography>
 					<Skeleton
 						width={'15%'}
@@ -109,7 +109,7 @@ const PropertiesCardSkeleton: FC<{ layout: 'column' | 'row' }> = ({
 				</Typography>
 				<Stack direction='row' spacing={2}>
 					<Box width={'160px'} height={'100px'}>
-						<Skeleton width={'100%'} height={100} />
+						<Skeleton height={100} />
 					</Box>
 					<Stack pt={1} width={'100%'} spacing={1.5}>
 						<Stack direction='row' spacing={1} justifyContent='space-between'>

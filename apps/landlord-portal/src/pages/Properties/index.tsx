@@ -9,6 +9,7 @@ import {
 	InputBase,
 	Typography,
 	Skeleton,
+	Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -28,7 +29,7 @@ import { api } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 import { PropertyDataType } from '../../shared/type';
-import { FilterSkeleton } from './FilterSkeleton';
+// import { FilterSkeleton } from './FilterSkeleton';
 import { PropertiesSkeleton } from './PropertiesSkeleton';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
@@ -46,8 +47,6 @@ const Properties = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [initialLoading, setInitialLoading] = useState<boolean>(true);
-
-	console.log(initialLoading);
 
 	const filterObjectLength = Object.keys(filter).length;
 
@@ -98,7 +97,7 @@ const Properties = () => {
 			const { filterOptions } = data;
 
 			setFilterOptions(filterOptions);
-			// setInitialLoading(false);
+			setInitialLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -125,10 +124,10 @@ const Properties = () => {
 	return (
 		<ViewPort>
 			{initialLoading ? (
-				<PropertiesSkeleton layout={layout} />
+				<PropertiesSkeleton />
 			) : (
-				<Box>
-					<Grid container rowSpacing={2} sx={styles.container}>
+				<Container maxWidth={'xl'} sx={styles.container}>
+					<Grid container rowSpacing={2}>
 						<Grid
 							xs={12}
 							display='flex'
@@ -244,7 +243,7 @@ const Properties = () => {
 							</Grid>
 						</Grid>
 					</Grid>
-				</Box>
+				</Container>
 			)}
 		</ViewPort>
 	);
