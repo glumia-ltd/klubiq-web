@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
 	Stack,
-	Box,
 	Button,
 	Paper,
 	IconButton,
@@ -17,8 +16,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import SearchIcon from '@mui/icons-material/Search';
 import PropertyCard from '../../components/PropertyCard';
-import ViewPort from '../../components/Viewport/ViewPort';
-import Filter from '../../components/Filter/Filter'; //, { OptionsType }
+import Filter from '../../components/Filter/Filter';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 import { filterOptions as initialFilterOptions } from './data';
@@ -29,7 +27,6 @@ import { api } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 import { PropertyDataType } from '../../shared/type';
-// import { FilterSkeleton } from './FilterSkeleton';
 import { PropertiesSkeleton } from './PropertiesSkeleton';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
@@ -122,7 +119,7 @@ const Properties = () => {
 	}, []);
 
 	return (
-		<ViewPort>
+		<>
 			{initialLoading ? (
 				<PropertiesSkeleton />
 			) : (
@@ -245,7 +242,7 @@ const Properties = () => {
 					</Grid>
 				</Container>
 			)}
-		</ViewPort>
+		</>
 	);
 };
 

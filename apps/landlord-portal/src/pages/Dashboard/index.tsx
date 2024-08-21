@@ -204,7 +204,7 @@ const DashBoard = () => {
 	};
 
 	return (
-		<ViewPort>
+		<>
 			{loading ? (
 				<DashBoardSkeleton />
 			) : (
@@ -548,7 +548,7 @@ const DashBoard = () => {
 					</Grid>
 				</Container>
 			)}
-		</ViewPort>
+		</>
 	);
 };
 export default DashBoard;

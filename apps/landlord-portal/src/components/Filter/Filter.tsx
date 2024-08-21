@@ -232,7 +232,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 
 												const labelWithIcon = (
 													<span style={styles.labelWithIcon}>
-														<LabelIcon />
+														{Icon && <LabelIcon />}
 														{label}
 													</span>
 												);

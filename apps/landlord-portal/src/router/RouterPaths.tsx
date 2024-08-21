@@ -29,6 +29,8 @@ import UnitType from '../components/PropertiesDetail';
 
 import Properties from '../pages/Properties';
 
+import ViewPortLayout from '../Layouts/ViewPortLayout';
+
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
@@ -40,34 +42,36 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='*' element={<Navigate to='/' replace />} />
 
-			<Route path='/properties' element={<Properties />} />
-
-			<Route path='/properties/:slug'>
-				<Route index element={<PropertyPage />} />
-
-				<Route path='add-tenant' element={<AddTenantPage />} />
-
-				<Route path='add-lease' element={<AddLeasePage />} />
-
-				<Route path='add-maintenance' element={<AddMaintenancePage />} />
-			</Route>
-
-			<Route path='/properties/*' element={<AddProperties />}>
-				<Route path='property-category' element={<PropertyCategory />} />
-				<Route path='property-details' element={<PropertiesDetails />} />
-				<Route path='unit-type' element={<UnitType />} />
-				<Route path='bank-account' element={<h1>Page in development</h1>} />
-
-				<Route path='*' element={<Navigate to='/properties' replace />} />
-			</Route>
-
 			<Route element={<PrivateRoute />}>
-				<Route path='/dashboard' element={<DashBoard />} />
-				<Route path='/lease' element={<Lease />} />
-				<Route path='/maintenance' element={<Maintenance />} />
-				<Route path='/message' element={<Message />} />
-				<Route path='/support' element={<Support />} />
-				<Route path='/settings' element={<Setting />} />
+				<Route element={<ViewPortLayout />}>
+					<Route path='/dashboard' element={<DashBoard />} />
+					<Route path='/properties' element={<Properties />} />
+
+					<Route path='/properties/:slug'>
+						<Route index element={<PropertyPage />} />
+
+						<Route path='add-tenant' element={<AddTenantPage />} />
+
+						<Route path='add-lease' element={<AddLeasePage />} />
+
+						<Route path='add-maintenance' element={<AddMaintenancePage />} />
+					</Route>
+
+					<Route path='/properties/*' element={<AddProperties />}>
+						<Route path='property-category' element={<PropertyCategory />} />
+						<Route path='property-details' element={<PropertiesDetails />} />
+						<Route path='unit-type' element={<UnitType />} />
+						<Route path='bank-account' element={<h1>Page in development</h1>} />
+
+						<Route path='*' element={<Navigate to='/properties' replace />} />
+					</Route>
+
+					<Route path='/lease' element={<Lease />} />
+					<Route path='/maintenance' element={<Maintenance />} />
+					<Route path='/message' element={<Message />} />
+					<Route path='/support' element={<Support />} />
+					<Route path='/settings' element={<Setting />} />
+				</Route>
 			</Route>
 		</Route>,
 	),
