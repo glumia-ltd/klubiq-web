@@ -8,6 +8,8 @@ import {
 	IconButton,
 	InputBase,
 	Typography,
+	Skeleton,
+	Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -19,14 +21,16 @@ import ViewPort from '../../components/Viewport/ViewPort';
 import Filter from '../../components/Filter/Filter'; //, { OptionsType }
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-import { data, filterOptions as initialFilterOptions } from './data';
+import { filterOptions as initialFilterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
 // import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
 // import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 import { api } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
-import PropertiesSkeleton from './PropertiesSkeleton';
+import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 import { PropertyDataType } from '../../shared/type';
+// import { FilterSkeleton } from './FilterSkeleton';
+import { PropertiesSkeleton } from './PropertiesSkeleton';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
@@ -42,14 +46,22 @@ const Properties = () => {
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(true);
+	const [initialLoading, setInitialLoading] = useState<boolean>(true);
 
-	const filterObjectHasProperties = Object.keys(filter).length > 0;
+	const filterObjectLength = Object.keys(filter).length;
 
-	//const filterLength = Object.keys(filter).length || 0;
+	const filterObjectHasProperties = filterObjectLength > 0;
+	const filterObjectHasOnlyOrderProperty =
+		filterObjectHasProperties &&
+		Object.keys(filter).includes('order') &&
+		filterObjectLength === 1;
+
+	const showFilterResultOnlyWhenFiltered =
+		filterObjectHasProperties && !filterObjectHasOnlyOrderProperty;
+
+	const allPropertiesLength = Boolean(allProperties?.length);
 
 	const inputRef = useRef<HTMLElement>(null);
-
-	console.log(allProperties);
 
 	const toggleLayout = () => {
 		setLayout((prevLayout) => (prevLayout === 'row' ? 'column' : 'row'));
@@ -70,8 +82,7 @@ const Properties = () => {
 			});
 
 			setAllProperties(pageData);
-
-			console.log(data);
+			setLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -86,6 +97,7 @@ const Properties = () => {
 			const { filterOptions } = data;
 
 			setFilterOptions(filterOptions);
+			setInitialLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -98,10 +110,10 @@ const Properties = () => {
 
 			inputElement && inputElement.focus();
 		}
-		setTimeout(() => setLoading(false), 1000);
 	}, []);
 
 	useEffect(() => {
+		setLoading(true);
 		getAllProperties();
 	}, [updateFilter]);
 
@@ -111,11 +123,11 @@ const Properties = () => {
 
 	return (
 		<ViewPort>
-			{loading ? (
+			{initialLoading ? (
 				<PropertiesSkeleton />
 			) : (
-				<Box>
-					<Grid container rowSpacing={2} sx={styles.container}>
+				<Container maxWidth={'xl'} sx={styles.container}>
+					<Grid container rowSpacing={2}>
 						<Grid
 							xs={12}
 							display='flex'
@@ -134,7 +146,7 @@ const Properties = () => {
 								spacing={2}
 								alignItems={'center'}
 							>
-								{!isMobile && (
+								{allPropertiesLength && !isMobile && (
 									<div onClick={toggleLayout}>
 										{layout === 'column' ? (
 											<FormatListBulletedIcon />
@@ -172,23 +184,39 @@ const Properties = () => {
 							</Grid>
 
 							<Grid xs={12}>
-								<Filter
-									filterList={filterOptions}
-									getFilterResult={(options) => {
-										setFilter(options);
-										setUpdateFilter((prev) => !prev);
-									}}
-								/>
+								{
+									<Filter
+										filterList={filterOptions}
+										getFilterResult={(options) => {
+											setFilter(options);
+											setUpdateFilter((prev) => !prev);
+										}}
+										disable={filterObjectLength ? false : !allPropertiesLength}
+									/>
+								}
 							</Grid>
 							<Grid xs={12} mb={3}>
-								{filterObjectHasProperties ? (
-									<Typography variant='filterResultText'>
-										<Typography variant='filterResultNumber'>
-											{allProperties?.length}
-										</Typography>{' '}
-										{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
-										Found
-									</Typography>
+								{showFilterResultOnlyWhenFiltered ? (
+									loading ? (
+										<Typography variant='filterResultText'>
+											<Typography variant='filterResultNumber'>
+												<Skeleton
+													variant='rectangular'
+													height={40}
+													width={'15%'}
+													sx={{ borderRadius: '8px' }}
+												/>
+											</Typography>{' '}
+										</Typography>
+									) : (
+										<Typography variant='filterResultText'>
+											<Typography variant='filterResultNumber'>
+												{allProperties?.length}
+											</Typography>{' '}
+											{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
+											Found
+										</Typography>
+									)
 								) : null}
 							</Grid>
 
@@ -202,16 +230,20 @@ const Properties = () => {
 										xl={layout === 'row' ? 12 : 3}
 										key={index}
 									>
-										<PropertyCard
-											propertyData={property}
-											layout={isMobile ? 'column' : layout}
-										/>
+										{loading ? (
+											<PropertiesCardSkeleton layout={layout} />
+										) : (
+											<PropertyCard
+												propertyData={property}
+												layout={isMobile ? 'column' : layout}
+											/>
+										)}
 									</Grid>
 								))}
 							</Grid>
 						</Grid>
 					</Grid>
-				</Box>
+				</Container>
 			)}
 		</ViewPort>
 	);

@@ -1,6 +1,7 @@
 export const styles = {
 	container: {
-		padding: { xs: '2rem 1.5rem', sm: '2rem 6rem' },
+		paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 	},
 	buttons: {
 		cursor: 'pointer',
@@ -109,5 +110,10 @@ export const styles = {
 	skeletonText: {
 		borderRadius: '5px',
 		marginBottom: '15px',
+	},
+	filterSkeletonContainer: {
+		margin: '16px 0px 16px 0px',
+		alignItems: 'center',
+		minHeight: '45px',
 	},
 };

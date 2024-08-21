@@ -56,7 +56,6 @@ const CreateAccount: React.FC = () => {
 	};
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log('submit clicked');
 		const { email, password, firstName, lastName, companyName, country } =
 			values;
 		const selectedCountry = find(activeCountries, ['code', country]);
@@ -77,8 +76,6 @@ const CreateAccount: React.FC = () => {
 				data: { data: token },
 			} = await api.post(authEndpoints.signup(), userDetails);
 
-			console.log(token);
-
 			const userCredential = await signInWithCustomToken(auth, token);
 			dispatch(
 				openSnackbar({
@@ -88,6 +85,8 @@ const CreateAccount: React.FC = () => {
 				}),
 			);
 
+			setLoading(false);
+
 			const user: any = userCredential.user;
 
 			const userInfo = { email: user.email };
@@ -95,7 +94,16 @@ const CreateAccount: React.FC = () => {
 			dispatch(saveUser({ user: userInfo, token: user.accessToken }));
 		} catch (error) {
 			setLoading(false);
-			console.log(error);
+			const errorMessage = (error as Error).message.includes('code 424')
+				? 'Your credentials are invalid. Please try again with new credentials.'
+				: (error as Error).message;
+			dispatch(
+				openSnackbar({
+					message: errorMessage,
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
 		}
 	};
 
@@ -116,12 +124,12 @@ const CreateAccount: React.FC = () => {
 		validateOnChange: true,
 		validateOnBlur: true,
 		validateOnMount: true,
-		isInitialValid: false,
-		validationSchema: {
-			validate: (values: IValuesType) => {
-				return validationSchema.isValidSync(values);
-			},
-		},
+		// validationSchema: {
+		// 	validate: (values: IValuesType) => {
+		// 		return validationSchema.isValidSync(values);
+		// 	},
+		// },
+		validationSchema,
 		onSubmit,
 	});
 

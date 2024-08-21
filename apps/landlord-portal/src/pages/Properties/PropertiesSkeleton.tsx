@@ -1,93 +1,104 @@
-import { Grid, Skeleton, Box, Card, CardContent } from '@mui/material';
+import { useState } from 'react';
+
+import {
+	Stack,
+	Box,
+	Button,
+	Paper,
+	IconButton,
+	InputBase,
+} from '@mui/material';
+
+import Grid from '@mui/material/Unstable_Grid2';
+
+import SearchIcon from '@mui/icons-material/Search';
+
+import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-import { data } from './data';
-import style from '../../components/PropertyCard/CardStyle';
-const PropertiesSkeleton = () => {
+
+import PropertiesCardSkeleton from './PropertiesCardSkeleton';
+
+import { FilterSkeleton } from './FilterSkeleton';
+import { Container } from '@mui/system';
+
+export const PropertiesSkeleton = () => {
+	const [layout] = useState<'row' | 'column'>('column');
+
 	return (
-		<Grid container spacing={1} sx={styles.container}>
-			{/* <Grid item xs={12} sx={styles.firstDiv}>
-				<Skeleton variant='rectangular' height={20} width='20px' />
-				<Skeleton variant='rectangular' sx={styles.buttonBorder} />
-			</Grid>
-			<Grid item xs={12}>
-				<Skeleton variant='rectangular' sx={styles.inputStyle2} />
-			</Grid>
-			<Grid item xs={6} sx={styles.filterContainers}>
-				<Skeleton variant='rectangular' sx={styles.borders} width='200px' />
-				<Skeleton variant='rectangular' sx={styles.borders} width='200px' />
-				<Skeleton
-					variant='rectangular'
-					sx={styles.borders}
-					height={45}
-					width='200px'
-				/>
-				<Skeleton
-					variant='rectangular'
-					sx={styles.borders}
-					height={45}
-					width='350px'
-				/>
-				<Skeleton
-					variant='rectangular'
-					sx={styles.borders}
-					height={45}
-					width='350px'
-				/>
-			</Grid> */}
+		<Container maxWidth={'xl'} sx={styles.container}>
+			<Grid container rowSpacing={2}>
+				<Grid
+					xs={12}
+					display='flex'
+					justifyContent={{
+						xs: 'flex-start',
+						md: 'flex-end',
+					}}
+					alignItems={'center'}
+				>
+					<Stack
+						sx={{
+							cursor: 'pointer',
+							pointerEvents: 'auto',
+						}}
+						direction={'row'}
+						spacing={2}
+						alignItems={'center'}
+					>
+						<Button variant='contained' sx={styles.addPropertyButton}>
+							<LeftArrowIcon />
+							Add New Property
+						</Button>
+					</Stack>
+				</Grid>
 
-			<Grid container spacing={1.5} mt={3} pl={0.5}>
-				{data.map((_, idx) => (
-					<Grid item xs={12} sm={6} md={4} lg={3} key={idx}>
-						<Card sx={style.cardContainerColumn}>
-							<CardContent
-								sx={{
-									padding: '1.5rem 1rem',
-								}}
-							>
-								<Skeleton
-									variant='rectangular'
-									style={styles.skeletonText}
-									width='50%'
-								/>
-
-								<Skeleton variant='rectangular' style={styles.skeletonImage} />
-								<Skeleton variant='rectangular' style={styles.skeletonText} />
-								<Skeleton
-									variant='rectangular'
-									style={styles.skeletonText}
-									width='70%'
-								/>
-								<Skeleton
-									variant='rectangular'
-									style={styles.skeletonText}
-									width='60%'
-								/>
-								<Skeleton
-									variant='rectangular'
-									style={styles.skeletonText}
-									width='55%'
-								/>
-								<Skeleton
-									variant='rectangular'
-									style={styles.skeletonText}
-									width='35%'
-								/>
-								<Skeleton variant='rectangular' height={2} width='100%' />
-
-								<Box display={'flex'} justifyContent={'flex-end'} mt='10px'>
-									<Skeleton
-										variant='rectangular'
-										style={styles.skeletonText}
-										width='40%'
-									/>
-								</Box>
-							</CardContent>
-						</Card>
+				<Grid xs={12} container rowSpacing={1}>
+					<Grid xs={12}>
+						<Paper component='form' sx={styles.inputStyle}>
+							<IconButton aria-label='search'>
+								<SearchIcon />
+							</IconButton>
+							<InputBase
+								sx={{ ml: 1, flex: 1 }}
+								placeholder='Search Properties'
+								inputProps={{ 'aria-label': 'search properties' }}
+							/>
+						</Paper>
 					</Grid>
-				))}{' '}
+
+					<Grid xs={12}>
+						<Stack
+							direction='row'
+							useFlexGap
+							flexWrap='wrap'
+							spacing={{ xs: 1, sm: 2 }}
+							alignItems={{ xs: 'flex-start', sm: 'center' }}
+							justifyContent={'flex-start'}
+							sx={styles.filterSkeletonContainer}
+						>
+							{[1, 2, 3, 4, 5].map((filter) => (
+								<FilterSkeleton key={filter} />
+							))}
+						</Stack>
+					</Grid>
+					<Grid xs={12} mb={3}></Grid>
+
+					<Grid xs={12} container spacing={3}>
+						{[1, 2, 3, 4, 5]?.map((index) => (
+							<Grid
+								xs={12}
+								sm={layout === 'row' ? 12 : 6}
+								md={layout === 'row' ? 12 : 4}
+								lg={layout === 'row' ? 12 : 4}
+								xl={layout === 'row' ? 12 : 3}
+								key={index}
+							>
+								<PropertiesCardSkeleton layout={layout} />
+							</Grid>
+						))}
+					</Grid>
+				</Grid>
 			</Grid>
-		</Grid>
+		</Container>
 	);
 };
-
-export default PropertiesSkeleton;
