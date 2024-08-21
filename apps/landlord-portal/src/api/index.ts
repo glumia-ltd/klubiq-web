@@ -89,7 +89,6 @@ api.interceptors.response.use(
 
 				// Retry the original request with the new token
 
-				console.log(access_token);
 				originalRequest.headers.Authorization = `Bearer ${access_token}`;
 
 				return axios(originalRequest);
