@@ -14,6 +14,12 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material';
+import {
+	HouseIcon,
+	VacantHomeIcon,
+	TenantIcon,
+	HomeMaintenanceIcon,
+} from '../../components/Icons/CustomIcons';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -25,10 +31,6 @@ import { Overview } from '../../components/Overview/Overview';
 import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
 import propertyImage from '../../assets/images/propertyImage.png';
 import addMaintenance from '../../assets/images/addMaintenance.svg';
-import HouseIcon from '../../assets/images/home.svg';
-import IconTwo from '../../assets/images/home2.svg';
-import IconThree from '../../assets/images/people.svg';
-import IconFour from '../../assets/images/lasthouse.svg';
 import { styles } from './style';
 import { useState } from 'react';
 import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
@@ -58,18 +60,18 @@ const data = [
 		label: 'VACANT UNIT',
 		value: 1,
 		valueColor: 'green',
-		imgSrc: IconTwo,
+		imgSrc: VacantHomeIcon,
 	},
 	{
 		label: 'TENANT',
 		value: 0,
-		imgSrc: IconThree,
+		imgSrc: TenantIcon,
 	},
 	{
 		label: 'MAINTENANCE REQUEST',
 		value: 0,
 		valueColor: 'red',
-		imgSrc: IconFour,
+		imgSrc: HomeMaintenanceIcon,
 	},
 ];
 
