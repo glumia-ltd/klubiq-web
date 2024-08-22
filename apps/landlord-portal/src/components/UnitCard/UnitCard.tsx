@@ -87,7 +87,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 							<Chip
 								sx={styles.additionalChipText}
 								label={buildingType}
-								variant='filled'
+								variant='propertyType'
 							/>
 						</Grid>
 					</Grid>

@@ -48,10 +48,16 @@ declare module '@mui/material/Typography' {
 	}
 }
 
+declare module '@mui/material/Button' {
+	interface ButtonPropsVariantOverrides {
+		propertyButton: true;
+	}
+}
+
 declare module '@mui/material/Chip' {
 	interface ChipPropsVariantOverrides {
 		rent: true;
 		sale: true;
-		propertyType: React.CSSProperties;
+		propertyType: true;
 	}
 }

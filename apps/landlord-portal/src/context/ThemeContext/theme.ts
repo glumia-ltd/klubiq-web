@@ -99,17 +99,23 @@ export const LightTheme: Theme = createTheme({
 						border: '1.6px solid #002147',
 					},
 				},
-				text: {
-					background: '#ffffff',
-					color: '#002147',
-					opacity: '0.8',
-					'&:hover': {
-						opacity: '1',
+			},
+
+			variants: [
+				{
+					props: { variant: 'propertyButton' },
+					style: {
+						background: '#ffffff',
 						color: '#002147',
-						border: '1.6px solid #FFFFFF',
+						opacity: '0.8',
+						'&:hover': {
+							// opacity: '1',
+							// color: '#002147',
+							// border: '1.6px solid #FFFFFF',
+						},
 					},
 				},
-			},
+			],
 		},
 		MuiListItemButton: {
 			defaultProps: {
@@ -481,18 +487,22 @@ export const DarkTheme: Theme = createTheme({
 						border: '1.6px solid #FFFFFF',
 					},
 				},
-				text: {
-					background: '#fdfdfd',
-					color: '#002147',
-					opacity: '0.8',
-					'&:hover': {
-						opacity: '1',
-						// color: '#002147',
-						// border: '1.6px solid #fdfdfd',
-						background: '#fdfdfd',
+			},
+			variants: [
+				{
+					props: { variant: 'propertyButton' },
+					style: {
+						background: '#ffffff',
+						color: '#002147',
+
+						'&:hover': {
+							// opacity: '1',
+							// color: '#002147',
+							// border: '1.6px solid #FFFFFF',
+						},
 					},
 				},
-			},
+			],
 		},
 
 		MuiCard: {
@@ -523,6 +533,7 @@ export const DarkTheme: Theme = createTheme({
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
+
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
@@ -543,8 +554,8 @@ export const DarkTheme: Theme = createTheme({
 		},
 		h6: {
 			fontWeight: 800,
-			// fontSize: '1rem',
-			// lineHeight: 1,
+			fontSize: '1rem',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 

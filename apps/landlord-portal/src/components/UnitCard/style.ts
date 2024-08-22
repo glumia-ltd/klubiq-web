@@ -13,7 +13,7 @@ export const styles = {
 	},
 
 	mainPictureStyle: {
-		minHeight: '182px',
+		maxHeight: '182px',
 		borderRadius: '8px',
 	},
 	propertyDetailsStyle: {

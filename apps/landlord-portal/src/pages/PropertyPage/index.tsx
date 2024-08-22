@@ -184,7 +184,7 @@ const PropertyPage = () => {
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='text' sx={styles.actionButtonStyle}>
+					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
