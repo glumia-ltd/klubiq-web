@@ -1,7 +1,8 @@
 export const styles = {
 	container: {
-		padding: '25px 90px',
-		color: 'primary.main',
+		paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+		// color: 'primary.main',
 	},
 	breadCrumbStyle: {
 		paddingLeft: '18px',
@@ -10,7 +11,6 @@ export const styles = {
 		},
 	},
 	iconStyle: {
-		color: '#6699CC',
 		width: '20px',
 		height: '20px',
 	},
@@ -37,7 +37,6 @@ export const styles = {
 		padding: '8px 12px',
 		gap: '8px',
 		borderRadius: '10px',
-		backgroundColor: '#ffffff',
 		minWidth: '160px',
 	},
 
@@ -51,7 +50,6 @@ export const styles = {
 	},
 
 	firstCardContainer: {
-		backgroundColor: '#fff',
 		borderRadius: '8px',
 	},
 
@@ -89,7 +87,6 @@ export const styles = {
 
 	tableHeaderCellStyle: {
 		background: 'transparent',
-		color: '#1B1B1BB2',
 		borderTop: '1px solid #B8D9FF ',
 		borderBottom: '1px solid #B8D9FF ',
 	},

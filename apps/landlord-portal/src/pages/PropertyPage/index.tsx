@@ -3,6 +3,7 @@ import {
 	Breadcrumbs,
 	Button,
 	Chip,
+	Container,
 	Grid,
 	SvgIcon,
 	Table,
@@ -13,9 +14,14 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material';
+import {
+	HouseIcon,
+	VacantHomeIcon,
+	TenantIcon,
+	HomeMaintenanceIcon,
+} from '../../components/Icons/CustomIcons';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ViewPort from '../../components/Viewport/ViewPort';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import UnitInfoCard from '../../components/UnitInfoComponent/UnitInfoCard';
 import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
@@ -25,10 +31,6 @@ import { Overview } from '../../components/Overview/Overview';
 import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
 import propertyImage from '../../assets/images/propertyImage.png';
 import addMaintenance from '../../assets/images/addMaintenance.svg';
-import HouseIcon from '../../assets/images/home.svg';
-import IconTwo from '../../assets/images/home2.svg';
-import IconThree from '../../assets/images/people.svg';
-import IconFour from '../../assets/images/lasthouse.svg';
 import { styles } from './style';
 import { useState } from 'react';
 import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
@@ -58,18 +60,18 @@ const data = [
 		label: 'VACANT UNIT',
 		value: 1,
 		valueColor: 'green',
-		imgSrc: IconTwo,
+		imgSrc: VacantHomeIcon,
 	},
 	{
 		label: 'TENANT',
 		value: 0,
-		imgSrc: IconThree,
+		imgSrc: TenantIcon,
 	},
 	{
 		label: 'MAINTENANCE REQUEST',
 		value: 0,
 		valueColor: 'red',
-		imgSrc: IconFour,
+		imgSrc: HomeMaintenanceIcon,
 	},
 ];
 
@@ -158,8 +160,8 @@ const PropertyPage = () => {
 	const handleAddUnit = () => {};
 
 	return (
-		<ViewPort>
-			<Grid sx={styles.container}>
+		<Container maxWidth={'xl'} sx={styles.container}>
+			<Grid>
 				<Grid>
 					<Breadcrumbs
 						separator={
@@ -184,7 +186,7 @@ const PropertyPage = () => {
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button sx={styles.actionButtonStyle}>
+					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
@@ -229,7 +231,7 @@ const PropertyPage = () => {
 									<>
 										{tableBodyRows.length > 0 && (
 											<TenantAndLeaseTable
-												title='Tenat'
+												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleAddTenantCard}
 												columns={columns}
@@ -274,7 +276,7 @@ const PropertyPage = () => {
 						<Grid sx={styles.addfieldStyle}>
 							{tableBodyRows.length > 0 && (
 								<TenantAndLeaseTable
-									title='Tenat'
+									title='Tenant'
 									buttonText='Add Tenant'
 									handleAdd={handleAddTenantCard}
 									columns={columns}
@@ -534,7 +536,7 @@ const PropertyPage = () => {
 					</TableContainer>
 				)}
 			</Grid>
-		</ViewPort>
+		</Container>
 	);
 };
 

@@ -25,11 +25,13 @@ declare module '@mui/material/styles' {
 	interface ChipVariants {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
+		propertyType: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
+		propertyType: React.CSSProperties;
 	}
 }
 
@@ -46,9 +48,16 @@ declare module '@mui/material/Typography' {
 	}
 }
 
+declare module '@mui/material/Button' {
+	interface ButtonPropsVariantOverrides {
+		propertyButton: true;
+	}
+}
+
 declare module '@mui/material/Chip' {
 	interface ChipPropsVariantOverrides {
 		rent: true;
 		sale: true;
+		propertyType: true;
 	}
 }

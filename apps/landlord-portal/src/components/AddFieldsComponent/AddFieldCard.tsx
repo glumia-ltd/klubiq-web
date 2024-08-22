@@ -32,7 +32,7 @@ const AddFieldCard: FC<CardProps> = ({
 					</Box>
 				</Grid>
 				<Grid item xs={6} sm={6} md={9} lg={9} sx={style.lastBox}>
-					<Button onClick={onClick} sx={style.button}>
+					<Button variant='contained' onClick={onClick} sx={style.button}>
 						{description}
 					</Button>
 				</Grid>
