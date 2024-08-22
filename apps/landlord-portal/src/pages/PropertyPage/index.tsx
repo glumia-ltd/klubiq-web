@@ -119,7 +119,7 @@ const PropertyPage = () => {
 	const [
 		propertyType,
 		//, setPropertyType
-	] = useState('multi');
+	] = useState('single');
 	const navigate = useNavigate();
 
 	const maintenanceTabs = [

@@ -70,7 +70,7 @@ export const styles = {
 	},
 
 	tableCell: {
-		backgroundColor: '#fff',
+		// backgroundColor: '#fff',
 		padding: '5px',
 		color: 'primary.main',
 		fontSize: '24px',
@@ -87,8 +87,8 @@ export const styles = {
 
 	tableHeaderCellStyle: {
 		background: 'transparent',
-		borderTop: '1px solid #B8D9FF ',
-		borderBottom: '1px solid #B8D9FF ',
+		borderTop: '1px solid primary.main',
+		borderBottom: '1px solid primary.main',
 	},
 	tenantInfoStyle: {
 		display: 'flex',
@@ -97,10 +97,10 @@ export const styles = {
 		gap: '20px',
 	},
 	tableBodyStyle: {
-		background: '#fff',
+		// background: '#fff',
 		border: 'none',
 		fontSize: '14px',
-		color: 'primary.main',
+		// color: 'primary.main',
 	},
 
 	addMaintenance: {
