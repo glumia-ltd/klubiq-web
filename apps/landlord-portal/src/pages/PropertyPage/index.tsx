@@ -231,7 +231,7 @@ const PropertyPage = () => {
 									<>
 										{tableBodyRows.length > 0 && (
 											<TenantAndLeaseTable
-												title='Tenat'
+												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleAddTenantCard}
 												columns={columns}
@@ -276,7 +276,7 @@ const PropertyPage = () => {
 						<Grid sx={styles.addfieldStyle}>
 							{tableBodyRows.length > 0 && (
 								<TenantAndLeaseTable
-									title='Tenat'
+									title='Tenant'
 									buttonText='Add Tenant'
 									handleAdd={handleAddTenantCard}
 									columns={columns}

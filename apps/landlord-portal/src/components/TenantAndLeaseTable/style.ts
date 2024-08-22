@@ -6,14 +6,11 @@ export const styles = {
 	},
 
 	tableCell: {
-		backgroundColor: '#fff',
 		padding: '24px',
-		color: 'primary.main',
 		fontSize: '24px',
 		fontWeight: '700',
 	},
 	tableButton: {
-		background: '#fff',
 		width: '144px',
 		height: '32px',
 		padding: '6px 8px, 6px 8px',
@@ -23,9 +20,6 @@ export const styles = {
 
 	tableHeaderCellStyle: {
 		background: 'transparent',
-		color: '#1B1B1BB2',
-		borderTop: '1px solid #B8D9FF ',
-		borderBottom: '1px solid #B8D9FF ',
 	},
 	tenantInfoStyle: {
 		display: 'flex',
@@ -34,9 +28,7 @@ export const styles = {
 		gap: '20px',
 	},
 	tableBodyStyle: {
-		background: '#fff',
 		border: 'none',
 		fontSize: '14px',
-		color: 'primary.main',
 	},
 };

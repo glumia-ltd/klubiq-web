@@ -2,7 +2,7 @@ export const styles = {
 	container: {
 		paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
-		color: 'primary.main',
+		// color: 'primary.main',
 	},
 	breadCrumbStyle: {
 		paddingLeft: '18px',

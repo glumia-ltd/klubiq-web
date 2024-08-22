@@ -110,7 +110,7 @@ export const LightTheme: Theme = createTheme({
 						opacity: '0.8',
 						'&:hover': {
 							// opacity: '1',
-							// color: '#002147',
+							color: '#002147',
 							// border: '1.6px solid #FFFFFF',
 						},
 					},
@@ -463,9 +463,6 @@ export const DarkTheme: Theme = createTheme({
 				paper: {
 					background: '#0DODOD',
 					backgroundImage: 'none',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
@@ -473,9 +470,6 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					color: '#FFFFFF',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 				outlined: {
 					borderColor: '#FFFFFF',
@@ -493,12 +487,10 @@ export const DarkTheme: Theme = createTheme({
 					props: { variant: 'propertyButton' },
 					style: {
 						background: '#ffffff',
-						color: '#002147',
+						color: '#0088F0',
 
 						'&:hover': {
-							// opacity: '1',
-							// color: '#002147',
-							// border: '1.6px solid #FFFFFF',
+							color: '#0088F0',
 						},
 					},
 				},
@@ -518,9 +510,6 @@ export const DarkTheme: Theme = createTheme({
 
 	typography: {
 		fontFamily: 'Maven Pro, sans-serif',
-		// allVariants: {
-		// 	color: "#BBD9FF"
-		//   },
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
