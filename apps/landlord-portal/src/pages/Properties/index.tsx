@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
 
 import {
 	Stack,
@@ -37,24 +37,17 @@ const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
-	const [allProperties, setAllProperties] = useState<PropertyDataType[] | null>(
-		null,
-	);
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
-	const [updateFilter, setUpdateFilter] = useState(false);
 	const [filterOptions, setFilterOptions] = useState(initialFilterOptions);
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState<boolean>(true);
-	const [initialLoading, setInitialLoading] = useState<boolean>(true);
-	const dispatch = useDispatch();
 
-	const { data, error, isLoading } = useGetPropertiesQuery({
+	const { data, error, isLoading, isFetching } = useGetPropertiesQuery({
 		...filter,
 		...DEFAULT_PARAMS,
 	});
 
-	console.log(data, error, isLoading);
+	const allProperties = data?.pageData;
 
 	const filterObjectLength = Object.keys(filter).length;
 
@@ -79,27 +72,6 @@ const Properties = () => {
 		navigate('/properties/property-category');
 	};
 
-	const getAllProperties = async () => {
-		try {
-			const {
-				data: {
-					data: { pageData },
-				},
-			} = await api.get(propertiesEndpoints.getProperties(), {
-				params: { ...filter, ...DEFAULT_PARAMS },
-			});
-
-			setAllProperties(pageData);
-
-			const payload = { allPropertiesData: pageData };
-
-			dispatch(savePropertiesData(payload));
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
 	const getPropertiesMetaData = async () => {
 		try {
 			const {
@@ -109,7 +81,6 @@ const Properties = () => {
 			const { filterOptions } = data;
 
 			setFilterOptions(filterOptions);
-			setInitialLoading(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -125,17 +96,12 @@ const Properties = () => {
 	}, []);
 
 	useEffect(() => {
-		setLoading(true);
-		getAllProperties();
-	}, [updateFilter]);
-
-	useEffect(() => {
 		getPropertiesMetaData();
 	}, []);
 
 	return (
 		<>
-			{initialLoading ? (
+			{isLoading ? (
 				<PropertiesSkeleton />
 			) : (
 				<Container maxWidth={'xl'} sx={styles.container}>
@@ -201,7 +167,6 @@ const Properties = () => {
 										filterList={filterOptions}
 										getFilterResult={(options) => {
 											setFilter(options);
-											setUpdateFilter((prev) => !prev);
 										}}
 										disable={filterObjectLength ? false : !allPropertiesLength}
 									/>
@@ -209,7 +174,7 @@ const Properties = () => {
 							</Grid>
 							<Grid xs={12} mb={3}>
 								{showFilterResultOnlyWhenFiltered ? (
-									loading ? (
+									isFetching ? (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
 												<Skeleton
@@ -233,25 +198,30 @@ const Properties = () => {
 							</Grid>
 
 							<Grid xs={12} container spacing={3}>
-								{allProperties?.map((property, index) => (
-									<Grid
-										xs={12}
-										sm={layout === 'row' ? 12 : 6}
-										md={layout === 'row' ? 12 : 4}
-										lg={layout === 'row' ? 12 : 4}
-										xl={layout === 'row' ? 12 : 3}
-										key={index}
-									>
-										{loading ? (
-											<PropertiesCardSkeleton layout={layout} />
-										) : (
-											<PropertyCard
-												propertyData={property}
-												layout={isMobile ? 'column' : layout}
-											/>
-										)}
-									</Grid>
-								))}
+								{allProperties?.map(
+									(
+										property: PropertyDataType,
+										index: Key | null | undefined,
+									) => (
+										<Grid
+											xs={12}
+											sm={layout === 'row' ? 12 : 6}
+											md={layout === 'row' ? 12 : 4}
+											lg={layout === 'row' ? 12 : 4}
+											xl={layout === 'row' ? 12 : 3}
+											key={index}
+										>
+											{isFetching ? (
+												<PropertiesCardSkeleton layout={layout} />
+											) : (
+												<PropertyCard
+													propertyData={property}
+													layout={isMobile ? 'column' : layout}
+												/>
+											)}
+										</Grid>
+									),
+								)}
 							</Grid>
 						</Grid>
 					</Grid>

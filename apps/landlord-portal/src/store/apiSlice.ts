@@ -12,7 +12,7 @@ export const apiSlice = createApi({
 				params: args.params,
 			});
 
-			return { data: result.data };
+			return { data: result.data.data };
 		} catch (error) {
 			return { error: (error as Error).message };
 		}
