@@ -21,7 +21,6 @@ import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 import { filterOptions as initialFilterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 // import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
 // import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
 import { api } from '../../api';
@@ -29,7 +28,6 @@ import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 import { PropertyDataType } from '../../shared/type';
 import { PropertiesSkeleton } from './PropertiesSkeleton';
-import { savePropertiesData } from '../../store/PropertyPageStore/PropertyPageSlice';
 import { useGetPropertiesQuery } from '../../store/apiSlice';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
@@ -42,7 +40,7 @@ const Properties = () => {
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 
-	const { data, error, isLoading, isFetching } = useGetPropertiesQuery({
+	const { data, isLoading, isFetching } = useGetPropertiesQuery({
 		...filter,
 		...DEFAULT_PARAMS,
 	});

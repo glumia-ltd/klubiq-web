@@ -1,9 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { api as axiosInstance } from '../api';
 
 export const apiSlice = createApi({
 	reducerPath: 'api',
-	baseQuery: async (args, api, extraOptions) => {
+	baseQuery: async (args) => {
 		try {
 			const result = await axiosInstance({
 				method: args.method,
