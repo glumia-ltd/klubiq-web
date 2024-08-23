@@ -48,8 +48,11 @@ const DashBoard = () => {
 	const [dashboardMetrics, setDashboardMetrics] =
 		useState<DashboardMetricsType>(initialDashboardMetrics);
 
-	const { propertyMetrics, transactionMetrics, revenueMetrics } =
-		dashboardMetrics;
+	const {
+		propertyMetrics,
+		transactionMetrics,
+		//, revenueMetrics
+	} = dashboardMetrics;
 
 	const {
 		maintenanceUnits,
@@ -82,14 +85,14 @@ const DashBoard = () => {
 		totalExpensesPercentageDifference,
 	} = transactionMetrics;
 
-	const {
-		changeIndicator,
-		//maxRevenue,
-		//monthlyRevenues,
-		percentageDifference,
-		revenueChart,
-		totalRevenueLast12Months,
-	} = revenueMetrics;
+	// const {
+	// 	changeIndicator,
+	// 	//maxRevenue,
+	// 	//monthlyRevenues,
+	// 	percentageDifference,
+	// 	revenueChart,
+	// 	totalRevenueLast12Months,
+	// } = revenueMetrics;
 
 	const guageData = {
 		occupied: occupiedUnits || 0,
@@ -436,37 +439,29 @@ const DashBoard = () => {
 									₦
 									{revenueReport
 										? revenueReport.totalRevenueLast12Months.toFixed(2)
-										: totalRevenueLast12Months.toFixed(2)}
+										: 0}
 								</Typography>
 
 								<Typography
 									sx={{
 										...styles.changeTypographyStyle,
 										backgroundColor: indicatorBackground(
-											revenueReport
-												? revenueReport.changeIndicator
-												: changeIndicator,
+											revenueReport ? revenueReport.changeIndicator : 'neutral',
 										),
 										color: indicatorColor(
-											revenueReport
-												? revenueReport.changeIndicator
-												: changeIndicator,
+											revenueReport ? revenueReport.changeIndicator : 'neutral',
 										),
 										border: `1px solid ${indicatorColor(
-											revenueReport
-												? revenueReport.changeIndicator
-												: changeIndicator,
+											revenueReport ? revenueReport.changeIndicator : 'neutral',
 										)}`,
 									}}
 								>
 									{showChangeArrow(
-										revenueReport
-											? revenueReport.changeIndicator
-											: changeIndicator,
+										revenueReport ? revenueReport.changeIndicator : 'neutral',
 									)}
 									{revenueReport
 										? revenueReport.percentageDifference.toFixed(1)
-										: percentageDifference.toFixed(1)}
+										: 0}
 									%
 								</Typography>
 							</Box>
@@ -529,19 +524,11 @@ const DashBoard = () => {
 						<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
 							<TableChart
 								seriesData={
-									revenueReport
-										? revenueReport?.revenueChart?.seriesData
-										: revenueChart?.seriesData
+									revenueReport ? revenueReport?.revenueChart?.seriesData : []
 								}
-								maxRevenue={
-									revenueReport
-										? revenueReport?.maxRevenue
-										: revenueMetrics?.maxRevenue
-								}
+								maxRevenue={revenueReport ? revenueReport?.maxRevenue : 0}
 								xAxisData={
-									revenueReport
-										? revenueReport?.revenueChart?.xAxisData
-										: revenueChart?.xAxisData
+									revenueReport ? revenueReport?.revenueChart?.xAxisData : []
 								}
 							/>
 						</Grid>
