@@ -39,6 +39,12 @@ import { useNavigate } from 'react-router-dom';
 
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
+import { useSelector } from 'react-redux';
+import { propertiesEndpoints } from '../../helpers/endpoints';
+import { api } from '../../api';
+import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
+import { RootState } from '../../store';
+import { PropertyDataType } from '../../shared/type';
 
 const stackedImages = [
 	propertyImage,
@@ -116,11 +122,16 @@ const totalMaintenanceRequests = 3;
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
-	const [
-		propertyType,
-		//, setPropertyType
-	] = useState('single');
+
 	const navigate = useNavigate();
+
+	const property = useSelector(getPropertyData) as PropertyDataType;
+
+	console.log(property);
+
+	const propertyType = property?.isMultiUnit ? 'Multi' : 'Single';
+
+	const propertyAddress = `${property?.address?.addressLine1} ${property?.address?.addressLine2}, ${property?.address?.city}, ${property?.address?.state}`;
 
 	const maintenanceTabs = [
 		`Active Request (${totalMaintenanceRequests})`,
@@ -181,7 +192,7 @@ const PropertyPage = () => {
 							inheritViewBox
 						/>
 						<Typography fontWeight={700} sx={styles.textStyle}>
-							Landmark Estate
+							{property?.name}
 						</Typography>
 					</Breadcrumbs>
 				</Grid>
@@ -195,10 +206,10 @@ const PropertyPage = () => {
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={propertyImage}
-						propertyName='Landmark Estate'
-						propertyAddress='Engineering Close,off Idowu Street,  Victoria Island'
-						propertyId='123456'
-						numberOfUnits='Single'
+						propertyName={property?.name || ''}
+						propertyAddress={propertyAddress}
+						propertyId={property?.id}
+						numberOfUnits={property?.isMultiUnit ? 'Multi' : 'Single'}
 						rent='₦0.0'
 						totalArea='350 sqm'
 						buildingType='Duplex'
@@ -207,7 +218,7 @@ const PropertyPage = () => {
 
 					{/* Render conditionally based on property type */}
 
-					{propertyType === 'single' && (
+					{propertyType === 'Single' && (
 						<TabsComponent
 							handleTabChange={handleTabChange}
 							tabValue={tabValue}
@@ -217,7 +228,7 @@ const PropertyPage = () => {
 				</Grid>
 
 				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
-				{propertyType === 'single' && (tabValue === 0 || tabValue === 1) && (
+				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
 							<UnitInfoCard data={data} />
@@ -265,7 +276,7 @@ const PropertyPage = () => {
 
 				{/* Multi unit */}
 
-				{propertyType === 'multi' && (
+				{propertyType === 'Multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
 							<UnitInfoCard data={data} />

@@ -14,6 +14,8 @@ import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
 import { PropertyDataType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { savePropertyId } from '../../store/PropertyPageStore/PropertyPageSlice';
 
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
@@ -25,9 +27,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	layout,
 }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
-	const handleViewProperty = () => {
-		navigate('/properties/12345');
+	const handleViewProperty = (id: number) => {
+		const payload = {
+			currentId: id,
+		};
+		dispatch(savePropertyId(payload));
+		navigate(`/properties/${id}`);
 	};
 
 	return layout === 'column' ? (
@@ -195,7 +202,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent: 'flex-end',
 				}}
 				disableSpacing
-				onClick={handleViewProperty}
+				onClick={() => handleViewProperty(propertyData?.id)}
 			>
 				<Typography variant='link'>View Properties</Typography>
 			</CardActions>
@@ -307,7 +314,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									{propertyData?.unitCount}
 								</Typography>
 							</Typography>
-							<Typography variant='link'>View Properties</Typography>
+							<Typography
+								onClick={() => handleViewProperty(propertyData?.id)}
+								variant='link'
+							>
+								View Properties
+							</Typography>
 						</Stack>
 					</Stack>
 				</Stack>

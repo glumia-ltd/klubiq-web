@@ -18,4 +18,5 @@ export const dashboardEndpoints = {
 export const propertiesEndpoints = {
 	getProperties: () => '/properties',
 	getPropertiesMetaData: () => '/public/property-metadata',
+	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
 };
