@@ -99,8 +99,6 @@ const DashBoard = () => {
 				config,
 			);
 
-			console.log(response);
-
 			const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
 			const url = URL.createObjectURL(
 				new Blob([response?.data], {
@@ -108,7 +106,6 @@ const DashBoard = () => {
 				}),
 			);
 
-			console.log(url);
 			const link = document.createElement('a');
 			link.href = url;
 			link.setAttribute('download', outputFilename);
