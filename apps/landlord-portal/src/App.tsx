@@ -16,7 +16,7 @@ import { UserProfile } from './shared/auth-types';
 
 function App() {
 	const { user } = useSelector(getAuthState);
-	const { message, severity, isOpen } = useSelector(
+	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
 
@@ -73,7 +73,7 @@ function App() {
 					vertical: 'top',
 					horizontal: 'right',
 				}}
-				autoHideDuration={5000}
+				autoHideDuration={duration || 2000}
 				key={message}
 				message={message}
 				severity={severity}

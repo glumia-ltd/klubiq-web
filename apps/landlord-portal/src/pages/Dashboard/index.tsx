@@ -11,9 +11,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
-import ViewPort from '../../components/Viewport/ViewPort';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { DashboardMetricsType, RevenueReportType } from '../../shared/type';
 import { api } from '../../api';
 import { styles } from './style';
 import {
@@ -22,12 +20,15 @@ import {
 	indicatorText,
 	showChangeArrow,
 	showTrendArrow,
-	initialDashboardMetrics,
 } from './dashboardUtils';
 import { useDispatch } from 'react-redux';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { AxiosRequestConfig } from 'axios';
 import DashBoardSkeleton from './DashBoardSkeleton';
+import {
+	useGetDashboardMetricsQuery,
+	useLazyGetRevenueReportDataQuery,
+} from '../../store/DashboardStore/dashboardApiSlice';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -37,123 +38,42 @@ const DashBoard = () => {
 		dayjs().subtract(11, 'months'),
 	);
 	const [secondDay, setSecondDay] = useState<Dayjs | null>(dayjs());
-	const [revenueReport, setRevenueReport] = useState<RevenueReportType | null>(
-		null,
-	);
-
-	const [loading, setLoading] = useState<boolean>(true);
 
 	const dispatch = useDispatch();
 
-	const [dashboardMetrics, setDashboardMetrics] =
-		useState<DashboardMetricsType>(initialDashboardMetrics);
+	const { data: dashboardMetrics, isLoading: isDasboardMetricsLoading } =
+		useGetDashboardMetricsQuery();
 
-	const { propertyMetrics, transactionMetrics, revenueMetrics } =
-		dashboardMetrics;
-
-	const {
-		maintenanceUnits,
-		maintenanceUnitsChangeIndicator,
-		//maintenanceUnitsLastMonth,
-		maintenanceUnitsPercentageDifference,
-		//multiUnits,
-		occupancyRate,
-		occupancyRateChangeIndicator,
-		//occupancyRateLastMonth,
-		occupancyRatePercentageDifference,
-		occupiedUnits,
-		rentOverdue,
-		//singleUnits,
-		//totalProperties,
-		totalUnits,
-		vacantUnits,
-	} = propertyMetrics;
-
-	const {
-		dailyRevenueChangeIndicator,
-		dailyRevenuePercentageDifference,
-		netCashFlow,
-		netCashFlowChangeIndicator,
-		//netCashFlowLastMonth,
-		netCashFlowPercentageDifference,
-		todaysRevenue,
-		totalExpenses,
-		totalExpensesChangeIndicator,
-		totalExpensesPercentageDifference,
-	} = transactionMetrics;
-
-	const {
-		changeIndicator,
-		//maxRevenue,
-		//monthlyRevenues,
-		percentageDifference,
-		revenueChart,
-		totalRevenueLast12Months,
-	} = revenueMetrics;
+	const [
+		triggerGetRevenueReport,
+		{ data: revenueReport, error, isLoading: isRevenueReportLoading },
+	] = useLazyGetRevenueReportDataQuery();
 
 	const guageData = {
-		occupied: occupiedUnits || 0,
-		vacant: vacantUnits || 0,
-		maintenance: maintenanceUnits || 0,
-	};
-
-	const getDashboardMetrics = async () => {
-		try {
-			const {
-				data: { data },
-			} = await api.get(dashboardEndpoints.getDashboardMetrics());
-
-			setDashboardMetrics(data);
-
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const getRevenueReportData = async () => {
-		if (!firstDay?.isValid() || !secondDay?.isValid()) {
-			setRevenueReport(null);
-			return;
-		}
-
-		const startDate = firstDay?.format('YYYY-MM-DD');
-		const endDate = secondDay?.format('YYYY-MM-DD');
-		try {
-			const {
-				data: { data },
-			} = await api.get(
-				dashboardEndpoints.getRevenueReport(startDate, endDate),
-			);
-			setRevenueReport(data);
-		} catch (e) {
-			console.log(e);
-		}
+		occupied: dashboardMetrics?.propertyMetrics?.occupiedUnits || 0,
+		vacant: dashboardMetrics?.propertyMetrics?.vacantUnits || 0,
+		maintenance: dashboardMetrics?.propertyMetrics?.maintenanceUnits || 0,
 	};
 
 	useEffect(() => {
-		getDashboardMetrics();
-	}, []);
-
-	useEffect(() => {
-		if (firstDay && secondDay) {
+		if (firstDay && secondDay && firstDay?.isValid() && secondDay?.isValid()) {
 			if (secondDay.subtract(6, 'months').isBefore(firstDay)) {
 				dispatch(
 					openSnackbar({
 						message: 'Your selected date range is less than 6 months! ',
 						severity: 'info',
 						isOpen: true,
+						duration: 2000,
 					}),
 				);
-				setFirstDay(null);
-				setSecondDay(null);
 
 				return;
 			} else {
-				getRevenueReportData();
+				const startDate = firstDay?.format('YYYY-MM-DD');
+				const endDate = secondDay?.format('YYYY-MM-DD');
+
+				triggerGetRevenueReport({ startDate, endDate });
 			}
-		} else if (!firstDay && !secondDay) {
-			setRevenueReport(null);
 		}
 	}, [firstDay, secondDay]);
 
@@ -173,17 +93,22 @@ const DashBoard = () => {
 		const endDate = secondDay?.format('YYYY-MM-DD');
 
 		try {
-			const response = await api.post<ArrayBuffer>(
+			const response = await api.post(
 				dashboardEndpoints.downloadReport(),
-				{
-					startDate,
-					endDate,
-				},
+				{ startDate, endDate },
 				config,
 			);
 
+			console.log(response);
+
 			const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
-			const url = URL.createObjectURL(new Blob([response.data]));
+			const url = URL.createObjectURL(
+				new Blob([response?.data], {
+					type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				}),
+			);
+
+			console.log(url);
 			const link = document.createElement('a');
 			link.href = url;
 			link.setAttribute('download', outputFilename);
@@ -196,6 +121,7 @@ const DashBoard = () => {
 						"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
 					severity: 'info',
 					isOpen: true,
+					duration: 2000,
 				}),
 			);
 		} catch (e) {
@@ -205,7 +131,7 @@ const DashBoard = () => {
 
 	return (
 		<>
-			{loading ? (
+			{isDasboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
 				<Container maxWidth={'xl'} sx={styles.containerStyle}>
@@ -221,7 +147,7 @@ const DashBoard = () => {
 											sx={styles.valueTextStyle}
 											variant='dashboardTypography'
 										>
-											{totalUnits || 0}
+											{dashboardMetrics?.propertyMetrics?.totalUnits || 0}
 										</Typography>
 									</Box>
 									<PropertiesGuage
@@ -243,29 +169,45 @@ const DashBoard = () => {
 										variant='dashboardTypography'
 									>
 										{' '}
-										₦{todaysRevenue.toFixed(2)}
+										₦
+										{dashboardMetrics?.transactionMetrics?.todaysRevenue.toFixed(
+											2,
+										)}
 									</Typography>
 									<Box sx={styles.changeArrowBoxStyle}>
 										<Typography
 											sx={{
 												...styles.changeTypographyStyle,
-												color: indicatorColor(dailyRevenueChangeIndicator),
-												border: `1px solid ${indicatorColor(dailyRevenueChangeIndicator)}`,
+												color: indicatorColor(
+													dashboardMetrics?.transactionMetrics
+														?.dailyRevenueChangeIndicator,
+												),
+												border: `1px solid ${indicatorColor(dashboardMetrics?.transactionMetrics?.dailyRevenueChangeIndicator)}`,
 
 												backgroundColor: indicatorBackground(
-													dailyRevenueChangeIndicator,
+													dashboardMetrics?.transactionMetrics
+														?.dailyRevenueChangeIndicator,
 												),
 											}}
 										>
-											{showChangeArrow(dailyRevenueChangeIndicator)}
-											{dailyRevenuePercentageDifference.toFixed(1)}%
+											{showChangeArrow(
+												dashboardMetrics?.transactionMetrics
+													?.dailyRevenueChangeIndicator,
+											)}
+											{dashboardMetrics?.transactionMetrics?.dailyRevenuePercentageDifference.toFixed(
+												1,
+											)}
+											%
 										</Typography>
 										<Typography
 											fontSize='14px'
 											lineHeight={'20px'}
 											fontWeight={400}
 										>
-											{indicatorText(dailyRevenueChangeIndicator)}
+											{indicatorText(
+												dashboardMetrics?.transactionMetrics
+													?.dailyRevenueChangeIndicator,
+											)}
 										</Typography>
 									</Box>
 								</Card>
@@ -280,11 +222,15 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											₦{rentOverdue?.overDueRentSum.toFixed(2)}
+											₦
+											{dashboardMetrics?.propertyMetrics?.rentOverdue?.overDueRentSum.toFixed(
+												2,
+											)}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
-										{rentOverdue?.overDueLeaseCount || 0}
+										{dashboardMetrics?.propertyMetrics?.rentOverdue
+											?.overDueLeaseCount || 0}
 										<span style={{ marginLeft: '5px' }}>overdue</span>
 									</Typography>
 								</Card>
@@ -298,21 +244,34 @@ const DashBoard = () => {
 											sx={styles.occupancyTextStyle}
 											variant='dashboardTypography'
 										>
-											{occupancyRate?.toFixed(1) || 0}%
+											{dashboardMetrics?.propertyMetrics?.occupancyRate?.toFixed(
+												1,
+											) || 0}
+											%
 										</Typography>
 
 										<Typography
 											sx={{
 												...styles.changeTypographyStyle,
-												color: indicatorColor(occupancyRateChangeIndicator),
-												border: `1px solid ${indicatorColor(occupancyRateChangeIndicator)}`,
+												color: indicatorColor(
+													dashboardMetrics?.propertyMetrics
+														?.occupancyRateChangeIndicator,
+												),
+												border: `1px solid ${indicatorColor(dashboardMetrics?.propertyMetrics?.occupancyRateChangeIndicator)}`,
 												backgroundColor: indicatorBackground(
-													occupancyRateChangeIndicator,
+													dashboardMetrics?.propertyMetrics
+														?.occupancyRateChangeIndicator,
 												),
 											}}
 										>
-											{showChangeArrow(occupancyRateChangeIndicator)}
-											{occupancyRatePercentageDifference.toFixed(1) || 0}%
+											{showChangeArrow(
+												dashboardMetrics?.propertyMetrics
+													?.occupancyRateChangeIndicator,
+											)}
+											{dashboardMetrics?.propertyMetrics?.occupancyRatePercentageDifference.toFixed(
+												1,
+											) || 0}
+											%
 										</Typography>
 									</Box>
 									<Box sx={styles.totalExpensesStyle}>
@@ -328,18 +287,30 @@ const DashBoard = () => {
 													mr={'1rem'}
 													variant='dashboardTypography'
 												>
-													₦{totalExpenses.toFixed(2)}
+													₦
+													{dashboardMetrics?.transactionMetrics?.totalExpenses.toFixed(
+														2,
+													)}
 												</Typography>
 
-												{showTrendArrow(totalExpensesChangeIndicator)}
+												{showTrendArrow(
+													dashboardMetrics?.transactionMetrics
+														?.totalExpensesChangeIndicator,
+												)}
 
 												<Typography
 													sx={{
 														...styles.typoStyle,
-														color: indicatorColor(totalExpensesChangeIndicator),
+														color: indicatorColor(
+															dashboardMetrics?.transactionMetrics
+																?.totalExpensesChangeIndicator,
+														),
 													}}
 												>
-													{totalExpensesPercentageDifference.toFixed(1)}%
+													{dashboardMetrics?.transactionMetrics?.totalExpensesPercentageDifference.toFixed(
+														1,
+													)}
+													%
 												</Typography>
 											</Box>
 										</Box>
@@ -354,21 +325,34 @@ const DashBoard = () => {
 													mr={'1rem'}
 													variant='dashboardTypography'
 												>
-													{netCashFlow && netCashFlow > 0
-														? `₦${netCashFlow.toFixed(2)}`
-														: netCashFlow && netCashFlow < 0
-															? `- ₦${(-1 * netCashFlow!).toFixed(2)}`
+													{dashboardMetrics?.transactionMetrics?.netCashFlow &&
+													dashboardMetrics?.transactionMetrics?.netCashFlow > 0
+														? `₦${dashboardMetrics?.transactionMetrics?.netCashFlow.toFixed(2)}`
+														: dashboardMetrics?.transactionMetrics
+																	?.netCashFlow &&
+															  dashboardMetrics?.transactionMetrics
+																	?.netCashFlow < 0
+															? `- ₦${(-1 * dashboardMetrics?.transactionMetrics?.netCashFlow).toFixed(2)}`
 															: `₦0.00`}
 												</Typography>
 
-												{showTrendArrow(netCashFlowChangeIndicator)}
+												{showTrendArrow(
+													dashboardMetrics?.transactionMetrics
+														?.netCashFlowChangeIndicator,
+												)}
 												<Typography
 													sx={{
 														...styles.typoStyle,
-														color: indicatorColor(netCashFlowChangeIndicator),
+														color: indicatorColor(
+															dashboardMetrics?.transactionMetrics
+																?.netCashFlowChangeIndicator,
+														),
 													}}
 												>
-													{netCashFlowPercentageDifference.toFixed(1)}%
+													{dashboardMetrics?.transactionMetrics?.netCashFlowPercentageDifference.toFixed(
+														1,
+													)}
+													%
 												</Typography>
 											</Box>
 										</Box>
@@ -383,23 +367,34 @@ const DashBoard = () => {
 										sx={styles.overdueTextStyle}
 										variant='dashboardTypography'
 									>
-										{maintenanceUnits || 0}
+										{dashboardMetrics?.propertyMetrics?.maintenanceUnits || 0}
 									</Typography>
 									<Box sx={styles.changeArrowBoxStyle}>
 										<Typography
 											sx={{
 												...styles.changeTypographyStyle,
-												color: indicatorColor(maintenanceUnitsChangeIndicator),
+												color: indicatorColor(
+													dashboardMetrics?.propertyMetrics
+														?.maintenanceUnitsChangeIndicator,
+												),
 												border: `1px solid ${indicatorColor(
-													maintenanceUnitsChangeIndicator,
+													dashboardMetrics?.propertyMetrics
+														?.maintenanceUnitsChangeIndicator,
 												)}`,
 												backgroundColor: indicatorBackground(
-													maintenanceUnitsChangeIndicator,
+													dashboardMetrics?.propertyMetrics
+														?.maintenanceUnitsChangeIndicator,
 												),
 											}}
 										>
-											{showChangeArrow(maintenanceUnitsChangeIndicator)}
-											{maintenanceUnitsPercentageDifference.toFixed(1)}%
+											{showChangeArrow(
+												dashboardMetrics?.propertyMetrics
+													?.maintenanceUnitsChangeIndicator,
+											)}
+											{dashboardMetrics?.propertyMetrics?.maintenanceUnitsPercentageDifference.toFixed(
+												1,
+											)}
+											%
 										</Typography>
 
 										<Typography sx={{ ...styles.overdueTypo, mt: 0 }}>
@@ -436,7 +431,9 @@ const DashBoard = () => {
 									₦
 									{revenueReport
 										? revenueReport.totalRevenueLast12Months.toFixed(2)
-										: totalRevenueLast12Months.toFixed(2)}
+										: dashboardMetrics?.revenueMetrics?.totalRevenueLast12Months.toFixed(
+												2,
+											)}
 								</Typography>
 
 								<Typography
@@ -445,28 +442,30 @@ const DashBoard = () => {
 										backgroundColor: indicatorBackground(
 											revenueReport
 												? revenueReport.changeIndicator
-												: changeIndicator,
+												: dashboardMetrics?.revenueMetrics?.changeIndicator,
 										),
 										color: indicatorColor(
 											revenueReport
 												? revenueReport.changeIndicator
-												: changeIndicator,
+												: dashboardMetrics?.revenueMetrics?.changeIndicator,
 										),
 										border: `1px solid ${indicatorColor(
 											revenueReport
 												? revenueReport.changeIndicator
-												: changeIndicator,
+												: dashboardMetrics?.revenueMetrics?.changeIndicator,
 										)}`,
 									}}
 								>
 									{showChangeArrow(
 										revenueReport
 											? revenueReport.changeIndicator
-											: changeIndicator,
+											: dashboardMetrics?.revenueMetrics?.changeIndicator,
 									)}
 									{revenueReport
 										? revenueReport.percentageDifference.toFixed(1)
-										: percentageDifference.toFixed(1)}
+										: dashboardMetrics?.revenueMetrics?.percentageDifference.toFixed(
+												1,
+											)}
 									%
 								</Typography>
 							</Box>
@@ -531,17 +530,17 @@ const DashBoard = () => {
 								seriesData={
 									revenueReport
 										? revenueReport?.revenueChart?.seriesData
-										: revenueChart?.seriesData
+										: dashboardMetrics?.revenueMetrics?.revenueChart?.seriesData
 								}
 								maxRevenue={
 									revenueReport
 										? revenueReport?.maxRevenue
-										: revenueMetrics?.maxRevenue
+										: dashboardMetrics?.revenueMetrics?.maxRevenue
 								}
 								xAxisData={
 									revenueReport
 										? revenueReport?.revenueChart?.xAxisData
-										: revenueChart?.xAxisData
+										: dashboardMetrics?.revenueMetrics.revenueChart?.xAxisData
 								}
 							/>
 						</Grid>

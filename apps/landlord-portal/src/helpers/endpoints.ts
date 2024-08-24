@@ -10,8 +10,7 @@ export const authEndpoints = {
 
 export const dashboardEndpoints = {
 	getDashboardMetrics: () => '/dashboard/metrics',
-	getRevenueReport: (startDate: string, endDate: string) =>
-		`/dashboard/revenue-report?startDate=${startDate}&endDate=${endDate}`,
+	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
 };
 

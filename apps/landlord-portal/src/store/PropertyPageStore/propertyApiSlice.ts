@@ -1,24 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { api as axiosInstance } from '../../api';
 import { propertiesEndpoints } from '../../helpers/endpoints';
+import { customApiFunction } from '../customApiFunction';
 
 export const propertyApiSlice = createApi({
-	reducerPath: 'api',
-	baseQuery: async (args) => {
-		try {
-			const result = await axiosInstance({
-				method: args.method,
-				url: args.url,
-				data: args.body,
-				params: args.params,
-			});
-
-			return { data: result.data.data };
-		} catch (error) {
-			return { error: (error as Error).message };
-		}
-	},
+	reducerPath: 'propertyApi',
+	baseQuery: customApiFunction,
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
