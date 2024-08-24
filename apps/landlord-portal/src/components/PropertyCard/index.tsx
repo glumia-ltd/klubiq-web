@@ -14,8 +14,8 @@ import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
 import { PropertyDataType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { savePropertyId } from '../../store/PropertyPageStore/PropertyPageSlice';
+
+// import { savePropertyId } from '../../store/PropertyPageStore/PropertyPageSlice';
 
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
@@ -27,13 +27,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	layout,
 }) => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 
 	const handleViewProperty = (id: number) => {
 		const payload = {
 			currentId: id,
 		};
-		dispatch(savePropertyId(payload));
+		// dispatch(savePropertyId(payload));
 		navigate(`/properties/${id}`);
 	};
 

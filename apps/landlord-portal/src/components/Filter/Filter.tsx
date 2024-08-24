@@ -132,7 +132,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 			justifyContent={'flex-start'}
 			sx={styles.filterContainer}
 		>
-			{filterList.map((entry) => {
+			{filterList?.map((entry) => {
 				const { title, options, id } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (

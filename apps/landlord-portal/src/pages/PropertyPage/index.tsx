@@ -42,7 +42,7 @@ import bukky from '../../assets/images/bukky.png';
 import { useSelector } from 'react-redux';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { api } from '../../api';
-import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
+// import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
 import { RootState } from '../../store';
 import { PropertyDataType } from '../../shared/type';
 
@@ -125,9 +125,16 @@ const PropertyPage = () => {
 
 	const navigate = useNavigate();
 
-	const property = useSelector(getPropertyData) as PropertyDataType;
+	// const property = useSelector(getPropertyData) as PropertyDataType;
 
-	console.log(property);
+	const property = {
+		name: '',
+		id: '',
+		isMultiUnit: '',
+		address: { addressLine1: '', addressLine2: '', city: '', state: '' },
+	};
+
+	// console.log(property);
 
 	const propertyType = property?.isMultiUnit ? 'Multi' : 'Single';
 
