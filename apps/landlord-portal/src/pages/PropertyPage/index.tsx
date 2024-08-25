@@ -40,11 +40,12 @@ import { useNavigate } from 'react-router-dom';
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
 import { useSelector } from 'react-redux';
-import { propertiesEndpoints } from '../../helpers/endpoints';
-import { api } from '../../api';
+// import { propertiesEndpoints } from '../../helpers/endpoints';
+// import { api } from '../../api';
 // import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
-import { RootState } from '../../store';
-import { PropertyDataType } from '../../shared/type';
+// import { RootState } from '../../store';
+// import { PropertyDataType } from '../../shared/type';
+import { getCurrentId } from '../../store/PropertyPageStore/PropertySlice';
 
 const stackedImages = [
 	propertyImage,
@@ -125,7 +126,8 @@ const PropertyPage = () => {
 
 	const navigate = useNavigate();
 
-	// const property = useSelector(getPropertyData) as PropertyDataType;
+	const currentId = useSelector(getCurrentId);
+	console.log(currentId);
 
 	const property = {
 		name: '',
