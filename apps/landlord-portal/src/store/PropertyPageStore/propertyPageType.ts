@@ -4,4 +4,5 @@ export type PropertyStateType = {
 	allPropertiesData?: PropertyDataType[] | null;
 	currentId?: null | number;
 	currentProperty?: PropertyDataType | null;
+	currentFilter?: any;
 };

@@ -27,6 +27,8 @@ import {
 	useGetPropertiesQuery,
 	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
+import { useDispatch } from 'react-redux';
+import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
@@ -36,6 +38,7 @@ const Properties = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const {
 		data: propertyData,
@@ -86,6 +89,14 @@ const Properties = () => {
 			inputElement && inputElement.focus();
 		}
 	}, []);
+
+	useEffect(() => {
+		const currentFilter = {
+			...filter,
+			...DEFAULT_PARAMS,
+		};
+		dispatch(setCurrentFilter({ currentFilter }));
+	}, [dispatch, filter]);
 
 	return (
 		<>

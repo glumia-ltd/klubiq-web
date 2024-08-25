@@ -5,6 +5,7 @@ import { RootState } from '..';
 
 const initialState: PropertyStateType = {
 	currentId: null,
+	currentFilter: {},
 };
 
 const options = {
@@ -20,13 +21,22 @@ const options = {
 				currentId: action.payload.currentId,
 			};
 		},
+		setCurrentFilter: (
+			state: PropertyStateType,
+			action: PayloadAction<PropertyStateType>,
+		) => {
+			return {
+				...state,
+				currentFilter: action.payload.currentFilter,
+			};
+		},
 	},
 };
 
 const propertyPageSlice = createSlice(options);
 
-export const getCurrentId = (state: RootState) => state.propertyPage;
+export const getPropertyData = (state: RootState) => state.propertyPage;
 
-export const { setCurrentId } = propertyPageSlice.actions;
+export const { setCurrentId, setCurrentFilter } = propertyPageSlice.actions;
 
 export default propertyPageSlice.reducer;

@@ -30,5 +30,9 @@ interface GetPropertiesResponse {
 	meta: any;
 }
 
+export const fetchPropertiesApiData = (filter: any) => {
+	return propertyApiSlice.endpoints.getProperties.select(filter);
+};
+
 export const { useGetPropertiesQuery, useGetPropertiesMetaDataQuery } =
 	propertyApiSlice;

@@ -45,7 +45,9 @@ import { useSelector } from 'react-redux';
 // import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
 // import { RootState } from '../../store';
 // import { PropertyDataType } from '../../shared/type';
-import { getCurrentId } from '../../store/PropertyPageStore/PropertySlice';
+import { getPropertyData } from '../../store/PropertyPageStore/PropertySlice';
+import { fetchPropertiesApiData } from '../../store/PropertyPageStore/propertyApiSlice';
+import { PropertyDataType } from '../../shared/type';
 
 const stackedImages = [
 	propertyImage,
@@ -126,8 +128,17 @@ const PropertyPage = () => {
 
 	const navigate = useNavigate();
 
-	const currentId = useSelector(getCurrentId);
-	console.log(currentId);
+	const { currentFilter, currentId } = useSelector(getPropertyData);
+
+	const { data: propertiesDataFromStore } = useSelector(
+		fetchPropertiesApiData(currentFilter),
+	);
+
+	const selectedPageData = propertiesDataFromStore?.pageData.find(
+		(data: PropertyDataType) => data.id === currentId,
+	);
+
+	console.log(selectedPageData);
 
 	const property = {
 		name: '',
