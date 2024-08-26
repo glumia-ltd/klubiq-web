@@ -31,7 +31,7 @@ function SideBar() {
 	const { drawerWidth } = allContexts;
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+	const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
 
 	const transitionedMixin = (theme: Theme): CSSObject => ({
 		transition: theme.transitions.create('width', {

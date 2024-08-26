@@ -31,6 +31,8 @@ import Properties from '../pages/Properties';
 
 import ViewPortLayout from '../Layouts/ViewPortLayout';
 
+import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
+
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
@@ -44,8 +46,16 @@ export const router = createBrowserRouter(
 
 			<Route element={<PrivateRoute />}>
 				<Route element={<ViewPortLayout />}>
-					<Route path='/dashboard' element={<DashBoard />} />
-					<Route path='/properties' element={<Properties />} />
+					<Route
+						path='/dashboard'
+						element={<DashBoard />}
+						errorElement={<ErrorComponent />}
+					/>
+					<Route
+						path='/properties'
+						element={<Properties />}
+						errorElement={<ErrorComponent />}
+					/>
 
 					<Route path='/properties/:slug'>
 						<Route index element={<PropertyPage />} />
