@@ -60,7 +60,8 @@ const stackedImages = [
 ];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 
-const initialText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo`;
+const initialText =
+	'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo';
 
 const data = [
 	{
@@ -138,8 +139,6 @@ const PropertyPage = () => {
 		useGetSinglePropertyByUUIDQuery({
 			uuid: currentUUId || '',
 		});
-
-	console.log(currentProperty);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
@@ -299,7 +298,7 @@ const PropertyPage = () => {
 							<UnitInfoCard data={data} />
 						</Grid>
 
-						<Overview initialText={initialText} />
+						<Overview initialText={currentProperty?.description} />
 
 						<Grid sx={styles.addfieldStyle}>
 							{tableBodyRows.length > 0 && (

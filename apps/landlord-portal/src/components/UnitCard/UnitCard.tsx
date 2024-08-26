@@ -9,7 +9,7 @@ type UnitCardPropType = {
 	propertyImage: string;
 	propertyName: string;
 	propertyAddress: string;
-	propertyId: string | number;
+	propertyId?: string | number;
 	numberOfUnits: string;
 	rent: string;
 	totalArea: string;

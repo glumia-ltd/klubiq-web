@@ -5,13 +5,13 @@ import { styles } from './style';
 import { EditIcon } from '../Icons/CustomIcons';
 
 type OverviewType = {
-	initialText: string;
+	initialText?: string;
 };
 
 export const Overview: FC<OverviewType> = ({ initialText }) => {
 	const [, setNeedsTruncation] = useState<boolean>(false);
 	const [truncateText, setTruncateText] = useState<boolean>(true);
-	const [textContent, setTextContent] = useState<string>(initialText);
+	const [textContent, setTextContent] = useState<string>(initialText || '');
 	const [showTextField, setShowTextField] = useState<boolean>(false);
 
 	const overviewContentRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,6 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 				<Typography variant='h3'>Overview</Typography>
 				<EditIcon onClick={handleEditOverview} style={styles.editImageStyle} />
 			</Grid>
-			{textContent}
 
 			<Grid sx={styles.overviewTextContainer}>
 				{!showTextField ? (
