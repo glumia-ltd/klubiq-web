@@ -140,6 +140,8 @@ const PropertyPage = () => {
 			uuid: currentUUId || '',
 		});
 
+	console.log(currentProperty);
+
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
@@ -218,7 +220,15 @@ const PropertyPage = () => {
 						<MoreVertIcon />
 					</Button>
 				</Grid>
-				<Chip sx={styles.chipStyle} label={'For Rent'} />
+				<Chip
+					// sx={styles.chipStyle}
+					label={currentProperty?.purpose?.displayText || 'For sale'}
+					variant={
+						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+							? 'rent'
+							: 'sale'
+					}
+				/>
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={propertyImage}
@@ -226,9 +236,9 @@ const PropertyPage = () => {
 						propertyAddress={propertyAddress}
 						propertyId={currentProperty?.id}
 						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
-						rent='₦0.0'
-						totalArea='350 sqm'
-						buildingType='Duplex'
+						rent={`₦ ${currentProperty?.totalRent}`}
+						totalArea={`${currentProperty?.area?.value || 'NA'} ${currentProperty?.area?.unit || ''}`}
+						buildingType={currentProperty?.type?.name}
 						additionalImages={stackedImages}
 					/>
 

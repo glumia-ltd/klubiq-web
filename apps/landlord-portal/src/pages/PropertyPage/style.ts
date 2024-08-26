@@ -41,15 +41,6 @@ export const styles = {
 		minWidth: '160px',
 	},
 
-	chipStyle: {
-		marginLeft: '18px',
-		padding: '2px',
-		backgroundColor: 'primary.light',
-		color: 'primary.contrastText',
-		fontSize: '12px',
-		fontWeight: '',
-	},
-
 	firstCardContainer: {
 		borderRadius: '8px',
 	},
