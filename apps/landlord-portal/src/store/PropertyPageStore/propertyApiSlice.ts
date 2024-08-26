@@ -2,6 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
+import { PropertyDataType } from '../../shared/type';
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
@@ -23,7 +24,7 @@ export const propertyApiSlice = createApi({
 			}),
 		}),
 
-		getSinglePropertyByUUID: builder.query<any, { uuid: string }>({
+		getSinglePropertyByUUID: builder.query<PropertyDataType, { uuid: string }>({
 			query: (params) => ({
 				url: propertiesEndpoints.getSinglePropery(params.uuid),
 				method: 'GET',
