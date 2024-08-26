@@ -251,7 +251,7 @@ const PropertyPage = () => {
 							<UnitInfoCard data={data} />
 						</Grid>
 
-						<Overview initialText={currentProperty?.description} />
+						<Overview initialText={initialText} />
 
 						{
 							<Grid sx={styles.addfieldStyle}>
