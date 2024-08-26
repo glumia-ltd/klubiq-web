@@ -22,6 +22,13 @@ export const propertyApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+
+		getSinglePropertyByUUID: builder.query<any, { uuid: string }>({
+			query: (params) => ({
+				url: propertiesEndpoints.getSinglePropery(params.uuid),
+				method: 'GET',
+			}),
+		}),
 	}),
 });
 
@@ -34,5 +41,8 @@ export const fetchPropertiesApiData = (filter: any) => {
 	return propertyApiSlice.endpoints.getProperties.select(filter);
 };
 
-export const { useGetPropertiesQuery, useGetPropertiesMetaDataQuery } =
-	propertyApiSlice;
+export const {
+	useGetPropertiesQuery,
+	useGetPropertiesMetaDataQuery,
+	useGetSinglePropertyByUUIDQuery,
+} = propertyApiSlice;
