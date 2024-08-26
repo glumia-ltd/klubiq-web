@@ -53,12 +53,10 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 				{!showTextField ? (
 					<Typography
 						ref={overviewContentRef}
-						sx={
-							{
-								// WebkitLineClamp: truncateText ? 2 : 'none',
-								// ...styles.overviewContent,
-							}
-						}
+						sx={{
+							WebkitLineClamp: truncateText ? 2 : 'none',
+							...styles.overviewContent,
+						}}
 					>
 						{textContent}
 					</Typography>
