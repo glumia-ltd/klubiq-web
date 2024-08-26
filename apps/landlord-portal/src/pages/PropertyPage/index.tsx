@@ -39,18 +39,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
-import { useSelector } from 'react-redux';
-// import { propertiesEndpoints } from '../../helpers/endpoints';
-// import { api } from '../../api';
-// import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
-// import { RootState } from '../../store';
-// import { PropertyDataType } from '../../shared/type';
-import { getPropertyData } from '../../store/PropertyPageStore/PropertySlice';
-import {
-	fetchPropertiesApiData,
-	useGetSinglePropertyByUUIDQuery,
-} from '../../store/PropertyPageStore/propertyApiSlice';
-import { PropertyDataType } from '../../shared/type';
+
+import { useGetSinglePropertyByUUIDQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+
+import { UnitsTable } from '../../components/TenantAndLeaseTable/UnitsTable';
 
 const stackedImages = [
 	propertyImage,
@@ -59,34 +51,6 @@ const stackedImages = [
 	propertyImage,
 ];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
-
-const initialText =
-	'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo';
-
-const data = [
-	{
-		label: 'UNIT',
-		value: 1,
-		imgSrc: HouseIcon,
-	},
-	{
-		label: 'VACANT UNIT',
-		value: 1,
-		valueColor: 'green',
-		imgSrc: VacantHomeIcon,
-	},
-	{
-		label: 'TENANT',
-		value: 0,
-		imgSrc: TenantIcon,
-	},
-	{
-		label: 'MAINTENANCE REQUEST',
-		value: 0,
-		valueColor: 'red',
-		imgSrc: HomeMaintenanceIcon,
-	},
-];
 
 type ColumnType = { id: string; label: string };
 type RowType = {
@@ -149,6 +113,31 @@ const PropertyPage = () => {
 	const maintenanceTabs = [
 		`Active Request (${totalMaintenanceRequests})`,
 		'All Requests',
+	];
+
+	const unitInfoData = [
+		{
+			label: 'UNIT',
+			value: currentProperty?.unitCount || 0,
+			imgSrc: HouseIcon,
+		},
+		{
+			label: 'VACANT UNIT',
+			value: currentProperty?.vacantUnitCount || 0,
+			valueColor: 'green',
+			imgSrc: VacantHomeIcon,
+		},
+		{
+			label: 'TENANT',
+			value: 0,
+			imgSrc: TenantIcon,
+		},
+		{
+			label: 'MAINTENANCE REQUEST',
+			value: 0,
+			valueColor: 'red',
+			imgSrc: HomeMaintenanceIcon,
+		},
 	];
 
 	const handleTabChange = (
@@ -257,10 +246,10 @@ const PropertyPage = () => {
 				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={data} />
+							<UnitInfoCard data={unitInfoData} />
 						</Grid>
 
-						<Overview initialText={initialText} />
+						<Overview initialText={currentProperty?.description} />
 
 						{
 							<Grid sx={styles.addfieldStyle}>
@@ -305,20 +294,18 @@ const PropertyPage = () => {
 				{propertyType === 'Multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={data} />
+							<UnitInfoCard data={unitInfoData} />
 						</Grid>
 
 						<Overview initialText={currentProperty?.description} />
 
 						<Grid sx={styles.addfieldStyle}>
 							{tableBodyRows.length > 0 && (
-								<TenantAndLeaseTable
-									title='Tenant'
-									buttonText='Add Tenant'
+								<UnitsTable
+									title='Units'
 									handleAdd={handleAddTenantCard}
-									columns={columns}
-									tableBodyRows={tableBodyRows}
-									showSecondHeader={false}
+									buttonText='Add Unit'
+									tableBodyRows={currentProperty?.units}
 								/>
 							)}
 							<AddFieldCard

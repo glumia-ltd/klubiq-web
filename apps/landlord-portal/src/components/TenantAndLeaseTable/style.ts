@@ -31,4 +31,7 @@ export const styles = {
 		border: 'none',
 		fontSize: '14px',
 	},
+	tableBodyWithIconStyle: {
+		display: 'flex',
+	},
 };
