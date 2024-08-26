@@ -30,12 +30,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const handleViewProperty = (id: number) => {
+	const handleViewProperty = (uuid: number | string) => {
 		const payload = {
-			currentId: id,
+			currentId: uuid,
 		};
-		dispatch(setCurrentId(payload));
-		navigate(`/properties/${id}`);
+		// dispatch(setCurrentId(payload));
+		navigate(`/properties/${uuid}`);
 	};
 
 	return layout === 'column' ? (
@@ -46,7 +46,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				}}
 			>
 				<Typography variant='cardHeader' noWrap={true}>
-					{propertyData?.type.name}
+					{propertyData?.type?.displayText || 'Apartment'}
 				</Typography>
 				<CardMedia
 					component='img'
@@ -71,9 +71,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						{propertyData?.name}
 					</Typography>
 					<Chip
-						label={propertyData?.purpose.name}
+						label={propertyData?.purpose?.name || 'sale'}
 						variant={
-							propertyData?.purpose.name?.toLowerCase() === 'rent'
+							propertyData?.purpose?.name?.toLowerCase() === 'rent'
 								? 'rent'
 								: 'sale'
 						}
@@ -212,7 +212,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent: 'flex-end',
 				}}
 				disableSpacing
-				onClick={() => handleViewProperty(propertyData?.id)}
+				onClick={() => handleViewProperty(propertyData?.uuid)}
 			>
 				<Typography variant='link'>View Property</Typography>
 			</CardActions>

@@ -35,7 +35,7 @@ import { styles } from './style';
 import { useState } from 'react';
 import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
@@ -46,7 +46,10 @@ import { useSelector } from 'react-redux';
 // import { RootState } from '../../store';
 // import { PropertyDataType } from '../../shared/type';
 import { getPropertyData } from '../../store/PropertyPageStore/PropertySlice';
-import { fetchPropertiesApiData } from '../../store/PropertyPageStore/propertyApiSlice';
+import {
+	fetchPropertiesApiData,
+	useGetSinglePropertyByUUIDQuery,
+} from '../../store/PropertyPageStore/propertyApiSlice';
 import { PropertyDataType } from '../../shared/type';
 
 const stackedImages = [
@@ -127,31 +130,20 @@ const PropertyPage = () => {
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
 
 	const navigate = useNavigate();
+	const location = useLocation();
 
-	const { currentFilter, currentId } = useSelector(getPropertyData);
+	const currentUUId = location.pathname.split('/')[2]!;
 
-	const { data: propertiesDataFromStore } = useSelector(
-		fetchPropertiesApiData(currentFilter),
-	);
+	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
+		useGetSinglePropertyByUUIDQuery({
+			uuid: currentUUId || '',
+		});
 
-	const selectedPageData = propertiesDataFromStore?.pageData.find(
-		(data: PropertyDataType) => data.id === currentId,
-	);
+	console.log(currentProperty);
 
-	console.log(selectedPageData);
+	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
-	const property = {
-		name: '',
-		id: '',
-		isMultiUnit: '',
-		address: { addressLine1: '', addressLine2: '', city: '', state: '' },
-	};
-
-	// console.log(property);
-
-	const propertyType = property?.isMultiUnit ? 'Multi' : 'Single';
-
-	const propertyAddress = `${property?.address?.addressLine1} ${property?.address?.addressLine2}, ${property?.address?.city}, ${property?.address?.state}`;
+	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
 	const maintenanceTabs = [
 		`Active Request (${totalMaintenanceRequests})`,
@@ -186,6 +178,10 @@ const PropertyPage = () => {
 		setMaintenanceTabValue(newValue);
 	};
 
+	const handleHomeClick = () => {
+		navigate('/properties');
+	};
+
 	const handleFileChange = () => {};
 
 	const handleAddUnit = () => {};
@@ -210,9 +206,10 @@ const PropertyPage = () => {
 							sx={styles.iconStyle}
 							component={HomeIcon}
 							inheritViewBox
+							onClick={handleHomeClick}
 						/>
 						<Typography fontWeight={700} sx={styles.textStyle}>
-							{property?.name}
+							{currentProperty?.name}
 						</Typography>
 					</Breadcrumbs>
 				</Grid>
@@ -226,10 +223,10 @@ const PropertyPage = () => {
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={propertyImage}
-						propertyName={property?.name || ''}
+						propertyName={currentProperty?.name || ''}
 						propertyAddress={propertyAddress}
-						propertyId={property?.id}
-						numberOfUnits={property?.isMultiUnit ? 'Multi' : 'Single'}
+						propertyId={currentProperty?.id}
+						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
 						rent='₦0.0'
 						totalArea='350 sqm'
 						buildingType='Duplex'
@@ -254,7 +251,7 @@ const PropertyPage = () => {
 							<UnitInfoCard data={data} />
 						</Grid>
 
-						<Overview initialText={initialText} />
+						<Overview initialText={currentProperty?.description} />
 
 						{
 							<Grid sx={styles.addfieldStyle}>

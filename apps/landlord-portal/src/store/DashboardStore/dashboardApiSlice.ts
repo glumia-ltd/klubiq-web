@@ -26,5 +26,8 @@ export const dashboardApiSlice = createApi({
 	}),
 });
 
-export const { useGetDashboardMetricsQuery, useLazyGetRevenueReportDataQuery } =
-	dashboardApiSlice;
+export const {
+	useGetDashboardMetricsQuery,
+	useGetRevenueReportDataQuery,
+	useLazyGetRevenueReportDataQuery,
+} = dashboardApiSlice;

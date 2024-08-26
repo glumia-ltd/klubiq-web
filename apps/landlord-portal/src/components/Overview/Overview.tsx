@@ -39,7 +39,6 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 	};
 
 	const handleSaveText = () => {
-		console.log('saved');
 		setShowTextField(false);
 	};
 	return (
@@ -48,15 +47,18 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 				<Typography variant='h3'>Overview</Typography>
 				<EditIcon onClick={handleEditOverview} style={styles.editImageStyle} />
 			</Grid>
+			{textContent}
 
 			<Grid sx={styles.overviewTextContainer}>
 				{!showTextField ? (
 					<Typography
 						ref={overviewContentRef}
-						sx={{
-							WebkitLineClamp: truncateText ? 2 : 'none',
-							...styles.overviewContent,
-						}}
+						sx={
+							{
+								// WebkitLineClamp: truncateText ? 2 : 'none',
+								// ...styles.overviewContent,
+							}
+						}
 					>
 						{textContent}
 					</Typography>

@@ -13,6 +13,7 @@ export const styles = {
 	iconStyle: {
 		width: '20px',
 		height: '20px',
+		cursor: 'pointer',
 	},
 	arrowIconStyle: {
 		height: '15px',
