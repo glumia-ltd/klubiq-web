@@ -1,47 +1,57 @@
 import {
-	Box,
+	Grid,
 	Breadcrumbs,
+	SvgIcon,
+	Typography,
 	Button,
 	Chip,
-	Container,
-	Grid,
-	SvgIcon,
-	Table,
-	TableBody,
-	TableCell,
 	TableContainer,
+	Table,
 	TableHead,
 	TableRow,
-	Typography,
+	TableCell,
+	TableBody,
 } from '@mui/material';
-import {
-	HouseIcon,
-	VacantHomeIcon,
-	TenantIcon,
-} from '../../components/Icons/CustomIcons';
-import HomeIcon from '@mui/icons-material/Home';
+import { Container, Box } from '@mui/system';
+import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
+import { styles } from './style';
+import { HomeIcon } from '../Icons/HomeIcon';
+import { MaintenanceIcon } from '../Icons/MaintenanceIcon';
+import { Overview } from '../Overview/Overview';
+import { TabsComponent } from '../TabsComponent/TabsComponent';
+import { TenantAndLeaseTable } from '../TenantAndLeaseTable/TenantAndLeaseTable';
+import { UnitsTable } from '../TenantAndLeaseTable/UnitsTable';
+import { UnitCard } from '../UnitCard/UnitCard';
+import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import UnitInfoCard from '../../components/UnitInfoComponent/UnitInfoCard';
-import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
-import { UnitCard } from '../../components/UnitCard/UnitCard';
-import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
-import { Overview } from '../../components/Overview/Overview';
-import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import { FC, useState } from 'react';
+import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
 import propertyImage from '../../assets/images/propertyImage.png';
 import addMaintenance from '../../assets/images/addMaintenance.svg';
-import { styles } from './style';
-import { useState } from 'react';
-import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { useNavigate, useLocation } from 'react-router-dom';
 
-import aisha from '../../assets/images/aisha.jpg';
-import bukky from '../../assets/images/bukky.png';
-
-import { useGetSinglePropertyByUUIDQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-
-import { UnitsTable } from '../../components/TenantAndLeaseTable/UnitsTable';
+type PropertyUnitComponentType = {
+	handleHomeClick?: () => void;
+	handleTabChange?: (
+		event: React.SyntheticEvent<Element, Event>,
+		newValue: number,
+	) => void;
+	handleNavigation?: (path?: string) => void;
+	handleMaintenanceTabChange?: (
+		_event: React.SyntheticEvent<Element, Event>,
+		newValue: number,
+	) => void;
+	currentProperty: any;
+	propertyType: 'Single' | 'Multi';
+	tenantTableBodyRows?: any;
+	tenantColumns?: any;
+	leaseTableBodyRows?: any;
+	maintenanceTableColumns?: any;
+	maintenanceTableBodyRows?: any;
+	documentTableColumns?: any;
+	documentTableBodyRows?: any;
+};
 
 const stackedImages = [
 	propertyImage,
@@ -49,63 +59,27 @@ const stackedImages = [
 	propertyImage,
 	propertyImage,
 ];
+
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
-
-type ColumnType = { id: string; label: string };
-type RowType = {
-	id: string;
-	tenant: { name: string; image: string };
-	phone: string;
-	email: string;
-	startDate: string;
-	cutOffDate: string;
-};
-
-const columns: ColumnType[] = [
-	{ id: 'tenant', label: 'Tenant' },
-	{ id: 'phone', label: 'Phone' },
-	{ id: 'email', label: 'Email' },
-	{ id: 'startDate', label: 'Start Date' },
-	{ id: 'cutOffDate', label: 'Cut-off date' },
-];
-const tableBodyRows: RowType[] = [
-	{
-		id: 'fadfasdfasd',
-		tenant: { name: 'Aisha Rohni', image: aisha },
-		phone: '0701234567',
-		email: 'aishar@yahoo.com',
-		startDate: 'April 4, 2024',
-		cutOffDate: 'May 4, 2024',
-	},
-	{
-		id: 'fadfasdfaadvadvd',
-		tenant: { name: 'Bukky King', image: bukky },
-		phone: '0805277558',
-		email: 'bking@gmail.com',
-		startDate: 'July 29, 2023',
-		cutOffDate: 'July 29, 2025',
-	},
-];
-
 const totalMaintenanceRequests = 3;
 
-const PropertyPage = () => {
+export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
+	handleHomeClick,
+	currentProperty,
+	tenantTableBodyRows,
+	propertyType,
+	handleTabChange,
+	handleNavigation,
+	handleMaintenanceTabChange,
+	tenantColumns,
+	leaseTableBodyRows,
+	maintenanceTableBodyRows,
+	maintenanceTableColumns,
+	documentTableBodyRows,
+	documentTableColumns,
+}) => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
-
-	const navigate = useNavigate();
-	const location = useLocation();
-
-	const currentUUId = location.pathname.split('/')[2]!;
-
-	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
-		useGetSinglePropertyByUUIDQuery({
-			uuid: currentUUId || '',
-		});
-
-	console.log(currentProperty);
-
-	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
@@ -132,42 +106,6 @@ const PropertyPage = () => {
 			imgSrc: TenantIcon,
 		},
 	];
-
-	const handleTabChange = (
-		_event: React.SyntheticEvent<Element, Event>,
-		newValue: number,
-	) => {
-		setTabValue(newValue);
-	};
-
-	const handleAddTenantCard = () => {
-		navigate('/properties/12345/add-tenant');
-	};
-
-	const handleAddLeaseCard = () => {
-		navigate('/properties/12345/add-lease');
-	};
-
-	const handleCreateMaintenance = () => {
-		navigate('/properties/12345/add-maintenance');
-	};
-
-	const handleCreateDocument = () => {};
-
-	const handleMaintenanceTabChange = (
-		_event: React.SyntheticEvent<Element, Event>,
-		newValue: number,
-	) => {
-		setMaintenanceTabValue(newValue);
-	};
-
-	const handleHomeClick = () => {
-		navigate('/properties');
-	};
-
-	const handleFileChange = () => {};
-
-	const handleAddUnit = () => {};
 
 	return (
 		<Container maxWidth={'xl'} sx={styles.container}>
@@ -252,33 +190,33 @@ const PropertyPage = () => {
 							<Grid sx={styles.addfieldStyle}>
 								{tabValue !== 1 && (
 									<>
-										{tableBodyRows.length > 0 && (
+										{tenantTableBodyRows.length > 0 && (
 											<TenantAndLeaseTable
 												title='Tenant'
 												buttonText='Add Tenant'
-												handleAdd={handleAddTenantCard}
-												columns={columns}
-												tableBodyRows={tableBodyRows}
+												handleAdd={handleNavigation}
+												columns={tenantColumns}
+												tableBodyRows={tenantTableBodyRows}
 											/>
 										)}
 
-										{!tableBodyRows?.length && (
+										{!tenantTableBodyRows?.length && (
 											<AddFieldCard
 												heading={'Add Tenant'}
 												subtext={'Add tenants to your property'}
 												description={'Add Tenant'}
-												handleAdd={handleAddTenantCard}
+												handleAdd={handleNavigation}
 											/>
 										)}
 									</>
 								)}
 
-								{!tableBodyRows?.length && (
+								{!leaseTableBodyRows?.length && (
 									<AddFieldCard
 										heading={'Add Lease'}
 										subtext={'Add lease to your property'}
 										description={'Add Lease'}
-										handleAdd={handleAddLeaseCard}
+										handleAdd={handleNavigation}
 									/>
 								)}
 							</Grid>
@@ -300,7 +238,7 @@ const PropertyPage = () => {
 							{currentProperty?.units?.length > 0 && (
 								<UnitsTable
 									title='Units'
-									handleAdd={handleAddTenantCard}
+									handleAdd={handleNavigation}
 									buttonText='Add Unit'
 									tableBodyRows={currentProperty?.units}
 								/>
@@ -310,7 +248,7 @@ const PropertyPage = () => {
 									heading={'Add Unit'}
 									subtext={'Add units to this property'}
 									description={'Add Unit'}
-									handleAdd={handleAddUnit}
+									handleAdd={handleNavigation}
 								/>
 							)}
 						</Grid>
@@ -353,7 +291,9 @@ const PropertyPage = () => {
 											>
 												<img src={addMaintenance} alt='add maintenance image' />
 												<Typography
-													onClick={handleCreateMaintenance}
+													onClick={() =>
+														handleNavigation && handleNavigation('')
+													}
 													sx={styles.addMaintenanceText}
 												>
 													Create Request
@@ -363,7 +303,7 @@ const PropertyPage = () => {
 									</TableRow>
 
 									<TableRow>
-										{columns.map((column) => (
+										{maintenanceTableColumns.map((column: any) => (
 											<TableCell
 												key={column.label}
 												align={'center'}
@@ -377,8 +317,8 @@ const PropertyPage = () => {
 
 								<TableBody>
 									{maintenanceTabValue === 0 &&
-										tableBodyRows.length > 0 &&
-										tableBodyRows.map((row) => {
+										maintenanceTableBodyRows.length > 0 &&
+										maintenanceTableBodyRows.map((row: any) => {
 											return (
 												<TableRow
 													hover
@@ -386,9 +326,9 @@ const PropertyPage = () => {
 													tabIndex={-1}
 													key={row.id}
 												>
-													{columns.map((column) => {
+													{maintenanceTableColumns.map((column: any) => {
 														const key: string = column.id;
-														const value = row[key as keyof RowType];
+														const value = row[key];
 
 														return (
 															<TableCell
@@ -415,7 +355,7 @@ const PropertyPage = () => {
 										})}
 								</TableBody>
 							</Table>
-							{tableBodyRows.length === 0 && (
+							{maintenanceTableBodyRows.length === 0 && (
 								<Grid item sx={styles.emptyDataInfo}>
 									<Typography sx={styles.emptyDataText} fontWeight={500}>
 										No Results Found
@@ -423,7 +363,7 @@ const PropertyPage = () => {
 
 									<Button
 										sx={styles.createMaintenceButton}
-										onClick={handleCreateMaintenance}
+										onClick={() => handleNavigation && handleNavigation('')}
 									>
 										<MaintenanceIcon height={20} />
 
@@ -441,11 +381,11 @@ const PropertyPage = () => {
 
 				{tabValue === 3 && (
 					<TableContainer>
-						{tableBodyRows.length > 0 ? (
+						{documentTableBodyRows.length > 0 ? (
 							<Table stickyHeader aria-label='sticky table'>
 								<TableHead>
 									<TableRow>
-										{columns.map((column) => (
+										{documentTableColumns.map((column: any) => (
 											<TableCell
 												key={column.label}
 												align={'center'}
@@ -458,7 +398,7 @@ const PropertyPage = () => {
 								</TableHead>
 
 								<TableBody>
-									{tableBodyRows.map((row) => {
+									{documentTableBodyRows.map((row: any) => {
 										return (
 											<TableRow
 												hover
@@ -466,9 +406,9 @@ const PropertyPage = () => {
 												tabIndex={-1}
 												key={row.id}
 											>
-												{columns.map((column) => {
+												{documentTableColumns.map((column: any) => {
 													const key: string = column.id;
-													const value = row[key as keyof RowType];
+													const value = row[key];
 
 													return (
 														<TableCell
@@ -509,7 +449,7 @@ const PropertyPage = () => {
 									<Grid sx={styles.uploadDocumentText}>
 										<CloudUploadOutlinedIcon />
 										<Typography
-											onClick={handleCreateDocument}
+											onClick={() => handleNavigation && handleNavigation('')}
 											sx={styles.addDocumentText}
 										>
 											Upload Document
@@ -539,7 +479,9 @@ const PropertyPage = () => {
 												style={{ display: 'none' }}
 												multiple
 												accept='image/png, image/jpeg'
-												onChange={handleFileChange}
+												onChange={() =>
+													handleNavigation && handleNavigation('')
+												}
 											/>
 										</Box>
 									</Box>
@@ -562,5 +504,3 @@ const PropertyPage = () => {
 		</Container>
 	);
 };
-
-export default PropertyPage;

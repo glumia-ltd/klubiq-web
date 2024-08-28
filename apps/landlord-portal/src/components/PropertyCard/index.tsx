@@ -150,11 +150,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						}}
 					/>
 
-					<Typography
-						variant='cardContentText'
-						noWrap={true}
-						// sx={{ opacity: `${!propertyData?.toilet ? 0 : 1}` }}
-					>
+					<Typography variant='cardContentText' noWrap={true}>
 						{propertyData?.toilet
 							? `${propertyData?.toilet} Toilet${Number(propertyData?.toilet) > 0 ? 's' : ''}`
 							: '--'}

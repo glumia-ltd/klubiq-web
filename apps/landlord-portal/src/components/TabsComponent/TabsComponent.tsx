@@ -6,7 +6,7 @@ import { FC } from 'react';
 type TabsComponentProps = {
 	allTabs: string[];
 	tabValue: number;
-	handleTabChange: (
+	handleTabChange?: (
 		event: React.SyntheticEvent<Element, Event>,
 		newValue: number,
 	) => void;

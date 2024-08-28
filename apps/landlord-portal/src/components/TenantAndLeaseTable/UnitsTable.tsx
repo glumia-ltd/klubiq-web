@@ -18,7 +18,7 @@ import bukky from '../../assets/images/bukky.png';
 
 type UnitsTableType = {
 	title: string;
-	handleAdd: () => void;
+	handleAdd?: (path?: string) => void;
 	buttonText: string;
 	tableBodyRows: UnitsTableRowType[];
 };
@@ -60,6 +60,9 @@ export const UnitsTable: FC<UnitsTableType> = ({
 	tableBodyRows,
 	title,
 }) => {
+	const handleButtonClick = () => {
+		handleAdd && handleAdd('');
+	};
 	return (
 		<Card sx={styles.tenantTableContainer}>
 			<TableContainer>
@@ -73,7 +76,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 								<Grid item xs={6} sm={6} md={9} lg={9}>
 									<Button
 										variant='propertyButton'
-										onClick={handleAdd}
+										onClick={handleButtonClick}
 										sx={styles.tableButton}
 									>
 										{buttonText}
@@ -95,7 +98,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 								}}
 							>
 								<TableCell align={'left'} sx={styles.tableBodyStyle}>
-									Unit {row.id}
+									Unit {row?.unitNumber}
 								</TableCell>
 								<TableCell align={'center'} sx={styles.tableBodyStyle}>
 									<span style={styles.tenantInfoStyle}>

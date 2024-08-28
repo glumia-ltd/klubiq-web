@@ -22,7 +22,7 @@ type RowType = {
 };
 
 type TenantAndLeaseTableProps = {
-	handleAdd: () => void;
+	handleAdd?: (path: string) => void;
 	title: string;
 	buttonText: string;
 	columns: ColumnType[];
@@ -38,6 +38,12 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 	tableBodyRows,
 	showSecondHeader = true,
 }) => {
+	const path = title === 'Tenant' ? 'add-tenant' : 'add-lease';
+
+	const handleClick = () => {
+		handleAdd && handleAdd(path);
+	};
+
 	return (
 		<Grid sx={styles.tenantTableContainer}>
 			<TableContainer>
@@ -51,7 +57,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 								<Grid item xs={6} sm={6} md={9} lg={9}>
 									<Button
 										variant='propertyButton'
-										onClick={handleAdd}
+										onClick={handleClick}
 										sx={styles.tableButton}
 									>
 										{buttonText}
