@@ -60,8 +60,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
-	console.log(propertyType, currentProperty?.isMultiUnit);
-
 	const handleHomeClick = () => {
 		navigate(-1);
 	};
