@@ -21,6 +21,7 @@ export const styles = {
 	},
 	textStyle: {
 		color: 'primary.main',
+		cursor: 'pointer',
 	},
 
 	actionButtonContainerStyle: {

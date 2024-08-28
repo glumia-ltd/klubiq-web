@@ -16,6 +16,7 @@ import { FC } from 'react';
 import { Bedroom, Bathroom, FloorPlan } from '../Icons/CustomIcons';
 import bukky from '../../assets/images/bukky.png';
 import { UnitType } from '../../shared/type';
+import { useNavigate } from 'react-router-dom';
 
 type UnitsTableType = {
 	title: string;
@@ -46,6 +47,11 @@ export const UnitsTable: FC<UnitsTableType> = ({
 	tableBodyRows,
 	title,
 }) => {
+	const navigate = useNavigate();
+
+	const handleUnitClick = (id: string | number) => {
+		navigate(`unit/${id}`);
+	};
 	const handleButtonClick = () => {
 		handleAdd && handleAdd('');
 	};
@@ -75,7 +81,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 						{tableBodyRows?.map((row: UnitType) => (
 							<TableRow
 								hover
-								role='checkbox'
+								onClick={() => handleUnitClick(row?.id)}
 								tabIndex={-1}
 								key={row.id}
 								sx={{

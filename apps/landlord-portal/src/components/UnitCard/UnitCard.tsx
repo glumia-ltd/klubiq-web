@@ -12,7 +12,7 @@ type UnitCardPropType = {
 	propertyId?: string | number;
 	numberOfUnits: string;
 	rent: string;
-	totalArea: string;
+	totalArea?: string;
 	buildingType?: string;
 	additionalImages: string[];
 };
@@ -73,14 +73,16 @@ export const UnitCard: FC<UnitCardPropType> = ({
 								</Grid>
 							</Grid>
 
-							<Grid sx={styles.additionalInfo}>
-								<FloorPlan />
-								<Grid sx={styles.additionalInfoText}>
-									<Typography>Total Area</Typography>
+							{totalArea && (
+								<Grid sx={styles.additionalInfo}>
+									<FloorPlan />
+									<Grid sx={styles.additionalInfoText}>
+										<Typography>Total Area</Typography>
 
-									<Typography variant='h6'>{totalArea}</Typography>
+										<Typography variant='h6'>{totalArea}</Typography>
+									</Grid>
 								</Grid>
-							</Grid>
+							)}
 						</Grid>
 
 						<Grid sx={styles.additionalChipStyle}>

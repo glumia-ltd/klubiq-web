@@ -33,6 +33,7 @@ import Properties from '../pages/Properties';
 import ViewPortLayout from '../Layouts/ViewPortLayout';
 
 import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
+import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -60,12 +61,7 @@ export const router = createBrowserRouter(
 
 					<Route path='/properties/:slug' element={<PropertyLayout />}>
 						<Route index element={<PropertyPage />} />
-						<Route
-							path='unit/:id'
-							element={
-								<h1>This will be for a single unit inside a multi unit</h1>
-							}
-						/>
+						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
 						<Route path='add-tenant' element={<AddTenantPage />} />
 
