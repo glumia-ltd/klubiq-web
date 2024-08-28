@@ -29,10 +29,11 @@ import propertyImage from '../../assets/images/propertyImage.png';
 import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useNavigate } from 'react-router-dom';
+import { PropertyDataType } from '../../shared/type';
 
 type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
-	currentProperty: any;
+	currentProperty: PropertyDataType;
 	tenantTableBodyRows?: any;
 	tenantColumns?: any;
 	leaseTableBodyRows?: any;
@@ -59,7 +60,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
-	console.log(propertyType, currentProperty?.isMulti);
+	console.log(propertyType, currentProperty?.isMultiUnit);
 
 	const handleHomeClick = () => {
 		navigate(-1);
@@ -81,7 +82,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		},
 		{
 			label: 'TENANT',
-			value: currentProperty?.totalTenants || 0,
+			// value: currentProperty?.totalTenants || 0,
+			value: 0,
 			imgSrc: TenantIcon,
 		},
 	];
@@ -163,8 +165,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 						<Overview initialText={currentProperty?.description} />
 
-						<h1>TODO: Complete highlights component</h1>
-
 						{/* Single unit table and add cards */}
 
 						{
@@ -216,7 +216,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						<Overview initialText={currentProperty?.description} />
 
 						<Grid sx={styles.addfieldStyle}>
-							{currentProperty?.units?.length > 0 && (
+							{currentProperty?.units && currentProperty?.units?.length > 0 && (
 								<UnitsTable
 									title='Units'
 									handleAdd={handleNavigation}
@@ -224,7 +224,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 									tableBodyRows={currentProperty?.units}
 								/>
 							)}
-							{currentProperty?.units?.length > 0 ? null : (
+							{currentProperty?.units &&
+							currentProperty?.units?.length > 0 ? null : (
 								<AddFieldCard
 									heading={'Add Unit'}
 									subtext={'Add units to this property'}

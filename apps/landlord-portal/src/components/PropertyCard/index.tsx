@@ -15,7 +15,6 @@ import CardStyle from './CardStyle';
 import { PropertyDataType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
 
-import { setCurrentId } from '../../store/PropertyPageStore/PropertySlice';
 import { useDispatch } from 'react-redux';
 
 interface PropertyCardProps {
@@ -28,13 +27,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	layout,
 }) => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 
 	const handleViewProperty = (uuid: number | string) => {
-		const payload = {
-			currentId: uuid,
-		};
-		// dispatch(setCurrentId(payload));
 		navigate(`/properties/${uuid}`);
 	};
 

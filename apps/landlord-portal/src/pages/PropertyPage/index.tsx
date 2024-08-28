@@ -1,10 +1,4 @@
-import {
-	HouseIcon,
-	VacantHomeIcon,
-	TenantIcon,
-} from '../../components/Icons/CustomIcons';
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { useGetSinglePropertyByUUIDQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 

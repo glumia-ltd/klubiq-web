@@ -21,6 +21,35 @@ export type PropertyMetaData = {
 	isMain?: boolean;
 };
 
+export type LeaseType = {
+	endDate: string;
+	id: number;
+	isArchived: boolean;
+	isDraft: boolean;
+	name: string;
+	paymentFrequency: string;
+	rentAmount: string;
+	rentDueDay: number;
+	securityDeposit: string;
+	startDate: string;
+	status: string;
+	tenants: any[];
+};
+export type UnitType = {
+	area: { value: number; unit: string };
+	bathrooms: number;
+	bedrooms: number;
+	floor: number | null;
+	id: string;
+	images: string[];
+	leases: LeaseType[];
+	offices: number | string | null;
+	rentAmount: string;
+	rooms: null;
+	toilets: 4;
+	unitNumber: string;
+};
+
 export type PropertyDataType = {
 	uuid: string;
 	id: number;
@@ -47,6 +76,12 @@ export type PropertyDataType = {
 		value: number | string;
 		unit: string;
 	};
+	units?: UnitType[];
+	amenities?: Record<string, string>[];
+	status?: string | null;
+	owner?: string | null;
+	vacantUnitCount?: number;
+	totalRent: string;
 };
 
 // export type PropertyType = {

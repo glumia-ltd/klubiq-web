@@ -13,7 +13,7 @@ type UnitCardPropType = {
 	numberOfUnits: string;
 	rent: string;
 	totalArea: string;
-	buildingType: string;
+	buildingType?: string;
 	additionalImages: string[];
 };
 

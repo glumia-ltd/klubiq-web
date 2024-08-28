@@ -15,12 +15,14 @@ import { styles } from './style';
 import { FC } from 'react';
 import { Bedroom, Bathroom, FloorPlan } from '../Icons/CustomIcons';
 import bukky from '../../assets/images/bukky.png';
+import { UnitType } from '../../shared/type';
 
 type UnitsTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
 	buttonText: string;
-	tableBodyRows: UnitsTableRowType[];
+	// tableBodyRows: UnitsTableRowType[];
+	tableBodyRows: any;
 };
 
 type LeaseType = {
@@ -36,22 +38,6 @@ type LeaseType = {
 	tenants: [];
 	isDraft: boolean;
 	isArchived: boolean;
-};
-
-type UnitsTableRowType = {
-	id: string;
-	unitNumber: string;
-	floor: string | null;
-	bedrooms: number;
-	bathrooms: number;
-	toilets: number;
-	area: {
-		value: number;
-		unit: string;
-	};
-	rentAmount: string;
-	leases: LeaseType[];
-	images: string[];
 };
 
 export const UnitsTable: FC<UnitsTableType> = ({
@@ -86,7 +72,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{tableBodyRows.map((row) => (
+						{tableBodyRows?.map((row: UnitType) => (
 							<TableRow
 								hover
 								role='checkbox'

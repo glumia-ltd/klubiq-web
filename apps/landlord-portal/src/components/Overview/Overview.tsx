@@ -9,7 +9,7 @@ type OverviewType = {
 };
 
 export const Overview: FC<OverviewType> = ({ initialText }) => {
-	const [, setNeedsTruncation] = useState<boolean>(false);
+	const [needsTruncation, setNeedsTruncation] = useState<boolean>(false);
 	const [truncateText, setTruncateText] = useState<boolean>(true);
 	const [textContent, setTextContent] = useState<string>(initialText || '');
 	const [showTextField, setShowTextField] = useState<boolean>(false);
@@ -20,9 +20,14 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 		if (overviewContentRef.current) {
 			const element = overviewContentRef.current;
 
+			console.log(
+				'check truncation ',
+				element.scrollHeight > element.clientHeight,
+			);
+
 			setNeedsTruncation(element.scrollHeight > element.clientHeight);
 		}
-	}, [truncateText]);
+	}, [textContent, showTextField]);
 
 	const toggleTextView = () => {
 		setTruncateText((prev) => !prev);
@@ -49,17 +54,17 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 			</Grid>
 
 			<Grid sx={styles.overviewTextContainer}>
-				{!showTextField ? (
-					<Typography
-						ref={overviewContentRef}
-						sx={{
-							WebkitLineClamp: truncateText ? 2 : 'none',
-							...styles.overviewContent,
-						}}
-					>
-						{textContent}
-					</Typography>
-				) : (
+				<Typography
+					ref={overviewContentRef}
+					sx={{
+						WebkitLineClamp: truncateText ? 2 : 'none',
+						...styles.overviewContent,
+					}}
+				>
+					{!showTextField ? textContent : ''}
+				</Typography>
+
+				{showTextField ? (
 					<TextField
 						id='standard-multiline-flexible'
 						variant='outlined'
@@ -75,16 +80,18 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 						}}
 						sx={styles.textFieldStyle}
 					/>
-				)}
+				) : null}
 
 				{!showTextField ? (
-					<Button
-						variant='propertyButton'
-						onClick={toggleTextView}
-						sx={styles.showHideTextStyle}
-					>
-						{truncateText ? 'Read more' : 'Hide Text'}
-					</Button>
+					needsTruncation ? (
+						<Button
+							variant='propertyButton'
+							onClick={toggleTextView}
+							sx={styles.showHideTextStyle}
+						>
+							{truncateText ? 'Read more' : 'Hide Text'}
+						</Button>
+					) : null
 				) : (
 					<Button
 						variant='propertyButton'
