@@ -6,7 +6,6 @@ const UnitInMultiUnitPage = () => {
 	const location = useLocation();
 
 	const currentUUId = location.pathname.split('/')[2]!;
-	console.log(currentUUId);
 
 	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
 		useGetSinglePropertyByUUIDQuery({
