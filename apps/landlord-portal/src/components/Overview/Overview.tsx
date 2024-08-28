@@ -53,8 +53,7 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 		if (extremelyLongWords) {
 			dispatch(
 				openSnackbar({
-					message: `An unusually long single word detected: ${extremelyLongWords}.`,
-
+					message: `A word exceeding 100 characters without spaces has been detected. Please shorten it or add spaces to improve readability.`,
 					severity: 'info',
 					isOpen: true,
 					duration: 2000,
