@@ -87,7 +87,7 @@ export const MaintenanceTableComponent: FC<MaintenanceTableComponentType> = ({
 						</TableRow>
 
 						<TableRow>
-							{maintenanceTableColumns.map((column: any) => (
+							{maintenanceTableColumns?.map((column: any) => (
 								<TableCell
 									key={column.label}
 									align={'center'}
@@ -101,11 +101,11 @@ export const MaintenanceTableComponent: FC<MaintenanceTableComponentType> = ({
 
 					<TableBody>
 						{maintenanceTabValue === 0 &&
-							maintenanceTableBodyRows.length > 0 &&
-							maintenanceTableBodyRows.map((row: any) => {
+							maintenanceTableBodyRows?.length > 0 &&
+							maintenanceTableBodyRows?.map((row: any) => {
 								return (
 									<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
-										{maintenanceTableColumns.map((column: any) => {
+										{maintenanceTableColumns?.map((column: any) => {
 											const key: string = column.id;
 											const value = row[key];
 
@@ -131,7 +131,7 @@ export const MaintenanceTableComponent: FC<MaintenanceTableComponentType> = ({
 							})}
 					</TableBody>
 				</Table>
-				{maintenanceTableBodyRows.length === 0 && (
+				{maintenanceTableBodyRows?.length === 0 && (
 					<Grid item sx={styles.emptyDataInfo}>
 						<Typography sx={styles.emptyDataText} fontWeight={500}>
 							No Results Found

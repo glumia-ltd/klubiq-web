@@ -5,18 +5,11 @@ import {
 	Typography,
 	Button,
 	Chip,
-	TableContainer,
-	Table,
-	TableHead,
-	TableRow,
-	TableCell,
-	TableBody,
 } from '@mui/material';
-import { Container, Box } from '@mui/system';
+import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
-import { HomeIcon } from '../Icons/HomeIcon';
-import { MaintenanceIcon } from '../Icons/MaintenanceIcon';
+// import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../Overview/Overview';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
 import { TenantAndLeaseTable } from '../TenantAndLeaseTable/TenantAndLeaseTable';
@@ -25,34 +18,24 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { FC, useState } from 'react';
-import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
+import {
+	HouseIcon,
+	TenantIcon,
+	VacantHomeIcon,
+	HomeIcon,
+} from '../Icons/CustomIcons';
 import propertyImage from '../../assets/images/propertyImage.png';
-import addMaintenance from '../../assets/images/addMaintenance.svg';
 import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
+import { useNavigate } from 'react-router-dom';
 
 type PropertyUnitComponentType = {
-	handleHomeClick?: () => void;
-	handleTabChange?: (
-		event: React.SyntheticEvent<Element, Event>,
-		newValue: number,
-	) => void;
 	handleNavigation?: (path?: string) => void;
-	handleMaintenanceTabChange?: (
-		_event: React.SyntheticEvent<Element, Event>,
-		newValue: number,
-	) => void;
 	currentProperty: any;
-	propertyType: 'Single' | 'Multi';
 	tenantTableBodyRows?: any;
 	tenantColumns?: any;
 	leaseTableBodyRows?: any;
-	maintenanceTableColumns?: any;
-	maintenanceTableBodyRows?: any;
-	documentTableColumns?: any;
-	documentTableBodyRows?: any;
 };
 
 const stackedImages = [
@@ -63,32 +46,26 @@ const stackedImages = [
 ];
 
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
-const totalMaintenanceRequests = 3;
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
-	handleHomeClick,
 	currentProperty,
 	tenantTableBodyRows,
-	propertyType,
-	handleTabChange,
 	handleNavigation,
-	handleMaintenanceTabChange,
 	tenantColumns,
 	leaseTableBodyRows,
-	maintenanceTableBodyRows,
-	maintenanceTableColumns,
-	documentTableBodyRows,
-	documentTableColumns,
 }) => {
+	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
-	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
+
+	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
+
+	console.log(propertyType, currentProperty?.isMulti);
+
+	const handleHomeClick = () => {
+		navigate(-1);
+	};
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
-
-	const maintenanceTabs = [
-		`Active Request (${totalMaintenanceRequests})`,
-		'All Requests',
-	];
 
 	const unitInfoData = [
 		{
@@ -109,6 +86,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		},
 	];
 
+	const handleTabChange = (
+		_event: React.SyntheticEvent<Element, Event>,
+		newValue: number,
+	) => {
+		setTabValue(newValue);
+	};
+
 	return (
 		<Container maxWidth={'xl'} sx={styles.container}>
 			<Grid>
@@ -125,12 +109,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						aria-label='breadcrumb'
 						sx={styles.breadCrumbStyle}
 					>
-						<SvgIcon
-							sx={styles.iconStyle}
-							component={HomeIcon}
-							inheritViewBox
-							onClick={handleHomeClick}
-						/>
+						<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
+
 						<Typography fontWeight={700} sx={styles.textStyle}>
 							{currentProperty?.name}
 						</Typography>
@@ -143,7 +123,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Button>
 				</Grid>
 				<Chip
-					// sx={styles.chipStyle}
 					label={currentProperty?.purpose?.displayText || 'For sale'}
 					variant={
 						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
@@ -192,7 +171,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 							<Grid sx={styles.addfieldStyle}>
 								{tabValue !== 1 && (
 									<>
-										{tenantTableBodyRows.length > 0 && (
+										{tenantTableBodyRows?.length > 0 && (
 											<TenantAndLeaseTable
 												title='Tenant'
 												buttonText='Add Tenant'

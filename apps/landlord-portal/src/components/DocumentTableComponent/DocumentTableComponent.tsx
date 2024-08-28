@@ -24,11 +24,11 @@ export const DocumentTableComponent: FC<DocumentTableComponentType> = ({
 	const documentTableColumns = documentTableData?.column;
 	return (
 		<TableContainer>
-			{documentTableBodyRows.length > 0 ? (
+			{documentTableBodyRows?.length > 0 ? (
 				<Table stickyHeader aria-label='sticky table'>
 					<TableHead>
 						<TableRow>
-							{documentTableColumns.map((column: any) => (
+							{documentTableColumns?.map((column: any) => (
 								<TableCell
 									key={column.label}
 									align={'center'}
@@ -41,7 +41,7 @@ export const DocumentTableComponent: FC<DocumentTableComponentType> = ({
 					</TableHead>
 
 					<TableBody>
-						{documentTableBodyRows.map((row: any) => {
+						{documentTableBodyRows?.map((row: any) => {
 							return (
 								<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 									{documentTableColumns.map((column: any) => {
