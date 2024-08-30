@@ -49,7 +49,11 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 							</TableCell>
 							<TableCell align='right' colSpan={3} sx={styles.tableCell}>
 								<Grid item xs={6} sm={6} md={9} lg={9}>
-									<Button onClick={handleAdd} sx={styles.tableButton}>
+									<Button
+										variant='propertyButton'
+										onClick={handleAdd}
+										sx={styles.tableButton}
+									>
 										{buttonText}
 									</Button>
 								</Grid>

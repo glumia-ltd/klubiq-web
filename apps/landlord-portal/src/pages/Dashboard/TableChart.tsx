@@ -9,9 +9,9 @@ import { useScreenSize } from '../../helpers/useScreenSize';
 type xAxisDataType = string[];
 
 const TableChart: FC<{
-	seriesData: SeriesDataType;
-	xAxisData: xAxisDataType;
-	maxRevenue: number;
+	seriesData: SeriesDataType | undefined;
+	xAxisData: xAxisDataType | undefined;
+	maxRevenue: number | undefined;
 }> = ({ seriesData, xAxisData, maxRevenue }) => {
 	const { width } = useScreenSize();
 
@@ -72,7 +72,7 @@ const TableChart: FC<{
 						},
 					}}
 					borderRadius={8}
-					series={seriesData}
+					series={seriesData!}
 					xAxis={[
 						{
 							...xAxisConfig.band,
@@ -83,7 +83,7 @@ const TableChart: FC<{
 					yAxis={[
 						{
 							min: 0,
-							max: maxRevenue + maxRevenue * 0.2,
+							max: maxRevenue! + maxRevenue! * 0.2,
 
 							valueFormatter,
 						},
@@ -127,7 +127,7 @@ const TableChart: FC<{
 						},
 					}}
 					borderRadius={8}
-					series={seriesData}
+					series={seriesData!}
 					xAxis={[
 						{
 							...xAxisConfig.band,
@@ -138,7 +138,7 @@ const TableChart: FC<{
 					yAxis={[
 						{
 							min: 0,
-							max: maxRevenue + maxRevenue * 0.2,
+							max: maxRevenue! + maxRevenue! * 0.2,
 
 							valueFormatter,
 						},

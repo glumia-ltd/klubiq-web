@@ -95,7 +95,7 @@ const NavBar = () => {
 								}}
 							>
 								{' '}
-								{section}{' '}
+								{/* {section}{' '} */}
 							</Typography>
 						</Grid>
 					</Grid>

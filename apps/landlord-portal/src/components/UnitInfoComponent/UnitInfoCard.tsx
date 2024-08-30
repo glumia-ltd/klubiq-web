@@ -7,7 +7,7 @@ interface DataItem {
 	label: string;
 	value: number;
 	valueColor?: string;
-	imgSrc?: string;
+	imgSrc?: any;
 }
 
 const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
@@ -25,13 +25,8 @@ const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
 						}}
 					>
 						<Box sx={style.lastBox}>
-							<Box>
-								<Box
-									component='img'
-									src={item.imgSrc}
-									alt={item.label}
-									sx={style.imageStyle}
-								/>
+							<Box sx={style.imageStyle}>
+								<item.imgSrc />
 							</Box>
 
 							<Typography variant='subtitle1' sx={style.headerText}>
@@ -39,7 +34,7 @@ const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
 							</Typography>
 							<Typography
 								variant='h4'
-								style={{ color: item.valueColor || 'black' }}
+								style={{ color: item.valueColor }}
 								sx={style.subText}
 							>
 								{item.value}

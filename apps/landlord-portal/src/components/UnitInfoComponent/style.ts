@@ -21,6 +21,12 @@ const style = {
 	imageStyle: {
 		width: { xs: '25px', sm: '36px', md: '50px', lg: '56px' },
 		height: { xs: '20px', sm: '36px', md: '50px', lg: '56px' },
+		margin: '0 auto',
+
+		svg: {
+			height: '100%',
+			width: '100%',
+		},
 	},
 
 	lastBox: {

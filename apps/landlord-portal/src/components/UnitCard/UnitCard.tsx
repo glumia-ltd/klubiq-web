@@ -1,8 +1,6 @@
-import { Box, Chip, Grid, Typography } from '@mui/material';
+import { Box, Card, Chip, Grid, Typography } from '@mui/material';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import bungalow from '../../assets/images/Bungalow.svg';
-import handCoins from '../../assets/images/HandCoins.svg';
-import floorplan from '../../assets/images/Floorplan.svg';
+import { Bungalow, HandCoins, FloorPlan } from '../Icons/CustomIcons';
 import { styles } from './style';
 import { Stackedimages } from '../StackedImages/Stackedimages';
 import { FC } from 'react';
@@ -11,7 +9,7 @@ type UnitCardPropType = {
 	propertyImage: string;
 	propertyName: string;
 	propertyAddress: string;
-	propertyId: string;
+	propertyId?: string | number;
 	numberOfUnits: string;
 	rent: string;
 	totalArea: string;
@@ -32,7 +30,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 }) => {
 	return (
 		<>
-			<Grid sx={styles.mainCardContainerStyle}>
+			<Card sx={styles.mainCardContainerStyle}>
 				<Grid sx={styles.mainCardStyle}>
 					<img
 						src={propertyImage}
@@ -58,11 +56,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 
 						<Grid sx={styles.additionalInfoContainer}>
 							<Grid sx={styles.additionalInfo}>
-								<img
-									src={bungalow}
-									alt='bungalow icon'
-									style={styles.additionalInfoPicture}
-								/>
+								<Bungalow />
 								<Grid sx={styles.additionalInfoText}>
 									<Typography>Number of Units</Typography>
 
@@ -71,11 +65,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 							</Grid>
 
 							<Grid sx={styles.additionalInfo}>
-								<img
-									src={handCoins}
-									alt='bungalow icon'
-									style={styles.additionalInfoPicture}
-								/>
+								<HandCoins />
 								<Grid sx={styles.additionalInfoText}>
 									<Typography>Rent</Typography>
 
@@ -84,11 +74,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 							</Grid>
 
 							<Grid sx={styles.additionalInfo}>
-								<img
-									src={floorplan}
-									alt='bungalow icon'
-									style={styles.additionalInfoPicture}
-								/>
+								<FloorPlan />
 								<Grid sx={styles.additionalInfoText}>
 									<Typography>Total Area</Typography>
 
@@ -98,7 +84,11 @@ export const UnitCard: FC<UnitCardPropType> = ({
 						</Grid>
 
 						<Grid sx={styles.additionalChipStyle}>
-							<Chip sx={styles.additionalChipText} label={buildingType} />
+							<Chip
+								sx={styles.additionalChipText}
+								label={buildingType}
+								variant='propertyType'
+							/>
 						</Grid>
 					</Grid>
 
@@ -116,7 +106,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 						})}
 					</Box>
 				</Grid>
-			</Grid>
+			</Card>
 		</>
 	);
 };

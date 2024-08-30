@@ -1,16 +1,17 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 import { styles } from './style';
-import editImage from '../../assets/images/edit.svg';
+// import editImage from '../../assets/images/edit.svg';
+import { EditIcon } from '../Icons/CustomIcons';
 
 type OverviewType = {
-	initialText: string;
+	initialText?: string;
 };
 
 export const Overview: FC<OverviewType> = ({ initialText }) => {
 	const [, setNeedsTruncation] = useState<boolean>(false);
 	const [truncateText, setTruncateText] = useState<boolean>(true);
-	const [textContent, setTextContent] = useState<string>(initialText);
+	const [textContent, setTextContent] = useState<string>(initialText || '');
 	const [showTextField, setShowTextField] = useState<boolean>(false);
 
 	const overviewContentRef = useRef<HTMLDivElement>(null);
@@ -38,19 +39,13 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 	};
 
 	const handleSaveText = () => {
-		console.log('saved');
 		setShowTextField(false);
 	};
 	return (
 		<Grid container sx={styles.overviewStyle}>
 			<Grid sx={styles.overviewHeader}>
 				<Typography variant='h3'>Overview</Typography>
-				<img
-					src={editImage}
-					alt='edit image '
-					style={styles.editImageStyle}
-					onClick={handleEditOverview}
-				/>
+				<EditIcon onClick={handleEditOverview} style={styles.editImageStyle} />
 			</Grid>
 
 			<Grid sx={styles.overviewTextContainer}>
@@ -83,11 +78,19 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 				)}
 
 				{!showTextField ? (
-					<Button onClick={toggleTextView} sx={styles.showHideTextStyle}>
+					<Button
+						variant='propertyButton'
+						onClick={toggleTextView}
+						sx={styles.showHideTextStyle}
+					>
 						{truncateText ? 'Read more' : 'Hide Text'}
 					</Button>
 				) : (
-					<Button onClick={handleSaveText} sx={styles.saveTextButton}>
+					<Button
+						variant='propertyButton'
+						onClick={handleSaveText}
+						sx={styles.saveTextButton}
+					>
 						Save
 					</Button>
 				)}

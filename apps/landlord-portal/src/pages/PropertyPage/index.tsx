@@ -3,6 +3,7 @@ import {
 	Breadcrumbs,
 	Button,
 	Chip,
+	Container,
 	Grid,
 	SvgIcon,
 	Table,
@@ -13,9 +14,14 @@ import {
 	TableRow,
 	Typography,
 } from '@mui/material';
+import {
+	HouseIcon,
+	VacantHomeIcon,
+	TenantIcon,
+	HomeMaintenanceIcon,
+} from '../../components/Icons/CustomIcons';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ViewPort from '../../components/Viewport/ViewPort';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import UnitInfoCard from '../../components/UnitInfoComponent/UnitInfoCard';
 import AddFieldCard from '../../components/AddFieldsComponent/AddFieldCard';
@@ -25,18 +31,26 @@ import { Overview } from '../../components/Overview/Overview';
 import { TenantAndLeaseTable } from '../../components/TenantAndLeaseTable/TenantAndLeaseTable';
 import propertyImage from '../../assets/images/propertyImage.png';
 import addMaintenance from '../../assets/images/addMaintenance.svg';
-import HouseIcon from '../../assets/images/home.svg';
-import IconTwo from '../../assets/images/home2.svg';
-import IconThree from '../../assets/images/people.svg';
-import IconFour from '../../assets/images/lasthouse.svg';
 import { styles } from './style';
 import { useState } from 'react';
 import { MaintenanceIcon } from '../../components/Icons/MaintenanceIcon';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import aisha from '../../assets/images/aisha.jpg';
 import bukky from '../../assets/images/bukky.png';
+import { useSelector } from 'react-redux';
+// import { propertiesEndpoints } from '../../helpers/endpoints';
+// import { api } from '../../api';
+// import { getPropertyData } from '../../store/PropertyPageStore/PropertyPageSlice';
+// import { RootState } from '../../store';
+// import { PropertyDataType } from '../../shared/type';
+import { getPropertyData } from '../../store/PropertyPageStore/PropertySlice';
+import {
+	fetchPropertiesApiData,
+	useGetSinglePropertyByUUIDQuery,
+} from '../../store/PropertyPageStore/propertyApiSlice';
+import { PropertyDataType } from '../../shared/type';
 
 const stackedImages = [
 	propertyImage,
@@ -46,7 +60,8 @@ const stackedImages = [
 ];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 
-const initialText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo`;
+const initialText =
+	'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip exea commodo comm Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat laboris nisi ut aliquip ex ea commodo commodo';
 
 const data = [
 	{
@@ -58,18 +73,18 @@ const data = [
 		label: 'VACANT UNIT',
 		value: 1,
 		valueColor: 'green',
-		imgSrc: IconTwo,
+		imgSrc: VacantHomeIcon,
 	},
 	{
 		label: 'TENANT',
 		value: 0,
-		imgSrc: IconThree,
+		imgSrc: TenantIcon,
 	},
 	{
 		label: 'MAINTENANCE REQUEST',
 		value: 0,
 		valueColor: 'red',
-		imgSrc: IconFour,
+		imgSrc: HomeMaintenanceIcon,
 	},
 ];
 
@@ -114,11 +129,20 @@ const totalMaintenanceRequests = 3;
 const PropertyPage = () => {
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [maintenanceTabValue, setMaintenanceTabValue] = useState<number>(0);
-	const [
-		propertyType,
-		//, setPropertyType
-	] = useState('multi');
+
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	const currentUUId = location.pathname.split('/')[2]!;
+
+	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
+		useGetSinglePropertyByUUIDQuery({
+			uuid: currentUUId || '',
+		});
+
+	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
+
+	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
 	const maintenanceTabs = [
 		`Active Request (${totalMaintenanceRequests})`,
@@ -153,13 +177,17 @@ const PropertyPage = () => {
 		setMaintenanceTabValue(newValue);
 	};
 
+	const handleHomeClick = () => {
+		navigate('/properties');
+	};
+
 	const handleFileChange = () => {};
 
 	const handleAddUnit = () => {};
 
 	return (
-		<ViewPort>
-			<Grid sx={styles.container}>
+		<Container maxWidth={'xl'} sx={styles.container}>
+			<Grid>
 				<Grid>
 					<Breadcrumbs
 						separator={
@@ -177,14 +205,15 @@ const PropertyPage = () => {
 							sx={styles.iconStyle}
 							component={HomeIcon}
 							inheritViewBox
+							onClick={handleHomeClick}
 						/>
 						<Typography fontWeight={700} sx={styles.textStyle}>
-							Landmark Estate
+							{currentProperty?.name}
 						</Typography>
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button sx={styles.actionButtonStyle}>
+					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
@@ -193,10 +222,10 @@ const PropertyPage = () => {
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={propertyImage}
-						propertyName='Landmark Estate'
-						propertyAddress='Engineering Close,off Idowu Street,  Victoria Island'
-						propertyId='123456'
-						numberOfUnits='Single'
+						propertyName={currentProperty?.name || ''}
+						propertyAddress={propertyAddress}
+						propertyId={currentProperty?.id}
+						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
 						rent='₦0.0'
 						totalArea='350 sqm'
 						buildingType='Duplex'
@@ -205,7 +234,7 @@ const PropertyPage = () => {
 
 					{/* Render conditionally based on property type */}
 
-					{propertyType === 'single' && (
+					{propertyType === 'Single' && (
 						<TabsComponent
 							handleTabChange={handleTabChange}
 							tabValue={tabValue}
@@ -215,7 +244,7 @@ const PropertyPage = () => {
 				</Grid>
 
 				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
-				{propertyType === 'single' && (tabValue === 0 || tabValue === 1) && (
+				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
 							<UnitInfoCard data={data} />
@@ -229,7 +258,7 @@ const PropertyPage = () => {
 									<>
 										{tableBodyRows.length > 0 && (
 											<TenantAndLeaseTable
-												title='Tenat'
+												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleAddTenantCard}
 												columns={columns}
@@ -263,18 +292,18 @@ const PropertyPage = () => {
 
 				{/* Multi unit */}
 
-				{propertyType === 'multi' && (
+				{propertyType === 'Multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
 							<UnitInfoCard data={data} />
 						</Grid>
 
-						<Overview initialText={initialText} />
+						<Overview initialText={currentProperty?.description} />
 
 						<Grid sx={styles.addfieldStyle}>
 							{tableBodyRows.length > 0 && (
 								<TenantAndLeaseTable
-									title='Tenat'
+									title='Tenant'
 									buttonText='Add Tenant'
 									handleAdd={handleAddTenantCard}
 									columns={columns}
@@ -534,7 +563,7 @@ const PropertyPage = () => {
 					</TableContainer>
 				)}
 			</Grid>
-		</ViewPort>
+		</Container>
 	);
 };
 

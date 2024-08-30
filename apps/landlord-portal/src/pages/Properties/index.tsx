@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Key, useEffect, useRef, useState } from 'react';
 
 import {
 	Stack,
@@ -19,31 +19,44 @@ import PropertyCard from '../../components/PropertyCard';
 import Filter from '../../components/Filter/Filter';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
-import { filterOptions as initialFilterOptions } from './data';
 import { useNavigate } from 'react-router-dom';
-// import Maintenance from '../../components/SingleUnitForms/Maintenance/MaintenanceForm';
-// import AddUnit from '../../components/MultiUnitForms/AddUnit/AddUnit';
-import { api } from '../../api';
-import { propertiesEndpoints } from '../../helpers/endpoints';
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 import { PropertyDataType } from '../../shared/type';
 import { PropertiesSkeleton } from './PropertiesSkeleton';
+import {
+	useGetPropertiesQuery,
+	useGetPropertiesMetaDataQuery,
+} from '../../store/PropertyPageStore/propertyApiSlice';
+import { useDispatch } from 'react-redux';
+import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 
 const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
-	const [allProperties, setAllProperties] = useState<PropertyDataType[] | null>(
-		null,
-	);
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
-	const [updateFilter, setUpdateFilter] = useState(false);
-	const [filterOptions, setFilterOptions] = useState(initialFilterOptions);
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState<boolean>(true);
-	const [initialLoading, setInitialLoading] = useState<boolean>(true);
+	const dispatch = useDispatch();
+
+	const {
+		data: propertyData,
+		isLoading: isPropertyLoading,
+		isFetching: isPropertyFetching,
+	} = useGetPropertiesQuery({
+		...filter,
+		...DEFAULT_PARAMS,
+	});
+
+	const {
+		data: metaData,
+		isLoading: isMetaDataLoading,
+		isFetching: isMetaDataFetching,
+	} = useGetPropertiesMetaDataQuery();
+
+	const allProperties = propertyData?.pageData;
+	const filterOptions = metaData?.filterOptions;
 
 	const filterObjectLength = Object.keys(filter).length;
 
@@ -68,38 +81,6 @@ const Properties = () => {
 		navigate('/properties/property-category');
 	};
 
-	const getAllProperties = async () => {
-		try {
-			const {
-				data: {
-					data: { pageData },
-				},
-			} = await api.get(propertiesEndpoints.getProperties(), {
-				params: { ...filter, ...DEFAULT_PARAMS },
-			});
-
-			setAllProperties(pageData);
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const getPropertiesMetaData = async () => {
-		try {
-			const {
-				data: { data },
-			} = await api.get(propertiesEndpoints.getPropertiesMetaData());
-
-			const { filterOptions } = data;
-
-			setFilterOptions(filterOptions);
-			setInitialLoading(false);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
 	useEffect(() => {
 		if (inputRef.current) {
 			const inputElement: HTMLInputElement | null =
@@ -110,17 +91,16 @@ const Properties = () => {
 	}, []);
 
 	useEffect(() => {
-		setLoading(true);
-		getAllProperties();
-	}, [updateFilter]);
-
-	useEffect(() => {
-		getPropertiesMetaData();
-	}, []);
+		const currentFilter = {
+			...filter,
+			...DEFAULT_PARAMS,
+		};
+		dispatch(setCurrentFilter({ currentFilter }));
+	}, [dispatch, filter]);
 
 	return (
 		<>
-			{initialLoading ? (
+			{isPropertyLoading ? (
 				<PropertiesSkeleton />
 			) : (
 				<Container maxWidth={'xl'} sx={styles.container}>
@@ -186,7 +166,6 @@ const Properties = () => {
 										filterList={filterOptions}
 										getFilterResult={(options) => {
 											setFilter(options);
-											setUpdateFilter((prev) => !prev);
 										}}
 										disable={filterObjectLength ? false : !allPropertiesLength}
 									/>
@@ -194,7 +173,7 @@ const Properties = () => {
 							</Grid>
 							<Grid xs={12} mb={3}>
 								{showFilterResultOnlyWhenFiltered ? (
-									loading ? (
+									isPropertyFetching ? (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
 												<Skeleton
@@ -218,25 +197,30 @@ const Properties = () => {
 							</Grid>
 
 							<Grid xs={12} container spacing={3}>
-								{allProperties?.map((property, index) => (
-									<Grid
-										xs={12}
-										sm={layout === 'row' ? 12 : 6}
-										md={layout === 'row' ? 12 : 4}
-										lg={layout === 'row' ? 12 : 4}
-										xl={layout === 'row' ? 12 : 3}
-										key={index}
-									>
-										{loading ? (
-											<PropertiesCardSkeleton layout={layout} />
-										) : (
-											<PropertyCard
-												propertyData={property}
-												layout={isMobile ? 'column' : layout}
-											/>
-										)}
-									</Grid>
-								))}
+								{allProperties?.map(
+									(
+										property: PropertyDataType,
+										index: Key | null | undefined,
+									) => (
+										<Grid
+											xs={12}
+											sm={layout === 'row' ? 12 : 6}
+											md={layout === 'row' ? 12 : 4}
+											lg={layout === 'row' ? 12 : 4}
+											xl={layout === 'row' ? 12 : 3}
+											key={index}
+										>
+											{isPropertyFetching ? (
+												<PropertiesCardSkeleton layout={layout} />
+											) : (
+												<PropertyCard
+													propertyData={property}
+													layout={isMobile ? 'column' : layout}
+												/>
+											)}
+										</Grid>
+									),
+								)}
 							</Grid>
 						</Grid>
 					</Grid>
