@@ -8,7 +8,6 @@ import {
 	Typography,
 	Box,
 	Chip,
-	Avatar,
 } from '@mui/material';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
@@ -56,7 +55,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						objectFit: 'cover',
 						borderRadius: '0.5rem',
 					}}
-					image={propertyData?.mainPhoto?.url}
+					image={propertyData?.mainImage?.url}
 					alt={propertyData?.name}
 				/>
 				<Stack
@@ -110,7 +109,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					<KlubiqIcons.Bedroom
 						sx={{
 							color: 'text.primary',
-							// opacity: `${!propertyData?.bedroom ? 0 : 1}`,
+							// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
 						}}
 					/>
 					<Typography
@@ -118,45 +117,45 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						noWrap={true}
 						sx={
 							{
-								// opacity: `${!propertyData?.bedroom ? 0 : 1}`,
+								// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
 							}
 						}
 					>
-						{propertyData?.bedroom
-							? `${propertyData?.bedroom} Bedroom${Number(propertyData?.bedroom) > 0 ? 's' : ''}`
+						{propertyData?.bedrooms
+							? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
 							: '--'}
 					</Typography>
 
 					<KlubiqIcons.Bathroom
 						sx={{
 							color: 'text.primary',
-							// opacity: `${!propertyData?.bathroom ? 0.5 : 1}`,
+							// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
 						}}
 					/>
 					<Typography
 						variant='cardContentText'
 						noWrap={true}
-						// sx={{ opacity: `${!propertyData?.bathroom ? 0.5 : 1}` }}
+						// sx={{ opacity: `${!propertyData?.bathrooms ? 0.5 : 1}` }}
 					>
-						{propertyData?.bathroom
-							? `${propertyData?.bathroom} Bathroom${Number(propertyData?.bathroom) > 0 ? 's' : ''}`
+						{propertyData?.bathrooms
+							? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
 							: '--'}
 					</Typography>
 
 					<KlubiqIcons.Bathroom
 						sx={{
 							color: 'text.primary',
-							// opacity: `${!propertyData?.toilet ? 0 : 1}`,
+							// opacity: `${!propertyData?.toilets ? 0 : 1}`,
 						}}
 					/>
 
 					<Typography
 						variant='cardContentText'
 						noWrap={true}
-						// sx={{ opacity: `${!propertyData?.toilet ? 0 : 1}` }}
+						// sx={{ opacity: `${!propertyData?.toilets ? 0 : 1}` }}
 					>
-						{propertyData?.toilet
-							? `${propertyData?.toilet} Toilet${Number(propertyData?.toilet) > 0 ? 's' : ''}`
+						{propertyData?.toilets
+							? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
 							: '--'}
 					</Typography>
 				</Stack>
@@ -228,9 +227,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				<Typography variant='cardHeader'>{propertyData?.type?.name}</Typography>
 				<Stack direction='row' spacing={2}>
 					<Box width={'160px'} height={'100px'}>
-						<Avatar
+						<CardMedia
+							component='img'
 							alt={propertyData?.name}
-							src={propertyData?.mainPhoto?.url}
+							image={propertyData?.mainImage?.url}
 							sx={CardStyle.rowImage}
 						/>
 					</Box>
@@ -272,12 +272,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									}}
 								/>
 								<Typography variant='cardContentText'>
-									{propertyData?.bedroom
-										? `${propertyData?.bedroom} Bedroom${Number(propertyData?.bedroom) > 0 ? 's' : ''}`
+									{propertyData?.bedrooms
+										? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
 										: '--'}
 								</Typography>
 							</>
-							{/* {propertyData?.bedroom ? (
+							{/* {propertyData?.bedrooms ? (
 								<>
 									<KlubiqIcons.Bedroom
 										sx={{
@@ -285,14 +285,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.bedroom
-											? `${propertyData?.bedroom} Bedroom${Number(propertyData?.bedroom) > 0 ? 's' : ''}`
+										{propertyData?.bedrooms
+											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
 											: '--'}
 									</Typography>
 								</>
 							) : null} */}
 
-							{/* {propertyData?.bathroom ? ( */}
+							{/* {propertyData?.bathrooms ? ( */}
 							<>
 								<KlubiqIcons.Bathroom
 									sx={{
@@ -300,14 +300,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									}}
 								/>
 								<Typography variant='cardContentText'>
-									{propertyData?.bathroom
-										? `${propertyData?.bathroom} Bathroom${Number(propertyData?.bathroom) > 0 ? 's' : ''}`
+									{propertyData?.bathrooms
+										? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
 										: '--'}
 								</Typography>
 							</>
 							{/* ) : null} */}
 
-							{/* {propertyData?.toilet ? ( */}
+							{/* {propertyData?.toilets ? ( */}
 							<>
 								<KlubiqIcons.Bathroom
 									sx={{
@@ -316,8 +316,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 								/>
 
 								<Typography variant='cardContentText'>
-									{propertyData?.toilet
-										? `${propertyData?.toilet} Toilet${Number(propertyData?.toilet) > 0 ? 's' : ''}`
+									{propertyData?.toilets
+										? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
 										: '--'}
 								</Typography>
 							</>

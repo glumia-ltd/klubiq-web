@@ -28,9 +28,9 @@ export type PropertyDataType = {
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedroom: string | number;
-	bathroom: string | number;
-	toilet: string | number;
+	bedrooms: string | number;
+	bathrooms: string | number;
+	toilets: string | number;
 	isArchived: boolean;
 	createdDate: string;
 	updatedDate: string;
@@ -38,7 +38,7 @@ export type PropertyDataType = {
 	unitCount: number;
 	isDraft: boolean;
 	isListingPublished: boolean;
-	mainPhoto: PropertyMetaData | null;
+	mainImage: PropertyMetaData | null;
 	purpose: PropertyMetaData;
 	category: PropertyMetaData;
 	type: PropertyMetaData;
