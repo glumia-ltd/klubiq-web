@@ -8,7 +8,6 @@ import {
 	Typography,
 	Box,
 	Chip,
-	Avatar,
 } from '@mui/material';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
@@ -56,7 +55,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						objectFit: 'cover',
 						borderRadius: '0.5rem',
 					}}
-					image={propertyData?.mainPhoto?.url}
+					image={propertyData?.mainImage?.url}
 					alt={propertyData?.name}
 				/>
 				<Stack
@@ -228,9 +227,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				<Typography variant='cardHeader'>{propertyData?.type?.name}</Typography>
 				<Stack direction='row' spacing={2}>
 					<Box width={'160px'} height={'100px'}>
-						<Avatar
+						<CardMedia
+							component='img'
 							alt={propertyData?.name}
-							src={propertyData?.mainPhoto?.url}
+							image={propertyData?.mainImage?.url}
 							sx={CardStyle.rowImage}
 						/>
 					</Box>

@@ -38,7 +38,7 @@ export type PropertyDataType = {
 	unitCount: number;
 	isDraft: boolean;
 	isListingPublished: boolean;
-	mainPhoto: PropertyMetaData | null;
+	mainImage: PropertyMetaData | null;
 	purpose: PropertyMetaData;
 	category: PropertyMetaData;
 	type: PropertyMetaData;
