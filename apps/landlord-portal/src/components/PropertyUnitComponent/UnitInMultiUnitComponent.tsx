@@ -19,8 +19,6 @@ type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
 	currentProperty: PropertyDataType;
 	tenantTableBodyRows?: any;
-	tenantColumns?: any;
-	leaseTableBodyRows?: any;
 };
 
 const stackedImages = [
@@ -30,14 +28,19 @@ const stackedImages = [
 	propertyImage,
 ];
 
+const leaseColumns = [
+	{ id: '1', label: 'Tenant' },
+	{ id: '2', label: 'Phone' },
+	{ id: '3', label: 'Email' },
+	{ id: '4', label: 'Start Date' },
+	{ id: '5', label: 'Cut-off-date' },
+];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 
 export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
 	tenantTableBodyRows,
 	handleNavigation,
-	tenantColumns,
-	leaseTableBodyRows,
 }) => {
 	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
@@ -49,6 +52,8 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	const currentUnitInformation = currentProperty?.units?.find(
 		(unit) => Number(unit.id) === Number(currentUnitId),
 	);
+
+	const leaseTableBodyRows = currentUnitInformation?.leases || [];
 
 	const handleHomeClick = (position: number) => {
 		navigate(position);
@@ -142,7 +147,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleNavigation}
-												columns={tenantColumns}
+												columns={leaseColumns}
 												tableBodyRows={tenantTableBodyRows}
 											/>
 										)}
@@ -164,6 +169,16 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 										subtext={'Add lease to your property'}
 										description={'Add Lease'}
 										handleAdd={handleNavigation}
+									/>
+								)}
+
+								{tabValue === 1 && leaseTableBodyRows?.length > 0 && (
+									<TenantAndLeaseTable
+										title='Lease'
+										buttonText='Add Lease'
+										handleAdd={handleNavigation}
+										columns={leaseColumns}
+										tableBodyRows={leaseTableBodyRows}
 									/>
 								)}
 							</Grid>

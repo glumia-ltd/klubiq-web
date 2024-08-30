@@ -13,12 +13,12 @@ import { FC } from 'react';
 
 type ColumnType = { id: string; label: string };
 type RowType = {
-	id: string;
-	tenant: { name: string; image: string };
-	phone: string;
-	email: string;
+	id: string | number;
+	tenant?: { name: string; image: string };
+	phone?: string;
+	email?: string;
 	startDate: string;
-	cutOffDate: string;
+	endDate: string;
 };
 
 type TenantAndLeaseTableProps = {
@@ -67,9 +67,9 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 						</TableRow>
 						{showSecondHeader && (
 							<TableRow>
-								{columns.map((column) => (
+								{columns?.map((column) => (
 									<TableCell
-										key={column.label}
+										key={column?.label}
 										align={'center'}
 										sx={styles.tableHeaderCellStyle}
 									>
@@ -80,30 +80,24 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 						)}
 					</TableHead>
 					<TableBody>
-						{tableBodyRows.map((row) => {
+						{tableBodyRows?.map((row) => {
 							return (
 								<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
-									{columns.map((column) => {
-										const key: string = column.id;
-										const value = row[key as keyof RowType];
-
-										return (
-											<TableCell
-												key={column.id}
-												align={'center'}
-												sx={styles.tableBodyStyle}
-											>
-												{typeof value === 'string' ? (
-													value
-												) : (
-													<span style={styles.tenantInfoStyle}>
-														<img src={value.image} alt='tenant picture' />{' '}
-														{value.name}
-													</span>
-												)}
-											</TableCell>
-										);
-									})}
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										TBD
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										TBD
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										TBD
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row.startDate}
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row.endDate}
+									</TableCell>
 								</TableRow>
 							);
 						})}
