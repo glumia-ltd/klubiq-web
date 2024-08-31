@@ -30,10 +30,10 @@ const stackedImages = [
 
 const leaseColumns = [
 	{ id: '1', label: 'Tenant' },
-	{ id: '2', label: 'Phone' },
-	{ id: '3', label: 'Email' },
+	{ id: '2', label: 'Status' },
+	{ id: '3', label: 'Rent Amount' },
 	{ id: '4', label: 'Start Date' },
-	{ id: '5', label: 'Cut-off-date' },
+	{ id: '5', label: 'End Date' },
 ];
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 

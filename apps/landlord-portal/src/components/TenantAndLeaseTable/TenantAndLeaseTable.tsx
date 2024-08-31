@@ -1,22 +1,27 @@
 import {
+	Avatar,
+	AvatarGroup,
 	Button,
 	Grid,
+	Popover,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
+	Typography,
 } from '@mui/material';
 import { styles } from './style';
 import { FC } from 'react';
+import aisha from '../../assets/images/aisha.jpg';
 
 type ColumnType = { id: string; label: string };
 type RowType = {
 	id: string | number;
 	tenant?: { name: string; image: string };
-	phone?: string;
-	email?: string;
+	status?: string;
+	rentAmount?: string;
 	startDate: string;
 	endDate: string;
 };
@@ -84,13 +89,36 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 							return (
 								<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										TBD
+										{/* <Typography> First name</Typography>
+										<Typography> First name</Typography>
+										<Typography> First name</Typography>
+										<Typography> First name</Typography>
+										<Typography> First name</Typography> */}
+
+										{/* <Popover
+											id={id}
+											open={open}
+											anchorEl={}
+											onClose={handleClose}
+											anchorOrigin={{
+												vertical: 'bottom',
+												horizontal: 'left',
+											}}
+										> */}
+										<AvatarGroup max={4} sx={{ justifyContent: 'center' }}>
+											<Avatar alt='Remy Sharp' src={aisha} />
+											<Avatar alt='Travis Howard' src={aisha} />
+											<Avatar alt='Cindy Baker' src={aisha} />
+											<Avatar alt='Agnes Walker' src={aisha} />
+											<Avatar alt='Trevor Henderson' src={aisha} />
+										</AvatarGroup>
+										{/* </Popover> */}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										TBD
+										{row?.status}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										TBD
+										{row?.rentAmount}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
 										{row.startDate}
