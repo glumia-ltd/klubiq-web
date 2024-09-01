@@ -100,7 +100,7 @@ const PropertiesDetails = () => {
 						<Grid container spacing={1}>
 							<Grid item xs={12}>
 								<ControlledSelect
-									color='#002147'
+									// color='#002147'
 									name='propertyType'
 									label='PROPERTY TYPE'
 									type='text'
@@ -115,7 +115,7 @@ const PropertiesDetails = () => {
 							</Grid>
 							<Grid item xs={12}>
 								<ControlledTextField
-									color='#002147'
+									// color='#002147'
 									name='propertyName'
 									label='PROPERTY NAME'
 									formik={formik}
@@ -128,7 +128,7 @@ const PropertiesDetails = () => {
 							</Grid>
 							<Grid item xs={12}>
 								<ControlledTextField
-									color='#002147'
+									// color='#002147'
 									name='description'
 									label='DESCRIPTION'
 									placeholder='Describe your property'
@@ -150,7 +150,11 @@ const PropertiesDetails = () => {
 					<Card sx={PropertiesFormStyle.cardTwo}>
 						<Grid container spacing={2} sx={PropertiesFormStyle.cardContent}>
 							<Grid item xs={12}>
-								<Typography variant='h1' fontSize={'20px'} color='#002147'>
+								<Typography
+									variant='h1'
+									fontSize={'20px'}
+									// color='#002147'
+								>
 									PROPERTY IMAGE ({formik.values.propertyImage.length}/4)
 								</Typography>
 							</Grid>
@@ -181,7 +185,7 @@ const PropertiesDetails = () => {
 												position: 'absolute',
 												top: -10,
 												right: -10,
-												backgroundColor: 'white',
+												// backgroundColor: 'white',
 											}}
 										>
 											<HighlightOffIcon />
