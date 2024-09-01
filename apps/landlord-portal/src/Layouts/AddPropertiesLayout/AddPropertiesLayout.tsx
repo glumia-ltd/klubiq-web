@@ -64,12 +64,20 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 		navigateToStep(activeStep - 1);
 	};
 
+	const handleAllPropertiesClick = () => {
+		navigate('/properties');
+	};
+
 	return (
 		<Container sx={styles.containerStyle}>
 			<>
 				<Grid container>
 					<Grid container sx={styles.addPropertiesContainer}>
-						<Grid item sx={styles.addPropertiesContent}>
+						<Grid
+							item
+							sx={styles.addPropertiesContent}
+							onClick={handleAllPropertiesClick}
+						>
 							<ArrowLeftIcon sx={styles.addPropertiesImage} />
 							<Typography sx={styles.addPropertiesText} fontWeight={600}>
 								All properties
