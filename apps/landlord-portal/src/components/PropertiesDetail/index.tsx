@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import RadioCard from '../../components/RadioCard/';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import UnitLoader from './UnitLoader';
 
 const options = [
@@ -27,37 +27,30 @@ const UnitType = () => {
 	const handleUnitTypeChange = (value: string) => {
 		setSelectedUnitType(value);
 	};
-	const [loading, setLoading] = useState<boolean>(true);
-	useEffect(() => {
-		setTimeout(() => setLoading(false), 20000);
-	}, []);
+
 	return (
 		<>
-			{loading ? (
-				<UnitLoader />
-			) : (
-				<Grid container spacing={2}>
-					<Grid item xs={12}>
-						<RadioCard
-							headerText='UNIT TYPE'
-							options={options}
-							defaultValue='one'
-							onChange={handleUnitTypeChange}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<RadioCard
-							headerText='PROPERTY purpose'
-							options={optionTwo}
-							defaultValue='one'
-							onChange={handleUnitTypeChange}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<GeneralInfo selectedUnitType={selectedUnitType} />
-					</Grid>
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<RadioCard
+						headerText='UNIT TYPE'
+						options={options}
+						defaultValue='one'
+						onChange={handleUnitTypeChange}
+					/>
 				</Grid>
-			)}
+				<Grid item xs={12}>
+					<RadioCard
+						headerText='PROPERTY purpose'
+						options={optionTwo}
+						defaultValue='one'
+						onChange={handleUnitTypeChange}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					<GeneralInfo selectedUnitType={selectedUnitType} />
+				</Grid>
+			</Grid>
 		</>
 	);
 };
