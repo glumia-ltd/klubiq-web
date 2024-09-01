@@ -14,7 +14,7 @@ import { RouteObjectType } from '../../shared/type';
 const StepIconRoot = styled('div')<{
 	ownerState: { completed?: boolean; active?: boolean };
 }>(({ theme, ownerState }) => ({
-	backgroundColor: '#fff',
+	backgroundColor: '#ffffff',
 	zIndex: 1,
 	width: 56,
 	height: 56,
@@ -25,15 +25,13 @@ const StepIconRoot = styled('div')<{
 	border: '1px solid #333',
 
 	...(ownerState.active && {
-		backgroundColor: '#ffffff',
+		backgroundColor: '#fff',
 		color: '#002147',
 		border: '3px solid #002147',
-		fontWeight: '900',
 	}),
 	...(ownerState.completed && {
-		background: '#002147',
-		color: '#ffffff',
-		fontWeight: '700',
+		backgroundColor: '#002147',
+		color: '#fff',
 	}),
 
 	[theme.breakpoints.down('sm')]: {
@@ -101,11 +99,10 @@ export const CustomStepper: FC<{
 							sx={{
 								'& .MuiStepLabel-label': {
 									fontWeight: 'normal',
-									color: 'primary.main',
 								},
 								'& .Mui-completed ': {
 									fontWeight: 'bold',
-									color: 'primary.main',
+									// color: 'primary.main',
 								},
 								'& .Mui-active ': {
 									fontWeight: 'bold',

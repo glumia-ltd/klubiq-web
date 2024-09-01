@@ -1,9 +1,8 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { FC, ReactElement, useState } from 'react';
 import styles from './AddPropertiesStyle';
-import leftArrow from '../../assets/images/arrow-left.svg';
 import { CustomStepper } from '../../components/CustomStepper';
-import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate } from 'react-router-dom';
 import { RouteObjectType } from '../../shared/type';
@@ -71,11 +70,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 				<Grid container>
 					<Grid container sx={styles.addPropertiesContainer}>
 						<Grid item sx={styles.addPropertiesContent}>
-							<img
-								src={leftArrow}
-								alt='back arrow'
-								style={styles.addPropertiesImage}
-							/>
+							<ArrowLeftIcon sx={styles.addPropertiesImage} />
 							<Typography sx={styles.addPropertiesText} fontWeight={600}>
 								Add properties
 							</Typography>
@@ -100,7 +95,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						onClick={handleBackwardButton}
 						disabled={activeStep <= 0}
 					>
-						<LeftArrowIcon />
+						<ArrowLeftIcon />
 						<Typography>Previous</Typography>
 					</Button>
 					<Button

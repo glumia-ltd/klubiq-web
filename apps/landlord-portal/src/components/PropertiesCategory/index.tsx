@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropertyCategoryCard from '../PropertyCategoryCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
-import myImage1 from '../../assets/images/house.svg';
-import myImage3 from '../../assets/images/emojione-monotone_houses.svg';
-import myImage2 from '../../assets/images/emojione-monotone_office-building.svg';
-// type Props = {};
+import {
+	HouseIcon,
+	EmojiOneHomeIcon,
+	EmojiOneBuildingIcon,
+} from '../Icons/CustomIcons';
+
 interface CardData {
 	id: number;
 	title: string;
 	description: string;
-	src: string;
+	Image: any;
 	alt: string;
 }
 const PropertyCategory = () => {
@@ -25,8 +27,7 @@ const PropertyCategory = () => {
 			id: 1,
 			title: 'Residential',
 			description: 'Any property used for residential purpose.',
-			// icon: <HomeIcon />,
-			src: myImage1,
+			Image: HouseIcon,
 			alt: 'Description of image 1',
 		},
 		{
@@ -34,8 +35,7 @@ const PropertyCategory = () => {
 			title: 'Commercial',
 			description:
 				'Any property used for business purposes rather than as a living space.',
-			// icon: <WorkIcon />,
-			src: myImage2,
+			Image: EmojiOneHomeIcon,
 			alt: 'Description of image 2',
 		},
 		{
@@ -43,8 +43,7 @@ const PropertyCategory = () => {
 			title: 'Student Housing',
 			description:
 				'Any residential units that serves as housing exclusively for  students.',
-			// icon: <SchoolIcon />,
-			src: myImage3,
+			Image: EmojiOneBuildingIcon,
 			alt: 'Description of image 3',
 		},
 	];
@@ -68,12 +67,10 @@ const PropertyCategory = () => {
 							key={item.id}
 							heading={item.title}
 							subtext={item.description}
-							// icon={item.icon}
 							id={item.id}
 							onClick={handleCardClick}
 							isSelected={item.id === selectedCard}
-							src={item.src}
-							alt={item.alt}
+							Image={item.Image}
 						/>
 					</Grid>
 				))}
