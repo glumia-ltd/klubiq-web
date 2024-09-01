@@ -6,6 +6,7 @@ import { CustomStepper } from '../../components/CustomStepper';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate } from 'react-router-dom';
+import { RouteObjectType } from '../../shared/type';
 
 import {
 	HomeIcon,
@@ -13,12 +14,12 @@ import {
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
 
-interface RouteObjectType {
-	'Property Category': { label: string; icon: React.ReactNode };
-	'Property Details': { label: string; icon: React.ReactNode };
-	'Unit Type': { label: string; icon: React.ReactNode };
-	[key: string]: { label: string; icon: React.ReactNode };
-}
+// interface RouteObjectType {
+// 	'Property Category': { label: string; icon: React.ReactNode };
+// 	'Property Details': { label: string; icon: React.ReactNode };
+// 	'Unit Type': { label: string; icon: React.ReactNode };
+// 	[key: string]: { label: string; icon: React.ReactNode };
+// }
 
 const routeObject: RouteObjectType = {
 	'Property Category': {
