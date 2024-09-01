@@ -83,6 +83,7 @@ export type PropertyDataType = {
 	vacantUnitCount?: number;
 	totalRent: string;
 	images?: { isMain: boolean; url: string }[] | null;
+	totalTenants: number;
 };
 
 // export type PropertyType = {

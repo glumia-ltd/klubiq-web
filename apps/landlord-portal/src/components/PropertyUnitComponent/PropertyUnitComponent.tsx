@@ -85,8 +85,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		},
 		{
 			label: 'TENANT',
-			// value: currentProperty?.totalTenants || 0,
-			value: 0,
+			value: currentProperty?.totalTenants || 0,
 			imgSrc: TenantIcon,
 		},
 	];
@@ -143,7 +142,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						propertyId={currentProperty?.id}
 						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
 						rent={`₦ ${currentProperty?.totalRent}`}
-						totalArea={`${currentProperty?.area?.value || 'NA'} ${currentProperty?.area?.unit || ''}`}
+						totalArea={
+							currentProperty?.isMultiUnit
+								? ''
+								: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
+						}
 						buildingType={currentProperty?.type?.name}
 						additionalImages={stackedImages}
 					/>

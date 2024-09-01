@@ -98,6 +98,9 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 							sx: {
 								alignItems: 'flex-start',
 								padding: '8px 12px',
+								'&.MuiInputBase-root': {
+									maxWidth: '100%',
+								},
 							},
 						}}
 						sx={styles.textFieldStyle}

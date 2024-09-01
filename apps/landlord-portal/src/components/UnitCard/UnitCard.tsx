@@ -73,7 +73,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 								</Grid>
 							</Grid>
 
-							{totalArea && (
+							{numberOfUnits !== 'Multi' && totalArea && (
 								<Grid sx={styles.additionalInfo}>
 									<FloorPlan />
 									<Grid sx={styles.additionalInfoText}>
