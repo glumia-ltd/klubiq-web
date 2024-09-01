@@ -13,13 +13,6 @@ import {
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
 
-// interface RouteObjectType {
-// 	'Property Category': { label: string; icon: React.ReactNode };
-// 	'Property Details': { label: string; icon: React.ReactNode };
-// 	'Unit Type': { label: string; icon: React.ReactNode };
-// 	[key: string]: { label: string; icon: React.ReactNode };
-// }
-
 const routeObject: RouteObjectType = {
 	'Property Category': {
 		label: 'property-category',
