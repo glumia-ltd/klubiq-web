@@ -61,6 +61,11 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
+	const mainImage =
+		currentProperty?.images && currentProperty?.images.length > 1
+			? currentProperty?.images?.find((image) => image.isMain)
+			: currentProperty?.images && currentProperty?.images[0];
+
 	const handleTabChange = (
 		_event: React.SyntheticEvent<Element, Event>,
 		newValue: number,
@@ -117,7 +122,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 				/>
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
-						propertyImage={propertyImage}
+						propertyImage={mainImage?.url}
 						propertyName={currentProperty?.name || ''}
 						propertyAddress={propertyAddress}
 						propertyId={currentUnitInformation?.id}

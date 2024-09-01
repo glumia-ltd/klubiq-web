@@ -6,7 +6,7 @@ import { Stackedimages } from '../StackedImages/Stackedimages';
 import { FC } from 'react';
 
 type UnitCardPropType = {
-	propertyImage: string;
+	propertyImage?: string;
 	propertyName: string;
 	propertyAddress: string;
 	propertyId?: string | number;

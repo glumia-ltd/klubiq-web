@@ -82,6 +82,7 @@ export type PropertyDataType = {
 	owner?: string | null;
 	vacantUnitCount?: number;
 	totalRent: string;
+	images?: { isMain: boolean; url: string }[] | null;
 };
 
 // export type PropertyType = {

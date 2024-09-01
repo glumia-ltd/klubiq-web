@@ -13,13 +13,14 @@ import {
 	Typography,
 } from '@mui/material';
 import { styles } from './style';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import aisha from '../../assets/images/aisha.jpg';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 type ColumnType = { id: string; label: string };
 type RowType = {
 	id: string | number;
-	tenant?: { name: string; image: string };
+	tenants?: { firstName: string; lastName: string; image?: string }[];
 	status?: string;
 	rentAmount?: string;
 	startDate: string;
@@ -89,30 +90,58 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 							return (
 								<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										{/* <Typography> First name</Typography>
-										<Typography> First name</Typography>
-										<Typography> First name</Typography>
-										<Typography> First name</Typography>
-										<Typography> First name</Typography> */}
+										{row?.tenants && row?.tenants?.length > 1 && (
+											<PopupState variant='popover'>
+												{(popupState) => {
+													return (
+														<div style={{ cursor: 'pointer' }}>
+															<AvatarGroup
+																max={4}
+																sx={{ justifyContent: 'center' }}
+																{...bindTrigger(popupState)}
+															>
+																<Avatar alt='Remy Sharp' src={aisha} />
+																<Avatar alt='Travis Howard' src={aisha} />
+																<Avatar alt='Cindy Baker' src={aisha} />
+																<Avatar alt='Agnes Walker' src={aisha} />
+																<Avatar alt='Trevor Henderson' src={aisha} />
+															</AvatarGroup>
+															<Popover
+																{...bindPopover(popupState)}
+																anchorOrigin={{
+																	vertical: 'bottom',
+																	horizontal: 'center',
+																}}
+																transformOrigin={{
+																	vertical: 'top',
+																	horizontal: 'center',
+																}}
+															>
+																<Typography sx={{ p: 2 }}>
+																	{row?.tenants?.map(
+																		(tenant) =>
+																			`${tenant?.firstName} ${tenant?.lastName}`,
+																	)}
+																</Typography>
+															</Popover>
+														</div>
+													);
+												}}
+											</PopupState>
+										)}
 
-										{/* <Popover
-											id={id}
-											open={open}
-											anchorEl={}
-											onClose={handleClose}
-											anchorOrigin={{
-												vertical: 'bottom',
-												horizontal: 'left',
-											}}
-										> */}
-										<AvatarGroup max={4} sx={{ justifyContent: 'center' }}>
-											<Avatar alt='Remy Sharp' src={aisha} />
-											<Avatar alt='Travis Howard' src={aisha} />
-											<Avatar alt='Cindy Baker' src={aisha} />
-											<Avatar alt='Agnes Walker' src={aisha} />
-											<Avatar alt='Trevor Henderson' src={aisha} />
-										</AvatarGroup>
-										{/* </Popover> */}
+										{row?.tenants && row?.tenants?.length === 1 && (
+											<>
+												<Avatar
+													alt={row.tenants[0]?.firstName}
+													src={row.tenants[0]?.image}
+												/>
+												<Typography sx={{ p: 2 }}>
+													{row?.tenants[0]?.firstName}{' '}
+													{row?.tenants[0]?.lastName}
+												</Typography>
+											</>
+										)}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
 										{row?.status}
