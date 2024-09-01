@@ -72,7 +72,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						<Grid item sx={styles.addPropertiesContent}>
 							<ArrowLeftIcon sx={styles.addPropertiesImage} />
 							<Typography sx={styles.addPropertiesText} fontWeight={600}>
-								Add properties
+								All properties
 							</Typography>
 						</Grid>
 
