@@ -14,8 +14,6 @@ import CardStyle from './CardStyle';
 import { PropertyDataType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
-
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
 	layout: 'row' | 'column';
