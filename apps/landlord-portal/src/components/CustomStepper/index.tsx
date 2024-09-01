@@ -7,9 +7,9 @@ import {
 	StepConnector,
 	stepConnectorClasses,
 } from '@mui/material';
-import { HomeIcon } from '../Icons/HomeIcon';
 import { FC } from 'react';
 import { styles } from './styles';
+import { HomeIcon } from '../Icons/CustomIcons';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { completed?: boolean; active?: boolean };
@@ -31,9 +31,10 @@ const StepIconRoot = styled('div')<{
 		fontWeight: '900',
 	}),
 	...(ownerState.completed && {
-		backgroundColor: '#002147',
-		color: '#fff',
-		fontWeight: '700',
+		background: 'red',
+		// backgroundColor: 'primary.main',
+		// // color: '#ffffff',
+		// fontWeight: '700',
 	}),
 
 	[theme.breakpoints.down('sm')]: {
@@ -47,10 +48,12 @@ const StepIconRoot = styled('div')<{
 }));
 
 const StepIcon = (props: StepIconProps) => {
-	const { active, completed, className } = props;
+	const { active, completed, className, icon: Icon } = props;
 
 	return (
 		<StepIconRoot ownerState={{ completed, active }} className={className}>
+			{/* {Icon} */}
+
 			<HomeIcon />
 		</StepIconRoot>
 	);
@@ -79,10 +82,10 @@ const LineConnector = styled(StepConnector)(() => ({
 	},
 }));
 
-export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
-	active,
-	steps,
-}) => {
+export const CustomStepper: FC<{
+	active: number;
+	routes: any;
+}> = ({ active, routes }) => {
 	return (
 		<Stepper
 			alternativeLabel
@@ -90,11 +93,13 @@ export const CustomStepper: FC<{ active: number; steps: string[] }> = ({
 			connector={<LineConnector />}
 			sx={styles.stepper}
 		>
-			{steps.map((label) => {
+			{Object.keys(routes).map((label) => {
+				const icon = routes[label].icon;
+
 				return (
 					<Step key={label}>
 						<StepLabel
-							StepIconComponent={StepIcon}
+							StepIconComponent={() => StepIcon({ icon })}
 							sx={{
 								'& .MuiStepLabel-label': {
 									fontWeight: 'normal',

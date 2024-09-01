@@ -37,7 +37,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				}}
 			>
 				<Typography variant='cardHeader' noWrap={true}>
-					{propertyData?.type?.displayText || 'Apartment'}
+					{propertyData?.type?.name || 'Apartment'}
 				</Typography>
 				<CardMedia
 					component='img'

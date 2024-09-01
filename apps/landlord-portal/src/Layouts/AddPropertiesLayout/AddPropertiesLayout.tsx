@@ -1,12 +1,5 @@
-import {
-	Button,
-	Container,
-	Grid,
-	Typography,
-	Skeleton,
-	Box,
-} from '@mui/material';
-import { FC, ReactElement, useState, useEffect } from 'react';
+import { Button, Container, Grid, Typography } from '@mui/material';
+import { FC, ReactElement, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import leftArrow from '../../assets/images/arrow-left.svg';
 import { CustomStepper } from '../../components/CustomStepper';
@@ -14,18 +7,29 @@ import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate } from 'react-router-dom';
 
+import {
+	HomeIcon,
+	PropertyDetailsIcon,
+	UnitTypeIcon,
+} from '../../components/Icons/CustomIcons';
+
 interface RouteObjectType {
-	'Property Category': string;
-	'Property Details': string;
-	'Unit Type': string;
-	//index signature
-	[key: string]: string;
+	'Property Category': { label: string; icon: React.ReactNode };
+	'Property Details': { label: string; icon: React.ReactNode };
+	'Unit Type': { label: string; icon: React.ReactNode };
+	[key: string]: { label: string; icon: React.ReactNode };
 }
 
 const routeObject: RouteObjectType = {
-	'Property Category': 'property-category',
-	'Property Details': 'property-details',
-	'Unit Type': 'unit-type',
+	'Property Category': {
+		label: 'property-category',
+		icon: <HomeIcon />,
+	},
+	'Property Details': {
+		label: 'property-details',
+		icon: <PropertyDetailsIcon />,
+	},
+	'Unit Type': { label: 'unit-type', icon: <UnitTypeIcon /> },
 };
 
 const steps = Object.keys(routeObject);
@@ -41,7 +45,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 
 		if (!routeKey) return;
 
-		const route = routeObject[routeKey];
+		const route = routeObject[routeKey]?.label;
 
 		navigate(route as string);
 	};
@@ -82,7 +86,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 					</Grid>
 
 					<Grid sx={styles.stepperContainer}>
-						<CustomStepper active={activeStep} steps={steps} />
+						<CustomStepper active={activeStep} routes={routeObject} />
 					</Grid>
 				</Grid>
 
