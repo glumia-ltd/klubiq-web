@@ -99,13 +99,15 @@ export const CustomStepper: FC<{
 							sx={{
 								'& .MuiStepLabel-label': {
 									fontWeight: 'normal',
+									color: 'primary.main',
 								},
 								'& .Mui-completed ': {
 									fontWeight: 'bold',
-									// color: 'primary.main',
+									color: 'primary.main',
 								},
 								'& .Mui-active ': {
 									fontWeight: 'bold',
+									color: 'primary.main',
 								},
 							}}
 						>
