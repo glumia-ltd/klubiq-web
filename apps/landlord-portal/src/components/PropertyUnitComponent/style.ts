@@ -11,8 +11,8 @@ export const styles = {
 		},
 	},
 	iconStyle: {
-		width: '20px',
-		height: '20px',
+		width: '16px',
+		height: '16px',
 		cursor: 'pointer',
 	},
 	arrowIconStyle: {
@@ -21,6 +21,7 @@ export const styles = {
 	},
 	textStyle: {
 		color: 'primary.main',
+		cursor: 'pointer',
 	},
 
 	actionButtonContainerStyle: {

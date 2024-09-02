@@ -1,3 +1,10 @@
+export interface RouteObjectType {
+	'Property Category': { label: string; icon: React.ReactNode };
+	'Property Details': { label: string; icon: React.ReactNode };
+	'Unit Type': { label: string; icon: React.ReactNode };
+	[key: string]: { label: string; icon: React.ReactNode };
+}
+
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -19,6 +26,35 @@ export type PropertyMetaData = {
 	url?: string;
 	fileSize?: number;
 	isMain?: boolean;
+};
+
+export type LeaseType = {
+	endDate: string;
+	id: number;
+	isArchived: boolean;
+	isDraft: boolean;
+	name: string;
+	paymentFrequency: string;
+	rentAmount: string;
+	rentDueDay: number;
+	securityDeposit: string;
+	startDate: string;
+	status: string;
+	tenants: any[];
+};
+export type UnitType = {
+	area: { value: number; unit: string };
+	bathrooms: number;
+	bedrooms: number;
+	floor: number | null;
+	id: string;
+	images: string[];
+	leases: LeaseType[];
+	offices: number | string | null;
+	rentAmount: string;
+	rooms: null;
+	toilets: 4;
+	unitNumber: string;
 };
 
 export type PropertyDataType = {
@@ -47,6 +83,14 @@ export type PropertyDataType = {
 		value: number | string;
 		unit: string;
 	};
+	units?: UnitType[];
+	amenities?: Record<string, string>[];
+	status?: string | null;
+	owner?: string | null;
+	vacantUnitCount?: number;
+	totalRent: string;
+	images?: { isMain: boolean; url: string }[] | null;
+	totalTenants: number;
 };
 
 // export type PropertyType = {

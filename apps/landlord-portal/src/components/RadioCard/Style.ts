@@ -13,7 +13,6 @@ const styles = {
 		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '24px' },
 		textTransform: 'uppercase',
 		marginBottom: '15px',
-		color: '#002147',
 	},
 	radioLabel: {
 		'& .MuiFormControlLabel-label': {

@@ -8,8 +8,7 @@ type PropertyCategoryCardProps = {
 	onClick: (id: number) => void;
 	id: number;
 	isSelected: boolean;
-	src: string;
-	alt: string;
+	Image: any;
 };
 
 const PropertyCategoryCard = ({
@@ -18,8 +17,7 @@ const PropertyCategoryCard = ({
 	onClick,
 	id,
 	isSelected,
-	alt,
-	src,
+	Image,
 }: PropertyCategoryCardProps) => {
 	return (
 		<Card
@@ -29,7 +27,7 @@ const PropertyCategoryCard = ({
 		>
 			<Stack direction='column' spacing={3}>
 				<Box>
-					<Box component='img' src={src} alt={alt} sx={CardStyle.imageStyle} />
+					<Image sx={CardStyle.imageStyle} />
 				</Box>
 				<Typography variant='body2' color='text.primary' sx={CardStyle.header}>
 					{heading}

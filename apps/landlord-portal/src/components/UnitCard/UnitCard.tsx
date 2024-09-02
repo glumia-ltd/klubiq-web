@@ -6,14 +6,14 @@ import { Stackedimages } from '../StackedImages/Stackedimages';
 import { FC } from 'react';
 
 type UnitCardPropType = {
-	propertyImage: string;
+	propertyImage?: string;
 	propertyName: string;
 	propertyAddress: string;
 	propertyId?: string | number;
 	numberOfUnits: string;
 	rent: string;
-	totalArea: string;
-	buildingType: string;
+	totalArea?: string;
+	buildingType?: string;
 	additionalImages: string[];
 };
 
@@ -73,14 +73,16 @@ export const UnitCard: FC<UnitCardPropType> = ({
 								</Grid>
 							</Grid>
 
-							<Grid sx={styles.additionalInfo}>
-								<FloorPlan />
-								<Grid sx={styles.additionalInfoText}>
-									<Typography>Total Area</Typography>
+							{numberOfUnits !== 'Multi' && totalArea && (
+								<Grid sx={styles.additionalInfo}>
+									<FloorPlan />
+									<Grid sx={styles.additionalInfoText}>
+										<Typography>Total Area</Typography>
 
-									<Typography variant='h6'>{totalArea}</Typography>
+										<Typography variant='h6'>{totalArea}</Typography>
+									</Grid>
 								</Grid>
-							</Grid>
+							)}
 						</Grid>
 
 						<Grid sx={styles.additionalChipStyle}>

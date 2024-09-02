@@ -22,6 +22,7 @@ import PropertyPage from '../pages/PropertyPage';
 import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
 import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
+import PropertyLayout from '../Layouts/PropertyLayout/PropertyLayout';
 
 import PropertyCategory from '../components/PropertiesCategory';
 import PropertiesDetails from '../components/PropertiesDetails';
@@ -32,6 +33,7 @@ import Properties from '../pages/Properties';
 import ViewPortLayout from '../Layouts/ViewPortLayout';
 
 import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
+import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -57,8 +59,9 @@ export const router = createBrowserRouter(
 						errorElement={<ErrorComponent />}
 					/>
 
-					<Route path='/properties/:slug'>
+					<Route path='/properties/:slug' element={<PropertyLayout />}>
 						<Route index element={<PropertyPage />} />
+						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
 						<Route path='add-tenant' element={<AddTenantPage />} />
 

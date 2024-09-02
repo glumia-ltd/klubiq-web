@@ -1,10 +1,8 @@
 import { useLocation } from 'react-router-dom';
-
+import { UnitInMultiUnitComponent } from '../../components/PropertyUnitComponent/UnitInMultiUnitComponent';
 import { useGetSinglePropertyByUUIDQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
-import { PropertyUnitComponent } from '../../components/PropertyUnitComponent/PropertyUnitComponent';
-
-const PropertyPage = () => {
+const UnitInMultiUnitPage = () => {
 	const location = useLocation();
 
 	const currentUUId = location.pathname.split('/')[2]!;
@@ -14,7 +12,7 @@ const PropertyPage = () => {
 			uuid: currentUUId || '',
 		});
 
-	return <PropertyUnitComponent currentProperty={currentProperty} />;
+	return <UnitInMultiUnitComponent currentProperty={currentProperty} />;
 };
 
-export default PropertyPage;
+export default UnitInMultiUnitPage;

@@ -3,16 +3,20 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 import { styles } from './style';
 // import editImage from '../../assets/images/edit.svg';
 import { EditIcon } from '../Icons/CustomIcons';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
 
 type OverviewType = {
 	initialText?: string;
 };
 
 export const Overview: FC<OverviewType> = ({ initialText }) => {
-	const [, setNeedsTruncation] = useState<boolean>(false);
+	const [needsTruncation, setNeedsTruncation] = useState<boolean>(false);
 	const [truncateText, setTruncateText] = useState<boolean>(true);
 	const [textContent, setTextContent] = useState<string>(initialText || '');
 	const [showTextField, setShowTextField] = useState<boolean>(false);
+
+	const dispatch = useDispatch();
 
 	const overviewContentRef = useRef<HTMLDivElement>(null);
 
@@ -22,7 +26,7 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 
 			setNeedsTruncation(element.scrollHeight > element.clientHeight);
 		}
-	}, [truncateText]);
+	}, [textContent, showTextField]);
 
 	const toggleTextView = () => {
 		setTruncateText((prev) => !prev);
@@ -39,7 +43,27 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 	};
 
 	const handleSaveText = () => {
+		const maximumLength = 100;
+		const splitTextContent = textContent.split(' ');
+
+		const extremelyLongWords = splitTextContent.find(
+			(word) => word.length > maximumLength,
+		);
+
+		if (extremelyLongWords) {
+			dispatch(
+				openSnackbar({
+					message: `A word exceeding 100 characters without spaces has been detected. Please shorten it or add spaces to improve readability.`,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			return;
+		}
+
 		setShowTextField(false);
+		setTruncateText(true);
 	};
 	return (
 		<Grid container sx={styles.overviewStyle}>
@@ -55,11 +79,14 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 						sx={{
 							WebkitLineClamp: truncateText ? 2 : 'none',
 							...styles.overviewContent,
+							height: `${truncateText ? '50px' : ''}`,
 						}}
 					>
 						{textContent}
 					</Typography>
-				) : (
+				) : null}
+
+				{showTextField ? (
 					<TextField
 						id='standard-multiline-flexible'
 						variant='outlined'
@@ -71,20 +98,25 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 							sx: {
 								alignItems: 'flex-start',
 								padding: '8px 12px',
+								'&.MuiInputBase-root': {
+									maxWidth: '100%',
+								},
 							},
 						}}
 						sx={styles.textFieldStyle}
 					/>
-				)}
+				) : null}
 
 				{!showTextField ? (
-					<Button
-						variant='propertyButton'
-						onClick={toggleTextView}
-						sx={styles.showHideTextStyle}
-					>
-						{truncateText ? 'Read more' : 'Hide Text'}
-					</Button>
+					needsTruncation ? (
+						<Button
+							variant='propertyButton'
+							onClick={toggleTextView}
+							sx={styles.showHideTextStyle}
+						>
+							{truncateText ? 'Read more' : 'Hide Text'}
+						</Button>
+					) : null
 				) : (
 					<Button
 						variant='propertyButton'

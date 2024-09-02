@@ -24,7 +24,7 @@ export const propertyApiSlice = createApi({
 			}),
 		}),
 
-		getSinglePropertyByUUID: builder.query<PropertyDataType, { uuid: string }>({
+		getSinglePropertyByUUID: builder.query<any, { uuid: string }>({
 			query: (params) => ({
 				url: propertiesEndpoints.getSinglePropery(params.uuid),
 				method: 'GET',
