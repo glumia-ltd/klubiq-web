@@ -9,10 +9,11 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 // import { Delete } from '@mui/icons-material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PropertyDetailSkeleton from './PropertyDetailSkeleton';
+import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 const validationSchema = yup.object({
-	propertyName: yup.string().required('Please enter the property name'),
+	name: yup.string().required('Please enter the property name'),
 	description: yup.string().required('This field is required'),
-	propertyType: yup.string().required('Select an option'),
+	typeId: yup.string().required('Select an option'),
 	propertyImage: yup
 		.array()
 		.min(1, 'You need to upload at least one image')
@@ -21,25 +22,17 @@ const validationSchema = yup.object({
 });
 
 type formValues = {
-	propertyName: string;
+	name: string;
 	description: string;
-	propertyType: string;
+	typeId: number | string;
 	propertyImage: string[];
 };
 
 const PropertiesDetails = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 
-	const property = [
-		{
-			value: 'A',
-			label: 'A',
-		},
-		{
-			value: 'B',
-			label: 'B',
-		},
-	];
+	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
+		useGetPropertiesMetaDataQuery();
 
 	const onSubmit = async (values: formValues) => {
 		console.log(values, 'val');
@@ -48,13 +41,15 @@ const PropertiesDetails = () => {
 	const formik = useFormik({
 		initialValues: {
 			description: '',
-			propertyName: '',
-			propertyType: '',
+			name: '',
+			typeId: '',
 			propertyImage: [],
 		},
 		validationSchema,
 		onSubmit,
 	});
+
+	console.log(formik.values);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = event.target.files;
@@ -80,12 +75,12 @@ const PropertiesDetails = () => {
 		setPassportFiles(updatedFiles);
 	};
 
-	useEffect(() => {
-		// Revoke URLs when the component unmounts
-		return () => {
-			formik.values.propertyImage.forEach((url) => URL.revokeObjectURL(url));
-		};
-	}, [formik.values.propertyImage]);
+	// useEffect(() => {
+	// 	// Revoke URLs when the component unmounts
+	// 	return () => {
+	// 		formik.values.propertyImage.forEach((url) => URL.revokeObjectURL(url));
+	// 	};
+	// }, [formik.values.propertyImage]);
 
 	return (
 		<Grid container spacing={0}>
@@ -101,11 +96,12 @@ const PropertiesDetails = () => {
 							<Grid item xs={12}>
 								<ControlledSelect
 									// color='#002147'
-									name='propertyType'
+									name='typeId'
 									label='PROPERTY TYPE'
 									type='text'
 									formik={formik}
-									options={property}
+									value={formik?.values?.typeId}
+									options={propertyMetaData?.types}
 									inputProps={{
 										sx: {
 											height: '40px',
@@ -116,8 +112,9 @@ const PropertiesDetails = () => {
 							<Grid item xs={12}>
 								<ControlledTextField
 									// color='#002147'
-									name='propertyName'
+									name='name'
 									label='PROPERTY NAME'
+									value={formik?.values?.name}
 									formik={formik}
 									inputProps={{
 										sx: {
@@ -155,7 +152,7 @@ const PropertiesDetails = () => {
 									fontSize={'20px'}
 									// color='#002147'
 								>
-									PROPERTY IMAGE ({formik.values.propertyImage.length}/4)
+									PROPERTY IMAGE
 								</Typography>
 							</Grid>
 							{formik.values.propertyImage.map(
@@ -193,7 +190,7 @@ const PropertiesDetails = () => {
 									</Grid>
 								),
 							)}
-							{formik.values.propertyImage.length < 4 && (
+							{
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
 										component='label'
@@ -224,7 +221,7 @@ const PropertiesDetails = () => {
 										/>
 									</Box>
 								</Grid>
-							)}
+							}
 						</Grid>
 					</Card>
 				</Grid>

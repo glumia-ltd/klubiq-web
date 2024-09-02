@@ -1,32 +1,62 @@
 import { Grid } from '@mui/material';
-import RadioCard from '../../components/RadioCard/';
+import RadioCard from '../../components/RadioCard';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
 import { useState } from 'react';
 import UnitLoader from './UnitLoader';
+import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 const options = [
 	{
-		value: 'one',
-		label: 'Single Unit',
+		id: 'single',
+		displayText: 'Single Unit',
 		subtext:
 			'Single unit properties are rentals in which there is only one rental unit associated to a specific address. This type of property does not allow to add any units.',
 	},
 	{
-		value: 'other',
-		label: 'Multi Unit',
+		id: 'multi',
+		displayText: 'Multi Unit',
 		subtext:
 			'Multi-unit properties are rentals in which there are multiple rental units (with multiple units and leases) associated to a specific (single) address. This type of property allows adding units.',
 	},
 ];
-const optionTwo = [
-	{ value: 'one', label: 'Single Unit' },
-	{ value: 'other', label: 'Multi Unit' },
-];
+
+type PropertyUnitType = {
+	unitType: string;
+	propertyPurpose: string;
+};
+
 const UnitType = () => {
 	const [selectedUnitType, setSelectedUnitType] = useState('one');
+
+	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
+		useGetPropertiesMetaDataQuery();
+
 	const handleUnitTypeChange = (value: string) => {
-		setSelectedUnitType(value);
+		console.log(value);
+		// setSelectedUnitType(value);
 	};
+
+	const validationSchema = yup.object({
+		unitType: yup.string().required('This field is required'),
+		propertyPurpose: yup.string().required('This field is required'),
+	});
+
+	const onSubmit = async (values: PropertyUnitType) => {
+		console.log(values, 'val');
+	};
+
+	const formik = useFormik({
+		initialValues: {
+			unitType: '',
+			propertyPurpose: '',
+		},
+		validationSchema,
+		onSubmit,
+	});
+
+	console.log('PropertiesDetail Rerendered');
 
 	return (
 		<>
@@ -34,17 +64,19 @@ const UnitType = () => {
 				<Grid item xs={12}>
 					<RadioCard
 						headerText='UNIT TYPE'
+						name='unitType'
 						options={options}
-						defaultValue='one'
-						onChange={handleUnitTypeChange}
+						// defaultValue='single'
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
 					<RadioCard
 						headerText='PROPERTY purpose'
-						options={optionTwo}
-						defaultValue='one'
-						onChange={handleUnitTypeChange}
+						name='propertyPurpose'
+						options={propertyMetaData?.purposes}
+						// defaultValue='one'
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>

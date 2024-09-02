@@ -18,7 +18,7 @@ type ControlledSelectProps = {
 	label: string;
 	name: string;
 	disableOnChange?: boolean;
-	options: { value: any; label: string }[];
+	options: { [key: string]: string }[];
 	inFieldLabel?: boolean;
 	[key: string]: any;
 	color?: string;
@@ -73,9 +73,9 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 						},
 					}}
 				>
-					{options.map(({ value, label }) => (
-						<MenuItem value={value} key={value}>
-							{label}
+					{options?.map(({ id, displayText }) => (
+						<MenuItem value={id} key={id}>
+							{displayText}
 						</MenuItem>
 					))}
 				</Select>

@@ -7,46 +7,57 @@ import {
 	EmojiOneHomeIcon,
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
+import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import {
+	getAddPropertyState,
+	saveAddPropertyFormDetail,
+} from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@reduxjs/toolkit/query';
 
+type CategoryType = {
+	id: number;
+	name: string;
+	displayText: string;
+};
 interface CardData {
 	id: number;
-	title: string;
-	description: string;
+	name: string;
+	displayText: string;
 	Image: any;
-	alt: string;
 }
 const PropertyCategory = () => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
+
+	const state = useSelector(getAddPropertyState);
+	console.log(state);
+
+	const dispatch = useDispatch();
+
+	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
+		useGetPropertiesMetaDataQuery();
+
 	const handleCardClick = (id: number) => {
-		setSelectedCard((prevId) => (prevId === id ? null : id));
-		console.log('Selected card ID:', id === selectedCard ? null : id);
+		setSelectedCard(id);
+		console.log('Selected card ID:', id);
+		dispatch(saveAddPropertyFormDetail({ categoryId: id }));
 	};
 
-	const data: CardData[] = [
-		{
-			id: 1,
-			title: 'Residential',
-			description: 'Any property used for residential purpose.',
-			Image: HouseIcon,
-			alt: 'Description of image 1',
+	const icons: Record<string, any> = {
+		Residential: HouseIcon,
+		Commercial: EmojiOneHomeIcon,
+		'Student Housing': EmojiOneBuildingIcon,
+	};
+
+	const cardData: CardData[] = propertyMetaData?.categories?.map(
+		(category: CategoryType) => {
+			return {
+				...category,
+				Image: icons[category.name],
+			};
 		},
-		{
-			id: 2,
-			title: 'Commercial',
-			description:
-				'Any property used for business purposes rather than as a living space.',
-			Image: EmojiOneHomeIcon,
-			alt: 'Description of image 2',
-		},
-		{
-			id: 3,
-			title: 'Student Housing',
-			description:
-				'Any residential units that serves as housing exclusively for  students.',
-			Image: EmojiOneBuildingIcon,
-			alt: 'Description of image 3',
-		},
-	];
+	);
+
 	return (
 		<Card sx={PropertyLayoutStyle.card}>
 			<Grid container spacing={3}>
@@ -61,12 +72,12 @@ const PropertyCategory = () => {
 						Property Category
 					</Typography>
 				</Grid>
-				{data.map((item) => (
+				{cardData?.map((item: CardData) => (
 					<Grid item xs={4} sm={4} md={4} key={item.id}>
 						<PropertyCategoryCard
 							key={item.id}
-							heading={item.title}
-							subtext={item.description}
+							heading={item.name}
+							subtext={item.displayText}
 							id={item.id}
 							onClick={handleCardClick}
 							isSelected={item.id === selectedCard}

@@ -1,24 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit/react';
+import { RootState } from '..';
 
 type AddPropertyType = {
-	selectedCard: string;
-	propertyType: string;
-	propertyName: string;
-	description: string;
-	propertyImage: string;
-	unitType: string;
-	propertyPurpose: string;
-	streetAddress: string;
-	apartment: string;
-	country: string;
-	postalCode: string;
-	state: string;
-	city: string;
+	categoryId?: number | null;
+	propertyType?: string;
+	propertyName?: string;
+	description?: string;
+	propertyImage?: string;
+	unitType?: string;
+	propertyPurpose?: string;
+	streetAddress?: string;
+	apartment?: string;
+	country?: string;
+	postalCode?: string;
+	state?: string;
+	city?: string;
 };
 
 const initialState: AddPropertyType = {
-	selectedCard: '',
+	categoryId: null,
 	propertyType: '',
 	propertyName: '',
 	description: '',
@@ -37,7 +38,7 @@ const options = {
 	name: 'addProperty',
 	initialState,
 	reducers: {
-		saveFormDetail: (
+		saveAddPropertyFormDetail: (
 			state: AddPropertyType,
 			action: PayloadAction<AddPropertyType>,
 		) => {
@@ -51,4 +52,10 @@ const options = {
 
 const addPropertySlice = createSlice(options);
 
-export const addPropertyReducer = addPropertySlice.reducer;
+export const getAddPropertyState = (state: RootState) => state.addPropertyForm;
+
+export const { saveAddPropertyFormDetail } = addPropertySlice.actions;
+
+const addPropertyReducer = addPropertySlice.reducer;
+
+export default addPropertyReducer;

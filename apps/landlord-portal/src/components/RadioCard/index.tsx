@@ -8,24 +8,35 @@ import {
 import styles from './Style';
 
 type RadioOption = {
-	value: string;
-	label: string;
+	value?: string;
+	label?: string;
 	subtext?: string;
+	id?: string | number;
+	displayText?: string;
+	name?: string;
 };
 
 type Props = {
 	options: RadioOption[];
 	defaultValue?: string;
+	name?: string;
+	value?: string;
 	headerText?: string;
-	onChange?: (value: string) => void;
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const index = ({ options, defaultValue, headerText, onChange }: Props) => {
+const RadioCard = ({
+	options,
+	defaultValue,
+	headerText,
+	name,
+	onChange,
+}: Props) => {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (onChange) {
-			onChange(event.target.value);
-		}
+		onChange && onChange(event);
 	};
+
+	console.log('radioCard rerendered');
 	return (
 		<Grid container spacing={1}>
 			<Card sx={styles.card}>
@@ -37,18 +48,24 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 					</Grid>
 					<Grid item xs={12}>
 						<FormControl sx={styles.formControl}>
-							<RadioGroup defaultValue={defaultValue} onChange={handleChange}>
-								{options.map((option, index) => (
+							<RadioGroup
+								defaultValue={defaultValue}
+								name={name}
+								onChange={handleChange}
+							>
+								{options?.map((option, index) => (
 									<Grid container item xs={12} key={index} sx={styles.box}>
 										<FormControlLabel
-											value={option.value}
+											value={option?.id}
 											control={<Radio />}
-											label={option.label}
+											label={option?.displayText}
 											sx={styles.radioLabel}
 										/>
-										<Typography variant='body2' sx={styles.subText}>
-											{option?.subtext}
-										</Typography>
+										{option?.subtext && (
+											<Typography variant='body2' sx={styles.subText}>
+												{option?.subtext}
+											</Typography>
+										)}
 									</Grid>
 								))}
 							</RadioGroup>
@@ -60,4 +77,4 @@ const index = ({ options, defaultValue, headerText, onChange }: Props) => {
 	);
 };
 
-export default index;
+export default RadioCard;
