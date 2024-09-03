@@ -52,7 +52,6 @@ const Login = () => {
 			const userToken: any = await user.getIdTokenResult();
 
 			if (userToken) {
-				console.log(user);
 				// const payload = {
 				// 	token: user.accessToken,
 				// 	user,

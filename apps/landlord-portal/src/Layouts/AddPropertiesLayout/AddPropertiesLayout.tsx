@@ -12,6 +12,9 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const routeObject: RouteObjectType = {
 	'Property Category': {
@@ -37,9 +40,15 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	children,
 }) => {
 	const [activeStep, setActiveStep] = useState(0);
+	const formState = useSelector(getAddPropertyState);
+
+	const { categoryId } = formState;
+
 	const navigate = useNavigate();
 
 	const location = useLocation();
+
+	const dispatch = useDispatch();
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
@@ -62,6 +71,17 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
 
+		if (location.pathname.includes('property-category') && !categoryId) {
+			dispatch(
+				openSnackbar({
+					message: 'Please select a property category before you proceed!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			return;
+		}
 		setActiveStep((prev) => prev + 1);
 
 		navigateToStep(activeStep + 1);
