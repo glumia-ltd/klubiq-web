@@ -39,7 +39,6 @@ const PropertyCategory = () => {
 
 	const handleCardClick = (id: number) => {
 		setSelectedCard(id);
-		console.log('Selected card ID:', id);
 		dispatch(saveAddPropertyFormDetail({ categoryId: id }));
 	};
 

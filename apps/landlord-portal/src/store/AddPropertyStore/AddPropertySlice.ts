@@ -4,12 +4,12 @@ import { RootState } from '..';
 
 type AddPropertyType = {
 	categoryId?: number | null;
+	purposeId?: number | null;
 	propertyType?: string;
 	propertyName?: string;
 	description?: string;
 	propertyImage?: string;
-	unitType?: string;
-	propertyPurpose?: string;
+	isMultiUnit?: boolean;
 	streetAddress?: string;
 	apartment?: string;
 	country?: string;
@@ -20,12 +20,12 @@ type AddPropertyType = {
 
 const initialState: AddPropertyType = {
 	categoryId: null,
+	purposeId: null,
 	propertyType: '',
 	propertyName: '',
 	description: '',
 	propertyImage: '',
-	unitType: '',
-	propertyPurpose: '',
+	isMultiUnit: false,
 	streetAddress: '',
 	apartment: '',
 	country: '',

@@ -268,11 +268,11 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 					</Grid>
 				</Card>
 			</Grid>
-			{selectedUnitType === 'other' && (
+			{selectedUnitType === 'multi' && (
 				<Grid container>
 					<Card sx={styles.cardTwo}>
 						<Grid container spacing={0}>
-							{selectedUnitType === 'other' && (
+							{selectedUnitType === 'multi' && (
 								<Grid item xs={12} sx={styles.addButton}>
 									<Button
 										color='primary'
@@ -284,7 +284,7 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								</Grid>
 							)}
 
-							{formik.values.units?.map((unit, index) => (
+							{formik.values?.units?.map((unit, index) => (
 								<Grid container spacing={0} key={index}>
 									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
@@ -318,13 +318,7 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 												</Typography>
 												<ControlledTextField
 													name={`units.${index}.description`}
-													// label='Description'
 													formik={formik}
-													// inputProps={{
-													// 	sx: {
-													// 		height: '40px',
-													// 	},
-													// }}
 												/>
 											</Grid>
 											<Grid item xs={12}>

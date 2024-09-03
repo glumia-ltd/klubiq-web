@@ -5,7 +5,8 @@ import UnitLoader from './UnitLoader';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useState } from 'react';
+import { saveAddPropertyFormDetail } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch } from 'react-redux';
 
 const options = [
 	{
@@ -24,12 +25,12 @@ const options = [
 
 type PropertyUnitType = {
 	unitType: string;
-	propertyPurpose: string;
+	purposeId: string;
 };
 
 const validationSchema = yup.object({
 	unitType: yup.string().required('This field is required'),
-	propertyPurpose: yup.string().required('This field is required'),
+	purposeId: yup.string().required('This field is required'),
 });
 
 const UnitType = () => {
@@ -39,6 +40,8 @@ const UnitType = () => {
 		}),
 	});
 
+	const dispatch = useDispatch();
+
 	const onSubmit = async (values: PropertyUnitType) => {
 		console.log(values, 'val');
 	};
@@ -46,11 +49,23 @@ const UnitType = () => {
 	const formik = useFormik({
 		initialValues: {
 			unitType: '',
-			propertyPurpose: '',
+			purposeId: '',
 		},
 		validationSchema,
 		onSubmit,
 	});
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const payload = {
+			purposeId: Number(formik.values.purposeId),
+			isMultiUnit: formik.values.unitType === 'multi' ? true : false,
+		};
+		dispatch(saveAddPropertyFormDetail(payload));
+
+		formik.handleChange(event);
+	};
+
+	console.log(formik.values);
 
 	return (
 		<>
@@ -61,16 +76,16 @@ const UnitType = () => {
 						name='unitType'
 						options={options}
 						// defaultValue='single'
-						onChange={formik.handleChange}
+						onChange={handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
 					<RadioCard
 						headerText='PROPERTY purpose'
-						name='propertyPurpose'
+						name='purposeId'
 						options={purposes}
 						// defaultValue='one'
-						onChange={formik.handleChange}
+						onChange={handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
