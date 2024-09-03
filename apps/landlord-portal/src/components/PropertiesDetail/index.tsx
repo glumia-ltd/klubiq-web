@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material';
 import RadioCard from '../../components/RadioCard';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
-import { useState } from 'react';
 import UnitLoader from './UnitLoader';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useState } from 'react';
 
 const options = [
 	{
@@ -27,20 +27,16 @@ type PropertyUnitType = {
 	propertyPurpose: string;
 };
 
+const validationSchema = yup.object({
+	unitType: yup.string().required('This field is required'),
+	propertyPurpose: yup.string().required('This field is required'),
+});
+
 const UnitType = () => {
-	const [selectedUnitType, setSelectedUnitType] = useState('one');
-
-	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
-		useGetPropertiesMetaDataQuery();
-
-	const handleUnitTypeChange = (value: string) => {
-		console.log(value);
-		// setSelectedUnitType(value);
-	};
-
-	const validationSchema = yup.object({
-		unitType: yup.string().required('This field is required'),
-		propertyPurpose: yup.string().required('This field is required'),
+	const { purposes } = useGetPropertiesMetaDataQuery(undefined, {
+		selectFromResult: ({ data }) => ({
+			purposes: data?.purposes,
+		}),
 	});
 
 	const onSubmit = async (values: PropertyUnitType) => {
@@ -55,8 +51,6 @@ const UnitType = () => {
 		validationSchema,
 		onSubmit,
 	});
-
-	console.log('PropertiesDetail Rerendered');
 
 	return (
 		<>
@@ -74,13 +68,13 @@ const UnitType = () => {
 					<RadioCard
 						headerText='PROPERTY purpose'
 						name='propertyPurpose'
-						options={propertyMetaData?.purposes}
+						options={purposes}
 						// defaultValue='one'
 						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<GeneralInfo selectedUnitType={selectedUnitType} />
+					<GeneralInfo selectedUnitType={formik?.values?.unitType} />
 				</Grid>
 			</Grid>
 		</>

@@ -284,7 +284,7 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								</Grid>
 							)}
 
-							{formik.values.units.map((unit, index) => (
+							{formik.values.units?.map((unit, index) => (
 								<Grid container spacing={0} key={index}>
 									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
