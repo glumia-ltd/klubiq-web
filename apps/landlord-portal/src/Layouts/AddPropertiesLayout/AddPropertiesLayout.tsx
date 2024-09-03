@@ -28,9 +28,9 @@ const routeObject: RouteObjectType = {
 const steps = Object.keys(routeObject);
 
 const STEPPERPATHS: Record<string, number> = {
-	'property-category': 1,
-	'property-details': 2,
-	'unit-type': 3,
+	'property-category': 0,
+	'property-details': 1,
+	'unit-type': 2,
 };
 
 export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
@@ -44,9 +44,9 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const currentLocation = location.pathname.split('/')[2] || '';
 
 	useEffect(() => {
-		const activeStepByPathName = STEPPERPATHS[currentLocation] || 1;
+		const activeStepByPathName = STEPPERPATHS[currentLocation] || 0;
 
-		setActiveStep(activeStepByPathName - 1);
+		setActiveStep(activeStepByPathName);
 	}, [currentLocation]);
 
 	const navigateToStep = (step: number) => {
