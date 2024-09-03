@@ -1,10 +1,10 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
-import { FC, ReactElement, useState } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RouteObjectType } from '../../shared/type';
 
 import {
@@ -27,11 +27,27 @@ const routeObject: RouteObjectType = {
 
 const steps = Object.keys(routeObject);
 
+const STEPPERPATHS: Record<string, number> = {
+	'property-category': 1,
+	'property-details': 2,
+	'unit-type': 3,
+};
+
 export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	children,
 }) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const navigate = useNavigate();
+
+	const location = useLocation();
+
+	const currentLocation = location.pathname.split('/')[2] || '';
+
+	useEffect(() => {
+		const activeStepByPathName = STEPPERPATHS[currentLocation] || 1;
+
+		setActiveStep(activeStepByPathName - 1);
+	}, [currentLocation]);
 
 	const navigateToStep = (step: number) => {
 		const routeKey = steps[step];
