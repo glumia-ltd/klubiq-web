@@ -10,8 +10,11 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PropertyDetailSkeleton from './PropertyDetailSkeleton';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import { saveAddPropertyFormDetail } from '../../store/AddPropertyStore/AddPropertySlice';
-import { useDispatch } from 'react-redux';
+import {
+	getAddPropertyState,
+	saveAddPropertyFormDetail,
+} from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch, useSelector } from 'react-redux';
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
 	description: yup.string().required('This field is required'),
@@ -32,6 +35,8 @@ type formValues = {
 
 const PropertiesDetails = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
+
+	const formState = useSelector(getAddPropertyState);
 
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
@@ -98,6 +103,8 @@ const PropertiesDetails = () => {
 		};
 	}, [formik.values.images]);
 
+	console.log(formState.images);
+
 	return (
 		<Grid container spacing={0}>
 			<Grid
@@ -116,7 +123,7 @@ const PropertiesDetails = () => {
 									label='PROPERTY TYPE'
 									type='text'
 									formik={formik}
-									value={formik?.values?.typeId}
+									value={formik?.values?.typeId || formState?.typeId}
 									options={propertyMetaData?.types}
 									inputprops={{
 										sx: {
@@ -130,7 +137,7 @@ const PropertiesDetails = () => {
 									// color='#002147'
 									name='name'
 									label='PROPERTY NAME'
-									value={formik?.values?.name}
+									value={formik?.values?.name || formState?.name}
 									formik={formik}
 									inputprops={{
 										sx: {
@@ -145,6 +152,7 @@ const PropertiesDetails = () => {
 									name='description'
 									label='DESCRIPTION'
 									placeholder='Describe your property'
+									value={formik?.values?.description || formState?.description}
 									formik={formik}
 									type='text'
 									multiline
@@ -171,39 +179,41 @@ const PropertiesDetails = () => {
 									PROPERTY IMAGE
 								</Typography>
 							</Grid>
-							{formik.values.images?.map((image: string, index: number) => (
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={4}
-									lg={3}
-									key={index}
-									position='relative'
-								>
-									<img
-										src={image}
-										alt={`property-${index}`}
-										style={{
-											width: '250px',
-											height: '170px',
-											objectFit: 'cover',
-										}}
-									/>
-									<IconButton
-										size='small'
-										onClick={() => handleImageRemove(index)}
-										style={{
-											position: 'absolute',
-											top: -10,
-											right: -10,
-											// backgroundColor: 'white',
-										}}
+							{(formik.values.images || formState.images)?.map(
+								(image: string, index: number) => (
+									<Grid
+										item
+										xs={12}
+										sm={6}
+										md={4}
+										lg={3}
+										key={index}
+										position='relative'
 									>
-										<HighlightOffIcon />
-									</IconButton>
-								</Grid>
-							))}
+										<img
+											src={image}
+											alt={`property-${index}`}
+											style={{
+												width: '250px',
+												height: '170px',
+												objectFit: 'cover',
+											}}
+										/>
+										<IconButton
+											size='small'
+											onClick={() => handleImageRemove(index)}
+											style={{
+												position: 'absolute',
+												top: -10,
+												right: -10,
+												// backgroundColor: 'white',
+											}}
+										>
+											<HighlightOffIcon />
+										</IconButton>
+									</Grid>
+								),
+							)}
 							{
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box

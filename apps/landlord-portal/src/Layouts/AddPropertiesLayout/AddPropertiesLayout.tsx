@@ -42,8 +42,6 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const [activeStep, setActiveStep] = useState(0);
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(formState);
-
 	const { categoryId, typeId, name, description, images } = formState;
 
 	const navigate = useNavigate();
