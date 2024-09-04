@@ -42,7 +42,9 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const [activeStep, setActiveStep] = useState(0);
 	const formState = useSelector(getAddPropertyState);
 
-	const { categoryId } = formState;
+	console.log(formState);
+
+	const { categoryId, typeId, name, description, images } = formState;
 
 	const navigate = useNavigate();
 
@@ -69,12 +71,30 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	};
 
 	const handleForwardButton = () => {
+		console.log(categoryId, typeId, name);
 		if (activeStep > steps.length) return;
 
 		if (location.pathname.includes('property-category') && !categoryId) {
 			dispatch(
 				openSnackbar({
 					message: 'Please select a property category before you proceed!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			return;
+		} else if (
+			location.pathname.includes('property-details') &&
+			!typeId &&
+			!name &&
+			!description &&
+			(!images || images?.length === 0)
+		) {
+			dispatch(
+				openSnackbar({
+					message:
+						'Please ensure all the fields are properly filled before you proceed!',
 					severity: 'info',
 					isOpen: true,
 				}),
@@ -135,15 +155,30 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						<ArrowLeftIcon />
 						<Typography>Previous</Typography>
 					</Button>
-					<Button
-						variant='contained'
-						sx={styles.directionButton}
-						onClick={handleForwardButton}
-						disabled={activeStep === steps.length - 1}
-					>
-						<Typography>Next</Typography>
-						<RightArrowIcon />
-					</Button>
+					{!(activeStep === steps.length - 1) && (
+						<>
+							<Button
+								variant='contained'
+								sx={styles.directionButton}
+								onClick={handleForwardButton}
+								disabled={activeStep === steps.length - 1}
+							>
+								<Typography>Next</Typography>
+								<RightArrowIcon />
+							</Button>
+						</>
+					)}
+
+					{activeStep === steps.length - 1 && (
+						<Button
+							variant='contained'
+							sx={styles.directionButton}
+							// onClick={handleForwardButton}
+							// disabled={activeStep === steps.length - 1}
+						>
+							<Typography>Submit</Typography>
+						</Button>
+					)}
 				</Grid>
 			</>
 		</Container>

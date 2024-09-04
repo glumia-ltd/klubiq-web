@@ -5,10 +5,10 @@ import { RootState } from '..';
 type AddPropertyType = {
 	categoryId?: number | null;
 	purposeId?: number | null;
-	propertyType?: string;
-	propertyName?: string;
+	typeId?: number | string;
+	name?: string;
 	description?: string;
-	propertyImage?: string;
+	images?: string[] | null;
 	isMultiUnit?: boolean;
 	streetAddress?: string;
 	apartment?: string;
@@ -21,10 +21,10 @@ type AddPropertyType = {
 const initialState: AddPropertyType = {
 	categoryId: null,
 	purposeId: null,
-	propertyType: '',
-	propertyName: '',
+	typeId: '',
+	name: '',
 	description: '',
-	propertyImage: '',
+	images: null,
 	isMultiUnit: false,
 	streetAddress: '',
 	apartment: '',

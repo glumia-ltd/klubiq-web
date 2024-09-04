@@ -20,7 +20,7 @@ type ControlledTextFieldProps = {
 	name: string;
 	type?: string;
 	inFieldLabel?: boolean;
-	inputProps?: any;
+	inputprops?: any;
 	prioritizeError?: any;
 	[key: string]: any;
 	color?: string;
@@ -36,7 +36,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	name,
 	type,
 	inFieldLabel,
-	inputProps,
+	inputprops,
 	prioritizeError,
 	onFileSelect,
 	color,
@@ -100,7 +100,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					(formik.touched[name] && formik.errors[name]) ||
 					' '
 				}
-				inputProps={inputProps}
+				inputProps={inputprops}
 				{...props}
 				sx={sxTwo}
 			/>

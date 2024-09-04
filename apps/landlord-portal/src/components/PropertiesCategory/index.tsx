@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropertyCategoryCard from '../PropertyCategoryCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
@@ -29,8 +29,14 @@ interface CardData {
 const PropertyCategory = () => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-	const state = useSelector(getAddPropertyState);
-	console.log(state);
+	const { categoryId } = useSelector(getAddPropertyState);
+
+	useEffect(() => {
+		if (categoryId) {
+			setSelectedCard(categoryId);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const dispatch = useDispatch();
 
@@ -72,7 +78,7 @@ const PropertyCategory = () => {
 					</Typography>
 				</Grid>
 				{cardData?.map((item: CardData) => (
-					<Grid item xs={4} sm={4} md={4} key={item.id}>
+					<Grid item xs={4} sm={4} md={4} key={`${item.id}--${item.name}`}>
 						<PropertyCategoryCard
 							key={item.id}
 							heading={item.name}

@@ -10,11 +10,13 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PropertyDetailSkeleton from './PropertyDetailSkeleton';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { saveAddPropertyFormDetail } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch } from 'react-redux';
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
 	description: yup.string().required('This field is required'),
 	typeId: yup.string().required('Select an option'),
-	propertyImage: yup
+	images: yup
 		.array()
 		.min(1, 'You need to upload at least one image')
 		.max(4, 'You can upload a maximum of 4 images')
@@ -25,7 +27,7 @@ type formValues = {
 	name: string;
 	description: string;
 	typeId: number | string;
-	propertyImage: string[];
+	images: string[];
 };
 
 const PropertiesDetails = () => {
@@ -33,6 +35,8 @@ const PropertiesDetails = () => {
 
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
+
+	const dispatch = useDispatch();
 
 	const onSubmit = async (values: formValues) => {
 		console.log(values, 'val');
@@ -43,37 +47,40 @@ const PropertiesDetails = () => {
 			description: '',
 			name: '',
 			typeId: '',
-			propertyImage: [],
+			images: [],
 		},
 		validationSchema,
 		onSubmit,
 	});
 
-	console.log(formik.values);
+	// console.log(formik.values);
+
+	useEffect(() => {
+		const { description, name, typeId, images } = formik.values;
+
+		if (!description || !name || !typeId || !(images.length > 0)) {
+			return;
+		} else {
+			dispatch(saveAddPropertyFormDetail({ ...formik.values }));
+		}
+	}, [formik.values, dispatch]);
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		console.log(event);
-
 		const files = event?.target?.files;
 		if (files) {
 			const fileArray = Array.from(files).map((file) =>
 				URL.createObjectURL(file),
 			);
-			formik.setFieldValue('propertyImage', [
-				...formik.values.propertyImage,
-				...fileArray,
-			]);
+			formik.setFieldValue('images', [...formik.values.images, ...fileArray]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 		}
 	};
 
 	const handleImageRemove = (index: number) => {
-		const updatedImages = formik.values.propertyImage.filter(
-			(_, i) => i !== index,
-		);
-		formik.setFieldValue('propertyImage', updatedImages);
+		const updatedImages = formik.values.images.filter((_, i) => i !== index);
+		formik.setFieldValue('images', updatedImages);
 
 		const updatedFiles = passportFiles.filter((_, i) => i !== index);
 
@@ -87,9 +94,9 @@ const PropertiesDetails = () => {
 	useEffect(() => {
 		// Revoke URLs when the component unmounts
 		return () => {
-			formik.values.propertyImage.forEach((url) => URL.revokeObjectURL(url));
+			formik.values.images.forEach((url) => URL.revokeObjectURL(url));
 		};
-	}, [formik.values.propertyImage]);
+	}, [formik.values.images]);
 
 	return (
 		<Grid container spacing={0}>
@@ -111,7 +118,7 @@ const PropertiesDetails = () => {
 									formik={formik}
 									value={formik?.values?.typeId}
 									options={propertyMetaData?.types}
-									inputProps={{
+									inputprops={{
 										sx: {
 											height: '40px',
 										},
@@ -125,7 +132,7 @@ const PropertiesDetails = () => {
 									label='PROPERTY NAME'
 									value={formik?.values?.name}
 									formik={formik}
-									inputProps={{
+									inputprops={{
 										sx: {
 											height: '40px',
 										},
@@ -164,41 +171,39 @@ const PropertiesDetails = () => {
 									PROPERTY IMAGE
 								</Typography>
 							</Grid>
-							{formik.values.propertyImage?.map(
-								(image: string, index: number) => (
-									<Grid
-										item
-										xs={12}
-										sm={6}
-										md={4}
-										lg={3}
-										key={index}
-										position='relative'
+							{formik.values.images?.map((image: string, index: number) => (
+								<Grid
+									item
+									xs={12}
+									sm={6}
+									md={4}
+									lg={3}
+									key={index}
+									position='relative'
+								>
+									<img
+										src={image}
+										alt={`property-${index}`}
+										style={{
+											width: '250px',
+											height: '170px',
+											objectFit: 'cover',
+										}}
+									/>
+									<IconButton
+										size='small'
+										onClick={() => handleImageRemove(index)}
+										style={{
+											position: 'absolute',
+											top: -10,
+											right: -10,
+											// backgroundColor: 'white',
+										}}
 									>
-										<img
-											src={image}
-											alt={`property-${index}`}
-											style={{
-												width: '250px',
-												height: '170px',
-												objectFit: 'cover',
-											}}
-										/>
-										<IconButton
-											size='small'
-											onClick={() => handleImageRemove(index)}
-											style={{
-												position: 'absolute',
-												top: -10,
-												right: -10,
-												// backgroundColor: 'white',
-											}}
-										>
-											<HighlightOffIcon />
-										</IconButton>
-									</Grid>
-								),
-							)}
+										<HighlightOffIcon />
+									</IconButton>
+								</Grid>
+							))}
 							{
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
