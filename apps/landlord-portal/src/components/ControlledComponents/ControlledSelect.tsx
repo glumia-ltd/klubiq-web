@@ -67,6 +67,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					id={name}
 					value={props.value || formik.values[name]}
 					onChange={!disableOnChange ? formik.handleChange : undefined}
+					onBlur={formik.handleBlur}
 					MenuProps={{
 						sx: {
 							maxHeight: 'calc(100% - 200px)',

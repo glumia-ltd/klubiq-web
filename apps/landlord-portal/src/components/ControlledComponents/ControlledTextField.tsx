@@ -82,6 +82,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					(props.value !== undefined && props.value) || formik.values[name]
 				}
 				onChange={onChange}
+				onBlur={formik.handleBlur}
 				error={
 					Boolean(prioritizeError) ||
 					(Boolean(formik.touched[name]) && Boolean(formik.errors[name]))

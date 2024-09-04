@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 // import { Delete } from '@mui/icons-material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -51,8 +51,12 @@ const PropertiesDetails = () => {
 
 	console.log(formik.values);
 
+	const inputRef = useRef<HTMLInputElement | null>(null);
+
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
+		console.log(event);
+
+		const files = event?.target?.files;
 		if (files) {
 			const fileArray = Array.from(files).map((file) =>
 				URL.createObjectURL(file),
@@ -72,15 +76,20 @@ const PropertiesDetails = () => {
 		formik.setFieldValue('propertyImage', updatedImages);
 
 		const updatedFiles = passportFiles.filter((_, i) => i !== index);
+
 		setPassportFiles(updatedFiles);
+
+		if (inputRef.current) {
+			inputRef.current.value = '';
+		}
 	};
 
-	// useEffect(() => {
-	// 	// Revoke URLs when the component unmounts
-	// 	return () => {
-	// 		formik.values.propertyImage.forEach((url) => URL.revokeObjectURL(url));
-	// 	};
-	// }, [formik.values.propertyImage]);
+	useEffect(() => {
+		// Revoke URLs when the component unmounts
+		return () => {
+			formik.values.propertyImage.forEach((url) => URL.revokeObjectURL(url));
+		};
+	}, [formik.values.propertyImage]);
 
 	return (
 		<Grid container spacing={0}>
@@ -155,7 +164,7 @@ const PropertiesDetails = () => {
 									PROPERTY IMAGE
 								</Typography>
 							</Grid>
-							{formik.values.propertyImage.map(
+							{formik.values.propertyImage?.map(
 								(image: string, index: number) => (
 									<Grid
 										item
@@ -212,11 +221,12 @@ const PropertiesDetails = () => {
 										</Box>
 
 										<input
+											ref={inputRef}
 											type='file'
 											id='upload-photo'
 											style={{ display: 'none' }}
 											multiple
-											accept='image/png, image/jpeg'
+											accept='image/*'
 											onChange={handleFileChange}
 										/>
 									</Box>
