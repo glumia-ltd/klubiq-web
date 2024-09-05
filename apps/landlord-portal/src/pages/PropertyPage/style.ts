@@ -195,4 +195,9 @@ export const styles = {
 		alignItems: 'center',
 		flexDirection: 'column',
 	},
+	skeletonStyle: {
+		width: '70px',
+		height: '20px',
+		border: '2px solid red',
+	},
 };

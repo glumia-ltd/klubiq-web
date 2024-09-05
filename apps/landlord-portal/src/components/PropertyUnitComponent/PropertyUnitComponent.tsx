@@ -1,11 +1,4 @@
-import {
-	Grid,
-	Breadcrumbs,
-	SvgIcon,
-	Typography,
-	Button,
-	Chip,
-} from '@mui/material';
+import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
 import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -59,7 +52,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	const [tabValue, setTabValue] = useState<number>(0);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
-
+	console.log(propertyType, 'real');
 	const handleHomeClick = () => {
 		navigate(-1);
 	};

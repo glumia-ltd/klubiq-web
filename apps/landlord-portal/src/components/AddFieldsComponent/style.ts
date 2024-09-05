@@ -4,6 +4,15 @@ const style = {
 		lineHeight: { xs: '20px', sm: '24px', md: '24px', lg: '24px' },
 		fontWeight: '600',
 	},
+	skeletonText: {
+		width: '134px',
+		height: '10px',
+		marginBottom: '5px',
+	},
+	skeletonText2: {
+		width: '184px',
+		height: '10px',
+	},
 	subText: {
 		fontSize: { xs: '12px', sm: '12px', md: '14px', lg: '14px' },
 		lineHeight: { xs: '24px', sm: '14px', md: '20px', lg: '20px' },

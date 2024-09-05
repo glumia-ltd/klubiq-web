@@ -11,7 +11,10 @@ export const styles = {
 		gap: '24px',
 		padding: '16px',
 	},
-
+	skelPic: {
+		minWidth: '182px',
+		minHeight: '182px',
+	},
 	mainPictureStyle: {
 		maxHeight: '182px',
 		borderRadius: '8px',
