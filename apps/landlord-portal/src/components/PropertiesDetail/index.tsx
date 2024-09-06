@@ -37,9 +37,10 @@ const validationSchema = yup.object({
 });
 
 const UnitType = () => {
-	const { purposes } = useGetPropertiesMetaDataQuery(undefined, {
+	const { purposes, amenities } = useGetPropertiesMetaDataQuery(undefined, {
 		selectFromResult: ({ data }) => ({
 			purposes: data?.purposes,
+			amenities: data?.amenities,
 		}),
 	});
 
@@ -92,7 +93,10 @@ const UnitType = () => {
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<GeneralInfo selectedUnitType={formik?.values?.unitType} />
+					<GeneralInfo
+						selectedUnitType={formik?.values?.unitType}
+						amenities={amenities}
+					/>
 				</Grid>
 			</Grid>
 		</>

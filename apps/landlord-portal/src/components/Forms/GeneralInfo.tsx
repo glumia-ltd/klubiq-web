@@ -63,6 +63,7 @@ const validationSchema = yup.object({
 });
 type CardProps = {
 	selectedUnitType?: string;
+	amenities: { id: number; name: string }[];
 };
 
 type FormValues = {
@@ -93,7 +94,7 @@ const countries = countriesList?.map((item) => ({
 	name: item.name,
 }));
 
-const GeneralInfo = ({ selectedUnitType }: CardProps) => {
+const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
 
@@ -161,34 +162,35 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	// 	formik.setFieldValue('units', units);
 	// };
 
-	const amenitiesOptions = [
-		'A/C',
-		'Furnished',
-		'Pool',
-		'Wheel chair access',
-		'Pets allowed',
-		'Balcony/Desk',
-	];
+	// const amenitiesOptions = [
+	// 	'A/C',
+	// 	'Furnished',
+	// 	'Pool',
+	// 	'Wheel chair access',
+	// 	'Pets allowed',
+	// 	'Balcony/Desk',
+	// ];
 
 	const renderAmenities = () => {
 		if (
 			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
 			selectedUnitType !== 'multi'
 		) {
-			return amenitiesOptions?.map((amenity) => (
+			return amenities?.map((amenity) => (
 				<FormControlLabel
-					key={amenity}
+					key={amenity.id}
 					control={
 						<Checkbox
-							name={`units.${currentUnitIndex}.amenities`}
-							value={amenity}
+							// name={`units.${currentUnitIndex}.amenities`}
+							name={amenity?.name}
+							value={amenity?.name}
 							// checked={
 							// 	formik.values.units[currentUnitIndex]?.amenities.includes(amenity) || false
 							//   }
 							onChange={formik.handleChange}
 						/>
 					}
-					label={amenity}
+					label={amenity?.name}
 				/>
 			));
 		}
@@ -318,7 +320,8 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units.${currentUnitIndex}.beds`}
+									// name={`units.${currentUnitIndex}.beds`}
+									name='bedrooms'
 									label='Bedrooms'
 									type='number'
 									formik={formik}
@@ -331,7 +334,8 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units.${currentUnitIndex}.baths`}
+									// name={`units.${currentUnitIndex}.baths`}
+									name='bathrooms'
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -357,7 +361,8 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units.${currentUnitIndex}.floorPlan`}
+									// name={`units.${currentUnitIndex}.floorPlan`}
+									name='floor'
 									label='Floor Plan'
 									formik={formik}
 									// inputProps={{
