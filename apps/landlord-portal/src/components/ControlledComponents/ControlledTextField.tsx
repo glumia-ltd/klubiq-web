@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { forwardRef } from 'react';
 import {
 	TextField,
 	Stack,
@@ -24,25 +24,30 @@ type ControlledTextFieldProps = {
 	prioritizeError?: any;
 	[key: string]: any;
 	color?: string;
+	inputRef?: React.Ref<HTMLInputElement>;
 };
 
-const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
-	loading,
-	formik,
-	sx,
-	InputProps,
-	disableOnChange,
-	label,
-	name,
-	type,
-	inFieldLabel,
-	inputprops,
-	prioritizeError,
-	onFileSelect,
-	color,
-	sxTwo,
-	...props
-}) => {
+const ControlledTextField: React.FC<ControlledTextFieldProps> = (
+	{
+		loading,
+		formik,
+		sx,
+		InputProps,
+		disableOnChange,
+		label,
+		name,
+		type,
+		inFieldLabel,
+		inputprops,
+		prioritizeError,
+		onFileSelect,
+		color,
+		sxTwo,
+		placeholder,
+		...props
+	},
+	ref,
+) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (disableOnChange) {
 			return;
@@ -70,12 +75,14 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					{label}
 				</Typography>
 			)}
+
 			<TextField
 				fullWidth
 				id={name}
 				name={name}
 				size='small'
 				variant='outlined'
+				placeholder={placeholder}
 				label={inFieldLabel && label}
 				type={type || 'text'}
 				value={
@@ -107,5 +114,4 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 		</Stack>
 	);
 };
-
 export default ControlledTextField;

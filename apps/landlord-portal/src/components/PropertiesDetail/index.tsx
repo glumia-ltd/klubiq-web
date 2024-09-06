@@ -5,8 +5,11 @@ import UnitLoader from './UnitLoader';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { saveAddPropertyFormDetail } from '../../store/AddPropertyStore/AddPropertySlice';
-import { useDispatch } from 'react-redux';
+import {
+	getAddPropertyState,
+	saveAddPropertyFormDetail,
+} from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const options = [
 	{
@@ -40,6 +43,8 @@ const UnitType = () => {
 		}),
 	});
 
+	const formState = useSelector(getAddPropertyState);
+
 	const dispatch = useDispatch();
 
 	const onSubmit = async (values: PropertyUnitType) => {
@@ -64,8 +69,6 @@ const UnitType = () => {
 
 		formik.handleChange(event);
 	};
-
-	console.log(formik.values);
 
 	return (
 		<>

@@ -42,7 +42,9 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const [activeStep, setActiveStep] = useState(0);
 	const formState = useSelector(getAddPropertyState);
 
-	const { categoryId, typeId, name, description, images } = formState;
+	const { categoryId, typeId, name } = formState;
+
+	console.log(useSelector(getAddPropertyState));
 
 	const navigate = useNavigate();
 
@@ -52,11 +54,30 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
+	const handleBeforeUnload = () => {
+		dispatch(
+			openSnackbar({
+				message: 'Are you sure you want to leave this page?',
+				severity: 'info',
+				isOpen: true,
+			}),
+		);
+	};
+
 	useEffect(() => {
 		const activeStepByPathName = STEPPERPATHS[currentLocation] || 0;
 
 		setActiveStep(activeStepByPathName);
 	}, [currentLocation]);
+
+	useEffect(() => {
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
+		// Remove the event listener when the component unmounts
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
 
 	const navigateToStep = (step: number) => {
 		const routeKey = steps[step];
@@ -85,10 +106,9 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 		} else if (
 			location.pathname.includes('property-details') &&
 			!typeId &&
-			!name &&
-			!description &&
-			(!images || images?.length === 0)
+			!name
 		) {
+			console.log(!typeId && !name);
 			dispatch(
 				openSnackbar({
 					message:
@@ -174,7 +194,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 							// onClick={handleForwardButton}
 							// disabled={activeStep === steps.length - 1}
 						>
-							<Typography>Submit</Typography>
+							<Typography>Save</Typography>
 						</Button>
 					)}
 				</Grid>

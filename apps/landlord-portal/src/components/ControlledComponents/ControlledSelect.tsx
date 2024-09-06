@@ -10,6 +10,7 @@ import {
 	Typography,
 	SxProps,
 } from '@mui/material';
+import { find } from 'lodash';
 
 type ControlledSelectProps = {
 	loading?: boolean;
@@ -22,6 +23,7 @@ type ControlledSelectProps = {
 	inFieldLabel?: boolean;
 	[key: string]: any;
 	color?: string;
+	placeholder?: string;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -74,9 +76,9 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 						},
 					}}
 				>
-					{options?.map(({ id, displayText }) => (
-						<MenuItem value={id} key={`${displayText}-${id}`}>
-							{displayText}
+					{options?.map(({ id, name }) => (
+						<MenuItem value={id} key={`${name}-${id}`}>
+							{name}
 						</MenuItem>
 					))}
 				</Select>

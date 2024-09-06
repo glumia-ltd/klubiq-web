@@ -10,12 +10,18 @@ type AddPropertyType = {
 	description?: string;
 	images?: string[] | null;
 	isMultiUnit?: boolean;
-	streetAddress?: string;
-	apartment?: string;
-	country?: string;
-	postalCode?: string;
-	state?: string;
-	city?: string;
+	address?: {
+		addressLine2?: string;
+		unit?: string;
+		city?: string;
+		state?: string;
+		postalCode?: string;
+		latitude: number;
+		longitude?: number;
+		addressLine1?: string;
+		country?: string;
+		isManualAddress?: boolean;
+	};
 };
 
 const initialState: AddPropertyType = {
@@ -26,12 +32,18 @@ const initialState: AddPropertyType = {
 	description: '',
 	images: null,
 	isMultiUnit: false,
-	streetAddress: '',
-	apartment: '',
-	country: '',
-	postalCode: '',
-	state: '',
-	city: '',
+	address: {
+		addressLine2: '',
+		unit: '',
+		city: '',
+		state: '',
+		postalCode: '',
+		latitude: 0,
+		longitude: 0,
+		addressLine1: '',
+		country: '',
+		isManualAddress: false,
+	},
 };
 
 const options = {

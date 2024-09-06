@@ -31,6 +31,8 @@ const PropertyCategory = () => {
 
 	const { categoryId } = useSelector(getAddPropertyState);
 
+	console.log(useSelector(getAddPropertyState));
+
 	useEffect(() => {
 		if (categoryId) {
 			setSelectedCard(categoryId);
@@ -55,9 +57,10 @@ const PropertyCategory = () => {
 	};
 
 	const cardData: CardData[] = propertyMetaData?.categories?.map(
-		(category: CategoryType) => {
+		(category: CategoryType, index: number) => {
 			return {
 				...category,
+				id: index + category.id,
 				Image: icons[category.name],
 			};
 		},

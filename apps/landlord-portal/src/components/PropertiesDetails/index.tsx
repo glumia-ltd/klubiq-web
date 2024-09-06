@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
-	description: yup.string().required('This field is required'),
+	// description: yup.string().required('This field is required'),
 	typeId: yup.string().required('Select an option'),
 	images: yup
 		.array()
@@ -37,6 +37,8 @@ const PropertiesDetails = () => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 
 	const formState = useSelector(getAddPropertyState);
+
+	console.log(useSelector(getAddPropertyState));
 
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
@@ -58,12 +60,10 @@ const PropertiesDetails = () => {
 		onSubmit,
 	});
 
-	// console.log(formik.values);
-
 	useEffect(() => {
-		const { description, name, typeId, images } = formik.values;
+		const { name, typeId } = formik.values;
 
-		if (!description || !name || !typeId || !(images.length > 0)) {
+		if (!name || !typeId) {
 			return;
 		} else {
 			dispatch(saveAddPropertyFormDetail({ ...formik.values }));
@@ -121,6 +121,7 @@ const PropertiesDetails = () => {
 									// color='#002147'
 									name='typeId'
 									label='PROPERTY TYPE'
+									placeholder='Property Type'
 									type='text'
 									formik={formik}
 									value={formik?.values?.typeId || formState?.typeId}
@@ -151,7 +152,7 @@ const PropertiesDetails = () => {
 									// color='#002147'
 									name='description'
 									label='DESCRIPTION'
-									placeholder='Describe your property'
+									// placeholder='Describe your property'
 									value={formik?.values?.description || formState?.description}
 									formik={formik}
 									type='text'
