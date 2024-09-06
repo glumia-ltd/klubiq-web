@@ -44,8 +44,6 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 
 	const { categoryId, typeId, name } = formState;
 
-	console.log(useSelector(getAddPropertyState));
-
 	const navigate = useNavigate();
 
 	const location = useLocation();

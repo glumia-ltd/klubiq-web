@@ -38,8 +38,6 @@ const PropertiesDetails = () => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(useSelector(getAddPropertyState));
-
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
@@ -102,8 +100,6 @@ const PropertiesDetails = () => {
 			formik.values.images.forEach((url) => URL.revokeObjectURL(url));
 		};
 	}, [formik.values.images]);
-
-	console.log(formState.images);
 
 	return (
 		<Grid container spacing={0}>

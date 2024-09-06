@@ -101,41 +101,6 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(formState);
-	// const [searchResult, setSearchResult] = useState<any>();
-
-	// const { isLoaded } = useLoadScript({
-	// 	googleMapsApiKey: 'AIzaSyAshmG1K7GPtJVArwlL9M_Pg4m0p8GQf6U',
-
-	// 	//@ts-ignore
-	// 	libraries: placesLibrary,
-	// });
-
-	// const inputRef = useRef(null);
-
-	// useEffect(() => {
-	// 	if (!inputRef.current) return;
-
-	// 	const autoComplete =
-	// 		window.google &&
-	// 		new window.google.maps.places.Autocomplete(inputRef?.current);
-
-	// 	console.log(new window.google.maps.places.Autocomplete(inputRef?.current));
-
-	// 	autoComplete?.addListener('place_changed', () => {
-	// 		const place = autoComplete.getPlace();
-	// 		if (!place.geometry || !place.geometry.location) {
-	// 			// User entered the name of a Place that was not suggested and
-	// 			// pressed the Enter key, or the Place Details request failed.
-	// 			alert('this location not available');
-	// 		}
-	// 		if (place?.geometry?.viewport || place?.geometry?.location) {
-	// 			// do something
-	// 			console.log(place.geometry.location);
-	// 		}
-	// 	});
-	// }, []);
-
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
 		setOpen(true);
@@ -146,6 +111,7 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	const onSubmit = async (values: FormValues) => {
 		console.log(values, 'val');
 	};
+
 	const formik = useFormik({
 		initialValues: {
 			addressLine1: '',
@@ -207,9 +173,9 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	const renderAmenities = () => {
 		if (
 			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
-			selectedUnitType === 'single'
+			selectedUnitType !== 'multi'
 		) {
-			return amenitiesOptions.map((amenity) => (
+			return amenitiesOptions?.map((amenity) => (
 				<FormControlLabel
 					key={amenity}
 					control={
@@ -229,25 +195,6 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 		return null;
 	};
 
-	// function onLoad(autocomplete: any) {
-	// 	setSearchResult(autocomplete);
-	// }
-
-	// function onPlaceChanged() {
-	// 	if (searchResult != null) {
-	// 		const place = searchResult?.getPlace();
-	// 		const name = place.name;
-	// 		const status = place.business_status;
-	// 		const formattedAddress = place.formatted_address;
-	// 		// console.log(place);
-	// 		console.log(`Name: ${name}`);
-	// 		console.log(`Business Status: ${status}`);
-	// 		console.log(`Formatted Address: ${formattedAddress}`);
-	// 	} else {
-	// 		alert('Please enter text');
-	// 	}
-	// }
-
 	useEffect(() => {
 		const payload = {
 			addressLine2: formik.values?.addressLine2,
@@ -264,6 +211,12 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 
 		dispatch(saveAddPropertyFormDetail({ address: { ...payload } }));
 	}, [formik.values, dispatch]);
+
+	useEffect(() => {
+		Object.keys(formState.address).forEach((key) => {
+			formik.setFieldValue(key, formState.address[key]);
+		});
+	}, []);
 
 	return (
 		<Grid container spacing={1}>
@@ -337,18 +290,6 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								label='State (Province or Region)'
 								formik={formik}
 							/>
-							{/* <ControlledSelect
-								name='state'
-								label='State'
-								type='text'
-								formik={formik}
-								options={states}
-								// inputProps={{
-								// 	sx: {
-								// 		muiOutlinedInput: '40px',
-								// 	},
-								// }}
-							/> */}
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
