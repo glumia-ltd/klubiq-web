@@ -93,8 +93,6 @@ const countries = countriesList?.map((item) => ({
 	name: item.name,
 }));
 
-console.log(countries);
-
 const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
@@ -207,7 +205,10 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	];
 
 	const renderAmenities = () => {
-		if (currentUnitIndex !== null && formik.values.units[currentUnitIndex]) {
+		if (
+			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
+			selectedUnitType === 'single'
+		) {
 			return amenitiesOptions.map((amenity) => (
 				<FormControlLabel
 					key={amenity}
@@ -365,9 +366,9 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 				</Card>
 			</Grid>
 
-			{selectedUnitType === 'single' && (
+			{selectedUnitType !== 'multi' && (
 				<Grid container mt={1}>
-					<Card sx={{ padding: '25px' }}>
+					<Card sx={styles.cardTwo}>
 						<Grid item xs={12}>
 							<Typography variant='h6' sx={styles.typo}>
 								Unit Details
