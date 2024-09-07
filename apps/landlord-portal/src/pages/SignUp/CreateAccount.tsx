@@ -108,7 +108,7 @@ const CreateAccount: React.FC = () => {
 	};
 
 	const routeToLogin = () => {
-		navigate('/', { replace: true });
+		navigate('/login', { replace: true });
 	};
 	const formik = useFormik({
 		initialValues: {

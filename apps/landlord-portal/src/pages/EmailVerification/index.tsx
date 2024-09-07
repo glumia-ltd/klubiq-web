@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Grid } from '@mui/material';
 import FeedbackContent from '../../components/FeedbackContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -8,10 +8,14 @@ import { applyActionCode } from 'firebase/auth';
 import successImage from '../../assets/images/circle-ok.svg';
 import errorImage from '../../assets/images/error.svg';
 import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
+import { Container } from '@mui/system';
+import { api } from '../../api';
+import { authEndpoints } from '../../helpers/endpoints';
 
 interface EmailVerificationProps {}
 
 const EmailVerification: FC<EmailVerificationProps> = () => {
+	const invocationCount = useRef(0);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | undefined>('');
@@ -22,26 +26,43 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	const oobCode = searchParams.get('oobCode');
 	const continueUrl = searchParams.get('continueUrl');
 
+	const verifyOobCode = async (code: string) => {
+		const values = {
+			oobCode: code,
+		};
+		const { data: data } = await api.post(
+			authEndpoints.verifyOobCode(),
+			values,
+		);
+		console.log('DATA: ', data.data);
+	};
+	//await applyActionCode(auth, oobCode);
 	const checkEmailVerification = async (oobCode: string) => {
 		try {
-			await applyActionCode(auth, oobCode);
+			console.log('OOB CODE: ', oobCode);
+			//await verifyOobCode(oobCode);
+			applyActionCode(auth, oobCode);
 			setLoading(false);
 			setError(false);
 		} catch (error) {
-			console.log(error);
+			console.log('verification error: ', error);
 			setLoading(false);
-			setErrorMessage(firebaseResponseObject[(error as Error).message]);
+			setErrorMessage('Verification Code expired. Contact Support');
+			setError(true);
 		}
 	};
 
 	useEffect(() => {
-		if (oobCode && loading) {
+		invocationCount.current++;
+		if (invocationCount.current === 1 && oobCode && loading) {
 			checkEmailVerification(oobCode);
 		}
-	}, []);
-
+	});
 	const navigateToContinueUrl = () => {
 		continueUrl && navigate(continueUrl, { replace: true });
+	};
+	const navigateToMFASetUp = () => {
+		navigate(`/login?enroll2fa=true`, { replace: true });
 	};
 
 	const renderViewContent = () => {
@@ -54,6 +75,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							: 'Your Email Address has been verified. You can continue using the application.'
 					}
 					onClick={navigateToContinueUrl}
+					onMFASetupClick={navigateToMFASetUp}
 					showButton={loading ? false : true}
 					header={loading ? 'Please be patient' : 'Email Verified'}
 					imageLink={loading ? '' : successImage}
@@ -71,41 +93,11 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 		}
 	};
 	return (
-		<Grid container spacing={1} bgcolor='white'>
-			<Grid
-				item
-				xs={12}
-				sm={12}
-				md={12}
-				lg={12}
-				sx={{
-					textAlign: 'center',
-					display: 'flex',
-					justifyContent: 'center',
-					alignSelf: 'center',
-				}}
-			>
-				<Box
-					sx={{
-						// minHeight: 280,
-						px: 8,
-						py: 6,
-						minWidth: 485,
-						maxWidth: 725,
-						alignSelf: 'center',
-						marginTop: '205px',
-					}}
-				>
-					{/* <FeedbackContent
-            content="A verification link has been sent to your email address. Please check your email and click on the link to continue"
-            type="error"
-            onClick={()=>console.log("here")}
-
-          /> */}
-					{renderViewContent()}
-				</Box>
-			</Grid>
-		</Grid>
+		<Container maxWidth='lg' sx={{}}>
+			<Box sx={{ display: 'flex', justifyContent: 'center', height: '100vh' }}>
+				{renderViewContent()}
+			</Box>
+		</Container>
 	);
 };
 

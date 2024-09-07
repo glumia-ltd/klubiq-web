@@ -35,6 +35,7 @@ function App() {
 					dispatch(saveUser(payload));
 				}
 			} else {
+				console.log('AUTH STATE: ', auth);
 				console.log('no user found yet');
 				const payload = {
 					token: null,

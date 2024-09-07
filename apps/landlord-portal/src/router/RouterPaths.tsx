@@ -17,6 +17,7 @@ import Support from '../pages/Support';
 import Message from '../pages/Message';
 import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
+import MFASetUp from '../pages/MFAPage';
 import AddProperties from '../pages/AddProperties';
 import PropertyPage from '../pages/PropertyPage';
 import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
@@ -38,13 +39,14 @@ import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPag
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
-			<Route path='/' element={<Login />} />
+			<Route path='/login' element={<Login />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
-			<Route path='*' element={<Navigate to='/' replace />} />
+			<Route path='/2fa-enroll' element={<MFASetUp />} />
+			<Route path='*' element={<Navigate to='/login' replace />} />
 
 			<Route element={<PrivateRoute />}>
 				<Route element={<ViewPortLayout />}>
