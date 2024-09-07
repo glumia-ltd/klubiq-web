@@ -52,7 +52,9 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
-	const handleBeforeUnload = () => {
+	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+		event.preventDefault();
+		event.returnValue = '';
 		dispatch(
 			openSnackbar({
 				message: 'Are you sure you want to leave this page?',
@@ -60,6 +62,8 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 				isOpen: true,
 			}),
 		);
+
+		window.alert('Are you sure you want to leave this page???');
 	};
 
 	useEffect(() => {

@@ -38,7 +38,7 @@ type AddPropertyType = {
 		status?: string;
 		rooms?: number | null;
 		offices?: number | null;
-	};
+	}[];
 };
 
 const initialState: AddPropertyType = {
@@ -61,22 +61,24 @@ const initialState: AddPropertyType = {
 		country: '',
 		isManualAddress: false,
 	},
-	units: {
-		id: null,
-		unitNumber: '',
-		rentAmount: null,
-		floor: null,
-		bedrooms: null,
-		bathrooms: null,
-		toilets: null,
-		area: {
-			value: null,
-			unit: '',
+	units: [
+		{
+			id: null,
+			unitNumber: '',
+			rentAmount: null,
+			floor: null,
+			bedrooms: null,
+			bathrooms: null,
+			toilets: null,
+			area: {
+				value: null,
+				unit: '',
+			},
+			status: '',
+			rooms: null,
+			offices: null,
 		},
-		status: '',
-		rooms: null,
-		offices: null,
-	},
+	],
 };
 
 const options = {

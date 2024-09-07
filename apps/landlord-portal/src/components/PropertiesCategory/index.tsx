@@ -31,8 +31,6 @@ const PropertyCategory = () => {
 
 	const { categoryId } = useSelector(getAddPropertyState);
 
-	console.log(useSelector(getAddPropertyState));
-
 	useEffect(() => {
 		if (categoryId) {
 			setSelectedCard(categoryId);

@@ -8,6 +8,8 @@ import {
 	Checkbox,
 	Dialog,
 	Box,
+	Stack,
+	TextField,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
@@ -74,6 +76,7 @@ type FormValues = {
 	postalCode: string;
 	state: string;
 	city: string;
+
 	units: {
 		id?: number | null;
 		unitNumber?: string;
@@ -89,6 +92,7 @@ type FormValues = {
 		status?: string;
 		rooms?: number | null;
 		offices?: number | null;
+		amenities?: string[];
 	}[];
 };
 
@@ -110,6 +114,8 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 
 	const formState = useSelector(getAddPropertyState);
 
+	// console.log(formState);
+
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
 		setOpen(true);
@@ -130,6 +136,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 			postalCode: '',
 			state: '',
 			city: '',
+
 			units: [
 				{
 					id: null,
@@ -146,6 +153,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 					status: '',
 					rooms: null,
 					offices: null,
+					amenities: [],
 				},
 			],
 		},
@@ -157,11 +165,20 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 		formik.setFieldValue('units', [
 			...formik.values.units,
 			{
-				description: '',
-				beds: 0,
-				baths: 0,
-				guestBaths: 0,
-				floorPlan: '',
+				id: null,
+				unitNumber: '',
+				rentAmount: null,
+				floor: null,
+				bedrooms: null,
+				bathrooms: null,
+				toilets: null,
+				area: {
+					value: null,
+					unit: '',
+				},
+				status: '',
+				rooms: null,
+				offices: null,
 				amenities: [],
 			},
 		]);
@@ -198,7 +215,8 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 					control={
 						<Checkbox
 							// name={`units.${currentUnitIndex}.amenities`}
-							name={amenity?.name}
+
+							name='units[0].amenities'
 							value={amenity?.name}
 							// checked={
 							// 	formik.values.units[currentUnitIndex]?.amenities.includes(amenity) || false
@@ -213,22 +231,38 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 		return null;
 	};
 
-	useEffect(() => {
-		const payload = {
-			addressLine2: formik.values?.addressLine2,
-			// unit: 'string',
-			city: formik.values?.city,
-			state: formik.values?.state,
-			postalCode: formik.values?.postalCode,
-			latitude: 0,
-			longitude: 0,
-			addressLine1: formik.values?.addressLine1,
-			country: formik.values?.country,
-			isManualAddress: true,
-		};
+	// useEffect(() => {
+	// 	const addressPayload = {
+	// 		addressLine2: formik.values?.addressLine2,
+	// 		// unit: 'string',
+	// 		city: formik.values?.city,
+	// 		state: formik.values?.state,
+	// 		postalCode: formik.values?.postalCode,
+	// 		latitude: 0,
+	// 		longitude: 0,
+	// 		addressLine1: formik.values?.addressLine1,
+	// 		country: formik.values?.country,
+	// 		isManualAddress: true,
+	// 	};
 
-		dispatch(saveAddPropertyFormDetail({ address: { ...payload } }));
-	}, [formik.values, dispatch]);
+	// 	dispatch(
+	// 		saveAddPropertyFormDetail({
+	// 			address: { ...addressPayload },
+	// 			units: [...formik.values.units],
+	// 		}),
+	// 	);
+	// }, [
+	// 	dispatch,
+	// 	formik.values?.addressLine1,
+	// 	formik.values?.addressLine2,
+	// 	formik.values?.city,
+	// 	formik.values?.country,
+	// 	formik.values?.postalCode,
+	// 	formik.values?.state,
+	// 	formik.values?.units,
+	// ]);
+
+	console.log(formik.values.units);
 
 	useEffect(() => {
 		Object.keys(formState.address).forEach((key) => {
@@ -336,8 +370,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									// name={`units.${currentUnitIndex}.beds`}
-									name='bedrooms'
+									name='units[0].bedrooms'
 									label='Bedrooms'
 									type='number'
 									formik={formik}
@@ -350,8 +383,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									// name={`units.${currentUnitIndex}.baths`}
-									name='bathrooms'
+									name='units[0].bathrooms'
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -378,7 +410,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							<Grid item xs={6}>
 								<ControlledTextField
 									// name={`units.${currentUnitIndex}.floorPlan`}
-									name='floor'
+									name='units[0].floor'
 									label='Floor Plan'
 									formik={formik}
 									// inputProps={{
