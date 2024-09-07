@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -75,12 +75,20 @@ type FormValues = {
 	state: string;
 	city: string;
 	units: {
-		description: string;
-		beds: number;
-		baths: number;
-		guestBaths: number;
-		floorPlan: string;
-		amenities: string[];
+		id?: number | null;
+		unitNumber?: string;
+		rentAmount?: number | null;
+		floor?: number | null;
+		bedrooms?: number | null;
+		bathrooms?: number | null;
+		toilets?: number | null;
+		area?: {
+			value?: number | null;
+			unit?: string;
+		};
+		status?: string;
+		rooms?: number | null;
+		offices?: number | null;
 	}[];
 };
 
@@ -124,12 +132,20 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 			city: '',
 			units: [
 				{
-					description: '',
-					beds: 0,
-					baths: 0,
-					guestBaths: 0,
-					floorPlan: '',
-					amenities: [],
+					id: null,
+					unitNumber: '',
+					rentAmount: null,
+					floor: null,
+					bedrooms: null,
+					bathrooms: null,
+					toilets: null,
+					area: {
+						value: null,
+						unit: '',
+					},
+					status: '',
+					rooms: null,
+					offices: null,
 				},
 			],
 		},
@@ -442,11 +458,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 											<Grid item xs={6} sx={styles.unitIcon}>
 												<IconButton onClick={() => handleOpen(index)}>
 													<BedIcon />
-													<Typography>{unit.beds}</Typography>
+													<Typography>{unit?.bedrooms}</Typography>
 												</IconButton>
 												<IconButton onClick={() => handleOpen(index)}>
 													<BathtubIcon />
-													<Typography>{unit.baths}</Typography>
+													<Typography>{unit?.bathrooms}</Typography>
 												</IconButton>
 											</Grid>
 											{/* <Grid item xs={12}>

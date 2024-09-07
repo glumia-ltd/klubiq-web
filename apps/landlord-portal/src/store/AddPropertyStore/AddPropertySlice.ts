@@ -22,6 +22,23 @@ type AddPropertyType = {
 		country?: string;
 		isManualAddress?: boolean;
 	};
+
+	units?: {
+		id?: number | null;
+		unitNumber?: string;
+		rentAmount?: number | null;
+		floor?: number | null;
+		bedrooms?: number | null;
+		bathrooms?: number | null;
+		toilets?: number | null;
+		area?: {
+			value?: number | null;
+			unit?: string;
+		};
+		status?: string;
+		rooms?: number | null;
+		offices?: number | null;
+	};
 };
 
 const initialState: AddPropertyType = {
@@ -43,6 +60,22 @@ const initialState: AddPropertyType = {
 		addressLine1: '',
 		country: '',
 		isManualAddress: false,
+	},
+	units: {
+		id: null,
+		unitNumber: '',
+		rentAmount: null,
+		floor: null,
+		bedrooms: null,
+		bathrooms: null,
+		toilets: null,
+		area: {
+			value: null,
+			unit: '',
+		},
+		status: '',
+		rooms: null,
+		offices: null,
 	},
 };
 
