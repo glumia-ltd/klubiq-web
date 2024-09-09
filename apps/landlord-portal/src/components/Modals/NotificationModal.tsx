@@ -151,7 +151,7 @@ const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
 										<ListItemText
 											primary={
 												<Typography
-													variant='body2'
+													// variant='body2'
 													sx={{ fontWeight: 'bold', color: 'text.secondary' }}
 												>
 													{item.title}

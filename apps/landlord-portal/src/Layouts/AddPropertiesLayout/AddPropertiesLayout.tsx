@@ -1,24 +1,17 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { FC, ReactElement, useState } from 'react';
 import styles from './AddPropertiesStyle';
-import leftArrow from '../../assets/images/arrow-left.svg';
 import { CustomStepper } from '../../components/CustomStepper';
-import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate } from 'react-router-dom';
+import { RouteObjectType } from '../../shared/type';
 
 import {
 	HomeIcon,
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
-
-interface RouteObjectType {
-	'Property Category': { label: string; icon: React.ReactNode };
-	'Property Details': { label: string; icon: React.ReactNode };
-	'Unit Type': { label: string; icon: React.ReactNode };
-	[key: string]: { label: string; icon: React.ReactNode };
-}
 
 const routeObject: RouteObjectType = {
 	'Property Category': {
@@ -64,19 +57,23 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 		navigateToStep(activeStep - 1);
 	};
 
+	const handleAllPropertiesClick = () => {
+		navigate('/properties');
+	};
+
 	return (
 		<Container sx={styles.containerStyle}>
 			<>
 				<Grid container>
 					<Grid container sx={styles.addPropertiesContainer}>
-						<Grid item sx={styles.addPropertiesContent}>
-							<img
-								src={leftArrow}
-								alt='back arrow'
-								style={styles.addPropertiesImage}
-							/>
+						<Grid
+							item
+							sx={styles.addPropertiesContent}
+							onClick={handleAllPropertiesClick}
+						>
+							<ArrowLeftIcon sx={styles.addPropertiesImage} />
 							<Typography sx={styles.addPropertiesText} fontWeight={600}>
-								Add properties
+								All properties
 							</Typography>
 						</Grid>
 
@@ -99,7 +96,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						onClick={handleBackwardButton}
 						disabled={activeStep <= 0}
 					>
-						<LeftArrowIcon />
+						<ArrowLeftIcon />
 						<Typography>Previous</Typography>
 					</Button>
 					<Button

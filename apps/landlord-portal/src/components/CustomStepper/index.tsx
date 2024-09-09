@@ -9,12 +9,12 @@ import {
 } from '@mui/material';
 import { FC } from 'react';
 import { styles } from './styles';
-import { HomeIcon } from '../Icons/CustomIcons';
+import { RouteObjectType } from '../../shared/type';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { completed?: boolean; active?: boolean };
 }>(({ theme, ownerState }) => ({
-	backgroundColor: '#fff',
+	backgroundColor: '#ffffff',
 	zIndex: 1,
 	width: 56,
 	height: 56,
@@ -28,13 +28,10 @@ const StepIconRoot = styled('div')<{
 		backgroundColor: '#fff',
 		color: '#002147',
 		border: '3px solid #002147',
-		fontWeight: '900',
 	}),
 	...(ownerState.completed && {
-		background: 'red',
-		// backgroundColor: 'primary.main',
-		// // color: '#ffffff',
-		// fontWeight: '700',
+		backgroundColor: '#002147',
+		color: '#fff',
 	}),
 
 	[theme.breakpoints.down('sm')]: {
@@ -47,17 +44,16 @@ const StepIconRoot = styled('div')<{
 	},
 }));
 
-const StepIcon = (props: StepIconProps) => {
-	const { active, completed, className, icon: Icon } = props;
+const ModifiedStepIcon =
+	(DynamicIcon: React.ReactNode) => (props: StepIconProps) => {
+		const { active, completed, className } = props;
 
-	return (
-		<StepIconRoot ownerState={{ completed, active }} className={className}>
-			{/* {Icon} */}
-
-			<HomeIcon />
-		</StepIconRoot>
-	);
-};
+		return (
+			<StepIconRoot ownerState={{ completed, active }} className={className}>
+				{DynamicIcon}
+			</StepIconRoot>
+		);
+	};
 
 const LineConnector = styled(StepConnector)(() => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -84,7 +80,7 @@ const LineConnector = styled(StepConnector)(() => ({
 
 export const CustomStepper: FC<{
 	active: number;
-	routes: any;
+	routes: RouteObjectType;
 }> = ({ active, routes }) => {
 	return (
 		<Stepper
@@ -94,12 +90,12 @@ export const CustomStepper: FC<{
 			sx={styles.stepper}
 		>
 			{Object.keys(routes).map((label) => {
-				const icon = routes[label].icon;
+				const icon = routes[label] && routes[label].icon;
 
 				return (
 					<Step key={label}>
 						<StepLabel
-							StepIconComponent={() => StepIcon({ icon })}
+							StepIconComponent={ModifiedStepIcon(icon)}
 							sx={{
 								'& .MuiStepLabel-label': {
 									fontWeight: 'normal',
@@ -111,6 +107,7 @@ export const CustomStepper: FC<{
 								},
 								'& .Mui-active ': {
 									fontWeight: 'bold',
+									color: 'primary.main',
 								},
 							}}
 						>

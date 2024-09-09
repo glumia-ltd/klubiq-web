@@ -1,3 +1,10 @@
+export interface RouteObjectType {
+	'Property Category': { label: string; icon: React.ReactNode };
+	'Property Details': { label: string; icon: React.ReactNode };
+	'Unit Type': { label: string; icon: React.ReactNode };
+	[key: string]: { label: string; icon: React.ReactNode };
+}
+
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
