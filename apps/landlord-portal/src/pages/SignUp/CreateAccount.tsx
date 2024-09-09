@@ -91,7 +91,9 @@ const CreateAccount: React.FC = () => {
 
 			const userInfo = { email: user.email };
 
-			dispatch(saveUser({ user: userInfo, token: user.accessToken }));
+			dispatch(
+				saveUser({ user: userInfo, token: user.accessToken, isSignedIn: true }),
+			);
 		} catch (error) {
 			setLoading(false);
 			const errorMessage = (error as Error).message.includes('code 424')

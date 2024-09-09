@@ -171,10 +171,6 @@ const Login = () => {
 		onSubmit,
 	});
 
-	// const routeToSignUp = () => {
-	// 	navigate('/signup', { replace: true });
-	// };
-
 	const routeToSignUp = () => {
 		navigate('/signup/createaccount', { replace: true });
 	};

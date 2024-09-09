@@ -26,21 +26,9 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	const oobCode = searchParams.get('oobCode');
 	const continueUrl = searchParams.get('continueUrl');
 
-	const verifyOobCode = async (code: string) => {
-		const values = {
-			oobCode: code,
-		};
-		const { data: data } = await api.post(
-			authEndpoints.verifyOobCode(),
-			values,
-		);
-		console.log('DATA: ', data.data);
-	};
-	//await applyActionCode(auth, oobCode);
 	const checkEmailVerification = async (oobCode: string) => {
 		try {
 			console.log('OOB CODE: ', oobCode);
-			//await verifyOobCode(oobCode);
 			applyActionCode(auth, oobCode);
 			setLoading(false);
 			setError(false);
@@ -62,7 +50,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 		continueUrl && navigate(continueUrl, { replace: true });
 	};
 	const navigateToMFASetUp = () => {
-		navigate(`/login?enroll2fa=true`, { replace: true });
+		navigate(`/2fa-enroll`, { replace: true });
 	};
 
 	const renderViewContent = () => {
