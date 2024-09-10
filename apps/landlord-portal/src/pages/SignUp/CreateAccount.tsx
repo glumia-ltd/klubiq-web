@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
@@ -136,43 +136,53 @@ const CreateAccount: React.FC = () => {
 	});
 
 	return (
-		<>
+		<Grid
+			container
+			component='form'
+			sx={{
+				justifyContent: 'center',
+				height: '100vh',
+				p: {
+					xs: 2,
+					sm: 1,
+					md: 0,
+					lg: 0,
+				},
+			}}
+			onSubmit={formik.handleSubmit}
+			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
+		>
 			<Grid
-				component='form'
-				container
+				item
+				xs={12}
+				sm={12}
+				md={6}
+				lg={6}
+				xl={6}
 				spacing={0}
-				justifyContent={'space-around'}
 				sx={{
-					p: {
-						xs: 2,
-						sm: 1,
-						md: 1,
-						lg: 1,
-					},
+					alignContent: 'center',
 				}}
-				onSubmit={formik.handleSubmit}
-				columnSpacing={{ xs: 1, sm: 1, md: 1 }}
 			>
 				<Grid
 					container
-					item
-					xs={12}
-					sm={12}
-					md={4}
-					lg={4}
-					xl={5}
-					spacing={0}
 					sx={{
-						alignContent: 'center',
+						justifyContent: 'center',
+						margin: 'auto',
 					}}
+					spacing={0.5}
 				>
 					<Grid
 						container
 						sx={{
-							justifyContent: 'center',
-							margin: 'auto',
+							width: {
+								xs: '20rem',
+								sm: '25rem',
+								md: '27rem',
+								lg: '30rem',
+								xl: '33rem',
+							},
 						}}
-						spacing={0.5}
 					>
 						<Grid
 							item
@@ -318,24 +328,41 @@ const CreateAccount: React.FC = () => {
 						</Grid>
 					</Grid>
 				</Grid>
-
-				<Grid
-					item
-					xs={0}
-					sm={0}
-					md={5}
-					lg={5}
-					sx={{
-						background: '#6699CC',
-						display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
-						borderBottomRightRadius: '1.3rem',
-						borderBottomLeftRadius: '1.3rem',
-						height: '97vh',
-						alignSelf: 'start',
-					}}
-				></Grid>
 			</Grid>
-		</>
+
+			<Grid
+				item
+				xs={0}
+				sm={0}
+				md={6}
+				lg={6}
+				xl={6}
+				sx={{
+					background: 'linear-gradient(#6699CC, #1F305E)',
+					display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
+					borderTopRightRadius: '1.3rem',
+					borderBottomLeftRadius: '1.3rem',
+					height: '100vh',
+					alignContent: 'center',
+				}}
+			>
+				<Stack
+					direction={'column'}
+					sx={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						alignContent: 'center',
+					}}
+				>
+					<Typography color={'white'} textAlign={'center'} variant='h2'>
+						Ready to Transform Your Property Management?
+					</Typography>
+					<Typography color={'white'} variant='body1'>
+						Sign up and make managing properties effortless.
+					</Typography>
+				</Stack>
+			</Grid>
+		</Grid>
 	);
 };
 

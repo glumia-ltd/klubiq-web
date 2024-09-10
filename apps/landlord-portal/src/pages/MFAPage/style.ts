@@ -1,21 +1,17 @@
 import setupImg from '../../assets/images/mfa-setup.png';
 export const styles = {
 	splitScreenStyle: {
-		borderTop: '2px solid',
-		borderBottom: '2px solid',
 		borderColor: 'secondary.light',
-		borderRadius: '1rem',
-		width: '40%',
-		height: '95%',
+		borderTopRightRadius: '1.3rem',
+		borderBottomLeftRadius: '1.3rem',
+		height: '100vh',
 		background: `url(${setupImg})`,
 		backgroundColor: 'white',
-		backgroundSize: 'contain',
+		backgroundSize: '50% 40%',
 		backgroundRepeat: 'no-repeat',
 		backgroundPosition: 'center',
-		position: 'relative',
-		borderTopRightRadius: '16px',
-		borderBottomRightRadius: '1rem',
 		backgroundBlendMode: 'normal',
+		display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 	},
 	cancelEnrollStyle: {
 		backgroundColor: 'secondary.light',
@@ -46,21 +42,21 @@ export const styles = {
 		width: '100%',
 	},
 	leftSplit: {
-		paddingLeft: {
-			xs: 0,
-			sm: '1rem',
-			md: '2rem',
-			lg: '5rem',
-		},
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		width: '33rem',
+		p: 1,
 	},
 	gridContainer: {
 		height: '100vh',
-		p: 2,
-		paddingRight: {
-			xs: 0,
-			sm: '1rem',
-			md: '2rem',
-			lg: '5rem',
+		justifyContent: 'center',
+		p: {
+			xs: 1,
+			sm: 1,
+			md: 0,
+			lg: 0,
 		},
+		overflow: 'hidden',
 	},
 };

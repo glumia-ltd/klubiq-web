@@ -19,6 +19,7 @@ import {
 	Avatar,
 	Box,
 	Button,
+	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -63,7 +64,7 @@ const MFASetUp = () => {
 	});
 	const [loading, setLoading] = useState<boolean>(false);
 	const [emailEnabled, setEmailEnabled] = useState<boolean>(false);
-	const isMobile = useMediaQuery('(max-width: 500px)');
+	const [initializing, setInitializing] = useState<boolean>(true);
 	const navigate = useNavigate();
 	const [qrCodeUrl, setQrCodeUrl] = useState('');
 	const [secretKey, setSecretKey] = useState('');
@@ -85,6 +86,7 @@ const MFASetUp = () => {
 			setEmailEnabled(false);
 			setRAuthenticationRequired(true);
 		}
+		setInitializing(false);
 	};
 	const onReAuthenticate = async (values: AuthValuesType) => {
 		const { email, password } = values;
@@ -175,6 +177,7 @@ const MFASetUp = () => {
 			subtitle: `Since you're trying to perform a sensitive operation, we need verify your account before you can proceed.`,
 			actionText: 'Sign in',
 		});
+		setInitializing(false);
 	};
 
 	const handleClose = () => {
@@ -294,21 +297,32 @@ const MFASetUp = () => {
 				</DialogActions>
 			</Dialog>
 			<Grid container spacing={0} sx={styles.gridContainer}>
-				<Stack direction='row' sx={styles.stackContainer}>
-					<Stack
-						direction={'column'}
-						spacing={2}
-						sx={{ ...styles.leftSplit, width: isMobile ? '100%' : '45%' }}
-					>
+				<Grid
+					xs={12}
+					sm={12}
+					md={6}
+					lg={6}
+					xl={6}
+					spacing={0}
+					sx={styles.leftSplit}
+				>
+					<Stack direction={'column'} spacing={2}>
 						<Stack
 							direction={'row'}
 							sx={{
 								justifyContent: 'flex-start',
 							}}
 						>
-							<Button onClick={routeToLogin} startIcon={<ArrowBackIos />}>
-								Back to login
-							</Button>
+							{initializing && (
+								<Box sx={{ display: 'flex' }}>
+									<CircularProgress />
+								</Box>
+							)}
+							{!initializing && (
+								<Button onClick={routeToLogin} startIcon={<ArrowBackIos />}>
+									Back to login
+								</Button>
+							)}
 						</Stack>
 						{reAuthenticationRequired && (
 							<Typography>
@@ -492,8 +506,15 @@ const MFASetUp = () => {
 							</>
 						)}
 					</Stack>
-					{!isMobile && <Stack sx={styles.splitScreenStyle}></Stack>}
-				</Stack>
+				</Grid>
+				<Grid
+					xs={0}
+					sm={0}
+					md={6}
+					lg={6}
+					xl={6}
+					sx={styles.splitScreenStyle}
+				></Grid>
 			</Grid>
 		</>
 	);
