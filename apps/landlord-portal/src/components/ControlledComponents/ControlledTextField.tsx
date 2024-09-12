@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { forwardRef } from 'react';
+import React from 'react';
 import {
 	TextField,
 	Stack,
@@ -27,27 +27,24 @@ type ControlledTextFieldProps = {
 	inputRef?: React.Ref<HTMLInputElement>;
 };
 
-const ControlledTextField: React.FC<ControlledTextFieldProps> = (
-	{
-		loading,
-		formik,
-		sx,
-		InputProps,
-		disableOnChange,
-		label,
-		name,
-		type,
-		inFieldLabel,
-		inputprops,
-		prioritizeError,
-		onFileSelect,
-		color,
-		sxTwo,
-		placeholder,
-		...props
-	},
-	ref,
-) => {
+const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
+	loading,
+	formik,
+	sx,
+	InputProps,
+	disableOnChange,
+	label,
+	name,
+	type,
+	inFieldLabel,
+	inputprops,
+	prioritizeError,
+	onFileSelect,
+	color,
+	sxTwo,
+	placeholder,
+	...props
+}) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (disableOnChange) {
 			return;
@@ -86,13 +83,13 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = (
 				label={inFieldLabel && label}
 				type={type || 'text'}
 				value={
-					(props.value !== undefined && props.value) || formik.values[name]
+					(props.value !== undefined && props.value) || formik?.values[name]
 				}
 				onChange={onChange}
-				onBlur={formik.handleBlur}
+				onBlur={formik?.handleBlur}
 				error={
 					Boolean(prioritizeError) ||
-					(Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
+					(Boolean(formik?.touched[name]) && Boolean(formik?.errors[name]))
 				}
 				InputProps={{
 					endAdornment: loading ? (
@@ -104,7 +101,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = (
 				}}
 				helperText={
 					prioritizeError ||
-					(formik.touched[name] && formik.errors[name]) ||
+					(formik?.touched[name] && formik?.errors[name]) ||
 					' '
 				}
 				inputProps={inputprops}

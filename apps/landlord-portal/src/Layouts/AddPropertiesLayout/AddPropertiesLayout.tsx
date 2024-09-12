@@ -55,15 +55,15 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 		event.preventDefault();
 		event.returnValue = '';
-		dispatch(
-			openSnackbar({
-				message: 'Are you sure you want to leave this page?',
-				severity: 'info',
-				isOpen: true,
-			}),
-		);
+		// dispatch(
+		// 	openSnackbar({
+		// 		message: 'Are you sure you want to leave this page?',
+		// 		severity: 'info',
+		// 		isOpen: true,
+		// 	}),
+		// );
 
-		window.alert('Are you sure you want to leave this page???');
+		// window.alert('Are you sure you want to leave this page???');
 	};
 
 	useEffect(() => {

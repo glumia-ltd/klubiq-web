@@ -27,14 +27,14 @@ import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
 // import { Autocomplete, useLoadScript } from '@react-google-maps/api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
 	getAddPropertyState,
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
-
-// const placesLibrary = ['places'];
+import { FormValuesType } from '../../shared/type';
+import { AutoComplete } from '../AutoComplete/AutoComplete';
 
 const validationSchema = yup.object({
 	addressLine1: yup.string().required('This field is required'),
@@ -68,34 +68,6 @@ type CardProps = {
 	amenities: { id: number; name: string }[];
 };
 
-type FormValues = {
-	addressLine1: string;
-	addressLine2: string;
-	apartment: string;
-	country: string;
-	postalCode: string;
-	state: string;
-	city: string;
-
-	units: {
-		id?: number | null;
-		unitNumber?: string;
-		rentAmount?: number | null;
-		floor?: number | null;
-		bedrooms?: number | null;
-		bathrooms?: number | null;
-		toilets?: number | null;
-		area?: {
-			value?: number | null;
-			unit?: string;
-		};
-		status?: string;
-		rooms?: number | null;
-		offices?: number | null;
-		amenities?: string[];
-	}[];
-};
-
 const states = StateList.map((item) => ({
 	value: item.name,
 	label: item.name,
@@ -110,8 +82,6 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
 
-	const dispatch = useDispatch();
-
 	const formState = useSelector(getAddPropertyState);
 
 	// console.log(formState);
@@ -123,7 +93,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 
 	const handleClose = () => setOpen(false);
 
-	const onSubmit = async (values: FormValues) => {
+	const onSubmit = async (values: FormValuesType) => {
 		console.log(values, 'val');
 	};
 
@@ -262,7 +232,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	// 	formik.values?.units,
 	// ]);
 
-	console.log(formik.values.units);
+	console.log(formik?.values);
 
 	useEffect(() => {
 		Object.keys(formState.address).forEach((key) => {
@@ -283,16 +253,22 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 						<Grid item xs={12}>
 							{/* <Autocomplete onPlaceChanged={onPlaceChanged} onLoad={onLoad}> */}
 
-							<ControlledTextField
+							<AutoComplete
+								formik={formik}
+								name={'addressLine1'}
+								label={'Street Address'}
+							/>
+
+							{/* <ControlledTextField
 								name='addressLine1'
 								label='Street Address'
-								formik={formik}
+								// formik={formik}
 								// inputProps={{
 								// 	sx: {
 								// 		height: '40px',
 								// 	},
 								// }}
-							/>
+							/> */}
 						</Grid>
 						{
 							<Grid item xs={12}>
