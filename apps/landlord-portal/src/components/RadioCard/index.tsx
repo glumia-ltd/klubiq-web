@@ -20,6 +20,7 @@ type RadioOption = {
 type Props = {
 	options: RadioOption[];
 	defaultValue?: string;
+	checkedValue?: string;
 	name?: string;
 	value?: string;
 	headerText?: string;
@@ -27,7 +28,14 @@ type Props = {
 };
 
 const RadioCard = React.memo(
-	({ options, defaultValue, headerText, name, onChange }: Props) => {
+	({
+		options,
+		defaultValue,
+		headerText,
+		name,
+		onChange,
+		checkedValue,
+	}: Props) => {
 		const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 			onChange && onChange(event);
 		};
@@ -53,6 +61,7 @@ const RadioCard = React.memo(
 											<FormControlLabel
 												value={option?.id}
 												control={<Radio />}
+												checked={checkedValue === option?.id}
 												label={option?.displayText}
 												sx={styles.radioLabel}
 											/>

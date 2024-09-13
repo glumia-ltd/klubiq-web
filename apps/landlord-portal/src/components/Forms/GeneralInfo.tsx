@@ -27,7 +27,7 @@ import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
 // import { Autocomplete, useLoadScript } from '@react-google-maps/api';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	getAddPropertyState,
 	saveAddPropertyFormDetail,
@@ -81,6 +81,8 @@ const countries = countriesList?.map((item) => ({
 const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
+
+	const dispatch = useDispatch();
 
 	const formState = useSelector(getAddPropertyState);
 
@@ -201,36 +203,36 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 		return null;
 	};
 
-	// useEffect(() => {
-	// 	const addressPayload = {
-	// 		addressLine2: formik.values?.addressLine2,
-	// 		// unit: 'string',
-	// 		city: formik.values?.city,
-	// 		state: formik.values?.state,
-	// 		postalCode: formik.values?.postalCode,
-	// 		latitude: 0,
-	// 		longitude: 0,
-	// 		addressLine1: formik.values?.addressLine1,
-	// 		country: formik.values?.country,
-	// 		isManualAddress: true,
-	// 	};
+	useEffect(() => {
+		const addressPayload = {
+			addressLine1: formik.values?.addressLine1,
+			addressLine2: formik.values?.addressLine2,
+			// unit: 'string',
+			city: formik.values?.city,
+			state: formik.values?.state,
+			postalCode: formik.values?.postalCode,
+			latitude: 0,
+			longitude: 0,
+			country: formik.values?.country,
+			isManualAddress: true,
+		};
 
-	// 	dispatch(
-	// 		saveAddPropertyFormDetail({
-	// 			address: { ...addressPayload },
-	// 			units: [...formik.values.units],
-	// 		}),
-	// 	);
-	// }, [
-	// 	dispatch,
-	// 	formik.values?.addressLine1,
-	// 	formik.values?.addressLine2,
-	// 	formik.values?.city,
-	// 	formik.values?.country,
-	// 	formik.values?.postalCode,
-	// 	formik.values?.state,
-	// 	formik.values?.units,
-	// ]);
+		dispatch(
+			saveAddPropertyFormDetail({
+				address: { ...addressPayload },
+				units: [...formik.values.units],
+			}),
+		);
+	}, [
+		dispatch,
+		formik.values?.addressLine1,
+		formik.values?.addressLine2,
+		formik.values?.city,
+		formik.values?.country,
+		formik.values?.postalCode,
+		formik.values?.state,
+		formik.values?.units,
+	]);
 
 	console.log(formik?.values);
 
@@ -251,24 +253,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
-							{/* <Autocomplete onPlaceChanged={onPlaceChanged} onLoad={onLoad}> */}
-
 							<AutoComplete
 								formik={formik}
 								name={'addressLine1'}
 								label={'Street Address'}
 							/>
-
-							{/* <ControlledTextField
-								name='addressLine1'
-								label='Street Address'
-								// formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
-							/> */}
 						</Grid>
 						{
 							<Grid item xs={12}>

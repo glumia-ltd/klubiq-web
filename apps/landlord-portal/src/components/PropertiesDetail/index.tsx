@@ -62,9 +62,17 @@ const UnitType = () => {
 	});
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		let purposeId = null;
+		let isMultiUnit = false;
+
+		if (event.target.name === 'purposeId') {
+			purposeId = Number(event.target.value);
+		} else if (event.target.name === 'unitType') {
+			isMultiUnit = event.target.value === 'multi' ? true : false;
+		}
 		const payload = {
-			purposeId: Number(formik.values.purposeId),
-			isMultiUnit: formik.values.unitType === 'multi' ? true : false,
+			purposeId,
+			isMultiUnit,
 		};
 		dispatch(saveAddPropertyFormDetail(payload));
 
@@ -79,7 +87,7 @@ const UnitType = () => {
 						headerText='UNIT TYPE'
 						name='unitType'
 						options={options}
-						// defaultValue='single'
+						checkedValue={formState.isMultiUnit ? 'multi' : 'single'}
 						onChange={handleChange}
 					/>
 				</Grid>
@@ -88,7 +96,7 @@ const UnitType = () => {
 						headerText='PROPERTY purpose'
 						name='purposeId'
 						options={purposes}
-						// defaultValue='one'
+						checkedValue={formState.purposeId}
 						onChange={handleChange}
 					/>
 				</Grid>
