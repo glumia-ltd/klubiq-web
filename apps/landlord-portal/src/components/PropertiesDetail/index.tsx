@@ -96,7 +96,7 @@ const UnitType = () => {
 						headerText='PROPERTY purpose'
 						name='purposeId'
 						options={purposes}
-						checkedValue={formState.purposeId}
+						checkedValue={formState?.purposeId}
 						onChange={handleChange}
 					/>
 				</Grid>

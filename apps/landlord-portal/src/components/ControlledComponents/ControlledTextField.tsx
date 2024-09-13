@@ -8,6 +8,7 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
@@ -55,6 +56,10 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 		formik.handleChange(e);
 	};
 
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -83,13 +88,13 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 				label={inFieldLabel && label}
 				type={type || 'text'}
 				value={
-					(props.value !== undefined && props.value) || formik?.values[name]
+					(props.value !== undefined && props.value) || fieldValue || undefined
 				}
 				onChange={onChange}
 				onBlur={formik?.handleBlur}
 				error={
 					Boolean(prioritizeError) ||
-					(Boolean(formik?.touched[name]) && Boolean(formik?.errors[name]))
+					(Boolean(fieldTouched) && Boolean(fieldError))
 				}
 				InputProps={{
 					endAdornment: loading ? (
@@ -99,11 +104,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					) : undefined,
 					...InputProps,
 				}}
-				helperText={
-					prioritizeError ||
-					(formik?.touched[name] && formik?.errors[name]) ||
-					' '
-				}
+				helperText={prioritizeError || (fieldTouched && fieldError) || ' '}
 				inputProps={inputprops}
 				{...props}
 				sx={sxTwo}

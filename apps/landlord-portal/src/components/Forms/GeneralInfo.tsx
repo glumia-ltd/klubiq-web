@@ -86,7 +86,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	// console.log(formState);
+	console.log(formState);
 
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
@@ -125,7 +125,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: [],
+					amenities: [''],
 				},
 			],
 		},
@@ -151,7 +151,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 				status: '',
 				rooms: null,
 				offices: null,
-				amenities: [],
+				amenities: [''],
 			},
 		]);
 	};
@@ -186,13 +186,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 					key={amenity.id}
 					control={
 						<Checkbox
-							// name={`units.${currentUnitIndex}.amenities`}
-
 							name='units[0].amenities'
 							value={amenity?.name}
-							// checked={
-							// 	formik.values.units[currentUnitIndex]?.amenities.includes(amenity) || false
-							//   }
+							checked={formik.values.units[0]?.amenities?.includes(
+								amenity?.name,
+							)}
 							onChange={formik.handleChange}
 						/>
 					}
@@ -234,12 +232,18 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 		formik.values?.units,
 	]);
 
-	console.log(formik?.values);
+	// console.log(formik?.values);
 
 	useEffect(() => {
 		Object.keys(formState.address).forEach((key) => {
 			formik.setFieldValue(key, formState.address[key]);
 		});
+
+		formik.setFieldValue('units', formState?.units);
+
+		// Object.keys(formState.units).forEach((key) => {
+		// 	formik.setFieldValue(key, formState.units);
+		// });
 	}, []);
 
 	return (
@@ -335,7 +339,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name='units[0].bedrooms'
+									name={`units[0].bedrooms`}
 									label='Bedrooms'
 									type='number'
 									formik={formik}
