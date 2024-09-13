@@ -114,7 +114,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			value={value}
 			noOptionsText='No locations'
 			onChange={(event: any, value: any) => {
-				console.log(options);
 				// setOptions(value ? [value, ...options] : options);
 				setValue(value);
 
@@ -126,17 +125,26 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 					formik.setFieldValue(name, value.description);
 				}
 			}}
-			onInputChange={(event, newInputValue) => {
+			onInputChange={(_event, newInputValue) => {
+				if (!newInputValue) {
+					formik.setFieldValue(name, newInputValue);
+				}
 				setInputValue(newInputValue);
 			}}
-			renderOption={(props, option, index) => (
-				<li
-					{...props}
-					key={`${option.description}-${index?.index}-${option.place_id}`}
-				>
-					{option.description || option}
-				</li>
-			)}
+			renderOption={(props, option, index) => {
+				console.log(option);
+				if (!option.description) {
+					return;
+				}
+				return (
+					<li
+						{...props}
+						key={`${option?.description}-${option?.place_id}-${index?.index}`}
+					>
+						{option?.description || option}
+					</li>
+				);
+			}}
 			// getOptionDisabled={(option) =>
 			// 	options.some((opt) => opt.place_id === option.place_id)
 			// } // Optional: Disable duplicate options in the dropdown
