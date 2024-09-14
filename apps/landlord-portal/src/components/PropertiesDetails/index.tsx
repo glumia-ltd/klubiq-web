@@ -36,8 +36,6 @@ const PropertiesDetails = () => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(formState);
-
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
@@ -59,7 +57,6 @@ const PropertiesDetails = () => {
 	});
 
 	useEffect(() => {
-		if (!formik.values.name && !formik.values.typeId) return;
 		dispatch(saveAddPropertyFormDetail({ ...formik.values }));
 	}, [dispatch, formik.values]);
 

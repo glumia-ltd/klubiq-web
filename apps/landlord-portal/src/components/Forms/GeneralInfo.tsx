@@ -188,9 +188,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 						<Checkbox
 							name={`units[${currentUnitIndex}].amenities`}
 							value={amenity?.name}
-							checked={formik.values.units[
-								currentUnitIndex
-							]?.amenities?.includes(amenity?.name)}
+							checked={
+								formik.values.units[currentUnitIndex]?.amenities?.includes(
+									amenity?.name,
+								) || false
+							}
 							onChange={formik.handleChange}
 						/>
 					}
@@ -205,7 +207,6 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 		const addressPayload = {
 			addressLine1: formik.values?.addressLine1,
 			addressLine2: formik.values?.addressLine2,
-			// unit: 'string',
 			city: formik.values?.city,
 			state: formik.values?.state,
 			postalCode: formik.values?.postalCode,

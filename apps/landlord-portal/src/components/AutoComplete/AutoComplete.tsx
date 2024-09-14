@@ -132,7 +132,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				setInputValue(newInputValue);
 			}}
 			renderOption={(props, option, index) => {
-				console.log(option);
 				if (!option.description) {
 					return;
 				}
@@ -154,11 +153,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 					label={label}
 					formik={formik}
 					{...params}
-					// inputProps={{
-					// 	sx: {
-					// 		height: '40px',
-					// 	},
-					// }}
 				/>
 			)}
 		/>
