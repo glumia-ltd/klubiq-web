@@ -6,9 +6,7 @@ import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
 import { useState, useEffect, useRef } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-// import { Delete } from '@mui/icons-material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import PropertyDetailSkeleton from './PropertyDetailSkeleton';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import {
 	getAddPropertyState,
@@ -61,8 +59,15 @@ const PropertiesDetails = () => {
 	});
 
 	useEffect(() => {
+		if (!formik.values.name && !formik.values.typeId) return;
 		dispatch(saveAddPropertyFormDetail({ ...formik.values }));
-	}, [formik.values, dispatch]);
+	}, [dispatch, formik.values]);
+
+	useEffect(() => {
+		Object.keys(formik?.values)?.forEach((key) => {
+			formik.setFieldValue(key, formState[key]);
+		});
+	}, []);
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -93,9 +98,9 @@ const PropertiesDetails = () => {
 	useEffect(() => {
 		// Revoke URLs when the component unmounts
 		return () => {
-			formik.values.images.forEach((url) => URL.revokeObjectURL(url));
+			formik.values?.images?.forEach((url) => URL.revokeObjectURL(url));
 		};
-	}, [formik.values.images]);
+	}, [formik.values?.images]);
 
 	return (
 		<Grid container spacing={0}>
