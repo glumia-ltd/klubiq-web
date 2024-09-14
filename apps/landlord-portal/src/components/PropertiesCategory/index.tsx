@@ -13,7 +13,6 @@ import {
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@reduxjs/toolkit/query';
 
 type CategoryType = {
 	id: number;

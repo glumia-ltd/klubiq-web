@@ -87,9 +87,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 				placeholder={placeholder}
 				label={inFieldLabel && label}
 				type={type || 'text'}
-				value={
-					(props.value !== undefined && props.value) || fieldValue || undefined
-				}
+				value={(props.value !== undefined && props.value) || fieldValue || ''}
 				onChange={onChange}
 				onBlur={formik?.handleBlur}
 				error={

@@ -70,14 +70,17 @@ export const router = createBrowserRouter(
 						<Route path='add-maintenance' element={<AddMaintenancePage />} />
 					</Route>
 
-					<Route path='/properties/*' element={<AddProperties />}>
-						<Route path='property-category' element={<PropertyCategory />} />
-						<Route path='property-details' element={<PropertiesDetails />} />
-						<Route path='unit-type' element={<UnitType />} />
-						<Route path='bank-account' element={<h1>Page in development</h1>} />
+					<Route
+						path='properties/property-category'
+						element={<AddProperties />}
+					/>
+					<Route
+						path='properties/property-details'
+						element={<AddProperties />}
+					/>
+					<Route path='properties/unit-type' element={<AddProperties />} />
 
-						<Route path='*' element={<Navigate to='/properties' replace />} />
-					</Route>
+					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
 
 					<Route path='/lease' element={<Lease />} />
 					<Route path='/maintenance' element={<Maintenance />} />

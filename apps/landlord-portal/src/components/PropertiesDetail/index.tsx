@@ -1,15 +1,10 @@
 import { Grid } from '@mui/material';
 import RadioCard from '../../components/RadioCard';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
-import UnitLoader from './UnitLoader';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import {
-	getAddPropertyState,
-	saveAddPropertyFormDetail,
-} from '../../store/AddPropertyStore/AddPropertySlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useSelector } from 'react-redux';
+import { FC } from 'react';
 
 const options = [
 	{
@@ -26,17 +21,10 @@ const options = [
 	},
 ];
 
-type PropertyUnitType = {
-	unitType: string;
-	purposeId: string;
-};
-
-const validationSchema = yup.object({
-	unitType: yup.string().required('This field is required'),
-	purposeId: yup.string().required('This field is required'),
-});
-
-const UnitType = () => {
+const UnitType: FC<{ formik: any; handleChange: any }> = ({
+	formik,
+	handleChange,
+}) => {
 	const { purposes, amenities } = useGetPropertiesMetaDataQuery(undefined, {
 		selectFromResult: ({ data }) => ({
 			purposes: data?.purposes,
@@ -45,39 +33,6 @@ const UnitType = () => {
 	});
 
 	const formState = useSelector(getAddPropertyState);
-
-	const dispatch = useDispatch();
-
-	const onSubmit = async (values: PropertyUnitType) => {
-		console.log(values, 'val');
-	};
-
-	const formik = useFormik({
-		initialValues: {
-			unitType: '',
-			purposeId: '',
-		},
-		validationSchema,
-		onSubmit,
-	});
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		let purposeId = null;
-		let isMultiUnit = false;
-
-		if (event.target.name === 'purposeId') {
-			purposeId = Number(event.target.value);
-		} else if (event.target.name === 'unitType') {
-			isMultiUnit = event.target.value === 'multi' ? true : false;
-		}
-		const payload = {
-			purposeId,
-			isMultiUnit,
-		};
-		dispatch(saveAddPropertyFormDetail(payload));
-
-		formik.handleChange(event);
-	};
 
 	return (
 		<>
@@ -101,10 +56,7 @@ const UnitType = () => {
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<GeneralInfo
-						selectedUnitType={formik?.values?.unitType}
-						amenities={amenities}
-					/>
+					<GeneralInfo formik={formik} amenities={amenities} />
 				</Grid>
 			</Grid>
 		</>
