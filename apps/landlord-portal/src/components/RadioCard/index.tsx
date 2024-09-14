@@ -61,7 +61,7 @@ const RadioCard = React.memo(
 											<FormControlLabel
 												value={option?.id}
 												control={<Radio />}
-												checked={checkedValue === option?.id}
+												checked={String(checkedValue) === String(option?.id)}
 												label={option?.displayText}
 												sx={styles.radioLabel}
 											/>

@@ -8,62 +8,25 @@ import {
 	Checkbox,
 	Dialog,
 	Box,
-	Stack,
-	TextField,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
-// import DeleteIcon from '@mui/icons-material/Delete';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BedIcon from '@mui/icons-material/Bed';
 import BathtubIcon from '@mui/icons-material/Bathtub';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
-// import { Autocomplete, useLoadScript } from '@react-google-maps/api';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	getAddPropertyState,
-	saveAddPropertyFormDetail,
-} from '../../store/AddPropertyStore/AddPropertySlice';
+import { useSelector } from 'react-redux';
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
-import { FormValuesType } from '../../shared/type';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
 
-const validationSchema = yup.object({
-	addressLine1: yup.string().required('This field is required'),
-	apartment: yup.string().required('This field is required'),
-	city: yup.string().required('This field is required'),
-	postalCode: yup.string().required('This field is required'),
-	country: yup.string().required('Select an option'),
-	state: yup.string().required('Select an option'),
-	units: yup.array().of(
-		yup.object({
-			description: yup.string().required('Required'),
-			beds: yup
-				.number()
-				.required('Required')
-				.min(0, 'Beds must be non-negative'),
-			baths: yup
-				.number()
-				.required('Required')
-				.min(0, 'Baths must be non-negative'),
-			guestBaths: yup
-				.number()
-				.required('Required')
-				.min(0, 'Guest Baths must be non-negative'),
-			floorPlan: yup.string().required('Required'),
-			amenities: yup.array().of(yup.string()),
-		}),
-	),
-});
 type CardProps = {
+	formik: any;
 	selectedUnitType?: string;
 	amenities: { id: number; name: string }[];
 };
@@ -78,11 +41,10 @@ const countries = countriesList?.map((item) => ({
 	name: item.name,
 }));
 
-const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
+const GeneralInfo = ({ amenities, formik }: CardProps) => {
+	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
-
-	const dispatch = useDispatch();
 
 	const formState = useSelector(getAddPropertyState);
 
@@ -94,44 +56,6 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	};
 
 	const handleClose = () => setOpen(false);
-
-	const onSubmit = async (values: FormValuesType) => {
-		console.log(values, 'val');
-	};
-
-	const formik = useFormik({
-		initialValues: {
-			addressLine1: '',
-			addressLine2: '',
-			apartment: '',
-			country: '',
-			postalCode: '',
-			state: '',
-			city: '',
-
-			units: [
-				{
-					id: null,
-					unitNumber: '',
-					rentAmount: null,
-					floor: null,
-					bedrooms: null,
-					bathrooms: null,
-					toilets: null,
-					area: {
-						value: null,
-						unit: '',
-					},
-					status: '',
-					rooms: null,
-					offices: null,
-					amenities: [''],
-				},
-			],
-		},
-		validationSchema,
-		onSubmit,
-	});
 
 	const addUnit = () => {
 		formik.setFieldValue('units', [
@@ -204,47 +128,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	};
 
 	useEffect(() => {
-		const addressPayload = {
-			addressLine1: formik.values?.addressLine1,
-			addressLine2: formik.values?.addressLine2,
-			city: formik.values?.city,
-			state: formik.values?.state,
-			postalCode: formik.values?.postalCode,
-			latitude: 0,
-			longitude: 0,
-			country: formik.values?.country,
-			isManualAddress: true,
-		};
-
-		dispatch(
-			saveAddPropertyFormDetail({
-				address: { ...addressPayload },
-				units: [...formik.values.units],
-			}),
-		);
-	}, [
-		dispatch,
-		formik.values?.addressLine1,
-		formik.values?.addressLine2,
-		formik.values?.city,
-		formik.values?.country,
-		formik.values?.postalCode,
-		formik.values?.state,
-		formik.values?.units,
-	]);
-
-	// console.log(formik?.values);
-
-	useEffect(() => {
 		Object.keys(formState.address).forEach((key) => {
 			formik.setFieldValue(key, formState.address[key]);
 		});
 
 		formik.setFieldValue('units', formState?.units);
-
-		// Object.keys(formState.units).forEach((key) => {
-		// 	formik.setFieldValue(key, formState.units);
-		// });
 	}, []);
 
 	return (
@@ -379,7 +267,6 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									// name={`units.${currentUnitIndex}.floorPlan`}
 									name={`units[${currentUnitIndex}].floor`}
 									label='Floor Plan'
 									formik={formik}
@@ -414,7 +301,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 								</Grid>
 							)}
 
-							{formik.values?.units?.map((unit, index) => (
+							{formik.values?.units?.map((unit: any, index: number) => (
 								<Grid container spacing={0} key={index}>
 									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>

@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
@@ -13,16 +13,16 @@ import {
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import { useDispatch, useSelector } from 'react-redux';
-const validationSchema = yup.object({
-	name: yup.string().required('Please enter the property name'),
-	// description: yup.string().required('This field is required'),
-	typeId: yup.string().required('Select an option'),
-	images: yup
-		.array()
-		.min(1, 'You need to upload at least one image')
-		.max(4, 'You can upload a maximum of 4 images')
-		.required('Images are required'),
-});
+// const validationSchema = yup.object({
+// 	name: yup.string().required('Please enter the property name'),
+// 	// description: yup.string().required('This field is required'),
+// 	typeId: yup.string().required('Select an option'),
+// 	images: yup
+// 		.array()
+// 		.min(1, 'You need to upload at least one image')
+// 		.max(4, 'You can upload a maximum of 4 images')
+// 		.required('Images are required'),
+// });
 
 type formValues = {
 	name: string;
@@ -31,7 +31,7 @@ type formValues = {
 	images: string[];
 };
 
-const PropertiesDetails = () => {
+const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 
 	const formState = useSelector(getAddPropertyState);
@@ -39,26 +39,26 @@ const PropertiesDetails = () => {
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
-	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
-	};
+	// const onSubmit = async (values: formValues) => {
+	// 	console.log(values, 'val');
+	// };
 
-	const formik = useFormik({
-		initialValues: {
-			description: '',
-			name: '',
-			typeId: '',
-			images: [],
-		},
-		validationSchema,
-		onSubmit,
-	});
+	// const formik = useFormik({
+	// 	initialValues: {
+	// 		description: '',
+	// 		name: '',
+	// 		typeId: '',
+	// 		images: [],
+	// 	},
+	// 	validationSchema,
+	// 	onSubmit,
+	// });
 
-	useEffect(() => {
-		dispatch(saveAddPropertyFormDetail({ ...formik.values }));
-	}, [dispatch, formik.values]);
+	// useEffect(() => {
+	// 	dispatch(saveAddPropertyFormDetail({ ...formik.values }));
+	// }, [dispatch, formik.values]);
 
 	useEffect(() => {
 		Object.keys(formik?.values)?.forEach((key) => {
@@ -80,7 +80,9 @@ const PropertiesDetails = () => {
 	};
 
 	const handleImageRemove = (index: number) => {
-		const updatedImages = formik.values.images.filter((_, i) => i !== index);
+		const updatedImages = formik.values.images.filter(
+			(_: any, i: number) => i !== index,
+		);
 		formik.setFieldValue('images', updatedImages);
 
 		const updatedFiles = passportFiles.filter((_, i) => i !== index);
@@ -95,7 +97,7 @@ const PropertiesDetails = () => {
 	useEffect(() => {
 		// Revoke URLs when the component unmounts
 		return () => {
-			formik.values?.images?.forEach((url) => URL.revokeObjectURL(url));
+			formik.values?.images?.forEach((url: string) => URL.revokeObjectURL(url));
 		};
 	}, [formik.values?.images]);
 
@@ -118,7 +120,7 @@ const PropertiesDetails = () => {
 									placeholder='Property Type'
 									type='text'
 									formik={formik}
-									value={formik?.values?.typeId || formState?.typeId}
+									value={formik?.values?.typeId}
 									options={propertyMetaData?.types}
 									inputprops={{
 										sx: {
@@ -132,7 +134,7 @@ const PropertiesDetails = () => {
 									// color='#002147'
 									name='name'
 									label='PROPERTY NAME'
-									value={formik?.values?.name || formState?.name}
+									value={formik?.values?.name}
 									formik={formik}
 									inputprops={{
 										sx: {
@@ -147,7 +149,7 @@ const PropertiesDetails = () => {
 									name='description'
 									label='DESCRIPTION'
 									// placeholder='Describe your property'
-									value={formik?.values?.description || formState?.description}
+									value={formik?.values?.description}
 									formik={formik}
 									type='text'
 									multiline
