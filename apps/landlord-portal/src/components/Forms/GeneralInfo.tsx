@@ -80,7 +80,7 @@ const countries = countriesList?.map((item) => ({
 
 const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 	const [open, setOpen] = useState(false);
-	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
+	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
 
 	const dispatch = useDispatch();
 
@@ -186,11 +186,11 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 					key={amenity.id}
 					control={
 						<Checkbox
-							name='units[0].amenities'
+							name={`units[${currentUnitIndex}].amenities`}
 							value={amenity?.name}
-							checked={formik.values.units[0]?.amenities?.includes(
-								amenity?.name,
-							)}
+							checked={formik.values.units[
+								currentUnitIndex
+							]?.amenities?.includes(amenity?.name)}
 							onChange={formik.handleChange}
 						/>
 					}
@@ -339,7 +339,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[0].bedrooms`}
+									name={`units[${currentUnitIndex}].bedrooms`}
 									label='Bedrooms'
 									type='number'
 									formik={formik}
@@ -352,7 +352,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name='units[0].bathrooms'
+									name={`units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -379,7 +379,7 @@ const GeneralInfo = ({ selectedUnitType, amenities }: CardProps) => {
 							<Grid item xs={6}>
 								<ControlledTextField
 									// name={`units.${currentUnitIndex}.floorPlan`}
-									name='units[0].floor'
+									name={`units[${currentUnitIndex}].floor`}
 									label='Floor Plan'
 									formik={formik}
 									// inputProps={{
