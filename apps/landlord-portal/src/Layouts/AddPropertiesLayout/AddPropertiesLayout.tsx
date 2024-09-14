@@ -108,7 +108,6 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 			!typeId &&
 			!name
 		) {
-			console.log(!typeId && !name);
 			dispatch(
 				openSnackbar({
 					message:
