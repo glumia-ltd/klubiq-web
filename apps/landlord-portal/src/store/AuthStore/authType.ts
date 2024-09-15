@@ -4,4 +4,5 @@ import { UserProfile } from '../../shared/auth-types';
 export type AuthType = {
 	user: UserProfile;
 	token: string | null;
+	isSignedIn: boolean;
 };
