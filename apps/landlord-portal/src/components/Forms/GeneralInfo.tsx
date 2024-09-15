@@ -8,6 +8,9 @@ import {
 	Checkbox,
 	Dialog,
 	Box,
+	InputAdornment,
+	Select,
+	MenuItem,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,6 +27,25 @@ import { useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
+
+const MEASUREMENTS: any[] = [
+	{
+		unit: 'SqM',
+		symbol: <span>m&sup2;</span>,
+	},
+	{
+		unit: 'SqCm',
+		symbol: <span>cm&sup2;</span>,
+	},
+	{
+		unit: 'SqFt',
+		symbol: <span>ft&sup2;</span>,
+	},
+	{
+		unit: 'SqIn',
+		symbol: <span>in&sup2;</span>,
+	},
+];
 
 type CardProps = {
 	formik: any;
@@ -45,8 +67,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
+	const [measurement, setMeasurement] = useState<string>('');
 
 	const formState = useSelector(getAddPropertyState);
+
+	console.log(formState);
+
+	const handleMeasurementChange = (event: any) => {
+		setMeasurement(event.target.value);
+	};
 
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
@@ -219,6 +248,22 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									name={`units[${currentUnitIndex}].floor`}
 									label='Floor Plan'
 									formik={formik}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<Select
+													value={measurement}
+													onChange={handleMeasurementChange}
+												>
+													{MEASUREMENTS.map((measurement) => (
+														<MenuItem value={measurement.unit}>
+															{measurement.symbol}
+														</MenuItem>
+													))}
+												</Select>
+											</InputAdornment>
+										),
+									}}
 								/>
 							</Grid>
 							<Grid item xs={12}>

@@ -55,9 +55,12 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				window as any
 			).google.maps.places.AutocompleteService({
 				types: ['geocode'],
+
+				//TODO: set dynamic country restriction
 				// componentRestrictions: { country: 'us' },
 			});
 		}
+
 		if (!autocompleteService.current) {
 			return undefined;
 		}
@@ -72,6 +75,8 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			return parts.slice(0, -1).join(',');
 		};
 
+		//TODO: Get Longitude and Latitude
+
 		fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
 			if (active) {
 				let newOptions: readonly PlaceType[] = [];
@@ -81,6 +86,8 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				}
 
 				if (results) {
+					console.log(results);
+
 					newOptions = [
 						...newOptions,
 						...results.map((option) => ({
