@@ -296,8 +296,6 @@ export const AddPropertiesLayout = () => {
 
 				{renderBasedOnPath()}
 
-				{/* {children} */}
-
 				<Grid sx={styles.buttonContainer}>
 					<Button
 						variant='text'
