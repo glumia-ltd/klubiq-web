@@ -31,14 +31,17 @@ function App() {
 					const payload = {
 						token: currentUser.accessToken,
 						user: response?.data as UserProfile,
+						isSignedIn: true,
 					};
 					dispatch(saveUser(payload));
 				}
 			} else {
+				console.log('AUTH STATE: ', auth);
 				console.log('no user found yet');
 				const payload = {
 					token: null,
 					user: {} as UserProfile,
+					isSignedIn: false,
 				};
 				dispatch(saveUser(payload));
 				auth.signOut();

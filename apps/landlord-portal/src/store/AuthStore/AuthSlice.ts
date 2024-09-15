@@ -7,6 +7,7 @@ import { UserProfile } from '../../shared/auth-types';
 const initialState: AuthType = {
 	user: {} as UserProfile,
 	token: null,
+	isSignedIn: false,
 };
 
 const options = {
@@ -18,10 +19,11 @@ const options = {
 				...state,
 				token: action.payload.token,
 				user: action.payload.user,
+				isSignedIn: action.payload.isSignedIn,
 			};
 		},
 		removeUser: (state: AuthType) => {
-			return { ...state, user: {}, token: null };
+			return { ...state, user: {}, token: null, isSignedIn: false };
 		},
 	},
 };
