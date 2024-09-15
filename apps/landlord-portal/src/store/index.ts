@@ -3,6 +3,7 @@ import authReducer from './AuthStore/AuthSlice';
 import snackbarReducer from './SnackbarStore/SnackbarSlice';
 import navReducer from './NavStore/NavSlice';
 import propertyPageReducer from './PropertyPageStore/PropertySlice';
+import addPropertyReducer from './AddPropertyStore/AddPropertySlice';
 import { propertyApiSlice } from './PropertyPageStore/propertyApiSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { dashboardApiSlice } from './DashboardStore/dashboardApiSlice';
@@ -16,6 +17,7 @@ const store: Store = configureStore({
 		snack: snackbarReducer,
 		nav: navReducer,
 		propertyPage: propertyPageReducer,
+		addPropertyForm: addPropertyReducer,
 		[propertyApiSlice.reducerPath]: propertyApiSlice.reducer,
 		[dashboardApiSlice.reducerPath]: dashboardApiSlice.reducer,
 		[authApiSlice.reducerPath]: authApiSlice.reducer,

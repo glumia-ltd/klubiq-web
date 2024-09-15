@@ -175,3 +175,46 @@ export type RevenueReportType = {
 		seriesData: SeriesDataType;
 	};
 };
+
+export interface MainTextMatchedSubstrings {
+	offset: number;
+	length: number;
+}
+export interface StructuredFormatting {
+	main_text: string;
+	secondary_text: string;
+	main_text_matched_substrings?: readonly MainTextMatchedSubstrings[];
+}
+export interface PlaceType {
+	place_id: string;
+	description: string;
+	structured_formatting: StructuredFormatting;
+}
+
+export type FormValuesType = {
+	addressLine1: string;
+	addressLine2: string;
+	apartment: string;
+	country: string;
+	postalCode: string;
+	state: string;
+	city: string;
+
+	units: {
+		id?: number | null;
+		unitNumber?: string;
+		rentAmount?: number | null;
+		floor?: number | null;
+		bedrooms?: number | null;
+		bathrooms?: number | null;
+		toilets?: number | null;
+		area?: {
+			value?: number | null;
+			unit?: string;
+		};
+		status?: string;
+		rooms?: number | null;
+		offices?: number | null;
+		amenities?: string[];
+	}[];
+};

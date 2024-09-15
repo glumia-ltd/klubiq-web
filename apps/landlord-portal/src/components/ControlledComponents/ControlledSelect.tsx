@@ -10,6 +10,7 @@ import {
 	Typography,
 	SxProps,
 } from '@mui/material';
+import { find } from 'lodash';
 
 type ControlledSelectProps = {
 	loading?: boolean;
@@ -18,10 +19,11 @@ type ControlledSelectProps = {
 	label: string;
 	name: string;
 	disableOnChange?: boolean;
-	options: { value: any; label: string }[];
+	options: { [key: string]: string }[];
 	inFieldLabel?: boolean;
 	[key: string]: any;
 	color?: string;
+	placeholder?: string;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -67,15 +69,16 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					id={name}
 					value={props.value || formik.values[name]}
 					onChange={!disableOnChange ? formik.handleChange : undefined}
+					onBlur={formik.handleBlur}
 					MenuProps={{
 						sx: {
 							maxHeight: 'calc(100% - 200px)',
 						},
 					}}
 				>
-					{options.map(({ value, label }) => (
-						<MenuItem value={value} key={value}>
-							{label}
+					{options?.map(({ id, name }) => (
+						<MenuItem value={id} key={`${name}-${id}`}>
+							{name}
 						</MenuItem>
 					))}
 				</Select>

@@ -1,32 +1,38 @@
 import { Grid } from '@mui/material';
-import RadioCard from '../../components/RadioCard/';
+import RadioCard from '../../components/RadioCard';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
-import { useState } from 'react';
-import UnitLoader from './UnitLoader';
+import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useSelector } from 'react-redux';
+import { FC } from 'react';
 
 const options = [
 	{
-		value: 'one',
-		label: 'Single Unit',
+		id: 'single',
+		displayText: 'Single Unit',
 		subtext:
 			'Single unit properties are rentals in which there is only one rental unit associated to a specific address. This type of property does not allow to add any units.',
 	},
 	{
-		value: 'other',
-		label: 'Multi Unit',
+		id: 'multi',
+		displayText: 'Multi Unit',
 		subtext:
 			'Multi-unit properties are rentals in which there are multiple rental units (with multiple units and leases) associated to a specific (single) address. This type of property allows adding units.',
 	},
 ];
-const optionTwo = [
-	{ value: 'one', label: 'Single Unit' },
-	{ value: 'other', label: 'Multi Unit' },
-];
-const UnitType = () => {
-	const [selectedUnitType, setSelectedUnitType] = useState('one');
-	const handleUnitTypeChange = (value: string) => {
-		setSelectedUnitType(value);
-	};
+
+const UnitType: FC<{ formik: any; handleChange: any }> = ({
+	formik,
+	handleChange,
+}) => {
+	const { purposes, amenities } = useGetPropertiesMetaDataQuery(undefined, {
+		selectFromResult: ({ data }) => ({
+			purposes: data?.purposes,
+			amenities: data?.amenities,
+		}),
+	});
+
+	const formState = useSelector(getAddPropertyState);
 
 	return (
 		<>
@@ -34,21 +40,23 @@ const UnitType = () => {
 				<Grid item xs={12}>
 					<RadioCard
 						headerText='UNIT TYPE'
+						name='unitType'
 						options={options}
-						defaultValue='one'
-						onChange={handleUnitTypeChange}
+						checkedValue={formState.isMultiUnit ? 'multi' : 'single'}
+						onChange={handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
 					<RadioCard
 						headerText='PROPERTY purpose'
-						options={optionTwo}
-						defaultValue='one'
-						onChange={handleUnitTypeChange}
+						name='purposeId'
+						options={purposes}
+						checkedValue={formState?.purposeId}
+						onChange={handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
-					<GeneralInfo selectedUnitType={selectedUnitType} />
+					<GeneralInfo formik={formik} amenities={amenities} />
 				</Grid>
 			</Grid>
 		</>
