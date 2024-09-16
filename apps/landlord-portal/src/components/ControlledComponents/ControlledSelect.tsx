@@ -77,7 +77,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					}}
 				>
 					{options?.map(({ id, name }) => (
-						<MenuItem value={id} key={`${name}-${id}`}>
+						<MenuItem value={id} key={`${name}-${id}-`}>
 							{name}
 						</MenuItem>
 					))}
