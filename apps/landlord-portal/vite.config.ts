@@ -52,8 +52,17 @@ export default ({ mode }: { mode: any }) => {
 	return defineConfig({
 		plugins: [react(), VitePWA(manifestForPlugin)],
 		optimizeDeps: {
-			include: ['react', 'react-dom', 'material-ui', '@emotion/styled'],
+			include: [
+				'react',
+				'react-dom',
+				'material-ui',
+				'@emotion/styled',
+				'@emotion/react',
+				'@mui/material/Tooltip',
+				'@mui/material/Unstable_Grid2',
+			],
 		},
+
 		server: {
 			proxy: {
 				'/api': {
