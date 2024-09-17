@@ -71,7 +71,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(formik.values);
+	console.log('store', formState);
+	console.log('formik', formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
@@ -144,12 +145,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		}
 		return null;
 	};
-
-	useEffect(() => {
-		formik.setFieldValue('address', formState?.address);
-
-		formik.setFieldValue('units', formState?.units);
-	}, []);
 
 	return (
 		<Grid container spacing={1}>

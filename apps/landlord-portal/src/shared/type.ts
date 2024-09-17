@@ -191,30 +191,42 @@ export interface PlaceType {
 	structured_formatting: StructuredFormatting;
 }
 
-export type FormValuesType = {
-	addressLine1: string;
-	addressLine2: string;
-	apartment: string;
-	country: string;
-	postalCode: string;
-	state: string;
-	city: string;
+export type AddPropertyType = {
+	categoryId?: number | null;
+	purposeId: number | null;
+	typeId: number | string;
+	name: string;
+	description: string;
+	images: string[] | null;
+	isMultiUnit?: boolean;
+	address: {
+		addressLine2: string;
+		unit: string;
+		city: string;
+		state: string;
+		postalCode: string;
+		latitude: number;
+		longitude: number;
+		addressLine1: string;
+		country: string;
+		isManualAddress: boolean;
+	};
 
 	units: {
-		id?: number | null;
-		unitNumber?: string;
-		rentAmount?: number | null;
-		floor?: number | null;
-		bedrooms?: number | null;
-		bathrooms?: number | null;
-		toilets?: number | null;
-		area?: {
-			value?: number | null;
-			unit?: string;
+		id: number | null;
+		unitNumber: string;
+		rentAmount: number | null;
+		floor: number | null;
+		bedrooms: number | null;
+		bathrooms: number | null;
+		toilets: number | null;
+		area: {
+			value: number | null;
+			unit: string;
 		};
-		status?: string;
-		rooms?: number | null;
-		offices?: number | null;
-		amenities?: string[];
+		status: string;
+		rooms: number | null;
+		offices: number | null;
+		amenities: string[];
 	}[];
 };

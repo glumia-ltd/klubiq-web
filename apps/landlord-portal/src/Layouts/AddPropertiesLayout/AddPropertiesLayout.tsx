@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
-import { FC, ReactElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
@@ -23,6 +23,7 @@ import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/PropertiesDetail';
+import { AddPropertyType } from '../../shared/type';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -62,6 +63,10 @@ type PayloadType = {
 	isMultiUnit: boolean;
 };
 
+interface IunitType extends AddPropertyType {
+	unitType?: string;
+}
+
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
 	const formState = useSelector(getAddPropertyState);
@@ -76,19 +81,11 @@ export const AddPropertiesLayout = () => {
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
-	const purposeIdRef = useRef<{
-		purposeId: number | null;
-		isMultiUnit: boolean;
-	}>({
-		purposeId: null,
-		isMultiUnit: false,
-	});
-
 	const onSubmit = async (values: any) => {
 		console.log(values, 'val');
 	};
 
-	const formik = useFormik({
+	const formik = useFormik<IunitType>({
 		initialValues: {
 			description: '',
 			name: '',
@@ -171,13 +168,14 @@ export const AddPropertiesLayout = () => {
 		navigate(route as string);
 	};
 
-	console.log(formik.values);
-
 	const saveFormikDataInStore = (payload?: PayloadType) => {
+		const isMultiUnit = formik.values.unitType === 'multi';
+		const allFormikValues = { ...formik.values };
+
 		dispatch(
 			saveAddPropertyFormDetail({
-				...formik.values,
-				units: [...formik.values.units],
+				...allFormikValues,
+				isMultiUnit,
 				...payload,
 			}),
 		);
@@ -234,30 +232,13 @@ export const AddPropertiesLayout = () => {
 		navigate('/properties');
 	};
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.target.name === 'purposeId') {
-			purposeIdRef.current.purposeId = Number(event.target.value);
-		} else if (event.target.name === 'unitType') {
-			purposeIdRef.current.isMultiUnit =
-				event.target.value === 'multi' ? true : false;
-		}
-		const payload = {
-			purposeId: purposeIdRef.current.purposeId,
-			isMultiUnit: purposeIdRef.current.isMultiUnit,
-		};
-
-		saveFormikDataInStore(payload);
-
-		formik.handleChange(event);
-	};
-
 	const renderBasedOnPath = () => {
 		if (location.pathname.includes('property-category')) {
 			return <PropertyCategory />;
 		} else if (location.pathname.includes('property-details')) {
 			return <PropertiesDetails formik={formik} />;
 		} else if (location.pathname.includes('unit-type')) {
-			return <UnitType formik={formik} handleChange={handleChange} />;
+			return <UnitType formik={formik} />;
 		}
 	};
 

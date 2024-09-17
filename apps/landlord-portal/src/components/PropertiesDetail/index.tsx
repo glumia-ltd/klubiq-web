@@ -4,7 +4,7 @@ import GeneralInfo from '../../components/Forms/GeneralInfo';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import { useSelector } from 'react-redux';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 const options = [
 	{
@@ -21,10 +21,7 @@ const options = [
 	},
 ];
 
-const UnitType: FC<{ formik: any; handleChange: any }> = ({
-	formik,
-	handleChange,
-}) => {
+const UnitType: FC<{ formik: any }> = ({ formik }) => {
 	const { purposes, amenities } = useGetPropertiesMetaDataQuery(undefined, {
 		selectFromResult: ({ data }) => ({
 			purposes: data?.purposes,
@@ -34,6 +31,14 @@ const UnitType: FC<{ formik: any; handleChange: any }> = ({
 
 	const formState = useSelector(getAddPropertyState);
 
+	useEffect(() => {
+		formik.setValues({
+			...formState,
+			address: formState?.address,
+			units: formState?.units,
+		});
+	}, []);
+
 	return (
 		<>
 			<Grid container spacing={2}>
@@ -42,8 +47,8 @@ const UnitType: FC<{ formik: any; handleChange: any }> = ({
 						headerText='UNIT TYPE'
 						name='unitType'
 						options={options}
-						checkedValue={formState.isMultiUnit ? 'multi' : 'single'}
-						onChange={handleChange}
+						checkedValue={formik.values.unitType}
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
@@ -51,8 +56,8 @@ const UnitType: FC<{ formik: any; handleChange: any }> = ({
 						headerText='PROPERTY purpose'
 						name='purposeId'
 						options={purposes}
-						checkedValue={formState?.purposeId}
-						onChange={handleChange}
+						checkedValue={formik.values.purposeId}
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
