@@ -28,7 +28,6 @@ type ControlledSelectProps = {
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
-	// loading,
 	formik,
 	sx,
 	label,

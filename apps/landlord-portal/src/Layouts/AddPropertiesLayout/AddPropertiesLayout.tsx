@@ -22,7 +22,7 @@ import {
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
-import UnitType from '../../components/PropertiesDetail';
+import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 
 const validationSchema = yup.object({
@@ -185,7 +185,10 @@ export const AddPropertiesLayout = () => {
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
 
-		if (location.pathname.includes('property-category') && !categoryId) {
+		if (
+			location.pathname.includes('property-category') &&
+			!formik.values.categoryId
+		) {
 			dispatch(
 				openSnackbar({
 					message: 'Please select a property category before you proceed!',

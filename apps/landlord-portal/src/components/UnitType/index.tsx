@@ -1,10 +1,8 @@
 import { Grid } from '@mui/material';
-import RadioCard from '../../components/RadioCard';
-import GeneralInfo from '../../components/Forms/GeneralInfo';
+import RadioCard from '../RadioCard';
+import GeneralInfo from '../Forms/GeneralInfo';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
-import { useSelector } from 'react-redux';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 const options = [
 	{
@@ -28,16 +26,6 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 			amenities: data?.amenities,
 		}),
 	});
-
-	const formState = useSelector(getAddPropertyState);
-
-	// useEffect(() => {
-	// 	formik.setValues({
-	// 		...formState,
-	// 		address: formState?.address,
-	// 		units: formState?.units,
-	// 	});
-	// }, []);
 
 	return (
 		<>
