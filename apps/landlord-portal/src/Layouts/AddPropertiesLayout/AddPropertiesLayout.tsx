@@ -115,7 +115,7 @@ export const AddPropertiesLayout = () => {
 					toilets: null,
 					area: {
 						value: null,
-						unit: '',
+						unit: 'SqM',
 					},
 					status: '',
 					rooms: null,

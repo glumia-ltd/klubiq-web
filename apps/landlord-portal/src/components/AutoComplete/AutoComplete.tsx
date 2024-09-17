@@ -31,6 +31,36 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 		loaded.current = true;
 	}
 
+	const placesService = useRef<any>(null);
+
+	// Function to get place details using placeId
+	const getPlaceDetails = (placeId: string) => {
+		// Initialize PlacesService if not already done
+		if (!placesService.current && window.google) {
+			placesService.current = new window.google.maps.places.PlacesService(
+				document.createElement('div'),
+			);
+		}
+
+		const request = {
+			placeId,
+			fields: ['name', 'formatted_address', 'address_component', 'geometry'],
+		};
+
+		placesService.current.getDetails(request, (place: any, status: any) => {
+			if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+				console.log('Place details:', place);
+				console.log(
+					place.geometry.location.lat().toFixed(5),
+					place.geometry.location.lng().toFixed(5),
+				);
+				// You can handle place details here, for example, update state
+			} else {
+				console.error('Error retrieving place details:', status);
+			}
+		});
+	};
+
 	const fetch = useMemo(
 		() =>
 			debounce(
@@ -56,10 +86,18 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				window as any
 			).google.maps.places.AutocompleteService({
 				types: ['geocode'],
+				componentRestrictions: { country: 'Au' },
+				strictBounds: false,
 
 				//TODO: set dynamic country restriction
-				// componentRestrictions: { country: 'us' },
+				// componentRestrictions: { country: ['us', 'ng'] },
+				// componentRestrictions: 'country:us|country:ng',
 			});
+
+			//@ts-ignore
+			// autocompleteService?.current?.setComponentRestrictions({
+			// 	country: ['us', 'pr', 'vi', 'gu', 'mp'],
+			// });
 		}
 
 		if (!autocompleteService.current) {
@@ -87,8 +125,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				}
 
 				if (results) {
-					console.log(results);
-
 					newOptions = [
 						...newOptions,
 						...results.map((option) => ({
@@ -99,6 +135,11 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				}
 
 				setOptions(newOptions);
+
+				if (results && results.length > 0) {
+					const placeId = results[0]?.place_id;
+					getPlaceDetails(placeId!);
+				}
 			}
 		});
 

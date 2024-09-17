@@ -68,15 +68,16 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
-	const [measurement, setMeasurement] = useState<string>('');
+	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log('store', formState);
-	console.log('formik', formik.values);
+	// console.log('store', formState);
+	// console.log('formik', formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
+		formik.handleChange(event);
 	};
 
 	const handleOpen = (index: number) => {
@@ -154,6 +155,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 			return 'offices';
 		} else if (Number(category) === 3) {
 			return 'rooms';
+		} else {
+			return 'bedrooms';
 		}
 	};
 
@@ -253,15 +256,22 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].floor`}
+									name={`units[${currentUnitIndex}].area.value`}
 									label='Floor Plan'
 									formik={formik}
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position='end'>
 												<Select
+													name={`units[${currentUnitIndex}].area.unit`}
 													value={measurement}
 													onChange={handleMeasurementChange}
+													defaultValue={measurement}
+													sx={{
+														'.MuiOutlinedInput-notchedOutline': {
+															border: 'none',
+														},
+													}}
 												>
 													{MEASUREMENTS.map((measurement) => (
 														<MenuItem
