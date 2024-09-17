@@ -39,11 +39,11 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
-	useEffect(() => {
-		Object.keys(formik?.values)?.forEach((key) => {
-			formik.setFieldValue(key, formState[key]);
-		});
-	}, []);
+	// useEffect(() => {
+	// 	Object.keys(formik?.values)?.forEach((key) => {
+	// 		formik.setFieldValue(key, formState[key]);
+	// 	});
+	// }, []);
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 

@@ -31,13 +31,13 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	useEffect(() => {
-		formik.setValues({
-			...formState,
-			address: formState?.address,
-			units: formState?.units,
-		});
-	}, []);
+	// useEffect(() => {
+	// 	formik.setValues({
+	// 		...formState,
+	// 		address: formState?.address,
+	// 		units: formState?.units,
+	// 	});
+	// }, []);
 
 	return (
 		<>

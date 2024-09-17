@@ -87,6 +87,7 @@ export const AddPropertiesLayout = () => {
 
 	const formik = useFormik<IunitType>({
 		initialValues: {
+			categoryId: null,
 			description: '',
 			name: '',
 			typeId: '',
@@ -234,7 +235,7 @@ export const AddPropertiesLayout = () => {
 
 	const renderBasedOnPath = () => {
 		if (location.pathname.includes('property-category')) {
-			return <PropertyCategory />;
+			return <PropertyCategory formik={formik} />;
 		} else if (location.pathname.includes('property-details')) {
 			return <PropertiesDetails formik={formik} />;
 		} else if (location.pathname.includes('unit-type')) {

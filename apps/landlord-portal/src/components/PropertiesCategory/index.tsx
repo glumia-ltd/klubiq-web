@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import PropertyCategoryCard from '../PropertyCategoryCard';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
@@ -8,11 +8,6 @@ import {
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import {
-	getAddPropertyState,
-	saveAddPropertyFormDetail,
-} from '../../store/AddPropertyStore/AddPropertySlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 type CategoryType = {
 	id: number;
@@ -25,26 +20,18 @@ interface CardData {
 	displayText: string;
 	Image: any;
 }
-const PropertyCategory = () => {
-	const [selectedCard, setSelectedCard] = useState<number | null>(null);
-
-	const formState = useSelector(getAddPropertyState);
-
-	useEffect(() => {
-		if (formState?.categoryId) {
-			setSelectedCard(formState?.categoryId);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	const dispatch = useDispatch();
+const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
+	const [selectedCard, setSelectedCard] = useState<number | null>(
+		formik.values.categoryId,
+	);
 
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
 	const handleCardClick = (id: number) => {
 		setSelectedCard(id);
-		dispatch(saveAddPropertyFormDetail({ ...formState, categoryId: id }));
+
+		formik.setFieldValue('categoryId', id);
 	};
 
 	const icons: Record<string, any> = {
