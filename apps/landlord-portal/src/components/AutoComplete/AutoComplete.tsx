@@ -6,6 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import { getIn } from 'formik';
+import _ from 'lodash';
 
 const autocompleteService = { current: null };
 
@@ -49,12 +50,39 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 
 		placesService.current.getDetails(request, (place: any, status: any) => {
 			if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-				console.log('Place details:', place);
-				console.log(
-					place.geometry.location.lat().toFixed(5),
-					place.geometry.location.lng().toFixed(5),
-				);
-				// You can handle place details here, for example, update state
+				const { address_components, geometry } = place;
+
+				const city = _.find(address_components, (item) =>
+					_.includes(item.types, 'locality'),
+				)?.long_name;
+
+				const state = _.find(address_components, (item) =>
+					_.includes(item.types, 'administrative_area_level_1'),
+				)?.long_name;
+
+				const country = _.find(address_components, (item) =>
+					_.includes(item.types, 'country'),
+				)?.long_name;
+				const postalCode = _.find(address_components, (item) =>
+					_.includes(item.types, 'postal_code'),
+				)?.long_name;
+
+				const latitude = geometry.location.lat().toFixed(5);
+
+				const longitude = geometry.location.lng().toFixed(5);
+
+				formik.setValues({
+					...formik.values,
+					address: {
+						...formik.values.address,
+						city,
+						state,
+						country,
+						postalCode,
+						latitude,
+						longitude,
+					},
+				});
 			} else {
 				console.error('Error retrieving place details:', status);
 			}

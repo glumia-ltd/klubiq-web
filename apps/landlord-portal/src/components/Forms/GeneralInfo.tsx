@@ -73,7 +73,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const formState = useSelector(getAddPropertyState);
 
 	// console.log('store', formState);
-	// console.log('formik', formik.values);
+	console.log('formik', formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
