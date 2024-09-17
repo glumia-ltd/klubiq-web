@@ -5,6 +5,7 @@ import { debounce } from '@mui/material/utils';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
+import { getIn } from 'formik';
 
 const autocompleteService = { current: null };
 
@@ -106,6 +107,10 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 		};
 	}, [value, inputValue, fetch]);
 
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Autocomplete
 			sx={{ width: '100%' }}
@@ -118,7 +123,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			autoComplete
 			includeInputInList
 			filterSelectedOptions
-			value={value || formik.values[name] || ''}
+			value={value || fieldValue || ''}
 			noOptionsText='No locations'
 			onChange={(event: any, value: any) => {
 				// setOptions(value ? [value, ...options] : options);

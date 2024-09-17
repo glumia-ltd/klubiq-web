@@ -39,27 +39,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
-	// const dispatch = useDispatch();
-
-	// const onSubmit = async (values: formValues) => {
-	// 	console.log(values, 'val');
-	// };
-
-	// const formik = useFormik({
-	// 	initialValues: {
-	// 		description: '',
-	// 		name: '',
-	// 		typeId: '',
-	// 		images: [],
-	// 	},
-	// 	validationSchema,
-	// 	onSubmit,
-	// });
-
-	// useEffect(() => {
-	// 	dispatch(saveAddPropertyFormDetail({ ...formik.values }));
-	// }, [dispatch, formik.values]);
-
 	useEffect(() => {
 		Object.keys(formik?.values)?.forEach((key) => {
 			formik.setFieldValue(key, formState[key]);

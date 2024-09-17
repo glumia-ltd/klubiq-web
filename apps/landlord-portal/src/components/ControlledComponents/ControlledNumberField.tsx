@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import { SxProps } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
@@ -45,7 +46,11 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 	sxTwo,
 	...props
 }) => {
-	const [value, setValue] = useState<number>(formik.values[name] || 0);
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
+	const [value, setValue] = useState<number>(fieldValue || 0);
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (disableOnChange) {
@@ -96,7 +101,7 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 				onChange={onChange}
 				error={
 					Boolean(prioritizeError) ||
-					(Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
+					(Boolean(fieldTouched) && Boolean(fieldError))
 				}
 				InputProps={{
 					startAdornment: (
@@ -119,11 +124,7 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 					),
 					...InputProps,
 				}}
-				helperText={
-					prioritizeError ||
-					(formik.touched[name] && formik.errors[name]) ||
-					' '
-				}
+				helperText={prioritizeError || (fieldTouched && fieldError) || ' '}
 				inputProps={{
 					style: { textAlign: 'center' },
 					...inputProps,

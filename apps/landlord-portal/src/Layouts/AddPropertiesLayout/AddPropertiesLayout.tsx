@@ -96,13 +96,18 @@ export const AddPropertiesLayout = () => {
 			images: [],
 			unitType: '',
 			purposeId: null,
-			addressLine1: '',
-			addressLine2: '',
-			apartment: '',
-			country: '',
-			postalCode: '',
-			state: '',
-			city: '',
+			address: {
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				state: '',
+				postalCode: '',
+				latitude: 0,
+				longitude: 0,
+				country: '',
+				isManualAddress: true,
+				unit: '',
+			},
 
 			units: [
 				{
@@ -127,19 +132,6 @@ export const AddPropertiesLayout = () => {
 		validationSchema,
 		onSubmit,
 	});
-
-	const addressPayload = {
-		addressLine1: formik.values?.addressLine1,
-		addressLine2: formik.values?.addressLine2,
-		city: formik.values?.city,
-		state: formik.values?.state,
-		postalCode: formik.values?.postalCode,
-		latitude: 0,
-		longitude: 0,
-		country: formik.values?.country,
-		isManualAddress: true,
-		unit: '',
-	};
 
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 		// event.preventDefault();
@@ -179,11 +171,12 @@ export const AddPropertiesLayout = () => {
 		navigate(route as string);
 	};
 
+	console.log(formik.values);
+
 	const saveFormikDataInStore = (payload?: PayloadType) => {
 		dispatch(
 			saveAddPropertyFormDetail({
 				...formik.values,
-				address: { ...addressPayload },
 				units: [...formik.values.units],
 				...payload,
 			}),

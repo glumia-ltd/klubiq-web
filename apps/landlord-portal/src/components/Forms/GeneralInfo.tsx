@@ -71,7 +71,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	console.log(formState);
+	console.log(formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
@@ -146,9 +146,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	useEffect(() => {
-		Object.keys(formState.address).forEach((key) => {
-			formik.setFieldValue(key, formState.address[key]);
-		});
+		formik.setFieldValue('address', formState?.address);
 
 		formik.setFieldValue('units', formState?.units);
 	}, []);
@@ -166,14 +164,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid item xs={12}>
 							<AutoComplete
 								formik={formik}
-								name={'addressLine1'}
+								name={'address.addressLine1'}
 								label={'Street Address'}
 							/>
 						</Grid>
 
 						<Grid item xs={12}>
 							<ControlledTextField
-								name='addressLine2'
+								name='address.addressLine2'
 								label='Apartment, suite, etc.'
 								formik={formik}
 							/>
@@ -181,7 +179,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
-								name='country'
+								name='address.country'
 								label='Country'
 								type='text'
 								formik={formik}
@@ -191,20 +189,24 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='postalCode'
+								name='address.postalCode'
 								label='Postal Code'
 								formik={formik}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='state'
+								name='address.state'
 								label='State (Province or Region)'
 								formik={formik}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
-							<ControlledTextField name='city' label='City' formik={formik} />
+							<ControlledTextField
+								name='address.city'
+								label='City'
+								formik={formik}
+							/>
 						</Grid>
 					</Grid>
 				</Card>
@@ -256,7 +258,10 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													onChange={handleMeasurementChange}
 												>
 													{MEASUREMENTS.map((measurement) => (
-														<MenuItem value={measurement.unit}>
+														<MenuItem
+															value={measurement.unit}
+															key={measurement.symbol}
+														>
 															{measurement.symbol}
 														</MenuItem>
 													))}

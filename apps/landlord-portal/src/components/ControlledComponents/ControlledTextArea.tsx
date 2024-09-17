@@ -8,6 +8,7 @@ import {
 	TextareaAutosize,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
@@ -58,6 +59,10 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 		formik.handleChange(e);
 	};
 
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -77,9 +82,7 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 			<TextareaAutosize
 				id={name}
 				name={name}
-				value={
-					(props.value !== undefined && props.value) || formik.values[name]
-				}
+				value={(props.value !== undefined && props.value) || fieldValue}
 				onChange={onChange}
 				// InputProps={{
 				// 	endAdornment: loading ? (
@@ -98,7 +101,7 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 				{...props}
 			/>
 			{Boolean(prioritizeError) ||
-				(Boolean(formik.touched[name]) && Boolean(formik.errors[name]) && (
+				(Boolean(fieldTouched) && Boolean(fieldError) && (
 					<Typography fontWeight={500} fontSize={'16px'} color={color}>
 						{label}
 					</Typography>
