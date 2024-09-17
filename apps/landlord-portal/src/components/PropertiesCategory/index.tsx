@@ -28,11 +28,11 @@ interface CardData {
 const PropertyCategory = () => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-	const { categoryId } = useSelector(getAddPropertyState);
+	const formState = useSelector(getAddPropertyState);
 
 	useEffect(() => {
-		if (categoryId) {
-			setSelectedCard(categoryId);
+		if (formState?.categoryId) {
+			setSelectedCard(formState?.categoryId);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -44,7 +44,7 @@ const PropertyCategory = () => {
 
 	const handleCardClick = (id: number) => {
 		setSelectedCard(id);
-		dispatch(saveAddPropertyFormDetail({ categoryId: id }));
+		dispatch(saveAddPropertyFormDetail({ ...formState, categoryId: id }));
 	};
 
 	const icons: Record<string, any> = {
@@ -57,7 +57,7 @@ const PropertyCategory = () => {
 		(category: CategoryType, index: number) => {
 			return {
 				...category,
-				id: index + category.id,
+				id: category?.id,
 				Image: icons[category.name],
 			};
 		},
