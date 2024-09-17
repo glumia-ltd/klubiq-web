@@ -69,9 +69,6 @@ interface IunitType extends AddPropertyType {
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
-	const formState = useSelector(getAddPropertyState);
-
-	const { categoryId } = formState;
 
 	const navigate = useNavigate();
 
