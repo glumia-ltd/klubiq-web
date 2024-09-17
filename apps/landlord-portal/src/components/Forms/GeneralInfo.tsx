@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
+import _ from 'lodash';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -146,6 +147,16 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
+	const getNameByPropertyCategory = (category: number) => {
+		if (Number(category) === 1) {
+			return 'bedrooms';
+		} else if (Number(category) === 2) {
+			return 'offices';
+		} else if (Number(category) === 3) {
+			return 'rooms';
+		}
+	};
+
 	return (
 		<Grid container spacing={1}>
 			<Grid container>
@@ -218,15 +229,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].bedrooms`}
-									label='Bedrooms'
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+									label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 									type='number'
 									formik={formik}
 								/>
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].bathrooms`}
+									name={`$units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -234,8 +245,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].guestBaths`}
-									label='Guest Bathrooms'
+									name={`units[${currentUnitIndex}].toilets`}
+									label='Toilets'
 									type='number'
 									formik={formik}
 								/>
@@ -387,8 +398,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].guestBaths`}
-								label='Guest Bathrooms'
+								name={`units[${currentUnitIndex}].toilets`}
+								label='Toilets'
 								type='number'
 								formik={formik}
 							/>
