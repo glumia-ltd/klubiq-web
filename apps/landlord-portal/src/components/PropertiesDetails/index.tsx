@@ -8,28 +8,8 @@ import { useState, useEffect, useRef, FC } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import {
-	getAddPropertyState,
-	saveAddPropertyFormDetail,
-} from '../../store/AddPropertyStore/AddPropertySlice';
-import { useDispatch, useSelector } from 'react-redux';
-// const validationSchema = yup.object({
-// 	name: yup.string().required('Please enter the property name'),
-// 	// description: yup.string().required('This field is required'),
-// 	typeId: yup.string().required('Select an option'),
-// 	images: yup
-// 		.array()
-// 		.min(1, 'You need to upload at least one image')
-// 		.max(4, 'You can upload a maximum of 4 images')
-// 		.required('Images are required'),
-// });
-
-type formValues = {
-	name: string;
-	description: string;
-	typeId: number | string;
-	images: string[];
-};
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useSelector } from 'react-redux';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
@@ -38,33 +18,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
-
-	// const dispatch = useDispatch();
-
-	// const onSubmit = async (values: formValues) => {
-	// 	console.log(values, 'val');
-	// };
-
-	// const formik = useFormik({
-	// 	initialValues: {
-	// 		description: '',
-	// 		name: '',
-	// 		typeId: '',
-	// 		images: [],
-	// 	},
-	// 	validationSchema,
-	// 	onSubmit,
-	// });
-
-	// useEffect(() => {
-	// 	dispatch(saveAddPropertyFormDetail({ ...formik.values }));
-	// }, [dispatch, formik.values]);
-
-	useEffect(() => {
-		Object.keys(formik?.values)?.forEach((key) => {
-			formik.setFieldValue(key, formState[key]);
-		});
-	}, []);
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 

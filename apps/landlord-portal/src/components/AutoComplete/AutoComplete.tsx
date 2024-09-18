@@ -5,6 +5,8 @@ import { debounce } from '@mui/material/utils';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
+import { getIn } from 'formik';
+import _ from 'lodash';
 
 const autocompleteService = { current: null };
 
@@ -29,6 +31,63 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 
 		loaded.current = true;
 	}
+
+	const placesService = useRef<any>(null);
+
+	// Function to get place details using placeId
+	const getPlaceDetails = (placeId: string) => {
+		// Initialize PlacesService if not already done
+		if (!placesService.current && window.google) {
+			placesService.current = new window.google.maps.places.PlacesService(
+				document.createElement('div'),
+			);
+		}
+
+		const request = {
+			placeId,
+			fields: ['name', 'formatted_address', 'address_component', 'geometry'],
+		};
+
+		placesService.current.getDetails(request, (place: any, status: any) => {
+			if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+				const { address_components, geometry } = place;
+
+				const city = _.find(address_components, (item) =>
+					_.includes(item.types, 'locality'),
+				)?.long_name;
+
+				const state = _.find(address_components, (item) =>
+					_.includes(item.types, 'administrative_area_level_1'),
+				)?.long_name;
+
+				const country = _.find(address_components, (item) =>
+					_.includes(item.types, 'country'),
+				)?.long_name;
+				const postalCode = _.find(address_components, (item) =>
+					_.includes(item.types, 'postal_code'),
+				)?.long_name;
+
+				const latitude = geometry.location.lat().toFixed(5);
+
+				const longitude = geometry.location.lng().toFixed(5);
+
+				formik.setValues({
+					...formik.values,
+					address: {
+						...formik.values.address,
+						city,
+						state,
+						country,
+						postalCode,
+						latitude,
+						longitude,
+					},
+				});
+			} else {
+				console.error('Error retrieving place details:', status);
+			}
+		});
+	};
 
 	const fetch = useMemo(
 		() =>
@@ -55,9 +114,20 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				window as any
 			).google.maps.places.AutocompleteService({
 				types: ['geocode'],
-				// componentRestrictions: { country: 'us' },
+				componentRestrictions: { country: 'Au' },
+				strictBounds: false,
+
+				//TODO: set dynamic country restriction
+				// componentRestrictions: { country: ['us', 'ng'] },
+				// componentRestrictions: 'country:us|country:ng',
 			});
+
+			//@ts-ignore
+			// autocompleteService?.current?.setComponentRestrictions({
+			// 	country: ['us', 'pr', 'vi', 'gu', 'mp'],
+			// });
 		}
+
 		if (!autocompleteService.current) {
 			return undefined;
 		}
@@ -71,6 +141,8 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			const parts = description.split(',');
 			return parts.slice(0, -1).join(',');
 		};
+
+		//TODO: Get Longitude and Latitude
 
 		fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
 			if (active) {
@@ -91,6 +163,11 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				}
 
 				setOptions(newOptions);
+
+				if (results && results.length > 0) {
+					const placeId = results[0]?.place_id;
+					getPlaceDetails(placeId!);
+				}
 			}
 		});
 
@@ -98,6 +175,10 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			active = false;
 		};
 	}, [value, inputValue, fetch]);
+
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
 
 	return (
 		<Autocomplete
@@ -111,7 +192,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			autoComplete
 			includeInputInList
 			filterSelectedOptions
-			value={value || formik.values[name] || ''}
+			value={value || fieldValue || ''}
 			noOptionsText='No locations'
 			onChange={(event: any, value: any) => {
 				// setOptions(value ? [value, ...options] : options);

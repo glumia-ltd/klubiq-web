@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
-import { FC, ReactElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
@@ -22,7 +22,8 @@ import {
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
-import UnitType from '../../components/PropertiesDetail';
+import UnitType from '../../components/UnitType';
+import { AddPropertyType } from '../../shared/type';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -62,11 +63,12 @@ type PayloadType = {
 	isMultiUnit: boolean;
 };
 
+interface IunitType extends AddPropertyType {
+	unitType?: string;
+}
+
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
-	const formState = useSelector(getAddPropertyState);
-
-	const { categoryId } = formState;
 
 	const navigate = useNavigate();
 
@@ -76,33 +78,31 @@ export const AddPropertiesLayout = () => {
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
-	const purposeIdRef = useRef<{
-		purposeId: number | null;
-		isMultiUnit: boolean;
-	}>({
-		purposeId: null,
-		isMultiUnit: false,
-	});
-
 	const onSubmit = async (values: any) => {
 		console.log(values, 'val');
 	};
 
-	const formik = useFormik({
+	const formik = useFormik<IunitType>({
 		initialValues: {
+			categoryId: null,
 			description: '',
 			name: '',
 			typeId: '',
 			images: [],
 			unitType: '',
 			purposeId: null,
-			addressLine1: '',
-			addressLine2: '',
-			apartment: '',
-			country: '',
-			postalCode: '',
-			state: '',
-			city: '',
+			address: {
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				state: '',
+				postalCode: '',
+				latitude: 0,
+				longitude: 0,
+				country: '',
+				isManualAddress: true,
+				unit: '',
+			},
 
 			units: [
 				{
@@ -115,7 +115,7 @@ export const AddPropertiesLayout = () => {
 					toilets: null,
 					area: {
 						value: null,
-						unit: '',
+						unit: 'SqM',
 					},
 					status: '',
 					rooms: null,
@@ -127,19 +127,6 @@ export const AddPropertiesLayout = () => {
 		validationSchema,
 		onSubmit,
 	});
-
-	const addressPayload = {
-		addressLine1: formik.values?.addressLine1,
-		addressLine2: formik.values?.addressLine2,
-		city: formik.values?.city,
-		state: formik.values?.state,
-		postalCode: formik.values?.postalCode,
-		latitude: 0,
-		longitude: 0,
-		country: formik.values?.country,
-		isManualAddress: true,
-		unit: '',
-	};
 
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
 		// event.preventDefault();
@@ -180,11 +167,13 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const saveFormikDataInStore = (payload?: PayloadType) => {
+		const isMultiUnit = formik.values.unitType === 'multi';
+		const allFormikValues = { ...formik.values };
+
 		dispatch(
 			saveAddPropertyFormDetail({
-				...formik.values,
-				address: { ...addressPayload },
-				units: [...formik.values.units],
+				...allFormikValues,
+				isMultiUnit,
 				...payload,
 			}),
 		);
@@ -193,7 +182,10 @@ export const AddPropertiesLayout = () => {
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
 
-		if (location.pathname.includes('property-category') && !categoryId) {
+		if (
+			location.pathname.includes('property-category') &&
+			!formik.values.categoryId
+		) {
 			dispatch(
 				openSnackbar({
 					message: 'Please select a property category before you proceed!',
@@ -241,30 +233,13 @@ export const AddPropertiesLayout = () => {
 		navigate('/properties');
 	};
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.target.name === 'purposeId') {
-			purposeIdRef.current.purposeId = Number(event.target.value);
-		} else if (event.target.name === 'unitType') {
-			purposeIdRef.current.isMultiUnit =
-				event.target.value === 'multi' ? true : false;
-		}
-		const payload = {
-			purposeId: purposeIdRef.current.purposeId,
-			isMultiUnit: purposeIdRef.current.isMultiUnit,
-		};
-
-		saveFormikDataInStore(payload);
-
-		formik.handleChange(event);
-	};
-
 	const renderBasedOnPath = () => {
 		if (location.pathname.includes('property-category')) {
-			return <PropertyCategory />;
+			return <PropertyCategory formik={formik} />;
 		} else if (location.pathname.includes('property-details')) {
 			return <PropertiesDetails formik={formik} />;
 		} else if (location.pathname.includes('unit-type')) {
-			return <UnitType formik={formik} handleChange={handleChange} />;
+			return <UnitType formik={formik} />;
 		}
 	};
 

@@ -1,45 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit/react';
 import { RootState } from '..';
-
-type AddPropertyType = {
-	categoryId?: number | null;
-	purposeId: number | null;
-	typeId: number | string;
-	name: string;
-	description: string;
-	images: string[] | null;
-	isMultiUnit?: boolean;
-	address: {
-		addressLine2: string;
-		unit: string;
-		city: string;
-		state: string;
-		postalCode: string;
-		latitude: number;
-		longitude: number;
-		addressLine1: string;
-		country: string;
-		isManualAddress: boolean;
-	};
-
-	units: {
-		id: number | null;
-		unitNumber: string;
-		rentAmount: number | null;
-		floor: number | null;
-		bedrooms: number | null;
-		bathrooms: number | null;
-		toilets: number | null;
-		area: {
-			value: number | null;
-			unit: string;
-		};
-		status: string;
-		rooms: number | null;
-		offices: number | null;
-	}[];
-};
+import { AddPropertyType } from '../../shared/type';
 
 const initialState: AddPropertyType = {
 	categoryId: null,
@@ -77,6 +39,7 @@ const initialState: AddPropertyType = {
 			status: '',
 			rooms: null,
 			offices: null,
+			amenities: [],
 		},
 	],
 };

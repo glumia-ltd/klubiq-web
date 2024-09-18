@@ -25,10 +25,6 @@ import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
 import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
 import PropertyLayout from '../Layouts/PropertyLayout/PropertyLayout';
 
-import PropertyCategory from '../components/PropertiesCategory';
-import PropertiesDetails from '../components/PropertiesDetails';
-import UnitType from '../components/PropertiesDetail';
-
 import Properties from '../pages/Properties';
 
 import ViewPortLayout from '../Layouts/ViewPortLayout';

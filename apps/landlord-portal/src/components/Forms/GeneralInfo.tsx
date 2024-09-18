@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -8,6 +8,9 @@ import {
 	Checkbox,
 	Dialog,
 	Box,
+	InputAdornment,
+	Select,
+	MenuItem,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,6 +27,26 @@ import { useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
+import _ from 'lodash';
+
+const MEASUREMENTS: any[] = [
+	{
+		unit: 'SqM',
+		symbol: <span>m&sup2;</span>,
+	},
+	{
+		unit: 'SqCm',
+		symbol: <span>cm&sup2;</span>,
+	},
+	{
+		unit: 'SqFt',
+		symbol: <span>ft&sup2;</span>,
+	},
+	{
+		unit: 'SqIn',
+		symbol: <span>in&sup2;</span>,
+	},
+];
 
 type CardProps = {
 	formik: any;
@@ -45,8 +68,17 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
+	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 
 	const formState = useSelector(getAddPropertyState);
+
+	// console.log('store', formState);
+	console.log('formik', formik.values);
+
+	const handleMeasurementChange = (event: any) => {
+		setMeasurement(event.target.value);
+		formik.handleChange(event);
+	};
 
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
@@ -116,13 +148,17 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
-	useEffect(() => {
-		Object.keys(formState.address).forEach((key) => {
-			formik.setFieldValue(key, formState.address[key]);
-		});
-
-		formik.setFieldValue('units', formState?.units);
-	}, []);
+	const getNameByPropertyCategory = (category: number) => {
+		if (Number(category) === 1) {
+			return 'bedrooms';
+		} else if (Number(category) === 2) {
+			return 'offices';
+		} else if (Number(category) === 3) {
+			return 'rooms';
+		} else {
+			return 'bedrooms';
+		}
+	};
 
 	return (
 		<Grid container spacing={1}>
@@ -137,14 +173,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid item xs={12}>
 							<AutoComplete
 								formik={formik}
-								name={'addressLine1'}
+								name={'address.addressLine1'}
 								label={'Street Address'}
 							/>
 						</Grid>
 
 						<Grid item xs={12}>
 							<ControlledTextField
-								name='addressLine2'
+								name='address.addressLine2'
 								label='Apartment, suite, etc.'
 								formik={formik}
 							/>
@@ -152,7 +188,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
-								name='country'
+								name='address.country'
 								label='Country'
 								type='text'
 								formik={formik}
@@ -162,20 +198,24 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='postalCode'
+								name='address.postalCode'
 								label='Postal Code'
 								formik={formik}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='state'
+								name='address.state'
 								label='State (Province or Region)'
 								formik={formik}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
-							<ControlledTextField name='city' label='City' formik={formik} />
+							<ControlledTextField
+								name='address.city'
+								label='City'
+								formik={formik}
+							/>
 						</Grid>
 					</Grid>
 				</Card>
@@ -192,15 +232,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].bedrooms`}
-									label='Bedrooms'
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+									label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 									type='number'
 									formik={formik}
 								/>
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].bathrooms`}
+									name={`$units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -208,17 +248,43 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].guestBaths`}
-									label='Guest Bathrooms'
+									name={`units[${currentUnitIndex}].toilets`}
+									label='Toilets'
 									type='number'
 									formik={formik}
 								/>
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].floor`}
+									name={`units[${currentUnitIndex}].area.value`}
 									label='Floor Plan'
 									formik={formik}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<Select
+													name={`units[${currentUnitIndex}].area.unit`}
+													value={measurement}
+													onChange={handleMeasurementChange}
+													defaultValue={measurement}
+													sx={{
+														'.MuiOutlinedInput-notchedOutline': {
+															border: 'none',
+														},
+													}}
+												>
+													{MEASUREMENTS.map((measurement) => (
+														<MenuItem
+															value={measurement.unit}
+															key={measurement.symbol}
+														>
+															{measurement.symbol}
+														</MenuItem>
+													))}
+												</Select>
+											</InputAdornment>
+										),
+									}}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -342,8 +408,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].guestBaths`}
-								label='Guest Bathrooms'
+								name={`units[${currentUnitIndex}].toilets`}
+								label='Toilets'
 								type='number'
 								formik={formik}
 							/>

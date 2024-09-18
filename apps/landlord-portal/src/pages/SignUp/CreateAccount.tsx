@@ -159,7 +159,7 @@ const CreateAccount: React.FC = () => {
 				md={6}
 				lg={6}
 				xl={6}
-				spacing={0}
+				// spacing={0}
 				sx={{
 					alignContent: 'center',
 				}}
@@ -243,9 +243,9 @@ const CreateAccount: React.FC = () => {
 								label='Select Country'
 								placeholder='Select Country'
 								formik={formik}
-								options={activeCountries.map((country) => ({
-									value: country.code,
-									label: country.name,
+								options={activeCountries?.map((country) => ({
+									id: country.code,
+									name: country.name,
 								}))}
 							/>
 						</Grid>

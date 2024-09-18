@@ -11,6 +11,7 @@ import {
 	SxProps,
 } from '@mui/material';
 import { find } from 'lodash';
+import { getIn } from 'formik';
 
 type ControlledSelectProps = {
 	loading?: boolean;
@@ -27,7 +28,6 @@ type ControlledSelectProps = {
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
-	// loading,
 	formik,
 	sx,
 	label,
@@ -39,6 +39,9 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 
 	...props
 }) => {
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
 	return (
 		<Stack
 			sx={{
@@ -58,7 +61,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 				sx={{ minWidth: 230 }}
 				variant='outlined'
 				fullWidth
-				error={Boolean(formik.touched[name]) && Boolean(formik.errors[name])}
+				error={Boolean(fieldTouched) && Boolean(fieldError)}
 				{...props}
 			>
 				{inFieldLabel && <InputLabel>{label}</InputLabel>}
@@ -67,7 +70,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					name={name}
 					size='small'
 					id={name}
-					value={props.value || formik.values[name]}
+					value={props.value || fieldValue}
 					onChange={!disableOnChange ? formik.handleChange : undefined}
 					onBlur={formik.handleBlur}
 					MenuProps={{
@@ -77,14 +80,12 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					}}
 				>
 					{options?.map(({ id, name }) => (
-						<MenuItem value={id} key={`${name}-${id}`}>
+						<MenuItem value={id} key={`${name}-${id}-`}>
 							{name}
 						</MenuItem>
 					))}
 				</Select>
-				<FormHelperText>
-					{(formik.touched[name] && formik.errors[name]) || ' '}
-				</FormHelperText>
+				<FormHelperText>{(fieldTouched && fieldError) || ' '}</FormHelperText>
 			</FormControl>
 		</Stack>
 	);

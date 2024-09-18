@@ -8,6 +8,7 @@ import {
 	FormControlLabel,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledCheckBoxProps = {
 	loading?: boolean;
@@ -39,6 +40,10 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 	// onFileSelect,
 	...props
 }) => {
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -51,13 +56,13 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 		>
 			<FormControl
 				required
-				error={(formik.touched[name] && formik.errors[name]) || ' '}
+				error={(fieldTouched && fieldValue) || ' '}
 				variant='standard'
 			>
 				<FormControlLabel
 					control={
 						<Checkbox
-							checked={props.value || formik.values[name]}
+							checked={props.value || fieldValue}
 							onChange={!disableOnChange ? formik.handleChange : undefined}
 							name={name}
 							id={name}
@@ -78,7 +83,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 					}}
 				/>
 				<FormHelperText sx={{ marginLeft: '1.2rem' }}>
-					{(formik.touched[name] && formik.errors[name]) || ''}
+					{(fieldTouched && fieldError) || ''}
 				</FormHelperText>{' '}
 			</FormControl>
 		</Stack>

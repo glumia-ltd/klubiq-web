@@ -121,7 +121,7 @@ const MFASetUp = () => {
 			email: currentUser?.email || '',
 			password: '',
 		},
-		enableReinitialize: true,
+		// enableReinitialize: true,
 		validationSchema,
 		onSubmit: onReAuthenticate,
 	});
@@ -237,7 +237,7 @@ const MFASetUp = () => {
 						<ControlledTextField
 							name='email'
 							type='email'
-							value={!emailEnabled ? currentUser?.email : ''}
+							value={!emailEnabled ? currentUser?.email : formData.values.email}
 							placeholder='Enter your email address'
 							formik={formData}
 							InputProps={{

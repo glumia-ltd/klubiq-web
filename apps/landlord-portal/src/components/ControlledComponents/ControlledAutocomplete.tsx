@@ -11,6 +11,7 @@ import {
 	TextField,
 	SxProps,
 } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledAutocompleteProps = {
 	formik: any;
@@ -33,6 +34,10 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 	inFieldLabel,
 	...props
 }) => {
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -52,7 +57,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 				sx={{ m: 1, minWidth: 230 }}
 				variant='outlined'
 				fullWidth
-				error={formik.touched[name] && Boolean(formik.errors[name])}
+				error={fieldTouched && Boolean(fieldError)}
 			>
 				{inFieldLabel && <InputLabel>{label}</InputLabel>}
 
@@ -62,7 +67,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 					autoHighlight
 					autoComplete
 					autoSelect
-					value={formik.values[name]}
+					value={fieldValue}
 					onChange={(_, newValue) => {
 						!disableOnChange
 							? formik.handleChange({
@@ -92,7 +97,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 							{...params}
 							name={name}
 							label={inFieldLabel && label}
-							error={formik.touched[name] && Boolean(formik.errors[name])}
+							error={fieldTouched && Boolean(fieldError)}
 							inputProps={{
 								...params.inputProps,
 								autoComplete: 'new-password',
@@ -101,9 +106,7 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 					)}
 					{...props}
 				/>
-				{formik.touched[name] && (
-					<FormHelperText>{formik.errors[name]}</FormHelperText>
-				)}
+				{fieldTouched && <FormHelperText>{fieldError}</FormHelperText>}
 			</FormControl>
 		</Stack>
 	);

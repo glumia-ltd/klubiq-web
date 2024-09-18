@@ -1,9 +1,7 @@
 import { Grid } from '@mui/material';
-import RadioCard from '../../components/RadioCard';
-import GeneralInfo from '../../components/Forms/GeneralInfo';
+import RadioCard from '../RadioCard';
+import GeneralInfo from '../Forms/GeneralInfo';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
-import { useSelector } from 'react-redux';
 import { FC } from 'react';
 
 const options = [
@@ -21,18 +19,13 @@ const options = [
 	},
 ];
 
-const UnitType: FC<{ formik: any; handleChange: any }> = ({
-	formik,
-	handleChange,
-}) => {
+const UnitType: FC<{ formik: any }> = ({ formik }) => {
 	const { purposes, amenities } = useGetPropertiesMetaDataQuery(undefined, {
 		selectFromResult: ({ data }) => ({
 			purposes: data?.purposes,
 			amenities: data?.amenities,
 		}),
 	});
-
-	const formState = useSelector(getAddPropertyState);
 
 	return (
 		<>
@@ -42,8 +35,8 @@ const UnitType: FC<{ formik: any; handleChange: any }> = ({
 						headerText='UNIT TYPE'
 						name='unitType'
 						options={options}
-						checkedValue={formState.isMultiUnit ? 'multi' : 'single'}
-						onChange={handleChange}
+						checkedValue={formik.values.unitType}
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>
@@ -51,8 +44,8 @@ const UnitType: FC<{ formik: any; handleChange: any }> = ({
 						headerText='PROPERTY purpose'
 						name='purposeId'
 						options={purposes}
-						checkedValue={formState?.purposeId}
-						onChange={handleChange}
+						checkedValue={formik.values.purposeId}
+						onChange={formik.handleChange}
 					/>
 				</Grid>
 				<Grid item xs={12}>

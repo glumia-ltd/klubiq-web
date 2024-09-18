@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Stack, SxProps, TextField } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledPinFieldProps = {
 	formik: any;
@@ -29,6 +30,10 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 		// Add any custom input props here
 	};
 
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -47,11 +52,11 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 				sx={{ fontSize: '16px' }}
 				variant='outlined'
 				type={type || 'text'}
-				value={formik.values[name]}
+				value={fieldValue}
 				onChange={formik.handleChange}
-				error={formik.touched[name] && Boolean(formik.errors[name])}
+				error={fieldTouched && Boolean(fieldError)}
 				InputProps={InputProps}
-				helperText={(formik.touched[name] && formik.errors[name]) || ' '}
+				helperText={(fieldTouched && fieldError) || ' '}
 				{...props}
 			/>
 		</Stack>
