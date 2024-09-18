@@ -84,6 +84,8 @@ export const AddPropertiesLayout = () => {
 
 	const formik = useFormik<IunitType>({
 		initialValues: {
+			newAmenity: '',
+			customAmenities: [],
 			categoryId: null,
 			description: '',
 			name: '',
@@ -120,7 +122,7 @@ export const AddPropertiesLayout = () => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: [''],
+					amenities: [],
 				},
 			],
 		},

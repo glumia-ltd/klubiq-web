@@ -23,11 +23,12 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import styles from './style';
 import { Grid } from '@mui/material';
 import cloneIcon from '../../assets/images/Vector.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
 import _ from 'lodash';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -69,6 +70,17 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
 	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
+	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
+	const dispatch = useDispatch();
+
+	const customAmenitiesArray = formik.values.customAmenities.map(
+		(amenity: string) => ({
+			id: amenity,
+			name: amenity,
+		}),
+	);
+
+	const allAmenities = amenities ? [...amenities, ...customAmenitiesArray] : [];
 
 	const formState = useSelector(getAddPropertyState);
 
@@ -86,6 +98,30 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const handleClose = () => setOpen(false);
+	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
+
+	const handleAddCustomAmenites = () => {
+		const { newAmenity, customAmenities } = formik.values;
+		if (customAmenities.includes(newAmenity)) {
+			dispatch(
+				openSnackbar({
+					message: `${newAmenity} exists in amenities list`,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			return;
+		}
+
+		if (newAmenity.trim()) {
+			formik.setValues({
+				...formik.values,
+				customAmenities: [...customAmenities, newAmenity.trim()],
+				newAmenity: '',
+			});
+		}
+	};
 
 	const addUnit = () => {
 		formik.setFieldValue('units', [
@@ -121,29 +157,31 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	// 	formik.setFieldValue('units', units);
 	// };
 
-	const renderAmenities = () => {
+	const renderAmenities = (amenities: any) => {
 		if (
 			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
 			selectedUnitType !== 'multi'
 		) {
-			return amenities?.map((amenity) => (
-				<FormControlLabel
-					key={amenity.id}
-					control={
-						<Checkbox
-							name={`units[${currentUnitIndex}].amenities`}
-							value={amenity?.name}
-							checked={
-								formik.values.units[currentUnitIndex]?.amenities?.includes(
-									amenity?.name,
-								) || false
-							}
-							onChange={formik.handleChange}
-						/>
-					}
-					label={amenity?.name}
-				/>
-			));
+			return amenities?.map(
+				(amenity: { id: string | number; name: string }) => (
+					<FormControlLabel
+						key={amenity?.id || amenity?.name}
+						control={
+							<Checkbox
+								name={`units[${currentUnitIndex}].amenities`}
+								value={amenity?.name}
+								checked={
+									formik.values.units[currentUnitIndex]?.amenities?.includes(
+										amenity?.name,
+									) || false
+								}
+								onChange={formik.handleChange}
+							/>
+						}
+						label={amenity?.name}
+					/>
+				),
+			);
 		}
 		return null;
 	};
@@ -273,12 +311,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														},
 													}}
 												>
-													{MEASUREMENTS.map((measurement) => (
+													{MEASUREMENTS.map((entry, index) => (
 														<MenuItem
-															value={measurement.unit}
-															key={measurement.symbol}
+															value={entry.unit}
+															key={`single-${entry.symbol}-${index}`}
 														>
-															{measurement.symbol}
+															{entry.symbol}
 														</MenuItem>
 													))}
 												</Select>
@@ -289,7 +327,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={12}>
 								<Typography variant='subtitle1'>Amenities</Typography>
-								{renderAmenities()}
+								{renderAmenities(allAmenities)}
+								<br />
+
+								<i
+									style={{ cursor: 'pointer' }}
+									onClick={() => setOpenCustomAmenities(true)}
+								>
+									+ Add custom amenities
+								</i>
 							</Grid>
 						</Grid>
 					</Card>
@@ -386,14 +432,48 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 				</Grid>
 			)}
 
+			<Dialog open={openCustomAmenities} onClose={handleCustomAmenitiesClose}>
+				<Card sx={{ padding: '25px' }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<ControlledTextField
+								name='newAmenity'
+								label='Add Custom Amenites'
+								formik={formik}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							{renderAmenities(customAmenitiesArray)}
+						</Grid>
+
+						<Grid item xs={12}>
+							<Button
+								variant='contained'
+								color='primary'
+								onClick={handleAddCustomAmenites}
+							>
+								Add Amenity
+							</Button>
+							{/* <Button
+								variant='contained'
+								color='primary'
+								onClick={handleCustomAmenitiesClose}
+							>
+								Close
+							</Button> */}
+						</Grid>
+					</Grid>
+				</Card>
+			</Dialog>
+
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
 					<Typography variant='h6'>Unit Details</Typography>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].bedrooms`}
-								label='Bedrooms'
+								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+								label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 								type='number'
 								formik={formik}
 							/>
@@ -416,18 +496,51 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].floor`}
+								name={`units[${currentUnitIndex}].area.value`}
 								label='Floor Plan'
 								formik={formik}
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position='end'>
+											<Select
+												name={`units[${currentUnitIndex}].area.unit`}
+												value={measurement}
+												onChange={handleMeasurementChange}
+												defaultValue={measurement}
+												sx={{
+													'.MuiOutlinedInput-notchedOutline': {
+														border: 'none',
+													},
+												}}
+											>
+												{MEASUREMENTS.map((measurement) => (
+													<MenuItem
+														value={measurement?.unit}
+														key={`multi-${measurement?.unit}`}
+													>
+														{measurement.symbol}
+													</MenuItem>
+												))}
+											</Select>
+										</InputAdornment>
+									),
+								}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant='subtitle1'>Amenities</Typography>
-							{renderAmenities()}
+							{renderAmenities(allAmenities)}
+
+							<i
+								style={{ cursor: 'pointer' }}
+								onClick={() => setOpenCustomAmenities(true)}
+							>
+								+ Add custom amenities
+							</i>
 						</Grid>
 						<Grid item xs={12}>
 							<Button variant='contained' color='primary' onClick={handleClose}>
-								Copy details and Add New Unit
+								Close
 							</Button>
 						</Grid>
 					</Grid>
