@@ -101,8 +101,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
 
 	const handleAddCustomAmenites = () => {
-		const { newAmenity, customAmenities } = formik.values;
-		if (customAmenities.includes(newAmenity)) {
+		const { newAmenity, customAmenities, units } = formik.values;
+
+		console.log(units);
+		if (
+			_.some(
+				allAmenities,
+				(item) => _.toLower(item.name) === _.toLower(newAmenity),
+			)
+		) {
 			dispatch(
 				openSnackbar({
 					message: `${newAmenity} exists in amenities list`,
