@@ -101,9 +101,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
 
 	const handleAddCustomAmenites = () => {
-		const { newAmenity, customAmenities, units } = formik.values;
-
-		console.log(units);
+		const { newAmenity, customAmenities } = formik.values;
 		if (
 			_.some(
 				allAmenities,
