@@ -11,24 +11,33 @@ import {
 	InputAdornment,
 	Select,
 	MenuItem,
+	Tooltip,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BedIcon from '@mui/icons-material/Bed';
-import BathtubIcon from '@mui/icons-material/Bathtub';
+// import BathtubIcon from '@mui/icons-material/Bathtub';
+import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined';
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
-import cloneIcon from '../../assets/images/Vector.svg';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
 import _ from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import {
+	Bathroom,
+	Bedroom,
+	FloorPlan,
+	ShowerIcon,
+	CloneIcon,
+} from '../Icons/CustomIcons';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -406,14 +415,35 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 											</Grid>
 
 											<Grid item xs={6} sx={styles.unitIcon}>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BedIcon />
-													<Typography>{unit?.bedrooms}</Typography>
-												</IconButton>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BathtubIcon />
-													<Typography>{unit?.bathrooms}</Typography>
-												</IconButton>
+												<Tooltip title={`Click to adjust bedroom count`}>
+													<IconButton onClick={() => handleOpen(index)}>
+														<Bedroom />
+														<Typography>{unit?.bedrooms}</Typography>
+													</IconButton>
+												</Tooltip>
+												<Tooltip title={`Click to adjust bathroom count`}>
+													<IconButton onClick={() => handleOpen(index)}>
+														<ShowerIcon />
+														<Typography>{unit?.bathrooms}</Typography>
+													</IconButton>
+												</Tooltip>
+												<Tooltip title={`Click to adjust toilet count`}>
+													<IconButton onClick={() => handleOpen(index)}>
+														<Bathroom />
+														<Typography>{unit?.toilets}</Typography>
+													</IconButton>
+												</Tooltip>
+												<Tooltip title={`Click to adjust floor plan`}>
+													<IconButton onClick={() => handleOpen(index)}>
+														<FloorPlan />
+														<Typography>
+															{unit?.area.value}{' '}
+															{unit?.area.value &&
+																_.find(MEASUREMENTS, { unit: unit?.area.unit })
+																	?.symbol}
+														</Typography>
+													</IconButton>
+												</Tooltip>
 											</Grid>
 										</Grid>
 									</Grid>
@@ -422,12 +452,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 											onClick={() => cloneUnit(index)}
 											sx={styles.cloneButton}
 										>
-											<img
-												src={cloneIcon}
-												alt='icon'
-												style={{ marginRight: '5px' }}
-											/>
-											<Typography sx={styles.cloneText}>Clone</Typography>
+											<CloneIcon sx={{ marginRight: '5px', height: '12px' }} />
+
+											<Typography sx={styles.cloneText}>Clone unit</Typography>
 										</IconButton>
 									</Grid>
 								</Grid>

@@ -425,12 +425,57 @@ const EmojiOneBuildingIcon = createSvgIcon(
 	'EmojiOneBuildingIcon',
 );
 
+const ShowerIcon = createSvgIcon(
+	<svg
+		width='24'
+		height='24'
+		viewBox='0 0 24 24'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<path
+			d='M21 13V16C21 17.0609 20.5786 18.0783 19.8284 18.8284C19.0783 19.5786 18.0609 20 17 20H7C5.93913 20 4.92172 19.5786 4.17157 18.8284C3.42143 18.0783 3 17.0609 3 16V13.6C3 13.4409 3.06321 13.2883 3.17574 13.1757C3.28826 13.0632 3.44087 13 3.6 13H21ZM21 13V7C21 5.93913 20.5786 4.92172 19.8284 4.17157C19.0783 3.42143 18.0609 3 17 3H12M16 20L17 22M8 20L7 22'
+			stroke='currentColor'
+			strokeOpacity='0.7'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		/>
+		<path
+			d='M15.3984 8H8.59844C8.26744 8 8.00244 7.732 8.03844 7.402C8.18444 6.075 8.86144 3 11.9984 3C15.1354 3 15.8124 6.075 15.9584 7.402C15.9944 7.732 15.7294 8 15.3984 8Z'
+			stroke='currentColor'
+			strokeOpacity='0.7'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+		/>
+	</svg>,
+	'ShowerIcon',
+);
+
+const CloneIcon = createSvgIcon(
+	<svg
+		width='12='
+		height='12'
+		viewBox='0 0 12 12'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<path
+			id='Vector'
+			d='M9.5 2H0.5C0.367392 2 0.240215 2.05268 0.146447 2.14645C0.0526785 2.24021 0 2.36739 0 2.5V11.5C0 11.6326 0.0526785 11.7598 0.146447 11.8536C0.240215 11.9473 0.367392 12 0.5 12H9.5C9.63261 12 9.75979 11.9473 9.85355 11.8536C9.94732 11.7598 10 11.6326 10 11.5V2.5C10 2.36739 9.94732 2.24021 9.85355 2.14645C9.75979 2.05268 9.63261 2 9.5 2ZM9 11H1V3H9V11ZM12 0.5V9.5C12 9.63261 11.9473 9.75979 11.8536 9.85355C11.7598 9.94732 11.6326 10 11.5 10C11.3674 10 11.2402 9.94732 11.1464 9.85355C11.0527 9.75979 11 9.63261 11 9.5V1H2.5C2.36739 1 2.24021 0.947321 2.14645 0.853553C2.05268 0.759785 2 0.632608 2 0.5C2 0.367392 2.05268 0.240215 2.14645 0.146447C2.24021 0.0526785 2.36739 0 2.5 0H11.5C11.6326 0 11.7598 0.0526785 11.8536 0.146447C11.9473 0.240215 12 0.367392 12 0.5Z'
+			fill='currentColor'
+		/>
+	</svg>,
+	'CloneIcon',
+);
+
 export {
 	Place,
 	Bedroom,
 	Bathroom,
 	Bungalow,
 	FloorPlan,
+	ShowerIcon,
+	CloneIcon,
 	Plus,
 	TopBottom,
 	AscendIcon,
