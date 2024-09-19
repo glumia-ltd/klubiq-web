@@ -16,15 +16,11 @@ import {
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import BedIcon from '@mui/icons-material/Bed';
-// import BathtubIcon from '@mui/icons-material/Bathtub';
-import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined';
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
@@ -37,6 +33,7 @@ import {
 	FloorPlan,
 	ShowerIcon,
 	CloneIcon,
+	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
 
 const MEASUREMENTS: any[] = [
@@ -415,10 +412,28 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 											</Grid>
 
 											<Grid item xs={6} sx={styles.unitIcon}>
-												<Tooltip title={`Click to adjust bedroom count`}>
+												<Tooltip
+													title={`Click to adjust ${getNameByPropertyCategory(
+														formik.values.categoryId,
+													).slice(0, -1)} count`}
+												>
 													<IconButton onClick={() => handleOpen(index)}>
-														<Bedroom />
-														<Typography>{unit?.bedrooms}</Typography>
+														{getNameByPropertyCategory(
+															formik.values.categoryId,
+														) === 'offices' ? (
+															<EmojiOneBuildingIcon />
+														) : (
+															<Bedroom />
+														)}
+														<Typography>
+															{
+																unit[
+																	getNameByPropertyCategory(
+																		formik.values.categoryId,
+																	)
+																]
+															}
+														</Typography>
 													</IconButton>
 												</Tooltip>
 												<Tooltip title={`Click to adjust bathroom count`}>
