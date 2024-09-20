@@ -118,9 +118,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							: '--'}
 					</Typography>
 
-					<KlubiqIcons.Bathroom
+					<KlubiqIcons.ShowerIcon
 						sx={{
 							color: 'text.primary',
+							height: '16px',
 							// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
 						}}
 					/>
