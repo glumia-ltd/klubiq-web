@@ -12,10 +12,12 @@ import {
 	Select,
 	MenuItem,
 	Tooltip,
+	Collapse,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import RemoveIcon from '@mui/icons-material/Remove';
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
@@ -77,7 +79,10 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
 	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
+	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
 	const dispatch = useDispatch();
+
+	console.log(collapseUnit);
 
 	const customAmenitiesArray = formik.values.customAmenities.map(
 		(amenity: string) => ({
@@ -162,11 +167,11 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
 	};
 
-	// const removeUnit = (index: number) => {
-	// 	const units = [...formik.values.units];
-	// 	units.splice(index, 1);
-	// 	formik.setFieldValue('units', units);
-	// };
+	const handleRemoveUnit = (index: number) => {
+		const units = [...formik.values.units];
+		units.splice(index, 1);
+		formik.setFieldValue('units', units);
+	};
 
 	const renderAmenities = (amenities: any) => {
 		if (
@@ -381,86 +386,121 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													Title
 												</Typography>
 												<Box>
+													{collapseUnit.includes(index) ? (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																const updatedValue = _.without(
+																	collapseUnit,
+																	index,
+																);
+
+																console.log(updatedValue);
+																setCollapseUnit([...updatedValue]);
+															}}
+														>
+															<ExpandMoreIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																console.log('clicked expand less');
+																setCollapseUnit([...collapseUnit, index]);
+															}}
+														>
+															<ExpandLessIcon />
+														</IconButton>
+													)}
 													<IconButton edge='end'>
-														<ExpandLessIcon />
-													</IconButton>
-													<IconButton edge='end'>
-														<MoreVertIcon />
+														<Tooltip title='Remove unit'>
+															<RemoveIcon
+																onClick={() => handleRemoveUnit(index)}
+															/>
+														</Tooltip>
 													</IconButton>
 												</Box>
 											</Card>
 										</Grid>
-										<Grid container spacing={0} sx={styles.cardContent}>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit number or name
-												</Typography>
-											</Grid>
-											<Grid item xs={12} md={12}>
-												<Typography fontWeight={400} fontSize={'14px'}>
-													Description{' '}
-												</Typography>
-												<ControlledTextField
-													name={`units[${index}].description`}
-													formik={formik}
-												/>
-											</Grid>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit Details
-												</Typography>
-											</Grid>
 
-											<Grid item xs={6} sx={styles.unitIcon}>
-												<Tooltip
-													title={`Click to adjust ${getNameByPropertyCategory(
-														formik.values.categoryId,
-													).slice(0, -1)} count`}
-												>
-													<IconButton onClick={() => handleOpen(index)}>
-														{getNameByPropertyCategory(
+										<Collapse
+											sx={{ width: '100%' }}
+											orientation='vertical'
+											in={collapseUnit.includes(index) ? false : true}
+										>
+											<Grid container spacing={0} sx={styles.cardContent}>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit number or name
+													</Typography>
+												</Grid>
+												<Grid item xs={12} md={12}>
+													<Typography fontWeight={400} fontSize={'14px'}>
+														Description{' '}
+													</Typography>
+													<ControlledTextField
+														name={`units[${index}].description`}
+														formik={formik}
+													/>
+												</Grid>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit Details
+													</Typography>
+												</Grid>
+
+												<Grid item xs={6} sx={styles.unitIcon}>
+													<Tooltip
+														title={`Click to adjust ${getNameByPropertyCategory(
 															formik.values.categoryId,
-														) === 'offices' ? (
-															<EmojiOneBuildingIcon />
-														) : (
-															<Bedroom />
-														)}
-														<Typography>
-															{
-																unit[
-																	getNameByPropertyCategory(
-																		formik.values.categoryId,
-																	)
-																]
-															}
-														</Typography>
-													</IconButton>
-												</Tooltip>
-												<Tooltip title={`Click to adjust bathroom count`}>
-													<IconButton onClick={() => handleOpen(index)}>
-														<ShowerIcon />
-														<Typography>{unit?.bathrooms}</Typography>
-													</IconButton>
-												</Tooltip>
-												<Tooltip title={`Click to adjust toilet count`}>
-													<IconButton onClick={() => handleOpen(index)}>
-														<Bathroom />
-														<Typography>{unit?.toilets}</Typography>
-													</IconButton>
-												</Tooltip>
-												<Tooltip title={`Click to adjust floor plan`}>
-													<IconButton onClick={() => handleOpen(index)}>
-														<FloorPlan />
-														<Typography>
-															{unit?.area.value}{' '}
-															{unit?.area.value &&
-																_.find(MEASUREMENTS, { unit: unit?.area.unit })
-																	?.symbol}
-														</Typography>
-													</IconButton>
-												</Tooltip>
+														).slice(0, -1)} count`}
+													>
+														<IconButton onClick={() => handleOpen(index)}>
+															{getNameByPropertyCategory(
+																formik.values.categoryId,
+															) === 'offices' ? (
+																<EmojiOneBuildingIcon />
+															) : (
+																<Bedroom />
+															)}
+															<Typography>
+																{
+																	unit[
+																		getNameByPropertyCategory(
+																			formik.values.categoryId,
+																		)
+																	]
+																}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust bathroom count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<ShowerIcon />
+															<Typography>{unit?.bathrooms}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust toilet count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<Bathroom />
+															<Typography>{unit?.toilets}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust floor plan`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<FloorPlan />
+															<Typography>
+																{unit?.area.value}{' '}
+																{unit?.area.value &&
+																	_.find(MEASUREMENTS, {
+																		unit: unit?.area.unit,
+																	})?.symbol}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+												</Grid>
 											</Grid>
-										</Grid>
+										</Collapse>
 									</Grid>
 									<Grid item xs={12}>
 										<IconButton
