@@ -1,62 +1,50 @@
 import { Stack, Typography, Button } from '@mui/material';
-
+import { SubmitButton } from '../../styles/button';
 interface FeedbackProps {
 	showButton?: boolean;
 	imageLink: string;
 	header: string;
 	content: string;
 	onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
+	onMFASetupClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 const FeedbackContent = ({
 	header,
 	content,
 	onClick,
+	onMFASetupClick,
 	imageLink,
 	showButton = false,
 }: FeedbackProps) => {
 	return (
 		<Stack
+			direction={'column'}
 			alignItems={'center'}
-			justifyContent='center'
-			spacing={1}
-			sx={{ minWidth: '650px' }}
+			justifyContent={'center'}
+			spacing={2}
 		>
 			<>
 				{' '}
-				<div style={{ marginBottom: '32px' }}>
+				<div>
 					{imageLink && (
-						<img src={imageLink} alt='logo' width={'100px'} height={'100px'} />
+						<img src={imageLink} alt='logo' width={'50px'} height={'50px'} />
 					)}
 				</div>
-				<div style={{ marginBottom: '20px' }}>
-					<Typography align='center' fontSize={'30px'} fontWeight={700}>
+				<div>
+					<Typography textAlign={'center'} variant='h3'>
 						{header}
 					</Typography>{' '}
 				</div>
-				<div style={{ marginBottom: '30px' }}>
-					<Typography fontSize={'18px'} fontWeight={500} textAlign={'left'}>
+				<div>
+					<Typography variant='body1' textAlign={'center'}>
 						{content}
 					</Typography>
 				</div>
 				{showButton && (
-					<Button
-						onClick={onClick}
-						sx={{
-							border: '1px solid #002147',
-							color: 'white',
-							background: '#002147',
-							height: '40px',
-							width: '90px',
-							borderRadius: '8px',
-							'&:hover': {
-								color: '#002147',
-								background: '#FFFFFF',
-								cursor: 'pointer',
-							},
-						}}
-					>
-						Sign In
-					</Button>
+					<Stack width='100%' direction={'row'} spacing={1}>
+						<SubmitButton onClick={onClick}> Sign In </SubmitButton>
+						<SubmitButton onClick={onMFASetupClick}> Setup 2FA </SubmitButton>
+					</Stack>
 				)}
 			</>
 		</Stack>

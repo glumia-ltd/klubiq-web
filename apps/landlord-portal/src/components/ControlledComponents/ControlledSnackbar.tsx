@@ -43,9 +43,6 @@ function ControlledSnackbar({
 				onClose={() => dispatch(closeSnackbar())}
 				severity={severity}
 				variant='filled'
-				sx={{
-					color: 'primary.contrastText',
-				}}
 			>
 				{message}
 			</Alert>

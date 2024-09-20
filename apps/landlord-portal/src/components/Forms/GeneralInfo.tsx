@@ -8,69 +8,59 @@ import {
 	Checkbox,
 	Dialog,
 	Box,
+	InputAdornment,
+	Select,
+	MenuItem,
+	Tooltip,
+	Collapse,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
-// import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import BedIcon from '@mui/icons-material/Bed';
-import BathtubIcon from '@mui/icons-material/Bathtub';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import CountryList from '../../helpers/countryList.json';
+import RemoveIcon from '@mui/icons-material/Remove';
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
-import cloneIcon from '../../assets/images/Vector.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import countriesList from '../../helpers/countries-meta.json';
+import { AutoComplete } from '../AutoComplete/AutoComplete';
+import _ from 'lodash';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import {
+	Bathroom,
+	Bedroom,
+	FloorPlan,
+	ShowerIcon,
+	CloneIcon,
+	EmojiOneBuildingIcon,
+} from '../Icons/CustomIcons';
 
-const validationSchema = yup.object({
-	streetAddress: yup.string().required('This field is required'),
-	apartment: yup.string().required('This field is required'),
-	city: yup.string().required('This field is required'),
-	postalCode: yup.string().required('This field is required'),
-	country: yup.string().required('Select an option'),
-	state: yup.string().required('Select an option'),
-	units: yup.array().of(
-		yup.object({
-			description: yup.string().required('Required'),
-			beds: yup
-				.number()
-				.required('Required')
-				.min(0, 'Beds must be non-negative'),
-			baths: yup
-				.number()
-				.required('Required')
-				.min(0, 'Baths must be non-negative'),
-			guestBaths: yup
-				.number()
-				.required('Required')
-				.min(0, 'Guest Baths must be non-negative'),
-			floorPlan: yup.string().required('Required'),
-			amenities: yup.array().of(yup.string()),
-		}),
-	),
-});
+const MEASUREMENTS: any[] = [
+	{
+		unit: 'SqM',
+		symbol: <span>m&sup2;</span>,
+	},
+	{
+		unit: 'SqCm',
+		symbol: <span>cm&sup2;</span>,
+	},
+	{
+		unit: 'SqFt',
+		symbol: <span>ft&sup2;</span>,
+	},
+	{
+		unit: 'SqIn',
+		symbol: <span>in&sup2;</span>,
+	},
+];
+
 type CardProps = {
+	formik: any;
 	selectedUnitType?: string;
-};
-
-type FormValues = {
-	streetAddress: string;
-	apartment: string;
-	country: string;
-	postalCode: string;
-	state: string;
-	city: string;
-	units: {
-		description: string;
-		beds: number;
-		baths: number;
-		guestBaths: number;
-		floorPlan: string;
-		amenities: string[];
-	}[];
+	amenities: { id: number; name: string }[];
 };
 
 const states = StateList.map((item) => ({
@@ -78,14 +68,40 @@ const states = StateList.map((item) => ({
 	label: item.name,
 }));
 
-const countries = CountryList.map((item) => ({
-	value: item.name,
-	label: item.name,
+const countries = countriesList?.map((item) => ({
+	id: item.name,
+	name: item.name,
 }));
 
-const GeneralInfo = ({ selectedUnitType }: CardProps) => {
+const GeneralInfo = ({ amenities, formik }: CardProps) => {
+	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
-	const [currentUnitIndex, setCurrentUnitIndex] = useState<number | null>(null);
+	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
+	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
+	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
+	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
+	const dispatch = useDispatch();
+
+	console.log(collapseUnit);
+
+	const customAmenitiesArray = formik.values.customAmenities.map(
+		(amenity: string) => ({
+			id: amenity,
+			name: amenity,
+		}),
+	);
+
+	const allAmenities = amenities ? [...amenities, ...customAmenitiesArray] : [];
+
+	const formState = useSelector(getAddPropertyState);
+
+	// console.log('store', formState);
+	console.log('formik', formik.values);
+
+	const handleMeasurementChange = (event: any) => {
+		setMeasurement(event.target.value);
+		formik.handleChange(event);
+	};
 
 	const handleOpen = (index: number) => {
 		setCurrentUnitIndex(index);
@@ -93,43 +109,55 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 	};
 
 	const handleClose = () => setOpen(false);
+	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
 
-	const onSubmit = async (values: FormValues) => {
-		console.log(values, 'val');
+	const handleAddCustomAmenites = () => {
+		const { newAmenity, customAmenities } = formik.values;
+		if (
+			_.some(
+				allAmenities,
+				(item) => _.toLower(item.name) === _.toLower(newAmenity),
+			)
+		) {
+			dispatch(
+				openSnackbar({
+					message: `${newAmenity} exists in amenities list`,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			return;
+		}
+
+		if (newAmenity.trim()) {
+			formik.setValues({
+				...formik.values,
+				customAmenities: [...customAmenities, newAmenity.trim()],
+				newAmenity: '',
+			});
+		}
 	};
-	const formik = useFormik({
-		initialValues: {
-			streetAddress: '',
-			apartment: '',
-			country: '',
-			postalCode: '',
-			state: '',
-			city: '',
-			units: [
-				{
-					description: '',
-					beds: 0,
-					baths: 0,
-					guestBaths: 0,
-					floorPlan: '',
-					amenities: [],
-				},
-			],
-		},
-		validationSchema,
-		onSubmit,
-	});
 
 	const addUnit = () => {
 		formik.setFieldValue('units', [
 			...formik.values.units,
 			{
-				description: '',
-				beds: 0,
-				baths: 0,
-				guestBaths: 0,
-				floorPlan: '',
-				amenities: [],
+				id: null,
+				unitNumber: '',
+				rentAmount: null,
+				floor: null,
+				bedrooms: null,
+				bathrooms: null,
+				toilets: null,
+				area: {
+					value: null,
+					unit: '',
+				},
+				status: '',
+				rooms: null,
+				offices: null,
+				amenities: [''],
 			},
 		]);
 	};
@@ -139,41 +167,51 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
 	};
 
-	// const removeUnit = (index: number) => {
-	// 	const units = [...formik.values.units];
-	// 	units.splice(index, 1);
-	// 	formik.setFieldValue('units', units);
-	// };
+	const handleRemoveUnit = (index: number) => {
+		const units = [...formik.values.units];
+		units.splice(index, 1);
+		formik.setFieldValue('units', units);
+	};
 
-	const amenitiesOptions = [
-		'A/C',
-		'Furnished',
-		'Pool',
-		'Wheel chair access',
-		'Pets allowed',
-		'Balcony/Desk',
-	];
-
-	const renderAmenities = () => {
-		if (currentUnitIndex !== null && formik.values.units[currentUnitIndex]) {
-			return amenitiesOptions.map((amenity) => (
-				<FormControlLabel
-					key={amenity}
-					control={
-						<Checkbox
-							name={`units.${currentUnitIndex}.amenities`}
-							value={amenity}
-							// checked={
-							// 	formik.values.units[currentUnitIndex]?.amenities.includes(amenity) || false
-							//   }
-							onChange={formik.handleChange}
-						/>
-					}
-					label={amenity}
-				/>
-			));
+	const renderAmenities = (amenities: any) => {
+		if (
+			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
+			selectedUnitType !== 'multi'
+		) {
+			return amenities?.map(
+				(amenity: { id: string | number; name: string }) => (
+					<FormControlLabel
+						key={amenity?.id || amenity?.name}
+						control={
+							<Checkbox
+								name={`units[${currentUnitIndex}].amenities`}
+								value={amenity?.name}
+								checked={
+									formik.values.units[currentUnitIndex]?.amenities?.includes(
+										amenity?.name,
+									) || false
+								}
+								onChange={formik.handleChange}
+							/>
+						}
+						label={amenity?.name}
+					/>
+				),
+			);
 		}
 		return null;
+	};
+
+	const getNameByPropertyCategory = (category: number) => {
+		if (Number(category) === 1) {
+			return 'bedrooms';
+		} else if (Number(category) === 2) {
+			return 'offices';
+		} else if (Number(category) === 3) {
+			return 'rooms';
+		} else {
+			return 'bedrooms';
+		}
 	};
 
 	return (
@@ -187,92 +225,143 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
-							<ControlledTextField
-								name='streetAddress'
-								label='Street Address'
+							<AutoComplete
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
+								name={'address.addressLine1'}
+								label={'Street Address'}
 							/>
 						</Grid>
-						{selectedUnitType === 'one' && (
-							<Grid item xs={12}>
-								<ControlledTextField
-									name='apartment'
-									label='Apartment, suite etc  '
-									formik={formik}
-									// inputProps={{
-									// 	sx: {
-									// 		height: '40px',
-									// 	},
-									// }}
-								/>
-							</Grid>
-						)}
+
+						<Grid item xs={12}>
+							<ControlledTextField
+								name='address.addressLine2'
+								label='Apartment, suite, etc.'
+								formik={formik}
+							/>
+						</Grid>
 
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
-								name='country'
+								name='address.country'
 								label='Country'
 								type='text'
 								formik={formik}
 								options={countries}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
+								placeholder=''
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='postalCode'
+								name='address.postalCode'
 								label='Postal Code'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		muiOutlinedInput: '40px',
-								// 	},
-								// }}
-							/>
-						</Grid>
-						<Grid item xs={12} md={6}>
-							<ControlledSelect
-								name='state'
-								label='State'
-								type='text'
-								formik={formik}
-								options={states}
-								// inputProps={{
-								// 	sx: {
-								// 		muiOutlinedInput: '40px',
-								// 	},
-								// }}
 							/>
 						</Grid>
 						<Grid item xs={12} md={6}>
 							<ControlledTextField
-								name='city'
+								name='address.state'
+								label='State (Province or Region)'
+								formik={formik}
+							/>
+						</Grid>
+						<Grid item xs={12} md={6}>
+							<ControlledTextField
+								name='address.city'
 								label='City'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		muiOutlinedInput: '40px',
-								// 	},
-								// }}
 							/>
 						</Grid>
 					</Grid>
 				</Card>
 			</Grid>
-			{selectedUnitType === 'other' && (
+
+			{selectedUnitType !== 'multi' && (
+				<Grid container mt={1}>
+					<Card sx={styles.cardTwo}>
+						<Grid item xs={12}>
+							<Typography variant='h6' sx={styles.typo}>
+								Unit Details
+							</Typography>
+						</Grid>
+						<Grid container>
+							<Grid item xs={6}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+									label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
+									type='number'
+									formik={formik}
+								/>
+							</Grid>
+							<Grid item xs={6}>
+								<ControlledTextField
+									name={`$units[${currentUnitIndex}].bathrooms`}
+									label='Bathrooms'
+									type='number'
+									formik={formik}
+								/>
+							</Grid>
+							<Grid item xs={6}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].toilets`}
+									label='Toilets'
+									type='number'
+									formik={formik}
+								/>
+							</Grid>
+							<Grid item xs={6}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].area.value`}
+									label='Floor Plan'
+									formik={formik}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<Select
+													name={`units[${currentUnitIndex}].area.unit`}
+													value={measurement}
+													onChange={handleMeasurementChange}
+													defaultValue={measurement}
+													sx={{
+														'.MuiOutlinedInput-notchedOutline': {
+															border: 'none',
+														},
+													}}
+												>
+													{MEASUREMENTS.map((entry, index) => (
+														<MenuItem
+															value={entry.unit}
+															key={`single-${entry.symbol}-${index}`}
+														>
+															{entry.symbol}
+														</MenuItem>
+													))}
+												</Select>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<Typography variant='subtitle1'>Amenities</Typography>
+								{renderAmenities(allAmenities)}
+								<br />
+
+								<i
+									style={{ cursor: 'pointer' }}
+									onClick={() => setOpenCustomAmenities(true)}
+								>
+									+ Add custom amenities
+								</i>
+							</Grid>
+						</Grid>
+					</Card>
+				</Grid>
+			)}
+			{selectedUnitType === 'multi' && (
 				<Grid container>
 					<Card sx={styles.cardTwo}>
 						<Grid container spacing={0}>
-							{selectedUnitType === 'other' && (
+							{selectedUnitType === 'multi' && (
 								<Grid item xs={12} sx={styles.addButton}>
 									<Button
 										color='primary'
@@ -284,7 +373,7 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 								</Grid>
 							)}
 
-							{formik.values.units.map((unit, index) => (
+							{formik.values?.units?.map((unit: any, index: number) => (
 								<Grid container spacing={0} key={index}>
 									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
@@ -297,75 +386,130 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 													Title
 												</Typography>
 												<Box>
+													{collapseUnit.includes(index) ? (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																const updatedValue = _.without(
+																	collapseUnit,
+																	index,
+																);
+
+																console.log(updatedValue);
+																setCollapseUnit([...updatedValue]);
+															}}
+														>
+															<ExpandMoreIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																console.log('clicked expand less');
+																setCollapseUnit([...collapseUnit, index]);
+															}}
+														>
+															<ExpandLessIcon />
+														</IconButton>
+													)}
 													<IconButton edge='end'>
-														<ExpandLessIcon />
-													</IconButton>
-													<IconButton edge='end'>
-														<MoreVertIcon />
+														<Tooltip title='Remove unit'>
+															<RemoveIcon
+																onClick={() => handleRemoveUnit(index)}
+															/>
+														</Tooltip>
 													</IconButton>
 												</Box>
 											</Card>
 										</Grid>
-										<Grid container spacing={0} sx={styles.cardContent}>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit number or name
-												</Typography>
-											</Grid>
-											<Grid item xs={12} md={12}>
-												<Typography fontWeight={400} fontSize={'14px'}>
-													Description{' '}
-												</Typography>
-												<ControlledTextField
-													name={`units.${index}.description`}
-													// label='Description'
-													formik={formik}
-													// inputProps={{
-													// 	sx: {
-													// 		height: '40px',
-													// 	},
-													// }}
-												/>
-											</Grid>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit Details
-												</Typography>
-											</Grid>
 
-											<Grid item xs={6} sx={styles.unitIcon}>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BedIcon />
-													<Typography>{unit.beds}</Typography>
-												</IconButton>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BathtubIcon />
-													<Typography>{unit.baths}</Typography>
-												</IconButton>
+										<Collapse
+											sx={{ width: '100%' }}
+											orientation='vertical'
+											in={collapseUnit.includes(index) ? false : true}
+										>
+											<Grid container spacing={0} sx={styles.cardContent}>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit number or name
+													</Typography>
+												</Grid>
+												<Grid item xs={12} md={12}>
+													<Typography fontWeight={400} fontSize={'14px'}>
+														Description{' '}
+													</Typography>
+													<ControlledTextField
+														name={`units[${index}].description`}
+														formik={formik}
+													/>
+												</Grid>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit Details
+													</Typography>
+												</Grid>
+
+												<Grid item xs={6} sx={styles.unitIcon}>
+													<Tooltip
+														title={`Click to adjust ${getNameByPropertyCategory(
+															formik.values.categoryId,
+														).slice(0, -1)} count`}
+													>
+														<IconButton onClick={() => handleOpen(index)}>
+															{getNameByPropertyCategory(
+																formik.values.categoryId,
+															) === 'offices' ? (
+																<EmojiOneBuildingIcon />
+															) : (
+																<Bedroom />
+															)}
+															<Typography>
+																{
+																	unit[
+																		getNameByPropertyCategory(
+																			formik.values.categoryId,
+																		)
+																	]
+																}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust bathroom count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<ShowerIcon />
+															<Typography>{unit?.bathrooms}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust toilet count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<Bathroom />
+															<Typography>{unit?.toilets}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust floor plan`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<FloorPlan />
+															<Typography>
+																{unit?.area.value}{' '}
+																{unit?.area.value &&
+																	_.find(MEASUREMENTS, {
+																		unit: unit?.area.unit,
+																	})?.symbol}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+												</Grid>
 											</Grid>
-											{/* <Grid item xs={12}>
-									<Button
-										variant='outlined'
-										color='secondary'
-										onClick={() => removeUnit(index)}
-										startIcon={<DeleteIcon />}
-									>
-										Remove Unit
-									</Button>
-								</Grid> */}
-										</Grid>
+										</Collapse>
 									</Grid>
 									<Grid item xs={12}>
 										<IconButton
 											onClick={() => cloneUnit(index)}
 											sx={styles.cloneButton}
 										>
-											<img
-												src={cloneIcon}
-												alt='icon'
-												style={{ marginRight: '5px' }}
-											/>
-											<Typography sx={styles.cloneText}>Clone</Typography>
+											<CloneIcon sx={{ marginRight: '5px', height: '12px' }} />
+
+											<Typography sx={styles.cloneText}>Clone unit</Typography>
 										</IconButton>
 									</Grid>
 								</Grid>
@@ -375,68 +519,115 @@ const GeneralInfo = ({ selectedUnitType }: CardProps) => {
 				</Grid>
 			)}
 
+			<Dialog open={openCustomAmenities} onClose={handleCustomAmenitiesClose}>
+				<Card sx={{ padding: '25px' }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<ControlledTextField
+								name='newAmenity'
+								label='Add Custom Amenites'
+								formik={formik}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							{renderAmenities(customAmenitiesArray)}
+						</Grid>
+
+						<Grid item xs={12}>
+							<Button
+								variant='contained'
+								color='primary'
+								onClick={handleAddCustomAmenites}
+							>
+								Add Amenity
+							</Button>
+							{/* <Button
+								variant='contained'
+								color='primary'
+								onClick={handleCustomAmenitiesClose}
+							>
+								Close
+							</Button> */}
+						</Grid>
+					</Grid>
+				</Card>
+			</Dialog>
+
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
 					<Typography variant='h6'>Unit Details</Typography>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units.${currentUnitIndex}.beds`}
-								label='Bedrooms'
+								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+								label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 								type='number'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units.${currentUnitIndex}.baths`}
+								name={`units[${currentUnitIndex}].bathrooms`}
 								label='Bathrooms'
 								type='number'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units.${currentUnitIndex}.guestBaths`}
-								label='Guest Bathrooms'
+								name={`units[${currentUnitIndex}].toilets`}
+								label='Toilets'
 								type='number'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
 							/>
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units.${currentUnitIndex}.floorPlan`}
+								name={`units[${currentUnitIndex}].area.value`}
 								label='Floor Plan'
 								formik={formik}
-								// inputProps={{
-								// 	sx: {
-								// 		height: '40px',
-								// 	},
-								// }}
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position='end'>
+											<Select
+												name={`units[${currentUnitIndex}].area.unit`}
+												value={measurement}
+												onChange={handleMeasurementChange}
+												defaultValue={measurement}
+												sx={{
+													'.MuiOutlinedInput-notchedOutline': {
+														border: 'none',
+													},
+												}}
+											>
+												{MEASUREMENTS.map((measurement) => (
+													<MenuItem
+														value={measurement?.unit}
+														key={`multi-${measurement?.unit}`}
+													>
+														{measurement.symbol}
+													</MenuItem>
+												))}
+											</Select>
+										</InputAdornment>
+									),
+								}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant='subtitle1'>Amenities</Typography>
-							{renderAmenities()}
+							{renderAmenities(allAmenities)}
+
+							<i
+								style={{ cursor: 'pointer' }}
+								onClick={() => setOpenCustomAmenities(true)}
+							>
+								+ Add custom amenities
+							</i>
 						</Grid>
 						<Grid item xs={12}>
 							<Button variant='contained' color='primary' onClick={handleClose}>
-								Copy details and Add New Unit
+								Close
 							</Button>
 						</Grid>
 					</Grid>

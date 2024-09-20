@@ -1,17 +1,42 @@
 import { Button, Container, Grid, Typography } from '@mui/material';
-import { FC, ReactElement, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RouteObjectType } from '../../shared/type';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
 
 import {
 	HomeIcon,
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	getAddPropertyState,
+	saveAddPropertyFormDetail,
+} from '../../store/AddPropertyStore/AddPropertySlice';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import PropertyCategory from '../../components/PropertiesCategory';
+import PropertiesDetails from '../../components/PropertiesDetails';
+import UnitType from '../../components/UnitType';
+import { AddPropertyType } from '../../shared/type';
+
+const validationSchema = yup.object({
+	name: yup.string().required('Please enter the property name'),
+	description: yup.string(),
+	typeId: yup.string().required('Select an option'),
+	images: yup
+		.array()
+		.min(1, 'You need to upload at least one image')
+		.max(4, 'You can upload a maximum of 4 images')
+		.required('Images are required'),
+	unitType: yup.string().required('This field is required'),
+	purposeId: yup.number().required('This field is required'),
+});
 
 const routeObject: RouteObjectType = {
 	'Property Category': {
@@ -27,24 +52,169 @@ const routeObject: RouteObjectType = {
 
 const steps = Object.keys(routeObject);
 
-export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
-	children,
-}) => {
+const STEPPERPATHS: Record<string, number> = {
+	'property-category': 0,
+	'property-details': 1,
+	'unit-type': 2,
+};
+
+type PayloadType = {
+	purposeId: number | null;
+	isMultiUnit: boolean;
+};
+
+interface IunitType extends AddPropertyType {
+	unitType?: string;
+}
+
+export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
+
 	const navigate = useNavigate();
+
+	const location = useLocation();
+
+	const dispatch = useDispatch();
+
+	const currentLocation = location.pathname.split('/')[2] || '';
+
+	const onSubmit = async (values: any) => {
+		console.log(values, 'val');
+	};
+
+	const formik = useFormik<IunitType>({
+		initialValues: {
+			newAmenity: '',
+			customAmenities: [],
+			categoryId: null,
+			description: '',
+			name: '',
+			typeId: '',
+			images: [],
+			unitType: '',
+			purposeId: null,
+			address: {
+				addressLine1: '',
+				addressLine2: '',
+				city: '',
+				state: '',
+				postalCode: '',
+				latitude: 0,
+				longitude: 0,
+				country: '',
+				isManualAddress: true,
+				unit: '',
+			},
+
+			units: [
+				{
+					id: null,
+					unitNumber: '',
+					rentAmount: null,
+					floor: null,
+					bedrooms: null,
+					bathrooms: null,
+					toilets: null,
+					area: {
+						value: null,
+						unit: 'SqM',
+					},
+					status: '',
+					rooms: null,
+					offices: null,
+					amenities: [],
+				},
+			],
+		},
+		validationSchema,
+		onSubmit,
+	});
+
+	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+		// event.preventDefault();
+		// event.returnValue = '';
+		// dispatch(
+		// 	openSnackbar({
+		// 		message: 'Are you sure you want to leave this page?',
+		// 		severity: 'info',
+		// 		isOpen: true,
+		// 	}),
+		// );
+		// window.alert('Are you sure you want to leave this page???');
+	};
+
+	useEffect(() => {
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
+		// Remove the event listener when the component unmounts
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
+
+	useEffect(() => {
+		const activeStepByPathName = STEPPERPATHS[currentLocation] || 0;
+
+		setActiveStep(activeStepByPathName);
+	}, [currentLocation]);
 
 	const navigateToStep = (step: number) => {
 		const routeKey = steps[step];
 
 		if (!routeKey) return;
 
-		const route = routeObject[routeKey]?.label;
+		const route = `/properties/${routeObject[routeKey]?.label}`;
 
 		navigate(route as string);
 	};
 
+	const saveFormikDataInStore = (payload?: PayloadType) => {
+		const isMultiUnit = formik.values.unitType === 'multi';
+		const allFormikValues = { ...formik.values };
+
+		dispatch(
+			saveAddPropertyFormDetail({
+				...allFormikValues,
+				isMultiUnit,
+				...payload,
+			}),
+		);
+	};
+
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
+
+		if (
+			location.pathname.includes('property-category') &&
+			!formik.values.categoryId
+		) {
+			dispatch(
+				openSnackbar({
+					message: 'Please select a property category before you proceed!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			return;
+		} else if (
+			location.pathname.includes('property-details') &&
+			!formik.values.typeId &&
+			!formik.values.name
+		) {
+			dispatch(
+				openSnackbar({
+					message:
+						'Please ensure all the fields are properly filled before you proceed!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			return;
+		}
+
+		saveFormikDataInStore();
 
 		setActiveStep((prev) => prev + 1);
 
@@ -53,12 +223,26 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 
 	const handleBackwardButton = () => {
 		if (activeStep === 0) return;
+
+		saveFormikDataInStore();
+
 		setActiveStep((prev) => prev - 1);
+
 		navigateToStep(activeStep - 1);
 	};
 
 	const handleAllPropertiesClick = () => {
 		navigate('/properties');
+	};
+
+	const renderBasedOnPath = () => {
+		if (location.pathname.includes('property-category')) {
+			return <PropertyCategory formik={formik} />;
+		} else if (location.pathname.includes('property-details')) {
+			return <PropertiesDetails formik={formik} />;
+		} else if (location.pathname.includes('unit-type')) {
+			return <UnitType formik={formik} />;
+		}
 	};
 
 	return (
@@ -87,7 +271,7 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 					</Grid>
 				</Grid>
 
-				{children}
+				{renderBasedOnPath()}
 
 				<Grid sx={styles.buttonContainer}>
 					<Button
@@ -99,15 +283,30 @@ export const AddPropertiesLayout: FC<{ children: ReactElement }> = ({
 						<ArrowLeftIcon />
 						<Typography>Previous</Typography>
 					</Button>
-					<Button
-						variant='contained'
-						sx={styles.directionButton}
-						onClick={handleForwardButton}
-						disabled={activeStep === steps.length - 1}
-					>
-						<Typography>Next</Typography>
-						<RightArrowIcon />
-					</Button>
+					{!(activeStep === steps.length - 1) && (
+						<>
+							<Button
+								variant='contained'
+								sx={styles.directionButton}
+								onClick={handleForwardButton}
+								disabled={activeStep === steps.length - 1}
+							>
+								<Typography>Next</Typography>
+								<RightArrowIcon />
+							</Button>
+						</>
+					)}
+
+					{activeStep === steps.length - 1 && (
+						<Button
+							variant='contained'
+							sx={styles.directionButton}
+							// onClick={handleForwardButton}
+							// disabled={activeStep === steps.length - 1}
+						>
+							<Typography>Save</Typography>
+						</Button>
+					)}
 				</Grid>
 			</>
 		</Container>

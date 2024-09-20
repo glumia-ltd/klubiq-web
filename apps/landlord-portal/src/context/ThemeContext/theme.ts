@@ -81,6 +81,14 @@ export const LightTheme: Theme = createTheme({
 		},
 	},
 	components: {
+		MuiAlert: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF !important',
+				},
+			},
+		},
+
 		MuiButton: {
 			styleOverrides: {
 				root: {
@@ -383,6 +391,13 @@ export const DarkTheme: Theme = createTheme({
 	},
 
 	components: {
+		MuiAlert: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF !important',
+				},
+			},
+		},
 		MuiListItemButton: {
 			defaultProps: {
 				disableRipple: true,

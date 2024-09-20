@@ -6,6 +6,7 @@ export const authEndpoints = {
 	getUserByFbid: () => `auth/user`,
 	sendResetPasswordEmail: () => `auth/reset-password-link`,
 	resetPassword: () => `auth/reset-password`,
+	verifyOobCode: () => `auth/verify-email`,
 };
 
 export const dashboardEndpoints = {
