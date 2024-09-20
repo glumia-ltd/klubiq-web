@@ -1,51 +1,39 @@
-import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
+import { Grid, Breadcrumbs, Button, Chip, Skeleton } from '@mui/material';
 import { Container } from '@mui/system';
-import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
 // import { HomeIcon } from '../Icons/HomeIcon';
-import { Overview } from '../Overview/Overview';
-import { TabsComponent } from '../TabsComponent/TabsComponent';
-import { TenantAndLeaseTable } from '../TenantAndLeaseTable/TenantAndLeaseTable';
-import { UnitsTable } from '../TenantAndLeaseTable/UnitsTable';
-import { UnitCard } from '../UnitCard/UnitCard';
-import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
+import { Overview } from '../../components/Overview/Overview';
+import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useState } from 'react';
+import UnitCardSkeleton from '../../components/UnitCard/UnitCardSkeleton';
+import InfoCardSkeleton from '../../components/UnitInfoComponent/InfoCardSkeleton';
+import FieldCardSkeleton from '../../components/AddFieldsComponent/FieldCardSkeleton';
+import TableSkeleton from '../../components/TenantAndLeaseTable/TableSkeleton';
 import {
 	HouseIcon,
 	TenantIcon,
 	VacantHomeIcon,
 	HomeIcon,
-} from '../Icons/CustomIcons';
-import propertyImage from '../../assets/images/propertyImage.png';
-import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
-import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
+} from '../../components/Icons/CustomIcons';
+import { MaintenanceTableComponent } from '../../components/MaintenaceTableComponent/MaintenanceTableComponent';
+import { DocumentTableComponent } from '../../components/DocumentTableComponent/DocumentTableComponent';
 import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
 
-type PropertyUnitComponentType = {
-	handleNavigation?: (path?: string) => void;
-	currentProperty: PropertyDataType;
+type UnitComponentType = {
+	currentProperty?: PropertyDataType;
 	tenantTableBodyRows?: any;
 	tenantColumns?: any;
 	leaseTableBodyRows?: any;
 };
 
-const stackedImages = [
-	propertyImage,
-	propertyImage,
-	propertyImage,
-	propertyImage,
-];
-
 const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
 
-export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
+export const UnitSkeleton: FC<UnitComponentType> = ({
 	currentProperty,
 	tenantTableBodyRows,
-	handleNavigation,
-	tenantColumns,
 	leaseTableBodyRows,
 }) => {
 	const navigate = useNavigate();
@@ -57,28 +45,17 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		navigate(-1);
 	};
 
-	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
-
-	const mainImage =
-		currentProperty?.images && currentProperty?.images.length > 1
-			? currentProperty?.images?.find((image) => image.isMain)
-			: currentProperty?.images && currentProperty?.images[0];
-
 	const unitInfoData = [
 		{
 			label: 'UNIT',
-			value: currentProperty?.unitCount || 0,
 			imgSrc: HouseIcon,
 		},
 		{
 			label: 'VACANT UNIT',
-			value: currentProperty?.vacantUnitCount || 0,
-			valueColor: 'green',
 			imgSrc: VacantHomeIcon,
 		},
 		{
 			label: 'TENANT',
-			value: currentProperty?.totalTenants || 0,
 			imgSrc: TenantIcon,
 		},
 	];
@@ -108,14 +85,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 					>
 						<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
 
-						<Typography fontWeight={700} sx={styles.textStyle}>
-							{currentProperty?.name}
-						</Typography>
+						<Skeleton variant='rectangular' width='90px' height='10px' />
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
 					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
-						<Typography fontWeight={500}>Action</Typography>
+						<Skeleton variant='rectangular' width='30px' height='10px' />
 						<MoreVertIcon />
 					</Button>
 				</Grid>
@@ -128,20 +103,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 					}
 				/>
 				<Grid sx={styles.firstCardContainer}>
-					<UnitCard
-						propertyImage={mainImage?.url}
-						propertyName={currentProperty?.name || ''}
-						propertyAddress={propertyAddress}
-						propertyId={currentProperty?.id}
+					<UnitCardSkeleton
 						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
-						rent={`₦ ${currentProperty?.totalRent}`}
-						totalArea={
-							currentProperty?.isMultiUnit
-								? ''
-								: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
-						}
-						buildingType={currentProperty?.type?.name}
-						additionalImages={stackedImages}
 					/>
 
 					{/* Render conditionally based on property type */}
@@ -159,7 +122,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={unitInfoData} />
+							<InfoCardSkeleton data={unitInfoData} />
 						</Grid>
 
 						<Overview initialText={currentProperty?.description} />
@@ -171,34 +134,14 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 								{tabValue !== 1 && (
 									<>
 										{tenantTableBodyRows?.length > 0 && (
-											<TenantAndLeaseTable
-												title='Tenant'
-												buttonText='Add Tenant'
-												handleAdd={handleNavigation}
-												columns={tenantColumns}
-												tableBodyRows={tenantTableBodyRows}
-											/>
+											<TableSkeleton tableBodyRows={tenantTableBodyRows} />
 										)}
 
-										{!tenantTableBodyRows?.length && (
-											<AddFieldCard
-												heading={'Add Tenant'}
-												subtext={'Add tenants to your property'}
-												description={'Add Tenant'}
-												handleAdd={handleNavigation}
-											/>
-										)}
+										{!tenantTableBodyRows?.length && <FieldCardSkeleton />}
 									</>
 								)}
 
-								{!leaseTableBodyRows?.length && (
-									<AddFieldCard
-										heading={'Add Lease'}
-										subtext={'Add lease to your property'}
-										description={'Add Lease'}
-										handleAdd={handleNavigation}
-									/>
-								)}
+								{!leaseTableBodyRows?.length && <FieldCardSkeleton />}
 							</Grid>
 						}
 					</Grid>
@@ -209,28 +152,18 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 				{propertyType === 'Multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={unitInfoData} />
+							<InfoCardSkeleton data={unitInfoData} />
 						</Grid>
 
 						<Overview initialText={currentProperty?.description} />
 
 						<Grid sx={styles.addfieldStyle}>
 							{currentProperty?.units && currentProperty?.units?.length > 0 && (
-								<UnitsTable
-									title='Units'
-									handleAdd={handleNavigation}
-									buttonText='Add Unit'
-									tableBodyRows={currentProperty?.units}
-								/>
+								<TableSkeleton tableBodyRows={currentProperty?.units} />
 							)}
 							{currentProperty?.units &&
 							currentProperty?.units?.length > 0 ? null : (
-								<AddFieldCard
-									heading={'Add Unit'}
-									subtext={'Add units to this property'}
-									description={'Add Unit'}
-									handleAdd={handleNavigation}
-								/>
+								<FieldCardSkeleton />
 							)}
 						</Grid>
 					</Grid>

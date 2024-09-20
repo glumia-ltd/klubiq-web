@@ -1,16 +1,14 @@
-import { Grid, Typography, Box, Card } from '@mui/material';
+import { Grid, Typography, Box, Card, Skeleton } from '@mui/material';
 import style from './style';
 import { FC } from 'react';
 
 interface DataItem {
 	icon?: JSX.Element;
 	label: string;
-	value: number;
-	valueColor?: string;
 	imgSrc?: any;
 }
 
-const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
+const InfoCardSkeleton: FC<{ data: DataItem[] }> = ({ data }) => {
 	return (
 		<Card sx={style.contentdiv}>
 			<Grid container spacing={1}>
@@ -35,20 +33,26 @@ const UnitInfoCard: FC<{ data: DataItem[] }> = ({ data }) => {
 								<Typography variant='subtitle1' sx={style.headerText}>
 									{item.label}
 								</Typography>
-								<Typography
-									variant='h4'
-									style={{ color: item.valueColor }}
-									sx={style.subText}
+								<Box
+									sx={{
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+									}}
 								>
-									{item.value}
-								</Typography>
+									<Skeleton
+										variant='rectangular'
+										width={'50px'}
+										height={'25px'}
+									/>
+								</Box>
 							</Box>
 						</Grid>
 					);
-				})}
+				})}{' '}
 			</Grid>
 		</Card>
 	);
 };
 
-export default UnitInfoCard;
+export default InfoCardSkeleton;

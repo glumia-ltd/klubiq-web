@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-
+import { UnitSkeleton } from './UnitSkeleton';
 import { useGetSinglePropertyByUUIDQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 import { PropertyUnitComponent } from '../../components/PropertyUnitComponent/PropertyUnitComponent';
@@ -14,7 +14,11 @@ const PropertyPage = () => {
 			uuid: currentUUId || '',
 		});
 
-	return <PropertyUnitComponent currentProperty={currentProperty} />;
+	return isCurrentPropertyLoading ? (
+		<UnitSkeleton currentProperty={currentProperty} />
+	) : (
+		<PropertyUnitComponent currentProperty={currentProperty} />
+	);
 };
 
 export default PropertyPage;

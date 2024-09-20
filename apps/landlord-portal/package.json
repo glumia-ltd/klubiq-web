@@ -18,7 +18,7 @@
     "@mui/x-charts": "^7.5.0",
     "@mui/x-date-pickers": "^7.12.1",
     "@react-google-maps/api": "^2.19.3",
-    "@reduxjs/toolkit": "^2.2.7",
+    "@reduxjs/toolkit": "^2.2.7", 
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.7",
     "axios": "^1.7.4",
