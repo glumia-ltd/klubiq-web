@@ -1,22 +1,26 @@
 import { Grid, Breadcrumbs, Button, Chip, Skeleton } from '@mui/material';
 import { Container } from '@mui/system';
 import { styles } from './style';
+// import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../../components/Overview/Overview';
 import { TabsComponent } from '../../components/TabsComponent/TabsComponent';
-import UnitCardSkeleton from '../../components/UnitCard/UnitCardSkeleton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useState } from 'react';
+import UnitCardSkeleton from '../../components/UnitCard/UnitCardSkeleton';
+import InfoCardSkeleton from '../../components/UnitInfoComponent/InfoCardSkeleton';
+import FieldCardSkeleton from '../../components/AddFieldsComponent/FieldCardSkeleton';
+import TableSkeleton from '../../components/TenantAndLeaseTable/TableSkeleton';
 import {
 	HouseIcon,
 	TenantIcon,
 	VacantHomeIcon,
 	HomeIcon,
 } from '../../components/Icons/CustomIcons';
+import { MaintenanceTableComponent } from '../../components/MaintenaceTableComponent/MaintenanceTableComponent';
+import { DocumentTableComponent } from '../../components/DocumentTableComponent/DocumentTableComponent';
+import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
-import InfoCardSkeleton from '../../components/UnitInfoComponent/InfoCardSkeleton';
-import FieldCardSkeleton from '../../components/AddFieldsComponent/FieldCardSkeleton';
-import TableSkeleton from '../../components/TenantAndLeaseTable/TableSkeleton';
 
 type UnitComponentType = {
 	currentProperty?: PropertyDataType;
@@ -32,10 +36,14 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 	tenantTableBodyRows,
 	leaseTableBodyRows,
 }) => {
+	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
-	console.log(propertyType, 'skel');
+	console.log(propertyType, 'real');
+	const handleHomeClick = () => {
+		navigate(-1);
+	};
 
 	const unitInfoData = [
 		{
@@ -75,7 +83,7 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 						aria-label='breadcrumb'
 						sx={styles.breadCrumbStyle}
 					>
-						<HomeIcon sx={styles.iconStyle} />
+						<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
 
 						<Skeleton variant='rectangular' width='90px' height='10px' />
 					</Breadcrumbs>
@@ -139,6 +147,8 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 					</Grid>
 				)}
 
+				{/* Multi unit */}
+
 				{propertyType === 'Multi' && (
 					<Grid>
 						<Grid sx={styles.unitInfoCardStyle}>
@@ -159,13 +169,13 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 					</Grid>
 				)}
 
-				{/* MAINTENANCE TAB
+				{/* MAINTENANCE TAB */}
 
 				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
 
-				DOCUMENT TAB
+				{/* DOCUMENT TAB */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />} */}
+				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
 		</Container>
 	);
