@@ -192,6 +192,8 @@ export interface PlaceType {
 }
 
 export type AddPropertyType = {
+	newAmenity: string;
+	customAmenities: string[];
 	categoryId?: number | null;
 	purposeId: number | null;
 	typeId: number | string;

@@ -11,23 +11,32 @@ import {
 	InputAdornment,
 	Select,
 	MenuItem,
+	Tooltip,
+	Collapse,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import BedIcon from '@mui/icons-material/Bed';
-import BathtubIcon from '@mui/icons-material/Bathtub';
+import RemoveIcon from '@mui/icons-material/Remove';
 import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
-import cloneIcon from '../../assets/images/Vector.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
 import _ from 'lodash';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import {
+	Bathroom,
+	Bedroom,
+	FloorPlan,
+	ShowerIcon,
+	CloneIcon,
+	EmojiOneBuildingIcon,
+} from '../Icons/CustomIcons';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -69,6 +78,20 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
 	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
+	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
+	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
+	const dispatch = useDispatch();
+
+	console.log(collapseUnit);
+
+	const customAmenitiesArray = formik.values.customAmenities.map(
+		(amenity: string) => ({
+			id: amenity,
+			name: amenity,
+		}),
+	);
+
+	const allAmenities = amenities ? [...amenities, ...customAmenitiesArray] : [];
 
 	const formState = useSelector(getAddPropertyState);
 
@@ -86,6 +109,35 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const handleClose = () => setOpen(false);
+	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
+
+	const handleAddCustomAmenites = () => {
+		const { newAmenity, customAmenities } = formik.values;
+		if (
+			_.some(
+				allAmenities,
+				(item) => _.toLower(item.name) === _.toLower(newAmenity),
+			)
+		) {
+			dispatch(
+				openSnackbar({
+					message: `${newAmenity} exists in amenities list`,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			return;
+		}
+
+		if (newAmenity.trim()) {
+			formik.setValues({
+				...formik.values,
+				customAmenities: [...customAmenities, newAmenity.trim()],
+				newAmenity: '',
+			});
+		}
+	};
 
 	const addUnit = () => {
 		formik.setFieldValue('units', [
@@ -115,35 +167,37 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
 	};
 
-	// const removeUnit = (index: number) => {
-	// 	const units = [...formik.values.units];
-	// 	units.splice(index, 1);
-	// 	formik.setFieldValue('units', units);
-	// };
+	const handleRemoveUnit = (index: number) => {
+		const units = [...formik.values.units];
+		units.splice(index, 1);
+		formik.setFieldValue('units', units);
+	};
 
-	const renderAmenities = () => {
+	const renderAmenities = (amenities: any) => {
 		if (
 			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
 			selectedUnitType !== 'multi'
 		) {
-			return amenities?.map((amenity) => (
-				<FormControlLabel
-					key={amenity.id}
-					control={
-						<Checkbox
-							name={`units[${currentUnitIndex}].amenities`}
-							value={amenity?.name}
-							checked={
-								formik.values.units[currentUnitIndex]?.amenities?.includes(
-									amenity?.name,
-								) || false
-							}
-							onChange={formik.handleChange}
-						/>
-					}
-					label={amenity?.name}
-				/>
-			));
+			return amenities?.map(
+				(amenity: { id: string | number; name: string }) => (
+					<FormControlLabel
+						key={amenity?.id || amenity?.name}
+						control={
+							<Checkbox
+								name={`units[${currentUnitIndex}].amenities`}
+								value={amenity?.name}
+								checked={
+									formik.values.units[currentUnitIndex]?.amenities?.includes(
+										amenity?.name,
+									) || false
+								}
+								onChange={formik.handleChange}
+							/>
+						}
+						label={amenity?.name}
+					/>
+				),
+			);
 		}
 		return null;
 	};
@@ -273,12 +327,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														},
 													}}
 												>
-													{MEASUREMENTS.map((measurement) => (
+													{MEASUREMENTS.map((entry, index) => (
 														<MenuItem
-															value={measurement.unit}
-															key={measurement.symbol}
+															value={entry.unit}
+															key={`single-${entry.symbol}-${index}`}
 														>
-															{measurement.symbol}
+															{entry.symbol}
 														</MenuItem>
 													))}
 												</Select>
@@ -289,7 +343,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={12}>
 								<Typography variant='subtitle1'>Amenities</Typography>
-								{renderAmenities()}
+								{renderAmenities(allAmenities)}
+								<br />
+
+								<i
+									style={{ cursor: 'pointer' }}
+									onClick={() => setOpenCustomAmenities(true)}
+								>
+									+ Add custom amenities
+								</i>
 							</Grid>
 						</Grid>
 					</Card>
@@ -324,59 +386,130 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													Title
 												</Typography>
 												<Box>
+													{collapseUnit.includes(index) ? (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																const updatedValue = _.without(
+																	collapseUnit,
+																	index,
+																);
+
+																console.log(updatedValue);
+																setCollapseUnit([...updatedValue]);
+															}}
+														>
+															<ExpandMoreIcon />
+														</IconButton>
+													) : (
+														<IconButton
+															edge='end'
+															onClick={() => {
+																console.log('clicked expand less');
+																setCollapseUnit([...collapseUnit, index]);
+															}}
+														>
+															<ExpandLessIcon />
+														</IconButton>
+													)}
 													<IconButton edge='end'>
-														<ExpandLessIcon />
-													</IconButton>
-													<IconButton edge='end'>
-														<MoreVertIcon />
+														<Tooltip title='Remove unit'>
+															<RemoveIcon
+																onClick={() => handleRemoveUnit(index)}
+															/>
+														</Tooltip>
 													</IconButton>
 												</Box>
 											</Card>
 										</Grid>
-										<Grid container spacing={0} sx={styles.cardContent}>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit number or name
-												</Typography>
-											</Grid>
-											<Grid item xs={12} md={12}>
-												<Typography fontWeight={400} fontSize={'14px'}>
-													Description{' '}
-												</Typography>
-												<ControlledTextField
-													name={`units[${index}].description`}
-													formik={formik}
-												/>
-											</Grid>
-											<Grid item xs={12}>
-												<Typography variant='h6' sx={styles.subText}>
-													Unit Details
-												</Typography>
-											</Grid>
 
-											<Grid item xs={6} sx={styles.unitIcon}>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BedIcon />
-													<Typography>{unit?.bedrooms}</Typography>
-												</IconButton>
-												<IconButton onClick={() => handleOpen(index)}>
-													<BathtubIcon />
-													<Typography>{unit?.bathrooms}</Typography>
-												</IconButton>
+										<Collapse
+											sx={{ width: '100%' }}
+											orientation='vertical'
+											in={collapseUnit.includes(index) ? false : true}
+										>
+											<Grid container spacing={0} sx={styles.cardContent}>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit number or name
+													</Typography>
+												</Grid>
+												<Grid item xs={12} md={12}>
+													<Typography fontWeight={400} fontSize={'14px'}>
+														Description{' '}
+													</Typography>
+													<ControlledTextField
+														name={`units[${index}].description`}
+														formik={formik}
+													/>
+												</Grid>
+												<Grid item xs={12}>
+													<Typography variant='h6' sx={styles.subText}>
+														Unit Details
+													</Typography>
+												</Grid>
+
+												<Grid item xs={6} sx={styles.unitIcon}>
+													<Tooltip
+														title={`Click to adjust ${getNameByPropertyCategory(
+															formik.values.categoryId,
+														).slice(0, -1)} count`}
+													>
+														<IconButton onClick={() => handleOpen(index)}>
+															{getNameByPropertyCategory(
+																formik.values.categoryId,
+															) === 'offices' ? (
+																<EmojiOneBuildingIcon />
+															) : (
+																<Bedroom />
+															)}
+															<Typography>
+																{
+																	unit[
+																		getNameByPropertyCategory(
+																			formik.values.categoryId,
+																		)
+																	]
+																}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust bathroom count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<ShowerIcon />
+															<Typography>{unit?.bathrooms}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust toilet count`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<Bathroom />
+															<Typography>{unit?.toilets}</Typography>
+														</IconButton>
+													</Tooltip>
+													<Tooltip title={`Click to adjust floor plan`}>
+														<IconButton onClick={() => handleOpen(index)}>
+															<FloorPlan />
+															<Typography>
+																{unit?.area.value}{' '}
+																{unit?.area.value &&
+																	_.find(MEASUREMENTS, {
+																		unit: unit?.area.unit,
+																	})?.symbol}
+															</Typography>
+														</IconButton>
+													</Tooltip>
+												</Grid>
 											</Grid>
-										</Grid>
+										</Collapse>
 									</Grid>
 									<Grid item xs={12}>
 										<IconButton
 											onClick={() => cloneUnit(index)}
 											sx={styles.cloneButton}
 										>
-											<img
-												src={cloneIcon}
-												alt='icon'
-												style={{ marginRight: '5px' }}
-											/>
-											<Typography sx={styles.cloneText}>Clone</Typography>
+											<CloneIcon sx={{ marginRight: '5px', height: '12px' }} />
+
+											<Typography sx={styles.cloneText}>Clone unit</Typography>
 										</IconButton>
 									</Grid>
 								</Grid>
@@ -386,14 +519,48 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 				</Grid>
 			)}
 
+			<Dialog open={openCustomAmenities} onClose={handleCustomAmenitiesClose}>
+				<Card sx={{ padding: '25px' }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<ControlledTextField
+								name='newAmenity'
+								label='Add Custom Amenites'
+								formik={formik}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							{renderAmenities(customAmenitiesArray)}
+						</Grid>
+
+						<Grid item xs={12}>
+							<Button
+								variant='contained'
+								color='primary'
+								onClick={handleAddCustomAmenites}
+							>
+								Add Amenity
+							</Button>
+							{/* <Button
+								variant='contained'
+								color='primary'
+								onClick={handleCustomAmenitiesClose}
+							>
+								Close
+							</Button> */}
+						</Grid>
+					</Grid>
+				</Card>
+			</Dialog>
+
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
 					<Typography variant='h6'>Unit Details</Typography>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].bedrooms`}
-								label='Bedrooms'
+								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
+								label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 								type='number'
 								formik={formik}
 							/>
@@ -416,18 +583,51 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].floor`}
+								name={`units[${currentUnitIndex}].area.value`}
 								label='Floor Plan'
 								formik={formik}
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position='end'>
+											<Select
+												name={`units[${currentUnitIndex}].area.unit`}
+												value={measurement}
+												onChange={handleMeasurementChange}
+												defaultValue={measurement}
+												sx={{
+													'.MuiOutlinedInput-notchedOutline': {
+														border: 'none',
+													},
+												}}
+											>
+												{MEASUREMENTS.map((measurement) => (
+													<MenuItem
+														value={measurement?.unit}
+														key={`multi-${measurement?.unit}`}
+													>
+														{measurement.symbol}
+													</MenuItem>
+												))}
+											</Select>
+										</InputAdornment>
+									),
+								}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant='subtitle1'>Amenities</Typography>
-							{renderAmenities()}
+							{renderAmenities(allAmenities)}
+
+							<i
+								style={{ cursor: 'pointer' }}
+								onClick={() => setOpenCustomAmenities(true)}
+							>
+								+ Add custom amenities
+							</i>
 						</Grid>
 						<Grid item xs={12}>
 							<Button variant='contained' color='primary' onClick={handleClose}>
-								Copy details and Add New Unit
+								Close
 							</Button>
 						</Grid>
 					</Grid>

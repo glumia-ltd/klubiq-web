@@ -36,9 +36,10 @@ const styles = {
 		// color: '#002147',
 	},
 	cloneText: {
-		color: '#002147',
+		// color: '#002147',
 		fontSize: '14px',
 		fontWeight: '500',
+		textDecoration: 'underline',
 	},
 	addButton: {
 		display: 'flex',
