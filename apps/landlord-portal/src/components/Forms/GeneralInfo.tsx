@@ -13,6 +13,8 @@ import {
 	MenuItem,
 	Tooltip,
 	Collapse,
+	Chip,
+	Stack,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -37,6 +39,7 @@ import {
 	CloneIcon,
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
+import { getIn } from 'formik';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -214,6 +217,13 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		}
 	};
 
+	const deselectAmenity = (name: string, valueToDeselect: string) => {
+		const selectedAmenities = getIn(formik.values, name);
+
+		const updatedAmenities = _.without(selectedAmenities, valueToDeselect);
+		formik.setFieldValue(name, updatedAmenities);
+	};
+
 	return (
 		<Grid container spacing={1}>
 			<Grid container>
@@ -383,7 +393,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													fontSize={'16px'}
 													variant='h6'
 												>
-													Title
+													{getIn(formik.values, `units[${index}].unitNumber`) ||
+														'Title'}
 												</Typography>
 												<Box>
 													{collapseUnit.includes(index) ? (
@@ -436,10 +447,10 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 												</Grid>
 												<Grid item xs={12} md={12}>
 													<Typography fontWeight={400} fontSize={'14px'}>
-														Description{' '}
+														Title{' '}
 													</Typography>
 													<ControlledTextField
-														name={`units[${index}].description`}
+														name={`units[${index}].unitNumber`}
 														formik={formik}
 													/>
 												</Grid>
@@ -498,6 +509,33 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															</Typography>
 														</IconButton>
 													</Tooltip>
+												</Grid>
+
+												<Grid xs={12}>
+													<Stack
+														direction='row'
+														flexWrap={'wrap'}
+														gap={1}
+														sx={{ maxWidth: '100%' }}
+													>
+														{getIn(
+															formik.values,
+															`units[${currentUnitIndex}].amenities`,
+														)?.map((amenity: string) => {
+															return (
+																<Chip
+																	label={amenity}
+																	variant='outlined'
+																	onDelete={() =>
+																		deselectAmenity(
+																			`units[${currentUnitIndex}].amenities`,
+																			amenity,
+																		)
+																	}
+																/>
+															);
+														})}
+													</Stack>
 												</Grid>
 											</Grid>
 										</Collapse>
