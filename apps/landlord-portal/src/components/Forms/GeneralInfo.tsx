@@ -85,8 +85,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
 	const dispatch = useDispatch();
 
-	console.log(collapseUnit);
-
 	const customAmenitiesArray = formik.values.customAmenities.map(
 		(amenity: string) => ({
 			id: amenity,
