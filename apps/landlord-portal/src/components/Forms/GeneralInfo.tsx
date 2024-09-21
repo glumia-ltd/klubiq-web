@@ -470,7 +470,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															{getNameByPropertyCategory(
 																formik.values.categoryId,
 															) === 'offices' ? (
-																<EmojiOneBuildingIcon />
+																<EmojiOneBuildingIcon sx={{ height: '15px' }} />
 															) : (
 																<Bedroom />
 															)}
@@ -487,7 +487,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													</Tooltip>
 													<Tooltip title={`Click to adjust bathroom count`}>
 														<IconButton onClick={() => handleOpen(index)}>
-															<ShowerIcon />
+															<ShowerIcon sx={{ height: '15px' }} />
 															<Typography>{unit?.bathrooms}</Typography>
 														</IconButton>
 													</Tooltip>
