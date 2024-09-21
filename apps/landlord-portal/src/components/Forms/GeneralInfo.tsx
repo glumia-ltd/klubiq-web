@@ -511,7 +511,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													</Tooltip>
 												</Grid>
 
-												<Grid xs={12}>
+												<Grid item xs={12}>
 													<Stack
 														direction='row'
 														flexWrap={'wrap'}
