@@ -349,14 +349,12 @@ export const AddPropertiesLayout = () => {
 
 		updatedFormikValues.units = updatedUnits;
 
-		console.log('updated formik values', updatedFormikValues);
-
 		const payload = { ...updatedFormikValues };
 
 		console.log(payload);
 
 		try {
-			// await addProperty(payload).unwrap();
+			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}

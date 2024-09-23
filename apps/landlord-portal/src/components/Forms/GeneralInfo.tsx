@@ -80,11 +80,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
-	const [measurement, setMeasurement] = useState<string>(
-		getIn(formik.values, `units[${currentUnitIndex}].area.value`)
-			? MEASUREMENTS[0].unit
-			: '',
-	);
+	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
 	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
 	const dispatch = useDispatch();
@@ -412,6 +408,21 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														<IconButton
 															edge='end'
 															onClick={() => {
+																if (
+																	!getIn(
+																		formik.values,
+																		`units[${index}].unitNumber`,
+																	)
+																) {
+																	dispatch(
+																		openSnackbar({
+																			message: 'Unit name is cannot be empty',
+																			severity: 'info',
+																			isOpen: true,
+																		}),
+																	);
+																	return;
+																}
 																setCollapseUnit([...collapseUnit, index]);
 															}}
 														>
