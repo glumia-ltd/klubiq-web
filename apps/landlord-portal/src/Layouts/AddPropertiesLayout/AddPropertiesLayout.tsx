@@ -309,33 +309,6 @@ export const AddPropertiesLayout = () => {
 			delete updatedFormikValues.unitType;
 		}
 
-		// if (updatedFormikValues.categoryId === 1) {
-		// 	updatedFormikValues.units.map((unit: any) => {
-		// 		if (unit && typeof unit === 'object') {
-		// 			const newUnit = { ...unit };
-		// 			if (updatedFormikValues.categoryId === 1) {
-		// 				delete newUnit.offices;
-		// 				delete newUnit.rooms;
-		// 			}
-
-		// 			return newUnit;
-		// 		}
-		// 	});
-		// }
-
-		// if (updatedFormikValues.categoryId === 3) {
-		// 	updatedFormikValues.units.map((unit: any) => {
-		// 		if (unit && typeof unit === 'object') {
-		// 			const newUnit = { ...unit };
-		// 			if (updatedFormikValues.categoryId === 3) {
-		// 				delete newUnit.offices;
-		// 				delete newUnit.bedrooms;
-		// 			}
-
-		// 			return newUnit;
-		// 		}
-		// 	});
-		// }
 		// clean up address field
 
 		const updatedAddress = omitBy(
@@ -381,9 +354,7 @@ export const AddPropertiesLayout = () => {
 		console.log(payload);
 
 		try {
-			const res = await addProperty(payload).unwrap();
-
-			// console.log(res);
+			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}

@@ -265,18 +265,49 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							justifyContent='flex-start'
 							alignItems='center'
 						>
-							<>
-								<KlubiqIcons.Bedroom
-									sx={{
-										color: 'text.primary',
-									}}
-								/>
-								<Typography variant='cardContentText'>
-									{propertyData?.bedrooms
-										? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
+							{propertyData?.bedrooms && (
+								<>
+									<KlubiqIcons.Bedroom
+										sx={{
+											color: 'text.primary',
+										}}
+									/>
+									<Typography variant='cardContentText'>
+										{propertyData?.bedrooms
+											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
+											: '--'}
+									</Typography>
+								</>
+							)}
+							{propertyData?.offices && (
+								<>
+									<KlubiqIcons.EmojiOneBuildingIcon
+										sx={{
+											color: 'text.primary',
+										}}
+									/>
+									<Typography variant='cardContentText'>
+										{propertyData?.offices
+											? `${propertyData?.offices} Office${Number(propertyData?.offices) > 0 ? 's' : ''}`
+											: '--'}
+									</Typography>
+								</>
+							)}
+							{propertyData?.rooms && (
+								<>
+									<KlubiqIcons.Bedroom
+										sx={{
+											color: 'text.primary',
+										}}
+									/>
+									<Typography variant='cardContentText'>
+										{propertyData?.rooms
+											? `${propertyData?.rooms} Room${Number(propertyData?.rooms) > 0 ? 's' : ''}`
+											: '--'}
+									</Typography>
+								</>
+							)}
+
 							{/* {propertyData?.bedrooms ? (
 								<>
 									<KlubiqIcons.Bedroom

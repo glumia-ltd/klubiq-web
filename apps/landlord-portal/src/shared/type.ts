@@ -91,6 +91,8 @@ export type PropertyDataType = {
 	totalRent: string;
 	images?: { isMain: boolean; url: string }[] | null;
 	totalTenants: number;
+	offices?: string | number;
+	rooms?: string | number;
 };
 
 // export type PropertyType = {
