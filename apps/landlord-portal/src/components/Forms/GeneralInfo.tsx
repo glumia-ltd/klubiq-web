@@ -15,6 +15,7 @@ import {
 	Collapse,
 	Chip,
 	Stack,
+	Menu,
 } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -40,6 +41,7 @@ import {
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
 import { getIn } from 'formik';
+import { MoreVert } from '@mui/icons-material';
 
 const MEASUREMENTS: any[] = [
 	{
@@ -83,7 +85,16 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
 	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
+	const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
 	const dispatch = useDispatch();
+	const openDropdown = Boolean(anchorElement);
+
+	const handleClickDropdown = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorElement(event.currentTarget);
+	};
+	const handleCloseDropdown = () => {
+		setAnchorElement(null);
+	};
 
 	const customAmenitiesArray = formik.values.customAmenities.map(
 		(amenity: string) => ({
@@ -430,11 +441,38 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														</IconButton>
 													)}
 													<IconButton edge='end'>
-														<Tooltip title='Remove unit'>
-															<RemoveIcon
-																onClick={() => handleRemoveUnit(index)}
-															/>
-														</Tooltip>
+														<span onClick={handleClickDropdown}>
+															<MoreVert />
+														</span>
+
+														<Menu
+															anchorEl={anchorElement}
+															open={openDropdown}
+															onClose={handleCloseDropdown}
+														>
+															<MenuItem
+																onClick={() => {
+																	cloneUnit(index);
+																	handleCloseDropdown();
+																}}
+															>
+																<CloneIcon
+																	sx={{ marginRight: '5px', height: '12px' }}
+																/>
+																Clone unit
+															</MenuItem>
+															<MenuItem
+																onClick={() => {
+																	handleRemoveUnit(index);
+																	handleCloseDropdown();
+																}}
+															>
+																<RemoveIcon
+																	sx={{ marginRight: '5px', height: '12px' }}
+																/>
+																Remove unit
+															</MenuItem>
+														</Menu>
 													</IconButton>
 												</Box>
 											</Card>
@@ -546,16 +584,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 												</Grid>
 											</Grid>
 										</Collapse>
-									</Grid>
-									<Grid item xs={12}>
-										<IconButton
-											onClick={() => cloneUnit(index)}
-											sx={styles.cloneButton}
-										>
-											<CloneIcon sx={{ marginRight: '5px', height: '12px' }} />
-
-											<Typography sx={styles.cloneText}>Clone unit</Typography>
-										</IconButton>
 									</Grid>
 								</Grid>
 							))}
@@ -674,7 +702,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={12}>
 							<Button variant='contained' color='primary' onClick={handleClose}>
-								Close
+								Save unit details
 							</Button>
 						</Grid>
 					</Grid>
