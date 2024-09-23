@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
-import _ from 'lodash';
+import { without, some, toLower, capitalize, find } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import {
 	Bathroom,
@@ -80,7 +80,11 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
-	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
+	const [measurement, setMeasurement] = useState<string>(
+		getIn(formik.values, `units[${currentUnitIndex}].area.value`)
+			? MEASUREMENTS[0].unit
+			: '',
+	);
 	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
 	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
 	const dispatch = useDispatch();
@@ -97,7 +101,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const formState = useSelector(getAddPropertyState);
 
 	// console.log('store', formState);
-	console.log('formik', formik.values);
+	// console.log('formik', formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
@@ -115,10 +119,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const handleAddCustomAmenites = () => {
 		const { newAmenity, customAmenities } = formik.values;
 		if (
-			_.some(
-				allAmenities,
-				(item) => _.toLower(item.name) === _.toLower(newAmenity),
-			)
+			some(allAmenities, (item) => toLower(item.name) === toLower(newAmenity))
 		) {
 			dispatch(
 				openSnackbar({
@@ -180,12 +181,13 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 			selectedUnitType !== 'multi'
 		) {
 			return amenities?.map(
-				(amenity: { id: string | number; name: string }) => (
+				(amenity: { id: string | number; name: string }, index: number) => (
 					<FormControlLabel
 						key={amenity?.id || amenity?.name}
 						control={
 							<Checkbox
 								name={`units[${currentUnitIndex}].amenities`}
+								key={`${amenity?.name}--${index}`}
 								value={amenity?.name}
 								checked={
 									formik.values.units[currentUnitIndex]?.amenities?.includes(
@@ -203,6 +205,23 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
+	// useEffect(() => {
+	// 	const category = formik.values.categoryId;
+
+	// 	if (!category) return;
+
+	// 	if (Number(category) === 1) {
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].offices`, null);
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].rooms`, null);
+	// 	} else if (Number(category) === 2) {
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].bedrooms`, null);
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].rooms`, null);
+	// 	} else if (Number(category) === 3) {
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].offices`, null);
+	// 		formik.setFieldValue(`units[${currentUnitIndex}].bedrooms`, null);
+	// 	}
+	// }, [currentUnitIndex, formik, formik.values.categoryId]);
+
 	const getNameByPropertyCategory = (category: number) => {
 		if (Number(category) === 1) {
 			return 'bedrooms';
@@ -218,7 +237,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const deselectAmenity = (name: string, valueToDeselect: string) => {
 		const selectedAmenities = getIn(formik.values, name);
 
-		const updatedAmenities = _.without(selectedAmenities, valueToDeselect);
+		const updatedAmenities = without(selectedAmenities, valueToDeselect);
 		formik.setFieldValue(name, updatedAmenities);
 	};
 
@@ -295,14 +314,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							<Grid item xs={6}>
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
-									label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
+									label={`${capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 									type='number'
 									formik={formik}
 								/>
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`$units[${currentUnitIndex}].bathrooms`}
+									name={`units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
 									type='number'
 									formik={formik}
@@ -328,7 +347,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													name={`units[${currentUnitIndex}].area.unit`}
 													value={measurement}
 													onChange={handleMeasurementChange}
-													defaultValue={measurement}
 													sx={{
 														'.MuiOutlinedInput-notchedOutline': {
 															border: 'none',
@@ -391,20 +409,17 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													fontSize={'16px'}
 													variant='h6'
 												>
-													{getIn(formik.values, `units[${index}].unitNumber`) ||
-														'Title'}
+													{getIn(formik.values, `units[${index}].unitNumber`)}
 												</Typography>
 												<Box>
 													{collapseUnit.includes(index) ? (
 														<IconButton
 															edge='end'
 															onClick={() => {
-																const updatedValue = _.without(
+																const updatedValue = without(
 																	collapseUnit,
 																	index,
 																);
-
-																console.log(updatedValue);
 																setCollapseUnit([...updatedValue]);
 															}}
 														>
@@ -414,7 +429,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														<IconButton
 															edge='end'
 															onClick={() => {
-																console.log('clicked expand less');
 																setCollapseUnit([...collapseUnit, index]);
 															}}
 														>
@@ -438,14 +452,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 											in={collapseUnit.includes(index) ? false : true}
 										>
 											<Grid container spacing={0} sx={styles.cardContent}>
-												<Grid item xs={12}>
-													<Typography variant='h6' sx={styles.subText}>
-														Unit number or name
-													</Typography>
-												</Grid>
 												<Grid item xs={12} md={12}>
-													<Typography fontWeight={400} fontSize={'14px'}>
-														Title{' '}
+													<Typography variant='h6' sx={styles.subText}>
+														Unit name
 													</Typography>
 													<ControlledTextField
 														name={`units[${index}].unitNumber`}
@@ -501,7 +510,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															<Typography>
 																{unit?.area.value}{' '}
 																{unit?.area.value &&
-																	_.find(MEASUREMENTS, {
+																	find(MEASUREMENTS, {
 																		unit: unit?.area.unit,
 																	})?.symbol}
 															</Typography>
@@ -522,6 +531,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														)?.map((amenity: string) => {
 															return (
 																<Chip
+																	sx={{
+																		border: '1px solid #757575',
+																		'&.MuiChip-deleteIcon': {
+																			color: '#757575 !important',
+																		},
+																	}}
 																	label={amenity}
 																	variant='outlined'
 																	onDelete={() =>
@@ -596,7 +611,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid item xs={6}>
 							<ControlledTextField
 								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
-								label={`${_.capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
+								label={`${capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
 								type='number'
 								formik={formik}
 							/>

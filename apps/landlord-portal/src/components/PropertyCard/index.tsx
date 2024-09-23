@@ -13,6 +13,7 @@ import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
 import { PropertyDataType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
+import defaultPropertyImage from '../../assets/images/defaultPropertyImage.png';
 
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
@@ -27,6 +28,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
 	const handleViewProperty = (uuid: number | string) => {
 		navigate(`/properties/${uuid}`);
+	};
+
+	const getFullAddress = () => {
+		return `${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2 ? propertyData?.address?.addressLine2 : ''}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`;
 	};
 
 	return layout === 'column' ? (
@@ -47,7 +52,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						objectFit: 'cover',
 						borderRadius: '0.5rem',
 					}}
-					image={propertyData?.mainImage?.url}
+					image={propertyData?.mainImage?.url || defaultPropertyImage}
 					alt={propertyData?.name}
 				/>
 				<Stack
@@ -85,7 +90,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						}}
 					/>
 					<Typography variant='cardContentText' noWrap={true}>
-						{`${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`}
+						{getFullAddress()}
 					</Typography>
 				</Stack>
 				<Stack
@@ -250,7 +255,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									color: 'text.primary',
 								}}
 							/>
-							<Typography variant='cardContentText'>{`${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`}</Typography>
+							<Typography variant='cardContentText'>
+								{getFullAddress()}
+							</Typography>
 						</Stack>
 						<Stack
 							direction='row'

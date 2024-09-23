@@ -32,7 +32,7 @@ const styles = {
 		fontSize: { xs: '13px', sm: '16px', md: '15px', lg: '16px' },
 		lineHeight: { xs: '20px', sm: '20px', md: '20px', lg: '20px' },
 		fontWeight: '600px',
-		marginBottom: '15px',
+		// marginBottom: '15px',
 		// color: '#002147',
 	},
 	cloneText: {

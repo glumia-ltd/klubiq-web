@@ -24,6 +24,8 @@ import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
+import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
+import { padEnd, omitBy } from 'lodash';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -75,6 +77,13 @@ export const AddPropertiesLayout = () => {
 	const location = useLocation();
 
 	const dispatch = useDispatch();
+
+	const formState = useSelector(getAddPropertyState);
+
+	const [
+		addProperty,
+		// { isLoading, isSuccess, isError, error }
+	] = useAddPropertyMutation();
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
@@ -131,16 +140,8 @@ export const AddPropertiesLayout = () => {
 	});
 
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-		// event.preventDefault();
-		// event.returnValue = '';
-		// dispatch(
-		// 	openSnackbar({
-		// 		message: 'Are you sure you want to leave this page?',
-		// 		severity: 'info',
-		// 		isOpen: true,
-		// 	}),
-		// );
-		// window.alert('Are you sure you want to leave this page???');
+		event.preventDefault();
+		event.returnValue = '';
 	};
 
 	useEffect(() => {
@@ -245,6 +246,149 @@ export const AddPropertiesLayout = () => {
 		}
 	};
 
+	const formatUnitBasedOnCategoryId = (
+		formikValues: any,
+		room1: string,
+		room2: string,
+	) => {
+		const units = [...formikValues.units];
+
+		const allUnits = units.map((unit: any) => {
+			if (unit && typeof unit === 'object') {
+				const newUnit = { ...unit };
+
+				delete newUnit[room1];
+				delete newUnit[room2];
+
+				return newUnit;
+			}
+		});
+
+		formikValues.units = allUnits;
+	};
+
+	const handleAddProperty = async () => {
+		saveFormikDataInStore();
+
+		const formikValues: any = Object.assign({}, formik.values);
+
+		if (formikValues.categoryId === 1) {
+			formatUnitBasedOnCategoryId(formikValues, 'offices', 'rooms');
+		}
+
+		if (formikValues.categoryId === 2) {
+			formatUnitBasedOnCategoryId(formikValues, 'bedrooms', 'rooms');
+		}
+
+		if (formikValues.categoryId === 3) {
+			formatUnitBasedOnCategoryId(formikValues, 'bedrooms', 'offices');
+		}
+
+		formikValues.isMultiUnit = formState.isMultiUnit;
+
+		//clean up form state object
+
+		const updatedFormikValues = omitBy(formikValues, (value) => {
+			return (
+				value === undefined ||
+				value === null ||
+				value === '' ||
+				(typeof value === 'object' && value?.length === 0)
+			);
+		});
+
+		if (updatedFormikValues?.purposeId) {
+			updatedFormikValues.purposeId = Number(updatedFormikValues.purposeId);
+		}
+
+		if (updatedFormikValues?.newAmenity) {
+			delete updatedFormikValues.newAmenity;
+		}
+
+		if (updatedFormikValues.unitType) {
+			delete updatedFormikValues.unitType;
+		}
+
+		// if (updatedFormikValues.categoryId === 1) {
+		// 	updatedFormikValues.units.map((unit: any) => {
+		// 		if (unit && typeof unit === 'object') {
+		// 			const newUnit = { ...unit };
+		// 			if (updatedFormikValues.categoryId === 1) {
+		// 				delete newUnit.offices;
+		// 				delete newUnit.rooms;
+		// 			}
+
+		// 			return newUnit;
+		// 		}
+		// 	});
+		// }
+
+		// if (updatedFormikValues.categoryId === 3) {
+		// 	updatedFormikValues.units.map((unit: any) => {
+		// 		if (unit && typeof unit === 'object') {
+		// 			const newUnit = { ...unit };
+		// 			if (updatedFormikValues.categoryId === 3) {
+		// 				delete newUnit.offices;
+		// 				delete newUnit.bedrooms;
+		// 			}
+
+		// 			return newUnit;
+		// 		}
+		// 	});
+		// }
+		// clean up address field
+
+		const updatedAddress = omitBy(
+			updatedFormikValues?.address,
+			(value) => value === undefined || value === null || value === '',
+		);
+
+		if (updatedAddress.longitude && updatedAddress.latitude) {
+			updatedAddress.longitude = Number(updatedAddress.longitude);
+			updatedAddress.latitude = Number(updatedAddress.latitude);
+		}
+
+		updatedFormikValues.address = updatedAddress;
+
+		// clean up unit field;
+
+		const updatedUnits = updatedFormikValues?.units?.map((unit: any) => {
+			return omitBy(unit, (value) => {
+				return (
+					value === undefined ||
+					value === null ||
+					value === '' ||
+					(typeof value === 'object' && value.length === 0)
+				);
+			});
+		});
+
+		updatedFormikValues.units = updatedUnits;
+
+		if (!updatedFormikValues.isMultiUnit) {
+			const unit = updatedFormikValues.units[0];
+			if (unit && typeof unit === 'object') {
+				const newUnit = { ...unit };
+
+				newUnit.unitNumber = padEnd(updatedFormikValues.name, 4, '-1');
+
+				updatedFormikValues.units = [newUnit];
+			}
+		}
+
+		const payload = { ...updatedFormikValues };
+
+		console.log(payload);
+
+		try {
+			const res = await addProperty(payload).unwrap();
+
+			// console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	return (
 		<Container sx={styles.containerStyle}>
 			<>
@@ -301,7 +445,7 @@ export const AddPropertiesLayout = () => {
 						<Button
 							variant='contained'
 							sx={styles.directionButton}
-							// onClick={handleForwardButton}
+							onClick={handleAddProperty}
 							// disabled={activeStep === steps.length - 1}
 						>
 							<Typography>Save</Typography>
