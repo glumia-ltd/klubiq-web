@@ -456,7 +456,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													/>
 												</Grid>
 												<Grid item xs={12}>
-													<Typography variant='h6' sx={styles.subText}>
+													<Typography variant='h3' sx={styles.subText}>
 														Unit Details
 													</Typography>
 												</Grid>
@@ -600,7 +600,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 			<Dialog open={open} onClose={handleClose} maxWidth='sm'>
 				<Card sx={{ padding: '25px' }}>
-					<Typography variant='h6'>Unit Details</Typography>
+					<Typography variant='h3' mb={2}>
+						Unit Details
+					</Typography>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
