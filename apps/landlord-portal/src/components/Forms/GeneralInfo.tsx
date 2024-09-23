@@ -205,23 +205,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
-	// useEffect(() => {
-	// 	const category = formik.values.categoryId;
-
-	// 	if (!category) return;
-
-	// 	if (Number(category) === 1) {
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].offices`, null);
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].rooms`, null);
-	// 	} else if (Number(category) === 2) {
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].bedrooms`, null);
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].rooms`, null);
-	// 	} else if (Number(category) === 3) {
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].offices`, null);
-	// 		formik.setFieldValue(`units[${currentUnitIndex}].bedrooms`, null);
-	// 	}
-	// }, [currentUnitIndex, formik, formik.values.categoryId]);
-
 	const getNameByPropertyCategory = (category: number) => {
 		if (Number(category) === 1) {
 			return 'bedrooms';

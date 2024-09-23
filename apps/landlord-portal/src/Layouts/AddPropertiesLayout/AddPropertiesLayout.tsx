@@ -67,6 +67,7 @@ type PayloadType = {
 
 interface IunitType extends AddPropertyType {
 	unitType?: string;
+	isMultiUnit?: boolean;
 }
 
 export const AddPropertiesLayout = () => {
@@ -101,6 +102,7 @@ export const AddPropertiesLayout = () => {
 			typeId: '',
 			images: [],
 			unitType: '',
+			isMultiUnit: false,
 			purposeId: null,
 			address: {
 				addressLine1: '',
@@ -270,7 +272,18 @@ export const AddPropertiesLayout = () => {
 	const handleAddProperty = async () => {
 		saveFormikDataInStore();
 
-		const formikValues: any = Object.assign({}, formik.values);
+		const formikValues: any = {
+			...formik.values,
+			isMultiUnit: formik.values.unitType === 'multi',
+		};
+
+		//check to see if more the property has multiple units;
+
+		const unitLength = formikValues.units.length > 1;
+
+		if (!unitLength && formikValues.isMultiUnit) {
+			formikValues.isMultiUnit = false;
+		}
 
 		if (formikValues.categoryId === 1) {
 			formatUnitBasedOnCategoryId(formikValues, 'offices', 'rooms');
@@ -283,8 +296,6 @@ export const AddPropertiesLayout = () => {
 		if (formikValues.categoryId === 3) {
 			formatUnitBasedOnCategoryId(formikValues, 'bedrooms', 'offices');
 		}
-
-		formikValues.isMultiUnit = formState.isMultiUnit;
 
 		//clean up form state object
 
@@ -338,23 +349,14 @@ export const AddPropertiesLayout = () => {
 
 		updatedFormikValues.units = updatedUnits;
 
-		if (!updatedFormikValues.isMultiUnit) {
-			const unit = updatedFormikValues.units[0];
-			if (unit && typeof unit === 'object') {
-				const newUnit = { ...unit };
-
-				newUnit.unitNumber = padEnd(updatedFormikValues.name, 4, '-1');
-
-				updatedFormikValues.units = [newUnit];
-			}
-		}
+		console.log('updated formik values', updatedFormikValues);
 
 		const payload = { ...updatedFormikValues };
 
 		console.log(payload);
 
 		try {
-			await addProperty(payload).unwrap();
+			// await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}
