@@ -300,7 +300,22 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleAddProperty = async () => {
-		console.log('formik', formik.values);
+		formik.handleSubmit();
+
+		const errors = await formik.validateForm();
+
+		if (Object.keys(errors).length > 0) {
+			dispatch(
+				openSnackbar({
+					message:
+						'Please ensure all the fields are properly filled before you proceed!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+			return;
+		}
+
 		saveFormikDataInStore();
 
 		const formikValues: any = {
@@ -385,12 +400,10 @@ export const AddPropertiesLayout = () => {
 		console.log(payload);
 
 		try {
-			// await addProperty(payload).unwrap();
+			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}
-
-		formik.handleSubmit();
 	};
 
 	return (
