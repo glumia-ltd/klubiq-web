@@ -4,6 +4,8 @@ import { Bungalow, HandCoins, FloorPlan } from '../Icons/CustomIcons';
 import { styles } from './style';
 import { Stackedimages } from '../StackedImages/Stackedimages';
 import { FC } from 'react';
+import { MEASUREMENTS } from '../../helpers/utils';
+import { find } from 'lodash';
 
 type UnitCardPropType = {
 	propertyImage?: string;
@@ -79,7 +81,13 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									<Grid sx={styles.additionalInfoText}>
 										<Typography>Total Area</Typography>
 
-										<Typography variant='h6'>{totalArea}</Typography>
+										<Typography variant='h6'>
+											{totalArea.split(' ')[0]}{' '}
+											{
+												find(MEASUREMENTS, { unit: totalArea.split(' ')[1] })
+													?.symbol
+											}
+										</Typography>
 									</Grid>
 								</Grid>
 							)}

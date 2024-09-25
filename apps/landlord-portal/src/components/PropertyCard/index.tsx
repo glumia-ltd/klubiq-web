@@ -103,25 +103,56 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent='flex-start'
 					alignItems='center'
 				>
-					<KlubiqIcons.Bedroom
-						sx={{
-							color: 'text.primary',
-							// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-						}}
-					/>
-					<Typography
-						variant='cardContentText'
-						noWrap={true}
-						sx={
-							{
-								// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-							}
-						}
-					>
-						{propertyData?.bedrooms
-							? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
-							: '--'}
-					</Typography>
+					{propertyData?.bedrooms !== undefined &&
+						propertyData?.bedrooms !== null && (
+							<>
+								<KlubiqIcons.Bedroom
+									sx={{
+										color: 'text.primary',
+										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+									}}
+								/>
+								<Typography
+									variant='cardContentText'
+									noWrap={true}
+									sx={
+										{
+											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+										}
+									}
+								>
+									{propertyData?.bedrooms
+										? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 1 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+						)}
+
+					{propertyData?.offices !== undefined &&
+						propertyData?.offices !== null && (
+							<>
+								<KlubiqIcons.EmojiOneBuildingIcon
+									sx={{
+										color: 'text.primary',
+										height: '15px',
+										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+									}}
+								/>
+								<Typography
+									variant='cardContentText'
+									noWrap={true}
+									sx={
+										{
+											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+										}
+									}
+								>
+									{propertyData?.offices
+										? `${propertyData?.offices} Office${Number(propertyData?.offices) > 1 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+						)}
 
 					<KlubiqIcons.ShowerIcon
 						sx={{

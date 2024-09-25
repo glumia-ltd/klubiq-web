@@ -42,25 +42,7 @@ import {
 } from '../Icons/CustomIcons';
 import { getIn } from 'formik';
 import { MoreVert } from '@mui/icons-material';
-
-const MEASUREMENTS: any[] = [
-	{
-		unit: 'SqM',
-		symbol: <span>m&sup2;</span>,
-	},
-	{
-		unit: 'SqCm',
-		symbol: <span>cm&sup2;</span>,
-	},
-	{
-		unit: 'SqFt',
-		symbol: <span>ft&sup2;</span>,
-	},
-	{
-		unit: 'SqIn',
-		symbol: <span>in&sup2;</span>,
-	},
-];
+import { MEASUREMENTS } from '../../helpers/utils';
 
 type CardProps = {
 	formik: any;
