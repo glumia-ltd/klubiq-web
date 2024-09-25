@@ -25,7 +25,7 @@ import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
-import { padEnd, omitBy } from 'lodash';
+import { omitBy } from 'lodash';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -38,6 +38,36 @@ const validationSchema = yup.object({
 		.required('Images are required'),
 	unitType: yup.string().required('This field is required'),
 	purposeId: yup.number().required('This field is required'),
+
+	address: yup.object({
+		addressLine1: yup.string().required('Address Line 1 is required'),
+		addressLine2: yup.string(),
+		city: yup.string().required('City is required'),
+		state: yup.string().required('State is required'),
+		postalCode: yup.string().required('Postal code is required'),
+		country: yup.string().required('Country is required'),
+		isManualAddress: yup.boolean(),
+	}),
+
+	units: yup.array().of(
+		yup.object({
+			id: yup.number().nullable(),
+			unitNumber: yup.string().required('Unit number is required'),
+			rentAmount: yup.number().nullable(),
+			floor: yup.number().nullable(),
+			bedrooms: yup.number().nullable(),
+			bathrooms: yup.number().nullable(),
+			toilets: yup.number().nullable(),
+			area: yup.object({
+				value: yup.number().nullable(),
+				unit: yup.string().required('Area unit is required'),
+			}),
+			status: yup.string(),
+			rooms: yup.number().nullable(),
+			offices: yup.number().nullable(),
+			amenities: yup.array().of(yup.string()),
+		}),
+	),
 });
 
 const routeObject: RouteObjectType = {
@@ -359,6 +389,8 @@ export const AddPropertiesLayout = () => {
 		} catch (e) {
 			console.log(e);
 		}
+
+		formik.handleSubmit();
 	};
 
 	return (
