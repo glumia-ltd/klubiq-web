@@ -372,7 +372,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							)}
 
 							{formik.values?.units?.map((unit: any, index: number) => (
-								<Grid container spacing={0} key={index}>
+								<Grid container spacing={0} key={`${index}-${index}-unit`}>
 									<Grid container spacing={0} sx={styles.boxContent}>
 										<Grid item xs={12}>
 											<Card sx={styles.titleDiv}>
@@ -383,7 +383,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 												>
 													{getIn(formik.values, `units[${index}].unitNumber`)}
 												</Typography>
-												<Box>
+												<Stack direction={'row'} alignItems={'center'} gap={2}>
 													{collapseUnit.includes(index) ? (
 														<IconButton
 															edge='end'
@@ -422,7 +422,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															<ExpandLessIcon />
 														</IconButton>
 													)}
-													<IconButton edge='end'>
+													{/* <IconButton edge='end'> */}
+													<Grid sx={{ cursor: 'pointer' }}>
 														<span onClick={handleClickDropdown}>
 															<MoreVert />
 														</span>
@@ -455,8 +456,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 																Remove unit
 															</MenuItem>
 														</Menu>
-													</IconButton>
-												</Box>
+													</Grid>
+													{/* </IconButton> */}
+												</Stack>
 											</Card>
 										</Grid>
 
