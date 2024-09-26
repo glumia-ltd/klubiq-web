@@ -7,7 +7,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
@@ -41,7 +41,7 @@ const DashBoard = () => {
 
 	const dispatch = useDispatch();
 
-	const { data: dashboardMetrics, isLoading: isDasboardMetricsLoading } =
+	const { data: dashboardMetrics, isLoading: isDashboardMetricsLoading } =
 		useGetDashboardMetricsQuery();
 
 	const startDate = firstDay?.format('YYYY-MM-DD');
@@ -158,7 +158,7 @@ const DashBoard = () => {
 
 	return (
 		<>
-			{isDasboardMetricsLoading ? (
+			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
 				<Container maxWidth={'xl'} sx={styles.containerStyle}>

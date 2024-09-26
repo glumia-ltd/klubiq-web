@@ -335,7 +335,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 								</Typography>
 							</Typography>
 							<Typography
-								onClick={() => handleViewProperty(propertyData?.id)}
+								onClick={() => handleViewProperty(propertyData?.uuid)}
 								variant='link'
 							>
 								View Property

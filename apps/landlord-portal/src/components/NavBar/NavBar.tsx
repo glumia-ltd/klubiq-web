@@ -157,7 +157,7 @@ const NavBar = () => {
 						>
 							{' '}
 							{user?.firstName ?? 'Klubiq User'} <br />
-							{startCase(user?.companyRole) ?? 'Demo'}
+							{startCase(user?.roleName) ?? 'Demo'}
 						</Typography>
 						<IconButton
 							edge='end'
