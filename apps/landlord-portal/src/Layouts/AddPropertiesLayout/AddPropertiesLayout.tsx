@@ -308,7 +308,7 @@ export const AddPropertiesLayout = () => {
 			dispatch(
 				openSnackbar({
 					message:
-						'Please ensure all the fields are properly filled before you proceed!',
+						'Please ensure all the fields are properly filled before you submit!',
 					severity: 'info',
 					isOpen: true,
 				}),
