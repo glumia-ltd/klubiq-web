@@ -201,9 +201,12 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				if (typeof value === 'string') {
 					// Handle custom typed value
 					formik.setFieldValue(name, value);
+
+					formik.setFieldValue('address.isManualAddress', true);
 				} else if (value) {
 					// Handle selected autocomplete suggestion
 					formik.setFieldValue(name, value.description);
+					formik.setFieldValue('address.isManualAddress', false);
 				}
 			}}
 			onInputChange={(_event, newInputValue) => {

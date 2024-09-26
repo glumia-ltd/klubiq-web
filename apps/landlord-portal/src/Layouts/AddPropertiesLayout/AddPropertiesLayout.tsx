@@ -302,6 +302,8 @@ export const AddPropertiesLayout = () => {
 	const handleAddProperty = async () => {
 		formik.handleSubmit();
 
+		console.log(formik.values);
+
 		const errors = await formik.validateForm();
 
 		if (Object.keys(errors).length > 0) {
