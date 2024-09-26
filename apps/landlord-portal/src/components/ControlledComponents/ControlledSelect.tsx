@@ -10,7 +10,6 @@ import {
 	Typography,
 	SxProps,
 } from '@mui/material';
-import { find } from 'lodash';
 import { getIn } from 'formik';
 
 type ControlledSelectProps = {
