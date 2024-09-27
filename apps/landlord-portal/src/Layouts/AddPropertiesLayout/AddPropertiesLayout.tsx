@@ -406,7 +406,7 @@ export const AddPropertiesLayout = () => {
 		console.log(payload);
 
 		try {
-			// await addProperty(payload).unwrap();
+			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}
