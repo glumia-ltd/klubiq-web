@@ -6,7 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import { getIn } from 'formik';
-import _ from 'lodash';
+import { find, includes } from 'lodash';
 
 const autocompleteService = { current: null };
 
@@ -52,19 +52,19 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			if (status === window.google.maps.places.PlacesServiceStatus.OK) {
 				const { address_components, geometry } = place;
 
-				const city = _.find(address_components, (item) =>
-					_.includes(item.types, 'locality'),
+				const city = find(address_components, (item) =>
+					includes(item.types, 'locality'),
 				)?.long_name;
 
-				const state = _.find(address_components, (item) =>
-					_.includes(item.types, 'administrative_area_level_1'),
+				const state = find(address_components, (item) =>
+					includes(item.types, 'administrative_area_level_1'),
 				)?.long_name;
 
-				const country = _.find(address_components, (item) =>
-					_.includes(item.types, 'country'),
+				const country = find(address_components, (item) =>
+					includes(item.types, 'country'),
 				)?.long_name;
-				const postalCode = _.find(address_components, (item) =>
-					_.includes(item.types, 'postal_code'),
+				const postalCode = find(address_components, (item) =>
+					includes(item.types, 'postal_code'),
 				)?.long_name;
 
 				const latitude = geometry.location.lat().toFixed(5);
@@ -201,9 +201,12 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				if (typeof value === 'string') {
 					// Handle custom typed value
 					formik.setFieldValue(name, value);
+
+					formik.setFieldValue('address.isManualAddress', true);
 				} else if (value) {
 					// Handle selected autocomplete suggestion
 					formik.setFieldValue(name, value.description);
+					formik.setFieldValue('address.isManualAddress', false);
 				}
 			}}
 			onInputChange={(_event, newInputValue) => {

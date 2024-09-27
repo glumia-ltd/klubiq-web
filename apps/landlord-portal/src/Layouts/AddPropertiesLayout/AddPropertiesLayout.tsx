@@ -24,18 +24,50 @@ import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
+import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
+import { omitBy } from 'lodash';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
 	description: yup.string(),
 	typeId: yup.string().required('Select an option'),
-	images: yup
-		.array()
-		.min(1, 'You need to upload at least one image')
-		.max(4, 'You can upload a maximum of 4 images')
-		.required('Images are required'),
+	categoryId: yup.string().required('Select an option'),
+	images: yup.array(),
+	// .min(1, 'You need to upload at least one image')
+	// .max(4, 'You can upload a maximum of 4 images')
+	// .required('Images are required'),
 	unitType: yup.string().required('This field is required'),
 	purposeId: yup.number().required('This field is required'),
+
+	address: yup.object({
+		addressLine1: yup.string().required('Address Line 1 is required'),
+		addressLine2: yup.string(),
+		city: yup.string().required('City is required'),
+		state: yup.string().required('State is required'),
+		postalCode: yup.string().required('Postal code is required'),
+		country: yup.string().required('Country is required'),
+		isManualAddress: yup.boolean(),
+	}),
+
+	units: yup.array().of(
+		yup.object({
+			id: yup.number().nullable(),
+			unitNumber: yup.string().required('Unit number is required'),
+			rentAmount: yup.number().nullable(),
+			floor: yup.number().nullable(),
+			bedrooms: yup.number().nullable(),
+			bathrooms: yup.number().nullable(),
+			toilets: yup.number().nullable(),
+			area: yup.object({
+				value: yup.number().nullable(),
+				unit: yup.string().required('Area unit is required'),
+			}),
+			status: yup.string(),
+			rooms: yup.number().nullable(),
+			offices: yup.number().nullable(),
+			// amenities: yup.array().of(yup.string()),
+		}),
+	),
 });
 
 const routeObject: RouteObjectType = {
@@ -65,6 +97,8 @@ type PayloadType = {
 
 interface IunitType extends AddPropertyType {
 	unitType?: string;
+	isMultiUnit?: boolean;
+	categoryName?: string | null;
 }
 
 export const AddPropertiesLayout = () => {
@@ -75,6 +109,13 @@ export const AddPropertiesLayout = () => {
 	const location = useLocation();
 
 	const dispatch = useDispatch();
+
+	const formState = useSelector(getAddPropertyState);
+
+	const [
+		addProperty,
+		// { isLoading, isSuccess, isError, error }
+	] = useAddPropertyMutation();
 
 	const currentLocation = location.pathname.split('/')[2] || '';
 
@@ -87,11 +128,13 @@ export const AddPropertiesLayout = () => {
 			newAmenity: '',
 			customAmenities: [],
 			categoryId: null,
+			categoryName: null,
 			description: '',
 			name: '',
 			typeId: '',
 			images: [],
 			unitType: '',
+			isMultiUnit: false,
 			purposeId: null,
 			address: {
 				addressLine1: '',
@@ -122,7 +165,7 @@ export const AddPropertiesLayout = () => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: [],
+					amenities: null,
 				},
 			],
 		},
@@ -131,16 +174,8 @@ export const AddPropertiesLayout = () => {
 	});
 
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-		// event.preventDefault();
-		// event.returnValue = '';
-		// dispatch(
-		// 	openSnackbar({
-		// 		message: 'Are you sure you want to leave this page?',
-		// 		severity: 'info',
-		// 		isOpen: true,
-		// 	}),
-		// );
-		// window.alert('Are you sure you want to leave this page???');
+		event.preventDefault();
+		event.returnValue = '';
 	};
 
 	useEffect(() => {
@@ -245,6 +280,138 @@ export const AddPropertiesLayout = () => {
 		}
 	};
 
+	const formatUnitBasedOnCategoryName = (
+		formikValues: any,
+		room1: string,
+		room2: string,
+	) => {
+		const units = [...formikValues.units];
+
+		const allUnits = units.map((unit: any) => {
+			if (unit && typeof unit === 'object') {
+				const newUnit = { ...unit };
+
+				delete newUnit[room1];
+				delete newUnit[room2];
+
+				return newUnit;
+			}
+		});
+
+		formikValues.units = allUnits;
+	};
+
+	const handleAddProperty = async () => {
+		formik.handleSubmit();
+
+		const errors = await formik.validateForm();
+
+		console.log(errors);
+
+		if (Object.keys(errors).length > 0) {
+			dispatch(
+				openSnackbar({
+					message:
+						'Please ensure all the fields are properly filled before you submit!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+			return;
+		}
+
+		saveFormikDataInStore();
+
+		const formikValues: any = {
+			...formik.values,
+			isMultiUnit: formik.values.unitType === 'multi',
+		};
+
+		//check to see if more the property has multiple units;
+
+		const unitLength = formikValues.units.length > 1;
+
+		if (!unitLength && formikValues.isMultiUnit) {
+			formikValues.isMultiUnit = false;
+		}
+
+		if (formikValues.categoryId === 1) {
+			formatUnitBasedOnCategoryName(formikValues, 'offices', 'rooms');
+		}
+
+		if (formikValues.categoryId === 2) {
+			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'rooms');
+		}
+
+		if (formikValues.categoryId === 3) {
+			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'offices');
+		}
+
+		//clean up form state object
+
+		const updatedFormikValues = omitBy(formikValues, (value) => {
+			return (
+				value === undefined ||
+				value === null ||
+				value === '' ||
+				(typeof value === 'object' && value?.length === 0)
+			);
+		});
+
+		if (updatedFormikValues?.purposeId) {
+			updatedFormikValues.purposeId = Number(updatedFormikValues.purposeId);
+		}
+
+		if (updatedFormikValues?.newAmenity) {
+			delete updatedFormikValues.newAmenity;
+		}
+
+		if (updatedFormikValues.unitType) {
+			delete updatedFormikValues.unitType;
+		}
+
+		// clean up address field
+
+		const updatedAddress = omitBy(
+			updatedFormikValues?.address,
+			(value) => value === undefined || value === null || value === '',
+		);
+
+		if (updatedAddress.longitude && updatedAddress.latitude) {
+			updatedAddress.longitude = Number(updatedAddress.longitude);
+			updatedAddress.latitude = Number(updatedAddress.latitude);
+		}
+
+		updatedFormikValues.address = updatedAddress;
+
+		// clean up unit field;
+
+		const updatedUnits = updatedFormikValues?.units?.map((unit: any) => {
+			return omitBy(unit, (value) => {
+				return (
+					value === undefined ||
+					value === null ||
+					value === '' ||
+					(typeof value === 'object' && value.length === 0)
+				);
+			});
+		});
+
+		updatedFormikValues.units = updatedUnits;
+
+		delete updatedFormikValues.categoryName;
+
+		const payload = { ...updatedFormikValues };
+
+		console.log(payload);
+
+		try {
+			// await addProperty(payload).unwrap();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	return (
 		<Container sx={styles.containerStyle}>
 			<>
@@ -301,7 +468,7 @@ export const AddPropertiesLayout = () => {
 						<Button
 							variant='contained'
 							sx={styles.directionButton}
-							// onClick={handleForwardButton}
+							onClick={handleAddProperty}
 							// disabled={activeStep === steps.length - 1}
 						>
 							<Typography>Save</Typography>

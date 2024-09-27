@@ -30,7 +30,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 
-const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
+const DEFAULT_PARAMS = { page: 1, take: 20, sortBy: 'name' };
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
