@@ -231,6 +231,6 @@ export type AddPropertyType = {
 		status: string;
 		rooms: number | null;
 		offices: number | null;
-		amenities: string[];
+		amenities: string[] | null;
 	}[];
 };
