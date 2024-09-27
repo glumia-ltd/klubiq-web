@@ -306,8 +306,6 @@ export const AddPropertiesLayout = () => {
 
 		const errors = await formik.validateForm();
 
-		console.log(errors);
-
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({
@@ -402,8 +400,6 @@ export const AddPropertiesLayout = () => {
 		delete updatedFormikValues.categoryName;
 
 		const payload = { ...updatedFormikValues };
-
-		console.log(payload);
 
 		try {
 			await addProperty(payload).unwrap();
