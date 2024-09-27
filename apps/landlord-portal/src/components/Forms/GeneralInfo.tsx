@@ -195,11 +195,11 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const getNameByPropertyCategory = (categoryName: string) => {
-		if (categoryName === 'Residential') {
+		if (categoryName?.toLowerCase()?.includes('residential')) {
 			return 'bedrooms';
-		} else if (categoryName === 'Commercial') {
+		} else if (categoryName?.toLowerCase()?.includes('commercial')) {
 			return 'offices';
-		} else if (categoryName === 'Student Housing') {
+		} else if (categoryName?.toLowerCase()?.includes('student housing')) {
 			return 'rooms';
 		} else {
 			return 'bedrooms';
