@@ -194,12 +194,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
-	const getNameByPropertyCategory = (category: number) => {
-		if (Number(category) === 1) {
+	const getNameByPropertyCategory = (categoryName: string) => {
+		if (categoryName === 'Residential') {
 			return 'bedrooms';
-		} else if (Number(category) === 2) {
+		} else if (categoryName === 'Commercial') {
 			return 'offices';
-		} else if (Number(category) === 3) {
+		} else if (categoryName === 'Student Housing') {
 			return 'rooms';
 		} else {
 			return 'bedrooms';
@@ -285,8 +285,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
-									label={`${capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryName)}`}
+									label={`${capitalize(getNameByPropertyCategory(formik.values.categoryName))}`}
 									type='number'
 									formik={formik}
 								/>
@@ -486,12 +486,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 												<Grid item xs={6} sx={styles.unitIcon}>
 													<Tooltip
 														title={`Click to adjust ${getNameByPropertyCategory(
-															formik.values.categoryId,
+															formik.values.categoryName,
 														).slice(0, -1)} count`}
 													>
 														<IconButton onClick={() => handleOpen(index)}>
 															{getNameByPropertyCategory(
-																formik.values.categoryId,
+																formik.values.categoryName,
 															) === 'offices' ? (
 																<EmojiOneBuildingIcon sx={{ height: '15px' }} />
 															) : (
@@ -501,7 +501,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 																{
 																	unit[
 																		getNameByPropertyCategory(
-																			formik.values.categoryId,
+																			formik.values.categoryName,
 																		)
 																	]
 																}
@@ -618,8 +618,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryId)}`}
-								label={`${capitalize(getNameByPropertyCategory(formik.values.categoryId))}`}
+								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryName)}`}
+								label={`${capitalize(getNameByPropertyCategory(formik.values.categoryName))}`}
 								type='number'
 								formik={formik}
 							/>

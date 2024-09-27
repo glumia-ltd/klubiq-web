@@ -28,10 +28,11 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
 		useGetPropertiesMetaDataQuery();
 
-	const handleCardClick = (id: number) => {
+	const handleCardClick = (id: number, name: string) => {
 		setSelectedCard(id);
 
 		formik.setFieldValue('categoryId', id);
+		formik.setFieldValue('categoryName', name);
 	};
 
 	const icons: Record<string, any> = {
@@ -71,7 +72,7 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 							heading={item.name}
 							subtext={item.displayText}
 							id={item.id}
-							onClick={handleCardClick}
+							onClick={() => handleCardClick(item.id, item.name)}
 							isSelected={item.id === selectedCard}
 							Image={item.Image}
 						/>

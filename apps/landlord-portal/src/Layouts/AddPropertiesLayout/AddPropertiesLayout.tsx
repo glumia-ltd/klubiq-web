@@ -31,6 +31,7 @@ const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
 	description: yup.string(),
 	typeId: yup.string().required('Select an option'),
+	categoryId: yup.string().required('Select an option'),
 	images: yup
 		.array()
 		.min(1, 'You need to upload at least one image')
@@ -98,6 +99,7 @@ type PayloadType = {
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
+	categoryName?: string | null;
 }
 
 export const AddPropertiesLayout = () => {
@@ -127,6 +129,7 @@ export const AddPropertiesLayout = () => {
 			newAmenity: '',
 			customAmenities: [],
 			categoryId: null,
+			categoryName: null,
 			description: '',
 			name: '',
 			typeId: '',
