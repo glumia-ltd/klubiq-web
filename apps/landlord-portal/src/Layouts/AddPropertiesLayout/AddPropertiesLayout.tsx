@@ -32,11 +32,10 @@ const validationSchema = yup.object({
 	description: yup.string(),
 	typeId: yup.string().required('Select an option'),
 	categoryId: yup.string().required('Select an option'),
-	images: yup
-		.array()
-		.min(1, 'You need to upload at least one image')
-		.max(4, 'You can upload a maximum of 4 images')
-		.required('Images are required'),
+	images: yup.array(),
+	// .min(1, 'You need to upload at least one image')
+	// .max(4, 'You can upload a maximum of 4 images')
+	// .required('Images are required'),
 	unitType: yup.string().required('This field is required'),
 	purposeId: yup.number().required('This field is required'),
 
@@ -66,7 +65,7 @@ const validationSchema = yup.object({
 			status: yup.string(),
 			rooms: yup.number().nullable(),
 			offices: yup.number().nullable(),
-			amenities: yup.array().of(yup.string()),
+			// amenities: yup.array().of(yup.string()),
 		}),
 	),
 });
@@ -166,7 +165,7 @@ export const AddPropertiesLayout = () => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: [],
+					amenities: null,
 				},
 			],
 		},
@@ -281,7 +280,7 @@ export const AddPropertiesLayout = () => {
 		}
 	};
 
-	const formatUnitBasedOnCategoryId = (
+	const formatUnitBasedOnCategoryName = (
 		formikValues: any,
 		room1: string,
 		room2: string,
@@ -305,9 +304,9 @@ export const AddPropertiesLayout = () => {
 	const handleAddProperty = async () => {
 		formik.handleSubmit();
 
-		console.log(formik.values);
-
 		const errors = await formik.validateForm();
+
+		console.log(errors);
 
 		if (Object.keys(errors).length > 0) {
 			dispatch(
@@ -337,15 +336,15 @@ export const AddPropertiesLayout = () => {
 		}
 
 		if (formikValues.categoryId === 1) {
-			formatUnitBasedOnCategoryId(formikValues, 'offices', 'rooms');
+			formatUnitBasedOnCategoryName(formikValues, 'offices', 'rooms');
 		}
 
 		if (formikValues.categoryId === 2) {
-			formatUnitBasedOnCategoryId(formikValues, 'bedrooms', 'rooms');
+			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'rooms');
 		}
 
 		if (formikValues.categoryId === 3) {
-			formatUnitBasedOnCategoryId(formikValues, 'bedrooms', 'offices');
+			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'offices');
 		}
 
 		//clean up form state object
@@ -400,12 +399,14 @@ export const AddPropertiesLayout = () => {
 
 		updatedFormikValues.units = updatedUnits;
 
+		delete updatedFormikValues.categoryName;
+
 		const payload = { ...updatedFormikValues };
 
 		console.log(payload);
 
 		try {
-			await addProperty(payload).unwrap();
+			// await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
 		}
