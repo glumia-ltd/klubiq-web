@@ -14,9 +14,9 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-	getAddPropertyState,
+	//getAddPropertyState,
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
@@ -110,7 +110,7 @@ export const AddPropertiesLayout = () => {
 
 	const dispatch = useDispatch();
 
-	const formState = useSelector(getAddPropertyState);
+	//const formState = useSelector(getAddPropertyState);
 
 	const [
 		addProperty,

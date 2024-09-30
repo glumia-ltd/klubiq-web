@@ -15,12 +15,11 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ButtonModule } from 'primeng/button';
+import { PasswordModule } from 'primeng/password';
 import { merge } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -35,78 +34,63 @@ export interface LoginValidationError {
 	imports: [
 		CommonModule,
 		RouterLink,
-		MatIconModule,
-		MatListModule,
-		MatButtonModule,
-		MatCardModule,
-		MatFormFieldModule,
-		MatInputModule,
 		FormsModule,
 		ReactiveFormsModule,
+		CardModule,
+		InputTextModule,
+		FloatLabelModule,
+		PasswordModule,
+		ButtonModule,
 	],
 	template: `
-		<div class="login-container">
-			<mat-card appearance="outlined" class="login-card">
-				<mat-card-header>
-					<mat-card-title>Klubiq Admin Portal</mat-card-title>
-				</mat-card-header>
-				<mat-card-content class="card-content">
-					<mat-form-field
-						[formGroup]="loginForm"
-						class="input"
-						appearance="outline"
-					>
-						<mat-label>Email</mat-label>
-						<input
-							matInput
-							formControlName="email"
-							(blur)="updateErrors()"
-							required
-						/>
+		<div class="login-container justify-content-center">
+			<p-card header="Klubiq Admin Portal">
+				<div
+					class="w-20rem login-card flex flex-column gap-4"
+					[formGroup]="loginForm"
+				>
+					<div class="flex flex-column gap-2">
+						<p-floatLabel>
+							<input
+								class="w-19rem"
+								pInputText
+								id="email"
+								formControlName="email"
+								(blur)="updateEmailErrors()"
+								required
+							/>
+							<label for="email">Email</label>
+						</p-floatLabel>
 						@if (errors().emailErrors) {
-							<mat-error>{{ errors().emailErrors }}</mat-error>
+							<small class="text-red-500">{{ errors().emailErrors }}</small>
 						}
-					</mat-form-field>
+					</div>
 
-					<mat-form-field
-						[formGroup]="loginForm"
-						class="input"
-						appearance="outline"
-					>
-						<mat-label>Password</mat-label>
-						<input
-							matInput
-							[type]="hide() ? 'password' : 'text'"
-							formControlName="password"
-							required
-							(blur)="updateErrors()"
-						/>
-						<button
-							mat-icon-button
-							matSuffix
-							(click)="togglePasswordVisibility($event)"
-							[attr.aria-label]="'Hide password'"
-							[attr.aria-pressed]="hide()"
-						>
-							<mat-icon>{{
-								hide() ? 'visibility_off' : 'visibility'
-							}}</mat-icon>
-						</button>
+					<div class="flex flex-column gap-2">
+						<p-floatLabel>
+							<p-password
+								id="password"
+								formControlName="password"
+								required
+								inputStyleClass="w-19rem"
+								(blur)="updatePasswordErrors()"
+								[toggleMask]="true"
+								[feedback]="false"
+							/>
+							<label for="password">Password</label>
+						</p-floatLabel>
 						@if (errors().passwordErrors) {
-							<mat-error>{{ errors().passwordErrors }}</mat-error>
+							<small class="text-red-500">{{ errors().passwordErrors }}</small>
 						}
-					</mat-form-field>
-
-					<button
-						class="submit"
+					</div>
+					<p-button
 						(click)="login()"
+						styleClass="w-19rem"
 						[disabled]="loginForm.invalid"
-						mat-flat-button
-					>
-						Login
-					</button>
-				</mat-card-content>
-			</mat-card>
+						label="Login"
+					/>
+				</div>
+			</p-card>
 		</div>
 	`,
 	styles: `
@@ -118,11 +102,8 @@ export interface LoginValidationError {
 			transform: translate(-50%, -50%);
 		}
 		.login-card {
-			display: flex;
-			max-width: 400px;
-			width: 100%;
-			align-items: center;
-			gap: 8px;
+			// max-width: 400px;
+			// width: 100%;
 		}
 		.input,
 		.submit {
@@ -155,14 +136,31 @@ export class LoginComponent implements OnInit {
 		merge(this.loginForm.statusChanges, this.loginForm.valueChanges)
 			.pipe(takeUntilDestroyed())
 			.subscribe(() => {
-				this.updateErrors();
+				this.updateEmailErrors();
+				this.updatePasswordErrors();
 			});
 	}
 
 	ngOnInit(): void {}
-	updateErrors() {
-		const emailForm = this.loginForm.get('email');
+	updatePasswordErrors() {
 		const passwordForm = this.loginForm.get('password');
+		if (passwordForm?.hasError) {
+			if (passwordForm?.hasError('required')) {
+				this.errors.set({
+					...this.errors(),
+					passwordErrors: 'Password is required',
+				});
+			} else {
+				this.errors.set({
+					...this.errors(),
+					passwordErrors: '',
+				});
+			}
+		}
+	}
+	updateEmailErrors() {
+		const emailForm = this.loginForm.get('email');
+
 		if (emailForm?.hasError) {
 			if (emailForm?.hasError('required')) {
 				this.errors.set({
@@ -178,19 +176,6 @@ export class LoginComponent implements OnInit {
 				this.errors.set({
 					...this.errors(),
 					emailErrors: '',
-				});
-			}
-		}
-		if (passwordForm?.hasError) {
-			if (passwordForm?.hasError('required')) {
-				this.errors.set({
-					...this.errors(),
-					passwordErrors: 'Password is required',
-				});
-			} else {
-				this.errors.set({
-					...this.errors(),
-					passwordErrors: '',
 				});
 			}
 		}

@@ -1,5 +1,5 @@
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
@@ -7,7 +7,6 @@ import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {
 	ListItemButton,
 	ListItemIcon,

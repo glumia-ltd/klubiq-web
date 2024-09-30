@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
 	Button,
 	Card,
@@ -26,20 +27,20 @@ type UnitsTableType = {
 	tableBodyRows: any;
 };
 
-type LeaseType = {
-	id: number;
-	name: string;
-	paymentFrequency: string;
-	status: string;
-	rentAmount: string;
-	startDate: string;
-	endDate: string;
-	rentDueDay: number;
-	securityDeposit: string;
-	tenants: [];
-	isDraft: boolean;
-	isArchived: boolean;
-};
+// type LeaseType = {
+// 	id: number;
+// 	name: string;
+// 	paymentFrequency: string;
+// 	status: string;
+// 	rentAmount: string;
+// 	startDate: string;
+// 	endDate: string;
+// 	rentDueDay: number;
+// 	securityDeposit: string;
+// 	tenants: [];
+// 	isDraft: boolean;
+// 	isArchived: boolean;
+// };
 
 export const UnitsTable: FC<UnitsTableType> = ({
 	handleAdd,

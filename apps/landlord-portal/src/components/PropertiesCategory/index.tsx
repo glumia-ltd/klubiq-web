@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import PropertyCategoryCard from '../PropertyCategoryCard';
+import PropertyCategoryCard from '../PropertyCategoryCard/index';
 import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
 import {
@@ -25,8 +25,10 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 		formik.values.categoryId,
 	);
 
-	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
-		useGetPropertiesMetaDataQuery();
+	const {
+		data: propertyMetaData,
+		//, isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
 
 	const handleCardClick = (id: number, name: string) => {
 		setSelectedCard(id);
@@ -36,21 +38,24 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 	};
 
 	const icons: Record<string, any> = {
-		Residential: HouseIcon,
-		Commercial: EmojiOneHomeIcon,
-		'Student Housing': EmojiOneBuildingIcon,
+		residential: HouseIcon,
+		commercial: EmojiOneHomeIcon,
+		Hostel: EmojiOneBuildingIcon,
 	};
 
 	const cardData: CardData[] = propertyMetaData?.categories?.map(
-		(category: CategoryType, index: number) => {
+		(
+			category: CategoryType,
+			//, index: number
+		) => {
 			return {
 				...category,
 				id: category?.id,
-				Image: icons[category.name],
+				Image: icons[category?.name],
 			};
 		},
 	);
-
+	console.log(cardData);
 	return (
 		<Card sx={PropertyLayoutStyle.card}>
 			<Grid container spacing={3}>
@@ -74,7 +79,7 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 							id={item.id}
 							onClick={() => handleCardClick(item.id, item.name)}
 							isSelected={item.id === selectedCard}
-							Image={item.Image}
+							Image={item?.Image}
 						/>
 					</Grid>
 				))}

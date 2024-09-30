@@ -1,4 +1,4 @@
-import { Stack, Typography, Button } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { SubmitButton } from '../../styles/button';
 interface FeedbackProps {
 	showButton?: boolean;

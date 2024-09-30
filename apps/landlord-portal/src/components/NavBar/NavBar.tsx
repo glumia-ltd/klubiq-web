@@ -13,7 +13,7 @@ import {
 	Badge,
 	Divider,
 } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
@@ -28,8 +28,8 @@ const NavBar = () => {
 	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
 	const [isModalOpen, setOpenModal] = useState(false);
 
-	const { pathname } = useLocation();
-	const section = pathname.split('/')[1];
+	// const { pathname } = useLocation();
+	// const section = pathname.split('/')[1];
 	const currentDrawerWidth = sidebarOpen
 		? isSmallScreen
 			? drawerWidth.smallOpen

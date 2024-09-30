@@ -1,6 +1,6 @@
 import { Grid, Card, IconButton, Box, Typography } from '@mui/material';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
+// import * as yup from 'yup';
+// import { useFormik } from 'formik';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
@@ -16,8 +16,10 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 
 	const formState = useSelector(getAddPropertyState);
 
-	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
-		useGetPropertiesMetaDataQuery();
+	const {
+		data: propertyMetaData,
+		//, isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 

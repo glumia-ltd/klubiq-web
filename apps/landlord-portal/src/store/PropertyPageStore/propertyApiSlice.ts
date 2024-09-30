@@ -2,7 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-import { PropertyDataType } from '../../shared/type';
+// import { PropertyDataType } from '../../shared/type';
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',

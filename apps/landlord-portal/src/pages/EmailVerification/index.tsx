@@ -1,16 +1,13 @@
 import { FC } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import FeedbackContent from '../../components/FeedbackContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { applyActionCode } from 'firebase/auth';
 import successImage from '../../assets/images/circle-ok.svg';
 import errorImage from '../../assets/images/error.svg';
-import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
 import { Container } from '@mui/system';
-import { api } from '../../api';
-import { authEndpoints } from '../../helpers/endpoints';
 
 interface EmailVerificationProps {}
 

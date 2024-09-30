@@ -49,7 +49,7 @@ const DashBoard = () => {
 
 	const {
 		data: revenueReport,
-		error,
+		//error,
 		isLoading: isRevenueReportLoading,
 	} = useGetRevenueReportDataQuery({ startDate, endDate });
 
