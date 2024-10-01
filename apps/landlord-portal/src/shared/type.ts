@@ -241,3 +241,9 @@ export type CategoryMetaDataType = {
 	hasRooms?: boolean;
 	hasOffices?: boolean;
 };
+
+export type SignedUrlType = {
+	signature: string;
+	storageLimit: number;
+	storageUsed: string;
+};
