@@ -37,6 +37,9 @@ export function loaderInterceptor(
 		}),
 		catchError((error) => {
 			loaderService.hideLoader();
+			if (error.status === 401) {
+				//inject(AuthService).logoutUser();
+			}
 			return throwError(() => error);
 		}),
 	);

@@ -58,7 +58,7 @@ export class PropertyMetadataService {
 			});
 	}
 
-	async createCategory(data: PropertyMetadata) {
+	async createCategory(data: UpdateMetaData) {
 		this.http
 			.post<ApiResponse>(
 				`${env.environment.apiUrl}/api/property-metadata/property-categories`,
@@ -85,7 +85,14 @@ export class PropertyMetadataService {
 			.subscribe({
 				next: (res) => {
 					if (res.status === 'success') {
-						this.getCategories();
+						this.categories().forEach((category) => {
+							if (category.id === id) {
+								category.name = data.name;
+								category.displayText = data.displayText;
+								category.metaData = data.metaData;
+							}
+						});
+						// this.getCategories();
 					}
 				},
 				error: (err) => {

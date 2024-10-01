@@ -20,12 +20,13 @@ import { ToastService } from '../services/toast.service';
 		<p-toast />
 		<div class="flex flex-column gap-1">
 			<h1 class="text-4xl">Property Metadata</h1>
-			<p-tabView [activeIndex]="0">
+			<p-tabView [(activeIndex)]="activeIndex">
 				@if (this.categories().length > 0) {
 					<p-tabPanel header="Property Categories">
 						<app-property-categories
 							[categories]="categories()"
 							(categoryChange)="updateCategory($event)"
+							(createCategory)="createCategory($event)"
 						></app-property-categories>
 					</p-tabPanel>
 				}
@@ -79,6 +80,7 @@ export class PropertyMetadataComponent implements OnInit {
 	amenities: Signal<PropertyMetadata[]> = computed(() =>
 		this.propertyMetadataService.amenities(),
 	);
+	activeIndex: number = 0;
 	constructor(
 		private router: Router,
 		private propertyMetadataService: PropertyMetadataService,
@@ -122,5 +124,17 @@ export class PropertyMetadataComponent implements OnInit {
 					);
 				});
 		}
+	}
+	createCategory(category: UpdateMetaData) {
+		this.propertyMetadataService
+			.createCategory(category)
+			.then(() => {
+				this.toastService.showSuccess('Category created successfully');
+			})
+			.catch((err) => {
+				this.toastService.showError(
+					`Failed to create Category due to ${err.message}`,
+				);
+			});
 	}
 }

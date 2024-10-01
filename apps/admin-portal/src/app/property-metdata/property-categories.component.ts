@@ -12,6 +12,7 @@ import { ToastService } from '../services/toast.service';
 import { PropertyMetadata } from '../shared/models/property-metadata.model';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { SidebarModule } from 'primeng/sidebar';
 
 interface newMetadata {
 	label: string;
@@ -20,7 +21,92 @@ interface newMetadata {
 @Component({
 	selector: 'app-property-categories',
 	standalone: true,
+	imports: [
+		CommonModule,
+		MatTableModule,
+		TableModule,
+		ButtonModule,
+		InputTextModule,
+		FormsModule,
+		ToastModule,
+		InputGroupModule,
+		InputGroupAddonModule,
+		SidebarModule,
+	],
 	template: ` <p-toast />
+		<p-sidebar
+			[(visible)]="createCategorySideBarVisible"
+			position="right"
+			[modal]="true"
+			styleClass="w-50rem"
+			header="Create Category"
+		>
+			<div class="flex flex-column gap-2">
+				<label for="name">Name</label>
+				<input
+					pInputText
+					type="text"
+					id="name"
+					[(ngModel)]="newCategory.name"
+				/>
+				<label for="displayText">Display Text</label>
+				<input
+					pInputText
+					type="text"
+					id="displayText"
+					[(ngModel)]="newCategory.displayText"
+				/>
+				<div class="flex flex-column gap-3 mt-2">
+					<label class="font-bold">Metadata</label>
+					<div
+						class="flex flex-column gap-2"
+						*ngFor="let item of newCategoryMetadata; let i = index"
+					>
+						<div class="flex flex-column gap-2">
+							<label for="key">Key</label>
+							<input pInputText type="text" id="key" [(ngModel)]="item.label" />
+							<label for="value">Value</label>
+							<input
+								pInputText
+								type="text"
+								id="value"
+								[(ngModel)]="item.value"
+							/>
+						</div>
+					</div>
+					<p-button
+						label="Add Metadata"
+						icon="pi pi-plus"
+						size="small"
+						(click)="addNewMetadata()"
+					/>
+				</div>
+				<div class="flex justify-content-between gap-2">
+					<p-button
+						label="Cancel"
+						icon="pi pi-times"
+						severity="secondary"
+						size="small"
+						(click)="cancelCreateCategory()"
+					/>
+					<p-button
+						label="Save"
+						icon="pi pi-check"
+						size="small"
+						(click)="saveCategory()"
+					/>
+				</div>
+			</div>
+		</p-sidebar>
+		<!-- Content Section -->
+		<div class="flex justify-content-end mb-3">
+			<p-button
+				size="small"
+				(click)="createCategorySideBarVisible = true"
+				label="Create Category"
+				icon="pi pi-plus"
+			/>
+		</div>
 		<p-table
 			[value]="categories"
 			dataKey="id"
@@ -173,25 +259,22 @@ interface newMetadata {
 		</p-table>`,
 	styles: ``,
 	providers: [ToastService, RolesFeaturesService],
-	imports: [
-		CommonModule,
-		MatTableModule,
-		TableModule,
-		ButtonModule,
-		InputTextModule,
-		FormsModule,
-		ToastModule,
-		InputGroupModule,
-		InputGroupAddonModule,
-	],
 })
 export class PropertyCategoriesComponent implements OnInit {
+	newCategory: PropertyMetadata = {
+		name: '',
+		displayText: '',
+		metaData: {},
+	};
+
 	expandedRows: Record<number, boolean> = {};
 	@Input() categories!: PropertyMetadata[];
 	@Output() categoryChange = new EventEmitter<PropertyMetadata>();
+	@Output() createCategory = new EventEmitter<PropertyMetadata>();
 	newMetadata!: Record<number, newMetadata>;
+	newCategoryMetadata: newMetadata[] = [];
 	clonedCategories: { [s: string]: PropertyMetadata } = {};
-
+	createCategorySideBarVisible: boolean = false;
 	constructor(
 		private router: Router,
 		private rolesFeaturesService: RolesFeaturesService,
@@ -268,5 +351,35 @@ export class PropertyCategoriesComponent implements OnInit {
 		}
 		this.newMetadata[category.id as number].label = '';
 		this.newMetadata[category.id as number].value = '';
+	}
+	addNewMetadata() {
+		const metadata: newMetadata = { label: '', value: '' };
+		this.newCategoryMetadata.push(metadata);
+	}
+	removeMetadata(_t24: number) {
+		throw new Error('Method not implemented.');
+	}
+	saveCategory() {
+		this.newCategoryMetadata.forEach((item) => {
+			if (item.label.trim().length > 0 && item.value.trim().length > 0) {
+				if (this.newCategory.metaData) {
+					this.newCategory.metaData[item.label] = item.value;
+				} else {
+					this.newCategory.metaData = {};
+					this.newCategory.metaData[item.label] = item.value;
+				}
+			}
+		});
+		this.createCategory.emit(this.newCategory);
+		this.cancelCreateCategory();
+	}
+	cancelCreateCategory() {
+		this.newCategory = {
+			name: '',
+			displayText: '',
+			metaData: {},
+		};
+		this.newCategoryMetadata = [];
+		this.createCategorySideBarVisible = false;
 	}
 }
