@@ -8,18 +8,16 @@ import {
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { CategoryMetaDataType } from '../../shared/type';
 
 type CategoryType = {
 	id: number;
 	name: string;
 	displayText: string;
-};
-interface CardData {
-	id: number;
-	name: string;
-	displayText: string;
+	metaData?: CategoryMetaDataType;
 	Image: any;
-}
+};
+
 const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 	const [selectedCard, setSelectedCard] = useState<number | null>(
 		formik.values.categoryId,
@@ -30,28 +28,24 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 		//, isLoading: isPropertyMetaDataLoading
 	} = useGetPropertiesMetaDataQuery();
 
-	const handleCardClick = (id: number, name: string) => {
-		setSelectedCard(id);
-
+	const handleCardClick = (metaData: any, id: number) => {
+		formik.setFieldValue('categoryMetaData', metaData);
 		formik.setFieldValue('categoryId', id);
-		formik.setFieldValue('categoryName', name);
+		setSelectedCard(id);
 	};
 
 	const icons: Record<string, any> = {
-		residential: HouseIcon,
-		commercial: EmojiOneHomeIcon,
-		Hostel: EmojiOneBuildingIcon,
+		HouseIcon,
+		EmojiOneHomeIcon,
+		EmojiOneBuildingIcon,
 	};
 
-	const cardData: CardData[] = propertyMetaData?.categories?.map(
-		(
-			category: CategoryType,
-			//, index: number
-		) => {
+	const cardData: CategoryType[] = propertyMetaData?.categories?.map(
+		(category: CategoryType) => {
 			return {
 				...category,
 				id: category?.id,
-				Image: icons[category?.name],
+				Image: icons[category.metaData?.icon || ''],
 			};
 		},
 	);
@@ -70,14 +64,14 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 						Property Category
 					</Typography>
 				</Grid>
-				{cardData?.map((item: CardData) => (
+				{cardData?.map((item: CategoryType) => (
 					<Grid item xs={4} sm={4} md={4} key={`${item.id}--${item.name}`}>
 						<PropertyCategoryCard
 							key={item.id}
 							heading={item.name}
 							subtext={item.displayText}
 							id={item.id}
-							onClick={() => handleCardClick(item.id, item.name)}
+							onClick={() => handleCardClick(item?.metaData, item.id)}
 							isSelected={item.id === selectedCard}
 							Image={item?.Image}
 						/>
