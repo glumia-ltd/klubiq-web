@@ -5,7 +5,11 @@ import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
+import {
+	CategoryMetaDataType,
+	RouteObjectType,
+	SignedUrlType,
+} from '../../shared/type';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
@@ -26,6 +30,8 @@ import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
 import { omitBy } from 'lodash';
+import dayjs from 'dayjs';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -99,6 +105,8 @@ interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
 	categoryMetaData: CategoryMetaDataType | null;
+	propertyImages?: File[];
+	signedUrl: SignedUrlType | null;
 }
 
 export const AddPropertiesLayout = () => {
@@ -109,6 +117,8 @@ export const AddPropertiesLayout = () => {
 	const location = useLocation();
 
 	const dispatch = useDispatch();
+
+	const { user } = useSelector(getAuthState);
 
 	const formState = useSelector(getAddPropertyState);
 
@@ -133,6 +143,8 @@ export const AddPropertiesLayout = () => {
 			name: '',
 			typeId: '',
 			images: [],
+			propertyImages: [],
+			signedUrl: null,
 			unitType: '',
 			isMultiUnit: false,
 			purposeId: null,
@@ -399,9 +411,40 @@ export const AddPropertiesLayout = () => {
 
 		delete updatedFormikValues.categoryMetaData;
 
-		const payload = { ...updatedFormikValues };
+		// delete updatedFormikValues.propertyImages;
 
 		try {
+			console.log(user?.organization);
+
+			const formData = new FormData();
+
+			console.log(formik.values.propertyImages);
+
+			formik.values?.propertyImages?.forEach((image, index) => {
+				console.log(typeof image);
+				formData.append(`file-${index}`, image);
+			});
+
+			formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
+			formData.append('timestamp', `${dayjs(new Date()).unix()}`);
+			formData.append('signature', formik.values?.signedUrl?.signature || '');
+			formData.append('eager', 'c_pad,h_300,w_400|c_crop,h_200,w_260');
+			formData.append('folder', `properties/${user?.organization}`);
+
+			const response = await fetch(
+				`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+				{
+					method: 'POST',
+					body: formData,
+				},
+			);
+
+			console.log(response);
+
+			delete formik.values.propertyImages;
+
+			const payload = { ...updatedFormikValues };
+
 			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);

@@ -1,10 +1,8 @@
 import { Grid, Card, IconButton, Box, Typography } from '@mui/material';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
-import { useState, useEffect, useRef, FC } from 'react';
+import { useState, useRef, FC } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import {
@@ -14,14 +12,14 @@ import {
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { SignedUrlType } from '../../shared/type';
 import { multiply } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
-	const [signedUrl, setSignedUrl] = useState<SignedUrlType | null>(null);
 	const [totalImageSize, setTotalImageSize] = useState(0);
+
+	console.log(formik.values);
 
 	const dispatch = useDispatch();
 
@@ -35,31 +33,34 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
+	const dispatchSizeExceededMessage = () => {
+		dispatch(
+			openSnackbar({
+				message: 'You have uploaded the maximum amount of allowed images',
+				severity: 'info',
+				isOpen: true,
+			}),
+		);
+	};
+
 	const handleFileChange = async (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		const files = event?.target?.files;
 		if (files) {
-			console.log('totalImageSize', totalImageSize);
-
 			const currentImageSize = files[0]?.size || 0;
 
 			const totalSizeOfUploadedImages = totalImageSize + currentImageSize;
 
 			console.log('totalSizeOfUploadedImages', totalSizeOfUploadedImages);
 
-			if (
-				signedUrl?.storageLimit &&
-				totalSizeOfUploadedImages > signedUrl?.storageLimit
-			) {
-				dispatch(
-					openSnackbar({
-						message: 'You have uploaded the maximum amount of allowed images',
-						severity: 'info',
-						isOpen: true,
-					}),
-				);
+			//TODO: Use real storage limit here.
 
+			if (
+				formik.values.signedUrl?.storageLimit &&
+				totalSizeOfUploadedImages > 173456
+			) {
+				dispatchSizeExceededMessage();
 				return;
 			}
 
@@ -68,8 +69,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			);
 
 			const imageFile = fileArray[0];
-
-			setTotalImageSize((prev) => prev + currentImageSize);
 
 			if (passportFiles.length === 0) {
 				const body = {
@@ -80,15 +79,28 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 
 				const { data } = await getSignedUrl(body);
 
-				setSignedUrl({
+				formik.setFieldValue('signedUrl', {
 					signature: data.signature,
 					storageLimit: multiply(data.storageLimit, 1048576),
 					storageUsed: data.storageUsed,
 				});
+
+				//TODO: Use real storage limit here.
+
+				if (currentImageSize > 173456) {
+					dispatchSizeExceededMessage();
+
+					return;
+				}
 			}
 
 			formik.setFieldValue('images', [...formik.values.images, ...fileArray]);
+			formik.setFieldValue('propertyImages', [
+				...formik.values.propertyImages,
+				files,
+			]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
+			setTotalImageSize((prev) => prev + currentImageSize);
 		}
 	};
 
@@ -110,13 +122,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			inputRef.current.value = '';
 		}
 	};
-
-	useEffect(() => {
-		// Revoke URLs when the component unmounts
-		return () => {
-			formik.values?.images?.forEach((url: string) => URL.revokeObjectURL(url));
-		};
-	}, [formik.values?.images]);
 
 	return (
 		<Grid container spacing={0}>
