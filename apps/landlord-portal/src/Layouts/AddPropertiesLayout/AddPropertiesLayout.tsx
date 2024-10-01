@@ -5,7 +5,7 @@ import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RouteObjectType } from '../../shared/type';
+import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
@@ -98,7 +98,7 @@ type PayloadType = {
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
-	categoryName?: string | null;
+	categoryMetaData: CategoryMetaDataType | null;
 }
 
 export const AddPropertiesLayout = () => {
@@ -125,10 +125,10 @@ export const AddPropertiesLayout = () => {
 
 	const formik = useFormik<IunitType>({
 		initialValues: {
+			categoryMetaData: null,
 			newAmenity: '',
 			customAmenities: [],
 			categoryId: null,
-			categoryName: null,
 			description: '',
 			name: '',
 			typeId: '',
@@ -280,7 +280,7 @@ export const AddPropertiesLayout = () => {
 		}
 	};
 
-	const formatUnitBasedOnCategoryName = (
+	const formatUnitBasedOnCategory = (
 		formikValues: any,
 		room1: string,
 		room2: string,
@@ -333,16 +333,16 @@ export const AddPropertiesLayout = () => {
 			formikValues.isMultiUnit = false;
 		}
 
-		if (formikValues.categoryId === 1) {
-			formatUnitBasedOnCategoryName(formikValues, 'offices', 'rooms');
+		if (formikValues.categoryMetaData?.hasBedrooms) {
+			formatUnitBasedOnCategory(formikValues, 'offices', 'rooms');
 		}
 
-		if (formikValues.categoryId === 2) {
-			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'rooms');
+		if (formikValues.categoryMetaData?.hasOffices) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'rooms');
 		}
 
-		if (formikValues.categoryId === 3) {
-			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'offices');
+		if (formikValues.categoryMetaData?.hasRooms) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'offices');
 		}
 
 		//clean up form state object
@@ -397,7 +397,7 @@ export const AddPropertiesLayout = () => {
 
 		updatedFormikValues.units = updatedUnits;
 
-		delete updatedFormikValues.categoryName;
+		delete updatedFormikValues.categoryMetaData;
 
 		const payload = { ...updatedFormikValues };
 

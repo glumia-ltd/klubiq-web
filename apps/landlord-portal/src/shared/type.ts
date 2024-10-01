@@ -234,3 +234,10 @@ export type AddPropertyType = {
 		amenities: string[] | null;
 	}[];
 };
+
+export type CategoryMetaDataType = {
+	icon?: string;
+	hasBedrooms?: boolean;
+	hasRooms?: boolean;
+	hasOffices?: boolean;
+};

@@ -4,6 +4,8 @@ import { RootState } from '..';
 import { AddPropertyType } from '../../shared/type';
 
 const initialState: AddPropertyType = {
+	newAmenity: '',
+	customAmenities: [],
 	categoryId: null,
 	purposeId: null,
 	typeId: '',
