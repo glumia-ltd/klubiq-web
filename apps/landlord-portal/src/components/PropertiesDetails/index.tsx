@@ -12,7 +12,7 @@ import {
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { multiply } from 'lodash';
+import { multiply, reduce } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import dayjs from 'dayjs';
 
@@ -51,7 +51,8 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	) => {
 		const files = event?.target?.files;
 		if (files) {
-			const currentImageSize = files[0]?.size || 0;
+			const currentImageSize = reduce(files, (sum, file) => sum + file.size, 0);
+			//files[0]?.size || 0;
 
 			const totalSizeOfUploadedImages = totalImageSize + currentImageSize;
 
@@ -102,7 +103,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			formik.setFieldValue('images', [...formik.values.images, ...fileArray]);
 			formik.setFieldValue('propertyImages', [
 				...formik.values.propertyImages,
-				files,
+				files[0],
 			]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 			setTotalImageSize((prev) => prev + currentImageSize);

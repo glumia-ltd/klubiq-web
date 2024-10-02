@@ -1,6 +1,5 @@
-import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { useContext } from 'react';
-import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
@@ -17,35 +16,36 @@ import {
 	Button,
 	Stack,
 	Typography,
+	Drawer,
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 
-function SideBar() {
+function MobileSideBar() {
 	const theme = useTheme();
+
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
-		allContexts;
+	const {
+		sidebarOpen,
+		mobileSideBarOpen,
+		drawerWidth,
+		setIsclosing,
+		toggleMobileSidebar,
+	} = allContexts;
 
 	const handleDrawerClose = () => {
 		setIsclosing(true);
-		setSidebarOpen(false);
+		toggleMobileSidebar();
 	};
 
 	const handleDrawerTransitionEnd = () => {
 		setIsclosing(true);
 	};
-	const transitionedMixin = (theme: Theme): CSSObject => ({
-		transition: theme.transitions.create('width', {
-			easing: theme.transitions.easing.easeInOut,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	});
 
 	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
@@ -61,40 +61,28 @@ function SideBar() {
 	const DrawerChildren = styled('div')(() => ({
 		display: 'flex',
 		flexDirection: 'column',
-		width: '80%',
 		gap: '20px',
 		padding: theme.spacing(1, 2),
 		alignItems: 'center',
-	}));
-
-	const Drawer = styled(MuiDrawer, {
-		shouldForwardProp: (prop) => prop !== 'open',
-	})(({ theme, open }) => ({
-		'& .MuiDrawer-paper': {
-			width: 'inherit',
-		},
-		...transitionedMixin(theme),
-		...(open && {
-			width: `${drawerWidth.largeOpen}px`,
-		}),
-		...(!open && {
-			width: `${drawerWidth.largeClosed}px`,
-		}),
+		width: drawerWidth.smallOpen,
 	}));
 
 	const handleLinkClick = (title: string) => {
+		handleDrawerClose();
 		if (title !== 'Logout') return;
 		sessionStorage.clear();
 	};
 
 	return (
 		<Drawer
-			variant='permanent'
-			open={sidebarOpen}
-			onMouseEnter={() => setSidebarOpen(true)}
-			onMouseLeave={() => setSidebarOpen(false)}
+			id='mobile-drawer'
+			variant='temporary'
+			open={mobileSideBarOpen}
 			onTransitionEnd={handleDrawerTransitionEnd}
 			onClose={handleDrawerClose}
+			ModalProps={{
+				keepMounted: true, // Better open performance on mobile.
+			}}
 		>
 			<DrawerChildren>
 				<div
@@ -270,4 +258,4 @@ function SideBar() {
 	);
 }
 
-export default SideBar;
+export default MobileSideBar;

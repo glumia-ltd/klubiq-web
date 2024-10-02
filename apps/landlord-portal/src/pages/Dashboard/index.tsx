@@ -392,6 +392,7 @@ const DashBoard = () => {
 
 					<Grid
 						container
+						rowSpacing={2}
 						sx={{
 							...styles.totalRevenueStyle,
 							background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',

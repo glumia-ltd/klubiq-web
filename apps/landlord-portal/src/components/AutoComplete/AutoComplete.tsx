@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
 // Extend the Window interface to include google
@@ -218,7 +221,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			filterSelectedOptions
 			value={value || fieldValue || ''}
 			noOptionsText='No locations'
-			onChange={(event: any, value: PlaceType | null) => {
+			onChange={(_event: any, value: PlaceType | null) => {
 				// setOptions(value ? [value, ...options] : options);
 				setValue(value);
 

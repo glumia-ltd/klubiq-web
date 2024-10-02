@@ -34,7 +34,11 @@ const PropertyCategoryCard = ({
 			}
 			onClick={() => onClick(id)}
 		>
-			<Stack direction='column' spacing={3}>
+			<Stack
+				direction='column'
+				spacing={3}
+				sx={{ justifyContent: 'center', alignItems: 'center' }}
+			>
 				<Box> {Image && <Image sx={CardStyle.imageStyle} />}</Box>
 				<Typography variant='body2' color='text.primary' sx={CardStyle.header}>
 					{heading}

@@ -1,10 +1,13 @@
-import { createContext, ReactNode } from 'react';
+/* eslint-disable no-unused-vars */
+import { createContext, ReactNode, useState } from 'react';
 
 interface ContextValue {
-	toggleSidebar?: () => void;
-	openSidebar?: () => void;
-	closeSidebar?: () => void;
-	sidebarOpen?: boolean;
+	toggleMobileSidebar: () => void;
+	setSidebarOpen: (open: boolean) => boolean;
+	isClosing: boolean;
+	setIsclosing: (isClosing: boolean) => void;
+	sidebarOpen: boolean;
+	mobileSideBarOpen: boolean;
 	drawerWidth: {
 		smallOpen: number;
 		smallClosed: number;
@@ -14,6 +17,12 @@ interface ContextValue {
 }
 
 export const Context = createContext<ContextValue>({
+	setSidebarOpen: (open: boolean) => open,
+	toggleMobileSidebar: () => {},
+	setIsclosing: () => {},
+	sidebarOpen: true,
+	mobileSideBarOpen: false,
+	isClosing: false,
 	drawerWidth: {
 		smallOpen: 200,
 		smallClosed: 0,
@@ -27,6 +36,22 @@ interface NavToggleProviderProps {
 }
 
 export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
+	const [sidebarOpen, setSidebarState] = useState<boolean>(true);
+	const [mobileSideBarOpen, setMobileSidebarState] = useState<boolean>(false);
+	const [isClosing, setSideBarIsClosing] = useState<boolean>(false);
+	const setSidebarOpen = (open: boolean) => {
+		setSidebarState(open);
+		return open;
+	};
+	const setIsclosing = (closing: boolean) => {
+		setSideBarIsClosing(closing);
+	};
+	const toggleMobileSidebar = () => {
+		// if (!isClosing) {
+
+		// }
+		setMobileSidebarState(!mobileSideBarOpen);
+	};
 	const drawerWidth = {
 		smallOpen: 200,
 		smallClosed: 0,
@@ -35,6 +60,12 @@ export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
 	};
 
 	const value: ContextValue = {
+		sidebarOpen,
+		setSidebarOpen,
+		mobileSideBarOpen,
+		toggleMobileSidebar,
+		isClosing,
+		setIsclosing,
 		drawerWidth,
 	};
 
