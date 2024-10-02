@@ -286,7 +286,7 @@ const DashBoard = () => {
 										</Typography>
 									</Box>
 									<Box sx={styles.totalExpensesStyle}>
-										<Box>
+										<Stack direction={'column'} spacing={2}>
 											<Typography sx={styles.typoStyle}>
 												Total expenses
 											</Typography>
@@ -317,9 +317,9 @@ const DashBoard = () => {
 													%
 												</Typography>
 											</Box>
-										</Box>
+										</Stack>
 
-										<Box>
+										<Stack direction={'column'} spacing={2}>
 											<Typography sx={styles.typoStyle}>
 												Net cash flow
 											</Typography>
@@ -346,7 +346,7 @@ const DashBoard = () => {
 													{NETCASHFLOWPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}%
 												</Typography>
 											</Box>
-										</Box>
+										</Stack>
 									</Box>
 								</Card>
 							</Grid>
@@ -402,37 +402,39 @@ const DashBoard = () => {
 						}}
 					>
 						<Grid item xs={12} sm={12} md={7}>
-							<Typography sx={styles.typoStyle}>Total Revenue </Typography>
-							{!isRevenueReportLoading && (
-								<Box
-									display={'flex'}
-									textAlign={'center'}
-									alignItems={'center'}
-								>
-									<Typography
-										sx={styles.occupancyTextStyle}
-										variant='dashboardTypography'
+							<Stack direction={'column'} spacing={2}>
+								<Typography sx={styles.typoStyle}>Total Revenue </Typography>
+								{!isRevenueReportLoading && (
+									<Box
+										display={'flex'}
+										textAlign={'center'}
+										alignItems={'center'}
 									>
-										₦{revenueReport?.totalRevenueLast12Months?.toFixed(2)}
-									</Typography>
+										<Typography
+											sx={styles.occupancyTextStyle}
+											variant='dashboardTypography'
+										>
+											₦{revenueReport?.totalRevenueLast12Months?.toFixed(2)}
+										</Typography>
 
-									<Typography
-										sx={{
-											...styles.changeTypographyStyle,
-											backgroundColor: indicatorBackground(
-												revenueReport?.changeIndicator,
-											),
-											color: indicatorColor(revenueReport?.changeIndicator),
-											border: `1px solid ${indicatorColor(
-												revenueReport?.changeIndicator,
-											)}`,
-										}}
-									>
-										{showChangeArrow(revenueReport?.changeIndicator)}
-										{revenueReport?.percentageDifference?.toFixed(1)}%
-									</Typography>
-								</Box>
-							)}
+										<Typography
+											sx={{
+												...styles.changeTypographyStyle,
+												backgroundColor: indicatorBackground(
+													revenueReport?.changeIndicator,
+												),
+												color: indicatorColor(revenueReport?.changeIndicator),
+												border: `1px solid ${indicatorColor(
+													revenueReport?.changeIndicator,
+												)}`,
+											}}
+										>
+											{showChangeArrow(revenueReport?.changeIndicator)}
+											{revenueReport?.percentageDifference?.toFixed(1)}%
+										</Typography>
+									</Box>
+								)}
+							</Stack>
 						</Grid>
 
 						<Grid
