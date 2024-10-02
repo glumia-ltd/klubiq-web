@@ -1,3 +1,5 @@
+import { display, width } from '@mui/system';
+
 export const styles = {
 	containerStyle: {
 		overflow: 'auto',
@@ -5,59 +7,80 @@ export const styles = {
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 	},
 	cardStyle: {
-		height: '183px',
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '20px',
-		alignItems: 'center',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-around',
 	},
 	cardStyleTwo: {
-		height: '183px',
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
 		borderRadius: '20px',
-		alignItems: 'center',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-around',
 	},
 	cardStyleThree: {
-		height: '207px',
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		borderRadius: '20px',
 		padding: { xs: '1rem', sm: '10px', md: '20px', lg: '24px' },
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-evenly',
 	},
 	cardStyleFour: {
-		height: { sm: '183px', md: '207px' },
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		textAlign: 'left',
 		padding: { xs: '24px', sm: '10px', md: '20px', lg: '24px' },
 		borderRadius: '20px',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-around',
 	},
 	cardStyleFive: {
 		width: '100%',
 		padding: { xs: '2.5rem', sm: '10px', md: '20px', lg: '24px' },
 		borderRadius: '20px',
 		overflow: 'auto',
-		height: { xs: '400px', sm: '100%', md: '400px', lg: '400px ' },
+		height: { xs: '400px', sm: '100%' },
 	},
-
-	boxStyle: {
+	selfFlex: {
 		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	boxStyle: {
+		//display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		width: '100%',
 	},
 
 	typoStyle: {
 		fontSize: '14px',
-		lineHeight: '20px',
+		//lineHeight: '44px',
 		fontWeight: 500,
 		mb: { sm: '0.5rem', md: '0.5rem', lg: '1rem' },
 		textAlign: 'left',
 	},
-
+	guageBoxStyle: {
+		width: '100%',
+	},
 	valueTextStyle: {
 		fontSize: {
 			sm: '24px',
-			md: '14px',
+			md: '24px',
 			lg: '24px',
 			xl: '40px',
 		},
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 	},
 	skeletonCon: {
 		height: '100vh',
@@ -70,13 +93,13 @@ export const styles = {
 			xl: '40px',
 		},
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 	},
 
 	changeArrowBoxStyle: {
 		display: 'flex',
 		textAlign: 'center',
-		marginTop: { xs: '35px', md: '28px', lg: '35px' },
+		//marginTop: { xs: '35px', md: '28px', lg: '35px' },
 		alignItems: 'center',
 	},
 	icons: {
@@ -112,7 +135,7 @@ export const styles = {
 		},
 
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 		alignItems: 'center',
 	},
 
@@ -137,7 +160,7 @@ export const styles = {
 			xl: '40px',
 		},
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 		mr: '30px',
 	},
 
@@ -146,6 +169,7 @@ export const styles = {
 		justifyContent: 'space-between',
 		textAlign: 'left',
 		marginTop: '12px',
+		width: '100%',
 	},
 
 	totalRevenueStyle: {

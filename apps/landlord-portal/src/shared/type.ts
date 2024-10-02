@@ -246,4 +246,5 @@ export type SignedUrlType = {
 	signature: string;
 	storageLimit: number;
 	storageUsed: string;
+	timestamp: number;
 };

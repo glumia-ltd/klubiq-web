@@ -59,7 +59,10 @@ const validationSchema = yup.object({
 	units: yup.array().of(
 		yup.object({
 			id: yup.number().nullable(),
-			unitNumber: yup.string().required('Unit number is required'),
+			unitNumber: yup.string().when('unitType', {
+				is: 'multi',
+				then: (schema) => schema.required('Unit number is required'),
+			}),
 			rentAmount: yup.number().nullable(),
 			floor: yup.number().nullable(),
 			bedrooms: yup.number().nullable(),
@@ -318,7 +321,7 @@ export const AddPropertiesLayout = () => {
 		formik.handleSubmit();
 
 		const errors = await formik.validateForm();
-
+		console.log(errors, 'errors');
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({
@@ -423,15 +426,14 @@ export const AddPropertiesLayout = () => {
 
 			formik.values?.propertyImages?.forEach((image, index) => {
 				console.log(typeof image);
-				formData.append(`file-${index}`, image);
+				formData.append(`file`, image);
 			});
 
 			formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
-			formData.append('timestamp', `${dayjs(new Date()).unix()}`);
+			formData.append('timestamp', `${formik.values?.signedUrl?.timestamp}`);
 			formData.append('signature', formik.values?.signedUrl?.signature || '');
-			formData.append('eager', 'c_pad,h_300,w_400|c_crop,h_200,w_260');
+			//formData.append('eager', 'w_300,h_300,c_crop,g_face');
 			formData.append('folder', `properties/${user?.organization}`);
-
 			const response = await fetch(
 				`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
 				{

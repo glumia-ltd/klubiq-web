@@ -205,7 +205,7 @@ const Properties = () => {
 										<Grid
 											xs={12}
 											sm={layout === 'row' ? 12 : 6}
-											md={layout === 'row' ? 12 : 4}
+											md={layout === 'row' ? 12 : 6}
 											lg={layout === 'row' ? 12 : 4}
 											xl={layout === 'row' ? 12 : 3}
 											key={index}

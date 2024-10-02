@@ -1,4 +1,12 @@
-import { Container, Grid, Card, Typography, Box, Button } from '@mui/material';
+import {
+	Container,
+	Grid,
+	Card,
+	Typography,
+	Box,
+	Button,
+	Stack,
+} from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
@@ -163,10 +171,10 @@ const DashBoard = () => {
 			) : (
 				<Container maxWidth={'xl'} sx={styles.containerStyle}>
 					<Grid container spacing={2}>
-						<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
-							<Grid item xs={12} sm={6} md={4} lg={4}>
+						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
+							<Grid item xs={12} sm={12} md={4} lg={4}>
 								<Card sx={styles.cardStyle}>
-									<Box sx={styles.boxStyle}>
+									<Stack sx={styles.boxStyle} direction={'row'}>
 										<Typography sx={styles.typoStyle}>
 											Total Properties{' '}
 										</Typography>{' '}
@@ -176,20 +184,26 @@ const DashBoard = () => {
 										>
 											{TOTALUNITS || 0}
 										</Typography>
+									</Stack>
+									<Box sx={styles.guageBoxStyle}>
+										<PropertiesGuage
+											data={guageData}
+											width={null}
+											height={100}
+											colors={['#6EC03C', '#D108A5', '#0088F0']}
+											legend={true}
+											legendPosition='left'
+										/>
 									</Box>
-									<PropertiesGuage
-										data={guageData}
-										width={null}
-										height={100}
-										colors={['#6EC03C', '#D108A5', '#0088F0']}
-										legend={true}
-										legendPosition='left'
-									/>
 								</Card>
 							</Grid>
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
-									<Typography sx={styles.typoStyle}>Today's Revenue</Typography>
+									<Stack sx={styles.boxStyle} direction={'row'}>
+										<Typography sx={styles.typoStyle}>
+											Today's Revenue
+										</Typography>
+									</Stack>
 
 									<Typography
 										sx={styles.revenueTextStyle}
@@ -226,7 +240,10 @@ const DashBoard = () => {
 
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
-									<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
+									<Stack sx={styles.boxStyle} direction={'row'}>
+										<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
+									</Stack>
+
 									<Box display={'flex'} alignItems={'center'}>
 										<CalendarTodayIcon sx={styles.calendarTodayStyle} />
 										<Typography
@@ -243,7 +260,7 @@ const DashBoard = () => {
 								</Card>
 							</Grid>
 
-							<Grid item xs={12} sm={12} md={8} lg={8}>
+							<Grid item xs={12} sm={6} md={8} lg={8}>
 								<Card sx={styles.cardStyleThree}>
 									<Typography sx={styles.typoStyle}>Occupancy Rate </Typography>{' '}
 									<Box sx={styles.occupancyBoxStyle}>
@@ -274,7 +291,11 @@ const DashBoard = () => {
 												Total expenses
 											</Typography>
 											<Box
-												sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}
+												sx={{
+													...styles.boxStyle,
+													display: 'flex',
+													alignItems: 'flex-start',
+												}}
 											>
 												<Typography
 													sx={styles.overdueTextStyle}
@@ -364,7 +385,7 @@ const DashBoard = () => {
 							</Grid>
 						</Grid>
 
-						<Grid container item xs={12} sm={4} md={4} lg={3}>
+						<Grid container item xs={12} sm={12} md={12} lg={3}>
 							<ReportCard />
 						</Grid>
 					</Grid>

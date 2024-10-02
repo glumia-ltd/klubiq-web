@@ -218,10 +218,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			filterSelectedOptions
 			value={value || fieldValue || ''}
 			noOptionsText='No locations'
-			onChange={(
-				//event: any,
-				value: any,
-			) => {
+			onChange={(event: any, value: PlaceType | null) => {
 				// setOptions(value ? [value, ...options] : options);
 				setValue(value);
 

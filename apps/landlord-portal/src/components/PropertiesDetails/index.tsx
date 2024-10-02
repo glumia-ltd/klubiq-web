@@ -14,11 +14,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { multiply } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import dayjs from 'dayjs';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
 	const [totalImageSize, setTotalImageSize] = useState(0);
-
+	const uploadFolder = 'properties';
 	console.log(formik.values);
 
 	const dispatch = useDispatch();
@@ -71,12 +72,13 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			);
 
 			const imageFile = fileArray[0];
-
+			const uploadTimeStamp = dayjs(new Date()).unix();
 			if (passportFiles.length === 0) {
 				const body = {
-					folder: imageFile,
+					folder: uploadFolder,
 					organization: user?.organization,
 					organizationUuid: user?.organizationUuid,
+					timestamp: uploadTimeStamp,
 				};
 
 				const { data } = await getSignedUrl(body);
@@ -85,6 +87,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					signature: data.signature,
 					storageLimit: multiply(data.storageLimit, 1048576),
 					storageUsed: data.storageUsed,
+					timestamp: uploadTimeStamp,
 				});
 
 				//TODO: Use real storage limit here.
