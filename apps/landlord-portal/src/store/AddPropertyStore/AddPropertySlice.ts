@@ -44,8 +44,6 @@ const initialState: AddPropertyType = {
 			amenities: [],
 		},
 	],
-	newAmenity: '',
-	customAmenities: [],
 };
 
 const options = {

@@ -15,6 +15,7 @@ import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { multiply, reduce } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import dayjs from 'dayjs';
+import { addData } from '../../services/indexedDb';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
@@ -99,14 +100,14 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					return;
 				}
 			}
-
+			console.log('Files list', files);
 			formik.setFieldValue('images', [...formik.values.images, ...fileArray]);
-			formik.setFieldValue('propertyImages', [
-				...formik.values.propertyImages,
-				files[0],
-			]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 			setTotalImageSize((prev) => prev + currentImageSize);
+			addData({
+				id: 'new-property-photos',
+				photos: [...passportFiles, ...files],
+			});
 		}
 	};
 
@@ -123,7 +124,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 		const updatedFiles = passportFiles.filter((_, i) => i !== index);
 
 		setPassportFiles(updatedFiles);
-
+		addData({ id: 'new-property-photos', photos: updatedFiles });
 		if (inputRef.current) {
 			inputRef.current.value = '';
 		}

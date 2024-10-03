@@ -201,7 +201,7 @@ export type AddPropertyType = {
 	typeId: number | string;
 	name: string;
 	description: string;
-	images: string[] | null;
+	images: PropertyImageType[] | null;
 	isMultiUnit?: boolean;
 	address: {
 		addressLine2: string;
@@ -247,4 +247,10 @@ export type SignedUrlType = {
 	storageLimit: number;
 	storageUsed: string;
 	timestamp: number;
+};
+export type PropertyImageType = {
+	isMain: boolean;
+	url: string;
+	fileSize: number;
+	unitNumber?: string;
 };

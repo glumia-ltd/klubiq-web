@@ -2,7 +2,7 @@ import { display } from '@mui/system';
 
 const styles = {
 	card: {
-		height: '290px',
+		height: { xs: '120px', sm: '180px', md: '290px', lg: '290px' },
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
 		maxWidth: '320px',
@@ -13,7 +13,7 @@ const styles = {
 		display: 'flex',
 	},
 	selectedCard: {
-		height: '290px',
+		height: { xs: '120px', sm: '180px', md: '290px', lg: '290px' },
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
 		background: 'primary.main',

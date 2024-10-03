@@ -65,7 +65,7 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 					</Typography>
 				</Grid>
 				{cardData?.map((item: CategoryType) => (
-					<Grid item xs={4} sm={4} md={4} key={`${item.id}--${item.name}`}>
+					<Grid item xs={12} sm={6} md={4} key={`${item.id}--${item.name}`}>
 						<PropertyCategoryCard
 							key={item.id}
 							heading={item.name}

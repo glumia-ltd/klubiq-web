@@ -7,6 +7,7 @@ import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
 	CategoryMetaDataType,
+	PropertyImageType,
 	RouteObjectType,
 	SignedUrlType,
 } from '../../shared/type';
@@ -20,7 +21,7 @@ import {
 } from '../../components/Icons/CustomIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	getAddPropertyState,
+	//getAddPropertyState,
 	//getAddPropertyState,
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
@@ -30,9 +31,9 @@ import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
-import { omitBy } from 'lodash';
-import dayjs from 'dayjs';
+import { each, omitBy } from 'lodash';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { getData } from '../../services/indexedDb';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -49,9 +50,9 @@ const validationSchema = yup.object({
 	address: yup.object({
 		addressLine1: yup.string().required('Address Line 1 is required'),
 		addressLine2: yup.string(),
-		city: yup.string().required('City is required'),
-		state: yup.string().required('State is required'),
-		postalCode: yup.string().required('Postal code is required'),
+		city: yup.string(),
+		state: yup.string(),
+		postalCode: yup.string(),
 		country: yup.string().required('Country is required'),
 		isManualAddress: yup.boolean(),
 	}),
@@ -104,7 +105,10 @@ type PayloadType = {
 	purposeId: number | null;
 	isMultiUnit: boolean;
 };
-
+type UploadedImages = {
+	id: string;
+	photos: File[];
+};
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
@@ -115,7 +119,7 @@ interface IunitType extends AddPropertyType {
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
-
+	const [imagesData, setImagesData] = useState<PropertyImageType[]>([]);
 	const navigate = useNavigate();
 
 	const location = useLocation();
@@ -147,7 +151,7 @@ export const AddPropertiesLayout = () => {
 			name: '',
 			typeId: '',
 			images: [],
-			propertyImages: [],
+			propertyImages: [] as File[],
 			signedUrl: null,
 			unitType: '',
 			isMultiUnit: false,
@@ -419,35 +423,42 @@ export const AddPropertiesLayout = () => {
 
 		try {
 			console.log(user?.organization);
-
+			const uploadedFiles: UploadedImages = await getData(
+				'new-property-photos',
+			);
 			const formData = new FormData();
 
-			console.log(formik.values.propertyImages);
-
-			formik.values?.propertyImages?.forEach((image, index) => {
-				console.log(typeof image);
-				formData.append(`file`, image);
+			// formik.values?.images?.forEach((image, index) => {
+			// 	console.log(image);
+			// 	formData.append(`file`, image);
+			// });
+			console.log('FROM INDEXDB', uploadedFiles);
+			each(uploadedFiles.photos, async (file, idx) => {
+				formData.append(`file`, file);
+				formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
+				formData.append('timestamp', `${formik.values?.signedUrl?.timestamp}`);
+				formData.append('signature', formik.values?.signedUrl?.signature || '');
+				formData.append('folder', `properties/${user?.organization}`);
+				const response = await fetch(
+					`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+					{
+						method: 'POST',
+						body: formData,
+					},
+				);
+				const data = await response.json();
+				setImagesData((prevImages) => [
+					...prevImages,
+					{
+						isMain: idx === 0,
+						url: data.secure_url,
+						fileSize: data.bytes,
+					},
+				]);
 			});
 
-			formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
-			formData.append('timestamp', `${formik.values?.signedUrl?.timestamp}`);
-			formData.append('signature', formik.values?.signedUrl?.signature || '');
-			//formData.append('eager', 'w_300,h_300,c_crop,g_face');
-			formData.append('folder', `properties/${user?.organization}`);
-			const response = await fetch(
-				`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
-				{
-					method: 'POST',
-					body: formData,
-				},
-			);
-
-			console.log(response);
-
 			delete formik.values.propertyImages;
-
-			const payload = { ...updatedFormikValues };
-
+			const payload = { ...updatedFormikValues, images: imagesData };
 			await addProperty(payload).unwrap();
 		} catch (e) {
 			console.log(e);
