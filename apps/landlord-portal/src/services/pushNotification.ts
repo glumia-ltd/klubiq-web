@@ -7,7 +7,6 @@ const urlBase64ToUint8Array = (base64String: string) => {
 const publicKey = import.meta.env.VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY;
 const subscribeUserToPush = async () => {
 	if ('serviceWorker' in navigator && 'PushManager' in window) {
-		console.log('PUBLIC KEY: ', publicKey);
 		try {
 			const registration = await navigator.serviceWorker.ready;
 			const subscribeOptions = {

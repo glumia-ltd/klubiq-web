@@ -25,7 +25,6 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 
 	const checkEmailVerification = async (oobCode: string) => {
 		try {
-			console.log('OOB CODE: ', oobCode);
 			applyActionCode(auth, oobCode);
 			setLoading(false);
 			setError(false);
