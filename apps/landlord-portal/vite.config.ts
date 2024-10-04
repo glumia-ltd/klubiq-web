@@ -9,7 +9,7 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 	manifest: {
 		name: 'Klubiq',
 		short_name: 'Klubiq',
-		description: 'Property mangement SAAS App',
+		description: 'Property Management SAAS App',
 		icons: [
 			{
 				src: '/ios-192.png',

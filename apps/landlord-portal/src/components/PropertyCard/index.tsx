@@ -259,7 +259,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						<CardMedia
 							component='img'
 							alt={propertyData?.name}
-							image={propertyData?.mainImage?.url}
+							image={propertyData?.mainImage?.url || defaultPropertyImage}
 							sx={CardStyle.rowImage}
 						/>
 					</Box>

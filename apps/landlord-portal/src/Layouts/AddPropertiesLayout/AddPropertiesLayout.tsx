@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
@@ -5,12 +6,7 @@ import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-	CategoryMetaDataType,
-	PropertyImageType,
-	RouteObjectType,
-	SignedUrlType,
-} from '../../shared/type';
+import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
@@ -31,9 +27,9 @@ import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
-import { each, omitBy } from 'lodash';
+import { omitBy } from 'lodash';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { getData } from '../../services/indexedDb';
+import { clearData } from '../../services/indexedDb';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -105,21 +101,15 @@ type PayloadType = {
 	purposeId: number | null;
 	isMultiUnit: boolean;
 };
-type UploadedImages = {
-	id: string;
-	photos: File[];
-};
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
 	categoryMetaData: CategoryMetaDataType | null;
-	propertyImages?: File[];
-	signedUrl: SignedUrlType | null;
+	propertyImages?: [];
 }
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
-	const [imagesData, setImagesData] = useState<PropertyImageType[]>([]);
 	const navigate = useNavigate();
 
 	const location = useLocation();
@@ -151,8 +141,7 @@ export const AddPropertiesLayout = () => {
 			name: '',
 			typeId: '',
 			images: [],
-			propertyImages: [] as File[],
-			signedUrl: null,
+			propertyImages: [],
 			unitType: '',
 			isMultiUnit: false,
 			purposeId: null,
@@ -416,52 +405,18 @@ export const AddPropertiesLayout = () => {
 		});
 
 		updatedFormikValues.units = updatedUnits;
-
 		delete updatedFormikValues.categoryMetaData;
-
-		// delete updatedFormikValues.propertyImages;
+		delete updatedFormikValues.propertyImages;
 
 		try {
 			console.log(user?.organization);
-			const uploadedFiles: UploadedImages = await getData(
-				'new-property-photos',
-			);
-			const formData = new FormData();
-
-			// formik.values?.images?.forEach((image, index) => {
-			// 	console.log(image);
-			// 	formData.append(`file`, image);
-			// });
-			console.log('FROM INDEXDB', uploadedFiles);
-			each(uploadedFiles.photos, async (file, idx) => {
-				formData.append(`file`, file);
-				formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
-				formData.append('timestamp', `${formik.values?.signedUrl?.timestamp}`);
-				formData.append('signature', formik.values?.signedUrl?.signature || '');
-				formData.append('folder', `properties/${user?.organization}`);
-				const response = await fetch(
-					`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
-					{
-						method: 'POST',
-						body: formData,
-					},
-				);
-				const data = await response.json();
-				setImagesData((prevImages) => [
-					...prevImages,
-					{
-						isMain: idx === 0,
-						url: data.secure_url,
-						fileSize: data.bytes,
-					},
-				]);
-			});
-
 			delete formik.values.propertyImages;
-			const payload = { ...updatedFormikValues, images: imagesData };
+			const payload = { ...updatedFormikValues };
 			await addProperty(payload).unwrap();
+			clearData('new-property');
 		} catch (e) {
 			console.log(e);
+			//clearData('new-property');
 		}
 	};
 
