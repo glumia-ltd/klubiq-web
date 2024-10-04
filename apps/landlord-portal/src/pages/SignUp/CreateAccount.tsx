@@ -94,6 +94,7 @@ const CreateAccount: React.FC = () => {
 			dispatch(
 				saveUser({ user: userInfo, token: user.accessToken, isSignedIn: true }),
 			);
+			navigate('/verify-email?is_pending=true', { replace: true });
 		} catch (error) {
 			setLoading(false);
 			const errorMessage = (error as Error).message.includes('code 424')
