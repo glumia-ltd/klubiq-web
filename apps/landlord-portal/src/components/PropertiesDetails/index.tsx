@@ -113,12 +113,15 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
 				});
 				worker.onmessage = (event: MessageEvent) => {
+					console.log(event);
 					const { status, data, error } = event.data;
 					if (status === 'success') {
 						formik.setFieldValue('images', [...data.value]);
-					} else if (status === 'uploading') {
-						// clearTimeout(data);
-					} else if (status === 'error') {
+					}
+					// else if (status === 'uploading') {
+					// 	// clearTimeout(data);
+					// }
+					else if (status === 'error') {
 						console.error('Upload error:', error);
 					}
 				};

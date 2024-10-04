@@ -27,7 +27,7 @@ self.onmessage = async (event: MessageEvent) => {
 		formData.append('signature', signature);
 		formData.append('folder', folder);
 		try {
-			postMessage({ status: 'uploading' });
+			// postMessage({ status: 'uploading' });
 
 			const response = await fetch(url, {
 				method: 'POST',
