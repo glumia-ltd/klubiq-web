@@ -1,58 +1,154 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, Card, IconButton, Box, Typography } from '@mui/material';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
-import { useState, useEffect, useRef, FC } from 'react';
+import { useState, useRef, FC } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import {
+	useGetPropertiesMetaDataQuery,
+	useGetSignedUrlMutation,
+} from '../../store/PropertyPageStore/propertyApiSlice';
 import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { multiply, sum } from 'lodash';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import dayjs from 'dayjs';
+import UploadWorker from '../../services/uploadWorker?worker';
+import { deleteData } from '../../services/indexedDb';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
+	const [totalImageSize, setTotalImageSize] = useState(0);
+	const uploadFolder = 'properties';
+	console.log(formik.values);
 
+	const dispatch = useDispatch();
+	const { user } = useSelector(getAuthState);
 	const formState = useSelector(getAddPropertyState);
+	const [getSignedUrl] = useGetSignedUrlMutation();
 
-	const { data: propertyMetaData, isLoading: isPropertyMetaDataLoading } =
-		useGetPropertiesMetaDataQuery();
+	const {
+		data: propertyMetaData,
+		//, isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
 
 	const inputRef = useRef<HTMLInputElement | null>(null);
+	const dispatchUploadMessage = (message: string) => {
+		dispatch(
+			openSnackbar({
+				message,
+				severity: 'info',
+				isOpen: true,
+			}),
+		);
+	};
 
-	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFileChange = async (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
 		const files = event?.target?.files;
 		if (files) {
+			const selectedFiles = Array.from(files);
+			if (selectedFiles.length < 1) {
+				dispatchUploadMessage('Please select a photo to upload.');
+				return;
+			}
+			const currentImageSize = selectedFiles[0]?.size || 0;
+
+			//const totalSizeOfUploadedImages = totalImageSize + currentImageSize;
+
+			//console.log('totalSizeOfUploadedImages', totalSizeOfUploadedImages);
+
+			//TODO: Use real storage limit here.
+
+			// if (
+			// 	formik.values.signedUrl?.storageLimit &&
+			// 	totalSizeOfUploadedImages > 173456
+			// ) {
+			// 	dispatchUploadMessage(
+			// 		'You have uploaded the maximum amount of allowed images',
+			// 	);
+			// 	return;
+			// }
+
 			const fileArray = Array.from(files).map((file) =>
 				URL.createObjectURL(file),
 			);
-			formik.setFieldValue('images', [...formik.values.images, ...fileArray]);
+
+			const uploadTimeStamp = dayjs(new Date()).unix();
+			if (passportFiles.length === 0) {
+				const body = {
+					folder: uploadFolder,
+					organization: user?.organization,
+					organizationUuid: user?.organizationUuid,
+					timestamp: uploadTimeStamp,
+				};
+
+				const { data } = await getSignedUrl(body);
+				const storageLimit = multiply(data.storageLimit, 1048576);
+				// formik.setFieldValue('signedUrl', {
+				// 	signature: data.signature,
+				// 	storageLimit:  multiply(data.storageLimit, 1048576),
+				// 	storageUsed: data.storageUsed,
+				// 	timestamp: uploadTimeStamp,
+				// });
+
+				//TODO: Use real storage limit here.
+
+				if (sum([currentImageSize, data.storageUsed]) > storageLimit) {
+					dispatchUploadMessage(`You have exceeded your plan's storage limit`);
+					return;
+				}
+				deleteData('images', 'new-property');
+				const worker = new UploadWorker();
+				worker.postMessage({
+					files: files,
+					apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY,
+					timestamp: uploadTimeStamp,
+					signature: data.signature,
+					folder: `${uploadFolder}/${user?.organization}`,
+					cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+				});
+				worker.onmessage = (event: MessageEvent) => {
+					const { status, data, error } = event.data;
+					if (status === 'success') {
+						formik.setFieldValue('images', [...data.value]);
+					} else if (status === 'uploading') {
+						clearTimeout(data);
+					} else if (status === 'error') {
+						console.error('Upload error:', error);
+					}
+				};
+			}
+			formik.setFieldValue('propertyImages', [
+				...formik.values.images,
+				...fileArray,
+			]);
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
+			setTotalImageSize((prev) => prev + currentImageSize);
 		}
 	};
 
 	const handleImageRemove = (index: number) => {
+		const removedImageSize = passportFiles[index]?.size || 0;
+
+		setTotalImageSize((prev) => prev - removedImageSize);
+
 		const updatedImages = formik.values.images.filter(
 			(_: any, i: number) => i !== index,
 		);
-		formik.setFieldValue('images', updatedImages);
+		formik.setFieldValue('propertyImages', updatedImages);
 
 		const updatedFiles = passportFiles.filter((_, i) => i !== index);
 
 		setPassportFiles(updatedFiles);
-
 		if (inputRef.current) {
 			inputRef.current.value = '';
 		}
 	};
-
-	useEffect(() => {
-		// Revoke URLs when the component unmounts
-		return () => {
-			formik.values?.images?.forEach((url: string) => URL.revokeObjectURL(url));
-		};
-	}, [formik.values?.images]);
 
 	return (
 		<Grid container spacing={0}>
@@ -126,10 +222,10 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									fontSize={'20px'}
 									// color='#002147'
 								>
-									PROPERTY IMAGE
+									COVER PHOTO
 								</Typography>
 							</Grid>
-							{(formik.values.images || formState.images)?.map(
+							{(formik.values.propertyImages || formState.propertyImages)?.map(
 								(image: string, index: number) => (
 									<Grid
 										item
@@ -164,7 +260,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									</Grid>
 								),
 							)}
-							{
+							{passportFiles.length === 0 && (
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
 										component='label'
@@ -175,28 +271,28 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 										width='250px'
 										height='170px'
 										border='1px dashed #ccc'
+										borderRadius={'5px'}
 										style={{ cursor: 'pointer' }}
 									>
 										<Box sx={PropertiesFormStyle.uploadBox}>
 											<CloudUploadOutlinedIcon sx={PropertiesFormStyle.icon} />
 
 											<Typography sx={PropertiesFormStyle.typo}>
-												Upload or drag photo here
+												Upload a cover photo for your property
 											</Typography>
 										</Box>
-
 										<input
 											ref={inputRef}
 											type='file'
 											id='upload-photo'
 											style={{ display: 'none' }}
-											multiple
 											accept='image/*'
 											onChange={handleFileChange}
+											readOnly={passportFiles.length > 0}
 										/>
 									</Box>
 								</Grid>
-							}
+							)}
 						</Grid>
 					</Card>
 				</Grid>

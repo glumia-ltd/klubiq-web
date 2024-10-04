@@ -1,5 +1,5 @@
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
-import { useEffect, useContext, useState } from 'react';
+import { useContext } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
@@ -7,7 +7,6 @@ import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -28,11 +27,19 @@ function SideBar() {
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
-	const { drawerWidth } = allContexts;
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
+		allContexts;
 
+	const handleDrawerClose = () => {
+		setIsclosing(true);
+		setSidebarOpen(false);
+	};
+
+	const handleDrawerTransitionEnd = () => {
+		setIsclosing(true);
+	};
 	const transitionedMixin = (theme: Theme): CSSObject => ({
 		transition: theme.transitions.create('width', {
 			easing: theme.transitions.easing.easeInOut,
@@ -68,17 +75,10 @@ function SideBar() {
 		},
 		...transitionedMixin(theme),
 		...(open && {
-			[theme.breakpoints.up('sm')]: {
-				width: `${drawerWidth.largeOpen}px`,
-			},
-			[theme.breakpoints.down('sm')]: {
-				width: `${drawerWidth.smallOpen}px`,
-			},
+			width: `${drawerWidth.largeOpen}px`,
 		}),
 		...(!open && {
-			[theme.breakpoints.down('sm')]: {
-				width: `${drawerWidth.smallClosed}px`,
-			},
+			width: `${drawerWidth.largeClosed}px`,
 		}),
 	}));
 
@@ -93,6 +93,8 @@ function SideBar() {
 			open={sidebarOpen}
 			onMouseEnter={() => setSidebarOpen(true)}
 			onMouseLeave={() => setSidebarOpen(false)}
+			onTransitionEnd={handleDrawerTransitionEnd}
+			onClose={handleDrawerClose}
 		>
 			<DrawerChildren>
 				<div

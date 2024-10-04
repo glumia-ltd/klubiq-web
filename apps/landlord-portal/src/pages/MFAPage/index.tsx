@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useNavigate } from 'react-router-dom';
 import appstorelogo from '../../assets/images/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg';
 import playstorelogo from '../../assets/images/GetItOnGooglePlay_Badge_Web_color_English.png';

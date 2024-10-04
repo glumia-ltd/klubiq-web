@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import { styles } from './style';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import aisha from '../../assets/images/aisha.jpg';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 

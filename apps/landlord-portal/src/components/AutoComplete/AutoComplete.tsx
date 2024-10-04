@@ -1,4 +1,14 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
+
+// Extend the Window interface to include google
+declare global {
+	interface Window {
+		google: any;
+	}
+}
 import { PlaceType } from '../../shared/type';
 import { loadScript } from '../../helpers/loadScript';
 import { debounce } from '@mui/material/utils';
@@ -6,15 +16,26 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import { getIn } from 'formik';
-import { find, includes } from 'lodash';
+import { filter, find, includes, map } from 'lodash';
+import countriesList from '../../helpers/countries-meta.json';
 
 const autocompleteService = { current: null };
+const countries = map(
+	filter(countriesList, (item) => item.active),
+	(item) => item.code.toLocaleLowerCase(),
+);
 
 export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 	formik,
 	name,
 	label,
 }) => {
+	const searchoptions = {
+		componentRestrictions: { country: countries },
+		fields: ['address_components', 'geometry', 'icon', 'name'],
+		types: ['address', 'geocode'],
+	};
+
 	const [value, setValue] = useState<PlaceType | null>(null);
 	const [inputValue, setInputValue] = useState('');
 	const [options, setOptions] = useState<readonly PlaceType[]>([]);
@@ -93,7 +114,12 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 		() =>
 			debounce(
 				(
-					request: { input: string },
+					request: {
+						input: string;
+						componentRestrictions: { country: string[] };
+						locationBias: string;
+						offset: number;
+					},
 					callback: (results?: readonly PlaceType[]) => void,
 				) => {
 					(autocompleteService.current as any).getPlacePredictions(
@@ -112,20 +138,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 		if (!autocompleteService.current && (window as any).google) {
 			autocompleteService.current = new (
 				window as any
-			).google.maps.places.AutocompleteService({
-				types: ['geocode'],
-				componentRestrictions: { country: 'Au' },
-				strictBounds: false,
-
-				//TODO: set dynamic country restriction
-				// componentRestrictions: { country: ['us', 'ng'] },
-				// componentRestrictions: 'country:us|country:ng',
-			});
-
-			//@ts-ignore
-			// autocompleteService?.current?.setComponentRestrictions({
-			// 	country: ['us', 'pr', 'vi', 'gu', 'mp'],
-			// });
+			).google.maps.places.AutocompleteService();
 		}
 
 		if (!autocompleteService.current) {
@@ -144,32 +157,42 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 
 		//TODO: Get Longitude and Latitude
 
-		fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
-			if (active) {
-				let newOptions: readonly PlaceType[] = [];
+		fetch(
+			{
+				input: inputValue,
+				componentRestrictions: searchoptions.componentRestrictions,
+				locationBias: 'IP_BIAS',
+				offset: 3,
+			},
+			(results?: readonly PlaceType[]) => {
+				console.log('countries: ', searchoptions.componentRestrictions);
+				if (active) {
+					let newOptions: readonly PlaceType[] = [];
 
-				if (value) {
-					newOptions = [value];
+					if (value) {
+						newOptions = [value];
+					}
+
+					if (results) {
+						newOptions = [
+							...newOptions,
+							...results.map((option) => ({
+								...option,
+								description: removeCountryFromDescription(option.description),
+							})),
+						];
+						console.log('newOptions', newOptions);
+					}
+
+					setOptions(newOptions);
+
+					if (results && results.length > 0) {
+						const placeId = results[0]?.place_id;
+						getPlaceDetails(placeId!);
+					}
 				}
-
-				if (results) {
-					newOptions = [
-						...newOptions,
-						...results.map((option) => ({
-							...option,
-							description: removeCountryFromDescription(option.description),
-						})),
-					];
-				}
-
-				setOptions(newOptions);
-
-				if (results && results.length > 0) {
-					const placeId = results[0]?.place_id;
-					getPlaceDetails(placeId!);
-				}
-			}
-		});
+			},
+		);
 
 		return () => {
 			active = false;
@@ -177,15 +200,19 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 	}, [value, inputValue, fetch]);
 
 	const fieldValue = getIn(formik.values, name);
-	const fieldError = getIn(formik.errors, name);
-	const fieldTouched = getIn(formik.touched, name);
+	// const fieldError = getIn(formik.errors, name);
+	// const fieldTouched = getIn(formik.touched, name);
 
 	return (
 		<Autocomplete
 			sx={{ width: '100%' }}
 			freeSolo
 			getOptionLabel={(option) =>
-				typeof option === 'string' ? option : option.description
+				option && typeof option === 'string'
+					? option
+					: option.description
+						? option.description
+						: ''
 			}
 			filterOptions={(x) => x}
 			options={options}
@@ -194,7 +221,7 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			filterSelectedOptions
 			value={value || fieldValue || ''}
 			noOptionsText='No locations'
-			onChange={(event: any, value: any) => {
+			onChange={(_event: any, value: PlaceType | null) => {
 				// setOptions(value ? [value, ...options] : options);
 				setValue(value);
 

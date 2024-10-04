@@ -115,6 +115,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 		event: React.MouseEvent<HTMLInputElement, MouseEvent>,
 		currentIndex: number,
 	) => {
+		console.log(event);
 		selectInput(currentIndex);
 	};
 

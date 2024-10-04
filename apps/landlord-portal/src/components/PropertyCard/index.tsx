@@ -259,7 +259,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						<CardMedia
 							component='img'
 							alt={propertyData?.name}
-							image={propertyData?.mainImage?.url}
+							image={propertyData?.mainImage?.url || defaultPropertyImage}
 							sx={CardStyle.rowImage}
 						/>
 					</Box>
@@ -405,7 +405,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 								</Typography>
 							</Typography>
 							<Typography
-								onClick={() => handleViewProperty(propertyData?.id)}
+								onClick={() => handleViewProperty(propertyData?.uuid)}
 								variant='link'
 							>
 								View Property

@@ -13,6 +13,7 @@ export const dashboardEndpoints = {
 	getDashboardMetrics: () => '/dashboard/metrics',
 	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
+	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
 };
 
 export const propertiesEndpoints = {
@@ -20,4 +21,5 @@ export const propertiesEndpoints = {
 	addProperty: () => `/properties`,
 	getPropertiesMetaData: () => '/public/property-metadata',
 	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	getSignedUrl: () => '/properties/signed-url',
 };

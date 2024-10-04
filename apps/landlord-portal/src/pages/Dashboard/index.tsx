@@ -1,4 +1,12 @@
-import { Container, Grid, Card, Typography, Box, Button } from '@mui/material';
+import {
+	Container,
+	Grid,
+	Card,
+	Typography,
+	Box,
+	Button,
+	Stack,
+} from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
@@ -7,7 +15,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
@@ -41,7 +49,7 @@ const DashBoard = () => {
 
 	const dispatch = useDispatch();
 
-	const { data: dashboardMetrics, isLoading: isDasboardMetricsLoading } =
+	const { data: dashboardMetrics, isLoading: isDashboardMetricsLoading } =
 		useGetDashboardMetricsQuery();
 
 	const startDate = firstDay?.format('YYYY-MM-DD');
@@ -49,7 +57,7 @@ const DashBoard = () => {
 
 	const {
 		data: revenueReport,
-		error,
+		//error,
 		isLoading: isRevenueReportLoading,
 	} = useGetRevenueReportDataQuery({ startDate, endDate });
 
@@ -158,15 +166,15 @@ const DashBoard = () => {
 
 	return (
 		<>
-			{isDasboardMetricsLoading ? (
+			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
 				<Container maxWidth={'xl'} sx={styles.containerStyle}>
 					<Grid container spacing={2}>
-						<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
-							<Grid item xs={12} sm={6} md={4} lg={4}>
+						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
+							<Grid item xs={12} sm={12} md={4} lg={4}>
 								<Card sx={styles.cardStyle}>
-									<Box sx={styles.boxStyle}>
+									<Stack sx={styles.boxStyle} direction={'row'}>
 										<Typography sx={styles.typoStyle}>
 											Total Properties{' '}
 										</Typography>{' '}
@@ -176,20 +184,26 @@ const DashBoard = () => {
 										>
 											{TOTALUNITS || 0}
 										</Typography>
+									</Stack>
+									<Box sx={styles.guageBoxStyle}>
+										<PropertiesGuage
+											data={guageData}
+											width={null}
+											height={100}
+											colors={['#6EC03C', '#D108A5', '#0088F0']}
+											legend={true}
+											legendPosition='left'
+										/>
 									</Box>
-									<PropertiesGuage
-										data={guageData}
-										width={null}
-										height={100}
-										colors={['#6EC03C', '#D108A5', '#0088F0']}
-										legend={true}
-										legendPosition='left'
-									/>
 								</Card>
 							</Grid>
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
-									<Typography sx={styles.typoStyle}>Today's Revenue</Typography>
+									<Stack sx={styles.boxStyle} direction={'row'}>
+										<Typography sx={styles.typoStyle}>
+											Today's Revenue
+										</Typography>
+									</Stack>
 
 									<Typography
 										sx={styles.revenueTextStyle}
@@ -226,7 +240,10 @@ const DashBoard = () => {
 
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
-									<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
+									<Stack sx={styles.boxStyle} direction={'row'}>
+										<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
+									</Stack>
+
 									<Box display={'flex'} alignItems={'center'}>
 										<CalendarTodayIcon sx={styles.calendarTodayStyle} />
 										<Typography
@@ -243,7 +260,7 @@ const DashBoard = () => {
 								</Card>
 							</Grid>
 
-							<Grid item xs={12} sm={12} md={8} lg={8}>
+							<Grid item xs={12} sm={6} md={8} lg={8}>
 								<Card sx={styles.cardStyleThree}>
 									<Typography sx={styles.typoStyle}>Occupancy Rate </Typography>{' '}
 									<Box sx={styles.occupancyBoxStyle}>
@@ -269,12 +286,16 @@ const DashBoard = () => {
 										</Typography>
 									</Box>
 									<Box sx={styles.totalExpensesStyle}>
-										<Box>
+										<Stack direction={'column'} spacing={2}>
 											<Typography sx={styles.typoStyle}>
 												Total expenses
 											</Typography>
 											<Box
-												sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}
+												sx={{
+													...styles.boxStyle,
+													display: 'flex',
+													alignItems: 'flex-start',
+												}}
 											>
 												<Typography
 													sx={styles.overdueTextStyle}
@@ -296,9 +317,9 @@ const DashBoard = () => {
 													%
 												</Typography>
 											</Box>
-										</Box>
+										</Stack>
 
-										<Box>
+										<Stack direction={'column'} spacing={2}>
 											<Typography sx={styles.typoStyle}>
 												Net cash flow
 											</Typography>
@@ -325,7 +346,7 @@ const DashBoard = () => {
 													{NETCASHFLOWPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}%
 												</Typography>
 											</Box>
-										</Box>
+										</Stack>
 									</Box>
 								</Card>
 							</Grid>
@@ -364,13 +385,14 @@ const DashBoard = () => {
 							</Grid>
 						</Grid>
 
-						<Grid container item xs={12} sm={4} md={4} lg={3}>
+						<Grid container item xs={12} sm={12} md={12} lg={3}>
 							<ReportCard />
 						</Grid>
 					</Grid>
 
 					<Grid
 						container
+						rowSpacing={2}
 						sx={{
 							...styles.totalRevenueStyle,
 							background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
@@ -381,37 +403,39 @@ const DashBoard = () => {
 						}}
 					>
 						<Grid item xs={12} sm={12} md={7}>
-							<Typography sx={styles.typoStyle}>Total Revenue </Typography>
-							{!isRevenueReportLoading && (
-								<Box
-									display={'flex'}
-									textAlign={'center'}
-									alignItems={'center'}
-								>
-									<Typography
-										sx={styles.occupancyTextStyle}
-										variant='dashboardTypography'
+							<Stack direction={'column'} spacing={2}>
+								<Typography sx={styles.typoStyle}>Total Revenue </Typography>
+								{!isRevenueReportLoading && (
+									<Box
+										display={'flex'}
+										textAlign={'center'}
+										alignItems={'center'}
 									>
-										₦{revenueReport?.totalRevenueLast12Months?.toFixed(2)}
-									</Typography>
+										<Typography
+											sx={styles.occupancyTextStyle}
+											variant='dashboardTypography'
+										>
+											₦{revenueReport?.totalRevenueLast12Months?.toFixed(2)}
+										</Typography>
 
-									<Typography
-										sx={{
-											...styles.changeTypographyStyle,
-											backgroundColor: indicatorBackground(
-												revenueReport?.changeIndicator,
-											),
-											color: indicatorColor(revenueReport?.changeIndicator),
-											border: `1px solid ${indicatorColor(
-												revenueReport?.changeIndicator,
-											)}`,
-										}}
-									>
-										{showChangeArrow(revenueReport?.changeIndicator)}
-										{revenueReport?.percentageDifference?.toFixed(1)}%
-									</Typography>
-								</Box>
-							)}
+										<Typography
+											sx={{
+												...styles.changeTypographyStyle,
+												backgroundColor: indicatorBackground(
+													revenueReport?.changeIndicator,
+												),
+												color: indicatorColor(revenueReport?.changeIndicator),
+												border: `1px solid ${indicatorColor(
+													revenueReport?.changeIndicator,
+												)}`,
+											}}
+										>
+											{showChangeArrow(revenueReport?.changeIndicator)}
+											{revenueReport?.percentageDifference?.toFixed(1)}%
+										</Typography>
+									</Box>
+								)}
+							</Stack>
 						</Grid>
 
 						<Grid

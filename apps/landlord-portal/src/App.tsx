@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ThemeContextProvider } from './context/ThemeContext/ThemeContext';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router/RouterPaths';
@@ -13,6 +15,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/L
 import { UserProfile } from './shared/auth-types';
 import { useLazyGetUserByFbidQuery } from './store/AuthStore/authApiSlice';
 
+// Helper function to convert the VAPID public key
+
 function App() {
 	const { user } = useSelector(getAuthState);
 	const { message, severity, isOpen, duration } = useSelector(
@@ -22,6 +26,16 @@ function App() {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
+		// const requestNotificationPermission = async () => {
+		// 	if ('Notification' in window) {
+		// 		const permission = await Notification.requestPermission();
+		// 		if (permission === 'granted') {
+		// 			await subscribeUserToPush();
+		// 		} else {
+		// 			console.log('Notification permission denied.');
+		// 		}
+		// 	}
+		// };
 		const listen = onAuthStateChanged(auth, async (currentUser: any) => {
 			if (currentUser) {
 				if (!user.fbId) {
@@ -35,6 +49,7 @@ function App() {
 					};
 					dispatch(saveUser(payload));
 				}
+				//await requestNotificationPermission();
 			} else {
 				console.log('AUTH STATE: ', auth);
 				console.log('no user found yet');
@@ -47,6 +62,7 @@ function App() {
 				auth.signOut();
 			}
 		});
+
 		return () => listen();
 	}, []);
 

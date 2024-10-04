@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
@@ -5,7 +6,7 @@ import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RouteObjectType } from '../../shared/type';
+import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
@@ -16,7 +17,8 @@ import {
 } from '../../components/Icons/CustomIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	getAddPropertyState,
+	//getAddPropertyState,
+	//getAddPropertyState,
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
@@ -26,6 +28,8 @@ import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
 import { omitBy } from 'lodash';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { clearData } from '../../services/indexedDb';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -42,9 +46,9 @@ const validationSchema = yup.object({
 	address: yup.object({
 		addressLine1: yup.string().required('Address Line 1 is required'),
 		addressLine2: yup.string(),
-		city: yup.string().required('City is required'),
-		state: yup.string().required('State is required'),
-		postalCode: yup.string().required('Postal code is required'),
+		city: yup.string(),
+		state: yup.string(),
+		postalCode: yup.string(),
 		country: yup.string().required('Country is required'),
 		isManualAddress: yup.boolean(),
 	}),
@@ -52,7 +56,10 @@ const validationSchema = yup.object({
 	units: yup.array().of(
 		yup.object({
 			id: yup.number().nullable(),
-			unitNumber: yup.string().required('Unit number is required'),
+			unitNumber: yup.string().when('unitType', {
+				is: 'multi',
+				then: (schema) => schema.required('Unit number is required'),
+			}),
 			rentAmount: yup.number().nullable(),
 			floor: yup.number().nullable(),
 			bedrooms: yup.number().nullable(),
@@ -94,23 +101,24 @@ type PayloadType = {
 	purposeId: number | null;
 	isMultiUnit: boolean;
 };
-
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
-	categoryName?: string | null;
+	categoryMetaData: CategoryMetaDataType | null;
+	propertyImages?: [];
 }
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
-
 	const navigate = useNavigate();
 
 	const location = useLocation();
 
 	const dispatch = useDispatch();
 
-	const formState = useSelector(getAddPropertyState);
+	const { user } = useSelector(getAuthState);
+
+	//const formState = useSelector(getAddPropertyState);
 
 	const [
 		addProperty,
@@ -125,14 +133,15 @@ export const AddPropertiesLayout = () => {
 
 	const formik = useFormik<IunitType>({
 		initialValues: {
+			categoryMetaData: null,
 			newAmenity: '',
 			customAmenities: [],
 			categoryId: null,
-			categoryName: null,
 			description: '',
 			name: '',
 			typeId: '',
 			images: [],
+			propertyImages: [],
 			unitType: '',
 			isMultiUnit: false,
 			purposeId: null,
@@ -280,7 +289,7 @@ export const AddPropertiesLayout = () => {
 		}
 	};
 
-	const formatUnitBasedOnCategoryName = (
+	const formatUnitBasedOnCategory = (
 		formikValues: any,
 		room1: string,
 		room2: string,
@@ -305,9 +314,7 @@ export const AddPropertiesLayout = () => {
 		formik.handleSubmit();
 
 		const errors = await formik.validateForm();
-
-		console.log(errors);
-
+		console.log(errors, 'errors');
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({
@@ -335,16 +342,16 @@ export const AddPropertiesLayout = () => {
 			formikValues.isMultiUnit = false;
 		}
 
-		if (formikValues.categoryId === 1) {
-			formatUnitBasedOnCategoryName(formikValues, 'offices', 'rooms');
+		if (formikValues.categoryMetaData?.hasBedrooms) {
+			formatUnitBasedOnCategory(formikValues, 'offices', 'rooms');
 		}
 
-		if (formikValues.categoryId === 2) {
-			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'rooms');
+		if (formikValues.categoryMetaData?.hasOffices) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'rooms');
 		}
 
-		if (formikValues.categoryId === 3) {
-			formatUnitBasedOnCategoryName(formikValues, 'bedrooms', 'offices');
+		if (formikValues.categoryMetaData?.hasRooms) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'offices');
 		}
 
 		//clean up form state object
@@ -398,17 +405,18 @@ export const AddPropertiesLayout = () => {
 		});
 
 		updatedFormikValues.units = updatedUnits;
-
-		delete updatedFormikValues.categoryName;
-
-		const payload = { ...updatedFormikValues };
-
-		console.log(payload);
+		delete updatedFormikValues.categoryMetaData;
+		delete updatedFormikValues.propertyImages;
 
 		try {
+			console.log(user?.organization);
+			delete formik.values.propertyImages;
+			const payload = { ...updatedFormikValues };
 			await addProperty(payload).unwrap();
+			clearData('new-property');
 		} catch (e) {
 			console.log(e);
+			//clearData('new-property');
 		}
 	};
 

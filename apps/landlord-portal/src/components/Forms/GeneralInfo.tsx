@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	Card,
 	Typography,
@@ -7,7 +7,6 @@ import {
 	FormControlLabel,
 	Checkbox,
 	Dialog,
-	Box,
 	InputAdornment,
 	Select,
 	MenuItem,
@@ -21,14 +20,13 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import DeleteIcon from '@mui/icons-material/Delete';
-import StateList from '../../helpers/stateList.json';
+// import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import styles from './style';
 import { Grid } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
+import { useDispatch } from 'react-redux';
+// import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
 import { without, some, toLower, capitalize, find } from 'lodash';
@@ -51,10 +49,10 @@ type CardProps = {
 	amenities: { id: number; name: string }[];
 };
 
-const states = StateList.map((item) => ({
-	value: item.name,
-	label: item.name,
-}));
+// const states = StateList.map((item) => ({
+// 	value: item.name,
+// 	label: item.name,
+// }));
 
 const countries = countriesList?.map((item) => ({
 	id: item.name,
@@ -88,7 +86,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const allAmenities = amenities ? [...amenities, ...customAmenitiesArray] : [];
 
-	const formState = useSelector(getAddPropertyState);
+	// const formState = useSelector(getAddPropertyState);
 
 	// console.log('store', formState);
 	// console.log('formik', formik.values);
@@ -195,12 +193,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		return null;
 	};
 
-	const getNameByPropertyCategory = (categoryName: string) => {
-		if (categoryName?.toLowerCase()?.includes('residential')) {
+	const getNameByPropertyCategory = () => {
+		const categoryMetaData = formik.values.categoryMetaData;
+
+		if (categoryMetaData?.hasBedrooms) {
 			return 'bedrooms';
-		} else if (categoryName?.toLowerCase()?.includes('commercial')) {
+		} else if (categoryMetaData?.hasOffices) {
 			return 'offices';
-		} else if (categoryName?.toLowerCase()?.includes('student housing')) {
+		} else if (categoryMetaData?.hasRooms) {
 			return 'rooms';
 		} else {
 			return 'bedrooms';
@@ -286,8 +286,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
-									name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryName)}`}
-									label={`${capitalize(getNameByPropertyCategory(formik.values.categoryName))}`}
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
+									label={`${capitalize(getNameByPropertyCategory())}`}
 									type='number'
 									formik={formik}
 								/>
@@ -493,26 +493,19 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 												<Grid item xs={6} sx={styles.unitIcon}>
 													<Tooltip
-														title={`Click to adjust ${getNameByPropertyCategory(
-															formik.values.categoryName,
-														).slice(0, -1)} count`}
+														title={`Click to adjust ${getNameByPropertyCategory().slice(
+															0,
+															-1,
+														)} count`}
 													>
 														<IconButton onClick={() => handleOpen(unitIndex)}>
-															{getNameByPropertyCategory(
-																formik.values.categoryName,
-															) === 'offices' ? (
+															{getNameByPropertyCategory() === 'offices' ? (
 																<EmojiOneBuildingIcon sx={{ height: '15px' }} />
 															) : (
 																<Bedroom />
 															)}
 															<Typography>
-																{
-																	unit[
-																		getNameByPropertyCategory(
-																			formik.values.categoryName,
-																		)
-																	]
-																}
+																{unit[getNameByPropertyCategory()]}
 															</Typography>
 														</IconButton>
 													</Tooltip>
@@ -637,8 +630,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
 							<ControlledTextField
-								name={`units[${currentUnitIndex}].${getNameByPropertyCategory(formik.values.categoryName)}`}
-								label={`${capitalize(getNameByPropertyCategory(formik.values.categoryName))}`}
+								name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
+								label={`${capitalize(getNameByPropertyCategory())}`}
 								type='number'
 								formik={formik}
 							/>
