@@ -1,5 +1,3 @@
-import { display, width } from '@mui/system';
-
 export const styles = {
 	containerStyle: {
 		overflow: 'auto',

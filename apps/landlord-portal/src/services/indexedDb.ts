@@ -28,9 +28,6 @@ const initDB = async (storeName: string) => {
 	});
 };
 
-const getDb = async () => {
-	return await openDB(dbName, 1);
-};
 // Add data to the store
 export const addData = async (data: Data, storeName: string = 'properties') => {
 	const db = await initDB(storeName);

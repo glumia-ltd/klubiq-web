@@ -21,9 +21,8 @@ import { deleteData } from '../../services/indexedDb';
 
 const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	const [passportFiles, setPassportFiles] = useState<File[]>([]);
-	const [totalImageSize, setTotalImageSize] = useState(0);
+	const [, setTotalImageSize] = useState(0);
 	const uploadFolder = 'properties';
-	console.log(formik.values);
 
 	const dispatch = useDispatch();
 	const { user } = useSelector(getAuthState);
@@ -88,7 +87,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 				};
 
 				const { data } = await getSignedUrl(body);
-				const storageLimit = multiply(data.storageLimit, 1048576);
+				const storageLimit = multiply(data?.storageLimit, 1048576);
 				// formik.setFieldValue('signedUrl', {
 				// 	signature: data.signature,
 				// 	storageLimit:  multiply(data.storageLimit, 1048576),
@@ -104,6 +103,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 				}
 				deleteData('images', 'new-property');
 				const worker = new UploadWorker();
+
 				worker.postMessage({
 					files: files,
 					apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY,
@@ -117,7 +117,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					if (status === 'success') {
 						formik.setFieldValue('images', [...data.value]);
 					} else if (status === 'uploading') {
-						clearTimeout(data);
+						// clearTimeout(data);
 					} else if (status === 'error') {
 						console.error('Upload error:', error);
 					}

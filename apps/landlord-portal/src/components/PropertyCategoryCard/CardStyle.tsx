@@ -1,5 +1,3 @@
-import { display } from '@mui/system';
-
 const styles = {
 	card: {
 		height: { xs: '120px', sm: '180px', md: '290px', lg: '290px' },
