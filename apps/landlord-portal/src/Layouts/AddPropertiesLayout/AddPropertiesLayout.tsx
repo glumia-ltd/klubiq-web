@@ -29,7 +29,7 @@ import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
 import { omitBy } from 'lodash';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { clearData } from '../../services/indexedDb';
+import { clearData, initDB } from '../../services/indexedDb';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -188,6 +188,7 @@ export const AddPropertiesLayout = () => {
 	};
 
 	useEffect(() => {
+		initDB('new-property');
 		window.addEventListener('beforeunload', handleBeforeUnload);
 
 		// Remove the event listener when the component unmounts

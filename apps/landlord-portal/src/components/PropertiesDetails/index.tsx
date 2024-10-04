@@ -88,7 +88,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 				};
 
 				const { data } = await getSignedUrl(body);
-				const storageLimit = multiply(data.storageLimit, 1048576);
+				const storageLimit = multiply(data?.storageLimit, 1048576);
 				// formik.setFieldValue('signedUrl', {
 				// 	signature: data.signature,
 				// 	storageLimit:  multiply(data.storageLimit, 1048576),
