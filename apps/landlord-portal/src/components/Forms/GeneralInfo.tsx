@@ -417,7 +417,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 																) {
 																	dispatch(
 																		openSnackbar({
-																			message: 'Unit name is cannot be empty',
+																			message: 'Unit name cannot be empty',
 																			severity: 'info',
 																			isOpen: true,
 																		}),
