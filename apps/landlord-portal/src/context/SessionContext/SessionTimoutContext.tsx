@@ -77,7 +77,6 @@ export const SessionTimeoutProvider = ({
 
 	// Effect to set up the event listeners for user activity and inactivity tracking
 	useEffect(() => {
-		console.log('location', window.location.href);
 		if (!window.location.href.includes('login')) {
 			const activityEvents = ['mousemove', 'keypress', 'click', 'scroll'];
 

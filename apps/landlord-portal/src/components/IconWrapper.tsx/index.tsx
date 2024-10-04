@@ -23,7 +23,7 @@ export const IconWrapper: React.FC<{ icon: React.ReactNode } & IconProps> = ({
 	return (
 		<span
 			role='img'
-			aria-hidden='true'
+			//aria-hidden='true'
 			style={{
 				color: color,
 				width,
