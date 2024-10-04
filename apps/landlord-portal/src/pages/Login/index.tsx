@@ -386,6 +386,7 @@ const Login = () => {
 										separator={<span>&nbsp; &nbsp;</span>}
 										onChange={setOtp}
 										length={6}
+										onEnterKeyPress={verifyOTP}
 									/>
 									{otpError && (
 										<Typography color='error'>{otpError}</Typography>
