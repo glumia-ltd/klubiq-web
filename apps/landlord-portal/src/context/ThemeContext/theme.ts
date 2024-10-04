@@ -81,6 +81,14 @@ export const LightTheme: Theme = createTheme({
 		},
 	},
 	components: {
+		MuiAlert: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF !important',
+				},
+			},
+		},
+
 		MuiButton: {
 			styleOverrides: {
 				root: {
@@ -100,6 +108,22 @@ export const LightTheme: Theme = createTheme({
 					},
 				},
 			},
+
+			variants: [
+				{
+					props: { variant: 'propertyButton' },
+					style: {
+						background: '#ffffff',
+						color: '#002147',
+						opacity: '0.8',
+						'&:hover': {
+							// opacity: '1',
+							color: '#002147',
+							// border: '1.6px solid #FFFFFF',
+						},
+					},
+				},
+			],
 		},
 		MuiListItemButton: {
 			defaultProps: {
@@ -207,6 +231,13 @@ export const LightTheme: Theme = createTheme({
 					style: {
 						backgroundColor: '#FF0000',
 						color: '#FFFFFF',
+					},
+				},
+				{
+					props: { variant: 'propertyType' },
+					style: {
+						backgroundColor: '#0C36A01A',
+						color: '#0C36A0',
 					},
 				},
 			],
@@ -360,6 +391,13 @@ export const DarkTheme: Theme = createTheme({
 	},
 
 	components: {
+		MuiAlert: {
+			styleOverrides: {
+				root: {
+					color: '#FFFFFF !important',
+				},
+			},
+		},
 		MuiListItemButton: {
 			defaultProps: {
 				disableRipple: true,
@@ -440,9 +478,6 @@ export const DarkTheme: Theme = createTheme({
 				paper: {
 					background: '#0DODOD',
 					backgroundImage: 'none',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
@@ -450,9 +485,6 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					color: '#FFFFFF',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 				outlined: {
 					borderColor: '#FFFFFF',
@@ -465,6 +497,19 @@ export const DarkTheme: Theme = createTheme({
 					},
 				},
 			},
+			variants: [
+				{
+					props: { variant: 'propertyButton' },
+					style: {
+						background: '#ffffff',
+						color: '#0088F0',
+
+						'&:hover': {
+							color: '#0088F0',
+						},
+					},
+				},
+			],
 		},
 
 		MuiCard: {
@@ -480,9 +525,6 @@ export const DarkTheme: Theme = createTheme({
 
 	typography: {
 		fontFamily: 'Maven Pro, sans-serif',
-		// allVariants: {
-		// 	color: "#BBD9FF"
-		//   },
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
@@ -495,6 +537,7 @@ export const DarkTheme: Theme = createTheme({
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
+
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
@@ -515,8 +558,8 @@ export const DarkTheme: Theme = createTheme({
 		},
 		h6: {
 			fontWeight: 800,
-			// fontSize: '1rem',
-			// lineHeight: 1,
+			fontSize: '1rem',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 

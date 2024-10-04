@@ -1,7 +1,8 @@
 export const styles = {
 	container: {
-		padding: '25px 90px',
-		color: 'primary.main',
+		paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
+		// color: 'primary.main',
 	},
 	breadCrumbStyle: {
 		paddingLeft: '18px',
@@ -10,9 +11,9 @@ export const styles = {
 		},
 	},
 	iconStyle: {
-		color: '#6699CC',
 		width: '20px',
 		height: '20px',
+		cursor: 'pointer',
 	},
 	arrowIconStyle: {
 		height: '15px',
@@ -37,21 +38,10 @@ export const styles = {
 		padding: '8px 12px',
 		gap: '8px',
 		borderRadius: '10px',
-		backgroundColor: '#ffffff',
 		minWidth: '160px',
 	},
 
-	chipStyle: {
-		marginLeft: '18px',
-		padding: '2px',
-		backgroundColor: 'primary.light',
-		color: 'primary.contrastText',
-		fontSize: '12px',
-		fontWeight: '',
-	},
-
 	firstCardContainer: {
-		backgroundColor: '#fff',
 		borderRadius: '8px',
 	},
 
@@ -72,7 +62,7 @@ export const styles = {
 	},
 
 	tableCell: {
-		backgroundColor: '#fff',
+		// backgroundColor: '#fff',
 		padding: '5px',
 		color: 'primary.main',
 		fontSize: '24px',
@@ -89,9 +79,8 @@ export const styles = {
 
 	tableHeaderCellStyle: {
 		background: 'transparent',
-		color: '#1B1B1BB2',
-		borderTop: '1px solid #B8D9FF ',
-		borderBottom: '1px solid #B8D9FF ',
+		borderTop: '1px solid primary.main',
+		borderBottom: '1px solid primary.main',
 	},
 	tenantInfoStyle: {
 		display: 'flex',
@@ -100,10 +89,10 @@ export const styles = {
 		gap: '20px',
 	},
 	tableBodyStyle: {
-		background: '#fff',
+		// background: '#fff',
 		border: 'none',
 		fontSize: '14px',
-		color: 'primary.main',
+		// color: 'primary.main',
 	},
 
 	addMaintenance: {
@@ -205,5 +194,10 @@ export const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 		flexDirection: 'column',
+	},
+	skeletonStyle: {
+		width: '70px',
+		height: '20px',
+		border: '2px solid red',
 	},
 };

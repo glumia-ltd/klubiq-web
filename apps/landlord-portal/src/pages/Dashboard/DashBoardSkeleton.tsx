@@ -9,8 +9,8 @@ const DashBoardSkeleton = () => {
 	return (
 		<Container maxWidth={'xl'} sx={styles.containerStyle}>
 			<Grid container spacing={2}>
-				<Grid container item spacing={2} xs={12} sm={8} md={8} lg={9}>
-					<Grid item xs={12} sm={6} md={4} lg={4}>
+				<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
+					<Grid item xs={12} sm={12} md={4} lg={4}>
 						<Card sx={styles.cardStyle}>
 							<Box sx={styles.boxStyle}>
 								<Skeleton variant='text' sx={styles.typoStyle} width='35%' />
@@ -104,7 +104,7 @@ const DashBoardSkeleton = () => {
 						</Card>
 					</Grid>
 
-					<Grid item xs={12} sm={12} md={8} lg={8}>
+					<Grid item xs={12} sm={6} md={8} lg={8}>
 						<Card sx={styles.cardStyleThree}>
 							<Skeleton variant='text' height={15} width='40%' />
 							<Box sx={styles.occupancyBoxStyle}>
@@ -180,7 +180,7 @@ const DashBoardSkeleton = () => {
 					</Grid>
 				</Grid>
 
-				<Grid container item xs={12} sm={4} md={4} lg={3}>
+				<Grid container item xs={12} sm={12} md={12} lg={3}>
 					<Card sx={styles.cardStyleFive}>
 						<Skeleton variant='rounded' width='100%' height='100%' />
 					</Card>

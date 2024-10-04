@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
 
 type LoginLayoutType = {
@@ -18,7 +18,7 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 				p: {
 					xs: 1,
 					sm: 1,
-					md: 1,
+					md: 0,
 					lg: 0,
 				},
 			}}
@@ -31,17 +31,34 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 				item
 				xs={0}
 				sm={0}
-				md={5}
-				lg={5}
+				md={6}
+				lg={6}
+				xl={6}
 				sx={{
-					background: '#6699CC',
-					borderBottomRightRadius: '1.3rem',
+					background: 'linear-gradient(#6699CC, #1F305E)',
+					borderTopRightRadius: '1.3rem',
 					borderBottomLeftRadius: '1.3rem',
-					height: '97vh',
-					alignSelf: 'start',
-					display: { xs: 'none', md: 'block' },
+					height: '100vh',
+					alignContent: 'center',
+					display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 				}}
-			></Grid>
+			>
+				<Stack
+					direction={'column'}
+					sx={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						alignContent: 'center',
+					}}
+				>
+					<Typography color={'white'} textAlign={'center'} variant='h2'>
+						Welcome back to Klubiq!
+					</Typography>
+					<Typography color={'white'} variant='body1'>
+						Manage your properties effortlessly, all in one place.
+					</Typography>
+				</Stack>
+			</Grid>
 		</Grid>
 	);
 };

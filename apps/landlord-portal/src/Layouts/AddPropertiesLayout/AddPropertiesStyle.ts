@@ -37,7 +37,6 @@ const styles = {
 	button: {
 		padding: '6px 8px',
 		borderRadius: '10px',
-		background: '#ffffff',
 		fontSize: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		minWidth: { xs: '4rem', sm: '9rem', md: '9rem', lg: '9rem' },
 		minHeight: '2rem',

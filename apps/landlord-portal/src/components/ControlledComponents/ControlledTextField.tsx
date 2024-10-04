@@ -8,6 +8,7 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import { SxProps } from '@mui/material';
+import { getIn } from 'formik';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
@@ -20,10 +21,11 @@ type ControlledTextFieldProps = {
 	name: string;
 	type?: string;
 	inFieldLabel?: boolean;
-	inputProps?: any;
+	inputprops?: any;
 	prioritizeError?: any;
 	[key: string]: any;
 	color?: string;
+	inputRef?: React.Ref<HTMLInputElement>;
 };
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
@@ -36,11 +38,12 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	name,
 	type,
 	inFieldLabel,
-	inputProps,
+	inputprops,
 	prioritizeError,
 	onFileSelect,
 	color,
 	sxTwo,
+	placeholder,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +55,10 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 		}
 		formik.handleChange(e);
 	};
+
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
 
 	return (
 		<Stack
@@ -70,21 +77,22 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					{label}
 				</Typography>
 			)}
+
 			<TextField
 				fullWidth
 				id={name}
 				name={name}
 				size='small'
 				variant='outlined'
+				placeholder={placeholder}
 				label={inFieldLabel && label}
 				type={type || 'text'}
-				value={
-					(props.value !== undefined && props.value) || formik.values[name]
-				}
+				value={(props.value !== undefined && props.value) || fieldValue || ''}
 				onChange={onChange}
+				onBlur={formik?.handleBlur}
 				error={
 					Boolean(prioritizeError) ||
-					(Boolean(formik.touched[name]) && Boolean(formik.errors[name]))
+					(Boolean(fieldTouched) && Boolean(fieldError))
 				}
 				InputProps={{
 					endAdornment: loading ? (
@@ -94,17 +102,12 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 					) : undefined,
 					...InputProps,
 				}}
-				helperText={
-					prioritizeError ||
-					(formik.touched[name] && formik.errors[name]) ||
-					' '
-				}
-				inputProps={inputProps}
+				helperText={prioritizeError || (fieldTouched && fieldError) || ' '}
+				inputProps={inputprops}
 				{...props}
 				sx={sxTwo}
 			/>
 		</Stack>
 	);
 };
-
 export default ControlledTextField;

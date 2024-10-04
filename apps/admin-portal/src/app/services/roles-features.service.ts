@@ -6,7 +6,15 @@ import {
 	signInWithEmailAndPassword,
 	User,
 } from 'firebase/auth';
-import { ApiResponse, Role, OrgRole } from '../shared';
+import {
+	ApiResponse,
+	Role,
+	OrgRole,
+	FeaturePermission,
+	CommonDataModel,
+	UpdateOrgRole,
+	CreateOrgRole,
+} from '../shared';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, firstValueFrom, Observable, of } from 'rxjs';
@@ -18,8 +26,9 @@ import * as env from '../../environments/environment';
 export class RolesFeaturesService {
 	roles = signal<Role[]>([]);
 	orgRoles = signal<OrgRole[]>([]);
-	features = signal<any[]>([]);
-	featurePermissions = signal<any[]>([]);
+	features = signal<CommonDataModel[]>([]);
+	featurePermissions = signal<FeaturePermission[]>([]);
+	permissions = signal<CommonDataModel[]>([]);
 
 	constructor(
 		private router: Router,
@@ -73,13 +82,102 @@ export class RolesFeaturesService {
 			});
 	}
 
+	async getPermissions() {
+		this.http
+			.get<ApiResponse>(`${env.environment.apiUrl}/api/public/permissions`)
+			.subscribe({
+				next: (res) => {
+					if (res.data) {
+						this.permissions.set(res.data);
+					}
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	}
+
 	async getFeaturePermissions() {
 		this.http
-			.get<ApiResponse>(`${env.environment.apiUrl}/api/public/features`)
+			.get<ApiResponse>(
+				`${env.environment.apiUrl}/api/public/features-permissions`,
+			)
 			.subscribe({
 				next: (res) => {
 					if (res.data) {
 						this.featurePermissions.set(res.data);
+					}
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	}
+
+	async updateOrgRole(role: UpdateOrgRole) {
+		this.http
+			.put<ApiResponse>(
+				`${env.environment.apiUrl}/api/public/organization-roles/${role.id}`,
+				role,
+			)
+			.subscribe({
+				next: (res) => {
+					if (res.data) {
+						this.getOrgRoles();
+					}
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	}
+
+	async createOrgRole(role: CreateOrgRole) {
+		this.http
+			.post<ApiResponse>(
+				`${env.environment.apiUrl}/api/public/organization-roles/`,
+				role,
+			)
+			.subscribe({
+				next: (res) => {
+					if (res.data) {
+						this.getOrgRoles();
+					}
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	}
+
+	async updateRole(role: Role) {
+		this.http
+			.put<ApiResponse>(
+				`${env.environment.apiUrl}/api/public/system-roles/${role.id}`,
+				role,
+			)
+			.subscribe({
+				next: (res) => {
+					if (res.data) {
+						this.getRoles();
+					}
+				},
+				error: (err) => {
+					console.error(err);
+				},
+			});
+	}
+
+	async createRole(role: Role) {
+		this.http
+			.post<ApiResponse>(
+				`${env.environment.apiUrl}/api/public/system-roles/`,
+				role,
+			)
+			.subscribe({
+				next: (res) => {
+					if (res.data) {
+						this.getRoles();
 					}
 				},
 				error: (err) => {

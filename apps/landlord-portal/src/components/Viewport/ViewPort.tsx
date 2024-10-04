@@ -8,12 +8,17 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
+import { useMediaQuery, useTheme } from '@mui/material';
+import MobileSideBar from '../SideBar/mobile-side-bar';
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
 };
 
 const ViewPort = ({ children }: ViewPortProp) => {
+	const theme = useTheme();
+	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+
 	const { mode } = useContext(ThemeContext);
 
 	const { pathname } = useLocation();
@@ -25,10 +30,11 @@ const ViewPort = ({ children }: ViewPortProp) => {
 	return (
 		<NavToggleProvider>
 			<CssBaseline />
-
+			{isMediumScreen && <MobileSideBar />}
 			<Box
 				sx={{
 					display: 'flex',
+					flexDirection: 'row',
 					flexGrow: 1,
 					overflow: 'hidden',
 					'&.MuiBox-root': {
@@ -36,7 +42,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 					},
 				}}
 			>
-				<Sidebar />
+				{!isMediumScreen && <Sidebar />}
 				<Box display='flex' flexGrow={1} flexDirection='column' width={'100%'}>
 					<NavBar />
 					<Box

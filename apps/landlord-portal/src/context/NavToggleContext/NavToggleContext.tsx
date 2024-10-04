@@ -1,10 +1,13 @@
-import { useState, useCallback, createContext, ReactNode } from 'react';
+/* eslint-disable no-unused-vars */
+import { createContext, ReactNode, useState } from 'react';
 
 interface ContextValue {
-	toggleSidebar: () => void;
-	openSidebar: () => void;
-	closeSidebar: () => void;
+	toggleMobileSidebar: () => void;
+	setSidebarOpen: (open: boolean) => boolean;
+	isClosing: boolean;
+	setIsclosing: (isClosing: boolean) => void;
 	sidebarOpen: boolean;
+	mobileSideBarOpen: boolean;
 	drawerWidth: {
 		smallOpen: number;
 		smallClosed: number;
@@ -14,10 +17,12 @@ interface ContextValue {
 }
 
 export const Context = createContext<ContextValue>({
-	toggleSidebar: () => {},
-	openSidebar: () => {},
-	closeSidebar: () => {},
-	sidebarOpen: false,
+	setSidebarOpen: (open: boolean) => open,
+	toggleMobileSidebar: () => {},
+	setIsclosing: () => {},
+	sidebarOpen: true,
+	mobileSideBarOpen: false,
+	isClosing: false,
 	drawerWidth: {
 		smallOpen: 200,
 		smallClosed: 0,
@@ -31,13 +36,22 @@ interface NavToggleProviderProps {
 }
 
 export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
-	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [sidebarOpen, setSidebarState] = useState<boolean>(true);
+	const [mobileSideBarOpen, setMobileSidebarState] = useState<boolean>(false);
+	const [isClosing, setSideBarIsClosing] = useState<boolean>(false);
+	const setSidebarOpen = (open: boolean) => {
+		setSidebarState(open);
+		return open;
+	};
+	const setIsclosing = (closing: boolean) => {
+		setSideBarIsClosing(closing);
+	};
+	const toggleMobileSidebar = () => {
+		// if (!isClosing) {
 
-	const closeSidebar = useCallback(() => setSidebarOpen(false), []);
-
-	const openSidebar = useCallback(() => setSidebarOpen(true), []);
-
-	const toggleSidebar = useCallback(() => setSidebarOpen((prev) => !prev), []);
+		// }
+		setMobileSidebarState(!mobileSideBarOpen);
+	};
 	const drawerWidth = {
 		smallOpen: 200,
 		smallClosed: 0,
@@ -46,10 +60,12 @@ export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
 	};
 
 	const value: ContextValue = {
-		toggleSidebar,
-		openSidebar,
-		closeSidebar,
 		sidebarOpen,
+		setSidebarOpen,
+		mobileSideBarOpen,
+		toggleMobileSidebar,
+		isClosing,
+		setIsclosing,
 		drawerWidth,
 	};
 

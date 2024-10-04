@@ -5,12 +5,14 @@ type snackbarType = {
 	message: string;
 	severity: 'success' | 'info' | 'warning' | 'error';
 	isOpen: boolean;
+	duration?: number;
 };
 
 const initialState: snackbarType = {
 	message: '',
 	severity: 'success',
 	isOpen: true,
+	duration: 2000,
 };
 
 const options = {

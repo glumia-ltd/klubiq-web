@@ -25,20 +25,21 @@ const styles = {
 		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '24px' },
 		textTransform: 'uppercase',
 		marginBottom: '15px',
-		color: '#002147',
+		// color: '#002147',
 	},
 
 	subText: {
 		fontSize: { xs: '13px', sm: '16px', md: '15px', lg: '16px' },
 		lineHeight: { xs: '20px', sm: '20px', md: '20px', lg: '20px' },
 		fontWeight: '600px',
-		marginBottom: '15px',
-		color: '#002147',
+		// marginBottom: '15px',
+		// color: '#002147',
 	},
 	cloneText: {
-		color: '#002147',
+		// color: '#002147',
 		fontSize: '14px',
 		fontWeight: '500',
+		textDecoration: 'underline',
 	},
 	addButton: {
 		display: 'flex',

@@ -30,6 +30,7 @@ export const styles = {
 	readMoreStyle: {
 		lineHeight: '24px',
 		cursor: 'pointer',
+		color: 'primary.main',
 	},
 
 	textFieldStyle: {
@@ -50,13 +51,12 @@ export const styles = {
 		height: '40px',
 		padding: '8px 12px',
 		borderRadius: '10px',
-		backgroundColor: '#ffffff',
 		maxWidth: '144px',
 		alignSelf: 'flex-end',
 	},
 
 	showHideTextStyle: {
-		background: '#fff',
+		// background: '#fff',
 		width: '144px',
 		height: '32px',
 		padding: '6px 8px, 6px 8px',

@@ -7,8 +7,6 @@ export const MaintenanceIcon = (allProps: IconProps) => {
 			{...restProps}
 			icon={
 				<svg
-					width='inherit'
-					height='inherit'
 					viewBox='0 0 14 16'
 					fill='none'
 					xmlns='http://www.w3.org/2000/svg'

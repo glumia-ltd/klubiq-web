@@ -11,4 +11,7 @@ export const environment = {
 	},
 	apiUrl: process.env['KLB_API_URL'],
 	appName: 'Klubiq Admin Portal',
+	recaptchaSiteKey: process.env['KLB_RECAPTCHA_SITE_KEY'],
+	recaptchaValidationUrl: process.env['KLB_RECAPTCHA_VALIDATION_URL'],
+	recaptchaDebugToken: process.env['KLB_RECAPTCHA_DEBUG_TOKEN'],
 };

@@ -1,103 +1,83 @@
-import { useState, useEffect } from 'react';
-import PropertyCategoryCard from '../PropertyCategoryCard';
-import { Grid, Typography, Card, Skeleton } from '@mui/material';
+import { FC, useState } from 'react';
+import PropertyCategoryCard from '../PropertyCategoryCard/index';
+import { Grid, Typography, Card } from '@mui/material';
 import PropertyLayoutStyle from './PropertyCategoryStyle';
-import myImage1 from '../../assets/images/house.svg';
-import myImage3 from '../../assets/images/emojione-monotone_houses.svg';
-import myImage2 from '../../assets/images/emojione-monotone_office-building.svg';
-// type Props = {};
-interface CardData {
+import {
+	HouseIcon,
+	EmojiOneHomeIcon,
+	EmojiOneBuildingIcon,
+} from '../Icons/CustomIcons';
+import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { CategoryMetaDataType } from '../../shared/type';
+
+type CategoryType = {
 	id: number;
-	title: string;
-	description: string;
-	// icon: React.ReactElement;
-	src: string;
-	alt: string;
-}
-const PropertyCategory = () => {
-	const [selectedCard, setSelectedCard] = useState<number | null>(null);
-	const handleCardClick = (id: number) => {
-		setSelectedCard((prevId) => (prevId === id ? null : id));
-		console.log('Selected card ID:', id === selectedCard ? null : id);
+	name: string;
+	displayText: string;
+	metaData?: CategoryMetaDataType;
+	Image: any;
+};
+
+const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
+	const [selectedCard, setSelectedCard] = useState<number | null>(
+		formik.values.categoryId,
+	);
+
+	const {
+		data: propertyMetaData,
+		//, isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
+
+	const handleCardClick = (metaData: any, id: number) => {
+		formik.setFieldValue('categoryMetaData', metaData);
+		formik.setFieldValue('categoryId', id);
+		setSelectedCard(id);
 	};
-	const [loading, setLoading] = useState<boolean>(true);
-	useEffect(() => {
-		setTimeout(() => setLoading(false), 20000);
-	}, []);
-	const data: CardData[] = [
-		{
-			id: 1,
-			title: 'Residential',
-			description: 'Any property used for residential purpose.',
-			// icon: <HomeIcon />,
-			src: myImage1,
-			alt: 'Description of image 1',
+
+	const icons: Record<string, any> = {
+		HouseIcon,
+		EmojiOneHomeIcon,
+		EmojiOneBuildingIcon,
+	};
+
+	const cardData: CategoryType[] = propertyMetaData?.categories?.map(
+		(category: CategoryType) => {
+			return {
+				...category,
+				id: category?.id,
+				Image: icons[category.metaData?.icon || ''],
+			};
 		},
-		{
-			id: 2,
-			title: 'Commercial',
-			description:
-				'Any property used for business purposes rather than as a living space.',
-			// icon: <WorkIcon />,
-			src: myImage2,
-			alt: 'Description of image 2',
-		},
-		{
-			id: 3,
-			title: 'Student Housing',
-			description:
-				'Any residential units that serves as housing exclusively for  students.',
-			// icon: <SchoolIcon />,
-			src: myImage3,
-			alt: 'Description of image 3',
-		},
-	];
+	);
+	console.log(cardData);
 	return (
 		<Card sx={PropertyLayoutStyle.card}>
-			{loading ? (
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Skeleton variant='text' height={25} width='50%' />
-					</Grid>
-					{data.map((item) => (
-						<Grid item xs={4} sm={4} md={4} key={item.id}>
-							<Skeleton
-								variant='rectangular'
-								sx={PropertyLayoutStyle.newCard}
-							/>
-						</Grid>
-					))}
+			<Grid container spacing={3}>
+				<Grid item xs={12}>
+					<Typography
+						variant='h1'
+						gutterBottom
+						textTransform={'capitalize'}
+						mb={'24px'}
+						sx={PropertyLayoutStyle.header}
+					>
+						Property Category
+					</Typography>
 				</Grid>
-			) : (
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Typography
-							variant='h1'
-							gutterBottom
-							textTransform={'capitalize'}
-							mb={'24px'}
-							sx={PropertyLayoutStyle.header}
-						>
-							Property Category
-						</Typography>
+				{cardData?.map((item: CategoryType) => (
+					<Grid item xs={12} sm={6} md={4} key={`${item.id}--${item.name}`}>
+						<PropertyCategoryCard
+							key={item.id}
+							heading={item.name}
+							subtext={item.displayText}
+							id={item.id}
+							onClick={() => handleCardClick(item?.metaData, item.id)}
+							isSelected={item.id === selectedCard}
+							Image={item?.Image}
+						/>
 					</Grid>
-					{data.map((item) => (
-						<Grid item xs={4} sm={4} md={4} key={item.id}>
-							<PropertyCategoryCard
-								key={item.id}
-								heading={item.title}
-								subtext={item.description}
-								// icon={item.icon}
-								id={item.id}
-								onClick={handleCardClick}
-								isSelected={item.id === selectedCard}
-								src={item.src}
-								alt={item.alt}
-							/>
-						</Grid>
-					))}
-				</Grid>
-			)}
+				))}
+			</Grid>
 		</Card>
 	);
 };

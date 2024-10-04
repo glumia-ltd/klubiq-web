@@ -52,13 +52,14 @@ type selectedFilters = Record<string, string | number>;
 type FilterType = {
 	filterList: OptionsType;
 	getFilterResult: (result: selectedFilters) => void;
+	disable?: boolean;
 };
 
 type ModalStyleType = {
 	[key: string]: string | number;
 };
 
-const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
+const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 	const [selectedTitle, setSelectedTitle] = useState<selectedFilters>({});
 
 	const [selectedId, setSelectedId] = useState<selectedFilters>({});
@@ -75,10 +76,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 
 	const theme = useTheme();
 
-	const handleButtonClick = (
-		title: string,
-		//, id = ''
-	) => {
+	const handleButtonClick = (title: string) => {
 		const buttonPosition = divRef?.current[title]?.getBoundingClientRect();
 		const modalPosition = modalRef?.current[title]?.getBoundingClientRect();
 
@@ -118,8 +116,6 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 		delete updatedFilters[filterTitle];
 		delete updatedId[id];
 
-		// getFilterResult({ ...updatedFilters });
-
 		getFilterResult({ ...updatedId });
 
 		setSelectedTitle({ ...updatedFilters });
@@ -136,7 +132,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 			justifyContent={'flex-start'}
 			sx={styles.filterContainer}
 		>
-			{filterList.map((entry) => {
+			{filterList?.map((entry) => {
 				const { title, options, id } = entry;
 
 				return ArrayOfSelectedTitles.includes(title) ? (
@@ -167,12 +163,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								...styles.selectedButtonDropDown,
 								background: `${theme.palette.primary.main}`,
 							}}
-							onClick={() =>
-								handleButtonClick(
-									title,
-									//, id
-								)
-							}
+							onClick={() => handleButtonClick(title)}
 						>
 							<Typography>{selectedTitle[title]}</Typography>
 
@@ -241,7 +232,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 
 												const labelWithIcon = (
 													<span style={styles.labelWithIcon}>
-														<LabelIcon />
+														{Icon && <LabelIcon />}
 														{label}
 													</span>
 												);
@@ -282,15 +273,13 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult }) => {
 								}}
 							>
 								<Button
+									disabled={disable}
 									sx={{
 										...styles.buttonStyle,
 										outline: `1px dashed ${theme.palette.primary.main}`,
 									}}
 									onClick={() => {
-										handleButtonClick(
-											title,
-											//, id
-										);
+										handleButtonClick(title);
 									}}
 								>
 									<Plus sx={{ height: '14px' }} />

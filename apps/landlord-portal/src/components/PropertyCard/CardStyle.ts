@@ -7,6 +7,7 @@ const CardContainer = {
 const CardStyle = {
 	cardContainerColumn: {
 		...CardContainer,
+		minWidth: { xs: '300px', sm: '300px', md: '320px', lg: '320px' },
 	},
 	cardContainerRow: {
 		width: '100%',

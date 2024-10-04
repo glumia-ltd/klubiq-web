@@ -2,6 +2,7 @@
 import React from 'react';
 import { TextField, Stack, Typography, SxProps } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
+import { getIn } from 'formik';
 
 type ControlledPhoneInputProps = {
 	formik: any;
@@ -41,6 +42,10 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
 		});
 	};
 
+	const fieldValue = getIn(formik.values, name);
+	const fieldError = getIn(formik.errors, name);
+	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -69,11 +74,8 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
 					autoComplete: 'new-password',
 					error:
 						Boolean(prioritizeError) ||
-						(Boolean(formik.touched[name]) && Boolean(formik.errors[name])),
-					helperText:
-						prioritizeError ||
-						(formik.touched[name] && formik.errors[name]) ||
-						' ',
+						(Boolean(fieldTouched) && Boolean(fieldError)),
+					helperText: prioritizeError || (fieldTouched && fieldError) || ' ',
 					sx: {
 						'MuiOutlinedInput-input *': {
 							bgcolor: 'red!important',
@@ -91,7 +93,7 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
 				placeholder={''}
 				// defaultCountry={'ng'}
 				inputClass={classes.field}
-				value={props.value || formik.values[name]}
+				value={props.value || fieldValue}
 				onChange={disableOnChange ? undefined : handleChange}
 				defaultMask={'... .... .... ...'}
 				{...props}

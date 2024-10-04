@@ -1,3 +1,10 @@
+export interface RouteObjectType {
+	'Property Category': { label: string; icon: React.ReactNode };
+	'Property Details': { label: string; icon: React.ReactNode };
+	'Unit Type': { label: string; icon: React.ReactNode };
+	[key: string]: { label: string; icon: React.ReactNode };
+}
+
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -21,6 +28,35 @@ export type PropertyMetaData = {
 	isMain?: boolean;
 };
 
+export type LeaseType = {
+	endDate: string;
+	id: number;
+	isArchived: boolean;
+	isDraft: boolean;
+	name: string;
+	paymentFrequency: string;
+	rentAmount: string;
+	rentDueDay: number;
+	securityDeposit: string;
+	startDate: string;
+	status: string;
+	tenants: any[];
+};
+export type UnitType = {
+	area: { value: number; unit: string };
+	bathrooms: number;
+	bedrooms: number;
+	floor: number | null;
+	id: string;
+	images: string[];
+	leases: LeaseType[];
+	offices: number | string | null;
+	rentAmount: string;
+	rooms: null;
+	toilets: 4;
+	unitNumber: string;
+};
+
 export type PropertyDataType = {
 	uuid: string;
 	id: number;
@@ -28,9 +64,9 @@ export type PropertyDataType = {
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedroom: string | number;
-	bathroom: string | number;
-	toilet: string | number;
+	bedrooms: string | number;
+	bathrooms: string | number;
+	toilets: string | number;
 	isArchived: boolean;
 	createdDate: string;
 	updatedDate: string;
@@ -38,7 +74,7 @@ export type PropertyDataType = {
 	unitCount: number;
 	isDraft: boolean;
 	isListingPublished: boolean;
-	mainPhoto: PropertyMetaData | null;
+	mainImage: PropertyMetaData | null;
 	purpose: PropertyMetaData;
 	category: PropertyMetaData;
 	type: PropertyMetaData;
@@ -47,6 +83,16 @@ export type PropertyDataType = {
 		value: number | string;
 		unit: string;
 	};
+	units?: UnitType[];
+	amenities?: Record<string, string>[];
+	status?: string | null;
+	owner?: string | null;
+	vacantUnitCount?: number;
+	totalRent: string;
+	images?: { isMain: boolean; url: string }[] | null;
+	totalTenants: number;
+	offices?: string | number;
+	rooms?: string | number;
 };
 
 // export type PropertyType = {
@@ -130,4 +176,81 @@ export type RevenueReportType = {
 		xAxisData: string[];
 		seriesData: SeriesDataType;
 	};
+};
+
+export interface MainTextMatchedSubstrings {
+	offset: number;
+	length: number;
+}
+export interface StructuredFormatting {
+	main_text: string;
+	secondary_text: string;
+	main_text_matched_substrings?: readonly MainTextMatchedSubstrings[];
+}
+export interface PlaceType {
+	place_id: string;
+	description: string;
+	structured_formatting: StructuredFormatting;
+}
+
+export type AddPropertyType = {
+	newAmenity: string;
+	customAmenities: string[];
+	categoryId?: number | null;
+	purposeId: number | null;
+	typeId: number | string;
+	name: string;
+	description: string;
+	images: PropertyImageType[] | null;
+	isMultiUnit?: boolean;
+	address: {
+		addressLine2: string;
+		unit: string;
+		city: string;
+		state: string;
+		postalCode: string;
+		latitude: number;
+		longitude: number;
+		addressLine1: string;
+		country: string;
+		isManualAddress: boolean;
+	};
+
+	units: {
+		id: number | null;
+		unitNumber: string;
+		rentAmount: number | null;
+		floor: number | null;
+		bedrooms: number | null;
+		bathrooms: number | null;
+		toilets: number | null;
+		area: {
+			value: number | null;
+			unit: string;
+		};
+		status: string;
+		rooms: number | null;
+		offices: number | null;
+		amenities: string[] | null;
+	}[];
+};
+
+export type CategoryMetaDataType = {
+	icon?: string;
+	hasBedrooms?: boolean;
+	hasRooms?: boolean;
+	hasOffices?: boolean;
+};
+
+export type SignedUrlType = {
+	signature: string;
+	storageLimit: number;
+	storageUsed: string;
+	timestamp: number;
+};
+export type PropertyImageType = {
+	isMain: boolean;
+	url: string;
+	fileSize: number;
+	unitNumber?: string;
 };

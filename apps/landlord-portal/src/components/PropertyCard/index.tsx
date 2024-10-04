@@ -8,12 +8,12 @@ import {
 	Typography,
 	Box,
 	Chip,
-	Avatar,
 } from '@mui/material';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import CardStyle from './CardStyle';
-//import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
+import { useNavigate } from 'react-router-dom';
+import defaultPropertyImage from '../../assets/images/defaultPropertyImage.png';
 
 interface PropertyCardProps {
 	propertyData: PropertyDataType;
@@ -24,11 +24,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	propertyData,
 	layout,
 }) => {
-	//const navigate = useNavigate();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-	// const handleViewProperty = () => {
-	// 	navigate('/properties/12345');
-	// };
+	const navigate = useNavigate();
+
+	const handleViewProperty = (uuid: number | string) => {
+		navigate(`/properties/${uuid}`);
+	};
+
+	const getFullAddress = () => {
+		return `${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2 ? propertyData?.address?.addressLine2 : ''}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`;
+	};
+
 	return layout === 'column' ? (
 		<Card sx={CardStyle.cardContainerColumn}>
 			<CardContent
@@ -37,7 +42,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				}}
 			>
 				<Typography variant='cardHeader' noWrap={true}>
-					{propertyData?.type.name}
+					{propertyData?.type?.name || 'Apartment'}
 				</Typography>
 				<CardMedia
 					component='img'
@@ -47,7 +52,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						objectFit: 'cover',
 						borderRadius: '0.5rem',
 					}}
-					image={propertyData?.mainPhoto?.url}
+					image={propertyData?.mainImage?.url || defaultPropertyImage}
 					alt={propertyData?.name}
 				/>
 				<Stack
@@ -62,9 +67,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						{propertyData?.name}
 					</Typography>
 					<Chip
-						label={propertyData?.purpose.name}
+						label={propertyData?.purpose?.name || 'sale'}
 						variant={
-							propertyData?.purpose.name?.toLowerCase() === 'rent'
+							propertyData?.purpose?.name?.toLowerCase() === 'rent'
 								? 'rent'
 								: 'sale'
 						}
@@ -85,7 +90,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						}}
 					/>
 					<Typography variant='cardContentText' noWrap={true}>
-						{`${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`}
+						{getFullAddress()}
 					</Typography>
 				</Stack>
 				<Stack
@@ -93,53 +98,94 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 						paddingTop: '0.5rem',
 					}}
 					direction='row'
+					// gap={3}
 					spacing={1}
 					justifyContent='flex-start'
 					alignItems='center'
 				>
-					<KlubiqIcons.Bedroom
+					{propertyData?.bedrooms !== undefined &&
+						propertyData?.bedrooms !== null && (
+							<>
+								<KlubiqIcons.Bedroom
+									sx={{
+										color: 'text.primary',
+										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+									}}
+								/>
+								<Typography
+									variant='cardContentText'
+									noWrap={true}
+									sx={
+										{
+											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+										}
+									}
+								>
+									{propertyData?.bedrooms
+										? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 1 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+						)}
+
+					{propertyData?.offices !== undefined &&
+						propertyData?.offices !== null && (
+							<>
+								<KlubiqIcons.EmojiOneBuildingIcon
+									sx={{
+										color: 'text.primary',
+										height: '15px',
+										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+									}}
+								/>
+								<Typography
+									variant='cardContentText'
+									noWrap={true}
+									sx={
+										{
+											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+										}
+									}
+								>
+									{propertyData?.offices
+										? `${propertyData?.offices} Office${Number(propertyData?.offices) > 1 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+						)}
+
+					<KlubiqIcons.ShowerIcon
 						sx={{
 							color: 'text.primary',
-							opacity: `${!propertyData?.bedroom ? 0 : 1}`,
+							height: '16px',
+							// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
 						}}
 					/>
 					<Typography
 						variant='cardContentText'
 						noWrap={true}
-						sx={{
-							opacity: `${!propertyData?.bedroom ? 0 : 1}`,
-						}}
+						// sx={{ opacity: `${!propertyData?.bathrooms ? 0.5 : 1}` }}
 					>
-						{propertyData?.bedroom} Bedrooms
+						{propertyData?.bathrooms
+							? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
+							: '--'}
 					</Typography>
 
 					<KlubiqIcons.Bathroom
 						sx={{
 							color: 'text.primary',
-							opacity: `${!propertyData?.bathroom ? 0 : 1}`,
-						}}
-					/>
-					<Typography
-						variant='cardContentText'
-						noWrap={true}
-						sx={{ opacity: `${!propertyData?.bathroom ? 0 : 1}` }}
-					>
-						{propertyData?.bathroom} Bathrooms
-					</Typography>
-
-					<KlubiqIcons.Bathroom
-						sx={{
-							color: 'text.primary',
-							opacity: `${!propertyData?.toilet ? 0 : 1}`,
+							// opacity: `${!propertyData?.toilets ? 0 : 1}`,
 						}}
 					/>
 
 					<Typography
 						variant='cardContentText'
 						noWrap={true}
-						sx={{ opacity: `${!propertyData?.toilet ? 0 : 1}` }}
+						// sx={{ opacity: `${!propertyData?.toilets ? 0 : 1}` }}
 					>
-						{propertyData?.toilet} Toilets
+						{propertyData?.toilets
+							? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
+							: '--'}
 					</Typography>
 				</Stack>
 				{
@@ -162,7 +208,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							<Typography variant='cardContentText' noWrap={true}>
 								{propertyData?.area?.value
 									? `${propertyData?.area?.value} ${propertyData?.area?.unit}`
-									: 'Multi Unit'}
+									: `${propertyData?.unitCount} unit${propertyData?.unitCount > 1 ? 's' : ''}`}
 							</Typography>
 						}
 					</Stack>
@@ -175,10 +221,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					spacing={1}
 				>
 					<Typography variant='cardHeader' noWrap={true}>
-						{propertyData?.unitCount > 1 ? 'Units' : 'Unit'}:{' '}
-						<Typography variant='cardContentText'>
+						{propertyData?.isMultiUnit ? 'Multi-Unit' : 'Single-Unit'}
+						{/* <Typography variant='cardContentText'>
 							{propertyData?.unitCount}
-						</Typography>
+						</Typography> */}
 					</Typography>
 				</Stack>
 			</CardContent>
@@ -194,8 +240,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent: 'flex-end',
 				}}
 				disableSpacing
+				onClick={() => handleViewProperty(propertyData?.uuid)}
 			>
-				<Typography variant='link'>View Properties</Typography>
+				<Typography variant='link'>View Property</Typography>
 			</CardActions>
 		</Card>
 	) : (
@@ -209,9 +256,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 				<Typography variant='cardHeader'>{propertyData?.type?.name}</Typography>
 				<Stack direction='row' spacing={2}>
 					<Box width={'160px'} height={'100px'}>
-						<Avatar
+						<CardMedia
+							component='img'
 							alt={propertyData?.name}
-							src={propertyData?.mainPhoto?.url}
+							image={propertyData?.mainImage?.url || defaultPropertyImage}
 							sx={CardStyle.rowImage}
 						/>
 					</Box>
@@ -238,7 +286,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									color: 'text.primary',
 								}}
 							/>
-							<Typography variant='cardContentText'>{`${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`}</Typography>
+							<Typography variant='cardContentText'>
+								{getFullAddress()}
+							</Typography>
 						</Stack>
 						<Stack
 							direction='row'
@@ -246,7 +296,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							justifyContent='flex-start'
 							alignItems='center'
 						>
-							{propertyData?.bedroom ? (
+							{propertyData?.bedrooms && (
 								<>
 									<KlubiqIcons.Bedroom
 										sx={{
@@ -254,37 +304,86 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.bedroom} Bedrooms
+										{propertyData?.bedrooms
+											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
+											: '--'}
 									</Typography>
 								</>
-							) : null}
-
-							{propertyData?.bathroom ? (
+							)}
+							{propertyData?.offices && (
 								<>
-									<KlubiqIcons.Bathroom
+									<KlubiqIcons.EmojiOneBuildingIcon
 										sx={{
 											color: 'text.primary',
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.bathroom} Bathrooms
+										{propertyData?.offices
+											? `${propertyData?.offices} Office${Number(propertyData?.offices) > 0 ? 's' : ''}`
+											: '--'}
 									</Typography>
 								</>
-							) : null}
-
-							{propertyData?.toilet ? (
+							)}
+							{propertyData?.rooms && (
 								<>
-									<KlubiqIcons.Bathroom
+									<KlubiqIcons.Bedroom
 										sx={{
 											color: 'text.primary',
 										}}
 									/>
-
 									<Typography variant='cardContentText'>
-										{propertyData?.toilet} Toilets
+										{propertyData?.rooms
+											? `${propertyData?.rooms} Room${Number(propertyData?.rooms) > 0 ? 's' : ''}`
+											: '--'}
 									</Typography>
 								</>
-							) : null}
+							)}
+
+							{/* {propertyData?.bedrooms ? (
+								<>
+									<KlubiqIcons.Bedroom
+										sx={{
+											color: 'text.primary',
+										}}
+									/>
+									<Typography variant='cardContentText'>
+										{propertyData?.bedrooms
+											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
+											: '--'}
+									</Typography>
+								</>
+							) : null} */}
+
+							{/* {propertyData?.bathrooms ? ( */}
+							<>
+								<KlubiqIcons.Bathroom
+									sx={{
+										color: 'text.primary',
+									}}
+								/>
+								<Typography variant='cardContentText'>
+									{propertyData?.bathrooms
+										? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+							{/* ) : null} */}
+
+							{/* {propertyData?.toilets ? ( */}
+							<>
+								<KlubiqIcons.Bathroom
+									sx={{
+										color: 'text.primary',
+									}}
+								/>
+
+								<Typography variant='cardContentText'>
+									{propertyData?.toilets
+										? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+							{/* ) : null} */}
 
 							<KlubiqIcons.FloorPlan
 								sx={{
@@ -294,7 +393,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							<Typography variant='cardContentText'>
 								{propertyData?.area?.value
 									? `${propertyData?.area?.value} ${propertyData?.area?.unit}`
-									: 'Multi Unit'}
+									: `${propertyData?.unitCount} unit${propertyData?.unitCount > 1 ? 's' : ''}`}
 							</Typography>
 						</Stack>
 						<Stack direction='row' spacing={1} justifyContent='space-between'>
@@ -305,7 +404,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 									{propertyData?.unitCount}
 								</Typography>
 							</Typography>
-							<Typography variant='link'>View Properties</Typography>
+							<Typography
+								onClick={() => handleViewProperty(propertyData?.uuid)}
+								variant='link'
+							>
+								View Property
+							</Typography>
 						</Stack>
 					</Stack>
 				</Stack>

@@ -14,7 +14,7 @@ const PrivateRoute = () => {
 
 	const userToken = token || storedSessionObject?.stsTokenManager?.accessToken;
 
-	return userToken ? <Outlet /> : <Navigate to={'/'} replace={true} />;
+	return userToken ? <Outlet /> : <Navigate to={'/login'} replace={true} />;
 };
 
 export default PrivateRoute;

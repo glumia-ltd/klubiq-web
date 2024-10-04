@@ -6,16 +6,20 @@ export const authEndpoints = {
 	getUserByFbid: () => `auth/user`,
 	sendResetPasswordEmail: () => `auth/reset-password-link`,
 	resetPassword: () => `auth/reset-password`,
+	verifyOobCode: () => `auth/verify-email`,
 };
 
 export const dashboardEndpoints = {
 	getDashboardMetrics: () => '/dashboard/metrics',
-	getRevenueReport: (startDate: string, endDate: string) =>
-		`/dashboard/revenue-report?startDate=${startDate}&endDate=${endDate}`,
+	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
+	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
 };
 
 export const propertiesEndpoints = {
 	getProperties: () => '/properties',
+	addProperty: () => `/properties`,
 	getPropertiesMetaData: () => '/public/property-metadata',
+	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	getSignedUrl: () => '/properties/signed-url',
 };

@@ -1,5 +1,5 @@
 import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
@@ -7,7 +7,6 @@ import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import {
 	ListItemButton,
 	ListItemIcon,
@@ -25,14 +24,22 @@ import { Context } from '../../context/NavToggleContext/NavToggleContext';
 
 function SideBar() {
 	const theme = useTheme();
-	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
-	const { sidebarOpen, closeSidebar, openSidebar, drawerWidth } = allContexts;
 	const pathList = getPathList();
 	const { pathname } = useLocation();
+	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
+		allContexts;
 
+	const handleDrawerClose = () => {
+		setIsclosing(true);
+		setSidebarOpen(false);
+	};
+
+	const handleDrawerTransitionEnd = () => {
+		setIsclosing(true);
+	};
 	const transitionedMixin = (theme: Theme): CSSObject => ({
 		transition: theme.transitions.create('width', {
 			easing: theme.transitions.easing.easeInOut,
@@ -68,27 +75,12 @@ function SideBar() {
 		},
 		...transitionedMixin(theme),
 		...(open && {
-			[theme.breakpoints.up('sm')]: {
-				width: `${drawerWidth.largeOpen}px`,
-			},
-			[theme.breakpoints.down('sm')]: {
-				width: `${drawerWidth.smallOpen}px`,
-			},
+			width: `${drawerWidth.largeOpen}px`,
 		}),
 		...(!open && {
-			[theme.breakpoints.down('sm')]: {
-				width: `${drawerWidth.smallClosed}px`,
-			},
+			width: `${drawerWidth.largeClosed}px`,
 		}),
 	}));
-
-	useEffect(() => {
-		isMediumScreen ? closeSidebar : sidebarOpen;
-	}, [isMediumScreen, closeSidebar, sidebarOpen]);
-
-	if (isMediumScreen && !sidebarOpen) {
-		return null;
-	}
 
 	const handleLinkClick = (title: string) => {
 		if (title !== 'Logout') return;
@@ -99,8 +91,10 @@ function SideBar() {
 		<Drawer
 			variant='permanent'
 			open={sidebarOpen}
-			onMouseEnter={openSidebar}
-			onMouseLeave={closeSidebar}
+			onMouseEnter={() => setSidebarOpen(true)}
+			onMouseLeave={() => setSidebarOpen(false)}
+			onTransitionEnd={handleDrawerTransitionEnd}
+			onClose={handleDrawerClose}
 		>
 			<DrawerChildren>
 				<div
@@ -123,9 +117,14 @@ function SideBar() {
 						{pathList.map((props, index) => {
 							const path = props.path;
 							return (
-								<ListItem disablePadding key={index}>
+								<ListItem
+									disablePadding
+									key={index}
+									onClick={() => {
+										handleLinkClick(props.title);
+									}}
+								>
 									<Link
-										onClick={() => handleLinkClick(props.title)}
 										to={props.path || ''}
 										relative='path'
 										style={{
@@ -163,6 +162,7 @@ function SideBar() {
 													minWidth: 0,
 													mr: sidebarOpen ? 1 : 'auto',
 													justifyContent: 'center',
+													pointerEvents: 'none',
 												}}
 											>
 												<SvgIcon
@@ -175,7 +175,12 @@ function SideBar() {
 													inheritViewBox
 												/>
 											</ListItemIcon>
-											<ListItemText sx={{ opacity: sidebarOpen ? 1 : 0 }}>
+											<ListItemText
+												sx={{
+													opacity: sidebarOpen ? 1 : 0,
+													pointerEvents: 'none',
+												}}
+											>
 												{props.title}
 											</ListItemText>
 										</ListItemButton>

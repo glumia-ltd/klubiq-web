@@ -9,7 +9,7 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 	manifest: {
 		name: 'Klubiq',
 		short_name: 'Klubiq',
-		description: 'Property mangement SAAS App',
+		description: 'Property Management SAAS App',
 		icons: [
 			{
 				src: '/ios-192.png',
@@ -52,8 +52,17 @@ export default ({ mode }: { mode: any }) => {
 	return defineConfig({
 		plugins: [react(), VitePWA(manifestForPlugin)],
 		optimizeDeps: {
-			include: ['react', 'react-dom', 'material-ui'],
+			include: [
+				'react',
+				'react-dom',
+				'material-ui',
+				'@emotion/styled',
+				'@emotion/react',
+				'@mui/material/Tooltip',
+				'@mui/material/Unstable_Grid2',
+			],
 		},
+
 		server: {
 			proxy: {
 				'/api': {

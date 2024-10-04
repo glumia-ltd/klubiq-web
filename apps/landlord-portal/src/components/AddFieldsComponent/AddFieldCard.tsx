@@ -8,15 +8,20 @@ type CardProps = {
 	subtext?: string;
 	description?: string;
 	id?: number;
-	onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+	handleAdd?: (path: string) => void;
 };
 
 const AddFieldCard: FC<CardProps> = ({
 	heading,
 	subtext,
-	onClick,
+	handleAdd,
 	description,
 }: CardProps) => {
+	const path = heading === 'Add Tenant' ? 'add-tenant' : 'add-lease';
+
+	const handleButtonClick = () => {
+		handleAdd && handleAdd(path);
+	};
 	return (
 		<Card sx={style.contentdiv}>
 			<Grid container spacing={1}>
@@ -32,7 +37,11 @@ const AddFieldCard: FC<CardProps> = ({
 					</Box>
 				</Grid>
 				<Grid item xs={6} sm={6} md={9} lg={9} sx={style.lastBox}>
-					<Button onClick={onClick} sx={style.button}>
+					<Button
+						variant='contained'
+						onClick={handleButtonClick}
+						sx={style.button}
+					>
 						{description}
 					</Button>
 				</Grid>

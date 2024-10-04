@@ -4,6 +4,15 @@ const style = {
 		lineHeight: { xs: '20px', sm: '24px', md: '24px', lg: '24px' },
 		fontWeight: '600',
 	},
+	skeletonText: {
+		width: '134px',
+		height: '10px',
+		marginBottom: '5px',
+	},
+	skeletonText2: {
+		width: '184px',
+		height: '10px',
+	},
 	subText: {
 		fontSize: { xs: '12px', sm: '12px', md: '14px', lg: '14px' },
 		lineHeight: { xs: '24px', sm: '14px', md: '20px', lg: '20px' },
@@ -11,7 +20,6 @@ const style = {
 	},
 	contentdiv: {
 		width: '100%',
-		// padding: { xs: '10px', sm: '16px', md: '16px', lg: '16px' },
 		alignItem: 'center',
 		padding: '16px 24px 16px 24px',
 	},
@@ -28,17 +36,11 @@ const style = {
 	},
 
 	button: {
-		background: '#002147',
-		color: '#ffffff',
 		width: '144px',
 		height: '32px',
 		padding: '6px 8px, 6px 8px',
 		borderRadius: '8px',
 		textAlign: 'center',
-
-		'&:hover': {
-			background: '#002147',
-		},
 	},
 	lastBox: {
 		display: 'flex',

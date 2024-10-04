@@ -1,28 +1,34 @@
 import {
+	Avatar,
+	AvatarGroup,
 	Button,
 	Grid,
+	Popover,
 	Table,
 	TableBody,
 	TableCell,
 	TableContainer,
 	TableHead,
 	TableRow,
+	Typography,
 } from '@mui/material';
 import { styles } from './style';
 import { FC } from 'react';
+import aisha from '../../assets/images/aisha.jpg';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 type ColumnType = { id: string; label: string };
 type RowType = {
-	id: string;
-	tenant: { name: string; image: string };
-	phone: string;
-	email: string;
+	id: string | number;
+	tenants?: { firstName: string; lastName: string; image?: string }[];
+	status?: string;
+	rentAmount?: string;
 	startDate: string;
-	cutOffDate: string;
+	endDate: string;
 };
 
 type TenantAndLeaseTableProps = {
-	handleAdd: () => void;
+	handleAdd?: (path: string) => void;
 	title: string;
 	buttonText: string;
 	columns: ColumnType[];
@@ -38,6 +44,12 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 	tableBodyRows,
 	showSecondHeader = true,
 }) => {
+	const path = title === 'Tenant' ? 'add-tenant' : 'add-lease';
+
+	const handleClick = () => {
+		handleAdd && handleAdd(path);
+	};
+
 	return (
 		<Grid sx={styles.tenantTableContainer}>
 			<TableContainer>
@@ -49,7 +61,11 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 							</TableCell>
 							<TableCell align='right' colSpan={3} sx={styles.tableCell}>
 								<Grid item xs={6} sm={6} md={9} lg={9}>
-									<Button onClick={handleAdd} sx={styles.tableButton}>
+									<Button
+										variant='propertyButton'
+										onClick={handleClick}
+										sx={styles.tableButton}
+									>
 										{buttonText}
 									</Button>
 								</Grid>
@@ -57,9 +73,9 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 						</TableRow>
 						{showSecondHeader && (
 							<TableRow>
-								{columns.map((column) => (
+								{columns?.map((column) => (
 									<TableCell
-										key={column.label}
+										key={column?.label}
 										align={'center'}
 										sx={styles.tableHeaderCellStyle}
 									>
@@ -70,30 +86,75 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 						)}
 					</TableHead>
 					<TableBody>
-						{tableBodyRows.map((row) => {
+						{tableBodyRows?.map((row) => {
 							return (
 								<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
-									{columns.map((column) => {
-										const key: string = column.id;
-										const value = row[key as keyof RowType];
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row?.tenants && row?.tenants?.length > 1 && (
+											<PopupState variant='popover'>
+												{(popupState) => {
+													return (
+														<div style={{ cursor: 'pointer' }}>
+															<AvatarGroup
+																max={4}
+																sx={{ justifyContent: 'center' }}
+																{...bindTrigger(popupState)}
+															>
+																<Avatar alt='Remy Sharp' src={aisha} />
+																<Avatar alt='Travis Howard' src={aisha} />
+																<Avatar alt='Cindy Baker' src={aisha} />
+																<Avatar alt='Agnes Walker' src={aisha} />
+																<Avatar alt='Trevor Henderson' src={aisha} />
+															</AvatarGroup>
+															<Popover
+																{...bindPopover(popupState)}
+																anchorOrigin={{
+																	vertical: 'bottom',
+																	horizontal: 'center',
+																}}
+																transformOrigin={{
+																	vertical: 'top',
+																	horizontal: 'center',
+																}}
+															>
+																<Typography sx={{ p: 2 }}>
+																	{row?.tenants?.map(
+																		(tenant) =>
+																			`${tenant?.firstName} ${tenant?.lastName}`,
+																	)}
+																</Typography>
+															</Popover>
+														</div>
+													);
+												}}
+											</PopupState>
+										)}
 
-										return (
-											<TableCell
-												key={column.id}
-												align={'center'}
-												sx={styles.tableBodyStyle}
-											>
-												{typeof value === 'string' ? (
-													value
-												) : (
-													<span style={styles.tenantInfoStyle}>
-														<img src={value.image} alt='tenant picture' />{' '}
-														{value.name}
-													</span>
-												)}
-											</TableCell>
-										);
-									})}
+										{row?.tenants && row?.tenants?.length === 1 && (
+											<>
+												<Avatar
+													alt={row.tenants[0]?.firstName}
+													src={row.tenants[0]?.image}
+												/>
+												<Typography sx={{ p: 2 }}>
+													{row?.tenants[0]?.firstName}{' '}
+													{row?.tenants[0]?.lastName}
+												</Typography>
+											</>
+										)}
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row?.status}
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row?.rentAmount}
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row.startDate}
+									</TableCell>
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										{row.endDate}
+									</TableCell>
 								</TableRow>
 							);
 						})}
