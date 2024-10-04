@@ -476,7 +476,12 @@ const MFASetUp = () => {
 													}}
 													spacing={1}
 												>
-													<OTPInput value={otp} onChange={setOtp} length={6} />
+													<OTPInput
+														value={otp}
+														onChange={setOtp}
+														length={6}
+														onEnterKeyPress={activateTOTP}
+													/>
 													{error && (
 														<Typography color='error'>{error}</Typography>
 													)}
