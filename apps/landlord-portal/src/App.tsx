@@ -14,6 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { UserProfile } from './shared/auth-types';
 import { useLazyGetUserByFbidQuery } from './store/AuthStore/authApiSlice';
+import { SessionTimeoutProvider } from './context/SessionContext/SessionTimoutContext';
 
 // Helper function to convert the VAPID public key
 
@@ -26,21 +27,32 @@ function App() {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		// if ('serviceWorker' in navigator) {
-		// 	window.addEventListener('load', () => {
-		// 		navigator.serviceWorker
-		// 			.register('/service-worker.js')
-		// 			.then((registration) => {
-		// 				console.log(
-		// 					'ServiceWorker registration successful with scope: ',
-		// 					registration.scope,
-		// 				);
-		// 			})
-		// 			.catch((error) => {
-		// 				console.log('ServiceWorker registration failed: ', error);
-		// 			});
-		// 	});
-		// }
+		// const requestNotificationPermission = async () => {
+		// 	if ('Notification' in window) {
+		// 		const permission = await Notification.requestPermission();
+		// 		if (permission === 'granted') {
+		// 			await subscribeUserToPush();
+		// 		} else {
+		// 			console.log('Notification permission denied.');
+		// 		}
+		// 	}
+		// };
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker
+					.register('/service-worker.js')
+					.then((registration) => {
+						console.log(
+							'ServiceWorker registration successful with scope: ',
+							registration.scope,
+						);
+					})
+					.catch((error) => {
+						console.log('ServiceWorker registration failed: ', error);
+					});
+			});
+		}
+
 		const listen = onAuthStateChanged(auth, async (currentUser: any) => {
 			if (currentUser) {
 				if (!user.fbId) {
@@ -73,21 +85,23 @@ function App() {
 
 	return (
 		<ThemeContextProvider>
-			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<RouterProvider router={router} />
-			</LocalizationProvider>
+			<SessionTimeoutProvider>
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					<RouterProvider router={router} />
+				</LocalizationProvider>
 
-			<ControlledSnackbar
-				anchorOrigin={{
-					vertical: 'top',
-					horizontal: 'right',
-				}}
-				autoHideDuration={duration || 2000}
-				key={message}
-				message={message}
-				severity={severity}
-				open={isOpen}
-			/>
+				<ControlledSnackbar
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+					autoHideDuration={duration || 2000}
+					key={message}
+					message={message}
+					severity={severity}
+					open={isOpen}
+				/>
+			</SessionTimeoutProvider>
 		</ThemeContextProvider>
 	);
 }

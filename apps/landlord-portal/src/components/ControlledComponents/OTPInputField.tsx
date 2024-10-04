@@ -8,12 +8,14 @@ type OTPTextInput = {
 	value: string;
 	onChange: React.Dispatch<React.SetStateAction<string>>;
 	errorMessage?: string;
+	onEnterKeyPress: () => void;
 };
 const OTPInput: React.FC<OTPTextInput> = ({
 	separator,
 	length,
 	value,
 	onChange,
+	onEnterKeyPress,
 }) => {
 	const inputRefs = React.useRef<HTMLInputElement[]>(
 		new Array(length).fill(null),
@@ -78,6 +80,15 @@ const OTPInput: React.FC<OTPTextInput> = ({
 
 			default:
 				break;
+		}
+	};
+
+	const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			if (value.length === length) {
+				event.preventDefault();
+				onEnterKeyPress();
+			}
 		}
 	};
 
@@ -173,6 +184,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 									onChange: (event) => handleChange(event, index),
 									onClick: (event) => handleClick(event, index),
 									onPaste: (event) => handlePaste(event, index),
+									onKeyPress: (event) => handleKeyPress(event),
 									value: value[index] ?? '',
 								},
 							}}
