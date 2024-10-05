@@ -1,5 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Container, Grid, Typography } from '@mui/material';
+import {
+	Button,
+	Container,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	Grid,
+	Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
@@ -108,6 +118,7 @@ interface IunitType extends AddPropertyType {
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+	const [informationDialog, setInformationDialog] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -120,10 +131,6 @@ export const AddPropertiesLayout = () => {
 	const LOCATION_IS_UNIT_TYPE = location.pathname.includes('unit-type');
 
 	const dispatch = useDispatch();
-
-	const { user } = useSelector(getAuthState);
-
-	//const formState = useSelector(getAddPropertyState);
 
 	const [
 		addProperty,
@@ -282,6 +289,21 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleAllPropertiesClick = () => {
+		const { categoryId, purposeId, propertyImages } = formik.values;
+
+		if (
+			Object.keys(formik.touched).length > 0 ||
+			categoryId ||
+			purposeId ||
+			!!propertyImages?.length
+		) {
+			setInformationDialog(true);
+		} else {
+			navigate('/properties');
+		}
+	};
+
+	const handleDialogLeave = () => {
 		navigate('/properties');
 	};
 
@@ -506,9 +528,9 @@ export const AddPropertiesLayout = () => {
 							</Typography>
 						</Grid>
 
-						<Button variant='text' sx={styles.button}>
+						{/* <Button variant='text' sx={styles.button}>
 							<Typography>Save draft</Typography>
-						</Button>
+						</Button> */}
 					</Grid>
 
 					<Grid sx={styles.stepperContainer}>
@@ -556,6 +578,29 @@ export const AddPropertiesLayout = () => {
 					)}
 				</Grid>
 			</>
+
+			<Dialog
+				open={informationDialog}
+				onClose={() => setInformationDialog(false)}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+			>
+				<DialogTitle id='alert-dialog-title'>
+					Are you sure you want to leave?
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText id='alert-dialog-description'>
+						You have unsaved changes. If you leave now, your changes will be
+						lost.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setInformationDialog(false)}>Cancel</Button>
+					<Button onClick={handleDialogLeave} autoFocus>
+						Leave Without Saving
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 };
