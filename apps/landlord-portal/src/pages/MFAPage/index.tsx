@@ -163,6 +163,8 @@ const MFASetUp = () => {
 		}
 	};
 	const routeToLogin = () => {
+		auth.signOut();
+		sessionStorage.clear();
 		navigate('/login', { replace: true });
 	};
 	const routeToForgotPassword = () => {

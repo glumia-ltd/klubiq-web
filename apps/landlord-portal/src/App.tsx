@@ -16,15 +16,12 @@ import { UserProfile } from './shared/auth-types';
 import { useLazyGetUserByFbidQuery } from './store/AuthStore/authApiSlice';
 import { SessionTimeoutProvider } from './context/SessionContext/SessionTimoutContext';
 
-// Helper function to convert the VAPID public key
-
 function App() {
 	const { user } = useSelector(getAuthState);
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
-
 	const dispatch = useDispatch();
 	useEffect(() => {
 		// const requestNotificationPermission = async () => {
@@ -53,14 +50,15 @@ function App() {
 			});
 		}
 
-		const listen = onAuthStateChanged(auth, async (currentUser: any) => {
+		const listen = onAuthStateChanged(auth, async (currentUser) => {
 			if (currentUser) {
+				const token = await currentUser.getIdToken();
 				if (!user.fbId) {
 					const response = await triggerGetUserByFbid();
 
 					if (!response.data) throw new Error('User not found');
 					const payload = {
-						token: currentUser.accessToken,
+						token: token,
 						user: response?.data as UserProfile,
 						isSignedIn: true,
 					};
@@ -77,6 +75,7 @@ function App() {
 				};
 				dispatch(saveUser(payload));
 				auth.signOut();
+				sessionStorage.clear();
 			}
 		});
 
@@ -85,23 +84,20 @@ function App() {
 
 	return (
 		<ThemeContextProvider>
-			<SessionTimeoutProvider>
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-					<RouterProvider router={router} />
-				</LocalizationProvider>
-
-				<ControlledSnackbar
-					anchorOrigin={{
-						vertical: 'top',
-						horizontal: 'right',
-					}}
-					autoHideDuration={duration || 2000}
-					key={message}
-					message={message}
-					severity={severity}
-					open={isOpen}
-				/>
-			</SessionTimeoutProvider>
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<RouterProvider router={router} />
+			</LocalizationProvider>
+			<ControlledSnackbar
+				anchorOrigin={{
+					vertical: 'top',
+					horizontal: 'right',
+				}}
+				autoHideDuration={duration || 2000}
+				key={message}
+				message={message}
+				severity={severity}
+				open={isOpen}
+			/>
 		</ThemeContextProvider>
 	);
 }

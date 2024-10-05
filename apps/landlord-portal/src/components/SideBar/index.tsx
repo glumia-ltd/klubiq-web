@@ -21,6 +21,7 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
+import { auth } from '../../firebase';
 
 function SideBar() {
 	const theme = useTheme();
@@ -85,6 +86,7 @@ function SideBar() {
 	const handleLinkClick = (title: string) => {
 		if (title !== 'Logout') return;
 		sessionStorage.clear();
+		auth.signOut();
 	};
 
 	return (
