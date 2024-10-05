@@ -475,6 +475,16 @@ export const AddPropertiesLayout = () => {
 			const payload = { ...updatedFormikValues };
 			await addProperty(payload).unwrap();
 			clearData('new-property');
+
+			dispatch(
+				openSnackbar({
+					message: 'Property Successfully created',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			navigate('/properties');
 		} catch (e) {
 			console.log(e);
 			//clearData('new-property');
