@@ -196,11 +196,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					<Card sx={PropertiesFormStyle.cardTwo}>
 						<Grid container spacing={2} sx={PropertiesFormStyle.cardContent}>
 							<Grid item xs={12}>
-								<Typography
-									variant='h1'
-									fontSize={'20px'}
-									// color='#002147'
-								>
+								<Typography variant='h1' fontSize={'20px'}>
 									COVER PHOTO
 								</Typography>
 							</Grid>
@@ -231,7 +227,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 												position: 'absolute',
 												top: -10,
 												right: -10,
-												// backgroundColor: 'white',
 											}}
 										>
 											<HighlightOffIcon />
@@ -239,7 +234,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									</Grid>
 								),
 							)}
-							{passportFiles.length === 0 && (
+							{formik.values.propertyImages.length === 0 && (
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
 										component='label'
@@ -267,7 +262,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 											style={{ display: 'none' }}
 											accept='image/*'
 											onChange={handleFileChange}
-											readOnly={passportFiles.length > 0}
+											readOnly={formik.values.propertyImages.length > 0}
 										/>
 									</Box>
 								</Grid>

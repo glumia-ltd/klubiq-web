@@ -25,7 +25,7 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
 	//getAddPropertyState,
 	//getAddPropertyState,
@@ -38,7 +38,6 @@ import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
 import { omitBy } from 'lodash';
-import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { clearData, initDB } from '../../services/indexedDb';
 
 const validationSchema = yup.object({
@@ -137,7 +136,7 @@ export const AddPropertiesLayout = () => {
 		// { isLoading, isSuccess, isError, error }
 	] = useAddPropertyMutation();
 
-	const currentLocation = location.pathname.split('/')[2] || '';
+	const currentLocation = location.pathname.split('/')[3] || '';
 
 	const onSubmit = async (values: any) => {
 		console.log(values, 'val');

@@ -74,6 +74,7 @@ const RadioCard = React.memo(
 								>
 									{options?.map((option) => (
 										<FormControlLabel
+											key={option?.id}
 											value={option?.id}
 											control={<Radio />}
 											checked={String(checkedValue) === String(option?.id)}
