@@ -234,7 +234,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									</Grid>
 								),
 							)}
-							{formik.values.propertyImages.length === 0 && (
+							{formik.values?.propertyImages?.length === 0 && (
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
 										component='label'
