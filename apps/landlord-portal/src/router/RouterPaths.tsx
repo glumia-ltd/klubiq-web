@@ -69,14 +69,17 @@ export const router = createBrowserRouter(
 					</Route>
 
 					<Route
-						path='properties/property-category'
+						path='properties/create/property-category'
 						element={<AddProperties />}
 					/>
 					<Route
-						path='properties/property-details'
+						path='properties/create/property-details'
 						element={<AddProperties />}
 					/>
-					<Route path='properties/unit-type' element={<AddProperties />} />
+					<Route
+						path='properties/create/unit-type'
+						element={<AddProperties />}
+					/>
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
 

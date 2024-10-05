@@ -220,7 +220,7 @@ export const AddPropertiesLayout = () => {
 
 		if (!routeKey) return;
 
-		const route = `/properties/${routeObject[routeKey]?.label}`;
+		const route = `/properties/create/${routeObject[routeKey]?.label}`;
 
 		navigate(route as string);
 	};
@@ -240,36 +240,6 @@ export const AddPropertiesLayout = () => {
 
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
-
-		if (
-			location.pathname.includes('property-category') &&
-			!formik.values.categoryId
-		) {
-			dispatch(
-				openSnackbar({
-					message: 'Please select a property category before you proceed!',
-					severity: 'info',
-					isOpen: true,
-				}),
-			);
-
-			return;
-		} else if (
-			location.pathname.includes('property-details') &&
-			!formik.values.typeId &&
-			!formik.values.name
-		) {
-			dispatch(
-				openSnackbar({
-					message:
-						'Please ensure all the fields are properly filled before you proceed!',
-					severity: 'info',
-					isOpen: true,
-				}),
-			);
-
-			return;
-		}
 
 		saveFormikDataInStore();
 
