@@ -25,11 +25,12 @@ const countries = map(
 	(item) => item.code.toLocaleLowerCase(),
 );
 
-export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
-	formik,
-	name,
-	label,
-}) => {
+export const AutoComplete: FC<{
+	formik: any;
+	name: string;
+	label: string;
+	required?: boolean;
+}> = ({ formik, name, label, required }) => {
 	const searchoptions = {
 		componentRestrictions: { country: countries },
 		fields: ['address_components', 'geometry', 'icon', 'name'],
@@ -198,8 +199,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 	}, [value, inputValue, fetch]);
 
 	const fieldValue = getIn(formik.values, name);
-	// const fieldError = getIn(formik.errors, name);
-	// const fieldTouched = getIn(formik.touched, name);
 
 	return (
 		<Autocomplete
@@ -220,7 +219,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 			value={value || fieldValue || ''}
 			noOptionsText='No locations'
 			onChange={(_event: any, value: PlaceType | null) => {
-				// setOptions(value ? [value, ...options] : options);
 				setValue(value);
 
 				if (typeof value === 'string') {
@@ -253,11 +251,9 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 					</li>
 				);
 			}}
-			// getOptionDisabled={(option) =>
-			// 	options.some((opt) => opt.place_id === option.place_id)
-			// } // Optional: Disable duplicate options in the dropdown
 			renderInput={(params) => (
 				<ControlledTextField
+					required={required}
 					name={name}
 					label={label}
 					formik={formik}

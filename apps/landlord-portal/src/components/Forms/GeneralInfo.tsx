@@ -49,11 +49,6 @@ type CardProps = {
 	amenities: { id: number; name: string }[];
 };
 
-// const states = StateList.map((item) => ({
-// 	value: item.name,
-// 	label: item.name,
-// }));
-
 const countries = countriesList?.map((item) => ({
 	id: item.name,
 	name: item.name,
@@ -85,11 +80,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	);
 
 	const allAmenities = amenities ? [...amenities, ...customAmenitiesArray] : [];
-
-	// const formState = useSelector(getAddPropertyState);
-
-	// console.log('store', formState);
-	// console.log('formik', formik.values);
 
 	const handleMeasurementChange = (event: any) => {
 		setMeasurement(event.target.value);
@@ -226,6 +216,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						</Grid>
 						<Grid item xs={12}>
 							<AutoComplete
+								required
 								formik={formik}
 								name={'address.addressLine1'}
 								label={'Street Address'}
@@ -242,6 +233,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 						<Grid item xs={12} md={6}>
 							<ControlledSelect
+								required
 								name='address.country'
 								label='Country'
 								type='text'
@@ -286,6 +278,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						<Grid container>
 							<Grid item xs={6}>
 								<ControlledTextField
+									required
 									name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
 									label={`${capitalize(getNameByPropertyCategory())}`}
 									type='number'
@@ -310,6 +303,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</Grid>
 							<Grid item xs={6}>
 								<ControlledTextField
+									required
 									name={`units[${currentUnitIndex}].area.value`}
 									label='Floor Plan'
 									formik={formik}
@@ -345,12 +339,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								{renderAmenities(allAmenities)}
 								<br />
 
-								<i
-									style={{ cursor: 'pointer' }}
-									onClick={() => setOpenCustomAmenities(true)}
-								>
-									+ Add custom amenities
-								</i>
+								<Typography fontSize={'14px'}>
+									<i
+										style={{ cursor: 'pointer' }}
+										onClick={() => setOpenCustomAmenities(true)}
+									>
+										+ Add custom amenities
+									</i>
+								</Typography>
 							</Grid>
 						</Grid>
 					</Card>
