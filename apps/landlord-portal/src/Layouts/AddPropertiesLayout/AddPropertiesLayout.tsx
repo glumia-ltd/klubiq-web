@@ -328,8 +328,8 @@ export const AddPropertiesLayout = () => {
 			const CHECKUNITNUMBERS = checkIfUnitsAreFilled('unitNumber');
 
 			const CHECKFLOORPLANS =
-				formik.values.units.filter((unit) => unit.area.value !== null).length >
-				0;
+				formik.values.units.filter((unit) => !!unit.area.value).length ===
+				formik.values.units.length;
 
 			if (
 				formik.values.unitType &&
