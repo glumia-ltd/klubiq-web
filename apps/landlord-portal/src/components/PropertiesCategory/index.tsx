@@ -49,7 +49,7 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 			};
 		},
 	);
-	console.log(cardData);
+
 	return (
 		<Card sx={PropertyLayoutStyle.card}>
 			<Grid container spacing={3}>

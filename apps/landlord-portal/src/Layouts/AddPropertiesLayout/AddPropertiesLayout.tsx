@@ -110,9 +110,17 @@ interface IunitType extends AddPropertyType {
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
+	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+
 	const navigate = useNavigate();
 
 	const location = useLocation();
+
+	const LOCATION_IS_PROPERTY_CATEGORY =
+		location.pathname.includes('property-category');
+	const LOCATION_IS_PROPERTY_DETAILS =
+		location.pathname.includes('property-details');
+	const LOCATION_IS_UNIT_TYPE = location.pathname.includes('unit-type');
 
 	const dispatch = useDispatch();
 
@@ -281,14 +289,80 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const renderBasedOnPath = () => {
-		if (location.pathname.includes('property-category')) {
+		if (LOCATION_IS_PROPERTY_CATEGORY) {
 			return <PropertyCategory formik={formik} />;
-		} else if (location.pathname.includes('property-details')) {
+		} else if (LOCATION_IS_PROPERTY_DETAILS) {
 			return <PropertiesDetails formik={formik} />;
-		} else if (location.pathname.includes('unit-type')) {
+		} else if (LOCATION_IS_UNIT_TYPE) {
 			return <UnitType formik={formik} />;
 		}
 	};
+
+	useEffect(() => {
+		console.log(formik.values);
+		// check to see if all the units have values for their rooms
+		const checkIfUnitsAreFilled = (
+			name: 'bedrooms' | 'offices' | 'rooms' | 'unitNumber',
+		) => {
+			return (
+				formik.values.units.filter((unit) => !!unit[name]).length ===
+				formik.values.units.length
+			);
+		};
+
+		if (LOCATION_IS_PROPERTY_CATEGORY) {
+			if (formik.values.categoryId) {
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		} else if (LOCATION_IS_PROPERTY_DETAILS) {
+			if (formik.values.typeId && formik.values.name) {
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		} else if (LOCATION_IS_UNIT_TYPE) {
+			const CHECKBEDROOMSINUNITS = checkIfUnitsAreFilled('bedrooms');
+
+			const CHECKOFFICESINUNITS = checkIfUnitsAreFilled('offices');
+
+			const CHECKROOMSINUNITS = checkIfUnitsAreFilled('rooms');
+
+			const CHECKUNITNUMBERS = checkIfUnitsAreFilled('unitNumber');
+
+			const CHECKFLOORPLANS =
+				formik.values.units.filter((unit) => unit.area.value !== null).length >
+				0;
+
+			if (
+				formik.values.unitType &&
+				formik.values.address.addressLine1 &&
+				formik.values.address.country &&
+				CHECKFLOORPLANS &&
+				(CHECKBEDROOMSINUNITS || CHECKOFFICESINUNITS || CHECKROOMSINUNITS)
+			) {
+				if (formik.values.unitType === 'multi' && !CHECKUNITNUMBERS) {
+					setIsNextButtonDisabled(true);
+				}
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		}
+	}, [
+		LOCATION_IS_PROPERTY_CATEGORY,
+		LOCATION_IS_PROPERTY_DETAILS,
+		LOCATION_IS_UNIT_TYPE,
+		formik.values,
+		formik.values.address.addressLine1,
+		formik.values.address.country,
+		formik.values.categoryId,
+		formik.values.name,
+		formik.values.typeId,
+		formik.values.unitType,
+		formik.values.units,
+	]);
 
 	const formatUnitBasedOnCategory = (
 		formikValues: any,
@@ -315,7 +389,7 @@ export const AddPropertiesLayout = () => {
 		formik.handleSubmit();
 
 		const errors = await formik.validateForm();
-		console.log(errors, 'errors');
+
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({
@@ -410,7 +484,6 @@ export const AddPropertiesLayout = () => {
 		delete updatedFormikValues.propertyImages;
 
 		try {
-			console.log(user?.organization);
 			delete formik.values.propertyImages;
 			const payload = { ...updatedFormikValues };
 			await addProperty(payload).unwrap();
@@ -465,7 +538,9 @@ export const AddPropertiesLayout = () => {
 								variant='contained'
 								sx={styles.directionButton}
 								onClick={handleForwardButton}
-								disabled={activeStep === steps.length - 1}
+								disabled={
+									isNextButtonDisabled || activeStep === steps.length - 1
+								}
 							>
 								<Typography>Next</Typography>
 								<RightArrowIcon />
@@ -478,7 +553,7 @@ export const AddPropertiesLayout = () => {
 							variant='contained'
 							sx={styles.directionButton}
 							onClick={handleAddProperty}
-							// disabled={activeStep === steps.length - 1}
+							disabled={isNextButtonDisabled}
 						>
 							<Typography>Save</Typography>
 						</Button>

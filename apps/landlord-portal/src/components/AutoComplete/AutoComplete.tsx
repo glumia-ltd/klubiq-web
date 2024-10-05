@@ -165,7 +165,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 				offset: 3,
 			},
 			(results?: readonly PlaceType[]) => {
-				console.log('countries: ', searchoptions.componentRestrictions);
 				if (active) {
 					let newOptions: readonly PlaceType[] = [];
 
@@ -181,7 +180,6 @@ export const AutoComplete: FC<{ formik: any; name: string; label: string }> = ({
 								description: removeCountryFromDescription(option.description),
 							})),
 						];
-						console.log('newOptions', newOptions);
 					}
 
 					setOptions(newOptions);
