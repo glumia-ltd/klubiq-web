@@ -37,9 +37,6 @@ const validationSchema = yup.object({
 	typeId: yup.string().required('Select an option'),
 	categoryId: yup.string().required('Select an option'),
 	images: yup.array(),
-	// .min(1, 'You need to upload at least one image')
-	// .max(4, 'You can upload a maximum of 4 images')
-	// .required('Images are required'),
 	unitType: yup.string().required('This field is required'),
 	purposeId: yup.number().required('This field is required'),
 
@@ -299,8 +296,7 @@ export const AddPropertiesLayout = () => {
 	};
 
 	useEffect(() => {
-		console.log(formik.values);
-		// check to see if all the units have values for their rooms
+		// check to see if all the units have values for their rooms and unitNumber where necessary.
 		const checkIfUnitsAreFilled = (
 			name: 'bedrooms' | 'offices' | 'rooms' | 'unitNumber',
 		) => {
