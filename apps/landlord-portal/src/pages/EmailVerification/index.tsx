@@ -70,7 +70,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 		continueUrl && navigate(continueUrl, { replace: true });
 	};
 	const navigateToMFASetUp = () => {
-		navigate(`/2fa-enroll`, { replace: true });
+		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
 	};
 
 	const renderViewContent = () => {

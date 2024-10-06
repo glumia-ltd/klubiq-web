@@ -12,7 +12,9 @@ const useAuth = () => {
 	};
 	const goToMFASetup = () => {
 		setShowMFAPrompt(false);
-		navigate(`/2fa-enroll`, { replace: true });
+		navigate(`/2fa-enroll?continueUrl=${window.location.pathname}`, {
+			replace: true,
+		});
 	};
 	useEffect(() => {
 		const listen = onAuthStateChanged(auth, async (currentUser) => {

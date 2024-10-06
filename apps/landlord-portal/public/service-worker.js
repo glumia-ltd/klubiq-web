@@ -1,5 +1,7 @@
 const ASSETS_CACHE = 'klubiq-assets-cache-v1';
 const DATA_CACHE = 'klubiq-data-cache-v1';
+const ALLOWED_ORIGINS = ['https://klubiq.com', 'http://localhost:5173'];
+const PUBLIC_CACHED_PATHS = ['/api/public/property-metadata'];
 
 self.addEventListener('sync', (event) => {
 	if (event.tag === 'syncFormData') {
@@ -7,7 +9,10 @@ self.addEventListener('sync', (event) => {
 	}
 });
 self.addEventListener('fetch', (event) => {
-	async function returnCachedResponse() {
+	const requestURL = new URL(event.request.url);
+	const eventOrigin = requestURL.origin;
+	const path = requestURL.pathname;
+	async function returnPublicCachedResponse() {
 		// open app's cache
 		const cache = await caches.open(DATA_CACHE);
 		// find response in cache
@@ -15,24 +20,48 @@ self.addEventListener('fetch', (event) => {
 		if (cachedResponse) {
 			return cachedResponse;
 		} else {
+			console.log('Headers', event.request.headers);
 			const fetchResponse = await fetch(event.request.url);
-			cache.put(event.request.url, fetchResponse.clone());
+			const responseCopy = fetchResponse.clone();
+			cache.put(event.request.url, responseCopy);
 			return fetchResponse;
 		}
 	}
 	if (event.request.method !== 'GET') {
 		return;
+	} else if (
+		ALLOWED_ORIGINS.includes(eventOrigin) &&
+		PUBLIC_CACHED_PATHS.includes(path)
+	) {
+		console.log('PATH', path);
+		event.respondWith(returnPublicCachedResponse());
 	}
-	event.respondWith(returnCachedResponse());
 });
 
 self.addEventListener('install', (event) => {
+	async function initCache() {
+		const hasCaches = await caches.has(DATA_CACHE);
+		if (!hasCaches) {
+			caches.open(DATA_CACHE);
+		}
+	}
 	self.skipWaiting();
+	event.waitUntil(initCache());
 });
 
 self.addEventListener('activate', (event) => {
-	event.waitUntil(self.clients.claim());
-	event.waitUntil(self.cleanCache());
+	var validCaches = [ASSETS_CACHE, DATA_CACHE];
+	event.waitUntil(
+		caches.keys().then((cacheNames) => {
+			return Promise.all(
+				cacheNames.map((cacheName) => {
+					if (!validCaches.includes(cacheName)) {
+						return caches.delete(cacheName);
+					}
+				}),
+			).then(() => self.clients.claim());
+		}),
+	);
 });
 
 self.addEventListener('push', function (event) {
