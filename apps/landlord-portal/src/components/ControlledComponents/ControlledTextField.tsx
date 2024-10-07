@@ -26,6 +26,7 @@ type ControlledTextFieldProps = {
 	[key: string]: any;
 	color?: string;
 	inputRef?: React.Ref<HTMLInputElement>;
+	required?: boolean;
 };
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
@@ -44,6 +45,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	color,
 	sxTwo,
 	placeholder,
+	required,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +75,15 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'} color={color}>
-					{label}
-				</Typography>
+				<Stack direction={'row'} alignItems={'end'} gap={1}>
+					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+						{label}
+					</Typography>
+
+					<Typography fontWeight={100} fontSize={'12px'}>
+						{required ? <i>(required)</i> : ''}
+					</Typography>
+				</Stack>
 			)}
 
 			<TextField

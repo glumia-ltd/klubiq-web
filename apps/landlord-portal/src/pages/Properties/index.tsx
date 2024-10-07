@@ -78,7 +78,7 @@ const Properties = () => {
 	};
 
 	const handleAddProperties = () => {
-		navigate('/properties/property-category');
+		navigate('/properties/create/property-category');
 	};
 
 	useEffect(() => {
