@@ -170,13 +170,15 @@ const DashBoard = () => {
 		if (!user.orgSettings) {
 			const orgSettings = getData('org-settings', 'client-config');
 			currencyCode = get(orgSettings, 'currency', 'NGN');
-			countryCode = get(orgSettings, 'countryCode', 'en-NG');
+			countryCode = get(orgSettings, 'countryCode', 'NG');
 		}
 		currencyCode = get(user, 'orgSettings.currency', 'NGN');
-		countryCode = get(user, 'orgSettings.countryCode', 'en-NG');
+		countryCode = get(user, 'orgSettings.countryCode', 'NG');
+		console.log('CountryCode: ', countryCode, 'currencyCode: ', currencyCode);
+		console.log('User: ', user);
 		const localCurrencyVal = new Intl.NumberFormat(`en-${countryCode}`, {
 			style: 'currency',
-			currency: currencyCode,
+			currency: `${currencyCode}`,
 		}).format(money);
 		return localCurrencyVal;
 	};
