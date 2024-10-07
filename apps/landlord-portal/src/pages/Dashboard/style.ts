@@ -136,9 +136,9 @@ export const styles = {
 
 	overdueTextStyle: {
 		fontSize: {
-			xs: '24px',
-			sm: '24px',
-			md: '24px',
+			xs: '14px',
+			sm: '14px',
+			md: '16px',
 			lg: '24px',
 			xl: '40px',
 		},

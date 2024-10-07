@@ -14,12 +14,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { useContext, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import { dashboardEndpoints } from '../../helpers/endpoints';
+import { UserProfile } from '../../shared/auth-types';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { styles } from './style';
 import {
@@ -29,7 +30,7 @@ import {
 	showChangeArrow,
 	showTrendArrow,
 } from './dashboardUtils';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { AxiosRequestConfig } from 'axios';
 import DashBoardSkeleton from './DashBoardSkeleton';
@@ -37,10 +38,11 @@ import {
 	useGetDashboardMetricsQuery,
 	useGetRevenueReportDataQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { getData } from '../../services/indexedDb';
+import { get, replace, split } from 'lodash';
 
 const DashBoard = () => {
+	const { user } = useSelector(getAuthState);
 	const { mode } = useContext(ThemeContext);
 	const [firstDay, setFirstDay] = useState<Dayjs>(
 		dayjs().subtract(11, 'months'),
@@ -163,6 +165,22 @@ const DashBoard = () => {
 			console.log(e);
 		}
 	};
+	const getUserCurrency = (money: number) => {
+		let currencyCode = '';
+		let countryCode = '';
+		if (!user.orgSettings) {
+			const orgSettings = getData('org-settings', 'client-config');
+			currencyCode = get(orgSettings, 'currency', 'NGN');
+			countryCode = get(orgSettings, 'countryCode', 'en-NG');
+		}
+		currencyCode = get(user, 'orgSettings.currency', 'NGN');
+		countryCode = get(user, 'orgSettings.countryCode', 'en-NG');
+		const localCurrencyVal = new Intl.NumberFormat(`en-${countryCode}`, {
+			style: 'currency',
+			currency: currencyCode,
+		}).format(money);
+		return localCurrencyVal;
+	};
 
 	return (
 		<>
@@ -209,8 +227,8 @@ const DashBoard = () => {
 										sx={styles.revenueTextStyle}
 										variant='dashboardTypography'
 									>
-										{' '}
-										₦{TODAYSREVENUE?.toFixed(2) || 0.0}
+										{''}
+										{getUserCurrency(TODAYSREVENUE || 0.0)}
 									</Typography>
 									<Box sx={styles.changeArrowBoxStyle}>
 										<Typography
@@ -250,7 +268,7 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											₦{OVERDUERENTSUM?.toFixed(2) || 0.0}
+											{getUserCurrency(OVERDUERENTSUM || 0.0)}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
@@ -302,7 +320,7 @@ const DashBoard = () => {
 													mr={'1rem'}
 													variant='dashboardTypography'
 												>
-													₦{TOTALEXPENSES?.toFixed(2) || 0.0}
+													{getUserCurrency(TOTALEXPENSES || 0.0)}
 												</Typography>
 
 												{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
@@ -329,11 +347,12 @@ const DashBoard = () => {
 													mr={'1rem'}
 													variant='dashboardTypography'
 												>
-													{NETCASHFLOW && NETCASHFLOW > 0
+													{getUserCurrency(NETCASHFLOW || 0.0)}
+													{/* {NETCASHFLOW && NETCASHFLOW > 0
 														? `₦${NETCASHFLOW?.toFixed(2) || 0.0}`
 														: NETCASHFLOW && NETCASHFLOW < 0
 															? `- ₦${(-1 * NETCASHFLOW).toFixed(2)}`
-															: `₦0.00`}
+															: `₦0.00`} */}
 												</Typography>
 
 												{showTrendArrow(NETCASHFLOWCHANGEINDICATOR)}
@@ -415,7 +434,9 @@ const DashBoard = () => {
 											sx={styles.occupancyTextStyle}
 											variant='dashboardTypography'
 										>
-											₦{revenueReport?.totalRevenueLast12Months?.toFixed(2)}
+											{getUserCurrency(
+												revenueReport?.totalRevenueLast12Months || 0.0,
+											)}
 										</Typography>
 
 										<Typography

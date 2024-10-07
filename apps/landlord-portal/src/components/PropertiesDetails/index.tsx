@@ -117,11 +117,8 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					const { status, data, error } = event.data;
 					if (status === 'success') {
 						formik.setFieldValue('images', [...data.value]);
-					}
-					// else if (status === 'uploading') {
-					// 	// clearTimeout(data);
-					// }
-					else if (status === 'error') {
+						worker.terminate();
+					} else if (status === 'error') {
 						console.error('Upload error:', error);
 					}
 				};

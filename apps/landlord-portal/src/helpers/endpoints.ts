@@ -23,3 +23,7 @@ export const propertiesEndpoints = {
 	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getSignedUrl: () => '/properties/signed-url',
 };
+
+export const organizationEndpoints = {
+	getOrganization: (orgUuid: string) => `/organizations/${orgUuid}`,
+};

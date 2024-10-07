@@ -1,4 +1,3 @@
-const ASSETS_CACHE = 'klubiq-assets-cache-v1';
 const DATA_CACHE = 'klubiq-data-cache-v1';
 const ALLOWED_ORIGINS = ['https://klubiq.com', 'http://localhost:5173'];
 const PUBLIC_CACHED_PATHS = ['/api/public/property-metadata'];
@@ -50,7 +49,7 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-	var validCaches = [ASSETS_CACHE, DATA_CACHE];
+	var validCaches = [DATA_CACHE];
 	event.waitUntil(
 		caches.keys().then((cacheNames) => {
 			return Promise.all(
