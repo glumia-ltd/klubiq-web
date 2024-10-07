@@ -7,9 +7,9 @@ const useAuth = () => {
 	const navigate = useNavigate();
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
 	const LOGIN_THRESHOLD = 3000;
-	const update2FAPrompt = (promptAgain: boolean) => {
-		localStorage.setItem('2fa-prompt', promptAgain ? 'true' : 'false');
-	};
+	// const update2FAPrompt = (promptAgain: boolean) => {
+	// 	localStorage.setItem('2fa-prompt', promptAgain ? 'true' : 'false');
+	// };
 	const goToMFASetup = () => {
 		setShowMFAPrompt(false);
 		navigate(`/2fa-enroll?continueUrl=${window.location.pathname}`, {

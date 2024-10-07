@@ -19,7 +19,6 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { UserProfile } from '../../shared/auth-types';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { styles } from './style';
@@ -39,7 +38,7 @@ import {
 	useGetRevenueReportDataQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
 import { getData } from '../../services/indexedDb';
-import { get, replace, split } from 'lodash';
+import { get } from 'lodash';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
