@@ -174,8 +174,6 @@ const DashBoard = () => {
 		}
 		currencyCode = get(user, 'orgSettings.currency', 'NGN');
 		countryCode = get(user, 'orgSettings.countryCode', 'NG');
-		console.log('CountryCode: ', countryCode, 'currencyCode: ', currencyCode);
-		console.log('User: ', user);
 		const localCurrencyVal = new Intl.NumberFormat(`en-${countryCode}`, {
 			style: 'currency',
 			currency: `${currencyCode}`,
