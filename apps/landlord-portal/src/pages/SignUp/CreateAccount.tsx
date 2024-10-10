@@ -29,6 +29,7 @@ const CreateAccount: React.FC = () => {
 		dialCode: string;
 		currency: string;
 		currencySymbol: string;
+		language: string;
 	};
 	const activeCountries: CountryType[] = orderBy(
 		filter(countries, ['active', true]),

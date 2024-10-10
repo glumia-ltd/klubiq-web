@@ -12,10 +12,12 @@ const TableChart: FC<{
 	seriesData: SeriesDataType | undefined;
 	xAxisData: xAxisDataType | undefined;
 	maxRevenue: number | undefined;
-}> = ({ seriesData, xAxisData, maxRevenue }) => {
+	currencySymbol: string;
+}> = ({ seriesData, xAxisData, maxRevenue, currencySymbol }) => {
 	const { width } = useScreenSize();
 
-	const valueFormatter = (value: number) => `₦ ${value / 1000}k`;
+	const valueFormatter = (value: number) =>
+		`${currencySymbol ? currencySymbol : '₦'}${value / 1000}k`;
 
 	const xAxisConfig: AxisScaleConfig = {
 		band: {

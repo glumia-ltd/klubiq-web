@@ -39,6 +39,10 @@ import {
 } from '../../store/DashboardStore/dashboardApiSlice';
 import { getData } from '../../services/indexedDb';
 import { get } from 'lodash';
+import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
+import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import FunctionsOutlinedIcon from '@mui/icons-material/FunctionsOutlined';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
@@ -86,13 +90,13 @@ const DashBoard = () => {
 	const MAINTENANCEUNITSPERCENTAGEDIFFERENCE =
 		dashboardMetrics?.propertyMetrics?.maintenanceUnitsPercentageDifference;
 
-	const TODAYSREVENUE = dashboardMetrics?.transactionMetrics?.todaysRevenue;
+	const TOTALREVENUE = dashboardMetrics?.transactionMetrics?.totalRevenue;
 
-	const DAILYREVENUECHANGEINDICATOR =
-		dashboardMetrics?.transactionMetrics?.dailyRevenueChangeIndicator;
+	const TOTALREVENUECHANGEINDICATOR =
+		dashboardMetrics?.transactionMetrics?.totalRevenueChangeIndicator;
 
-	const DAILYREVENUEPERCENTAGEDIFFERENCE =
-		dashboardMetrics?.transactionMetrics?.dailyRevenuePercentageDifference;
+	const TOTALREVENUEPERCENTAGEDIFFERENCE =
+		dashboardMetrics?.transactionMetrics?.totalRevenuePercentageDifference;
 
 	const TOTALEXPENSES = dashboardMetrics?.transactionMetrics?.totalExpenses;
 
@@ -109,6 +113,16 @@ const DashBoard = () => {
 
 	const NETCASHFLOWPERCENTAGEDIFFERENCE =
 		dashboardMetrics?.transactionMetrics?.netCashFlowPercentageDifference;
+
+	const EXPIRINGLEASEFORPERIODCOUNT =
+		dashboardMetrics?.leaseMetrics?.expiringLeaseForPeriodCount;
+	const TENANTCOUNT = dashboardMetrics?.leaseMetrics?.tenantCount;
+	const AVGLEASEDURATION = dashboardMetrics?.leaseMetrics?.avgLeaseDuration;
+	const ACTIVELEASECOUNT = dashboardMetrics?.leaseMetrics?.activeLeaseCount;
+	const ACTIVELEASEFORPERIODCHANGEDIFFERENCE =
+		dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodPercentageDifference;
+	const ACTIVELEASEFORPERIODCHANGEINDICATOR =
+		dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodChangeIndicator;
 
 	const guageData = {
 		occupied: dashboardMetrics?.propertyMetrics?.occupiedUnits || 0,
@@ -164,21 +178,42 @@ const DashBoard = () => {
 			console.log(e);
 		}
 	};
-	const getUserCurrency = (money: number) => {
+	const getLocaleFormat = (
+		numberVal: number,
+		style: 'currency' | 'percent' | 'unit' | 'decimal',
+	) => {
 		let currencyCode = '';
 		let countryCode = '';
+		let lang = '';
 		if (!user.orgSettings) {
 			const orgSettings = getData('org-settings', 'client-config');
-			currencyCode = get(orgSettings, 'currency', 'NGN');
-			countryCode = get(orgSettings, 'countryCode', 'NG');
+			currencyCode = get(orgSettings, 'currency', '');
+			countryCode = get(orgSettings, 'countryCode', '');
+			lang = get(orgSettings, 'language', '');
 		}
-		currencyCode = get(user, 'orgSettings.currency', 'NGN');
-		countryCode = get(user, 'orgSettings.countryCode', 'NG');
-		const localCurrencyVal = new Intl.NumberFormat(`en-${countryCode}`, {
-			style: 'currency',
+		currencyCode = get(user, 'orgSettings.currency', '');
+		countryCode = get(user, 'orgSettings.countryCode', '');
+		lang = get(user, 'orgSettings.language', '');
+		if (!currencyCode || !countryCode || !lang) {
+			currencyCode = 'NGN';
+			countryCode = 'NG';
+			lang = 'en';
+		}
+		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
+			style: `${style}`,
 			currency: `${currencyCode}`,
-		}).format(money);
+			currencyDisplay: 'symbol',
+		}).format(numberVal);
 		return localCurrencyVal;
+	};
+	const getCurrencySymbol = () => {
+		if (!user.orgSettings) {
+			const orgSettings = getData('org-settings', 'client-config');
+			const currencySymbol = get(orgSettings, 'currencySymbol', '');
+			return currencySymbol;
+		}
+		const currencySymbol = get(user, 'orgSettings.currencySymbol', '');
+		return currencySymbol;
 	};
 
 	return (
@@ -189,6 +224,7 @@ const DashBoard = () => {
 				<Container maxWidth={'xl'} sx={styles.containerStyle}>
 					<Grid container spacing={2}>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
+							{/* PROPERTIES */}
 							<Grid item xs={12} sm={12} md={4} lg={4}>
 								<Card sx={styles.cardStyle}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
@@ -214,47 +250,50 @@ const DashBoard = () => {
 									</Box>
 								</Card>
 							</Grid>
+							{/* OCCUPANCY RATE */}
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
 										<Typography sx={styles.typoStyle}>
-											Today's Revenue
+											Occupancy Rate
 										</Typography>
 									</Stack>
 
 									<Typography
-										sx={styles.revenueTextStyle}
+										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{''}
-										{getUserCurrency(TODAYSREVENUE || 0.0)}
+										{getLocaleFormat(OCCUPANCYRATE || 0, 'percent')}
 									</Typography>
-									<Box sx={styles.changeArrowBoxStyle}>
+
+									<Stack
+										sx={styles.changeArrowBoxStyle}
+										direction={'row'}
+										spacing={2}
+									>
 										<Typography
 											sx={{
 												...styles.changeTypographyStyle,
-												color: indicatorColor(DAILYREVENUECHANGEINDICATOR),
-												border: `1px solid ${indicatorColor(DAILYREVENUECHANGEINDICATOR)}`,
-
+												color: indicatorColor(OCCUPANCYRATECHANGEINDICATOR),
+												border: `1px solid ${indicatorColor(OCCUPANCYRATECHANGEINDICATOR)}`,
 												backgroundColor: indicatorBackground(
-													DAILYREVENUECHANGEINDICATOR,
+													OCCUPANCYRATECHANGEINDICATOR,
 												),
 											}}
 										>
-											{showChangeArrow(DAILYREVENUECHANGEINDICATOR)}
-											{DAILYREVENUEPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}%
+											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
+											{getLocaleFormat(
+												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
+												'percent',
+											)}
 										</Typography>
-										<Typography
-											fontSize='14px'
-											lineHeight={'20px'}
-											fontWeight={400}
-										>
-											{indicatorText(DAILYREVENUECHANGEINDICATOR)}
+										<Typography sx={styles.overdueTypo}>
+											{indicatorText(OCCUPANCYRATECHANGEINDICATOR)}
 										</Typography>
-									</Box>
+									</Stack>
 								</Card>
 							</Grid>
-
+							{/* RENT OVERDUE */}
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
@@ -267,7 +306,7 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											{getUserCurrency(OVERDUERENTSUM || 0.0)}
+											{getLocaleFormat(OVERDUERENTSUM || 0.0, 'currency')}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
@@ -276,129 +315,371 @@ const DashBoard = () => {
 									</Typography>
 								</Card>
 							</Grid>
-
+							{/* REVENUE AND EXPENSES */}
 							<Grid item xs={12} sm={6} md={8} lg={8}>
 								<Card sx={styles.cardStyleThree}>
-									<Typography sx={styles.typoStyle}>Occupancy Rate </Typography>{' '}
-									<Box sx={styles.occupancyBoxStyle}>
-										<Typography
-											sx={styles.occupancyTextStyle}
-											variant='dashboardTypography'
-										>
-											{OCCUPANCYRATE?.toFixed(1) || 0}%
-										</Typography>
-
-										<Typography
+									<Stack
+										spacing={2}
+										direction={'column'}
+										sx={{
+											height: '100%',
+											width: '100%',
+											justifyContent: 'space-between',
+										}}
+									>
+										<Stack
+											direction={'row'}
+											spacing={2}
 											sx={{
-												...styles.changeTypographyStyle,
-												color: indicatorColor(OCCUPANCYRATECHANGEINDICATOR),
-												border: `1px solid ${indicatorColor(OCCUPANCYRATECHANGEINDICATOR)}`,
-												backgroundColor: indicatorBackground(
-													OCCUPANCYRATECHANGEINDICATOR,
-												),
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												width: '100%',
 											}}
 										>
-											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
-											{OCCUPANCYRATEPERCENTAGEDIFFERENCE?.toFixed(1) || 0}%
-										</Typography>
-									</Box>
-									<Box sx={styles.totalExpensesStyle}>
-										<Stack direction={'column'} spacing={2}>
-											<Typography sx={styles.typoStyle}>
-												Total expenses
-											</Typography>
-											<Box
-												sx={{
-													...styles.boxStyle,
-													display: 'flex',
-													alignItems: 'flex-start',
-												}}
-											>
-												<Typography
-													sx={styles.overdueTextStyle}
-													mr={'1rem'}
-													variant='dashboardTypography'
-												>
-													{getUserCurrency(TOTALEXPENSES || 0.0)}
+											<Stack direction={'column'} spacing={1}>
+												<Typography sx={styles.typoStyle}>
+													Total Revenue MTD
 												</Typography>
-
-												{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
-
-												<Typography
+												<Box
 													sx={{
-														...styles.typoStyle,
-														color: indicatorColor(TOTALEXPENSESCHANGEINDICATOR),
+														...styles.boxStyle,
+														display: 'flex',
+														alignItems: 'flex-start',
 													}}
 												>
-													{TOTALEXPENSESPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}
-													%
-												</Typography>
-											</Box>
-										</Stack>
+													<Typography
+														sx={styles.overdueTextStyle}
+														mr={'1rem'}
+														variant='dashboardTypography'
+													>
+														{getLocaleFormat(TOTALREVENUE || 0.0, 'currency')}
+													</Typography>
 
-										<Stack direction={'column'} spacing={2}>
-											<Typography sx={styles.typoStyle}>
-												Net cash flow
-											</Typography>
-											<Box display={'flex'} justifyContent={'space-between'}>
-												<Typography
-													sx={styles.overdueTextStyle}
-													mr={'1rem'}
-													variant='dashboardTypography'
+													{showTrendArrow(TOTALREVENUECHANGEINDICATOR)}
+
+													<Typography
+														sx={{
+															...styles.typoStyle,
+															color: indicatorColor(
+																TOTALREVENUECHANGEINDICATOR,
+															),
+														}}
+													>
+														{getLocaleFormat(
+															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
+															'percent',
+														)}
+													</Typography>
+												</Box>
+											</Stack>
+
+											<Stack direction={'column'} spacing={1}>
+												<Typography sx={styles.typoStyle}>
+													Total Expenses MTD
+												</Typography>
+												<Box
+													sx={{
+														...styles.boxStyle,
+														display: 'flex',
+														alignItems: 'flex-start',
+													}}
 												>
-													{getUserCurrency(NETCASHFLOW || 0.0)}
-													{/* {NETCASHFLOW && NETCASHFLOW > 0
+													<Typography
+														sx={styles.overdueTextStyle}
+														mr={'1rem'}
+														variant='dashboardTypography'
+													>
+														{getLocaleFormat(TOTALEXPENSES || 0.0, 'currency')}
+													</Typography>
+
+													{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
+
+													<Typography
+														sx={{
+															...styles.typoStyle,
+															color: indicatorColor(
+																TOTALEXPENSESCHANGEINDICATOR,
+															),
+														}}
+													>
+														{getLocaleFormat(
+															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
+															'percent',
+														)}
+													</Typography>
+												</Box>
+											</Stack>
+										</Stack>
+										<Stack
+											direction={'row'}
+											spacing={2}
+											sx={styles.totalExpensesStyle}
+										>
+											<Stack direction={'column'} spacing={1}>
+												<Typography sx={styles.typoStyle}>
+													Net Cash Flow
+												</Typography>
+												<Box display={'flex'} justifyContent={'space-between'}>
+													<Typography
+														sx={styles.overdueTextStyle}
+														mr={'1rem'}
+														variant='dashboardTypography'
+													>
+														{getLocaleFormat(NETCASHFLOW || 0.0, 'currency')}
+														{/* {NETCASHFLOW && NETCASHFLOW > 0
 														? `₦${NETCASHFLOW?.toFixed(2) || 0.0}`
 														: NETCASHFLOW && NETCASHFLOW < 0
 															? `- ₦${(-1 * NETCASHFLOW).toFixed(2)}`
 															: `₦0.00`} */}
-												</Typography>
+													</Typography>
 
-												{showTrendArrow(NETCASHFLOWCHANGEINDICATOR)}
-												<Typography
-													sx={{
-														...styles.typoStyle,
-														color: indicatorColor(NETCASHFLOWCHANGEINDICATOR),
-													}}
-												>
-													{NETCASHFLOWPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}%
+													{showTrendArrow(NETCASHFLOWCHANGEINDICATOR)}
+													<Typography
+														sx={{
+															...styles.typoStyle,
+															color: indicatorColor(NETCASHFLOWCHANGEINDICATOR),
+														}}
+													>
+														{getLocaleFormat(
+															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
+															'percent',
+														)}
+													</Typography>
+												</Box>
+											</Stack>
+											<Stack
+												direction={'column'}
+												spacing={2}
+												sx={{
+													display: 'flex',
+													alignItems: 'flex-end',
+													justifyContent: 'flex-end',
+												}}
+											>
+												<Typography sx={styles.overdueTypo}>
+													{indicatorText(NETCASHFLOWCHANGEINDICATOR)}
 												</Typography>
-											</Box>
+											</Stack>
 										</Stack>
-									</Box>
+									</Stack>
 								</Card>
 							</Grid>
-
+							{/* MAINTENANCE SECTION */}
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleFour}>
-									<Typography sx={styles.typoStyle}>Maintenance</Typography>
+									<Stack
+										direction={'column'}
+										spacing={1}
+										sx={{
+											height: '100%',
+											width: '100%',
+											justifyContent: 'space-between',
+										}}
+									>
+										<Card
+											variant='outlined'
+											sx={{ width: '100%', p: 1, borderRadius: '10px' }}
+										>
+											<Stack
+												direction={'row'}
+												sx={{
+													justifyContent: 'space-between',
+													alignItems: 'center',
+													width: '100%',
+												}}
+											>
+												<Stack
+													direction={'row'}
+													spacing={1}
+													sx={{
+														alignItems: 'center',
+													}}
+												>
+													<TaskOutlinedIcon
+														fontSize='small'
+														sx={{
+															color: '#6EC03C',
+														}}
+													/>
+													<Typography sx={styles.leaseMetricsTextStyle}>
+														Active Lease
+														{ACTIVELEASECOUNT && ACTIVELEASECOUNT > 1
+															? 's'
+															: ''}{' '}
+													</Typography>
+												</Stack>
+												<Stack direction={'row'}>
+													<Typography
+														sx={styles.leaseMetricsValues}
+														variant='dashboardTypography'
+													>
+														{ACTIVELEASECOUNT || 0}
+													</Typography>
+												</Stack>
+											</Stack>
+										</Card>
+
+										<Card
+											variant='outlined'
+											sx={{ width: '100%', p: 1, borderRadius: '10px' }}
+										>
+											<Stack
+												direction={'row'}
+												sx={{
+													justifyContent: 'space-between',
+													alignItems: 'center',
+													width: '100%',
+												}}
+											>
+												<Stack
+													direction={'row'}
+													spacing={1}
+													sx={{
+														alignItems: 'center',
+													}}
+												>
+													<PendingActionsOutlinedIcon
+														fontSize='small'
+														sx={{
+															color: '#D108A5',
+														}}
+													/>
+													<Typography sx={styles.leaseMetricsTextStyle}>
+														Lease
+														{EXPIRINGLEASEFORPERIODCOUNT &&
+														EXPIRINGLEASEFORPERIODCOUNT > 1
+															? 's'
+															: ''}{' '}
+														Expiring Soon
+													</Typography>
+												</Stack>
+												<Stack direction={'row'}>
+													<Typography
+														sx={styles.leaseMetricsValues}
+														variant='dashboardTypography'
+													>
+														{EXPIRINGLEASEFORPERIODCOUNT || 0}
+													</Typography>
+												</Stack>
+											</Stack>
+										</Card>
+
+										<Card
+											variant='outlined'
+											sx={{ width: '100%', p: 1, borderRadius: '10px' }}
+										>
+											<Stack
+												direction={'row'}
+												sx={{
+													justifyContent: 'space-between',
+													alignItems: 'center',
+													width: '100%',
+												}}
+											>
+												<Stack
+													direction={'row'}
+													spacing={1}
+													sx={{
+														alignItems: 'center',
+													}}
+												>
+													<GroupAddOutlinedIcon
+														fontSize='small'
+														sx={{
+															color: '#0088F0',
+														}}
+													/>
+													<Typography sx={styles.leaseMetricsTextStyle}>
+														Tenant
+														{TENANTCOUNT && TENANTCOUNT > 1 ? 's' : ''}{' '}
+													</Typography>
+												</Stack>
+												<Stack direction={'row'}>
+													<Typography
+														sx={styles.leaseMetricsValues}
+														variant='dashboardTypography'
+													>
+														{TENANTCOUNT || 0}
+													</Typography>
+												</Stack>
+											</Stack>
+										</Card>
+
+										{/* <Card
+											variant='outlined'
+											sx={{ width: '100%', p: 1, borderRadius: '10px' }}
+										>
+											<Stack
+												direction={'row'}
+												sx={{
+													justifyContent: 'space-between',
+													alignItems: 'center',
+													width: '100%',
+												}}
+											>
+												<Stack
+													direction={'row'}
+													spacing={1}
+													sx={{
+														alignItems: 'center',
+													}}
+												>
+													<FunctionsOutlinedIcon
+														fontSize='small'
+														sx={{
+															color: '#0088F0',
+														}}
+													/>
+													<Typography sx={styles.leaseMetricsTextStyle}>
+														Average Lease Duration
+													</Typography>
+												</Stack>
+												<Stack direction={'row'}>
+													<Typography
+														sx={styles.overdueTextStyle}
+														variant='dashboardTypography'
+													>
+														{AVGLEASEDURATION || 0}
+														{' days'}
+													</Typography>
+												</Stack>
+											</Stack>
+										</Card> */}
+									</Stack>
+
+									{/* <Typography sx={styles.typoStyle}>Active Lease</Typography>
 									<Typography
 										sx={styles.overdueTextStyle}
 										variant='dashboardTypography'
 									>
-										{MAINTENANCEUNITS || 0}
+										{ACTIVELEASECOUNT || 0}
 									</Typography>
 									<Box sx={styles.changeArrowBoxStyle}>
 										<Typography
 											sx={{
 												...styles.changeTypographyStyle,
-												color: indicatorColor(MAINTENANCEUNITSCHANGEINDICATOR),
+												color: indicatorColor(
+													ACTIVELEASEFORPERIODCHANGEINDICATOR,
+												),
 												border: `1px solid ${indicatorColor(
-													MAINTENANCEUNITSCHANGEINDICATOR,
+													ACTIVELEASEFORPERIODCHANGEINDICATOR,
 												)}`,
 												backgroundColor: indicatorBackground(
-													MAINTENANCEUNITSCHANGEINDICATOR,
+													ACTIVELEASEFORPERIODCHANGEINDICATOR,
 												),
 											}}
 										>
-											{showChangeArrow(MAINTENANCEUNITSCHANGEINDICATOR)}
-											{MAINTENANCEUNITSPERCENTAGEDIFFERENCE?.toFixed(1) || 0.0}%
+											{showChangeArrow(ACTIVELEASEFORPERIODCHANGEINDICATOR)}
+											{getLocaleFormat(
+												ACTIVELEASEFORPERIODCHANGEDIFFERENCE || 0.0,
+												'percent',
+											)}
 										</Typography>
 
 										<Typography sx={{ ...styles.overdueTypo, mt: 0 }}>
 											Since last month
 										</Typography>
-									</Box>
+									</Box> */}
 								</Card>
 							</Grid>
 						</Grid>
@@ -433,8 +714,9 @@ const DashBoard = () => {
 											sx={styles.occupancyTextStyle}
 											variant='dashboardTypography'
 										>
-											{getUserCurrency(
+											{getLocaleFormat(
 												revenueReport?.totalRevenueLast12Months || 0.0,
+												'currency',
 											)}
 										</Typography>
 
@@ -451,7 +733,10 @@ const DashBoard = () => {
 											}}
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
-											{revenueReport?.percentageDifference?.toFixed(1)}%
+											{getLocaleFormat(
+												revenueReport?.percentageDifference || 0,
+												'percent',
+											)}
 										</Typography>
 									</Box>
 								)}
@@ -462,7 +747,9 @@ const DashBoard = () => {
 							item
 							xs={12}
 							sm={12}
-							md={5}
+							md={7}
+							lg={5}
+							xl={5}
 							alignItems={'center'}
 							justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 							display={'flex'}
@@ -518,6 +805,7 @@ const DashBoard = () => {
 									seriesData={revenueReport?.revenueChart?.seriesData || []}
 									maxRevenue={revenueReport?.maxRevenue || 0}
 									xAxisData={revenueReport?.revenueChart?.xAxisData}
+									currencySymbol={getCurrencySymbol()}
 								/>
 							)}
 						</Grid>
