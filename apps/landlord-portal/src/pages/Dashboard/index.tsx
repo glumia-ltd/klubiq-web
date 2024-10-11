@@ -42,7 +42,6 @@ import { get } from 'lodash';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
-import FunctionsOutlinedIcon from '@mui/icons-material/FunctionsOutlined';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
@@ -68,11 +67,10 @@ const DashBoard = () => {
 
 	const TOTALUNITS = dashboardMetrics?.propertyMetrics?.totalUnits;
 
-	const OVERDUERENTSUM =
-		dashboardMetrics?.propertyMetrics?.rentOverdue?.overDueRentSum;
+	const OVERDUERENTSUM = dashboardMetrics?.rentsOverDueSummary?.overDueRentSum;
 
 	const OVERDUELEASECOUNT =
-		dashboardMetrics?.propertyMetrics?.rentOverdue?.overDueLeaseCount;
+		dashboardMetrics?.rentsOverDueSummary?.overDueLeaseCount;
 
 	const OCCUPANCYRATE = dashboardMetrics?.propertyMetrics?.occupancyRate;
 
@@ -84,11 +82,11 @@ const DashBoard = () => {
 
 	const MAINTENANCEUNITS = dashboardMetrics?.propertyMetrics?.maintenanceUnits;
 
-	const MAINTENANCEUNITSCHANGEINDICATOR =
-		dashboardMetrics?.propertyMetrics?.maintenanceUnitsChangeIndicator;
+	// const MAINTENANCEUNITSCHANGEINDICATOR =
+	// 	dashboardMetrics?.propertyMetrics?.maintenanceUnitsChangeIndicator;
 
-	const MAINTENANCEUNITSPERCENTAGEDIFFERENCE =
-		dashboardMetrics?.propertyMetrics?.maintenanceUnitsPercentageDifference;
+	// const MAINTENANCEUNITSPERCENTAGEDIFFERENCE =
+	// 	dashboardMetrics?.propertyMetrics?.maintenanceUnitsPercentageDifference;
 
 	const TOTALREVENUE = dashboardMetrics?.transactionMetrics?.totalRevenue;
 
@@ -117,12 +115,12 @@ const DashBoard = () => {
 	const EXPIRINGLEASEFORPERIODCOUNT =
 		dashboardMetrics?.leaseMetrics?.expiringLeaseForPeriodCount;
 	const TENANTCOUNT = dashboardMetrics?.leaseMetrics?.tenantCount;
-	const AVGLEASEDURATION = dashboardMetrics?.leaseMetrics?.avgLeaseDuration;
+	// const AVGLEASEDURATION = dashboardMetrics?.leaseMetrics?.avgLeaseDuration;
 	const ACTIVELEASECOUNT = dashboardMetrics?.leaseMetrics?.activeLeaseCount;
-	const ACTIVELEASEFORPERIODCHANGEDIFFERENCE =
-		dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodPercentageDifference;
-	const ACTIVELEASEFORPERIODCHANGEINDICATOR =
-		dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodChangeIndicator;
+	// const ACTIVELEASEFORPERIODCHANGEDIFFERENCE =
+	// 	dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodPercentageDifference;
+	// const ACTIVELEASEFORPERIODCHANGEINDICATOR =
+	// 	dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodChangeIndicator;
 
 	const guageData = {
 		occupied: dashboardMetrics?.propertyMetrics?.occupiedUnits || 0,
@@ -327,6 +325,7 @@ const DashBoard = () => {
 											justifyContent: 'space-between',
 										}}
 									>
+										{/* Revenue & Expenses Stack */}
 										<Stack
 											direction={'row'}
 											spacing={2}
@@ -338,8 +337,9 @@ const DashBoard = () => {
 										>
 											<Stack direction={'column'} spacing={1}>
 												<Typography sx={styles.typoStyle}>
-													Total Revenue MTD
+													Total Revenue
 												</Typography>
+												<Typography variant='caption'>This month</Typography>
 												<Box
 													sx={{
 														...styles.boxStyle,
@@ -375,8 +375,9 @@ const DashBoard = () => {
 
 											<Stack direction={'column'} spacing={1}>
 												<Typography sx={styles.typoStyle}>
-													Total Expenses MTD
+													Total Expenses
 												</Typography>
+												<Typography variant='caption'>This month</Typography>
 												<Box
 													sx={{
 														...styles.boxStyle,
@@ -410,6 +411,7 @@ const DashBoard = () => {
 												</Box>
 											</Stack>
 										</Stack>
+										{/* Net Cash flow stack */}
 										<Stack
 											direction={'row'}
 											spacing={2}
