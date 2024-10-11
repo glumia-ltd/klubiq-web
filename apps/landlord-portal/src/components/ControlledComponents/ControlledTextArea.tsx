@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { SxProps } from '@mui/material';
 import { getIn } from 'formik';
+import { consoleLog } from '../../helpers/debug-logger';
 
 type ControlledTextFieldProps = {
 	loading?: boolean;
@@ -52,7 +53,7 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 			const files = e.target.files;
 			if (files) {
 				// Handle file input
-				console.log(files);
+				consoleLog(files);
 				onFileSelect?.(e.target.files);
 			}
 		}

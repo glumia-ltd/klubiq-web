@@ -16,6 +16,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import cloneIcon from '../../../assets/images/Vector.svg';
 import ControlledNumberField from '../../ControlledComponents/ControlledNumberField';
+import { consoleLog } from '../../../helpers/debug-logger';
 
 const AddUnit = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -38,7 +39,7 @@ const AddUnit = () => {
 	};
 
 	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 	};
 
 	const formik = useFormik({

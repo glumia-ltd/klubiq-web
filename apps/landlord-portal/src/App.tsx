@@ -17,6 +17,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/L
 import { UserProfile } from './shared/auth-types';
 import { useLazyGetUserByFbidQuery } from './store/AuthStore/authApiSlice';
 import { addData, getData, initDB } from './services/indexedDb';
+import { consoleLog } from './helpers/debug-logger';
 
 function App() {
 	const { user } = useSelector(getAuthState);
@@ -35,7 +36,7 @@ function App() {
 		// 		if (permission === 'granted') {
 		// 			await subscribeUserToPush();
 		// 		} else {
-		// 			console.log('Notification permission denied.');
+		// 			consoleLog('Notification permission denied.');
 		// 		}
 		// 	}
 		// };
@@ -45,20 +46,20 @@ function App() {
 					.register('/service-worker.js')
 					.then((registration) => {
 						initDB();
-						console.log(
+						consoleLog(
 							'ServiceWorker registration successful with scope: ',
 							registration.scope,
 						);
 					})
 					.catch((error) => {
-						console.log('ServiceWorker registration failed: ', error);
+						consoleLog('ServiceWorker registration failed: ', error);
 					});
 			});
 		}
 		const updateConfigStoreIdb = async (data: any) => {
 			const orgConfig = await getData('org-settings', configStoreName);
 			if (!orgConfig) {
-				console.log('ORG Config not found: ');
+				consoleLog('ORG Config not found: ');
 				await addData({ key: 'org-settings', value: data }, 'client-config');
 			}
 		};
@@ -80,8 +81,8 @@ function App() {
 					await updateConfigStoreIdb(user.orgSettings);
 				}
 			} else {
-				console.log('AUTH STATE: ', auth);
-				console.log('no user found yet');
+				consoleLog('AUTH STATE: ', auth);
+				consoleLog('no user found yet');
 				const payload = {
 					token: null,
 					user: {} as UserProfile,

@@ -3,6 +3,7 @@ import ControlledTextField from '../../components/ControlledComponents/Controlle
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledCheckBox from '../../components/ControlledComponents/ControlledCheckbox';
+import { consoleLog } from '../../helpers/debug-logger';
 interface ContactProps {
 	setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -23,7 +24,7 @@ const ContactDetails: React.FC<ContactProps> = ({ setActiveStep }) => {
 	};
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values, 'hh');
+		consoleLog(values, 'hh');
 		setActiveStep(1);
 	};
 	const formik = useFormik({

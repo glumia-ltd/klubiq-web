@@ -6,6 +6,7 @@ import StateList from '../../helpers/stateList.json';
 import { Grid, Typography, Button } from '@mui/material';
 
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
+import { consoleLog } from '../../helpers/debug-logger';
 const PropertyInformation: React.FC = () => {
 	const validationSchema = yup.object({
 		propertyName: yup.string().required('This field is required'),
@@ -28,7 +29,7 @@ const PropertyInformation: React.FC = () => {
 	};
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values, 'hh');
+		consoleLog(values, 'hh');
 	};
 	const formik = useFormik({
 		initialValues: {

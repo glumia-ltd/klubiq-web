@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Input as BaseInput } from '@mui/base/Input';
 import { Box, styled } from '@mui/system';
+import { consoleLog } from '../../helpers/debug-logger';
 
 type OTPTextInput = {
 	separator?: React.ReactNode;
@@ -126,7 +127,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 		event: React.MouseEvent<HTMLInputElement, MouseEvent>,
 		currentIndex: number,
 	) => {
-		console.log(event);
+		consoleLog(event);
 		selectInput(currentIndex);
 	};
 
