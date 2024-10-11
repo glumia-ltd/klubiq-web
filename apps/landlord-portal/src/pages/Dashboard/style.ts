@@ -41,7 +41,7 @@ export const styles = {
 		textAlign: 'left',
 		//padding: { xs: '24px', sm: '10px', md: '20px', lg: '24px' },
 		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
-		paddingY: { xs: '24px', sm: '24px', md: '32px', lg: '32px', xl: '32px' },
+		paddingY: { xs: '16px', sm: '16px', md: '24px', lg: '24px', xl: '24px' },
 		borderRadius: '20px',
 		alignItems: 'flex-start',
 		display: 'flex',
@@ -76,6 +76,11 @@ export const styles = {
 		//mb: { sm: '0.5rem', md: '0.5rem', lg: '1rem' },
 		textAlign: 'left',
 	},
+	leaseMetricsTextStyle: {
+		fontSize: '12px',
+		fontWeight: 500,
+		textAlign: 'left',
+	},
 	guageBoxStyle: {
 		width: '100%',
 	},
@@ -107,9 +112,12 @@ export const styles = {
 
 	changeArrowBoxStyle: {
 		display: 'flex',
-		textAlign: 'center',
+		textAlign: 'left',
 		//marginTop: { xs: '35px', md: '28px', lg: '35px' },
 		alignItems: 'center',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		width: '100%',
 	},
 	icons: {
 		marginRight: '15px',
@@ -148,6 +156,20 @@ export const styles = {
 		alignItems: 'center',
 	},
 
+	leaseMetricsValues: {
+		fontSize: {
+			xs: '20px',
+			sm: '24px',
+			md: '24px',
+			lg: '24px',
+			xl: '32px',
+		},
+
+		fontWeight: 800,
+		//lineHeight: '44px',
+		alignItems: 'center',
+	},
+
 	overdueTypo: {
 		fontSize: '14px',
 		lineHeight: '20px',
@@ -175,11 +197,12 @@ export const styles = {
 	},
 
 	totalExpensesStyle: {
-		display: 'flex',
+		// display: 'flex',
 		justifyContent: 'space-between',
 		textAlign: 'left',
 		marginTop: '12px',
 		width: '100%',
+		// flexDirection: 'row',
 	},
 
 	totalRevenueStyle: {
