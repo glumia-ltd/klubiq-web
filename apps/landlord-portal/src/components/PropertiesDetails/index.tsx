@@ -57,22 +57,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			}
 			const currentImageSize = selectedFiles[0]?.size || 0;
 
-			//const totalSizeOfUploadedImages = totalImageSize + currentImageSize;
-
-			//console.log('totalSizeOfUploadedImages', totalSizeOfUploadedImages);
-
-			//TODO: Use real storage limit here.
-
-			// if (
-			// 	formik.values.signedUrl?.storageLimit &&
-			// 	totalSizeOfUploadedImages > 173456
-			// ) {
-			// 	dispatchUploadMessage(
-			// 		'You have uploaded the maximum amount of allowed images',
-			// 	);
-			// 	return;
-			// }
-
 			const fileArray = Array.from(files).map((file) =>
 				URL.createObjectURL(file),
 			);
@@ -88,14 +72,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 
 				const { data } = await getSignedUrl(body);
 				const storageLimit = multiply(data?.storageLimit, 1048576);
-				// formik.setFieldValue('signedUrl', {
-				// 	signature: data.signature,
-				// 	storageLimit:  multiply(data.storageLimit, 1048576),
-				// 	storageUsed: data.storageUsed,
-				// 	timestamp: uploadTimeStamp,
-				// });
-
-				//TODO: Use real storage limit here.
 
 				if (sum([currentImageSize, data.storageUsed]) > storageLimit) {
 					dispatchUploadMessage(`You have exceeded your plan's storage limit`);
@@ -113,23 +89,22 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
 				});
 				worker.onmessage = (event: MessageEvent) => {
-					console.log(event);
 					const { status, data, error } = event.data;
+
 					if (status === 'success') {
 						formik.setFieldValue('images', [...data.value]);
-					}
-					// else if (status === 'uploading') {
-					// 	// clearTimeout(data);
-					// }
-					else if (status === 'error') {
+						worker.terminate();
+					} else if (status === 'error') {
 						console.error('Upload error:', error);
 					}
 				};
 			}
+
 			formik.setFieldValue('propertyImages', [
 				...formik.values.images,
 				...fileArray,
 			]);
+
 			setPassportFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
 			setTotalImageSize((prev) => prev + currentImageSize);
 		}
@@ -167,8 +142,9 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 							<Grid item xs={12}>
 								<ControlledSelect
 									// color='#002147'
+									required
 									name='typeId'
-									label='PROPERTY TYPE'
+									label='PROPERTY TYPE '
 									placeholder='Property Type'
 									type='text'
 									formik={formik}
@@ -184,6 +160,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 							<Grid item xs={12}>
 								<ControlledTextField
 									// color='#002147'
+									required
 									name='name'
 									label='PROPERTY NAME'
 									value={formik?.values?.name}
@@ -220,11 +197,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 					<Card sx={PropertiesFormStyle.cardTwo}>
 						<Grid container spacing={2} sx={PropertiesFormStyle.cardContent}>
 							<Grid item xs={12}>
-								<Typography
-									variant='h1'
-									fontSize={'20px'}
-									// color='#002147'
-								>
+								<Typography variant='h1' fontSize={'20px'}>
 									COVER PHOTO
 								</Typography>
 							</Grid>
@@ -255,7 +228,6 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 												position: 'absolute',
 												top: -10,
 												right: -10,
-												// backgroundColor: 'white',
 											}}
 										>
 											<HighlightOffIcon />
@@ -263,7 +235,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									</Grid>
 								),
 							)}
-							{passportFiles.length === 0 && (
+							{formik.values?.propertyImages?.length === 0 && (
 								<Grid item xs={12} sm={6} md={4} lg={3}>
 									<Box
 										component='label'
@@ -291,7 +263,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 											style={{ display: 'none' }}
 											accept='image/*'
 											onChange={handleFileChange}
-											readOnly={passportFiles.length > 0}
+											readOnly={formik.values.propertyImages.length > 0}
 										/>
 									</Box>
 								</Grid>

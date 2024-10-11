@@ -19,7 +19,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
-import { startCase } from 'lodash';
+import { replace, startCase } from 'lodash';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
@@ -28,7 +28,10 @@ const NavBar = () => {
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing } =
 		useContext(Context);
 	const [isModalOpen, setOpenModal] = useState(false);
-
+	const simplifyRoleName = (role: string) => {
+		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
+		return startCase(simplifiedRole);
+	};
 	// const { pathname } = useLocation();
 	// const section = pathname.split('/')[1];
 
@@ -152,7 +155,7 @@ const NavBar = () => {
 						>
 							{' '}
 							{user?.firstName ?? 'Klubiq User'} <br />
-							{startCase(user?.roleName) ?? 'Demo'}
+							{simplifyRoleName(user?.roleName || '')}
 						</Typography>
 						<IconButton
 							edge='end'

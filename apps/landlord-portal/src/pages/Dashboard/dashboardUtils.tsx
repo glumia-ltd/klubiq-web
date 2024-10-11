@@ -63,12 +63,15 @@ export const indicatorBackground = (changeIndicator?: string) =>
 			? 'rgba(255, 0, 0, 0.1)'
 			: '#c2daed';
 
-export const indicatorText = (changeIndicator?: string) =>
+export const indicatorText = (
+	changeIndicator?: string,
+	period: string = 'last month',
+) =>
 	changeIndicator === IndicatorOptions.POSITIVE
-		? 'Up from yesterday'
+		? `Up from ${period}`
 		: changeIndicator === IndicatorOptions.NEGATIVE
-			? 'Down from yesterday'
-			: 'No changes from yesterday';
+			? `Down from ${period}`
+			: `No changes from ${period}`;
 
 export const showChangeArrow = (changeIndicator?: string) => {
 	if (changeIndicator === IndicatorOptions.POSITIVE) {

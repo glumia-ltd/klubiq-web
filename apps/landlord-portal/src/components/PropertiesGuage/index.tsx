@@ -27,7 +27,7 @@ export const PropertiesGuage = ({
 	const categories = [
 		{ label: 'Occupied', value: occupied, color: colors[0] },
 		{ label: 'Vacant', value: vacant, color: colors[1] },
-		{ label: 'Maintenance', value: maintenance, color: colors[2] },
+		// { label: 'Maintenance', value: maintenance, color: colors[2] },
 	];
 
 	const legendComponent = legend && (
@@ -138,6 +138,7 @@ export const PropertiesGuage = ({
 				cornerRadius='50%'
 				size={smallSize}
 				sx={{
+					visibility: 'hidden',
 					position: 'absolute',
 					left: `calc(50% - ${smallSize / 2 - 10}px)`,
 					top: `calc(50% - ${smallSize / 2}px)`,

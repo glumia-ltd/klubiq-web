@@ -120,11 +120,14 @@ export type PropertyMetricsType = {
 	occupancyRateLastMonth: number | null;
 	occupancyRatePercentageDifference: number;
 	occupiedUnits: number;
-	rentOverdue: { overDueLeaseCount: number; overDueRentSum: number } | null;
 	singleUnits: number;
 	totalProperties: number;
 	totalUnits: number;
 	vacantUnits: number;
+};
+export type RentOverdueLeaseType = {
+	overDueLeaseCount: number;
+	overDueRentSum: number;
 };
 
 export type SeriesDataType = {
@@ -144,21 +147,34 @@ export type RevenueMetricsType = {
 };
 
 export type TransactionMetricsType = {
-	dailyRevenueChangeIndicator: string;
-	dailyRevenuePercentageDifference: number;
+	totalRevenueChangeIndicator: string;
+	totalRevenuePercentageDifference: number;
 	netCashFlow: number | null;
 	netCashFlowChangeIndicator: string;
 	netCashFlowLastMonth: number | null;
 	netCashFlowPercentageDifference: number;
-	todaysRevenue: number;
+	totalRevenue: number;
+	totalRevenueLastMonth: number;
 	totalExpenses: number;
 	totalExpensesChangeIndicator: string;
 	totalExpensesPercentageDifference: number;
+};
+
+export type LeaseMetricsType = {
+	activeLeaseForPeriodChangeIndicator: string;
+	activeLeaseForPeriodPercentageDifference: number;
+	activeLeaseCount: number | null;
+	activeLeaseForPeriodCount: number | null;
+	expiringLeaseForPeriodCount: number;
+	tenantCount: number;
+	avgLeaseDuration: number;
 };
 export type DashboardMetricsType = {
 	propertyMetrics: PropertyMetricsType;
 	revenueMetrics: RevenueMetricsType;
 	transactionMetrics: TransactionMetricsType;
+	leaseMetrics: LeaseMetricsType;
+	rentsOverDueSummary?: RentOverdueLeaseType;
 };
 
 export type RevenueReportType = {

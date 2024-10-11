@@ -35,6 +35,7 @@ const styles = {
 		padding: { xs: '10px', sm: '10px', md: '14px', lg: '16px' },
 		marginBottom: '15px',
 		borderRadius: '8px',
+		cursor: 'pointer',
 
 		width: { xs: '100%', sm: '100%', md: '100%', lg: '100%' },
 		minWidth: '100%',

@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
+import { auth } from '../../firebase';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -24,45 +25,49 @@ export const SessionTimeoutProvider = ({
 	const [isTimedOut, setIsTimedOut] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [timeLeft, setTimeLeft] = useState(60); // 60 seconds warning before logout
-	let timeout: ReturnType<typeof setTimeout>;
-	let warningTimeout: ReturnType<typeof setTimeout>;
+	const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes inactivity limit
+	const WARNING_TIME = 25 * 60 * 1000; // Show warning after 25 minutes of inactivity
+	const COUNTDOWN_TIME = 60; // 60 seconds countdown before auto-logout
+
+	// let timeout: ReturnType<typeof setTimeout>;
+	// let warningTimeout: ReturnType<typeof setTimeout>;
 	let countdownInterval: ReturnType<typeof setInterval>;
 
-	// Function to reset the inactivity timers
-	const resetTimer = useCallback(() => {
-		clearTimeout(timeout); // Clear auto-logout timeout
-		clearTimeout(warningTimeout); // Clear warning timeout
-		clearInterval(countdownInterval); // Clear the countdown
+	// Function to update the last activity timestamp in sessionStorage
+	const updateLastActivity = () => {
+		sessionStorage.setItem(
+			'lastActivity',
+			JSON.stringify(new Date().getTime()),
+		);
+	};
 
-		setShowModal(false); // Hide modal if user confirms to stay logged in
-		setTimeLeft(60); // Reset countdown
-
-		// Start warning timer (e.g., after 4.5 minutes of inactivity)
-		warningTimeout = setTimeout(
-			() => {
-				setShowModal(true); // Show the inactivity warning modal
-				startCountdown(); // Start the countdown timer
-			},
-			55 * 60 * 1000,
-		); // Show warning after 4.5 minutes of inactivity
-
-		// Start auto-logout timer (e.g., after 5 minutes of inactivity)
-		timeout = setTimeout(
-			() => {
+	// Function to check whether the user has been inactive for too long
+	const checkInactivity = useCallback(() => {
+		const lastActivity = sessionStorage.getItem('lastActivity');
+		if (lastActivity) {
+			const currentTime = new Date().getTime();
+			const timeSinceLastActivity = currentTime - parseInt(lastActivity, 10);
+			if (timeSinceLastActivity >= INACTIVITY_LIMIT) {
 				setIsTimedOut(true);
-				//window.location.href = '/login'; // Redirect to login
-			},
-			60 * 60 * 1000,
-		); // Auto-logout after 5 minutes
+				sessionStorage.clear();
+				auth.signOut();
+				window.location.href = '/login'; // Redirect to login after timeout
+			} else if (timeSinceLastActivity >= WARNING_TIME) {
+				setShowModal(true); // Show inactivity warning modal
+				startCountdown();
+			}
+		}
 	}, []);
 
 	// Function to start the countdown timer
 	const startCountdown = useCallback(() => {
-		let countdown = 60; // 60 seconds countdown
+		let countdown = COUNTDOWN_TIME; // 60 seconds countdown
 		countdownInterval = setInterval(() => {
 			setTimeLeft(--countdown);
 			if (countdown <= 0) {
 				clearInterval(countdownInterval);
+				auth.signOut();
+				sessionStorage.clear();
 				window.location.href = '/login'; // Auto logout after countdown ends
 			}
 		}, 1000); // Decrease countdown every second
@@ -70,35 +75,41 @@ export const SessionTimeoutProvider = ({
 
 	// Function to handle "Stay Logged In" button click
 	const stayLoggedIn = useCallback(() => {
+		clearInterval(countdownInterval); // Clear countdown
 		setShowModal(false); // Hide the modal when the user confirms to stay logged in
-		setTimeLeft(60); // Reset countdown timer
-		resetTimer(); // Reset both warning and logout timers
-	}, [resetTimer]);
+		setTimeLeft(COUNTDOWN_TIME); // Reset countdown timer
+		updateLastActivity(); // Update the last activity time
+	}, []);
 
 	// Effect to set up the event listeners for user activity and inactivity tracking
 	useEffect(() => {
 		if (!window.location.href.includes('login')) {
 			const activityEvents = ['mousemove', 'keypress', 'click', 'scroll'];
 
+			// Update last activity timestamp on any user interaction
+			const handleUserActivity = () => {
+				updateLastActivity();
+			};
 			// Attach event listeners for activity detection
 			activityEvents.forEach((event) => {
-				window.addEventListener(event, resetTimer);
+				window.addEventListener(event, handleUserActivity);
 			});
 
-			// Initial reset of the timer when the app loads
-			resetTimer();
+			// Periodically check for user inactivity
+			const interval = setInterval(checkInactivity, 10000);
 
+			// Set initial last activity timestamp on app load
+			updateLastActivity();
 			return () => {
 				// Cleanup: Remove event listeners and clear timeouts/intervals
 				activityEvents.forEach((event) =>
-					window.removeEventListener(event, resetTimer),
+					window.removeEventListener(event, handleUserActivity),
 				);
-				clearTimeout(timeout);
-				clearTimeout(warningTimeout);
+				clearInterval(interval);
 				clearInterval(countdownInterval);
 			};
 		}
-	}, [resetTimer]);
+	}, [checkInactivity]);
 
 	return (
 		<SessionTimeoutContext.Provider value={{ isTimedOut, stayLoggedIn }}>
@@ -140,7 +151,7 @@ export const SessionTimeoutProvider = ({
 					</Button>
 					<Button
 						variant='outlined'
-						onClick={() => (window.location.href = '/login')}
+						onClick={() => ((window.location.href = '/login'), auth.signOut())}
 					>
 						Logout
 					</Button>
