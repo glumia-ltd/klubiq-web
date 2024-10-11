@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { useState, useEffect } from 'react';
+import { consoleLog } from '../../../helpers/debug-logger';
 
 const Maintenance = () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
@@ -45,7 +46,7 @@ const Maintenance = () => {
 	];
 
 	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 	};
 
 	const formik = useFormik({

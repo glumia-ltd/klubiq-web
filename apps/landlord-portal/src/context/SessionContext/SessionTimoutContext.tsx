@@ -75,10 +75,11 @@ export const SessionTimeoutProvider = ({
 
 	// Function to handle "Stay Logged In" button click
 	const stayLoggedIn = useCallback(() => {
-		clearInterval(countdownInterval); // Clear countdown
+		setIsTimedOut(false);
 		setShowModal(false); // Hide the modal when the user confirms to stay logged in
 		setTimeLeft(COUNTDOWN_TIME); // Reset countdown timer
 		updateLastActivity(); // Update the last activity time
+		clearInterval(countdownInterval); // Clear countdown
 	}, []);
 
 	// Effect to set up the event listeners for user activity and inactivity tracking

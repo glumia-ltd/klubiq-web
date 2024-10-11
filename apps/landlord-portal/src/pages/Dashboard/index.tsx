@@ -42,6 +42,7 @@ import { get } from 'lodash';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import { consoleLog } from '../../helpers/debug-logger';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
@@ -173,7 +174,7 @@ const DashBoard = () => {
 				}),
 			);
 		} catch (e) {
-			console.log(e);
+			consoleLog(e);
 		}
 	};
 	const getLocaleFormat = (

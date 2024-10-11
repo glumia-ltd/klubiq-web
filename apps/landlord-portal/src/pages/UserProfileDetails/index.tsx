@@ -11,6 +11,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import { StepLabel } from '@mui/material';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
+import { consoleLog } from '../../helpers/debug-logger';
 const steps = [
 	{
 		label: ['Contact Information', <br />, 'Tell us how to reach you'],
@@ -29,7 +30,7 @@ const StepperComponent: React.FC = () => {
 		setActiveStep(step);
 	};
 
-	console.log(activeStep, 'active', handleStep);
+	consoleLog(activeStep, 'active', handleStep);
 	return (
 		<Grid container spacing={0}>
 			<Grid

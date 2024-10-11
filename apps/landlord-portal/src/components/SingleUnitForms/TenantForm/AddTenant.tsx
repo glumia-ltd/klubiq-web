@@ -12,6 +12,7 @@ import {
 	Radio,
 } from '@mui/material';
 import AddTenantModal from '../../Modals/AddTenantModal';
+import { consoleLog } from '../../../helpers/debug-logger';
 
 const AddTenant = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -37,7 +38,7 @@ const AddTenant = () => {
 	};
 
 	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 		setOpenModal(true);
 	};
 
@@ -56,7 +57,7 @@ const AddTenant = () => {
 		{ value: 'two', label: 'Text' },
 		{ value: 'three', label: 'Email & Text' },
 	];
-	console.log(formik.errors, 'err');
+	consoleLog(formik.errors, 'err');
 	return (
 		<FormLayout Header='Add Tenant' sx={style.card}>
 			{loading ? (
