@@ -39,6 +39,7 @@ import { AddPropertyType } from '../../shared/type';
 import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
 import { omitBy } from 'lodash';
 import { clearData } from '../../services/indexedDb';
+import { consoleLog } from '../../helpers/debug-logger';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -139,7 +140,7 @@ export const AddPropertiesLayout = () => {
 	const currentLocation = location.pathname.split('/')[3] || '';
 
 	const onSubmit = async (values: any) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 	};
 
 	const formik = useFormik<IunitType>({
@@ -485,7 +486,7 @@ export const AddPropertiesLayout = () => {
 
 			navigate('/properties');
 		} catch (e) {
-			console.log(e);
+			consoleLog(e);
 			//clearData('new-property');
 		}
 	};

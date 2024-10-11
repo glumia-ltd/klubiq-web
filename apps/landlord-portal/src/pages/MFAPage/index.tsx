@@ -111,7 +111,7 @@ const MFASetUp = () => {
 			setRAuthenticationRequired(false);
 			setError('');
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			setOpenDialog(true);
 			setError('Unable to re-authenticate. Please try again.');
 			setLoading(false);
@@ -157,7 +157,7 @@ const MFASetUp = () => {
 				notify('Successfully enrolled in OTP Authentication.', 'success');
 				navigate('/dashboard', { replace: true });
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 				setError('Unable to enroll in OTP Authentication.');
 			}
 		} else {

@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
+import { consoleLog } from '../../helpers/debug-logger';
 
 interface EmailVerificationProps {}
 
@@ -36,7 +37,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 			setLoading(false);
 			setError(false);
 		} catch (error) {
-			console.log('verification error: ', error);
+			consoleLog('verification error: ', error);
 			setLoading(false);
 			setErrorMessage('Verification Code expired. Contact Support');
 			setError(true);
