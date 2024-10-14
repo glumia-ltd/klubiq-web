@@ -29,11 +29,15 @@ import {
 } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useDispatch } from 'react-redux';
 import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
-
-const DEFAULT_PARAMS = { page: 1, take: 20, sortBy: 'name' };
+import { DataPagination } from '../../components/DataPagination';
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
+	const [defaultParams, setDefaultParams] = useState({
+		page: 1,
+		take: 20,
+		sortBy: 'name',
+	});
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [searchText, setSearchText] = useState('');
@@ -46,7 +50,7 @@ const Properties = () => {
 		isFetching: isPropertyFetching,
 	} = useGetPropertiesQuery({
 		...filter,
-		...DEFAULT_PARAMS,
+		...defaultParams,
 	});
 
 	const {
@@ -90,13 +94,18 @@ const Properties = () => {
 		}
 	}, []);
 
+	const getCurrentPage = (value: any) => {
+		console.log(value);
+		setDefaultParams({ ...defaultParams, page: value });
+	};
+
 	useEffect(() => {
 		const currentFilter = {
 			...filter,
-			...DEFAULT_PARAMS,
+			...defaultParams,
 		};
 		dispatch(setCurrentFilter({ currentFilter }));
-	}, [dispatch, filter]);
+	}, [defaultParams, dispatch, filter]);
 
 	return (
 		<>
@@ -224,6 +233,9 @@ const Properties = () => {
 							</Grid>
 						</Grid>
 					</Grid>
+					<Stack mt={4}>
+						<DataPagination getCurrentPage={getCurrentPage} />
+					</Stack>
 				</Container>
 			)}
 		</>
