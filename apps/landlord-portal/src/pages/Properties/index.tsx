@@ -59,6 +59,8 @@ const Properties = () => {
 		// isFetching: isMetaDataFetching,
 	} = useGetPropertiesMetaDataQuery();
 
+	const pageCount = propertyData?.meta?.pageCount;
+
 	const allProperties = propertyData?.pageData;
 	const filterOptions = metaData?.filterOptions;
 
@@ -95,8 +97,11 @@ const Properties = () => {
 	}, []);
 
 	const getCurrentPage = (value: any) => {
-		console.log(value);
 		setDefaultParams({ ...defaultParams, page: value });
+	};
+
+	const getItemsPerPageCount = (value: any) => {
+		setDefaultParams({ ...defaultParams, take: value });
 	};
 
 	useEffect(() => {
@@ -104,6 +109,12 @@ const Properties = () => {
 			...filter,
 			...defaultParams,
 		};
+
+		// console.log(currentFilter);
+		// console.log({
+		// 	...filter,
+		// 	...defaultParams,
+		// });
 		dispatch(setCurrentFilter({ currentFilter }));
 	}, [defaultParams, dispatch, filter]);
 
@@ -234,7 +245,11 @@ const Properties = () => {
 						</Grid>
 					</Grid>
 					<Stack mt={4}>
-						<DataPagination getCurrentPage={getCurrentPage} />
+						<DataPagination
+							getCurrentPage={getCurrentPage}
+							getItemsPerPageCount={getItemsPerPageCount}
+							pageCount={pageCount}
+						/>
 					</Stack>
 				</Container>
 			)}

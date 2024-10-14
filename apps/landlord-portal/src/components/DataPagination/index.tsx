@@ -5,13 +5,23 @@ import { FC, useState } from 'react';
 
 type PaginationType = {
 	getCurrentPage?: (value?: any) => void;
+	getItemsPerPageCount?: (value?: any) => void;
+	pageCount?: number;
 };
 
-export const DataPagination: FC<PaginationType> = ({ getCurrentPage }) => {
-	const [itemsPerPage, _] = useState(20);
+export const DataPagination: FC<PaginationType> = ({
+	getCurrentPage,
+	getItemsPerPageCount,
+	pageCount,
+}) => {
+	// const [itemsPerPage, _] = useState(20);
 
-	const handleChange = (value: any) => {
+	const handlePaginationChange = (value: any) => {
 		getCurrentPage && getCurrentPage(value);
+	};
+
+	const handleItemsPerPageChange = (event: any) => {
+		getItemsPerPageCount && getItemsPerPageCount(event.target.value);
 	};
 
 	return (
@@ -22,12 +32,12 @@ export const DataPagination: FC<PaginationType> = ({ getCurrentPage }) => {
 			justifyContent='center'
 		>
 			<Pagination
-				count={10}
+				count={pageCount}
 				shape='rounded'
 				variant='outlined'
 				showFirstButton
 				showLastButton
-				onChange={(_, pageNumber) => handleChange(pageNumber)}
+				onChange={(_, pageNumber) => handlePaginationChange(pageNumber)}
 			/>
 
 			<Box width='10%'>
@@ -36,9 +46,9 @@ export const DataPagination: FC<PaginationType> = ({ getCurrentPage }) => {
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
-						value={itemsPerPage}
+						defaultValue={20}
 						label='Properties per page'
-						onChange={handleChange}
+						onChange={handleItemsPerPageChange}
 					>
 						<MenuItem value={10}>10</MenuItem>
 						<MenuItem value={20}>20</MenuItem>
