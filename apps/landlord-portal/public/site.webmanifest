@@ -37,8 +37,8 @@
   "theme_color": "#002147",
   "background_color": "#FFFFFF",
   "display": "standalone",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "https://dev.klubiq.com/",
+  "start_url": "https://dev.klubiq.com/",
   "orientation": "portrait",
   "id": "klubiq.landlord.portal",
   "lang": "en",
@@ -51,12 +51,21 @@
   "shortcuts": [
     {
       "name": "Add Property",
-      "url": "https://dev.klubiq.com/createproperty",
+      "url": "/create/property-category",
       "description": "Creates a property"
+    },
+    {
+      "name": "View Properties",
+      "url": "/properties",
+      "description": "View property list"
     }
   ],
   "categories": [
     "business",
-    "finance"
-  ]
+    "finance",
+    "productivity"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }
