@@ -143,10 +143,10 @@ const CreateAccount: React.FC = () => {
 			component='form'
 			sx={{
 				justifyContent: 'center',
-				height: '100vh',
+				//height: '100vh',
 				p: {
-					xs: 2,
-					sm: 1,
+					xs: 7,
+					sm: 7,
 					md: 0,
 					lg: 0,
 				},
@@ -217,6 +217,7 @@ const CreateAccount: React.FC = () => {
 								label='First Name'
 								type='text'
 								placeholder='Enter your first'
+								autoComplete='given-name'
 								formik={formik}
 							/>
 						</Grid>
@@ -227,6 +228,7 @@ const CreateAccount: React.FC = () => {
 								placeholder='Enter your last name'
 								formik={formik}
 								type='text'
+								autoComplete='family-name'
 							/>
 						</Grid>
 
@@ -237,6 +239,7 @@ const CreateAccount: React.FC = () => {
 								placeholder='Enter your company name'
 								type='text'
 								formik={formik}
+								autoComplete='organization'
 							/>
 						</Grid>
 						<Grid item sm={12} xs={12} lg={12}>
@@ -258,6 +261,7 @@ const CreateAccount: React.FC = () => {
 								placeholder='Enter your email address'
 								formik={formik}
 								type='email'
+								autoComplete='email'
 							/>
 						</Grid>
 
@@ -268,6 +272,7 @@ const CreateAccount: React.FC = () => {
 								type='password'
 								placeholder='Enter your password'
 								formik={formik}
+								autoComplete='new-password'
 							/>
 						</Grid>
 

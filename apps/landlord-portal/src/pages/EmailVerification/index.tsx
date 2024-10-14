@@ -13,6 +13,7 @@ import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { consoleLog } from '../../helpers/debug-logger';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 
 interface EmailVerificationProps {}
 
@@ -113,19 +114,23 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							alignItems: 'center',
 							maxWidth: '400px',
 							margin: 'auto',
+							textAlign: 'center',
 						}}
 					>
+						<DraftsOutlinedIcon fontSize='large' />
 						<Typography variant='h3'>Account Created!</Typography>
+						<Typography variant='body1'>We've sent you an email.</Typography>
 						<Typography variant='body1'>
-							Please check your email to verify your account.
+							Please confirm your email address by clicking on the link in your
+							inbox.
 						</Typography>
-						<Button
+						{/* <Button
 							variant='contained'
 							disabled={!resendEnabled}
 							onClick={resendVerificationEmail}
 						>
 							Resend Verification Email
-						</Button>
+						</Button> */}
 					</Stack>
 				) : (
 					renderViewContent()
