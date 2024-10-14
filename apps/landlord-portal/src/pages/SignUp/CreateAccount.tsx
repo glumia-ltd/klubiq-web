@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { filter, find, orderBy } from 'lodash';
 import countries from '../../helpers/countries-meta.json';
-
+import bgillustration from '../../assets/images/undraw_town_re_2ng5-removebg-preview.png';
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -340,12 +340,16 @@ const CreateAccount: React.FC = () => {
 				lg={6}
 				xl={6}
 				sx={{
-					background: 'linear-gradient(#6699CC, #1F305E)',
+					background: `linear-gradient(#6699CC, #1F305E), url(${bgillustration})`,
 					display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 					borderTopRightRadius: '1.3rem',
 					borderBottomLeftRadius: '1.3rem',
 					height: '100vh',
 					alignContent: 'center',
+					backgroundBlendMode: 'overlay',
+					backgroundSize: 'fixed',
+					backgroundRepeat: 'no-repeat',
+					backgroundPosition: 'bottom',
 				}}
 			>
 				<Stack
