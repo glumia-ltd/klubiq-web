@@ -6,8 +6,10 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
+	Card,
 } from '@mui/material';
 import { styles } from './style';
+import fileIcon from '../../assets/images/Vector (2).svg';
 
 const TenantDocument = () => {
 	const details = [
@@ -31,7 +33,7 @@ const TenantDocument = () => {
 	];
 
 	return (
-		<TableContainer>
+		<TableContainer component={Card}>
 			<Table>
 				<TableHead>
 					<TableRow>
@@ -58,9 +60,13 @@ const TenantDocument = () => {
 				<TableBody>
 					{details.map((detail, index) => (
 						<TableRow key={index}>
-							<TableCell align='left' sx={styles.cellText}>
-								{detail.name}
+							<TableCell sx={styles.tableDiv} align='left'>
+								<img src={fileIcon} alt='tenant picture' />
+								<Typography sx={styles.cellText} ml='25px'>
+									{detail.name}
+								</Typography>
 							</TableCell>
+
 							<TableCell align='left' sx={styles.cellText}>
 								{detail.dueDate}
 							</TableCell>

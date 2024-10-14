@@ -1,5 +1,3 @@
-import { textAlign } from '@mui/system';
-
 export const styles = {
 	container: {
 		overflow: 'auto',
@@ -210,6 +208,11 @@ export const styles = {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	tableDiv: {
+		display: 'flex',
+		alignItems: 'center',
+		// justifyContent: 'center',
 	},
 	detailsBox: {
 		display: 'flex',

@@ -21,10 +21,11 @@ type LeaseTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
 	filters: Record<string, string | number>;
+	onRowClick?: (lease: any) => void;
 };
 
-export const LeaseTable: FC<LeaseTableType> = ({ filters }) => {
-	const [currentPage, setCurrentPage] = useState(5);
+export const LeaseTable: FC<LeaseTableType> = ({ filters, onRowClick }) => {
+	const [currentPage, setCurrentPage] = useState(1);
 	const [rowsPerPage] = useState(5);
 
 	const statusColors: Record<string, string> = {
@@ -83,7 +84,12 @@ export const LeaseTable: FC<LeaseTableType> = ({ filters }) => {
 				</TableHead>
 				<TableBody>
 					{paginatedLeases.map((lease, index) => (
-						<TableRow key={index}>
+						<TableRow
+							key={index}
+							hover // Adds hover effect on rows
+							onClick={() => onRowClick && onRowClick(lease)} // Makes row clickable
+							sx={{ cursor: 'pointer' }} // Changes the cursor to pointer
+						>
 							<TableCell align='center'>
 								<Chip
 									label={lease.status}
