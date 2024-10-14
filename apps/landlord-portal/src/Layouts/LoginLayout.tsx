@@ -1,5 +1,6 @@
 import { Grid, Stack, Typography } from '@mui/material';
 import { FC } from 'react';
+import style from './style';
 
 type LoginLayoutType = {
 	children: JSX.Element;
@@ -35,7 +36,7 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 				lg={6}
 				xl={6}
 				sx={{
-					background: 'linear-gradient(#6699CC, #1F305E)',
+					...style.background,
 					borderTopRightRadius: '1.3rem',
 					borderBottomLeftRadius: '1.3rem',
 					height: '100vh',

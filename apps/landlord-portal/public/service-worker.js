@@ -11,6 +11,7 @@ self.addEventListener('fetch', (event) => {
 	const requestURL = new URL(event.request.url);
 	const eventOrigin = requestURL.origin;
 	const path = requestURL.pathname;
+	console.log('Headers', event.request.headers.keys);
 	async function returnPublicCachedResponse() {
 		// open app's cache
 		const cache = await caches.open(DATA_CACHE);
@@ -19,7 +20,6 @@ self.addEventListener('fetch', (event) => {
 		if (cachedResponse) {
 			return cachedResponse;
 		} else {
-			console.log('Headers', event.request.headers);
 			const fetchResponse = await fetch(event.request.url);
 			const responseCopy = fetchResponse.clone();
 			cache.put(event.request.url, responseCopy);
