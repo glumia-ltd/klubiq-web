@@ -27,7 +27,7 @@ export const DataPagination: FC<PaginationType> = ({
 	return (
 		<Stack
 			spacing={2}
-			direction={'row'}
+			direction={{ xs: 'column', sm: 'row' }}
 			alignItems='center'
 			justifyContent='center'
 		>
@@ -40,7 +40,7 @@ export const DataPagination: FC<PaginationType> = ({
 				onChange={(_, pageNumber) => handlePaginationChange(pageNumber)}
 			/>
 
-			<Box width='10%'>
+			<Box width={{ xs: '35%', sm: '15%', lg: '10%' }}>
 				<FormControl fullWidth size='small'>
 					<InputLabel id='demo-simple-select-label'>Items per page</InputLabel>
 					<Select
