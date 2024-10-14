@@ -50,8 +50,8 @@ const Properties = () => {
 
 	const {
 		data: metaData,
-		isLoading: isMetaDataLoading,
-		isFetching: isMetaDataFetching,
+		// isLoading: isMetaDataLoading,
+		// isFetching: isMetaDataFetching,
 	} = useGetPropertiesMetaDataQuery();
 
 	const allProperties = propertyData?.pageData;
