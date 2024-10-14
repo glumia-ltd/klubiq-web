@@ -15,9 +15,7 @@ import { useState } from 'react';
 import { styles } from './style';
 import { FC } from 'react';
 import bukky from '../../assets/images/bukky.png';
-// import { UnitType } from '../../shared/type';
-// import { useNavigate } from 'react-router-dom';
-// import AddIcon from '@mui/icons-material/Add';
+import { leases } from './data';
 
 type LeaseTableType = {
 	title: string;
@@ -29,128 +27,6 @@ export const LeaseTable: FC<LeaseTableType> = ({ filters }) => {
 	const [currentPage, setCurrentPage] = useState(5);
 	const [rowsPerPage] = useState(5);
 
-	const leases = [
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Expiring',
-			tenant: 'Aisha R',
-			property: 'City High',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Expiring',
-			tenant: 'Aisha R',
-			property: 'City High',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Expiring',
-			tenant: 'Aisha R',
-			property: 'City High',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Over Due',
-			tenant: 'Aisha R',
-			property: 'Hybib Apartment',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Landmark House',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Expiring',
-			tenant: 'Aisha R',
-			property: 'City High',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Resolved Avenue',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Over Due',
-			tenant: 'Aisha R',
-			property: 'Hybib Apartment',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Active',
-			tenant: 'Aisha R',
-			property: 'Gateway Garden',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-		{
-			status: 'Over Due',
-			tenant: 'Aisha R',
-			property: 'Hybib Apartment',
-			unit: '034',
-			leaseStart: 'April 4, 2024',
-			leaseEnd: 'April 4, 2024',
-		},
-	];
 	const statusColors: Record<string, string> = {
 		Active: 'success',
 		Expiring: 'warning',

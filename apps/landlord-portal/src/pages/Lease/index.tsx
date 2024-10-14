@@ -5,9 +5,12 @@ import Filter from '../../components/Filter/Filter';
 import { useEffect, useRef, useState } from 'react';
 import { LeaseTable } from './LeaseTable';
 import { filterOptions } from './filterOption';
+import { leases } from './data';
 
 const Lease = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const filterObjectLength = Object.keys(filter).length;
+	const allLeases = Boolean(leases?.length);
 
 	return (
 		<>
@@ -37,7 +40,7 @@ const Lease = () => {
 							getFilterResult={(options) => {
 								setFilter(options);
 							}}
-							// disable={filterObjectLength ? false : !allPropertiesLength}
+							disable={filterObjectLength ? false : !allLeases}
 						/>
 					</Stack>
 					<Stack direction={'row'}>
