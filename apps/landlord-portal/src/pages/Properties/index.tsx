@@ -61,10 +61,14 @@ const Properties = () => {
 
 	const pageCount = propertyData?.meta?.pageCount;
 
+	const itemCount = propertyData?.meta?.itemCount;
+
 	const allProperties = propertyData?.pageData;
 	const filterOptions = metaData?.filterOptions;
 
 	const filterObjectLength = Object.keys(filter).length;
+
+	const isResponseFromFilterMultiPage = filterObjectLength > 0 && pageCount > 1;
 
 	const filterObjectHasProperties = filterObjectLength > 0;
 	const filterObjectHasOnlyOrderProperty =
@@ -108,6 +112,7 @@ const Properties = () => {
 		const currentFilter = {
 			...filter,
 			...defaultParams,
+			page: 1,
 		};
 
 		// console.log(currentFilter);
@@ -207,7 +212,7 @@ const Properties = () => {
 									) : (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
-												{allProperties?.length}
+												{itemCount}
 											</Typography>{' '}
 											{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
 											Found
