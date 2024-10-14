@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import FeedbackContent from '../../components/FeedbackContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { auth } from '../../firebase';
@@ -13,7 +13,8 @@ import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { consoleLog } from '../../helpers/debug-logger';
-import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import { styles } from './style';
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 
 interface EmailVerificationProps {}
 
@@ -104,7 +105,13 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	};
 	return (
 		<Container maxWidth='lg' sx={{}}>
-			<Box sx={{ display: 'flex', justifyContent: 'center', height: '100vh' }}>
+			<Box
+				sx={{
+					display: 'flex',
+					justifyContent: 'center',
+					height: '100vh',
+				}}
+			>
 				{isPending ? (
 					<Stack
 						direction={'column'}
@@ -117,20 +124,26 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							textAlign: 'center',
 						}}
 					>
-						<DraftsOutlinedIcon fontSize='large' />
-						<Typography variant='h3'>Account Created!</Typography>
-						<Typography variant='body1'>We've sent you an email.</Typography>
-						<Typography variant='body1'>
-							Please confirm your email address by clicking on the link in your
-							inbox.
-						</Typography>
-						{/* <Button
-							variant='contained'
-							disabled={!resendEnabled}
-							onClick={resendVerificationEmail}
-						>
-							Resend Verification Email
-						</Button> */}
+						<Paper elevation={3} sx={styles.pendingPaper}>
+							<MarkEmailUnreadIcon sx={styles.envelopeIcon} />
+							<Typography sx={styles.pendingTitle}>Account Created!</Typography>
+							<Typography sx={styles.pendingSubtitle}>
+								We've sent you an email.
+							</Typography>
+							<Typography sx={styles.pendingText}>
+								Please confirm your email address by clicking on the link in
+								your inbox.
+							</Typography>
+							{user?.email && (
+								<Button
+									variant='contained'
+									disabled={!resendEnabled}
+									onClick={resendVerificationEmail}
+								>
+									Resend Verification Email
+								</Button>
+							)}
+						</Paper>
 					</Stack>
 				) : (
 					renderViewContent()
