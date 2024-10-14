@@ -10,14 +10,13 @@ import {
 	Typography,
 	SxProps,
 } from '@mui/material';
-import { find } from 'lodash';
 import { getIn } from 'formik';
 
 type ControlledSelectProps = {
 	loading?: boolean;
-	formik: any;
+	formik?: any;
 	sx?: SxProps;
-	label: string;
+	label?: string;
 	name: string;
 	disableOnChange?: boolean;
 	options: { [key: string]: string }[];
