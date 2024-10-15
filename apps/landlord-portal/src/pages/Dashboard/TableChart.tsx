@@ -4,7 +4,7 @@ import { AxisScaleConfig } from '@mui/x-charts/internals';
 import { SeriesDataType } from '../../shared/type';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { FC } from 'react';
-import { useScreenSize } from '../../helpers/useScreenSize';
+import { useScreenSize } from '../../hooks/useScreenSize';
 
 type xAxisDataType = string[];
 
