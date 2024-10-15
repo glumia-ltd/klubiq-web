@@ -47,7 +47,7 @@ const RadioCard = React.memo(
 				<Card sx={styles.card}>
 					<Grid container spacing={1}>
 						<Grid item xs={12}>
-							<Stack direction={'row'} alignItems={'end'} gap={1}>
+							<Stack direction={'row'} alignItems={'center'} gap={1}>
 								<Typography variant='h6' sx={styles.typo}>
 									{headerText}
 								</Typography>

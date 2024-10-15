@@ -27,6 +27,7 @@ type ControlledTextFieldProps = {
 	color?: string;
 	inputRef?: React.Ref<HTMLInputElement>;
 	required?: boolean;
+	autoComplete?: string;
 };
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
@@ -46,6 +47,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	sxTwo,
 	placeholder,
 	required,
+	autoComplete,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +100,7 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 				value={(props.value !== undefined && props.value) || fieldValue || ''}
 				onChange={onChange}
 				onBlur={formik?.handleBlur}
+				autoComplete={autoComplete}
 				error={
 					Boolean(prioritizeError) ||
 					(Boolean(fieldTouched) && Boolean(fieldError))

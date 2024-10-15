@@ -44,12 +44,8 @@ function App() {
 			window.addEventListener('load', () => {
 				navigator.serviceWorker
 					.register('/service-worker.js')
-					.then((registration) => {
+					.then(() => {
 						initDB();
-						consoleLog(
-							'ServiceWorker registration successful with scope: ',
-							registration.scope,
-						);
 					})
 					.catch((error) => {
 						consoleLog('ServiceWorker registration failed: ', error);

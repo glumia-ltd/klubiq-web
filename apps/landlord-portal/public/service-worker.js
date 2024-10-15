@@ -19,7 +19,6 @@ self.addEventListener('fetch', (event) => {
 		if (cachedResponse) {
 			return cachedResponse;
 		} else {
-			console.log('Headers', event.request.headers);
 			const fetchResponse = await fetch(event.request.url);
 			const responseCopy = fetchResponse.clone();
 			cache.put(event.request.url, responseCopy);
@@ -32,7 +31,6 @@ self.addEventListener('fetch', (event) => {
 		ALLOWED_ORIGINS.includes(eventOrigin) &&
 		PUBLIC_CACHED_PATHS.includes(path)
 	) {
-		console.log('PATH', path);
 		event.respondWith(returnPublicCachedResponse());
 	}
 });
