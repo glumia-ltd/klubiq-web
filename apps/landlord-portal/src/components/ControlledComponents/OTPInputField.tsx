@@ -187,6 +187,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 									onPaste: (event) => handlePaste(event, index),
 									onKeyPress: (event) => handleKeyPress(event),
 									value: value[index] ?? '',
+									autoComplete: 'one-time-code',
 								},
 							}}
 						/>
