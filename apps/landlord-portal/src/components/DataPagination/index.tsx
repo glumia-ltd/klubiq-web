@@ -1,21 +1,21 @@
 import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 type PaginationType = {
 	getCurrentPage?: (value?: any) => void;
 	getItemsPerPageCount?: (value?: any) => void;
 	pageCount?: number;
+	currentPage?: number;
 };
 
 export const DataPagination: FC<PaginationType> = ({
 	getCurrentPage,
 	getItemsPerPageCount,
 	pageCount,
+	currentPage,
 }) => {
-	// const [itemsPerPage, _] = useState(20);
-
 	const handlePaginationChange = (value: any) => {
 		getCurrentPage && getCurrentPage(value);
 	};
@@ -33,11 +33,14 @@ export const DataPagination: FC<PaginationType> = ({
 		>
 			<Pagination
 				count={pageCount}
+				page={currentPage}
 				shape='rounded'
 				variant='outlined'
 				showFirstButton
 				showLastButton
-				onChange={(_, pageNumber) => handlePaginationChange(pageNumber)}
+				onChange={(_, pageNumber) => {
+					handlePaginationChange(pageNumber);
+				}}
 			/>
 
 			<Box width={{ xs: '35%', sm: '15%', lg: '10%' }}>
@@ -46,13 +49,13 @@ export const DataPagination: FC<PaginationType> = ({
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
-						defaultValue={20}
+						defaultValue={24}
 						label='Properties per page'
 						onChange={handleItemsPerPageChange}
 					>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={20}>20</MenuItem>
-						<MenuItem value={30}>30</MenuItem>
+						<MenuItem value={12}>12</MenuItem>
+						<MenuItem value={24}>24</MenuItem>
+						<MenuItem value={36}>36</MenuItem>
 					</Select>
 				</FormControl>
 			</Box>

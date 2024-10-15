@@ -1,4 +1,4 @@
-import { Key, useEffect, useRef, useState } from 'react';
+import { Key, useCallback, useEffect, useRef, useState } from 'react';
 
 import {
 	Stack,
@@ -33,9 +33,10 @@ import { DataPagination } from '../../components/DataPagination';
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
+	const [currentPage, setCurrentPage] = useState(1);
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
-		take: 20,
+		take: 24,
 		sortBy: 'name',
 	});
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
@@ -68,8 +69,6 @@ const Properties = () => {
 
 	const filterObjectLength = Object.keys(filter).length;
 
-	const isResponseFromFilterMultiPage = filterObjectLength > 0 && pageCount > 1;
-
 	const filterObjectHasProperties = filterObjectLength > 0;
 	const filterObjectHasOnlyOrderProperty =
 		filterObjectHasProperties &&
@@ -100,28 +99,29 @@ const Properties = () => {
 		}
 	}, []);
 
-	const getCurrentPage = (value: any) => {
-		setDefaultParams({ ...defaultParams, page: value });
-	};
+	const getCurrentPage = useCallback((value: any) => {
+		setCurrentPage(value);
+
+		setDefaultParams((prev) => ({ ...prev, page: value }));
+	}, []);
 
 	const getItemsPerPageCount = (value: any) => {
-		setDefaultParams({ ...defaultParams, take: value });
+		setCurrentPage(1);
+		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
 	useEffect(() => {
 		const currentFilter = {
 			...filter,
 			...defaultParams,
-			page: 1,
 		};
 
-		// console.log(currentFilter);
-		// console.log({
-		// 	...filter,
-		// 	...defaultParams,
-		// });
 		dispatch(setCurrentFilter({ currentFilter }));
 	}, [defaultParams, dispatch, filter]);
+
+	useEffect(() => {
+		getCurrentPage(1);
+	}, [filter, getCurrentPage]);
 
 	return (
 		<>
@@ -254,6 +254,7 @@ const Properties = () => {
 							getCurrentPage={getCurrentPage}
 							getItemsPerPageCount={getItemsPerPageCount}
 							pageCount={pageCount}
+							currentPage={currentPage}
 						/>
 					</Stack>
 				</Container>
