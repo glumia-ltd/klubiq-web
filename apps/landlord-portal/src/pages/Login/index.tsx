@@ -248,7 +248,7 @@ const Login = () => {
 										name='email'
 										label='Email'
 										type='email'
-										autoComplete='email'
+										autoComplete='username'
 										placeholder='Enter your email address'
 										formik={formik}
 										inputProps={{
