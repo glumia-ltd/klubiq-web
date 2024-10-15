@@ -3,13 +3,20 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { styles } from './style';
 
 interface MFAPromptProps {
 	open: boolean;
+	onOptOutClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 	onClose: React.MouseEventHandler<HTMLButtonElement> | undefined;
 	onMFASetupClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
-const MFAPrompt = ({ open, onClose, onMFASetupClick }: MFAPromptProps) => {
+const MFAPrompt = ({
+	open,
+	onClose,
+	onMFASetupClick,
+	onOptOutClick,
+}: MFAPromptProps) => {
 	return (
 		<Dialog open={open}>
 			<IconButton
@@ -33,14 +40,21 @@ const MFAPrompt = ({ open, onClose, onMFASetupClick }: MFAPromptProps) => {
 				}}
 			>
 				{/* Add Icon here later */}
-				<Typography variant='h4'>ENABLE TWO-FACTOR AUTHENTICATION</Typography>
+				<Typography variant='h4' sx={styles.twoFaStyles.title}>
+					ENABLE TWO-FACTOR AUTHENTICATION
+				</Typography>
 				<Typography variant='body2'>
 					You haven't set up Two-Factor Authentication (2FA) yet. To better
 					secure your account and protect your data, please set it up.
 				</Typography>
-				<Button variant='contained' onClick={onMFASetupClick}>
-					Enable
-				</Button>
+				<Stack direction={'row'} spacing={1}>
+					<Button variant='outlined' onClick={onOptOutClick}>
+						Opt Out
+					</Button>
+					<Button variant='contained' onClick={onMFASetupClick}>
+						Enable
+					</Button>
+				</Stack>
 			</Stack>
 		</Dialog>
 	);
