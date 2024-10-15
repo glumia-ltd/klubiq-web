@@ -207,7 +207,7 @@ const Properties = () => {
 								}
 							</Grid>
 							<Grid xs={12} mb={3}>
-								{showFilterResultOnlyWhenFiltered ? (
+								{showFilterResultOnlyWhenFiltered || searchText ? (
 									isPropertyFetching ? (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
