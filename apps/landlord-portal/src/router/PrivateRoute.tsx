@@ -2,8 +2,12 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../store/AuthStore/AuthSlice';
 import { firebaseResponseObject } from '../helpers/FirebaseResponse';
+import useAuth from '../hooks/useAuth';
+import MFAPrompt from '../components/Dialogs/MfaPrompts';
+import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimoutContext';
 
 const PrivateRoute = () => {
+	const { showMFAPrompt, goToMFASetup, setShowMFAPrompt } = useAuth();
 	const { token } = useSelector(getAuthState);
 
 	const storedSession = sessionStorage.getItem(
@@ -14,7 +18,24 @@ const PrivateRoute = () => {
 
 	const userToken = token || storedSessionObject?.stsTokenManager?.accessToken;
 
-	return userToken ? <Outlet /> : <Navigate to={'/login'} replace={true} />;
+	return userToken ? (
+		<>
+			<SessionTimeoutProvider>
+				{showMFAPrompt && (
+					<MFAPrompt
+						open={showMFAPrompt}
+						onClose={() => {
+							setShowMFAPrompt(false);
+						}}
+						onMFASetupClick={goToMFASetup}
+					></MFAPrompt>
+				)}
+				<Outlet />
+			</SessionTimeoutProvider>
+		</>
+	) : (
+		<Navigate to={'/login'} replace={true} />
+	);
 };
 
 export default PrivateRoute;

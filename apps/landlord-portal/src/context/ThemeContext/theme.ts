@@ -328,6 +328,7 @@ export const LightTheme: Theme = createTheme({
 			// fontSize: '1rem',
 			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
+			fontSize: '1rem',
 		},
 		button: {
 			textTransform: 'none',

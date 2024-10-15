@@ -12,7 +12,8 @@ main{
 .toolbar{
    position: fixed;
    z-index: 2;
-  background-color: mat.get-theme-color(base.$darkTheme, neutral, 95);
+  background-color: blue($color: #000000)
+  // mat.get-theme-color(base.$darkTheme, neutral, 95);
 }
 .container {
   //max-width: 250px;

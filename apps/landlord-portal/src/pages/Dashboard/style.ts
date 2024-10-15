@@ -5,79 +5,119 @@ export const styles = {
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 	},
 	cardStyle: {
-		height: '183px',
-		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
+		height: { xs: '185px', sm: '185px', md: '210px' },
+		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
+		paddingY: { xs: '24px', sm: '24px', md: '32px', lg: '32px', xl: '32px' },
 		borderRadius: '20px',
-		alignItems: 'center',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
 	},
 	cardStyleTwo: {
-		height: '183px',
-		padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
+		height: { xs: '185px', sm: '185px', md: '210px' },
+		//padding: { xs: '24px', sm: '25px', md: '15px', lg: '24px' },
+		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
+		paddingY: { xs: '24px', sm: '24px', md: '32px', lg: '32px', xl: '32px' },
 		borderRadius: '20px',
-		alignItems: 'center',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
 	},
 	cardStyleThree: {
-		height: '207px',
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		borderRadius: '20px',
-		padding: { xs: '1rem', sm: '10px', md: '20px', lg: '24px' },
+		//padding: { xs: '1rem', sm: '10px', md: '20px', lg: '24px' },
+		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
+		paddingY: { xs: '24px', sm: '24px', md: '32px', lg: '32px', xl: '32px' },
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
 	},
 	cardStyleFour: {
-		height: { sm: '183px', md: '207px' },
+		height: { xs: '185px', sm: '185px', md: '210px' },
 		textAlign: 'left',
-		padding: { xs: '24px', sm: '10px', md: '20px', lg: '24px' },
+		//padding: { xs: '24px', sm: '10px', md: '20px', lg: '24px' },
+		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
+		paddingY: { xs: '16px', sm: '16px', md: '24px', lg: '24px', xl: '24px' },
 		borderRadius: '20px',
+		alignItems: 'flex-start',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'space-between',
 	},
 	cardStyleFive: {
 		width: '100%',
-		padding: { xs: '2.5rem', sm: '10px', md: '20px', lg: '24px' },
+		//padding: { xs: '2.5rem', sm: '10px', md: '20px', lg: '24px' },
+		paddingX: { xs: '16px', sm: '16px', md: '16px', lg: '16px', xl: '24px' },
+		paddingY: { xs: '24px', sm: '24px', md: '32px', lg: '32px', xl: '32px' },
 		borderRadius: '20px',
 		overflow: 'auto',
-		height: { xs: '400px', sm: '100%', md: '400px', lg: '400px ' },
+		height: { xs: '400px', sm: '100%' },
 	},
-
-	boxStyle: {
+	selfFlex: {
 		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	boxStyle: {
+		//display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',
+		width: '100%',
 	},
 
 	typoStyle: {
 		fontSize: '14px',
-		lineHeight: '20px',
+		//lineHeight: '44px',
 		fontWeight: 500,
-		mb: { sm: '0.5rem', md: '0.5rem', lg: '1rem' },
+		//mb: { sm: '0.5rem', md: '0.5rem', lg: '1rem' },
 		textAlign: 'left',
 	},
-
+	leaseMetricsTextStyle: {
+		fontSize: '12px',
+		fontWeight: 500,
+		textAlign: 'left',
+	},
+	guageBoxStyle: {
+		width: '100%',
+	},
 	valueTextStyle: {
 		fontSize: {
+			xs: '24px',
 			sm: '24px',
-			md: '14px',
+			md: '24px',
 			lg: '24px',
 			xl: '40px',
 		},
-		fontWeight: 800,
-		lineHeight: '44px',
+		//fontWeight: 800,
+		//lineHeight: '44px',
 	},
 	skeletonCon: {
 		height: '100vh',
 	},
 	revenueTextStyle: {
 		fontSize: {
+			xs: '24px',
 			sm: '24px',
-			md: '14px',
+			md: '24px',
 			lg: '24px',
 			xl: '40px',
 		},
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 	},
 
 	changeArrowBoxStyle: {
 		display: 'flex',
-		textAlign: 'center',
-		marginTop: { xs: '35px', md: '28px', lg: '35px' },
+		textAlign: 'left',
+		//marginTop: { xs: '35px', md: '28px', lg: '35px' },
 		alignItems: 'center',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		width: '100%',
 	},
 	icons: {
 		marginRight: '15px',
@@ -104,15 +144,29 @@ export const styles = {
 
 	overdueTextStyle: {
 		fontSize: {
-			xs: '24px',
-			sm: '24px',
-			md: '14px',
+			xs: '14px',
+			sm: '14px',
+			md: '16px',
 			lg: '24px',
 			xl: '40px',
 		},
 
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
+		alignItems: 'center',
+	},
+
+	leaseMetricsValues: {
+		fontSize: {
+			xs: '20px',
+			sm: '24px',
+			md: '24px',
+			lg: '24px',
+			xl: '32px',
+		},
+
+		fontWeight: 800,
+		//lineHeight: '44px',
 		alignItems: 'center',
 	},
 
@@ -120,7 +174,7 @@ export const styles = {
 		fontSize: '14px',
 		lineHeight: '20px',
 		fontWeight: 400,
-		mt: '2rem',
+		//mt: '2rem',
 	},
 	occupancyBoxStyle: {
 		display: 'flex',
@@ -131,21 +185,24 @@ export const styles = {
 
 	occupancyTextStyle: {
 		fontSize: {
+			xs: '24px',
 			sm: '24px',
-			md: '14px',
+			md: '24px',
 			lg: '24px',
 			xl: '40px',
 		},
 		fontWeight: 800,
-		lineHeight: '44px',
+		//lineHeight: '44px',
 		mr: '30px',
 	},
 
 	totalExpensesStyle: {
-		display: 'flex',
+		// display: 'flex',
 		justifyContent: 'space-between',
 		textAlign: 'left',
 		marginTop: '12px',
+		width: '100%',
+		// flexDirection: 'row',
 	},
 
 	totalRevenueStyle: {

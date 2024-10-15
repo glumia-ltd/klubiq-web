@@ -32,6 +32,7 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 			<Grid container spacing={2}>
 				<Grid item xs={12}>
 					<RadioCard
+						required
 						headerText='UNIT TYPE'
 						name='unitType'
 						options={options}
@@ -41,6 +42,7 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 				</Grid>
 				<Grid item xs={12}>
 					<RadioCard
+						required
 						headerText='PROPERTY purpose'
 						name='purposeId'
 						options={purposes}

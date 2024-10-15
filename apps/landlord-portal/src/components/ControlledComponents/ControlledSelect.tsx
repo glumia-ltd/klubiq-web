@@ -24,6 +24,7 @@ type ControlledSelectProps = {
 	[key: string]: any;
 	color?: string;
 	placeholder?: string;
+	required?: boolean;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -35,7 +36,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	options,
 	inFieldLabel,
 	color,
-
+	required,
 	...props
 }) => {
 	const fieldValue = getIn(formik.values, name);
@@ -52,9 +53,15 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'} color={color}>
-					{label}
-				</Typography>
+				<Stack direction={'row'} alignItems={'end'} gap={1}>
+					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+						{label}
+					</Typography>
+
+					<Typography fontWeight={100} fontSize={'12px'}>
+						{required ? <i>(required)</i> : ''}
+					</Typography>
+				</Stack>
 			)}
 			<FormControl
 				sx={{ minWidth: 230 }}

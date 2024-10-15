@@ -2,7 +2,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-import { PropertyDataType } from '../../shared/type';
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
@@ -30,6 +29,22 @@ export const propertyApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+
+		addProperty: builder.mutation({
+			query: (body) => ({
+				url: propertiesEndpoints.addProperty(),
+				method: 'POST',
+				body,
+			}),
+		}),
+
+		getSignedUrl: builder.mutation({
+			query: (body) => ({
+				url: propertiesEndpoints.getSignedUrl(),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -46,4 +61,6 @@ export const {
 	useGetPropertiesQuery,
 	useGetPropertiesMetaDataQuery,
 	useGetSinglePropertyByUUIDQuery,
+	useAddPropertyMutation,
+	useGetSignedUrlMutation,
 } = propertyApiSlice;

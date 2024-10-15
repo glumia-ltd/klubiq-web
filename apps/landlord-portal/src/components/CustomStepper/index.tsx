@@ -90,7 +90,7 @@ export const CustomStepper: FC<{
 			sx={styles.stepper}
 		>
 			{Object.keys(routes).map((label) => {
-				const icon = routes[label] && routes[label].icon;
+				const icon = routes[label] && routes[label]?.icon;
 
 				return (
 					<Step key={label}>

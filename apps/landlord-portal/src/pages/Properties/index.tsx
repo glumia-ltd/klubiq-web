@@ -29,7 +29,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 
-const DEFAULT_PARAMS = { page: 1, take: 10, sortBy: 'name' };
+const DEFAULT_PARAMS = { page: 1, take: 20, sortBy: 'name' };
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
@@ -50,8 +50,8 @@ const Properties = () => {
 
 	const {
 		data: metaData,
-		isLoading: isMetaDataLoading,
-		isFetching: isMetaDataFetching,
+		// isLoading: isMetaDataLoading,
+		// isFetching: isMetaDataFetching,
 	} = useGetPropertiesMetaDataQuery();
 
 	const allProperties = propertyData?.pageData;
@@ -77,7 +77,7 @@ const Properties = () => {
 	};
 
 	const handleAddProperties = () => {
-		navigate('/properties/property-category');
+		navigate('/properties/create/property-category');
 	};
 
 	useEffect(() => {
@@ -204,7 +204,7 @@ const Properties = () => {
 										<Grid
 											xs={12}
 											sm={layout === 'row' ? 12 : 6}
-											md={layout === 'row' ? 12 : 4}
+											md={layout === 'row' ? 12 : 6}
 											lg={layout === 'row' ? 12 : 4}
 											xl={layout === 'row' ? 12 : 3}
 											key={index}

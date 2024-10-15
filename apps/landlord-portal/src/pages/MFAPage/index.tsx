@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import appstorelogo from '../../assets/images/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg';
 import playstorelogo from '../../assets/images/GetItOnGooglePlay_Badge_Web_color_English.png';
 import {
@@ -53,6 +52,8 @@ type AuthValuesType = {
 	email: string;
 };
 const MFASetUp = () => {
+	const [searchParams] = useSearchParams();
+	const continueUrl = searchParams.get('continueUrl');
 	const dispatch = useDispatch();
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const invocationCount = useRef(0);
@@ -110,7 +111,7 @@ const MFASetUp = () => {
 			setRAuthenticationRequired(false);
 			setError('');
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			setOpenDialog(true);
 			setError('Unable to re-authenticate. Please try again.');
 			setLoading(false);
@@ -156,14 +157,21 @@ const MFASetUp = () => {
 				notify('Successfully enrolled in OTP Authentication.', 'success');
 				navigate('/dashboard', { replace: true });
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 				setError('Unable to enroll in OTP Authentication.');
 			}
 		} else {
 			setError('Please enter a valid OTP. OTP must be 6 digits.');
 		}
 	};
+	const continueToUrl = () => {
+		if (continueUrl) {
+			navigate(continueUrl, { replace: true });
+		}
+	};
 	const routeToLogin = () => {
+		auth.signOut();
+		sessionStorage.clear();
 		navigate('/login', { replace: true });
 	};
 	const routeToForgotPassword = () => {
@@ -319,8 +327,11 @@ const MFASetUp = () => {
 								</Box>
 							)}
 							{!initializing && (
-								<Button onClick={routeToLogin} startIcon={<ArrowBackIos />}>
-									Back to login
+								<Button
+									onClick={continueUrl ? continueToUrl : routeToLogin}
+									startIcon={<ArrowBackIos />}
+								>
+									{continueUrl ? 'Return to site' : 'Back to login'}
 								</Button>
 							)}
 						</Stack>
@@ -477,7 +488,12 @@ const MFASetUp = () => {
 													}}
 													spacing={1}
 												>
-													<OTPInput value={otp} onChange={setOtp} length={6} />
+													<OTPInput
+														value={otp}
+														onChange={setOtp}
+														length={6}
+														onEnterKeyPress={activateTOTP}
+													/>
 													{error && (
 														<Typography color='error'>{error}</Typography>
 													)}
@@ -494,7 +510,7 @@ const MFASetUp = () => {
 										<Button
 											sx={styles.cancelEnrollStyle}
 											variant='contained'
-											onClick={routeToLogin}
+											onClick={continueUrl ? continueToUrl : routeToLogin}
 										>
 											Cancel
 										</Button>

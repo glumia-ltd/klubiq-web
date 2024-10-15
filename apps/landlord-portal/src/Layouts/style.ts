@@ -1,8 +1,6 @@
+import cityillustration from '../assets/images/undraw_city_life_gnpr-removebg-preview.png';
 const style = {
 	card: {
-		// border: '1px solid red',
-		// backgroundColor: 'primary.main',
-		// color: 'white',
 		width: '100%',
 		maxWidth: '810px',
 	},
@@ -11,7 +9,6 @@ const style = {
 		color: 'white',
 		width: '100%',
 		alignItems: 'center',
-		// maxWidth: '810px',
 		height: '100px',
 		borderRadius: '0px, 0px, 3px, 0px',
 	},
@@ -24,6 +21,13 @@ const style = {
 		marginTop: '31px',
 		marginLeft: '32px',
 		gap: '416px',
+	},
+	background: {
+		background: `linear-gradient(#6699CC, #1F305E), url(${cityillustration})`,
+		backgroundBlendMode: 'overlay',
+		backgroundSize: 'fixed',
+		backgroundRepeat: 'no-repeat',
+		backgroundPosition: 'bottom',
 	},
 	leaseHeader: {
 		fontSize: { xs: '13px', sm: '18px', md: '20px', lg: '24px' },

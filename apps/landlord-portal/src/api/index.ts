@@ -3,9 +3,13 @@ import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 
+const baseURL =
+	import.meta.env.VITE_NODE_ENV !== 'local'
+		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
+		: '/api';
 const api = axios.create({
 	baseURL:
-		import.meta.env.NODE_ENV !== 'local'
+		import.meta.env.VITE_NODE_ENV !== 'local'
 			? `${import.meta.env.VITE_BASE_URL_DEV}/api`
 			: '/api',
 });
@@ -22,7 +26,7 @@ const getSessionToken = () => {
 	);
 	return storedSession && JSON.parse(storedSession);
 };
-
+const accessToken = getSessionToken()?.stsTokenManager?.accessToken;
 // request config
 
 function AxiosConfig(config: any) {
@@ -100,4 +104,4 @@ api.interceptors.response.use(
 	},
 );
 
-export { api };
+export { api, baseURL, accessToken };

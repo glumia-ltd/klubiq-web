@@ -1,11 +1,22 @@
-import { Button, Container, Grid, Typography } from '@mui/material';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+	Button,
+	Container,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	Grid,
+	Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import styles from './AddPropertiesStyle';
 import { CustomStepper } from '../../components/CustomStepper';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RouteObjectType } from '../../shared/type';
+import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 
@@ -14,9 +25,10 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../components/Icons/CustomIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
-	getAddPropertyState,
+	//getAddPropertyState,
+	//getAddPropertyState,
 	saveAddPropertyFormDetail,
 } from '../../store/AddPropertyStore/AddPropertySlice';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
@@ -24,18 +36,52 @@ import PropertyCategory from '../../components/PropertiesCategory';
 import PropertiesDetails from '../../components/PropertiesDetails';
 import UnitType from '../../components/UnitType';
 import { AddPropertyType } from '../../shared/type';
+import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
+import { omitBy } from 'lodash';
+import { clearData } from '../../services/indexedDb';
+import { consoleLog } from '../../helpers/debug-logger';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
 	description: yup.string(),
 	typeId: yup.string().required('Select an option'),
-	images: yup
-		.array()
-		.min(1, 'You need to upload at least one image')
-		.max(4, 'You can upload a maximum of 4 images')
-		.required('Images are required'),
+	categoryId: yup.string().required('Select an option'),
+	images: yup.array(),
 	unitType: yup.string().required('This field is required'),
 	purposeId: yup.number().required('This field is required'),
+
+	address: yup.object({
+		addressLine1: yup.string().required('Address Line 1 is required'),
+		addressLine2: yup.string(),
+		city: yup.string(),
+		state: yup.string(),
+		postalCode: yup.string(),
+		country: yup.string().required('Country is required'),
+		isManualAddress: yup.boolean(),
+	}),
+
+	units: yup.array().of(
+		yup.object({
+			id: yup.number().nullable(),
+			unitNumber: yup.string().when('unitType', {
+				is: 'multi',
+				then: (schema) => schema.required('Unit number is required'),
+			}),
+			rentAmount: yup.number().nullable(),
+			floor: yup.number().nullable(),
+			bedrooms: yup.number().nullable(),
+			bathrooms: yup.number().nullable(),
+			toilets: yup.number().nullable(),
+			area: yup.object({
+				value: yup.number().nullable(),
+				unit: yup.string().required('Area unit is required'),
+			}),
+			status: yup.string(),
+			rooms: yup.number().nullable(),
+			offices: yup.number().nullable(),
+			// amenities: yup.array().of(yup.string()),
+		}),
+	),
 });
 
 const routeObject: RouteObjectType = {
@@ -62,28 +108,44 @@ type PayloadType = {
 	purposeId: number | null;
 	isMultiUnit: boolean;
 };
-
 interface IunitType extends AddPropertyType {
 	unitType?: string;
+	isMultiUnit?: boolean;
+	categoryMetaData: CategoryMetaDataType | null;
+	propertyImages?: [];
 }
 
 export const AddPropertiesLayout = () => {
 	const [activeStep, setActiveStep] = useState(0);
+	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+	const [informationDialog, setInformationDialog] = useState(false);
 
 	const navigate = useNavigate();
 
 	const location = useLocation();
 
+	const LOCATION_IS_PROPERTY_CATEGORY =
+		location.pathname.includes('property-category');
+	const LOCATION_IS_PROPERTY_DETAILS =
+		location.pathname.includes('property-details');
+	const LOCATION_IS_UNIT_TYPE = location.pathname.includes('unit-type');
+
 	const dispatch = useDispatch();
 
-	const currentLocation = location.pathname.split('/')[2] || '';
+	const [
+		addProperty,
+		// { isLoading, isSuccess, isError, error }
+	] = useAddPropertyMutation();
+
+	const currentLocation = location.pathname.split('/')[3] || '';
 
 	const onSubmit = async (values: any) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 	};
 
 	const formik = useFormik<IunitType>({
 		initialValues: {
+			categoryMetaData: null,
 			newAmenity: '',
 			customAmenities: [],
 			categoryId: null,
@@ -91,7 +153,9 @@ export const AddPropertiesLayout = () => {
 			name: '',
 			typeId: '',
 			images: [],
+			propertyImages: [],
 			unitType: '',
+			isMultiUnit: false,
 			purposeId: null,
 			address: {
 				addressLine1: '',
@@ -122,7 +186,7 @@ export const AddPropertiesLayout = () => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: [],
+					amenities: null,
 				},
 			],
 		},
@@ -131,16 +195,8 @@ export const AddPropertiesLayout = () => {
 	});
 
 	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-		// event.preventDefault();
-		// event.returnValue = '';
-		// dispatch(
-		// 	openSnackbar({
-		// 		message: 'Are you sure you want to leave this page?',
-		// 		severity: 'info',
-		// 		isOpen: true,
-		// 	}),
-		// );
-		// window.alert('Are you sure you want to leave this page???');
+		event.preventDefault();
+		event.returnValue = '';
 	};
 
 	useEffect(() => {
@@ -163,7 +219,7 @@ export const AddPropertiesLayout = () => {
 
 		if (!routeKey) return;
 
-		const route = `/properties/${routeObject[routeKey]?.label}`;
+		const route = `/properties/create/${routeObject[routeKey]?.label}`;
 
 		navigate(route as string);
 	};
@@ -184,36 +240,6 @@ export const AddPropertiesLayout = () => {
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) return;
 
-		if (
-			location.pathname.includes('property-category') &&
-			!formik.values.categoryId
-		) {
-			dispatch(
-				openSnackbar({
-					message: 'Please select a property category before you proceed!',
-					severity: 'info',
-					isOpen: true,
-				}),
-			);
-
-			return;
-		} else if (
-			location.pathname.includes('property-details') &&
-			!formik.values.typeId &&
-			!formik.values.name
-		) {
-			dispatch(
-				openSnackbar({
-					message:
-						'Please ensure all the fields are properly filled before you proceed!',
-					severity: 'info',
-					isOpen: true,
-				}),
-			);
-
-			return;
-		}
-
 		saveFormikDataInStore();
 
 		setActiveStep((prev) => prev + 1);
@@ -232,16 +258,236 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleAllPropertiesClick = () => {
+		const { categoryId, purposeId, propertyImages } = formik.values;
+
+		if (
+			Object.keys(formik.touched).length > 0 ||
+			categoryId ||
+			purposeId ||
+			!!propertyImages?.length
+		) {
+			setInformationDialog(true);
+		} else {
+			navigate('/properties');
+		}
+	};
+
+	const handleDialogLeave = () => {
 		navigate('/properties');
 	};
 
 	const renderBasedOnPath = () => {
-		if (location.pathname.includes('property-category')) {
+		if (LOCATION_IS_PROPERTY_CATEGORY) {
 			return <PropertyCategory formik={formik} />;
-		} else if (location.pathname.includes('property-details')) {
+		} else if (LOCATION_IS_PROPERTY_DETAILS) {
 			return <PropertiesDetails formik={formik} />;
-		} else if (location.pathname.includes('unit-type')) {
+		} else if (LOCATION_IS_UNIT_TYPE) {
 			return <UnitType formik={formik} />;
+		}
+	};
+
+	useEffect(() => {
+		// check to see if all the units have values for their rooms and unitNumber where necessary.
+		const checkIfUnitsAreFilled = (
+			name: 'bedrooms' | 'offices' | 'rooms' | 'unitNumber',
+		) => {
+			return (
+				formik.values.units.filter((unit) => !!unit[name]).length ===
+				formik.values.units.length
+			);
+		};
+
+		if (LOCATION_IS_PROPERTY_CATEGORY) {
+			if (formik.values.categoryId) {
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		} else if (LOCATION_IS_PROPERTY_DETAILS) {
+			if (formik.values.typeId && formik.values.name) {
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		} else if (LOCATION_IS_UNIT_TYPE) {
+			const CHECKBEDROOMSINUNITS = checkIfUnitsAreFilled('bedrooms');
+
+			const CHECKOFFICESINUNITS = checkIfUnitsAreFilled('offices');
+
+			const CHECKROOMSINUNITS = checkIfUnitsAreFilled('rooms');
+
+			const CHECKUNITNUMBERS = checkIfUnitsAreFilled('unitNumber');
+
+			const CHECKFLOORPLANS =
+				formik.values.units.filter((unit) => !!unit.area.value).length ===
+				formik.values.units.length;
+
+			if (
+				formik.values.unitType &&
+				formik.values.address.addressLine1 &&
+				formik.values.address.country &&
+				CHECKFLOORPLANS &&
+				(CHECKBEDROOMSINUNITS || CHECKOFFICESINUNITS || CHECKROOMSINUNITS)
+			) {
+				if (formik.values.unitType === 'multi' && !CHECKUNITNUMBERS) {
+					setIsNextButtonDisabled(true);
+				}
+				setIsNextButtonDisabled(false);
+			} else {
+				setIsNextButtonDisabled(true);
+			}
+		}
+	}, [
+		LOCATION_IS_PROPERTY_CATEGORY,
+		LOCATION_IS_PROPERTY_DETAILS,
+		LOCATION_IS_UNIT_TYPE,
+		formik.values,
+		formik.values.address.addressLine1,
+		formik.values.address.country,
+		formik.values.categoryId,
+		formik.values.name,
+		formik.values.typeId,
+		formik.values.unitType,
+		formik.values.units,
+	]);
+
+	const formatUnitBasedOnCategory = (
+		formikValues: any,
+		room1: string,
+		room2: string,
+	) => {
+		const units = [...formikValues.units];
+
+		const allUnits = units.map((unit: any) => {
+			if (unit && typeof unit === 'object') {
+				const newUnit = { ...unit };
+
+				delete newUnit[room1];
+				delete newUnit[room2];
+
+				return newUnit;
+			}
+		});
+
+		formikValues.units = allUnits;
+	};
+
+	const handleAddProperty = async () => {
+		formik.handleSubmit();
+
+		const errors = await formik.validateForm();
+
+		if (Object.keys(errors).length > 0) {
+			dispatch(
+				openSnackbar({
+					message:
+						'Please ensure all the fields are properly filled before you submit!',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+			return;
+		}
+
+		saveFormikDataInStore();
+
+		const formikValues: any = {
+			...formik.values,
+			isMultiUnit: formik.values.unitType === 'multi',
+		};
+
+		//check to see if more the property has multiple units;
+
+		const unitLength = formikValues.units.length > 1;
+
+		if (!unitLength && formikValues.isMultiUnit) {
+			formikValues.isMultiUnit = false;
+		}
+
+		if (formikValues.categoryMetaData?.hasBedrooms) {
+			formatUnitBasedOnCategory(formikValues, 'offices', 'rooms');
+		}
+
+		if (formikValues.categoryMetaData?.hasOffices) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'rooms');
+		}
+
+		if (formikValues.categoryMetaData?.hasRooms) {
+			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'offices');
+		}
+
+		//clean up form state object
+
+		const updatedFormikValues = omitBy(formikValues, (value) => {
+			return (
+				value === undefined ||
+				value === null ||
+				value === '' ||
+				(typeof value === 'object' && value?.length === 0)
+			);
+		});
+
+		if (updatedFormikValues?.purposeId) {
+			updatedFormikValues.purposeId = Number(updatedFormikValues.purposeId);
+		}
+
+		if (updatedFormikValues?.newAmenity) {
+			delete updatedFormikValues.newAmenity;
+		}
+
+		if (updatedFormikValues.unitType) {
+			delete updatedFormikValues.unitType;
+		}
+
+		// clean up address field
+
+		const updatedAddress = omitBy(
+			updatedFormikValues?.address,
+			(value) => value === undefined || value === null || value === '',
+		);
+
+		if (updatedAddress.longitude && updatedAddress.latitude) {
+			updatedAddress.longitude = Number(updatedAddress.longitude);
+			updatedAddress.latitude = Number(updatedAddress.latitude);
+		}
+
+		updatedFormikValues.address = updatedAddress;
+
+		// clean up unit field;
+
+		const updatedUnits = updatedFormikValues?.units?.map((unit: any) => {
+			return omitBy(unit, (value) => {
+				return (
+					value === undefined ||
+					value === null ||
+					value === '' ||
+					(typeof value === 'object' && value.length === 0)
+				);
+			});
+		});
+
+		updatedFormikValues.units = updatedUnits;
+		delete updatedFormikValues.categoryMetaData;
+		delete updatedFormikValues.propertyImages;
+
+		try {
+			delete formik.values.propertyImages;
+			const payload = { ...updatedFormikValues };
+			await addProperty(payload).unwrap();
+			clearData('new-property');
+
+			dispatch(
+				openSnackbar({
+					message: 'Property Successfully created',
+					severity: 'info',
+					isOpen: true,
+				}),
+			);
+
+			navigate('/properties');
+		} catch (e) {
+			consoleLog(e);
+			//clearData('new-property');
 		}
 	};
 
@@ -261,9 +507,9 @@ export const AddPropertiesLayout = () => {
 							</Typography>
 						</Grid>
 
-						<Button variant='text' sx={styles.button}>
+						{/* <Button variant='text' sx={styles.button}>
 							<Typography>Save draft</Typography>
-						</Button>
+						</Button> */}
 					</Grid>
 
 					<Grid sx={styles.stepperContainer}>
@@ -289,7 +535,9 @@ export const AddPropertiesLayout = () => {
 								variant='contained'
 								sx={styles.directionButton}
 								onClick={handleForwardButton}
-								disabled={activeStep === steps.length - 1}
+								disabled={
+									isNextButtonDisabled || activeStep === steps.length - 1
+								}
 							>
 								<Typography>Next</Typography>
 								<RightArrowIcon />
@@ -301,14 +549,37 @@ export const AddPropertiesLayout = () => {
 						<Button
 							variant='contained'
 							sx={styles.directionButton}
-							// onClick={handleForwardButton}
-							// disabled={activeStep === steps.length - 1}
+							onClick={handleAddProperty}
+							disabled={isNextButtonDisabled}
 						>
 							<Typography>Save</Typography>
 						</Button>
 					)}
 				</Grid>
 			</>
+
+			<Dialog
+				open={informationDialog}
+				onClose={() => setInformationDialog(false)}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+			>
+				<DialogTitle id='alert-dialog-title'>
+					Are you sure you want to leave?
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText id='alert-dialog-description'>
+						You have unsaved changes. If you leave now, your changes will be
+						lost.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setInformationDialog(false)}>Cancel</Button>
+					<Button onClick={handleDialogLeave} autoFocus>
+						Leave Without Saving
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 };

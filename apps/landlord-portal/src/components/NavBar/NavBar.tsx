@@ -13,37 +13,35 @@ import {
 	Badge,
 	Divider,
 } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
-import { startCase } from 'lodash';
+import { replace, startCase } from 'lodash';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const { toggleSidebar, sidebarOpen, drawerWidth } = useContext(Context);
+	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing } =
+		useContext(Context);
 	const [isModalOpen, setOpenModal] = useState(false);
+	const simplifyRoleName = (role: string) => {
+		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
+		return startCase(simplifiedRole);
+	};
+	// const { pathname } = useLocation();
+	// const section = pathname.split('/')[1];
 
-	const { pathname } = useLocation();
-	const section = pathname.split('/')[1];
-	const currentDrawerWidth = sidebarOpen
-		? isSmallScreen
-			? drawerWidth.smallOpen
-			: drawerWidth.largeOpen
-		: isSmallScreen
-			? drawerWidth.smallClosed
-			: drawerWidth.largeClosed;
+	const handleOpenSidebar = () => {
+		setIsclosing && setIsclosing(false);
+		toggleMobileSidebar && toggleMobileSidebar();
+	};
 
 	return (
-		<AppBar
-			position='fixed'
-			elevation={2}
-			sx={{ width: `calc(100% - ${currentDrawerWidth}px)` }}
-		>
+		<AppBar position='fixed' elevation={2} sx={{ width: '100%' }}>
 			<Toolbar
 				variant='regular'
 				sx={{
@@ -74,10 +72,10 @@ const NavBar = () => {
 							},
 						}}
 					>
-						{isSmallScreen && (
+						{isSmallScreen && !mobileSideBarOpen && (
 							<IconButton
 								// sx={{ marginRight: '1rem' }}
-								onClick={toggleSidebar}
+								onClick={handleOpenSidebar}
 								size={'large'}
 								edge='end'
 								color='inherit'
@@ -157,7 +155,7 @@ const NavBar = () => {
 						>
 							{' '}
 							{user?.firstName ?? 'Klubiq User'} <br />
-							{startCase(user?.companyRole) ?? 'Demo'}
+							{simplifyRoleName(user?.roleName || '')}
 						</Typography>
 						<IconButton
 							edge='end'

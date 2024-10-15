@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Input as BaseInput } from '@mui/base/Input';
 import { Box, styled } from '@mui/system';
+import { consoleLog } from '../../helpers/debug-logger';
 
 type OTPTextInput = {
 	separator?: React.ReactNode;
@@ -8,12 +9,14 @@ type OTPTextInput = {
 	value: string;
 	onChange: React.Dispatch<React.SetStateAction<string>>;
 	errorMessage?: string;
+	onEnterKeyPress: () => void;
 };
 const OTPInput: React.FC<OTPTextInput> = ({
 	separator,
 	length,
 	value,
 	onChange,
+	onEnterKeyPress,
 }) => {
 	const inputRefs = React.useRef<HTMLInputElement[]>(
 		new Array(length).fill(null),
@@ -81,6 +84,15 @@ const OTPInput: React.FC<OTPTextInput> = ({
 		}
 	};
 
+	const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			if (value.length === length) {
+				event.preventDefault();
+				onEnterKeyPress();
+			}
+		}
+	};
+
 	const handleChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
 		currentIndex: number,
@@ -115,6 +127,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 		event: React.MouseEvent<HTMLInputElement, MouseEvent>,
 		currentIndex: number,
 	) => {
+		consoleLog(event);
 		selectInput(currentIndex);
 	};
 
@@ -172,6 +185,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 									onChange: (event) => handleChange(event, index),
 									onClick: (event) => handleClick(event, index),
 									onPaste: (event) => handlePaste(event, index),
+									onKeyPress: (event) => handleKeyPress(event),
 									value: value[index] ?? '',
 								},
 							}}

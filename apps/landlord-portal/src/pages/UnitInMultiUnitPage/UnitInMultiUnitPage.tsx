@@ -7,10 +7,12 @@ const UnitInMultiUnitPage = () => {
 
 	const currentUUId = location.pathname.split('/')[2]!;
 
-	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
-		useGetSinglePropertyByUUIDQuery({
-			uuid: currentUUId || '',
-		});
+	const {
+		data: currentProperty,
+		//isLoading: isCurrentPropertyLoading
+	} = useGetSinglePropertyByUUIDQuery({
+		uuid: currentUUId || '',
+	});
 
 	return <UnitInMultiUnitComponent currentProperty={currentProperty} />;
 };

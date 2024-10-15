@@ -6,3 +6,7 @@ declare const KLB_FIREBASE_MESSAGINGSENDERID: string;
 declare const KLB_FIREBASE_APPID: string;
 declare const KLB_FIREBASE_MEASUREMENTID: string;
 declare const KLB_API_URL: string;
+declare const KLB_RECAPTCHA_SITE_KEY: string;
+declare const KLB_RECAPTCHA_VALIDATION_URL: string;
+declare const KLB_RECAPTCHA_DEBUG_TOKEN: string;
+declare const KLB_GOOGLE_PLACES_API_KEY: string;

@@ -1,56 +1,77 @@
 import { FC } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import FeedbackContent from '../../components/FeedbackContent';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { applyActionCode } from 'firebase/auth';
 import successImage from '../../assets/images/circle-ok.svg';
 import errorImage from '../../assets/images/error.svg';
-import { firebaseResponseObject } from '../../helpers/FirebaseResponse';
-import { Container } from '@mui/system';
+import { Container, Stack } from '@mui/system';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
+import { consoleLog } from '../../helpers/debug-logger';
 
 interface EmailVerificationProps {}
 
 const EmailVerification: FC<EmailVerificationProps> = () => {
+	const { user } = useSelector(getAuthState);
 	const invocationCount = useRef(0);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | undefined>('');
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
+	const [resendEnabled, setResendEnabled] = useState(false);
 
 	// const mode = searchParams.get('mode');
 	const oobCode = searchParams.get('oobCode');
 	const continueUrl = searchParams.get('continueUrl');
+	const isPending = searchParams.get('is_pending');
 
 	const checkEmailVerification = async (oobCode: string) => {
 		try {
-			console.log('OOB CODE: ', oobCode);
 			applyActionCode(auth, oobCode);
 			setLoading(false);
 			setError(false);
 		} catch (error) {
-			console.log('verification error: ', error);
+			consoleLog('verification error: ', error);
 			setLoading(false);
 			setErrorMessage('Verification Code expired. Contact Support');
 			setError(true);
 		}
+	};
+	const toggleResendEnabled = () => {
+		setTimeout(() => {
+			setResendEnabled(true);
+		}, 10000);
 	};
 
 	useEffect(() => {
 		invocationCount.current++;
 		if (invocationCount.current === 1 && oobCode && loading) {
 			checkEmailVerification(oobCode);
+		} else if (invocationCount.current === 1 && isPending) {
+			toggleResendEnabled();
 		}
 	});
+	const resendVerificationEmail = () => {
+		setResendEnabled(false);
+		api.post(authEndpoints.emailVerification(), {
+			email: user?.email,
+			firstName: user?.firstName,
+			lastName: user?.lastName,
+		});
+		toggleResendEnabled();
+	};
+
 	const navigateToContinueUrl = () => {
 		continueUrl && navigate(continueUrl, { replace: true });
 	};
 	const navigateToMFASetUp = () => {
-		navigate(`/2fa-enroll`, { replace: true });
+		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
 	};
 
 	const renderViewContent = () => {
@@ -83,7 +104,32 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	return (
 		<Container maxWidth='lg' sx={{}}>
 			<Box sx={{ display: 'flex', justifyContent: 'center', height: '100vh' }}>
-				{renderViewContent()}
+				{isPending ? (
+					<Stack
+						direction={'column'}
+						spacing={2}
+						sx={{
+							justifyContent: 'center',
+							alignItems: 'center',
+							maxWidth: '400px',
+							margin: 'auto',
+						}}
+					>
+						<Typography variant='h3'>Account Created!</Typography>
+						<Typography variant='body1'>
+							Please check your email to verify your account.
+						</Typography>
+						<Button
+							variant='contained'
+							disabled={!resendEnabled}
+							onClick={resendVerificationEmail}
+						>
+							Resend Verification Email
+						</Button>
+					</Stack>
+				) : (
+					renderViewContent()
+				)}
 			</Box>
 		</Container>
 	);

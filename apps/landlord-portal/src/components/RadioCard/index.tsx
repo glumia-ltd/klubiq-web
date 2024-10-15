@@ -1,4 +1,4 @@
-import { Card, Typography, Grid } from '@mui/material';
+import { Card, Typography, Grid, Stack } from '@mui/material';
 import {
 	FormControl,
 	FormControlLabel,
@@ -24,6 +24,7 @@ type Props = {
 	name?: string;
 	value?: string;
 	headerText?: string;
+	required?: boolean;
 	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -35,6 +36,7 @@ const RadioCard = React.memo(
 		name,
 		onChange,
 		checkedValue,
+		required,
 	}: Props) => {
 		const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 			onChange && onChange(event);
@@ -45,9 +47,23 @@ const RadioCard = React.memo(
 				<Card sx={styles.card}>
 					<Grid container spacing={1}>
 						<Grid item xs={12}>
-							<Typography variant='h6' sx={styles.typo}>
-								{headerText}
-							</Typography>
+							<Stack direction={'row'} alignItems={'end'} gap={1}>
+								<Typography variant='h6' sx={styles.typo}>
+									{headerText}
+								</Typography>
+
+								<Typography
+									fontWeight={100}
+									fontSize={'12px'}
+									sx={{
+										...styles.typo,
+										textTransform: 'none',
+										fontSize: '12px',
+									}}
+								>
+									{required ? <i>(required)</i> : ''}
+								</Typography>
+							</Stack>
 						</Grid>
 						<Grid item xs={12}>
 							<FormControl sx={styles.formControl}>
@@ -56,21 +72,27 @@ const RadioCard = React.memo(
 									name={name}
 									onChange={handleChange}
 								>
-									{options?.map((option, index) => (
-										<Grid container item xs={12} key={index} sx={styles.box}>
-											<FormControlLabel
-												value={option?.id}
-												control={<Radio />}
-												checked={String(checkedValue) === String(option?.id)}
-												label={option?.displayText}
-												sx={styles.radioLabel}
-											/>
-											{option?.subtext && (
-												<Typography variant='body2' sx={styles.subText}>
-													{option?.subtext}
-												</Typography>
-											)}
-										</Grid>
+									{options?.map((option) => (
+										<FormControlLabel
+											key={option?.id}
+											value={option?.id}
+											control={<Radio />}
+											checked={String(checkedValue) === String(option?.id)}
+											sx={styles.box}
+											label={
+												<Stack direction={'column'} gap={1}>
+													<Typography variant='body1'>
+														{option?.displayText}
+													</Typography>
+
+													{option?.subtext && (
+														<Typography variant='body2'>
+															{option?.subtext}
+														</Typography>
+													)}
+												</Stack>
+											}
+										/>
 									))}
 								</RadioGroup>
 							</FormControl>

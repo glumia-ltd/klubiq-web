@@ -1,37 +1,62 @@
 {
-            "name": "Klubiq",
-            "short_name": "Klubiq",
-            "description": "Property mangement SAAS App",
-            "icons": [
-                {
-                    "src": "/ios-192.png",
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "monochrome"
-                },
-                {
-                    "src": "/android-512.png",
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any"
-                },
-                {
-                    "src": "/ios-180.png",
-                    "sizes": "180x180",
-                    "type": "image/png",
-                    "purpose": "any"
-                },
-                {
-                    "src": "/icon.png",
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any maskable"
-                }
-            ],
-            "theme_color": "#002147",
-            "background_color": "#FFFFFF",
-            "display": "standalone",
-            "scope": "/",
-            "start_url": "/",
-            "orientation": "portrait"
+  "name": "Klubiq",
+  "short_name": "Klubiq",
+  "description": "Property Management SAAS App",
+  "icons": [
+    {
+      "src": "/icons/64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "/icons/ios-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "/icons/android-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ios-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
+  ],
+  "theme_color": "#002147",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "orientation": "portrait",
+  "id": "klubiq.landlord.portal",
+  "lang": "en",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "browser"
+  ],
+  "dir": "auto",
+  "shortcuts": [
+    {
+      "name": "Add Property",
+      "url": "https://dev.klubiq.com/createproperty",
+      "description": "Creates a property"
+    }
+  ],
+  "categories": [
+    "business",
+    "finance"
+  ]
+}
