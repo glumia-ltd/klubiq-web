@@ -300,6 +300,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 			</Stack>
 			{ArrayOfSelectedTitles.length > 0 && (
 				<Stack
+					mb={2}
 					direction={'row'}
 					alignItems={'center'}
 					sx={{ cursor: 'pointer' }}
