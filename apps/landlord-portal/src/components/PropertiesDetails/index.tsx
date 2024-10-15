@@ -236,14 +236,25 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 								),
 							)}
 							{formik.values?.propertyImages?.length === 0 && (
-								<Grid item xs={12} sm={6} md={4} lg={3}>
+								<Grid
+									item
+									xs={12}
+									sm={6}
+									md={4}
+									lg={3}
+									sx={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+									}}
+								>
 									<Box
 										component='label'
 										htmlFor='upload-photo'
 										display='flex'
 										alignItems='center'
 										justifyContent='center'
-										width='250px'
+										//width='250px'
 										height='170px'
 										border='1px dashed #ccc'
 										borderRadius={'5px'}

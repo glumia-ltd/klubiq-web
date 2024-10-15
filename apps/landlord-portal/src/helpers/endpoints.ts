@@ -7,6 +7,7 @@ export const authEndpoints = {
 	sendResetPasswordEmail: () => `auth/reset-password-link`,
 	resetPassword: () => `auth/reset-password`,
 	verifyOobCode: () => `auth/verify-email`,
+	updateUserPreferences: () => `auth/update-preferences`,
 };
 
 export const dashboardEndpoints = {

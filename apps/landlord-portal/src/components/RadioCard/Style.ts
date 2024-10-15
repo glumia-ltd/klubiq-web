@@ -2,10 +2,10 @@ const styles = {
 	card: {
 		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
 		borderRadius: '8px',
-
 		alignItems: 'center',
 		JustifyContent: 'center',
 		width: '100%',
+		display: 'flex',
 	},
 
 	typo: {

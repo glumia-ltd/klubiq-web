@@ -12,8 +12,18 @@ export const authApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		updateUserPreferences: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.updateUserPreferences(),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
-export const { useGetUserByFbidQuery, useLazyGetUserByFbidQuery } =
-	authApiSlice;
+export const {
+	useGetUserByFbidQuery,
+	useLazyGetUserByFbidQuery,
+	useUpdateUserPreferencesMutation,
+} = authApiSlice;
