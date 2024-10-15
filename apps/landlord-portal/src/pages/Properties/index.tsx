@@ -30,6 +30,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../components/DataPagination';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
@@ -44,6 +45,9 @@ const Properties = () => {
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const debouncedPropertiesSearch = useDebounce(() => {
+		setDefaultParams((prev) => ({ ...prev, search: searchText }));
+	}, 500);
 
 	const {
 		data: propertyData,
@@ -88,6 +92,12 @@ const Properties = () => {
 
 	const handleAddProperties = () => {
 		navigate('/properties/create/property-category');
+	};
+
+	const handlePropertiesSearch = (e: any) => {
+		setSearchText(e.target.value);
+
+		debouncedPropertiesSearch();
 	};
 
 	useEffect(() => {
@@ -180,7 +190,7 @@ const Properties = () => {
 										placeholder='Search Properties'
 										inputProps={{ 'aria-label': 'search properties' }}
 										value={searchText}
-										onChange={(e) => setSearchText(e.target.value)}
+										onChange={handlePropertiesSearch}
 									/>
 								</Paper>
 							</Grid>
