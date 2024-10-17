@@ -14,6 +14,7 @@ import {
 import { styles } from './style';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
+import { GroupedAvatar } from '../../components/GroupedAvatar/GroupedAvatar';
 
 type LeaseTableType = {
 	title: string;
@@ -80,11 +81,10 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 							</TableCell>
 							<TableCell align='center'>
 								{lease.tenants.length > 0 ? (
-									<Avatar src={''} />
+									<GroupedAvatar tenants={lease.tenants} />
 								) : (
-									<NavLink to='/properties'>Add Tenant</NavLink>
+									<NavLink to='/add-tenant'>Add Tenant</NavLink>
 								)}
-
 								<Typography fontWeight='600' ml='15px'>
 									{lease?.tenants[0]}
 								</Typography>
