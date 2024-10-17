@@ -204,11 +204,6 @@ export const styles = {
 		bgcolor: 'background.default',
 		fontWeight: '600px',
 	},
-	check: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
 	tableDiv: {
 		display: 'flex',
 		alignItems: 'center',

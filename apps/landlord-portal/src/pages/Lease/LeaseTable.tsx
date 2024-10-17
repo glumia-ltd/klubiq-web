@@ -8,11 +8,12 @@ import {
 	TableRow,
 	Chip,
 	Typography,
+	Avatar,
 } from '@mui/material';
 
 import { styles } from './style';
 import { FC } from 'react';
-import bukky from '../../assets/images/bukky.png';
+import { NavLink } from 'react-router-dom';
 
 type LeaseTableType = {
 	title: string;
@@ -77,8 +78,13 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 									sx={styles.chip}
 								/>
 							</TableCell>
-							<TableCell sx={styles.check}>
-								<img src={bukky} alt='tenant picture' />
+							<TableCell align='center'>
+								{lease.tenants.length > 0 ? (
+									<Avatar src={''} />
+								) : (
+									<NavLink to='/properties'>Add Tenant</NavLink>
+								)}
+
 								<Typography fontWeight='600' ml='15px'>
 									{lease?.tenants[0]}
 								</Typography>
