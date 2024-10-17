@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { styles } from './style';
 import {
 	FormControl,
 	InputLabel,
@@ -40,21 +41,16 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				m: 0.2,
-				minWidth: 230,
-				...sx,
-			}}
+			sx={styles.container}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'}>
+				<Typography style={styles.typography}>
 					{label}
 				</Typography>
 			)}
 			<FormControl
-				sx={{ m: 1, minWidth: 230 }}
+				sx={styles.formcontrol}
 				variant='outlined'
 				fullWidth
 				error={fieldTouched && Boolean(fieldError)}
