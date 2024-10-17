@@ -29,5 +29,15 @@ const style = {
 		backgroundRepeat: 'no-repeat',
 		backgroundPosition: 'bottom',
 	},
+	leaseHeader: {
+		fontSize: { xs: '13px', sm: '18px', md: '20px', lg: '24px' },
+		lineHeight: { xs: '20px', sm: '20px', md: '24px', lg: '38px' },
+		textTransform: 'ccapitalize',
+		fontWeight: 700,
+		textAlign: 'left',
+		marginTop: '31px',
+		marginLeft: '32px',
+		gap: '416px',
+	},
 };
 export default style;
