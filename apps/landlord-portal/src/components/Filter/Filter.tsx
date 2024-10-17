@@ -281,10 +281,11 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 								>
 									<Button
 										disabled={disable}
-										sx={{
-											...styles.buttonStyle,
-											outline: `1px dashed ${theme.palette.primary.main}`,
-										}}
+										variant='filterButton'
+										// sx={{
+										// 	...styles.buttonStyle,
+										// 	outline: `1px dashed ${theme.palette.primary.main}`,
+										// }}
 										onClick={() => {
 											handleButtonClick(title);
 										}}
@@ -306,8 +307,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 					sx={{ cursor: 'pointer', color: 'secondary.light' }}
 					onClick={handleClearAllFilter}
 				>
-					<ClearIcon />
-					<Typography variant='h6'>Clear Filter</Typography>
+					<Button variant='borderlessFilterButton'>
+						<ClearIcon />
+						<Typography variant='h6'>Clear Filter</Typography>
+					</Button>
 				</Stack>
 			)}
 		</Stack>

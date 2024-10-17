@@ -33,6 +33,26 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 	}
+
+	interface TypographyVariants {
+		h7: React.CSSProperties;
+	}
+
+	interface TypographyVariantsOptions {
+		h7?: React.CSSProperties;
+	}
+
+	interface Palette {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+	}
+
+	interface PaletteOptions {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+	}
 }
 
 // Update the Typography's variant prop options
@@ -46,11 +66,17 @@ declare module '@mui/material/Typography' {
 		filterResultText: true;
 		filterResultNumber: true;
 	}
+
+	interface TypographyPropsVariantOverrides {
+		h7: true;
+	}
 }
 
 declare module '@mui/material/Button' {
 	interface ButtonPropsVariantOverrides {
 		propertyButton: true;
+		filterButton: true;
+		borderlessFilterButton: true;
 	}
 }
 
