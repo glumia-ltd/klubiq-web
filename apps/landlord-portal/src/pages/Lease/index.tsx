@@ -2,7 +2,7 @@ import { Container, Stack, Button } from '@mui/material';
 import { styles } from './style';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../components/Filter/Filter';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { LeaseTable } from './LeaseTable';
 import { filterOptions } from './filterOption';
 import { leases } from './data';

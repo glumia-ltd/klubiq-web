@@ -1,5 +1,3 @@
-import { minWidth } from '@mui/system';
-
 export const styles = {
 	container: {
 		borderRadius: '8px',

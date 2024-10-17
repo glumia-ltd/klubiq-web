@@ -1,4 +1,4 @@
-import { Stack, Card, Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import { styles } from './style';
 type cardProps = {
 	Amount?: string;
