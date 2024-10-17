@@ -50,6 +50,10 @@ const Lease = () => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
 
+	const handleRowClick = (id: number) => {
+		console.log(id);
+	};
+
 	return (
 		<>
 			<Container maxWidth='xl' sx={styles.container}>
@@ -82,7 +86,11 @@ const Lease = () => {
 						/>
 					</Stack>
 					<Stack direction={'row'}>
-						<LeaseTable title='Lease' allLease={allLease} />
+						<LeaseTable
+							title='Lease'
+							allLease={allLease}
+							onRowClick={handleRowClick}
+						/>
 					</Stack>
 				</Stack>
 

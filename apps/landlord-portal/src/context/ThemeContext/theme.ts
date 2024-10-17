@@ -107,6 +107,11 @@ export const LightTheme: Theme = createTheme({
 						border: '1.6px solid #002147',
 					},
 				},
+
+				contained: {
+					color: '#ffffff',
+					borderColor: '#002147',
+				},
 			},
 
 			variants: [
@@ -495,6 +500,14 @@ export const DarkTheme: Theme = createTheme({
 						opacity: '1',
 						color: '#FFFFFF',
 						border: '1.6px solid #FFFFFF',
+					},
+				},
+				contained: {
+					backgroundColor: '#B8D9FF',
+					borderColor: '#B8D9FF',
+					color: '#1B1B1B',
+					'&:hover': {
+						color: '#FFFFFF',
 					},
 				},
 			},

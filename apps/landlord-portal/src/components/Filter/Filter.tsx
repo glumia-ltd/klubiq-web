@@ -303,7 +303,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 					mb={2}
 					direction={'row'}
 					alignItems={'center'}
-					sx={{ cursor: 'pointer' }}
+					sx={{ cursor: 'pointer', color: 'secondary.light' }}
 					onClick={handleClearAllFilter}
 				>
 					<ClearIcon />

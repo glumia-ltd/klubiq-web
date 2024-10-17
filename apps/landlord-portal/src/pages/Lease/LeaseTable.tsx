@@ -68,7 +68,7 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 						<TableRow
 							key={index}
 							hover // Adds hover effect on rows
-							onClick={() => onRowClick && onRowClick(lease)} // Makes row clickable
+							onClick={() => onRowClick && onRowClick(lease.id)} // Makes row clickable
 							sx={{ cursor: 'pointer' }} // Changes the cursor to pointer
 						>
 							<TableCell align='center'>
