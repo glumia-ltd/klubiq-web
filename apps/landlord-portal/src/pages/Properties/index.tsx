@@ -28,7 +28,7 @@ import {
 	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useDispatch } from 'react-redux';
-import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
+// import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../components/DataPagination';
 import { useDebounce } from '../../hooks/useDebounce';
 
@@ -120,14 +120,14 @@ const Properties = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
-	useEffect(() => {
-		const currentFilter = {
-			...filter,
-			...defaultParams,
-		};
+	// useEffect(() => {
+	// 	const currentFilter = {
+	// 		...filter,
+	// 		...defaultParams,
+	// 	};
 
-		dispatch(setCurrentFilter({ currentFilter }));
-	}, [defaultParams, dispatch, filter]);
+	// 	dispatch(setCurrentFilter({ currentFilter }));
+	// }, [defaultParams, dispatch, filter]);
 
 	useEffect(() => {
 		getCurrentPage(1);

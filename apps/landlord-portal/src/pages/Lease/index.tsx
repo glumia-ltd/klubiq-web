@@ -2,15 +2,53 @@ import { Container, Stack, Button } from '@mui/material';
 import { styles } from './style';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../components/Filter/Filter';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { LeaseTable } from './LeaseTable';
-import { filterOptions } from './filterOption';
 import { leases } from './data';
+import {
+	useGetLeaseMetaDataQuery,
+	useGetLeasesQuery,
+} from '../../store/LeaseStore/leaseApiSlice';
+import { DataPagination } from '../../components/DataPagination';
+// import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+
+const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const [currentPage, setCurrentPage] = useState(1);
+	const [defaultParams, setDefaultParams] = useState({
+		page: 1,
+		take: 20,
+		sortBy: 'createdDate',
+		order: 'ASC',
+	});
 	const filterObjectLength = Object.keys(filter).length;
 	const allLeases = Boolean(leases?.length);
+	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
+	const { data: leaseData } = useGetLeasesQuery({
+		...filter,
+		...defaultParams,
+	});
+
+	const filterOptions = leaseMetaData?.filterOptions;
+	const allLease = leaseData?.pageData;
+	const pageCount = leaseData?.meta?.pageCount;
+
+	const getCurrentPage = useCallback((value: any) => {
+		setCurrentPage(value);
+
+		setDefaultParams((prev) => ({ ...prev, page: value }));
+	}, []);
+
+	const getItemsPerPageCount = (value: any) => {
+		setCurrentPage(1);
+		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
+	};
+
+	useEffect(() => {
+		getCurrentPage(1);
+	}, [filter, getCurrentPage]);
 
 	return (
 		<>
@@ -44,8 +82,18 @@ const Lease = () => {
 						/>
 					</Stack>
 					<Stack direction={'row'}>
-						<LeaseTable title='Lease' filters={filter} />
+						<LeaseTable title='Lease' allLease={allLease} />
 					</Stack>
+				</Stack>
+
+				<Stack mt={4}>
+					<DataPagination
+						getCurrentPage={getCurrentPage}
+						getItemsPerPageCount={getItemsPerPageCount}
+						pageCount={pageCount}
+						currentPage={currentPage}
+						itemsPerPageOptions={ITEMSCOUNTOPTIONS}
+					/>
 				</Stack>
 			</Container>
 		</>

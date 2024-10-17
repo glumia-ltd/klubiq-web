@@ -23,8 +23,14 @@ export const propertiesEndpoints = {
 	getPropertiesMetaData: () => '/public/property-metadata',
 	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getSignedUrl: () => '/properties/signed-url',
+	getPropertiesNames: () => '/properties/view/list',
 };
 
 export const organizationEndpoints = {
 	getOrganization: (orgUuid: string) => `/organizations/${orgUuid}`,
+};
+
+export const leaseEndpoints = {
+	getLeaseMetaData: () => '/public/lease-metadata',
+	getLeases: () => '/leases',
 };

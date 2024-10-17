@@ -6,49 +6,28 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Box,
-	Pagination,
 	Chip,
 	Typography,
 } from '@mui/material';
-import { useState } from 'react';
+
 import { styles } from './style';
 import { FC } from 'react';
 import bukky from '../../assets/images/bukky.png';
-import { leases } from './data';
 
 type LeaseTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
-	filters: Record<string, string | number>;
+	filters?: Record<string, string | number>;
 	onRowClick?: (lease: any) => void;
+	allLease: any;
 };
 
-export const LeaseTable: FC<LeaseTableType> = ({ filters, onRowClick }) => {
-	const [currentPage, setCurrentPage] = useState(1);
-	const [rowsPerPage] = useState(5);
-
+export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 	const statusColors: Record<string, string> = {
 		Active: 'success',
 		Expiring: 'warning',
 		'Over Due': 'error',
 	};
-
-	const filteredLeases = leases.filter((lease) => {
-		const statusFilter = filters.status
-			? lease.status === filters.status
-			: true;
-		const propertyFilter = filters.property
-			? lease.property === filters.property
-			: true;
-
-		return statusFilter && propertyFilter;
-	});
-
-	const paginatedLeases = filteredLeases.slice(
-		(currentPage - 1) * rowsPerPage,
-		currentPage * rowsPerPage,
-	);
 
 	return (
 		<TableContainer component={Card}>
@@ -83,7 +62,7 @@ export const LeaseTable: FC<LeaseTableType> = ({ filters, onRowClick }) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{paginatedLeases.map((lease, index) => (
+					{allLease?.map((lease: any, index: number) => (
 						<TableRow
 							key={index}
 							hover // Adds hover effect on rows
@@ -101,27 +80,17 @@ export const LeaseTable: FC<LeaseTableType> = ({ filters, onRowClick }) => {
 							<TableCell sx={styles.check}>
 								<img src={bukky} alt='tenant picture' />
 								<Typography fontWeight='600' ml='15px'>
-									{lease.tenant}
+									{lease?.tenants[0]}
 								</Typography>
 							</TableCell>
-							<TableCell align='center'>{lease.property}</TableCell>
-							<TableCell align='center'>{lease.unit}</TableCell>
-							<TableCell align='center'>{lease.leaseStart}</TableCell>
-							<TableCell align='center'>{lease.leaseEnd}</TableCell>
+							<TableCell align='center'>{lease?.property?.name}</TableCell>
+							<TableCell align='center'>{lease?.unitNumber}</TableCell>
+							<TableCell align='center'>{lease?.startDate}</TableCell>
+							<TableCell align='center'>{lease?.endDate}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
 			</Table>
-
-			<Box display='flex' justifyContent='center' mt={2}>
-				<Pagination
-					count={Math.ceil(filteredLeases.length / rowsPerPage)}
-					page={currentPage}
-					onChange={(_, value) => setCurrentPage(value)}
-					color='primary'
-					sx={styles.paginationStyle}
-				/>
-			</Box>
 		</TableContainer>
 	);
 };
