@@ -11,7 +11,6 @@ self.addEventListener('fetch', (event) => {
 	const requestURL = new URL(event.request.url);
 	const eventOrigin = requestURL.origin;
 	const path = requestURL.pathname;
-	console.log('Headers', event.request.headers.keys);
 	async function returnPublicCachedResponse() {
 		// open app's cache
 		const cache = await caches.open(DATA_CACHE);
@@ -32,7 +31,6 @@ self.addEventListener('fetch', (event) => {
 		ALLOWED_ORIGINS.includes(eventOrigin) &&
 		PUBLIC_CACHED_PATHS.includes(path)
 	) {
-		console.log('PATH', path);
 		event.respondWith(returnPublicCachedResponse());
 	}
 });

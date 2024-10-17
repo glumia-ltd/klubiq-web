@@ -1,4 +1,5 @@
-import { Key, useEffect, useRef, useState } from 'react';
+import { Key, useCallback, useEffect, useRef, useState } from 'react';
+
 import {
 	Stack,
 	Button,
@@ -28,16 +29,25 @@ import {
 } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useDispatch } from 'react-redux';
 import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
-
-const DEFAULT_PARAMS = { page: 1, take: 20, sortBy: 'name' };
+import { DataPagination } from '../../components/DataPagination';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [defaultParams, setDefaultParams] = useState({
+		page: 1,
+		take: 24,
+		sortBy: 'name',
+	});
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const debouncedPropertiesSearch = useDebounce(() => {
+		setDefaultParams((prev) => ({ ...prev, search: searchText }));
+	}, 500);
 
 	const {
 		data: propertyData,
@@ -45,7 +55,7 @@ const Properties = () => {
 		isFetching: isPropertyFetching,
 	} = useGetPropertiesQuery({
 		...filter,
-		...DEFAULT_PARAMS,
+		...defaultParams,
 	});
 
 	const {
@@ -53,6 +63,10 @@ const Properties = () => {
 		// isLoading: isMetaDataLoading,
 		// isFetching: isMetaDataFetching,
 	} = useGetPropertiesMetaDataQuery();
+
+	const pageCount = propertyData?.meta?.pageCount;
+
+	const itemCount = propertyData?.meta?.itemCount;
 
 	const allProperties = propertyData?.pageData;
 	const filterOptions = metaData?.filterOptions;
@@ -80,6 +94,12 @@ const Properties = () => {
 		navigate('/properties/create/property-category');
 	};
 
+	const handlePropertiesSearch = (e: any) => {
+		setSearchText(e.target.value);
+
+		debouncedPropertiesSearch();
+	};
+
 	useEffect(() => {
 		if (inputRef.current) {
 			const inputElement: HTMLInputElement | null =
@@ -89,13 +109,29 @@ const Properties = () => {
 		}
 	}, []);
 
+	const getCurrentPage = useCallback((value: any) => {
+		setCurrentPage(value);
+
+		setDefaultParams((prev) => ({ ...prev, page: value }));
+	}, []);
+
+	const getItemsPerPageCount = (value: any) => {
+		setCurrentPage(1);
+		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
+	};
+
 	useEffect(() => {
 		const currentFilter = {
 			...filter,
-			...DEFAULT_PARAMS,
+			...defaultParams,
 		};
+
 		dispatch(setCurrentFilter({ currentFilter }));
-	}, [dispatch, filter]);
+	}, [defaultParams, dispatch, filter]);
+
+	useEffect(() => {
+		getCurrentPage(1);
+	}, [filter, getCurrentPage]);
 
 	return (
 		<>
@@ -154,7 +190,7 @@ const Properties = () => {
 										placeholder='Search Properties'
 										inputProps={{ 'aria-label': 'search properties' }}
 										value={searchText}
-										onChange={(e) => setSearchText(e.target.value)}
+										onChange={handlePropertiesSearch}
 									/>
 								</Paper>
 							</Grid>
@@ -171,7 +207,7 @@ const Properties = () => {
 								}
 							</Grid>
 							<Grid xs={12} mb={3}>
-								{showFilterResultOnlyWhenFiltered ? (
+								{showFilterResultOnlyWhenFiltered || searchText ? (
 									isPropertyFetching ? (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
@@ -186,7 +222,7 @@ const Properties = () => {
 									) : (
 										<Typography variant='filterResultText'>
 											<Typography variant='filterResultNumber'>
-												{allProperties?.length}
+												{itemCount}
 											</Typography>{' '}
 											{`Result${allProperties && allProperties?.length > 1 ? 's' : ''}`}{' '}
 											Found
@@ -223,6 +259,14 @@ const Properties = () => {
 							</Grid>
 						</Grid>
 					</Grid>
+					<Stack mt={4}>
+						<DataPagination
+							getCurrentPage={getCurrentPage}
+							getItemsPerPageCount={getItemsPerPageCount}
+							pageCount={pageCount}
+							currentPage={currentPage}
+						/>
+					</Stack>
 				</Container>
 			)}
 		</>

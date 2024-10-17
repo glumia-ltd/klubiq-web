@@ -29,6 +29,7 @@ import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../components/Dialogs/OtpPrompt';
+import { styles } from './style';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -198,25 +199,8 @@ const Login = () => {
 						width: '33rem',
 					}}
 				>
-					<Grid
-						container
-						sx={{
-							height: '100vh',
-							justifyContent: 'center',
-						}}
-					>
-						<Grid
-							container
-							sx={{
-								width: {
-									xs: '20rem',
-									sm: '25rem',
-									md: '27rem',
-									lg: '30rem',
-									xl: '33rem',
-								},
-							}}
-						>
+					<Grid container sx={styles.container}>
+						<Grid container sx={styles.formContainer}>
 							<Grid
 								item
 								xs={12}
@@ -248,39 +232,13 @@ const Login = () => {
 								}}
 								mt={-15}
 							>
-								<Grid
-									item
-									xs={12}
-									sm={12}
-									md={12}
-									lg={12}
-									mb={2}
-									sx={{
-										textAlign: 'center',
-									}}
-								>
-									<Typography variant='h1' sx={{ fontWeight: '700' }}>
+								<Grid item xs={12} sm={12} md={12} lg={12}>
+									<Typography variant='h1' sx={styles.title}>
 										Sign in
 									</Typography>
 								</Grid>
-								<Grid
-									item
-									xs={12}
-									sm={12}
-									md={12}
-									lg={12}
-									mb={5}
-									sx={{
-										textAlign: 'center',
-									}}
-								>
-									<Typography
-										sx={{
-											fontWeight: 500,
-											lineHeight: '30px',
-											fontSize: '20px',
-										}}
-									>
+								<Grid item xs={12} sm={12} md={12} lg={12}>
+									<Typography sx={styles.subTitle}>
 										Welcome back! Please enter your details.
 									</Typography>
 								</Grid>
@@ -290,6 +248,7 @@ const Login = () => {
 										name='email'
 										label='Email'
 										type='email'
+										autoComplete='username'
 										placeholder='Enter your email address'
 										formik={formik}
 										inputProps={{
@@ -305,6 +264,7 @@ const Login = () => {
 										name='password'
 										label='Password'
 										type='password'
+										autoComplete='current-password'
 										placeholder='Enter your password'
 										formik={formik}
 										inputProps={{
@@ -321,11 +281,7 @@ const Login = () => {
 									lg={12}
 									mt={-1}
 									m={0.5}
-									sx={{
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'start',
-									}}
+									sx={styles.forgotPassword}
 								>
 									{/* <FormGroup>
                   <FormControlLabel
@@ -338,18 +294,7 @@ const Login = () => {
 									</Typography>
 								</Grid>
 
-								<Grid
-									item
-									sm={12}
-									xs={12}
-									lg={12}
-									// m={0.5}
-									sx={{
-										alignItems: 'center',
-										textAlign: 'center',
-										marginTop: '1rem',
-									}}
-								>
+								<Grid item sm={12} xs={12} lg={12} sx={styles.buttonGroupStyle}>
 									{loading ? (
 										<LoadingSubmitButton
 											loading
@@ -369,11 +314,7 @@ const Login = () => {
 									xs={12}
 									lg={12}
 									mt={2}
-									sx={{
-										alignItems: 'center',
-										textAlign: 'center',
-										cursor: 'pointer',
-									}}
+									sx={styles.lastGridStyle}
 									onClick={routeToSignUp}
 								>
 									<Typography>

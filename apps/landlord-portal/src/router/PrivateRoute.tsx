@@ -7,7 +7,8 @@ import MFAPrompt from '../components/Dialogs/MfaPrompts';
 import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimoutContext';
 
 const PrivateRoute = () => {
-	const { showMFAPrompt, goToMFASetup, setShowMFAPrompt } = useAuth();
+	const { showMFAPrompt, goToMFASetup, setShowMFAPrompt, optOutOf2fa } =
+		useAuth();
 	const { token } = useSelector(getAuthState);
 
 	const storedSession = sessionStorage.getItem(
@@ -28,6 +29,7 @@ const PrivateRoute = () => {
 							setShowMFAPrompt(false);
 						}}
 						onMFASetupClick={goToMFASetup}
+						onOptOutClick={optOutOf2fa}
 					></MFAPrompt>
 				)}
 				<Outlet />
