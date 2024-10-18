@@ -76,17 +76,11 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				minWidth: 150,
-				m: 0.3,
-				flexDirection: 'column',
-				...sx,
-			}}
+			sx={styles.controlledNumberFieldContainer}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'} color={color}>
+				<Typography  style={styles.controlledNumberFieldTypography}>
 					{label}
 				</Typography>
 			)}

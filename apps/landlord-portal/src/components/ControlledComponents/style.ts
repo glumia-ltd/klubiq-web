@@ -1,4 +1,5 @@
 import { typography } from "@mui/system";
+import ControlledNumberField from "./ControlledNumberField";
 
 export const styles = {
     container: {
@@ -28,6 +29,18 @@ export const styles = {
     formHelperText:{
          marginLeft: '1.2rem' 
 
+    },
+    controlledNumberFieldContainer: {
+        justifyContent: 'center',
+		minWidth: 150,
+		m: 0.3,
+		flexDirection: 'column',
+		// ...sx,
+    },
+    controlledNumberFieldTypography: {
+        fontWeight: 500,
+        fontSize: '16px',
+        // color: {color}
     }
     
     
