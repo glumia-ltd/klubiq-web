@@ -1,4 +1,7 @@
-import { typography } from "@mui/system";
+import { typography, useMediaQuery } from "@mui/system";
+const isSmallScreen = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.down('sm'),
+);
 
 export const styles = {
     container: {
@@ -144,10 +147,33 @@ export const styles = {
         display: 'flex', 
         flexDirection: 'column', 
         gap: 2 
+    },
+    textFieldWithModalSx: {
+        width: { xs: '50px', sm: '250px', md: '320px' },
+        height: '45px',
+        padding: '0 4 0 4',
+        border: { xs: 'none' },
+            '& fieldset': {
+        border: isSmallScreen ? 'none' : undefined,
+        }, 
+    },
+    textFieldWithModalBox: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '80%',
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+         p: 4,
+    },
+    textFieldWithModalTypography: {
+         id:'modal-title', 
+         variant:'h6', 
+         component:'h2'
+    },
+    textFieldWithModalButton: {
+        mt: 2 
     }
-
-
-
-
     
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { styles } from './style';
 import {
 	TextField,
 	Modal,
@@ -40,15 +41,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				onClick={handleOpen}
 				id='input-with-icon-textfield'
 				placeholder='Search Transactions,customers'
-				sx={{
-					width: { xs: '50px', sm: '250px', md: '320px' },
-					height: '45px',
-					padding: '0 4 0 4',
-					border: { xs: 'none' },
-					'& fieldset': {
-						border: isSmallScreen ? 'none' : undefined,
-					},
-				}}
+				sx={styles.textFieldWithModalSx}
 				InputProps={{
 					startAdornment: (
 						<InputAdornment position='start'>
@@ -70,19 +63,9 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				aria-describedby='modal-description'
 			>
 				<Box
-					sx={{
-						position: 'absolute',
-						top: '50%',
-						left: '50%',
-						transform: 'translate(-50%, -50%)',
-						width: '80%',
-						bgcolor: 'background.paper',
-						boxShadow: 24,
-						p: 4,
-					}}
+					sx={styles.textFieldWithModalBox}
 				>
-					<Typography id='modal-title' variant='h6' component='h2'>
-						Enter Text
+					<Typography  sx={styles.textFieldWithModalTypography}>
 					</Typography>
 					<TextField
 						variant='outlined'
@@ -90,7 +73,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 						onChange={handleChange}
 						fullWidth
 					/>
-					<Button onClick={handleClose} variant='contained' sx={{ mt: 2 }}>
+					<Button onClick={handleClose} variant='contained' sx={styles.textFieldWithModalButton}>
 						Close
 					</Button>
 				</Box>
