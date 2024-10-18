@@ -111,6 +111,29 @@ export const styles = {
         fontWeight:500,
         fontSize:'16px', 
         // color={color}
+    },
+    controlledTextFieldSx: {
+        justifyContent: 'center',
+        minWidth: 150,
+        // m: 0.1,
+        m: 0.3,
+        flexDirection: 'column',
+        // ...sx,
+        
+    },
+    controlledTextFieldStack: {
+        direction: 'row', 
+        alignItems:'end', 
+        gap:1
+    },
+    controlledTextFieldTypography: {
+        fontWeight:500, 
+        fontSize:'16px' 
+        // color={color}
+    },
+    secondControlledTextFeldTypography: {
+        fontWeight:100,
+        fontSize:'12px'
     }
 
 

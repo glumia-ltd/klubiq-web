@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { styles } from './style';
 import {
 	TextField,
 	Stack,
@@ -66,23 +67,16 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				minWidth: 150,
-				// m: 0.1,
-				m: 0.3,
-				flexDirection: 'column',
-				...sx,
-			}}
+			sx={styles.controlledTextFieldSx}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Stack direction={'row'} alignItems={'end'} gap={1}>
-					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+				<Stack sx={styles.controlledTextFieldStack}>
+					<Typography  style={styles.controlledTextFieldTypography}>
 						{label}
 					</Typography>
 
-					<Typography fontWeight={100} fontSize={'12px'}>
+					<Typography  style={styles.secondControlledTextFeldTypography}>
 						{required ? <i>(required)</i> : ''}
 					</Typography>
 				</Stack>
