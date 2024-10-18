@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { styles } from './style';
 import {
 	Stack,
 	Typography,
@@ -66,17 +67,11 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				minWidth: 150,
-				m: 0.1,
-				flexDirection: 'column',
-				...sx,
-			}}
+			sx={styles.controlledTextAreaSx}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'} color={color}>
+				<Typography style={styles.controlledTextAreaTypography}>
 					{label}
 				</Typography>
 			)}
@@ -103,7 +98,7 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 			/>
 			{Boolean(prioritizeError) ||
 				(Boolean(fieldTouched) && Boolean(fieldError) && (
-					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+					<Typography style={styles.secondControlledTextAreaTypography}>
 						{label}
 					</Typography>
 				))}

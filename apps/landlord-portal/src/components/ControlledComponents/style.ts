@@ -94,7 +94,25 @@ export const styles = {
         fontFamily: 'Maven Pro, sans-serif',
         fontSize: '16px',
         
+    },
+    controlledTextAreaSx:{
+        justifyContent: 'center',
+        minWidth: 150,
+        m: 0.1,
+        flexDirection: 'column',
+        // ...sx,     
+    },
+    controlledTextAreaTypography:{
+        fontWeight: 500,
+        fontSize: '16px' 
+        // color: color
+    },
+    secondControlledTextAreaTypography: {
+        fontWeight:500,
+        fontSize:'16px', 
+        // color={color}
     }
+
 
 
     
