@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { styles } from './style';
 import {
 	Stack,
 	FormHelperText,
@@ -46,13 +47,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				// justifyContent: "center",
-				m: 0,
-				minWidth: 230,
-				flexDirection: 'row',
-				...sx,
-			}}
+			sx={styles.checkboxcontainer}
 		>
 			<FormControl
 				required
@@ -74,7 +69,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 					}
 					label={label}
 					labelPlacement='end'
-					sx={{ mr: 5, mb: 0 }}
+					sx={styles.formControlLabel}
 					componentsProps={{
 						typography: {
 							fontSize: ' 16px',
@@ -82,7 +77,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 						},
 					}}
 				/>
-				<FormHelperText sx={{ marginLeft: '1.2rem' }}>
+				<FormHelperText sx={styles.formHelperText}>
 					{(fieldTouched && fieldError) || ''}
 				</FormHelperText>{' '}
 			</FormControl>

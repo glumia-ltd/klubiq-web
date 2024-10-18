@@ -14,8 +14,21 @@ export const styles = {
     typography: {
         fontWeight: 500, 
         fontSize: '16px'
+    },
+    checkboxcontainer:{
+        m: 0,
+		minWidth: 230,
+		flexDirection: 'row',
+		// ...sx,
+    },
+    formControlLabel: { 
+        mr: 5, 
+        mb: 0 
+    },
+    formHelperText:{
+         marginLeft: '1.2rem' 
+
     }
-
     
-
+    
 }
