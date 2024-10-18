@@ -88,6 +88,12 @@ export const styles = {
     },
     controlledSelectSx: {
         maxHeight: 'calc(100% - 200px)',
+    },
+    controlledSnackBarSx: {
+        width: '100%',
+        fontFamily: 'Maven Pro, sans-serif',
+        fontSize: '16px',
+        
     }
 
 
