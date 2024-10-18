@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Input as BaseInput } from '@mui/base/Input';
+import { styles } from './style';
 import { Box, styled } from '@mui/system';
 import { consoleLog } from '../../helpers/debug-logger';
 
@@ -168,7 +169,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 
 	const OTPField = () => {
 		return (
-			<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+			<Box sx={styles.otpInputFieldBox}>
 				{new Array(length).fill(null).map((_, index) => (
 					<React.Fragment key={index}>
 						<BaseInput
@@ -199,7 +200,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 	};
 
 	return (
-		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+		<Box sx={styles.secondOtpInputField}>
 			{OTPField()}
 		</Box>
 	);

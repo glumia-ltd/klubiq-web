@@ -134,7 +134,18 @@ export const styles = {
     secondControlledTextFeldTypography: {
         fontWeight:100,
         fontSize:'12px'
+    },
+    otpInputFieldBox:{
+        display: 'flex', 
+        gap: 1, 
+        alignItems: 'center' 
+    },
+    secondOtpInputField: {
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 2 
     }
+
 
 
 
