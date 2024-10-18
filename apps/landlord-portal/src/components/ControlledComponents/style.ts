@@ -41,7 +41,20 @@ export const styles = {
         fontWeight: 500,
         fontSize: '16px',
         // color: {color}
+    },
+    controlledPhoneInputContainer: {
+        justifyContent: 'center',
+		minWidth: 230,
+		m: 0.1,
+		flexDirection: 'column',
+		// ...sx,
+    },
+    controlledPhoneInputTypography: {
+        fontWeight: 500, 
+        fontSize: '16px'
     }
+
+    
     
     
 }
