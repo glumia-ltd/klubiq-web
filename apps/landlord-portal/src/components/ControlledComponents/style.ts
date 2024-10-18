@@ -62,6 +62,34 @@ export const styles = {
     controlledPinFieldTextField: {
         fontSize: '16px'
 
+    },
+    controlledSelectContainer: {
+        justifyContent: 'center',
+		m: 0.1,
+		minWidth: 230,
+		// ...sx,
+    },
+    controlledSelectStack: {
+        direction: 'row',
+        alignItems:'end', 
+        gap:1
+    }, 
+    controlledSelectTypography: {
+        fontWeight: 500, 
+        fontSize:'16px', 
+        // color: color
+    },
+    secondControlledSelectTypography: {
+        fontWeight: 100,
+        fontSize: '12px'
+    },
+    controlledSelectFormControl: {
+        minWidth: 230 
+    },
+    controlledSelectSx: {
+        maxHeight: 'calc(100% - 200px)',
     }
+
+
     
 }

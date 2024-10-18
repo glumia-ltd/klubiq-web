@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
+import { styles } from './style';
 import {
 	FormControl,
 	InputLabel,
@@ -44,21 +45,16 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	const fieldTouched = getIn(formik.touched, name);
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				m: 0.1,
-				minWidth: 230,
-				...sx,
-			}}
+			sx={styles.controlledSelectContainer}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Stack direction={'row'} alignItems={'end'} gap={1}>
-					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+				<Stack sx={styles.controlledSelectStack}>
+					<Typography style={styles.controlledSelectTypography}>
 						{label}
 					</Typography>
 
-					<Typography fontWeight={100} fontSize={'12px'}>
+					<Typography style={styles.secondControlledSelectTypography}>
 						{required ? <i>(required)</i> : ''}
 					</Typography>
 				</Stack>
@@ -80,9 +76,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					onChange={!disableOnChange ? formik.handleChange : undefined}
 					onBlur={formik.handleBlur}
 					MenuProps={{
-						sx: {
-							maxHeight: 'calc(100% - 200px)',
-						},
+						sx: styles.controlledSelectSx,
 					}}
 				>
 					{options?.map(({ id, name }) => (
