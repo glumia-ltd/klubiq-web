@@ -2,6 +2,8 @@
 import React from 'react';
 import { Stack, SxProps, TextField } from '@mui/material';
 import { getIn } from 'formik';
+import { styles } from './style';
+
 
 type ControlledPinFieldProps = {
 	formik: any;
@@ -36,12 +38,7 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 
 	return (
 		<Stack
-			sx={{
-				justifyContent: 'center',
-				minWidth: 4,
-				m: 0.1,
-				...sx,
-			}}
+			sx={styles.controlledPinFieldContainer}
 			direction='row'
 			spacing={1.2}
 		>
@@ -49,7 +46,7 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 				fullWidth
 				id={name}
 				name={name}
-				sx={{ fontSize: '16px' }}
+				sx={styles.controlledPinFieldTextField}
 				variant='outlined'
 				type={type || 'text'}
 				value={fieldValue}

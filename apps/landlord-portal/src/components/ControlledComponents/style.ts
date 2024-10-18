@@ -1,5 +1,4 @@
 import { typography } from "@mui/system";
-import ControlledNumberField from "./ControlledNumberField";
 
 export const styles = {
     container: {
@@ -52,9 +51,17 @@ export const styles = {
     controlledPhoneInputTypography: {
         fontWeight: 500, 
         fontSize: '16px'
-    }
+    },
+    controlledPinFieldContainer: {
+        
+            justifyContent: 'center',
+            minWidth: 4,
+            m: 0.1,
+            // ...sx,      
+    },
+    controlledPinFieldTextField: {
+        fontSize: '16px'
 
-    
-    
+    }
     
 }
