@@ -70,12 +70,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 					label={label}
 					labelPlacement='end'
 					sx={styles.formControlLabel}
-					componentsProps={{
-						typography: {
-							fontSize: ' 16px',
-							fontWeight: 500,
-						},
-					}}
+					componentsProps={styles.checkBoxComponentProps}
 				/>
 				<FormHelperText sx={styles.formHelperText}>
 					{(fieldTouched && fieldError) || ''}

@@ -24,6 +24,13 @@ export const styles = {
 		flexDirection: 'row',
 		// ...sx,
     },
+    checkBoxComponentProps: {  
+        typography: {
+            fontSize: ' 16px',
+            fontWeight: 500,
+        },
+       
+    },
     formControlLabel: { 
         mr: 5, 
         mb: 0 
