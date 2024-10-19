@@ -33,4 +33,5 @@ export const organizationEndpoints = {
 export const leaseEndpoints = {
 	getLeaseMetaData: () => '/public/lease-metadata',
 	getLeases: () => '/leases',
+	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
 };

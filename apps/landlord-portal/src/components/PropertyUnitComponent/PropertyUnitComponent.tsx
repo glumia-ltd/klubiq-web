@@ -1,5 +1,5 @@
 import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
-import { Container } from '@mui/system';
+// import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
 // import { HomeIcon } from '../Icons/HomeIcon';
@@ -91,7 +91,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.container}>
+		// <Container maxWidth={'xl'} sx={styles.container}>
+		<>
 			<Grid>
 				<Grid>
 					<Breadcrumbs
@@ -244,6 +245,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
-		</Container>
+		</>
+		// </Container>
 	);
 };

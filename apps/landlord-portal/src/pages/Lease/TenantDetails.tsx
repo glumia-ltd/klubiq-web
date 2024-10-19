@@ -1,6 +1,6 @@
 import { styles } from './style';
 import {
-	Container,
+	// Container,
 	Stack,
 	Typography,
 	Card,
@@ -34,7 +34,8 @@ const TenantDetails = () => {
 		},
 	];
 	return (
-		<Container maxWidth='xl' sx={styles.container}>
+		// <Container maxWidth='xl' sx={styles.container}>
+		<>
 			<Stack spacing={4}>
 				<Stack direction={'row'} spacing={{ xs: 1, sm: 1, md: 1 }}>
 					<Card sx={styles.detailsCard}>
@@ -145,7 +146,8 @@ const TenantDetails = () => {
 					</Card>
 				</Stack>
 			</Stack>
-		</Container>
+		</>
+		// </Container>
 	);
 };
 

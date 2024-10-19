@@ -31,6 +31,7 @@ import ViewPortLayout from '../Layouts/ViewPortLayout';
 
 import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
 import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
+import LeaseDetails from '../pages/Lease/LeaseDetails';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -84,6 +85,7 @@ export const router = createBrowserRouter(
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
 
 					<Route path='/lease' element={<Lease />} />
+					<Route path='/lease/:id' element={<LeaseDetails />} />
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/message' element={<Message />} />
 					<Route path='/support' element={<Support />} />

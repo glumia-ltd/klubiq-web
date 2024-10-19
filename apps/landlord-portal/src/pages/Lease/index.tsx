@@ -1,4 +1,8 @@
-import { Container, Stack, Button } from '@mui/material';
+import {
+	// Container,
+	Stack,
+	Button,
+} from '@mui/material';
 import { styles } from './style';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../components/Filter/Filter';
@@ -10,6 +14,7 @@ import {
 	useGetLeasesQuery,
 } from '../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../components/DataPagination';
+import { useNavigate } from 'react-router-dom';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
@@ -35,6 +40,8 @@ const Lease = () => {
 	const allLease = leaseData?.pageData;
 	const pageCount = leaseData?.meta?.pageCount;
 
+	const navigate = useNavigate();
+
 	const getCurrentPage = useCallback((value: any) => {
 		setCurrentPage(value);
 
@@ -51,59 +58,59 @@ const Lease = () => {
 	}, [filter, getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
-		console.log(id);
+		navigate(`/lease/${id}`);
 	};
 
 	return (
 		<>
-			<Container maxWidth='xl' sx={styles.container}>
-				<Stack spacing={5}>
-					<Stack
-						direction={'row'}
-						spacing={{ xs: 1, sm: 2, md: 4 }}
-						sx={styles.buttonContainer}
+			{/* <Container maxWidth='xl' sx={styles.container}> */}
+			<Stack spacing={5}>
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 2, md: 4 }}
+					sx={styles.buttonContainer}
+				>
+					<Button
+						variant='contained'
+						sx={styles.addLeaseButton}
+						// onClick={handleAddProperties}
 					>
-						<Button
-							variant='contained'
-							sx={styles.addLeaseButton}
-							// onClick={handleAddProperties}
-						>
-							<LeftArrowIcon />
-							Add New Lease
-						</Button>
-					</Stack>
-					<Stack
-						direction={'row'}
-						spacing={{ xs: 1, sm: 2, md: 4 }}
-						// sx={styles.buttonContainer}
-					>
-						<Filter
-							filterList={filterOptions}
-							getFilterResult={(options) => {
-								setFilter(options);
-							}}
-							disable={filterObjectLength ? false : !allLeases}
-						/>
-					</Stack>
-					<Stack direction={'row'}>
-						<LeaseTable
-							title='Lease'
-							allLease={allLease}
-							onRowClick={handleRowClick}
-						/>
-					</Stack>
+						<LeftArrowIcon />
+						Add New Lease
+					</Button>
 				</Stack>
-
-				<Stack mt={4}>
-					<DataPagination
-						getCurrentPage={getCurrentPage}
-						getItemsPerPageCount={getItemsPerPageCount}
-						pageCount={pageCount}
-						currentPage={currentPage}
-						itemsPerPageOptions={ITEMSCOUNTOPTIONS}
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 2, md: 4 }}
+					// sx={styles.buttonContainer}
+				>
+					<Filter
+						filterList={filterOptions}
+						getFilterResult={(options) => {
+							setFilter(options);
+						}}
+						disable={filterObjectLength ? false : !allLeases}
 					/>
 				</Stack>
-			</Container>
+				<Stack direction={'row'}>
+					<LeaseTable
+						title='Lease'
+						allLease={allLease}
+						onRowClick={handleRowClick}
+					/>
+				</Stack>
+			</Stack>
+
+			<Stack mt={4}>
+				<DataPagination
+					getCurrentPage={getCurrentPage}
+					getItemsPerPageCount={getItemsPerPageCount}
+					pageCount={pageCount}
+					currentPage={currentPage}
+					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
+				/>
+			</Stack>
+			{/* </Container> */}
 		</>
 	);
 };

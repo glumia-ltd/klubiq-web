@@ -8,7 +8,7 @@ import {
 	InputBase,
 	Typography,
 	Skeleton,
-	Container,
+	// Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -138,7 +138,8 @@ const Properties = () => {
 			{isPropertyLoading ? (
 				<PropertiesSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.container}>
+				// <Container maxWidth={'xl'} sx={styles.container}>
+				<>
 					<Grid container rowSpacing={2}>
 						<Grid
 							xs={12}
@@ -267,7 +268,8 @@ const Properties = () => {
 							currentPage={currentPage}
 						/>
 					</Stack>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);

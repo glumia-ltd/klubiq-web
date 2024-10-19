@@ -1,5 +1,5 @@
 import { Grid, Breadcrumbs, Button, Chip, Skeleton } from '@mui/material';
-import { Container } from '@mui/system';
+// import { Container } from '@mui/system';
 import { styles } from './style';
 // import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../../components/Overview/Overview';
@@ -68,7 +68,8 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 	};
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.container}>
+		// <Container maxWidth={'xl'} sx={styles.container}>
+		<>
 			<Grid>
 				<Grid>
 					<Breadcrumbs
@@ -177,6 +178,7 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 
 				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
-		</Container>
+		</>
+		// </Container>
 	);
 };

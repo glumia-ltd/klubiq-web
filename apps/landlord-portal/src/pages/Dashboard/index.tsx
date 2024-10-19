@@ -220,7 +220,8 @@ const DashBoard = () => {
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.containerStyle}>
+				// <Container maxWidth={'xl'} sx={styles.containerStyle}>
+				<>
 					<Grid container spacing={2}>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 							{/* PROPERTIES */}
@@ -813,7 +814,8 @@ const DashBoard = () => {
 							)}
 						</Grid>
 					</Grid>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);

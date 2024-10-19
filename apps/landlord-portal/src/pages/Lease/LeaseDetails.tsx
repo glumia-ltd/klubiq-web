@@ -36,58 +36,58 @@ const Datas = [
 const LeaseDetails = () => {
 	return (
 		<>
-			<Container maxWidth='xl' sx={styles.container}>
-				<Stack spacing={5}>
-					<Stack
-						direction={'row'}
-						spacing={{ xs: 1, sm: 1, md: 1 }}
-						sx={styles.detailsBox}
-					>
-						<img src={LeaseIcon} alt='icon' />
-						<ArrowForwardIosIcon sx={styles.topIcon} />
-						<Typography sx={styles.detailsText}> Lease Detail</Typography>
-					</Stack>
-					<Stack
-						direction={'row'}
-						spacing={{ xs: 1, sm: 2, md: 2 }}
-						sx={styles.buttonContainer}
-					>
-						<Button
-							variant='contained'
-							sx={styles.actionButton}
-							// onClick={handleAddProperties}
-						>
-							Action
-							<MoreVertIcon />
-						</Button>
-					</Stack>
-					<Stack direction={'row'}>
-						<Chip
-							label={'Active'}
-							color={'success'}
-							variant='outlined'
-							sx={styles.chip}
-						/>
-					</Stack>
-					<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
-						<LeasePropertyCard />
-					</Stack>
-					<Box
-						sx={{
-							justifyContent: 'space-between',
-							alignItems: 'center',
-							display: 'flex',
-						}}
-					>
-						{Datas.map((Data) => (
-							<MiniCard Amount={Data.amount} Name={Data.name} />
-						))}
-					</Box>
-					<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
-						<DocumentUploadCard />
-					</Stack>
+			{/* <Container maxWidth='xl' sx={styles.container}> */}
+			<Stack spacing={5}>
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 1, md: 1 }}
+					sx={styles.detailsBox}
+				>
+					<img src={LeaseIcon} alt='icon' />
+					<ArrowForwardIosIcon sx={styles.topIcon} />
+					<Typography sx={styles.detailsText}> Lease Detail</Typography>
 				</Stack>
-			</Container>
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 2, md: 2 }}
+					sx={styles.buttonContainer}
+				>
+					<Button
+						variant='contained'
+						sx={styles.actionButton}
+						// onClick={handleAddProperties}
+					>
+						Action
+						<MoreVertIcon />
+					</Button>
+				</Stack>
+				<Stack direction={'row'}>
+					<Chip
+						label={'Active'}
+						color={'success'}
+						variant='outlined'
+						sx={styles.chip}
+					/>
+				</Stack>
+				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
+					<LeasePropertyCard />
+				</Stack>
+				<Box
+					sx={{
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						display: 'flex',
+					}}
+				>
+					{Datas.map((Data) => (
+						<MiniCard Amount={Data.amount} Name={Data.name} />
+					))}
+				</Box>
+				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
+					<DocumentUploadCard />
+				</Stack>
+			</Stack>
+			{/* </Container> */}
 		</>
 	);
 };

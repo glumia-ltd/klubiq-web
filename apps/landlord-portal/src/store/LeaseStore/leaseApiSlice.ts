@@ -20,6 +20,12 @@ export const leaseApiSlice = createApi({
 				params,
 			}),
 		}),
+		getSingleLeaseById: builder.query<any, { id: string | number }>({
+			query: (params) => ({
+				url: leaseEndpoints.getLease(params?.id),
+				method: 'GET',
+			}),
+		}),
 	}),
 });
 
