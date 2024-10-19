@@ -195,10 +195,9 @@ export const styles = {
 		textAlign: 'center',
 	},
 	chip: {
-		width: '106px',
+		padding: '18px',
 		fontSize: '15px',
-		fontWeight: '600',
-		marginLeft: '35px',
+		marginLeft: '1rem',
 	},
 	tableHeaderCellStyle: {
 		bgcolor: 'background.default',
@@ -207,13 +206,11 @@ export const styles = {
 	tableDiv: {
 		display: 'flex',
 		alignItems: 'center',
-		// justifyContent: 'center',
 	},
 	detailsBox: {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		width: '142px',
 	},
 
 	headerText: {

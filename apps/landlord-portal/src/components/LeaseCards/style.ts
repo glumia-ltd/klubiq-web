@@ -8,7 +8,7 @@ export const styles = {
 	cardContainer: {
 		borderRadius: '8px',
 		padding: '8px',
-		width: '217.2px',
+		width: { xs: '100%', sm: '48%', md: '32%' },
 		height: '80px',
 	},
 	chip: {

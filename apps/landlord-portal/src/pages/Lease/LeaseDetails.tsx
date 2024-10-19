@@ -37,31 +37,44 @@ const LeaseDetails = () => {
 	return (
 		<>
 			{/* <Container maxWidth='xl' sx={styles.container}> */}
-			<Stack spacing={5}>
+			<Stack
+				sx={{
+					justifyContent: 'center',
+					alignItems: 'flex-start',
+					width: '100%',
+				}}
+				spacing={5}
+			>
+				{/* Header stack */}
 				<Stack
 					direction={'row'}
-					spacing={{ xs: 1, sm: 1, md: 1 }}
-					sx={styles.detailsBox}
+					sx={{
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						width: '100%',
+					}}
 				>
-					<img src={LeaseIcon} alt='icon' />
-					<ArrowForwardIosIcon sx={styles.topIcon} />
-					<Typography sx={styles.detailsText}> Lease Detail</Typography>
+					<Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
+						<img src={LeaseIcon} alt='icon' />
+						<ArrowForwardIosIcon sx={styles.topIcon} />
+						<Typography sx={styles.detailsText}> Lease Detail</Typography>
+					</Stack>
+
+					<Stack>
+						<Button
+							variant='contained'
+							sx={styles.actionButton}
+							// onClick={handleAddProperties}
+						>
+							Action
+							<MoreVertIcon />
+						</Button>
+					</Stack>
 				</Stack>
-				<Stack
-					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 2 }}
-					sx={styles.buttonContainer}
-				>
-					<Button
-						variant='contained'
-						sx={styles.actionButton}
-						// onClick={handleAddProperties}
-					>
-						Action
-						<MoreVertIcon />
-					</Button>
-				</Stack>
-				<Stack direction={'row'}>
+
+				{/* chip stack */}
+
+				<Stack direction={'row'} fontWeight={600}>
 					<Chip
 						label={'Active'}
 						color={'success'}
@@ -69,21 +82,35 @@ const LeaseDetails = () => {
 						sx={styles.chip}
 					/>
 				</Stack>
-				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
+
+				{/* Lease property card */}
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 2, md: 8 }}
+					sx={{ width: '100%' }}
+				>
 					<LeasePropertyCard />
 				</Stack>
-				<Box
+
+				<Stack
+					spacing={2}
+					useFlexGap
+					direction={{ xs: 'column', sm: 'row' }}
 					sx={{
 						justifyContent: 'space-between',
-						alignItems: 'center',
-						display: 'flex',
+						width: '100%',
+						flexWrap: { xs: 'nowrap', sm: 'wrap', md: 'wrap' },
 					}}
 				>
 					{Datas.map((Data) => (
 						<MiniCard Amount={Data.amount} Name={Data.name} />
 					))}
-				</Box>
-				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 8 }}>
+				</Stack>
+				<Stack
+					direction={'row'}
+					spacing={{ xs: 1, sm: 2, md: 8 }}
+					sx={{ width: '100%' }}
+				>
 					<DocumentUploadCard />
 				</Stack>
 			</Stack>
