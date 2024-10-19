@@ -80,6 +80,9 @@ export const LightTheme: Theme = createTheme({
 			default: '#F3F6F8',
 			paper: '#F3F6F8',
 		},
+		notification: {
+			light: '#002147',
+		},
 		buttonColors: {
 			common: {
 				// color:
@@ -426,6 +429,9 @@ export const DarkTheme: Theme = createTheme({
 			light: '#6699CC',
 			dark: '#1b1b1b',
 			contrastText: '#ffffff',
+		},
+		notification: {
+			light: '#B8D9FF',
 		},
 
 		background: {

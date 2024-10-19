@@ -46,11 +46,19 @@ declare module '@mui/material/styles' {
 		buttonColors?: {
 			common: React.CSSProperties;
 		};
+		notification?: {
+			light?: string;
+			dark?: string;
+		};
 	}
 
 	interface PaletteOptions {
 		buttonColors?: {
 			common: React.CSSProperties;
+		};
+		notification?: {
+			light?: string;
+			dark?: string;
 		};
 	}
 }
