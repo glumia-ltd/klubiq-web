@@ -12,7 +12,7 @@ export const styles = {
 		height: '80px',
 	},
 	chip: {
-		width: '69px',
+		padding: '5px',
 		fontSize: '12px',
 		fontWeight: '600',
 	},

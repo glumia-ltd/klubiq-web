@@ -236,6 +236,27 @@ export const LightTheme: Theme = createTheme({
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
+
+			variants: [
+				{
+					props: { variant: 'expired' },
+					style: {
+						backgroundColor: '#D9D9D9B2',
+					},
+				},
+				{
+					props: { variant: 'overdue' },
+					style: {
+						backgroundColor: '#FF00001A',
+					},
+				},
+				{
+					props: { variant: 'active' },
+					style: {
+						backgroundColor: '#FFFFFF',
+					},
+				},
+			],
 		},
 
 		MuiButtonBase: {
@@ -602,6 +623,26 @@ export const DarkTheme: Theme = createTheme({
 					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},
+			variants: [
+				{
+					props: { variant: 'expired' },
+					style: {
+						backgroundColor: '#D9D9D9B2',
+					},
+				},
+				{
+					props: { variant: 'overdue' },
+					style: {
+						backgroundColor: '#FF00001A',
+					},
+				},
+				{
+					props: { variant: 'active' },
+					style: {
+						backgroundColor: '#FFFFFF',
+					},
+				},
+			],
 		},
 	},
 

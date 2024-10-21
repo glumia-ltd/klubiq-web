@@ -11,7 +11,6 @@ declare module '@mui/material/styles' {
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
 	}
-
 	interface TypographyVariantsOptions {
 		dashboardTypography?: React.CSSProperties;
 		link: React.CSSProperties;
@@ -93,5 +92,13 @@ declare module '@mui/material/Chip' {
 		rent: true;
 		sale: true;
 		propertyType: true;
+	}
+}
+
+declare module '@mui/material/Paper' {
+	interface PaperPropsVariantOverrides {
+		expired: true;
+		overdue: true;
+		active: true;
 	}
 }

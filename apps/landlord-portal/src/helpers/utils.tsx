@@ -1,3 +1,6 @@
+import { getData } from '../../src/services/indexedDb';
+import { get } from 'lodash';
+
 export const MEASUREMENTS: any[] = [
 	{
 		unit: 'SqM',
@@ -16,3 +19,13 @@ export const MEASUREMENTS: any[] = [
 		symbol: <span>in&sup2;</span>,
 	},
 ];
+
+export const getCurrencySymbol = (user: any) => {
+	if (!user.orgSettings) {
+		const orgSettings = getData('org-settings', 'client-config');
+		const currencySymbol = get(orgSettings, 'currencySymbol', '');
+		return currencySymbol;
+	}
+	const currencySymbol = get(user, 'orgSettings.currencySymbol', '');
+	return currencySymbol;
+};

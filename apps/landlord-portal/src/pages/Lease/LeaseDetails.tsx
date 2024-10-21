@@ -1,12 +1,17 @@
-import { Container, Stack, Button, Typography, Chip, Box } from '@mui/material';
+import { Stack, Button, Typography, Chip } from '@mui/material';
 import { styles } from './style';
-// import { useEffect, useRef, useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import LeaseIcon from '../../assets/images/Lease.svg';
+import { LeaseIcon } from '../../components/Icons/CustomIcons';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import LeasePropertyCard from '../../components/LeaseCards/LeasePropertyCard';
 import MiniCard from '../../components/LeaseCards/MiniCard';
 import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
+import { useGetSingleLeaseByIdQuery } from '../../store/LeaseStore/leaseApiSlice';
+import { useLocation } from 'react-router-dom';
+import { getCurrencySymbol } from '../../helpers/utils';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+
 const Datas = [
 	{
 		name: 'Rent',
@@ -34,6 +39,13 @@ const Datas = [
 	},
 ];
 const LeaseDetails = () => {
+	const location = useLocation();
+	const { user } = useSelector(getAuthState);
+
+	const currentLeaseId = location.pathname.split('/')[2]!;
+
+	const { data } = useGetSingleLeaseByIdQuery({ id: currentLeaseId || '' });
+
 	return (
 		<>
 			{/* <Container maxWidth='xl' sx={styles.container}> */}
@@ -55,7 +67,8 @@ const LeaseDetails = () => {
 					}}
 				>
 					<Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
-						<img src={LeaseIcon} alt='icon' />
+						{/* <img src={LeaseIcon} alt='icon' /> */}
+						<LeaseIcon sx={{ cursor: 'pointer' }} />
 						<ArrowForwardIosIcon sx={styles.topIcon} />
 						<Typography sx={styles.detailsText}> Lease Detail</Typography>
 					</Stack>
@@ -89,7 +102,12 @@ const LeaseDetails = () => {
 					spacing={{ xs: 1, sm: 2, md: 8 }}
 					sx={{ width: '100%' }}
 				>
-					<LeasePropertyCard />
+					<LeasePropertyCard
+						propertyName={data?.propertyName}
+						isMultiUnitProperty={data?.isMultiUnitProperty}
+						propertyAddress={data?.propertyAddress}
+						propertyType={data?.propertyType}
+					/>
 				</Stack>
 
 				<Stack
@@ -99,12 +117,41 @@ const LeaseDetails = () => {
 					sx={{
 						justifyContent: 'space-between',
 						width: '100%',
-						flexWrap: { xs: 'nowrap', sm: 'wrap', md: 'wrap' },
+						flexWrap: {
+							xs: 'nowrap',
+							sm: 'wrap',
+							md: 'wrap',
+							lg: 'nowrap',
+							xl: 'nowrap',
+						},
 					}}
 				>
-					{Datas.map((Data) => (
-						<MiniCard Amount={Data.amount} Name={Data.name} />
-					))}
+					<MiniCard
+						value={`${getCurrencySymbol(user)}${data?.rentAmount}`}
+						name='Rent'
+						status={data?.status}
+					/>
+					<MiniCard
+						value={`${data?.rentDueOn}`}
+						name='Due On'
+						status={data?.status}
+					/>
+					<MiniCard
+						value={data?.paymentFrequency}
+						name='Payment Period'
+						status={data?.status}
+					/>
+					<MiniCard
+						value={data?.nextPaymentDate}
+						name='Next Payment'
+						status={data?.status}
+					/>
+					<MiniCard value={''} name='Tenant' status={data?.status} />
+					<MiniCard
+						value={`${data?.daysToLeaseExpires} day${Number(data?.daysToLeaseExpires) > 1 ? 's' : ''}`}
+						name='Lease Expires'
+						status={data?.status}
+					/>
 				</Stack>
 				<Stack
 					direction={'row'}

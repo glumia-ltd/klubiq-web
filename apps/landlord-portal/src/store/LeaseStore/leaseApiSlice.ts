@@ -34,4 +34,8 @@ interface GetLeasesResponse {
 	meta: any;
 }
 
-export const { useGetLeaseMetaDataQuery, useGetLeasesQuery } = leaseApiSlice;
+export const {
+	useGetLeaseMetaDataQuery,
+	useGetLeasesQuery,
+	useGetSingleLeaseByIdQuery,
+} = leaseApiSlice;
