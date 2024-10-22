@@ -1,8 +1,4 @@
-import {
-	// Container,
-	Stack,
-	Button,
-} from '@mui/material';
+import { Stack, Button } from '@mui/material';
 import { styles } from './style';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../components/Filter/Filter';
@@ -31,6 +27,7 @@ const Lease = () => {
 	const filterObjectLength = Object.keys(filter).length;
 	const allLeases = Boolean(leases?.length);
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
+
 	const { data: leaseData } = useGetLeasesQuery({
 		...filter,
 		...defaultParams,

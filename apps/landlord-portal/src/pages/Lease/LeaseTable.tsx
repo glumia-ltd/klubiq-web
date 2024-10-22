@@ -8,7 +8,6 @@ import {
 	TableRow,
 	Chip,
 	Typography,
-	Avatar,
 } from '@mui/material';
 
 import { styles } from './style';

@@ -5,7 +5,8 @@ import { LeaseIcon } from '../../components/Icons/CustomIcons';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import LeasePropertyCard from '../../components/LeaseCards/LeasePropertyCard';
 import MiniCard from '../../components/LeaseCards/MiniCard';
-import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
+// import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
+import { LeaseDocumentTable } from './LeaseDocumentTable';
 import { useGetSingleLeaseByIdQuery } from '../../store/LeaseStore/leaseApiSlice';
 import { useLocation } from 'react-router-dom';
 import { getCurrencySymbol } from '../../helpers/utils';
@@ -45,6 +46,14 @@ const LeaseDetails = () => {
 	const currentLeaseId = location.pathname.split('/')[2]!;
 
 	const { data } = useGetSingleLeaseByIdQuery({ id: currentLeaseId || '' });
+
+	const documentTableData = {
+		column: [
+			{ id: 'name', label: 'Name' },
+			{ id: 'date', label: 'Date' },
+		],
+		row: [{ name: 'Maintenance Fee', date: 'second' }],
+	};
 
 	return (
 		<>
@@ -158,7 +167,8 @@ const LeaseDetails = () => {
 					spacing={{ xs: 1, sm: 2, md: 8 }}
 					sx={{ width: '100%' }}
 				>
-					<DocumentUploadCard />
+					{/* <DocumentUploadCard /> */}
+					<LeaseDocumentTable documentTableData={documentTableData} />
 				</Stack>
 			</Stack>
 			{/* </Container> */}

@@ -112,12 +112,24 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 	};
 
 	const handleRemoveFilter = (filterTitle: string, id: string) => {
-		const updatedFilters = selectedTitle;
-		const updatedId = selectedId;
+		//clone the objects
+		const updatedFilters = { ...selectedTitle };
+		const updatedId = { ...selectedId };
 		delete updatedFilters[filterTitle];
 		delete updatedId[id];
 
+		//check to see the keys in the object
+		const updatedIdKeyArray = Object.keys(updatedId);
+		if (
+			updatedIdKeyArray.includes('order') &&
+			!updatedIdKeyArray.includes('sortBy')
+		) {
+			delete updatedId['order'];
+		}
 		getFilterResult({ ...updatedId });
+
+		// add selected id
+		setSelectedId({ ...updatedId });
 
 		setSelectedTitle({ ...updatedFilters });
 		setCurrentTitle('');
@@ -126,6 +138,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 	const handleClearAllFilter = () => {
 		getFilterResult({});
 		setSelectedTitle({});
+		setSelectedId({});
 	};
 
 	return (
