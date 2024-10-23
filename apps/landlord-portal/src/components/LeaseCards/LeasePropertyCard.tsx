@@ -2,8 +2,22 @@ import { Card, Stack, Chip, Typography, Divider } from '@mui/material';
 import { styles } from './style';
 import bukky from '../../assets/images/bukky.png';
 import * as KlubiqIcons from '../Icons/CustomIcons';
+import { FC } from 'react';
 
-const LeasePropertyCard = () => {
+type LeasePropertyCardType = {
+	propertyName: string;
+	isMultiUnitProperty: boolean;
+	propertyAddress: string;
+	propertyType: string;
+	tenants?: any[];
+};
+
+const LeasePropertyCard: FC<LeasePropertyCardType> = ({
+	propertyName,
+	isMultiUnitProperty,
+	propertyAddress,
+	propertyType,
+}) => {
 	return (
 		<Stack spacing='2' width='100%'>
 			<Card sx={styles.container}>
@@ -18,7 +32,7 @@ const LeasePropertyCard = () => {
 					<Stack spacing={2} direction={'column'}>
 						<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 1 }}>
 							<Chip
-								label={'Duplex'}
+								label={propertyType}
 								color={'primary'}
 								variant='outlined'
 								sx={styles.chip}
@@ -29,8 +43,10 @@ const LeasePropertyCard = () => {
 							divider={<Divider orientation='vertical' flexItem />}
 							spacing={2.5}
 						>
-							<Typography sx={styles.typoText}>Landmark Estate</Typography>
-							<Typography sx={styles.typoText}>Single Unit</Typography>
+							<Typography sx={styles.typoText}>{propertyName}</Typography>
+							<Typography sx={styles.typoText}>
+								{isMultiUnitProperty ? 'Multi Unit' : 'Single Unit'}
+							</Typography>
 						</Stack>{' '}
 						<Stack direction={'row'} sx={styles.addressDiv}>
 							<KlubiqIcons.Place
@@ -38,9 +54,7 @@ const LeasePropertyCard = () => {
 									color: 'text.primary',
 								}}
 							/>
-							<Typography>
-								Engineering Close,off Idowu Street, Victoria Island, Lagos
-							</Typography>
+							<Typography>{propertyAddress}</Typography>
 						</Stack>
 					</Stack>
 					<Stack
@@ -54,7 +68,7 @@ const LeasePropertyCard = () => {
 							width={'64px'}
 							height={'64px'}
 						/>
-						<Typography sx={styles.nameText}>Aisha R</Typography>
+						<Typography sx={styles.nameText}>TODO</Typography>
 					</Stack>
 				</Stack>
 			</Card>

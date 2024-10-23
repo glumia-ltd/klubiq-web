@@ -139,19 +139,22 @@ function SideBar() {
 											sx={{
 												minHeight: 20,
 												justifyContent: sidebarOpen ? 'initial' : 'center',
+												alignItems: 'center',
 												my: 0.8,
 												borderRadius: '10px',
 												'&:hover': {
-													bgcolor: 'rgba(255,255,255,0.6)',
-													color: 'rgba(255,255,255,0.5)',
+													bgcolor: 'secondary.light',
+													opacity: '0.9',
 												},
 												'&.Mui-selected': {
 													bgcolor: 'white',
 													'& .MuiListItemIcon-root': {
-														color: 'primary.main',
+														// color: 'primary.main',
+														color: 'secondary.light',
 													},
 													'& .MuiListItemText-root': {
-														color: 'primary.main',
+														// color: 'primary.main',
+														color: 'secondary.dark',
 													},
 													'&:hover': {
 														bgcolor: 'white',
@@ -181,6 +184,11 @@ function SideBar() {
 												sx={{
 													opacity: sidebarOpen ? 1 : 0,
 													pointerEvents: 'none',
+													justifyContent: 'center',
+													'& .MuiListItemText-primary': {
+														fontWeight: 600,
+														fontSize: '1.1rem',
+													},
 												}}
 											>
 												{props.title}

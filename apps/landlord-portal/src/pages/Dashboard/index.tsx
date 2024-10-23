@@ -1,12 +1,4 @@
-import {
-	Container,
-	Grid,
-	Card,
-	Typography,
-	Box,
-	Button,
-	Stack,
-} from '@mui/material';
+import { Grid, Card, Typography, Box, Button, Stack } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
@@ -43,6 +35,7 @@ import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import { consoleLog } from '../../helpers/debug-logger';
+import { getCurrencySymbol } from '../../helpers/utils';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
@@ -205,22 +198,14 @@ const DashBoard = () => {
 		}).format(numberVal);
 		return localCurrencyVal;
 	};
-	const getCurrencySymbol = () => {
-		if (!user.orgSettings) {
-			const orgSettings = getData('org-settings', 'client-config');
-			const currencySymbol = get(orgSettings, 'currencySymbol', '');
-			return currencySymbol;
-		}
-		const currencySymbol = get(user, 'orgSettings.currencySymbol', '');
-		return currencySymbol;
-	};
 
 	return (
 		<>
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.containerStyle}>
+				// <Container maxWidth={'xl'} sx={styles.containerStyle}>
+				<>
 					<Grid container spacing={2}>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 							{/* PROPERTIES */}
@@ -808,12 +793,13 @@ const DashBoard = () => {
 									seriesData={revenueReport?.revenueChart?.seriesData || []}
 									maxRevenue={revenueReport?.maxRevenue || 0}
 									xAxisData={revenueReport?.revenueChart?.xAxisData}
-									currencySymbol={getCurrencySymbol()}
+									currencySymbol={getCurrencySymbol(user)}
 								/>
 							)}
 						</Grid>
 					</Grid>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);
