@@ -1,4 +1,16 @@
-import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
+import {
+	Grid,
+	Breadcrumbs,
+	Typography,
+	Button,
+	Chip,
+	Paper,
+	MenuList,
+	MenuItem,
+	ClickAwayListener,
+	Grow,
+	Popper,
+} from '@mui/material';
 // import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -11,7 +23,7 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import {
 	HouseIcon,
 	TenantIcon,
@@ -50,11 +62,40 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 }) => {
 	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
+	const [open, setOpen] = useState<boolean>(false);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
+	const anchorRef = useRef<HTMLButtonElement>(null);
+
 	const handleHomeClick = () => {
 		navigate(-1);
+	};
+
+	const handleClose = (value?: string) => {
+		// if (
+		// 	anchorRef.current &&
+		// 	anchorRef.current.contains(event.target as HTMLElement)
+		// ) {
+		// 	return;
+		// }
+
+		console.log(value);
+
+		setOpen(false);
+	};
+
+	function handleListKeyDown(event: React.KeyboardEvent) {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			setOpen(false);
+		} else if (event.key === 'Escape') {
+			setOpen(false);
+		}
+	}
+
+	const handleToggle = () => {
+		setOpen((prevOpen) => !prevOpen);
 	};
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
@@ -115,10 +156,64 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
+					<Button
+						ref={anchorRef}
+						variant='propertyButton'
+						sx={styles.actionButtonStyle}
+						onClick={handleToggle}
+					>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
+
+					<Popper
+						open={open}
+						anchorEl={anchorRef.current}
+						role={undefined}
+						placement='bottom-start'
+						transition
+						disablePortal
+						sx={{ minWidth: '160px', zIndex: 10 }}
+					>
+						{({ TransitionProps, placement }) => (
+							<Grow
+								{...TransitionProps}
+								style={{
+									transformOrigin:
+										placement === 'bottom-start' ? 'left top' : 'left bottom',
+								}}
+							>
+								<Paper>
+									<ClickAwayListener onClickAway={() => setOpen(false)}>
+										<MenuList
+											id='composition-menu'
+											aria-labelledby='composition-button'
+											onKeyDown={handleListKeyDown}
+										>
+											<MenuItem
+												onClick={() => handleClose('Edit')}
+												value='Edit'
+											>
+												Edit{' '}
+											</MenuItem>
+											<MenuItem
+												onClick={() => handleClose('Delete')}
+												value='Delete'
+											>
+												Delete{' '}
+											</MenuItem>
+											<MenuItem
+												onClick={() => handleClose('Logout')}
+												value='Logout'
+											>
+												Logout
+											</MenuItem>
+										</MenuList>
+									</ClickAwayListener>
+								</Paper>
+							</Grow>
+						)}
+					</Popper>
 				</Grid>
 				<Chip
 					label={currentProperty?.purpose?.displayText || 'For sale'}
