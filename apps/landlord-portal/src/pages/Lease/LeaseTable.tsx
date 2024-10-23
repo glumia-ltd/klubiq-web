@@ -86,9 +86,9 @@ export const LeaseTable: FC<LeaseTableType> = ({ filters, onRowClick }) => {
 					{paginatedLeases.map((lease, index) => (
 						<TableRow
 							key={index}
-							hover // Adds hover effect on rows
-							onClick={() => onRowClick && onRowClick(lease)} // Makes row clickable
-							sx={{ cursor: 'pointer' }} // Changes the cursor to pointer
+							hover
+							onClick={() => onRowClick && onRowClick(lease)}
+							sx={{ cursor: 'pointer' }}
 						>
 							<TableCell align='center'>
 								<Chip
