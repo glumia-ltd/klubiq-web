@@ -8,7 +8,7 @@ import {
 	InputBase,
 	Typography,
 	Skeleton,
-	Container,
+	// Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -28,7 +28,7 @@ import {
 	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
 import { useDispatch } from 'react-redux';
-import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
+// import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../components/DataPagination';
 import { useDebounce } from '../../hooks/useDebounce';
 
@@ -120,14 +120,14 @@ const Properties = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
-	useEffect(() => {
-		const currentFilter = {
-			...filter,
-			...defaultParams,
-		};
+	// useEffect(() => {
+	// 	const currentFilter = {
+	// 		...filter,
+	// 		...defaultParams,
+	// 	};
 
-		dispatch(setCurrentFilter({ currentFilter }));
-	}, [defaultParams, dispatch, filter]);
+	// 	dispatch(setCurrentFilter({ currentFilter }));
+	// }, [defaultParams, dispatch, filter]);
 
 	useEffect(() => {
 		getCurrentPage(1);
@@ -138,7 +138,8 @@ const Properties = () => {
 			{isPropertyLoading ? (
 				<PropertiesSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.container}>
+				// <Container maxWidth={'xl'} sx={styles.container}>
+				<>
 					<Grid container rowSpacing={2}>
 						<Grid
 							xs={12}
@@ -267,7 +268,8 @@ const Properties = () => {
 							currentPage={currentPage}
 						/>
 					</Stack>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);
