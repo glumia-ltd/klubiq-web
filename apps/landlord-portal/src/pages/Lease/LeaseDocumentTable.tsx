@@ -26,32 +26,13 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 }) => {
 	const documentTableBodyRows = documentTableData?.row;
 	const documentTableColumns = documentTableData?.column;
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-	const details = [
-		{
-			name: 'Maintenance fee ',
-			dueDate: 'March 13,2025',
-		},
-
-		{
-			name: 'Insurance fee  ',
-			dueDate: 'April 4, 2024',
-		},
-		{
-			name: 'Landmark House unit 1 Lease payment ',
-			dueDate: 'March 13,2025',
-		},
-		{
-			name: 'Landmark House unit 2 Lease payment ',
-			dueDate: 'April 4, 2024',
-		},
-	];
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0]; // Safe check for files array
-		if (file) {
-			setSelectedFile(file);
-			console.log('Selected file:', file);
+		const files = event.target.files;
+		if (files) {
+			setSelectedFiles(Array.from(files));
+			console.log('Selected files:', files);
 		}
 	};
 	return (
@@ -61,10 +42,11 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 				<Stack direction='row' alignItems='center'>
 					<div style={{ textAlign: 'center' }}>
 						<input
-							accept='image/*'
+							accept='image/*,application/pdf,.doc,.docx,text/plain'
 							style={{ display: 'none' }}
 							id='upload-button'
 							type='file'
+							multiple
 							onChange={handleFileChange}
 						/>
 						<label htmlFor='upload-button'>
@@ -95,7 +77,7 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{details.map((detail, index) => (
+						{selectedFiles.map((detail, index) => (
 							<TableRow key={index}>
 								<TableCell sx={styles.tableDiv} align='left'>
 									<InsertDriveFileOutlinedIcon />
@@ -105,7 +87,7 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 								</TableCell>
 
 								<TableCell align='left' sx={styles.cellText}>
-									{detail.dueDate}
+									March 13,2025
 								</TableCell>
 							</TableRow>
 						))}
