@@ -6,15 +6,19 @@ import { FC } from 'react';
 type PaginationType = {
 	getCurrentPage?: (value?: any) => void;
 	getItemsPerPageCount?: (value?: any) => void;
+	itemsPerPageOptions?: number[];
 	pageCount?: number;
 	currentPage?: number;
 };
+
+const DEFAULTITEMSPERPAGE = [12, 24, 36];
 
 export const DataPagination: FC<PaginationType> = ({
 	getCurrentPage,
 	getItemsPerPageCount,
 	pageCount,
 	currentPage,
+	itemsPerPageOptions,
 }) => {
 	const handlePaginationChange = (value: any) => {
 		getCurrentPage && getCurrentPage(value);
@@ -49,13 +53,29 @@ export const DataPagination: FC<PaginationType> = ({
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
-						defaultValue={24}
+						defaultValue={
+							itemsPerPageOptions
+								? itemsPerPageOptions[0]
+								: DEFAULTITEMSPERPAGE[1]
+						}
 						label='Properties per page'
 						onChange={handleItemsPerPageChange}
 					>
-						<MenuItem value={12}>12</MenuItem>
-						<MenuItem value={24}>24</MenuItem>
-						<MenuItem value={36}>36</MenuItem>
+						{itemsPerPageOptions
+							? itemsPerPageOptions?.map((item: number) => {
+									return (
+										<MenuItem key={item} value={item}>
+											{item}
+										</MenuItem>
+									);
+								})
+							: DEFAULTITEMSPERPAGE.map((item: number) => {
+									return (
+										<MenuItem key={item} value={item}>
+											{item}
+										</MenuItem>
+									);
+								})}
 					</Select>
 				</FormControl>
 			</Box>

@@ -139,7 +139,7 @@ const Invoice = () => {
 							sx={{
 								'& .MuiDataGrid-columnHeaders': {
 									backgroundColor: 'white',
-									color: '#000000', // Change header text color to white
+									color: '#1B1B1B', // Change header text color to white
 								},
 								'& .MuiDataGrid-cell': {
 									borderRight: '1px solid rgba(224, 224, 224, 1)', // Add vertical lines between cells

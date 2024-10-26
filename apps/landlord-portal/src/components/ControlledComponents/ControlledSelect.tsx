@@ -14,9 +14,9 @@ import { getIn } from 'formik';
 
 type ControlledSelectProps = {
 	loading?: boolean;
-	formik: any;
+	formik?: any;
 	sx?: SxProps;
-	label: string;
+	label?: string;
 	name: string;
 	disableOnChange?: boolean;
 	options: { [key: string]: string }[];
