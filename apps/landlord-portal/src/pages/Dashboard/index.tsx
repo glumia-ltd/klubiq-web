@@ -750,56 +750,62 @@ const DashBoard = () => {
 							item
 							xs={12}
 							sm={12}
-							md={7}
+							md={5}
 							lg={5}
 							xl={5}
 							alignItems={'center'}
 							justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 							display={'flex'}
 						>
-							<DatePicker
-								defaultValue={dayjs().subtract(11, 'months')}
-								value={firstDay}
-								maxDate={
-									!secondDay
-										? dayjs().subtract(11, 'months')
-										: secondDay.subtract(11, 'months')
-								}
-								onChange={(date) => {
-									setFirstDay(dayjs(date));
-									setSecondDay(dayjs(date).add(11, 'months'));
-								}}
-								format='DD/MM/YYYY'
-								slotProps={{
-									inputAdornment: {
-										position: 'start',
-									},
-								}}
-							/>
-							<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-							<DatePicker
-								defaultValue={dayjs()}
-								value={secondDay}
-								maxDate={dayjs()}
-								onChange={(date) => {
-									setSecondDay(dayjs(date));
-									setFirstDay(dayjs(date).subtract(11, 'months'));
-								}}
-								format='DD/MM/YYYY'
-								slotProps={{
-									inputAdornment: {
-										position: 'start',
-									},
-								}}
-							/>
-
-							<Button
-								sx={styles.downloadButtonStyle}
-								variant='outlined'
-								onClick={handleDownload}
+							<Stack
+								direction={'row'}
+								spacing={1}
+								sx={styles.datepickerStackStyle}
 							>
-								<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
-							</Button>
+								<DatePicker
+									defaultValue={dayjs().subtract(11, 'months')}
+									value={firstDay}
+									maxDate={
+										!secondDay
+											? dayjs().subtract(11, 'months')
+											: secondDay.subtract(11, 'months')
+									}
+									onChange={(date) => {
+										setFirstDay(dayjs(date));
+										setSecondDay(dayjs(date).add(11, 'months'));
+									}}
+									format='DD/MM/YYYY'
+									slotProps={{
+										inputAdornment: {
+											position: 'start',
+										},
+									}}
+								/>
+								<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+								<DatePicker
+									defaultValue={dayjs()}
+									value={secondDay}
+									maxDate={dayjs()}
+									onChange={(date) => {
+										setSecondDay(dayjs(date));
+										setFirstDay(dayjs(date).subtract(11, 'months'));
+									}}
+									format='DD/MM/YYYY'
+									slotProps={{
+										inputAdornment: {
+											position: 'start',
+										},
+									}}
+								/>
+
+								<Button
+									sx={styles.downloadButtonStyle}
+									variant='outlined'
+									onClick={handleDownload}
+								>
+									<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
+								</Button>
+							</Stack>
 						</Grid>
 
 						<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>

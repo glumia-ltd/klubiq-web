@@ -21,7 +21,7 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-
+import { auth } from '../../firebase';
 function MobileSideBar() {
 	const theme = useTheme();
 
@@ -71,6 +71,7 @@ function MobileSideBar() {
 		handleDrawerClose();
 		if (title !== 'Logout') return;
 		sessionStorage.clear();
+		auth.signOut();
 	};
 
 	return (
