@@ -17,6 +17,6 @@ export const styles = {
 	},
 
 	tabItem: {
-		width: '25%',
+		width: '33%',
 	},
 };

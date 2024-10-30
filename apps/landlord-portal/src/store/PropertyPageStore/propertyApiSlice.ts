@@ -45,6 +45,19 @@ export const propertyApiSlice = createApi({
 				body,
 			}),
 		}),
+
+		archiveProperty: builder.mutation<any, { uuid: string }>({
+			query: (params) => ({
+				url: propertiesEndpoints.archiveProperty(params.uuid),
+				method: 'PUT',
+			}),
+		}),
+		deleteProperty: builder.mutation<any, { uuid: string }>({
+			query: (params) => ({
+				url: propertiesEndpoints.deleteProperty(params.uuid),
+				method: 'DELETE',
+			}),
+		}),
 	}),
 });
 
@@ -63,4 +76,6 @@ export const {
 	useGetSinglePropertyByUUIDQuery,
 	useAddPropertyMutation,
 	useGetSignedUrlMutation,
+	useArchivePropertyMutation,
+	useDeletePropertyMutation,
 } = propertyApiSlice;
