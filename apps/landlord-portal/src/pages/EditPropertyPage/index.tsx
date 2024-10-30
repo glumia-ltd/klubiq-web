@@ -148,7 +148,7 @@ const EditPropertyPage = () => {
 			categoryMetaData: null,
 			newAmenity: '',
 			customAmenities: [],
-			categoryId: 1,
+			categoryId: null,
 			description: '',
 			name: '',
 			typeId: '',
