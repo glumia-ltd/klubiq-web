@@ -135,7 +135,7 @@ function SideBar() {
 										}}
 									>
 										<ListItemButton
-											selected={path === pathname}
+											selected={pathname.includes(path)}
 											sx={{
 												minHeight: 20,
 												justifyContent: sidebarOpen ? 'initial' : 'center',
