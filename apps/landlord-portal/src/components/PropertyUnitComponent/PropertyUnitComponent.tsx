@@ -118,6 +118,10 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		setOpenDeletePropertyDialog(true);
 	};
 
+	const handleEditProperty = () => {
+		navigate('edit/property-category');
+	};
+
 	const handleArchivePropertyRequest = async () => {
 		if (currentUUId) {
 			try {
@@ -295,20 +299,20 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 											</MenuItem>
 
 											<MenuItem
+												onClick={handleEditProperty}
+												value='Logout'
+												sx={{ padding: '10px' }}
+											>
+												Edit Property
+											</MenuItem>
+
+											<MenuItem
 												onClick={handleDeleteProperty}
 												value='Delete'
 												sx={{ padding: '10px' }}
 												divider
 											>
 												Delete Property{' '}
-											</MenuItem>
-
-											<MenuItem
-												onClick={() => handleClose('Logout')}
-												value='Logout'
-												sx={{ padding: '10px' }}
-											>
-												Delete Property
 											</MenuItem>
 										</MenuList>
 									</ClickAwayListener>
