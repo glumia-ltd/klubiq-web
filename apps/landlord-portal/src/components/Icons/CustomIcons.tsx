@@ -484,6 +484,23 @@ const LeaseIcon = createSvgIcon(
 	'LeaseIcon',
 );
 
+const WarningIcon = createSvgIcon(
+	<svg
+		width='64'
+		height='64'
+		viewBox='0 0 64 64'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<path d='M32 0L59.7128 48H4.28719L32 0Z' fill='#FFD700' />
+		<path
+			d='M31 19.0684H33V30.0684H31V19.0684ZM33 33.0684V35.0684H31V33.0684H33Z'
+			fill='white'
+		/>
+	</svg>,
+	'WarningIcon',
+);
+
 export {
 	Place,
 	Bedroom,
@@ -509,4 +526,5 @@ export {
 	EmojiOneHomeIcon,
 	EmojiOneBuildingIcon,
 	LeaseIcon,
+	WarningIcon,
 };

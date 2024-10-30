@@ -24,6 +24,9 @@ export const propertiesEndpoints = {
 	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getSignedUrl: () => '/properties/signed-url',
 	getPropertiesNames: () => '/properties/view/list',
+	archiveProperty: (propertyUuid: string) =>
+		`/properties/${propertyUuid}/archive`,
+	deleteProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 };
 
 export const organizationEndpoints = {

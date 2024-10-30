@@ -29,8 +29,7 @@ import {
 	useGetDashboardMetricsQuery,
 	useGetRevenueReportDataQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
-import { getData } from '../../services/indexedDb';
-import { get } from 'lodash';
+import { getLocaleFormat } from '../../helpers/utils';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
@@ -170,34 +169,6 @@ const DashBoard = () => {
 			consoleLog(e);
 		}
 	};
-	const getLocaleFormat = (
-		numberVal: number,
-		style: 'currency' | 'percent' | 'unit' | 'decimal',
-	) => {
-		let currencyCode = '';
-		let countryCode = '';
-		let lang = '';
-		if (!user.orgSettings) {
-			const orgSettings = getData('org-settings', 'client-config');
-			currencyCode = get(orgSettings, 'currency', '');
-			countryCode = get(orgSettings, 'countryCode', '');
-			lang = get(orgSettings, 'language', '');
-		}
-		currencyCode = get(user, 'orgSettings.currency', '');
-		countryCode = get(user, 'orgSettings.countryCode', '');
-		lang = get(user, 'orgSettings.language', '');
-		if (!currencyCode || !countryCode || !lang) {
-			currencyCode = 'NGN';
-			countryCode = 'NG';
-			lang = 'en';
-		}
-		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
-			style: `${style}`,
-			currency: `${currencyCode}`,
-			currencyDisplay: 'symbol',
-		}).format(numberVal);
-		return localCurrencyVal;
-	};
 
 	return (
 		<>
@@ -247,7 +218,7 @@ const DashBoard = () => {
 										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{getLocaleFormat(OCCUPANCYRATE || 0, 'percent')}
+										{getLocaleFormat(user, OCCUPANCYRATE || 0, 'percent')}
 									</Typography>
 
 									<Stack
@@ -267,6 +238,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
 											{getLocaleFormat(
+												user,
 												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
 												'percent',
 											)}
@@ -290,7 +262,7 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											{getLocaleFormat(OVERDUERENTSUM || 0.0, 'currency')}
+											{getLocaleFormat(user, OVERDUERENTSUM || 0.0, 'currency')}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
@@ -338,7 +310,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(TOTALREVENUE || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															TOTALREVENUE || 0.0,
+															'currency',
+														)}
 													</Typography>
 
 													{showTrendArrow(TOTALREVENUECHANGEINDICATOR)}
@@ -352,6 +328,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -376,7 +353,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(TOTALEXPENSES || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															TOTALEXPENSES || 0.0,
+															'currency',
+														)}
 													</Typography>
 
 													{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
@@ -390,6 +371,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -413,7 +395,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(NETCASHFLOW || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															NETCASHFLOW || 0.0,
+															'currency',
+														)}
 														{/* {NETCASHFLOW && NETCASHFLOW > 0
 														? `₦${NETCASHFLOW?.toFixed(2) || 0.0}`
 														: NETCASHFLOW && NETCASHFLOW < 0
@@ -429,6 +415,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -703,6 +690,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
+												user,
 												revenueReport?.totalRevenueLast12Months || 0.0,
 												'currency',
 											)}
@@ -722,6 +710,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
 											{getLocaleFormat(
+												user,
 												revenueReport?.percentageDifference || 0,
 												'percent',
 											)}
