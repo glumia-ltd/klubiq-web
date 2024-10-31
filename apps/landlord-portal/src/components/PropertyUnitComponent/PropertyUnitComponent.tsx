@@ -123,6 +123,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						isOpen: true,
 					}),
 				);
+				navigate('/properties');
 			} catch (e) {
 				console.log(e);
 			}
