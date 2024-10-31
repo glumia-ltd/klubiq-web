@@ -83,19 +83,7 @@ export const router = createBrowserRouter(
 						path='properties/create/unit-type'
 						element={<AddProperties />}
 					/>
-
-					<Route
-						path='properties/edit/property-category'
-						element={<EditPropertyPage />}
-					/>
-					<Route
-						path='properties/edit/property-details'
-						element={<EditPropertyPage />}
-					/>
-					<Route
-						path='properties/edit/unit-type'
-						element={<EditPropertyPage />}
-					/>
+					<Route path='properties/edit' element={<EditPropertyPage />} />
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
 
