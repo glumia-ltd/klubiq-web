@@ -10,7 +10,6 @@ import {
 	ClickAwayListener,
 	Grow,
 	Popper,
-	CircularProgress,
 } from '@mui/material';
 // import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
@@ -97,19 +96,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		navigate(-1);
 	};
 
-	const handleClose = (value?: string) => {
-		// if (
-		// 	anchorRef.current &&
-		// 	anchorRef.current.contains(event.target as HTMLElement)
-		// ) {
-		// 	return;
-		// }
-
-		console.log(value);
-
-		setOpen(false);
-	};
-
 	const handleArchiveProperty = () => {
 		setOpenArchivePropertyDialog(true);
 	};
@@ -160,6 +146,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						isOpen: true,
 					}),
 				);
+				navigate('/properties');
 			} catch (e) {
 				console.log(e);
 			}
