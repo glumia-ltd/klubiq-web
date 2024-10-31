@@ -8,7 +8,7 @@ import {
 	Divider,
 	LinearProgress,
 } from '@mui/material';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { styles } from './style';
 import { WarningIcon } from '../Icons/CustomIcons';
 
@@ -61,6 +61,7 @@ export const PropertiesActionsPrompts: FC<PropertiesActionsPromptsType> = ({
 					onClick={handleDialogButtonAction}
 					sx={styles.propertiesDialogButtons}
 					value={'Cancel'}
+					disabled={progress}
 				>
 					Cancel
 				</Button>
@@ -70,6 +71,7 @@ export const PropertiesActionsPrompts: FC<PropertiesActionsPromptsType> = ({
 					autoFocus
 					sx={styles.propertiesDialogButtons}
 					value={rightButtonContent}
+					disabled={progress}
 				>
 					{rightButtonContent}
 				</Button>
