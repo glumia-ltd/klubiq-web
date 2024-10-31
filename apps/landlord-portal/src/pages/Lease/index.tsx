@@ -60,7 +60,6 @@ const Lease = () => {
 
 	return (
 		<>
-			{/* <Container maxWidth='xl' sx={styles.container}> */}
 			<Stack spacing={5}>
 				<Stack
 					direction={'row'}
@@ -107,7 +106,6 @@ const Lease = () => {
 					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
 				/>
 			</Stack>
-			{/* </Container> */}
 		</>
 	);
 };

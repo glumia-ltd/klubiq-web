@@ -57,7 +57,6 @@ const LeaseDetails = () => {
 
 	return (
 		<>
-			{/* <Container maxWidth='xl' sx={styles.container}> */}
 			<Stack
 				sx={{
 					justifyContent: 'center',
@@ -76,25 +75,18 @@ const LeaseDetails = () => {
 					}}
 				>
 					<Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
-						{/* <img src={LeaseIcon} alt='icon' /> */}
 						<LeaseIcon sx={{ cursor: 'pointer' }} />
 						<ArrowForwardIosIcon sx={styles.topIcon} />
 						<Typography sx={styles.detailsText}> Lease Detail</Typography>
 					</Stack>
 
 					<Stack>
-						<Button
-							variant='contained'
-							sx={styles.actionButton}
-							// onClick={handleAddProperties}
-						>
+						<Button variant='contained' sx={styles.actionButton}>
 							Action
 							<MoreVertIcon />
 						</Button>
 					</Stack>
 				</Stack>
-
-				{/* chip stack */}
 
 				<Stack direction={'row'} fontWeight={600}>
 					<Chip
@@ -105,7 +97,6 @@ const LeaseDetails = () => {
 					/>
 				</Stack>
 
-				{/* Lease property card */}
 				<Stack
 					direction={'row'}
 					spacing={{ xs: 1, sm: 2, md: 8 }}
@@ -167,11 +158,9 @@ const LeaseDetails = () => {
 					spacing={{ xs: 1, sm: 2, md: 8 }}
 					sx={{ width: '100%' }}
 				>
-					{/* <DocumentUploadCard /> */}
 					<LeaseDocumentTable documentTableData={documentTableData} />
 				</Stack>
 			</Stack>
-			{/* </Container> */}
 		</>
 	);
 };
