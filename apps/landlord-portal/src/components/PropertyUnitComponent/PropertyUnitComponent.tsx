@@ -289,6 +289,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 												onClick={handleEditProperty}
 												value='Logout'
 												sx={{ padding: '10px' }}
+												divider
 											>
 												Edit Property
 											</MenuItem>
@@ -297,7 +298,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 												onClick={handleDeleteProperty}
 												value='Delete'
 												sx={{ padding: '10px' }}
-												divider
 											>
 												Delete Property{' '}
 											</MenuItem>
