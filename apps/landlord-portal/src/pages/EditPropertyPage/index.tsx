@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Card } from '@mui/material';
+import { Grid, Card, Typography, Button } from '@mui/material';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 
@@ -11,6 +11,9 @@ import { AddPropertyType, CategoryMetaDataType } from '../../shared/type';
 import { consoleLog } from '../../helpers/debug-logger';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
 import styles from '../../components/Forms/style';
+import addPropertyStyles from '../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
+import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
+import { useNavigate } from 'react-router-dom';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -68,6 +71,8 @@ const EditProperty = () => {
 		//, isLoading: isPropertyMetaDataLoading
 	} = useGetPropertiesMetaDataQuery();
 
+	const navigate = useNavigate();
+
 	const onSubmit = async (values: any) => {
 		consoleLog(values, 'val');
 	};
@@ -123,8 +128,34 @@ const EditProperty = () => {
 		onSubmit,
 	});
 
+	const handleReturnToPropertyClick = () => {
+		navigate(-1);
+	};
+
 	return (
 		<Grid container spacing={0}>
+			<Grid
+				container
+				sx={{
+					...addPropertyStyles.addPropertiesContainer,
+					margin: '30px -10px 30px',
+				}}
+			>
+				<Grid
+					item
+					sx={addPropertyStyles.addPropertiesContent}
+					onClick={handleReturnToPropertyClick}
+				>
+					<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
+					<Typography sx={addPropertyStyles.addPropertiesText} fontWeight={600}>
+						Property
+					</Typography>
+				</Grid>
+
+				{/* <Button variant='text' sx={styles.button}>
+							<Typography>Save draft</Typography>
+						</Button> */}
+			</Grid>
 			<Grid
 				container
 				spacing={4}
@@ -192,6 +223,25 @@ const EditProperty = () => {
 
 				<Grid item xs={12}>
 					<GeneralInfo formik={formik} amenities={[]} />
+				</Grid>
+			</Grid>
+
+			<Grid
+				container
+				sx={{
+					display: 'flex',
+					justifyContent: 'flex-end',
+				}}
+			>
+				<Grid sx={addPropertyStyles.buttonContainer}>
+					<Button
+						variant='contained'
+						sx={addPropertyStyles.directionButton}
+						// onClick={handleAddProperty}
+						// disabled={isNextButtonDisabled}
+					>
+						<Typography>Save</Typography>
+					</Button>
 				</Grid>
 			</Grid>
 		</Grid>
