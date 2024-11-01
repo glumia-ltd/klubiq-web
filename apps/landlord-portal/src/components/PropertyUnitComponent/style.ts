@@ -15,6 +15,32 @@ export const styles = {
 		height: '16px',
 		cursor: 'pointer',
 	},
+	subheadText: {
+		fontWeight: '400',
+		fontSize: '12px',
+		marginTop: '10px',
+	},
+	headText: {
+		fontWeight: '700',
+		fontSize: '24px',
+	},
+
+	cellText: {
+		fontWeight: '400',
+		fontSize: '20px',
+	},
+	tableDiv: {
+		display: 'flex',
+		alignItems: 'center',
+	},
+	headerText3: {
+		fontWeight: '500',
+		fontSize: '24px',
+	},
+	iconText: {
+		fontWeight: '500',
+		fontSize: '16px',
+	},
 	arrowIconStyle: {
 		height: '15px',
 		width: '15px',
@@ -166,7 +192,13 @@ export const styles = {
 		marginTop: '32px',
 		padding: '63px',
 	},
-
+	iconDiv: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: '70px',
+		// padding: '63px',
+	},
 	documentBox: {
 		cursor: 'pointer',
 		display: 'flex',
@@ -195,5 +227,9 @@ export const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 		flexDirection: 'column',
+	},
+	tableContainer: {
+		padding: '16px 32px 24px 32px',
+		gap: '24px',
 	},
 };

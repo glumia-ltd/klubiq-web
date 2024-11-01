@@ -33,6 +33,8 @@ import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
 import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
 import LeaseDetails from '../pages/Lease/LeaseDetails';
 
+import EditPropertyPage from '../pages/EditPropertyPage';
+
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
@@ -80,6 +82,19 @@ export const router = createBrowserRouter(
 					<Route
 						path='properties/create/unit-type'
 						element={<AddProperties />}
+					/>
+
+					<Route
+						path='properties/edit/property-category'
+						element={<EditPropertyPage />}
+					/>
+					<Route
+						path='properties/edit/property-details'
+						element={<EditPropertyPage />}
+					/>
+					<Route
+						path='properties/edit/unit-type'
+						element={<EditPropertyPage />}
 					/>
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}

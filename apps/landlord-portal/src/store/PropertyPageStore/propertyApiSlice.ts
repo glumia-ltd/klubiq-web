@@ -6,6 +6,7 @@ import { customApiFunction } from '../customApiFunction';
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
+	tagTypes: ['Property'],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
@@ -14,6 +15,7 @@ export const propertyApiSlice = createApi({
 					method: 'GET',
 					params,
 				}),
+				providesTags: ['Property'],
 			},
 		),
 		getPropertiesMetaData: builder.query<any, void>({
@@ -51,12 +53,14 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.archiveProperty(params.uuid),
 				method: 'PUT',
 			}),
+			invalidatesTags: ['Property'],
 		}),
 		deleteProperty: builder.mutation<any, { uuid: string }>({
 			query: (params) => ({
 				url: propertiesEndpoints.deleteProperty(params.uuid),
 				method: 'DELETE',
 			}),
+			invalidatesTags: ['Property'],
 		}),
 	}),
 });

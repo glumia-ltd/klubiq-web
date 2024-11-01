@@ -38,7 +38,8 @@ const Properties = () => {
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 24,
-		sortBy: 'name',
+		sortBy: 'createdDate',
+		order: 'DESC',
 	});
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
