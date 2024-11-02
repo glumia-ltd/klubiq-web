@@ -105,7 +105,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	const handleEditProperty = () => {
-		navigate('edit/property-category');
+		navigate(`/properties/${currentUUId}/edit`);
 	};
 
 	const handleArchivePropertyRequest = async () => {
