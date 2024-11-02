@@ -62,6 +62,15 @@ export const propertyApiSlice = createApi({
 			}),
 			invalidatesTags: ['Property'],
 		}),
+
+		editProperty: builder.mutation<any, { uuid: string; data: any }>({
+			query: ({ uuid, data }) => ({
+				url: propertiesEndpoints.editProperty(uuid),
+				method: 'PUT',
+				body: data,
+			}),
+			invalidatesTags: ['Property'],
+		}),
 	}),
 });
 
@@ -82,4 +91,5 @@ export const {
 	useGetSignedUrlMutation,
 	useArchivePropertyMutation,
 	useDeletePropertyMutation,
+	useEditPropertyMutation,
 } = propertyApiSlice;

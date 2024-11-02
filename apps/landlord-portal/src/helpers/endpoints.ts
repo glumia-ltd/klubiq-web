@@ -27,6 +27,7 @@ export const propertiesEndpoints = {
 	archiveProperty: (propertyUuid: string) =>
 		`/properties/${propertyUuid}/archive`,
 	deleteProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	editProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 };
 
 export const organizationEndpoints = {

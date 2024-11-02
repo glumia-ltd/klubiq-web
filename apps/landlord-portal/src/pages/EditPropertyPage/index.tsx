@@ -4,6 +4,7 @@ import ControlledSelect from '../../components/ControlledComponents/ControlledSe
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 
 import {
+	useEditPropertyMutation,
 	useGetPropertiesMetaDataQuery,
 	useGetSinglePropertyByUUIDQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
@@ -84,6 +85,8 @@ const EditProperty = () => {
 		// isLoading: isPropertyMetaDataLoading
 	} = useGetPropertiesMetaDataQuery();
 
+	const [editProperty] = useEditPropertyMutation();
+
 	const navigate = useNavigate();
 
 	const onSubmit = async (values: any) => {
@@ -145,27 +148,26 @@ const EditProperty = () => {
 		navigate(-1);
 	};
 
-	useEffect(() => {
-		const initialData = {
-			categoryId: currentProperty?.category?.id || '',
-			typeId: currentProperty?.type?.id || '',
-			name: currentProperty?.name || '',
-			address: {
-				addressLine1: currentProperty?.address.addressLine1 || '',
-				addressLine2: currentProperty?.address.addressLine2 || '',
-				city: currentProperty?.address?.city || '',
-				state: currentProperty?.address?.state || '',
-				postalCode: currentProperty?.address?.postalCode || '',
-				latitude: currentProperty?.address?.latitude || 0,
-				longitude: currentProperty?.address?.longitude || 0,
-				country: currentProperty?.address?.country || '',
-				isManualAddress: true,
-				unit: currentProperty?.address?.unit || '',
-			},
-			units: currentProperty?.units,
-			unitType: currentProperty?.isMultiUnit ? 'multi' : 'single',
-		};
+	const initialData = {
+		categoryId: currentProperty?.category?.id || '',
+		typeId: currentProperty?.type?.id || '',
+		name: currentProperty?.name || '',
+		address: {
+			addressLine1: currentProperty?.address.addressLine1 || '',
+			addressLine2: currentProperty?.address.addressLine2 || '',
+			city: currentProperty?.address?.city || '',
+			state: currentProperty?.address?.state || '',
+			postalCode: currentProperty?.address?.postalCode || '',
+			latitude: currentProperty?.address?.latitude || 0,
+			longitude: currentProperty?.address?.longitude || 0,
+			country: currentProperty?.address?.country || '',
+			isManualAddress: true,
+			unit: currentProperty?.address?.unit || '',
+		},
+		units: currentProperty?.units,
+	};
 
+	useEffect(() => {
 		const getCategoryMetaData = () => {
 			const categoryMetaData = propertyMetaData?.categories?.find(
 				(property: any) =>
@@ -176,8 +178,20 @@ const EditProperty = () => {
 		};
 		const categoryMetaData = getCategoryMetaData();
 
-		formik.setValues({ ...formik.values, categoryMetaData, ...initialData });
+		formik.setValues({
+			...formik.values,
+			categoryMetaData,
+			unitType: currentProperty?.isMultiUnit ? 'multi' : 'single',
+			...initialData,
+		});
 	}, [currentProperty, propertyMetaData]);
+
+	const handleEditProperty = async () => {
+		await editProperty({
+			uuid: currentUUId,
+			data: { ...initialData },
+		});
+	};
 
 	return (
 		<>
@@ -290,7 +304,7 @@ const EditProperty = () => {
 							<Button
 								variant='contained'
 								sx={addPropertyStyles.directionButton}
-								// onClick={handleAddProperty}
+								onClick={handleEditProperty}
 								// disabled={isNextButtonDisabled}
 							>
 								<Typography>Save</Typography>
