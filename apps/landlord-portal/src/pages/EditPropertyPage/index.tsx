@@ -22,6 +22,7 @@ import { omit, transform } from 'lodash';
 import { useEffect } from 'react';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
+import { InputSkeleton } from './InputSkeleton';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -102,7 +103,7 @@ const EditProperty = () => {
 			categoryMetaData: null,
 			newAmenity: '',
 			customAmenities: [],
-			categoryId: null,
+			categoryId: 1,
 			description: '',
 			name: '',
 			typeId: '',
@@ -140,7 +141,7 @@ const EditProperty = () => {
 					status: '',
 					rooms: null,
 					offices: null,
-					amenities: null,
+					amenities: [],
 				},
 			],
 		},
@@ -243,41 +244,43 @@ const EditProperty = () => {
 
 	return (
 		<>
-			{
-				<Grid container spacing={0}>
+			<Grid container spacing={0}>
+				<Grid
+					container
+					sx={{
+						...addPropertyStyles.addPropertiesContainer,
+						margin: '30px -10px 30px',
+					}}
+				>
 					<Grid
-						container
-						sx={{
-							...addPropertyStyles.addPropertiesContainer,
-							margin: '30px -10px 30px',
-						}}
+						item
+						sx={addPropertyStyles.addPropertiesContent}
+						onClick={handleReturnToPropertyClick}
 					>
-						<Grid
-							item
-							sx={addPropertyStyles.addPropertiesContent}
-							onClick={handleReturnToPropertyClick}
+						<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
+						<Typography
+							sx={addPropertyStyles.addPropertiesText}
+							fontWeight={600}
 						>
-							<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
-							<Typography
-								sx={addPropertyStyles.addPropertiesText}
-								fontWeight={600}
-							>
-								{currentProperty?.name}
-							</Typography>
-						</Grid>
+							{currentProperty?.name}
+						</Typography>
 					</Grid>
-					<Grid
-						container
-						spacing={4}
-						component='form'
-						onSubmit={formik.handleSubmit}
-					>
-						<Grid item xs={12}>
-							<Grid container spacing={1}>
-								<Grid container>
-									<Card sx={styles.card}>
-										<Grid container spacing={2}>
-											<Grid item xs={12}>
+				</Grid>
+				<Grid
+					container
+					spacing={4}
+					component='form'
+					onSubmit={formik.handleSubmit}
+				>
+					<Grid item xs={12}>
+						<Grid container spacing={1}>
+							<Grid container>
+								<Card sx={styles.card}>
+									<Grid container spacing={2}>
+										<Grid item xs={12}>
+											{isCurrentPropertyLoading ? (
+												<InputSkeleton />
+											) : (
 												<ControlledSelect
 													required
 													name='categoryId'
@@ -293,8 +296,13 @@ const EditProperty = () => {
 														},
 													}}
 												/>
-											</Grid>
-											<Grid item xs={12}>
+											)}
+										</Grid>
+
+										<Grid item xs={12}>
+											{isCurrentPropertyLoading ? (
+												<InputSkeleton />
+											) : (
 												<ControlledSelect
 													required
 													name='typeId'
@@ -310,8 +318,12 @@ const EditProperty = () => {
 														},
 													}}
 												/>
-											</Grid>
-											<Grid item xs={12}>
+											)}
+										</Grid>
+										<Grid item xs={12}>
+											{isCurrentPropertyLoading ? (
+												<InputSkeleton />
+											) : (
 												<ControlledTextField
 													required
 													name='name'
@@ -324,43 +336,55 @@ const EditProperty = () => {
 														},
 													}}
 												/>
-											</Grid>
+											)}
 										</Grid>
+									</Grid>
+								</Card>
+							</Grid>
+						</Grid>
+					</Grid>
+
+					<Grid item xs={12}>
+						{isCurrentPropertyLoading ? (
+							<Grid container spacing={1}>
+								<Grid container>
+									<Card sx={styles.card}>
+										<InputSkeleton />
+										<InputSkeleton />
+										<InputSkeleton />
+										<InputSkeleton />
+										<InputSkeleton />
 									</Card>
 								</Grid>
 							</Grid>
-						</Grid>
-
-						<Grid item xs={12}>
-							{!isCurrentPropertyLoading && (
-								<GeneralInfo
-									formik={formik}
-									amenities={propertyMetaData?.amenities}
-								/>
-							)}
-						</Grid>
-					</Grid>
-
-					<Grid
-						container
-						sx={{
-							display: 'flex',
-							justifyContent: 'flex-end',
-						}}
-					>
-						<Grid sx={addPropertyStyles.buttonContainer}>
-							<Button
-								variant='contained'
-								sx={addPropertyStyles.directionButton}
-								onClick={handleEditProperty}
-								// disabled={isNextButtonDisabled}
-							>
-								<Typography>Save</Typography>
-							</Button>
-						</Grid>
+						) : (
+							<GeneralInfo
+								formik={formik}
+								amenities={propertyMetaData?.amenities}
+							/>
+						)}
 					</Grid>
 				</Grid>
-			}
+
+				<Grid
+					container
+					sx={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+					}}
+				>
+					<Grid sx={addPropertyStyles.buttonContainer}>
+						<Button
+							variant='contained'
+							sx={addPropertyStyles.directionButton}
+							onClick={handleEditProperty}
+							disabled={isCurrentPropertyLoading}
+						>
+							<Typography>Save</Typography>
+						</Button>
+					</Grid>
+				</Grid>
+			</Grid>
 		</>
 	);
 };
