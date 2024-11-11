@@ -45,7 +45,7 @@ const TenantProfile = () => {
 	};
 
 	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
+		// console.log(values, 'val');
 	};
 
 	const formik = useFormik({
@@ -65,7 +65,7 @@ const TenantProfile = () => {
 		{ value: 'two', label: 'Text' },
 		{ value: 'three', label: 'Email & Text' },
 	];
-	console.log(formik.errors, 'err');
+
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
 			const file = e.target.files[0];

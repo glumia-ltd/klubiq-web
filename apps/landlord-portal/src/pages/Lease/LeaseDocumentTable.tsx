@@ -32,7 +32,7 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 		const files = event.target.files;
 		if (files) {
 			setSelectedFiles(Array.from(files));
-			console.log('Selected files:', files);
+			// console.log('Selected files:', files);
 		}
 	};
 	return (
