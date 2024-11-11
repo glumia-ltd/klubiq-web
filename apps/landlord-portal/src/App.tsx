@@ -77,8 +77,6 @@ function App() {
 					await updateConfigStoreIdb(user.orgSettings);
 				}
 			} else {
-				consoleLog('AUTH STATE: ', auth);
-				consoleLog('no user found yet');
 				const payload = {
 					token: null,
 					user: {} as UserProfile,
