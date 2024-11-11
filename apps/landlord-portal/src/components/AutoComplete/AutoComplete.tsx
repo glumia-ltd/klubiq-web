@@ -241,7 +241,6 @@ export const AutoComplete: FC<{
 				setInputValue(newInputValue);
 			}}
 			renderOption={(props, option, index) => {
-				console.log(option);
 				if (!option.description) {
 					return;
 				}
