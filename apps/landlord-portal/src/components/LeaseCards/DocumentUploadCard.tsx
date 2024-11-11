@@ -25,7 +25,7 @@ const DocumentUploadCard = () => {
 	};
 
 	const onSubmit = async (values: formValuesType) => {
-		console.log(values, 'hh');
+		// console.log(values, 'hh');
 	};
 	const formik = useFormik({
 		initialValues: {

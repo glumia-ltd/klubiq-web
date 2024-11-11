@@ -1,45 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-	Button,
-	Container,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-	Grid,
-	Typography,
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import styles from '../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
-import { CustomStepper } from '../../components/CustomStepper';
-import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
-import { RightArrowIcon } from '../../components/Icons/RightArrowIcon';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { CategoryMetaDataType, RouteObjectType } from '../../shared/type';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
+import { Grid, Card, Typography, Button } from '@mui/material';
+import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
+import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 
 import {
-	HomeIcon,
-	PropertyDetailsIcon,
-	UnitTypeIcon,
-} from '../../components/Icons/CustomIcons';
-import { useDispatch } from 'react-redux';
-import {
-	//getAddPropertyState,
-	//getAddPropertyState,
-	saveAddPropertyFormDetail,
-} from '../../store/AddPropertyStore/AddPropertySlice';
-import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import PropertyCategory from '../../components/PropertiesCategory';
-import PropertiesDetails from '../../components/PropertiesDetails';
-import UnitType from '../../components/UnitType';
-import { AddPropertyType } from '../../shared/type';
-import { useAddPropertyMutation } from '../../store/PropertyPageStore/propertyApiSlice';
-import { omitBy } from 'lodash';
-import { clearData } from '../../services/indexedDb';
+	useEditPropertyMutation,
+	useGetPropertiesMetaDataQuery,
+	useGetSinglePropertyByUUIDQuery,
+} from '../../store/PropertyPageStore/propertyApiSlice';
+
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { AddPropertyType, CategoryMetaDataType } from '../../shared/type';
 import { consoleLog } from '../../helpers/debug-logger';
+import GeneralInfo from '../../components/Forms/GeneralInfo';
+import styles from '../../components/Forms/style';
+import addPropertyStyles from '../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
+import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { omit, transform } from 'lodash';
+import { useEffect } from 'react';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -84,30 +66,6 @@ const validationSchema = yup.object({
 	),
 });
 
-const routeObject: RouteObjectType = {
-	'Property Category': {
-		label: 'property-category',
-		icon: <HomeIcon />,
-	},
-	'Property Details': {
-		label: 'property-details',
-		icon: <PropertyDetailsIcon />,
-	},
-	'Unit Type': { label: 'unit-type', icon: <UnitTypeIcon /> },
-};
-
-const steps = Object.keys(routeObject);
-
-const STEPPERPATHS: Record<string, number> = {
-	'property-category': 0,
-	'property-details': 1,
-	'unit-type': 2,
-};
-
-type PayloadType = {
-	purposeId: number | null;
-	isMultiUnit: boolean;
-};
 interface IunitType extends AddPropertyType {
 	unitType?: string;
 	isMultiUnit?: boolean;
@@ -115,29 +73,25 @@ interface IunitType extends AddPropertyType {
 	propertyImages?: [];
 }
 
-const EditPropertyPage = () => {
-	const [activeStep, setActiveStep] = useState(0);
-	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
-	const [informationDialog, setInformationDialog] = useState(false);
-
-	const navigate = useNavigate();
-
+const EditProperty = () => {
 	const location = useLocation();
-
-	const LOCATION_IS_PROPERTY_CATEGORY =
-		location.pathname.includes('property-category');
-	const LOCATION_IS_PROPERTY_DETAILS =
-		location.pathname.includes('property-details');
-	const LOCATION_IS_UNIT_TYPE = location.pathname.includes('unit-type');
-
 	const dispatch = useDispatch();
 
-	const [
-		addProperty,
-		// { isLoading, isSuccess, isError, error }
-	] = useAddPropertyMutation();
+	const currentUUId = location.pathname.split('/')[2]!;
 
-	const currentLocation = location.pathname.split('/')[3] || '';
+	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
+		useGetSinglePropertyByUUIDQuery({
+			uuid: currentUUId || '',
+		});
+
+	const {
+		data: propertyMetaData,
+		// isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
+
+	const [editProperty] = useEditPropertyMutation();
+
+	const navigate = useNavigate();
 
 	const onSubmit = async (values: any) => {
 		consoleLog(values, 'val');
@@ -194,394 +148,221 @@ const EditPropertyPage = () => {
 		onSubmit,
 	});
 
-	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-		event.preventDefault();
-		event.returnValue = '';
+	const handleReturnToPropertyClick = () => {
+		navigate(-1);
+	};
+
+	const transformedProperties = transform(
+		currentProperty?.units,
+		(result, unit) => {
+			const newUnit = omit(unit, 'leases', 'images');
+
+			result.units.push(newUnit);
+		},
+		{ units: [] as any[] },
+	)?.units;
+
+	const initialData = {
+		categoryId: currentProperty?.category?.id || '',
+		typeId: currentProperty?.type?.id || '',
+		name: currentProperty?.name || '',
+		address: {
+			addressLine1: currentProperty?.address.addressLine1 || '',
+			addressLine2: currentProperty?.address.addressLine2 || '',
+			city: currentProperty?.address?.city || '',
+			state: currentProperty?.address?.state || '',
+			postalCode: currentProperty?.address?.postalCode || '',
+			latitude: currentProperty?.address?.latitude || 0,
+			longitude: currentProperty?.address?.longitude || 0,
+			country: currentProperty?.address?.country || '',
+			isManualAddress: true,
+			unit: currentProperty?.address?.unit || '',
+		},
+		units: transformedProperties,
+	};
+
+	const editedData = {
+		categoryId: formik.values?.categoryId,
+		typeId: formik.values?.typeId,
+		name: formik.values?.name,
+		address: {
+			addressLine1: formik.values.address?.addressLine1,
+			addressLine2: formik.values.address?.addressLine2,
+			city: formik.values.address?.city,
+			state: formik.values.address?.state,
+			postalCode: formik.values.address?.postalCode,
+			latitude: formik.values.address?.latitude || 0,
+			longitude: formik.values.address?.longitude || 0,
+			country: formik.values.address?.country,
+			isManualAddress: true,
+			unit: formik.values.address?.unit,
+		},
+		units: transformedProperties,
 	};
 
 	useEffect(() => {
-		window.addEventListener('beforeunload', handleBeforeUnload);
-
-		// Remove the event listener when the component unmounts
-		return () => {
-			window.removeEventListener('beforeunload', handleBeforeUnload);
-		};
-	}, []);
-
-	useEffect(() => {
-		const activeStepByPathName = STEPPERPATHS[currentLocation] || 0;
-
-		setActiveStep(activeStepByPathName);
-	}, [currentLocation]);
-
-	const navigateToStep = (step: number) => {
-		const routeKey = steps[step];
-
-		if (!routeKey) return;
-
-		const route = `/properties/edit/${routeObject[routeKey]?.label}`;
-
-		navigate(route as string);
-	};
-
-	const saveFormikDataInStore = (payload?: PayloadType) => {
-		const isMultiUnit = formik.values.unitType === 'multi';
-		const allFormikValues = { ...formik.values };
-
-		dispatch(
-			saveAddPropertyFormDetail({
-				...allFormikValues,
-				isMultiUnit,
-				...payload,
-			}),
-		);
-	};
-
-	const handleForwardButton = () => {
-		if (activeStep > steps.length) return;
-
-		saveFormikDataInStore();
-
-		setActiveStep((prev) => prev + 1);
-
-		navigateToStep(activeStep + 1);
-	};
-
-	const handleBackwardButton = () => {
-		if (activeStep === 0) return;
-
-		saveFormikDataInStore();
-
-		setActiveStep((prev) => prev - 1);
-
-		navigateToStep(activeStep - 1);
-	};
-
-	const handleAllPropertiesClick = () => {
-		const { categoryId, purposeId, propertyImages } = formik.values;
-
-		if (
-			Object.keys(formik.touched).length > 0 ||
-			categoryId ||
-			purposeId ||
-			!!propertyImages?.length
-		) {
-			setInformationDialog(true);
-		} else {
-			navigate('/properties');
-		}
-	};
-
-	const handleDialogLeave = () => {
-		navigate('/properties');
-	};
-
-	const renderBasedOnPath = () => {
-		if (LOCATION_IS_PROPERTY_CATEGORY) {
-			return <PropertyCategory formik={formik} />;
-		} else if (LOCATION_IS_PROPERTY_DETAILS) {
-			return <PropertiesDetails formik={formik} />;
-		} else if (LOCATION_IS_UNIT_TYPE) {
-			return <UnitType formik={formik} />;
-		}
-	};
-
-	useEffect(() => {
-		// check to see if all the units have values for their rooms and unitNumber where necessary.
-		const checkIfUnitsAreFilled = (
-			name: 'bedrooms' | 'offices' | 'rooms' | 'unitNumber',
-		) => {
-			return (
-				formik.values.units.filter((unit) => !!unit[name]).length ===
-				formik.values.units.length
+		const getCategoryMetaData = () => {
+			const categoryMetaData = propertyMetaData?.categories?.find(
+				(property: any) =>
+					Number(property.id) === Number(initialData.categoryId),
 			);
+
+			return categoryMetaData?.metaData;
 		};
+		const categoryMetaData = getCategoryMetaData();
 
-		if (LOCATION_IS_PROPERTY_CATEGORY) {
-			if (formik.values.categoryId) {
-				setIsNextButtonDisabled(false);
-			} else {
-				setIsNextButtonDisabled(true);
-			}
-		} else if (LOCATION_IS_PROPERTY_DETAILS) {
-			if (formik.values.typeId && formik.values.name) {
-				setIsNextButtonDisabled(false);
-			} else {
-				setIsNextButtonDisabled(true);
-			}
-		} else if (LOCATION_IS_UNIT_TYPE) {
-			const CHECKBEDROOMSINUNITS = checkIfUnitsAreFilled('bedrooms');
-
-			const CHECKOFFICESINUNITS = checkIfUnitsAreFilled('offices');
-
-			const CHECKROOMSINUNITS = checkIfUnitsAreFilled('rooms');
-
-			const CHECKUNITNUMBERS = checkIfUnitsAreFilled('unitNumber');
-
-			const CHECKFLOORPLANS =
-				formik.values.units.filter((unit) => !!unit.area.value).length ===
-				formik.values.units.length;
-
-			if (
-				formik.values.unitType &&
-				formik.values.address.addressLine1 &&
-				formik.values.address.country &&
-				CHECKFLOORPLANS &&
-				(CHECKBEDROOMSINUNITS || CHECKOFFICESINUNITS || CHECKROOMSINUNITS)
-			) {
-				if (formik.values.unitType === 'multi' && !CHECKUNITNUMBERS) {
-					setIsNextButtonDisabled(true);
-				}
-				setIsNextButtonDisabled(false);
-			} else {
-				setIsNextButtonDisabled(true);
-			}
-		}
-	}, [
-		LOCATION_IS_PROPERTY_CATEGORY,
-		LOCATION_IS_PROPERTY_DETAILS,
-		LOCATION_IS_UNIT_TYPE,
-		formik.values,
-		formik.values.address.addressLine1,
-		formik.values.address.country,
-		formik.values.categoryId,
-		formik.values.name,
-		formik.values.typeId,
-		formik.values.unitType,
-		formik.values.units,
-	]);
-
-	const formatUnitBasedOnCategory = (
-		formikValues: any,
-		room1: string,
-		room2: string,
-	) => {
-		const units = [...formikValues.units];
-
-		const allUnits = units.map((unit: any) => {
-			if (unit && typeof unit === 'object') {
-				const newUnit = { ...unit };
-
-				delete newUnit[room1];
-				delete newUnit[room2];
-
-				return newUnit;
-			}
-		});
-
-		formikValues.units = allUnits;
-	};
-
-	const handleAddProperty = async () => {
-		formik.handleSubmit();
-
-		const errors = await formik.validateForm();
-
-		if (Object.keys(errors).length > 0) {
-			dispatch(
-				openSnackbar({
-					message:
-						'Please ensure all the fields are properly filled before you submit!',
-					severity: 'info',
-					isOpen: true,
-				}),
-			);
-			return;
-		}
-
-		saveFormikDataInStore();
-
-		const formikValues: any = {
+		formik.setValues({
 			...formik.values,
-			isMultiUnit: formik.values.unitType === 'multi',
-		};
-
-		//check to see if more the property has multiple units;
-
-		const unitLength = formikValues.units.length > 1;
-
-		if (!unitLength && formikValues.isMultiUnit) {
-			formikValues.isMultiUnit = false;
-		}
-
-		if (formikValues.categoryMetaData?.hasBedrooms) {
-			formatUnitBasedOnCategory(formikValues, 'offices', 'rooms');
-		}
-
-		if (formikValues.categoryMetaData?.hasOffices) {
-			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'rooms');
-		}
-
-		if (formikValues.categoryMetaData?.hasRooms) {
-			formatUnitBasedOnCategory(formikValues, 'bedrooms', 'offices');
-		}
-
-		//clean up form state object
-
-		const updatedFormikValues = omitBy(formikValues, (value) => {
-			return (
-				value === undefined ||
-				value === null ||
-				value === '' ||
-				(typeof value === 'object' && value?.length === 0)
-			);
+			categoryMetaData,
+			unitType: currentProperty?.isMultiUnit ? 'multi' : 'single',
+			...initialData,
 		});
+	}, [currentProperty, propertyMetaData]);
 
-		if (updatedFormikValues?.purposeId) {
-			updatedFormikValues.purposeId = Number(updatedFormikValues.purposeId);
-		}
-
-		if (updatedFormikValues?.newAmenity) {
-			delete updatedFormikValues.newAmenity;
-		}
-
-		if (updatedFormikValues.unitType) {
-			delete updatedFormikValues.unitType;
-		}
-
-		// clean up address field
-
-		const updatedAddress = omitBy(
-			updatedFormikValues?.address,
-			(value) => value === undefined || value === null || value === '',
-		);
-
-		if (updatedAddress.longitude && updatedAddress.latitude) {
-			updatedAddress.longitude = Number(updatedAddress.longitude);
-			updatedAddress.latitude = Number(updatedAddress.latitude);
-		}
-
-		updatedFormikValues.address = updatedAddress;
-
-		// clean up unit field;
-
-		const updatedUnits = updatedFormikValues?.units?.map((unit: any) => {
-			return omitBy(unit, (value) => {
-				return (
-					value === undefined ||
-					value === null ||
-					value === '' ||
-					(typeof value === 'object' && value.length === 0)
-				);
-			});
-		});
-
-		updatedFormikValues.units = updatedUnits;
-		delete updatedFormikValues.categoryMetaData;
-		delete updatedFormikValues.propertyImages;
-
+	const handleEditProperty = async () => {
 		try {
-			delete formik.values.propertyImages;
-			const payload = { ...updatedFormikValues };
-			await addProperty(payload).unwrap();
-			clearData('new-property');
+			await editProperty({
+				uuid: currentUUId,
+				data: { ...editedData },
+			});
 
 			dispatch(
 				openSnackbar({
-					message: 'Property Successfully created',
+					message: `Changes made to your property has been updated`,
 					severity: 'info',
 					isOpen: true,
+					duration: 2000,
 				}),
 			);
 
-			navigate('/properties');
+			navigate(-1);
 		} catch (e) {
-			consoleLog(e);
-			//clearData('new-property');
+			// console.log(e);
 		}
 	};
 
 	return (
-		<Container sx={styles.containerStyle}>
-			<>
-				<Grid container>
-					<Grid container sx={styles.addPropertiesContainer}>
+		<>
+			{
+				<Grid container spacing={0}>
+					<Grid
+						container
+						sx={{
+							...addPropertyStyles.addPropertiesContainer,
+							margin: '30px -10px 30px',
+						}}
+					>
 						<Grid
 							item
-							sx={styles.addPropertiesContent}
-							onClick={handleAllPropertiesClick}
+							sx={addPropertyStyles.addPropertiesContent}
+							onClick={handleReturnToPropertyClick}
 						>
-							<ArrowLeftIcon sx={styles.addPropertiesImage} />
-							<Typography sx={styles.addPropertiesText} fontWeight={600}>
-								All properties
+							<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
+							<Typography
+								sx={addPropertyStyles.addPropertiesText}
+								fontWeight={600}
+							>
+								{currentProperty?.name}
 							</Typography>
 						</Grid>
-
-						{/* <Button variant='text' sx={styles.button}>
-							<Typography>Save draft</Typography>
-						</Button> */}
 					</Grid>
-
-					<Grid sx={styles.stepperContainer}>
-						<CustomStepper active={activeStep} routes={routeObject} />
-					</Grid>
-				</Grid>
-
-				{renderBasedOnPath()}
-
-				<Grid sx={styles.buttonContainer}>
-					<Button
-						variant='text'
-						sx={styles.directionButton}
-						onClick={handleBackwardButton}
-						disabled={activeStep <= 0}
+					<Grid
+						container
+						spacing={4}
+						component='form'
+						onSubmit={formik.handleSubmit}
 					>
-						<ArrowLeftIcon />
-						<Typography>Previous</Typography>
-					</Button>
-					{!(activeStep === steps.length - 1) && (
-						<>
+						<Grid item xs={12}>
+							<Grid container spacing={1}>
+								<Grid container>
+									<Card sx={styles.card}>
+										<Grid container spacing={2}>
+											<Grid item xs={12}>
+												<ControlledSelect
+													required
+													name='categoryId'
+													label='PROPERTY CATEGORY '
+													placeholder='Property Category'
+													type='text'
+													formik={formik}
+													value={formik?.values?.categoryId}
+													options={propertyMetaData?.categories}
+													inputprops={{
+														sx: {
+															height: '40px',
+														},
+													}}
+												/>
+											</Grid>
+											<Grid item xs={12}>
+												<ControlledSelect
+													required
+													name='typeId'
+													label='PROPERTY TYPE '
+													placeholder='Property Type'
+													type='text'
+													formik={formik}
+													value={formik?.values?.typeId}
+													options={propertyMetaData?.types}
+													inputprops={{
+														sx: {
+															height: '40px',
+														},
+													}}
+												/>
+											</Grid>
+											<Grid item xs={12}>
+												<ControlledTextField
+													required
+													name='name'
+													label='PROPERTY NAME'
+													value={formik?.values?.name}
+													formik={formik}
+													inputprops={{
+														sx: {
+															height: '40px',
+														},
+													}}
+												/>
+											</Grid>
+										</Grid>
+									</Card>
+								</Grid>
+							</Grid>
+						</Grid>
+
+						<Grid item xs={12}>
+							{!isCurrentPropertyLoading && (
+								<GeneralInfo
+									formik={formik}
+									amenities={propertyMetaData?.amenities}
+								/>
+							)}
+						</Grid>
+					</Grid>
+
+					<Grid
+						container
+						sx={{
+							display: 'flex',
+							justifyContent: 'flex-end',
+						}}
+					>
+						<Grid sx={addPropertyStyles.buttonContainer}>
 							<Button
 								variant='contained'
-								sx={styles.directionButton}
-								onClick={handleForwardButton}
-								disabled={
-									isNextButtonDisabled || activeStep === steps.length - 1
-								}
+								sx={addPropertyStyles.directionButton}
+								onClick={handleEditProperty}
+								// disabled={isNextButtonDisabled}
 							>
-								<Typography>Next</Typography>
-								<RightArrowIcon />
+								<Typography>Save</Typography>
 							</Button>
-						</>
-					)}
-
-					{activeStep === steps.length - 1 && (
-						<Button
-							variant='contained'
-							sx={styles.directionButton}
-							onClick={handleAddProperty}
-							disabled={isNextButtonDisabled}
-						>
-							<Typography>Save</Typography>
-						</Button>
-					)}
+						</Grid>
+					</Grid>
 				</Grid>
-			</>
-
-			<Dialog
-				open={informationDialog}
-				onClose={() => setInformationDialog(false)}
-				aria-labelledby='alert-dialog-title'
-				aria-describedby='alert-dialog-description'
-			>
-				<DialogTitle id='alert-dialog-title'>
-					Are you sure you want to leave?
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText id='alert-dialog-description'>
-						You have unsaved changes. If you leave now, your changes will be
-						lost.
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setInformationDialog(false)}>Cancel</Button>
-					<Button onClick={handleDialogLeave} autoFocus>
-						Leave Without Saving
-					</Button>
-				</DialogActions>
-			</Dialog>
-		</Container>
+			}
+		</>
 	);
 };
 
-export default EditPropertyPage;
+export default EditProperty;

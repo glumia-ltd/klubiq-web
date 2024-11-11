@@ -62,6 +62,7 @@ export const router = createBrowserRouter(
 
 					<Route path='/properties/:slug' element={<PropertyLayout />}>
 						<Route index element={<PropertyPage />} />
+						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
 						<Route path='add-tenant' element={<AddTenantPage />} />
@@ -82,19 +83,6 @@ export const router = createBrowserRouter(
 					<Route
 						path='properties/create/unit-type'
 						element={<AddProperties />}
-					/>
-
-					<Route
-						path='properties/edit/property-category'
-						element={<EditPropertyPage />}
-					/>
-					<Route
-						path='properties/edit/property-details'
-						element={<EditPropertyPage />}
-					/>
-					<Route
-						path='properties/edit/unit-type'
-						element={<EditPropertyPage />}
 					/>
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
