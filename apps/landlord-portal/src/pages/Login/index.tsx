@@ -30,6 +30,9 @@ import { authEndpoints } from '../../helpers/endpoints';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
+import { useLazyGetUserByFbidQuery } from '../../store/AuthStore/authApiSlice';
+import { UserProfile } from '../../shared/auth-types';
+import { saveUser } from '../../store/AuthStore/AuthSlice';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -52,6 +55,7 @@ const Login = () => {
 	const [otp, setOtp] = useState('');
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
+	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const verifyOTP = async () => {
@@ -136,6 +140,16 @@ const Login = () => {
 						}),
 					);
 				} else {
+					const response = await triggerGetUserByFbid();
+					if (!response.data) throw new Error('User not found');
+
+					const payload = {
+						token: userToken,
+						user: response?.data as UserProfile,
+						isSignedIn: true,
+					};
+					dispatch(saveUser(payload));
+
 					openSnackbar({
 						message: 'That was easy',
 						severity: 'success',
