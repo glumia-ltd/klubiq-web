@@ -30,6 +30,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getSinglePropery(params.uuid),
 				method: 'GET',
 			}),
+			providesTags: ['Property'],
 		}),
 
 		addProperty: builder.mutation({

@@ -18,7 +18,10 @@ import styles from '../../components/Forms/style';
 import addPropertyStyles from '../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { omit, transform } from 'lodash';
 import { useEffect } from 'react';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -72,6 +75,7 @@ interface IunitType extends AddPropertyType {
 
 const EditProperty = () => {
 	const location = useLocation();
+	const dispatch = useDispatch();
 
 	const currentUUId = location.pathname.split('/')[2]!;
 
@@ -148,6 +152,16 @@ const EditProperty = () => {
 		navigate(-1);
 	};
 
+	const transformedProperties = transform(
+		currentProperty?.units,
+		(result, unit) => {
+			const newUnit = omit(unit, 'leases', 'images');
+
+			result.units.push(newUnit);
+		},
+		{ units: [] as any[] },
+	)?.units;
+
 	const initialData = {
 		categoryId: currentProperty?.category?.id || '',
 		typeId: currentProperty?.type?.id || '',
@@ -164,7 +178,26 @@ const EditProperty = () => {
 			isManualAddress: true,
 			unit: currentProperty?.address?.unit || '',
 		},
-		units: currentProperty?.units,
+		units: transformedProperties,
+	};
+
+	const editedData = {
+		categoryId: formik.values?.categoryId,
+		typeId: formik.values?.typeId,
+		name: formik.values?.name,
+		address: {
+			addressLine1: formik.values.address?.addressLine1,
+			addressLine2: formik.values.address?.addressLine2,
+			city: formik.values.address?.city,
+			state: formik.values.address?.state,
+			postalCode: formik.values.address?.postalCode,
+			latitude: formik.values.address?.latitude || 0,
+			longitude: formik.values.address?.longitude || 0,
+			country: formik.values.address?.country,
+			isManualAddress: true,
+			unit: formik.values.address?.unit,
+		},
+		units: transformedProperties,
 	};
 
 	useEffect(() => {
@@ -187,10 +220,25 @@ const EditProperty = () => {
 	}, [currentProperty, propertyMetaData]);
 
 	const handleEditProperty = async () => {
-		await editProperty({
-			uuid: currentUUId,
-			data: { ...initialData },
-		});
+		try {
+			await editProperty({
+				uuid: currentUUId,
+				data: { ...editedData },
+			});
+
+			dispatch(
+				openSnackbar({
+					message: `Changes made to your property has been updated`,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+
+			navigate(-1);
+		} catch (e) {
+			// console.log(e);
+		}
 	};
 
 	return (

@@ -5,7 +5,7 @@ import { getData, addData } from './indexedDb';
 
 self.onmessage = async (event: MessageEvent) => {
 	const { files, apiKey, timestamp, signature, folder, cloudName } = event.data;
-	console.log('Message Received files:', files);
+	// console.log('Message Received files:', files);
 	// Cloudinary upload URL and preset
 	const url = `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`;
 	const formData = new FormData();

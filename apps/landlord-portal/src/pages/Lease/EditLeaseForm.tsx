@@ -48,7 +48,7 @@ const EditLeaseForm = () => {
 	];
 
 	const onSubmit = async (values: formValues) => {
-		console.log(values, 'val');
+		// console.log(values, 'val');
 	};
 
 	const formik = useFormik({

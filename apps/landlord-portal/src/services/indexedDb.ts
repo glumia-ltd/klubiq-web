@@ -24,7 +24,7 @@ export const initDB = async () => {
 		upgrade(db) {
 			each(stores, (store) => {
 				if (!db.objectStoreNames.contains(store)) {
-					console.log('Creating object store:', store);
+					// console.log('Creating object store:', store);
 					db.createObjectStore(store, {
 						keyPath: 'key',
 					});
@@ -33,7 +33,7 @@ export const initDB = async () => {
 		},
 	});
 	db.onversionchange = (event) => {
-		console.log('Database version change:', event);
+		// console.log('Database version change:', event);
 		db.close();
 		//initDB(event.newVersion);
 	};

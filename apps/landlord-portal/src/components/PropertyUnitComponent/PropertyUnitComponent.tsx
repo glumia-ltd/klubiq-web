@@ -150,6 +150,16 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 				navigate('/properties');
 			} catch (e) {
 				console.log(e);
+				setProgress(false);
+				setOpen(false);
+				setOpenDeletePropertyDialog(false);
+				dispatch(
+					openSnackbar({
+						message: 'Error deleting this property',
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
 			}
 		} else {
 			setOpenDeletePropertyDialog(false);
