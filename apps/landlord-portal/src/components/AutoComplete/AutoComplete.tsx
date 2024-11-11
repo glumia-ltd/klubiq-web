@@ -151,9 +151,9 @@ export const AutoComplete: FC<{
 			return undefined;
 		}
 
-		const removeCountryFromDescription = (description: string) => {
+		const removeCountryAndCityFromDescription = (description: string) => {
 			const parts = description.split(',');
-			return parts.slice(0, -1).join(',');
+			return parts.slice(0, -2).join(',');
 		};
 
 		//TODO: Get Longitude and Latitude
@@ -178,7 +178,9 @@ export const AutoComplete: FC<{
 							...newOptions,
 							...results.map((option) => ({
 								...option,
-								description: removeCountryFromDescription(option.description),
+								description: removeCountryAndCityFromDescription(
+									option.description,
+								),
 							})),
 						];
 					}
@@ -239,6 +241,7 @@ export const AutoComplete: FC<{
 				setInputValue(newInputValue);
 			}}
 			renderOption={(props, option, index) => {
+				console.log(option);
 				if (!option.description) {
 					return;
 				}
