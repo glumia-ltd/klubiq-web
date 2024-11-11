@@ -228,7 +228,7 @@ const EditProperty = () => {
 
 			dispatch(
 				openSnackbar({
-					message: `Changes made to your property has been updated`,
+					message: `Changes made to your property have been updated`,
 					severity: 'info',
 					isOpen: true,
 					duration: 2000,
