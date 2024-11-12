@@ -439,11 +439,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 				{/* MAINTENANCE TAB */}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
+				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
 				{/* DOCUMENT TAB */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
 			<PropertiesActionsPrompts
 				open={openArchivePropertyDialog}
