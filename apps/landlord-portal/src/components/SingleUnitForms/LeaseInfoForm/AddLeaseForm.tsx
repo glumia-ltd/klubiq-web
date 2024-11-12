@@ -160,6 +160,9 @@ const AddLeaseForm = () => {
 								position: 'absolute',
 								right: '25px',
 							}}
+							onClick={() => {
+								console.log('clicked');
+							}}
 						>
 							Add tenant
 						</Link>
