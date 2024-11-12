@@ -20,6 +20,7 @@ const style = {
 	},
 	content: {
 		padding: '24px',
+		position: 'relative',
 	},
 	infobox: {
 		display: 'flex',
@@ -34,6 +35,15 @@ const style = {
 		fontSize: { xs: '13px', sm: '12px', md: '14px', lg: '16px' },
 		lineHeight: { xs: '18px', sm: '18px', md: '18px', lg: '18px' },
 		fontWeight: 400,
+	},
+
+	button: {
+		display: 'flex',
+		width: { xs: '7rem', sm: '9rem', md: '11rem', lg: '11.25rem' },
+		height: { xs: '2rem', sm: '2rem', md: '2.5rem', lg: '2.5rem' },
+		padding: '0.5rem 0.9rem',
+		borderRadius: '0.6rem',
+		gap: '0.6rem',
 	},
 };
 export default style;

@@ -289,7 +289,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 										>
 											<MenuItem
 												onClick={handleArchiveProperty}
-												value='Edit'
+												value='Archive'
 												sx={{ padding: '10px' }}
 												divider
 											>
@@ -298,7 +298,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 											<MenuItem
 												onClick={handleEditProperty}
-												value='Logout'
+												value='Edit'
 												sx={{ padding: '10px' }}
 												divider
 											>

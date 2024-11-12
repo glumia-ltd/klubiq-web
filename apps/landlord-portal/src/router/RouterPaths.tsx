@@ -23,7 +23,7 @@ import PropertyPage from '../pages/PropertyPage';
 import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
 import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
-import PropertyLayout from '../Layouts/PropertyLayout/PropertyLayout';
+import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
 import Properties from '../pages/Properties';
 
@@ -60,14 +60,12 @@ export const router = createBrowserRouter(
 						errorElement={<ErrorComponent />}
 					/>
 
-					<Route path='/properties/:slug' element={<PropertyLayout />}>
+					<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 						<Route index element={<PropertyPage />} />
 						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
 						<Route path='add-tenant' element={<AddTenantPage />} />
-
-						<Route path='add-lease' element={<AddLeasePage />} />
 
 						<Route path='add-maintenance' element={<AddMaintenancePage />} />
 					</Route>
@@ -86,8 +84,11 @@ export const router = createBrowserRouter(
 					/>
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
+					<Route path='/lease' element={<NestedRoutesLayout />}>
+						<Route index element={<Lease />} />
+						<Route path='add-lease' element={<AddLeasePage />} />
+					</Route>
 
-					<Route path='/lease' element={<Lease />} />
 					<Route path='/lease/:id' element={<LeaseDetails />} />
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/message' element={<Message />} />
