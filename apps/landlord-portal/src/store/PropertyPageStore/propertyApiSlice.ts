@@ -56,7 +56,10 @@ export const propertyApiSlice = createApi({
 			}),
 			invalidatesTags: ['Property'],
 		}),
-		deleteProperty: builder.mutation<any, { uuid: string }>({
+		deleteProperty: builder.mutation<
+			any,
+			{ uuid: string; address: string; name: string; unitCount: number }
+		>({
 			query: (params) => ({
 				url: propertiesEndpoints.deleteProperty(params.uuid),
 				method: 'DELETE',
