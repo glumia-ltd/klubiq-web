@@ -34,18 +34,20 @@ import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPag
 import LeaseDetails from '../pages/Lease/LeaseDetails';
 
 import EditPropertyPage from '../pages/EditPropertyPage';
+import NotFound from '../pages/ErrorPages/404';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
 			<Route path='/login' element={<Login />} />
+			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='/2fa-enroll' element={<MFASetUp />} />
-			<Route path='*' element={<Navigate to='/login' replace />} />
+			<Route path='*' element={<Navigate to='/404' replace />} />
 
 			<Route element={<PrivateRoute />}>
 				<Route element={<ViewPortLayout />}>
