@@ -35,7 +35,7 @@ const leaseColumns = [
 	{ id: '4', label: 'Start Date' },
 	{ id: '5', label: 'End Date' },
 ];
-const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
+const allTabs = ['Overview', 'Lease', 'Document'];
 
 export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
@@ -192,9 +192,9 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Grid>
 				)}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
+				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
 		</>
 		// </Container>
