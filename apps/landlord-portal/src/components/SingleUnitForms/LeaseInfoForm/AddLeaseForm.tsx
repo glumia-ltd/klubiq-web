@@ -1,5 +1,5 @@
 import FormLayout from '../../../Layouts/FormLayout';
-import { Grid, Typography, Skeleton } from '@mui/material';
+import { Grid, Typography, Skeleton, Button, Link } from '@mui/material';
 import style from './style';
 import ControlledTextField from '../../ControlledComponents/ControlledTextField';
 import * as yup from 'yup';
@@ -8,12 +8,13 @@ import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import Logo from '../../../assets/images/info.svg';
 import { useState, useEffect } from 'react';
 import { consoleLog } from '../../../helpers/debug-logger';
+import { Stack } from '@mui/system';
 
 const AddLeaseForm = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const validationSchema = yup.object({
-		nickName: yup.string().required('field is required'),
+		nickname: yup.string().required('field is required'),
 		// description: yup.string().required('This field is required'),
 		unit: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
@@ -68,7 +69,7 @@ const AddLeaseForm = () => {
 		onSubmit,
 	});
 	useEffect(() => {
-		setTimeout(() => setLoading(false), 20000);
+		setTimeout(() => setLoading(false), 20);
 	}, []);
 	return (
 		<FormLayout Header='LEASE INFORMATION' sx={style.card}>
@@ -141,16 +142,30 @@ const AddLeaseForm = () => {
 							options={property}
 						/>
 					</Grid>
-					{/* <Grid item xs={12}>
-					<ControlledSelect
-						name='unit'
-						label='Unit '
-						type='text'
-						formik={formik}
-						options={property}
-					/>
-				</Grid> */}
 					<Grid item xs={12}>
+						<ControlledSelect
+							name='unit'
+							label='Unit'
+							type='text'
+							formik={formik}
+							options={property}
+							disabled={true}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<Link
+							component='button'
+							variant='body2'
+							sx={{
+								position: 'absolute',
+								right: '25px',
+							}}
+							onClick={() => {
+								console.log('clicked');
+							}}
+						>
+							Add tenant
+						</Link>
 						<ControlledSelect
 							name='tenant'
 							label='Tenant'
@@ -162,7 +177,7 @@ const AddLeaseForm = () => {
 					<Grid xs={12}>
 						<ControlledTextField
 							name='rentAmount'
-							label='Rent Amount '
+							label='Rent Amount'
 							formik={formik}
 							type='text'
 						/>
@@ -176,11 +191,12 @@ const AddLeaseForm = () => {
 						/>
 					</Grid>
 					<Grid item xs={6}>
-						<ControlledTextField
+						<ControlledSelect
 							name='frequency'
 							label='Payment Frequency *'
-							formik={formik}
 							type='text'
+							formik={formik}
+							options={property}
 						/>
 					</Grid>
 					<Grid item xs={6}></Grid>
@@ -188,7 +204,7 @@ const AddLeaseForm = () => {
 					<Grid item xs={6} sm={6} md={3} lg={3}>
 						<ControlledTextField
 							name='startDate'
-							label='Lease Start Date '
+							label='Lease Start Date'
 							formik={formik}
 							type='date'
 						/>
@@ -196,7 +212,7 @@ const AddLeaseForm = () => {
 					<Grid item xs={6} sm={6} md={3} lg={3}>
 						<ControlledTextField
 							name='endDate'
-							label='Lease End Date '
+							label='Lease End Date'
 							formik={formik}
 							type='date'
 						/>
@@ -209,6 +225,21 @@ const AddLeaseForm = () => {
 							year on the same date
 						</Typography>
 					</Grid>
+
+					<Stack
+						direction={'row'}
+						gap={3}
+						justifyContent={'flex-end'}
+						width={'100%'}
+						mt={10}
+					>
+						<Button variant='text' sx={style.button}>
+							Cancel
+						</Button>
+						<Button variant='contained' sx={style.button}>
+							Add Lease
+						</Button>
+					</Stack>
 				</Grid>
 			)}
 		</FormLayout>

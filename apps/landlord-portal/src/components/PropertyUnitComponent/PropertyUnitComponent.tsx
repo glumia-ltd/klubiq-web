@@ -90,6 +90,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
+	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
+
 	const anchorRef = useRef<HTMLButtonElement>(null);
 
 	const handleHomeClick = () => {
@@ -136,7 +138,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		if (currentUUId) {
 			try {
 				setProgress(true);
-				await deleteProperty({ uuid: currentUUId }).unwrap();
+				await deleteProperty({
+					uuid: currentUUId,
+					address: propertyAddress,
+					name: currentProperty?.name,
+					unitCount: currentProperty?.unitCount,
+				}).unwrap();
 				setOpenDeletePropertyDialog(false);
 				setOpen(false);
 				setProgress(false);
@@ -194,8 +201,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	const handleToggle = () => {
 		setOpen((prevOpen) => !prevOpen);
 	};
-
-	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
 	const mainImage =
 		currentProperty?.images && currentProperty?.images.length > 1
@@ -289,7 +294,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 										>
 											<MenuItem
 												onClick={handleArchiveProperty}
-												value='Edit'
+												value='Archive'
 												sx={{ padding: '10px' }}
 												divider
 											>
@@ -298,7 +303,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 											<MenuItem
 												onClick={handleEditProperty}
-												value='Logout'
+												value='Edit'
 												sx={{ padding: '10px' }}
 												divider
 											>
@@ -439,11 +444,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 				{/* MAINTENANCE TAB */}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
+				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
 				{/* DOCUMENT TAB */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
 			<PropertiesActionsPrompts
 				open={openArchivePropertyDialog}
