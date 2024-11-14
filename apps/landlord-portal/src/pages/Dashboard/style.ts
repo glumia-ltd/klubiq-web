@@ -232,4 +232,8 @@ export const styles = {
 			backgroundColor: 'background.paper',
 		},
 	},
+	datepickerStackStyle: {
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 };

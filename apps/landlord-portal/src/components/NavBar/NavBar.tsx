@@ -14,6 +14,7 @@ import {
 	Divider,
 	TextField,
 	InputAdornment,
+	Skeleton,
 } from '@mui/material';
 // import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -194,8 +195,15 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							{user?.firstName ?? 'Klubiq User'} <br />
-							{simplifyRoleName(user?.roleName || '')}
+							{user?.firstName ?? (
+								<Skeleton variant='rectangular' width='30px' />
+							)}{' '}
+							<br />
+							{user?.roleName ? (
+								simplifyRoleName(user?.roleName)
+							) : (
+								<Skeleton variant='rectangular' width='40px' />
+							)}
 						</Typography>
 						<IconButton
 							edge='end'

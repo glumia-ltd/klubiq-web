@@ -63,6 +63,12 @@ export const propertyApiSlice = createApi({
 			query: (params) => ({
 				url: propertiesEndpoints.deleteProperty(params.uuid),
 				method: 'DELETE',
+				body: {
+					uuid: params.uuid,
+					address: params.address,
+					name: params.name,
+					unitCount: params.unitCount,
+				},
 			}),
 			invalidatesTags: ['Property'],
 		}),

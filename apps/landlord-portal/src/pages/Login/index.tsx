@@ -58,6 +58,7 @@ const Login = () => {
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
+	const continuePath = searchParams.get('continue_path');
 	const verifyOTP = async () => {
 		setIsVerifying(true);
 		if (otp.length != 6) {
@@ -75,7 +76,7 @@ const Login = () => {
 			try {
 				await mfaResolver.resolveSignIn(multiFactorAssertion);
 				setOtpError('');
-				navigate('/dashboard', { replace: true });
+				navigate(continuePath ? continuePath : '/dashboard', { replace: true });
 			} catch (error: any) {
 				dispatch(
 					openSnackbar({
@@ -106,22 +107,11 @@ const Login = () => {
 
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
-
 		try {
 			setLoading(true);
-
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
-
 			const userToken: any = await user.getIdTokenResult();
-
 			if (userToken) {
-				// const payload = {
-				// 	token: user.accessToken,
-				// 	user,
-				// };
-
-				// dispatch(saveUser(payload));
-
 				const userName = user?.displayName?.split(' ');
 				const firstName = userName && userName[0];
 				const lastName = userName && userName[1];
