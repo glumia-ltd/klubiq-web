@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { leaseEndpoints } from '../../helpers/endpoints';
+import { leaseEndpoints, propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 
 export const leaseApiSlice = createApi({
@@ -26,6 +26,12 @@ export const leaseApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		getOrgPropertiesViewList: builder.query<any, { orgId: string }>({
+			query: (params) => ({
+				url: propertiesEndpoints.getOrgPropertiesViewList(params?.orgId),
+				method: 'GET',
+			}),
+		}),
 	}),
 });
 
@@ -38,4 +44,5 @@ export const {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
 	useGetSingleLeaseByIdQuery,
+	useGetOrgPropertiesViewListQuery,
 } = leaseApiSlice;

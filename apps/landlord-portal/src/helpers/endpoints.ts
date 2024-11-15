@@ -28,6 +28,8 @@ export const propertiesEndpoints = {
 		`/properties/${propertyUuid}/archive`,
 	deleteProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	editProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	getOrgPropertiesViewList: (orgId: string) =>
+		`/public/org/${orgId}/properties`,
 };
 
 export const organizationEndpoints = {

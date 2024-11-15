@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import FormLayout from '../../../Layouts/FormLayout';
 import { Grid, Typography, Skeleton, Button, Link } from '@mui/material';
 import style from './style';
@@ -6,12 +7,42 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import Logo from '../../../assets/images/info.svg';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { consoleLog } from '../../../helpers/debug-logger';
 import { Stack } from '@mui/system';
+import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leaseApiSlice';
+import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { useSelector } from 'react-redux';
+import { find } from 'lodash';
+
+enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+	// CUSTOM = 'Custom',
+}
+
+const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
+	id: freq,
+	name: freq,
+}));
 
 const AddLeaseForm = () => {
-	const [loading, setLoading] = useState<boolean>(true);
+	const { user } = useSelector(getAuthState);
+
+	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
+		useGetOrgPropertiesViewListQuery(user?.organizationId);
+
+	const propertyNameOptions = orgPropertiesViewList?.map(
+		(property: { uuid: string; name: string }) => ({
+			id: property?.uuid,
+			name: property?.name,
+		}),
+	);
 
 	const validationSchema = yup.object({
 		nickname: yup.string().required('field is required'),
@@ -38,17 +69,6 @@ const AddLeaseForm = () => {
 		tenant: string;
 	};
 
-	const property = [
-		{
-			value: 'A',
-			label: 'A',
-		},
-		{
-			value: 'B',
-			label: 'B',
-		},
-	];
-
 	const onSubmit = async (values: formValues) => {
 		consoleLog(values, 'val');
 	};
@@ -68,12 +88,46 @@ const AddLeaseForm = () => {
 		validationSchema,
 		onSubmit,
 	});
+
+	const getUnitsInProperty = find(orgPropertiesViewList, {
+		uuid: formik.values.propertyName,
+	});
+
+	const unitsInProperty = getUnitsInProperty?.units?.map(
+		(unit: { id: string; unitNumber: string }) => ({
+			id: unit?.id,
+			name: unit?.unitNumber,
+		}),
+	);
+
 	useEffect(() => {
-		setTimeout(() => setLoading(false), 20);
-	}, []);
+		formik.resetForm({ values: { ...formik.values, unit: '' } });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formik.values.propertyName]);
+
+	//  const RENT_DUE_ON = (
+	// rentDueDay: number,
+	// startDate: string,
+	//  ): Record<PaymentFrequency, string> => {
+
+	// const startDayAndMonth = DateTime.fromISO(startDate).toFormat('dd LLL');
+	// const day: string = DateTime.fromISO(startDate).weekdayLong;
+
+	// return ({
+	// [PaymentFrequency.WEEKLY]: ${day} every week,
+	// [PaymentFrequency.BI_WEEKLY]: ${day} Bi-Weekly,
+	// [PaymentFrequency.MONTHLY]: ${rentDueDay}<sup>${getDaySuffix(rentDueDay)}</sup> of every month,
+	// [PaymentFrequency.ANNUALLY]: ${startDayAndMonth} every year,
+	// [PaymentFrequency.ONE_TIME]: Once on ${startDayAndMonth},
+	// [PaymentFrequency.BI_MONTHLY]: ${rentDueDay}<sup>${getDaySuffix(rentDueDay)}</sup> of every other month,
+	// [PaymentFrequency.QUARTERLY]: Quarterly on ${day},
+	// [PaymentFrequency.CUSTOM]: See lease agreement,
+	//  });
+	// };
+
 	return (
 		<FormLayout Header='LEASE INFORMATION' sx={style.card}>
-			{loading ? (
+			{isLoadingOrgPropertiesView ? (
 				<Grid container spacing={1} sx={style.content}>
 					<Grid item xs={12}>
 						<Skeleton variant='text' height={25} width='50%' />
@@ -139,7 +193,7 @@ const AddLeaseForm = () => {
 							label='Property Name'
 							type='text'
 							formik={formik}
-							options={property}
+							options={propertyNameOptions}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -148,8 +202,8 @@ const AddLeaseForm = () => {
 							label='Unit'
 							type='text'
 							formik={formik}
-							options={property}
-							disabled={true}
+							options={unitsInProperty}
+							disabled={!unitsInProperty || unitsInProperty?.length <= 1}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -171,10 +225,10 @@ const AddLeaseForm = () => {
 							label='Tenant'
 							type='text'
 							formik={formik}
-							options={property}
+							options={[]}
 						/>
 					</Grid>
-					<Grid xs={12}>
+					<Grid item xs={12}>
 						<ControlledTextField
 							name='rentAmount'
 							label='Rent Amount'
@@ -196,7 +250,7 @@ const AddLeaseForm = () => {
 							label='Payment Frequency *'
 							type='text'
 							formik={formik}
-							options={property}
+							options={frequencyOptions}
 						/>
 					</Grid>
 					<Grid item xs={6}></Grid>
