@@ -14,6 +14,7 @@ import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leas
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
 import { find } from 'lodash';
+import dayjs from 'dayjs';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -25,6 +26,16 @@ enum PaymentFrequency {
 	WEEKLY = 'Weekly',
 	// CUSTOM = 'Custom',
 }
+
+const days = [
+	'Sunday',
+	'Monday',
+	'Tuesday',
+	'Wednesday',
+	'Thursday',
+	'Friday',
+	'Saturday',
+];
 
 const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 	id: freq,
@@ -105,6 +116,8 @@ const AddLeaseForm = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
 
+	consoleLog(formik.values);
+
 	//  const RENT_DUE_ON = (
 	// rentDueDay: number,
 	// startDate: string,
@@ -124,6 +137,40 @@ const AddLeaseForm = () => {
 	// [PaymentFrequency.CUSTOM]: See lease agreement,
 	//  });
 	// };
+
+	const getDaySuffix = (number: number) => {
+		if (number > 3 && number < 21) return 'th';
+		switch (number % 10) {
+			case 1:
+				return 'st';
+			case 2:
+				return 'nd';
+			case 3:
+				return 'rd';
+			default:
+				return 'th';
+		}
+	};
+
+	const rentDueOn = (
+		endDate: string,
+		startDate: string,
+	): Record<string, string> => {
+		const rentDueDay = dayjs(endDate).get('date');
+		const startDayAndMonth = dayjs(startDate).format('DD MMMM');
+		const day = days[dayjs(startDate).get('day')];
+
+		return {
+			[PaymentFrequency.WEEKLY]: `${day} every week`,
+			[PaymentFrequency.BI_WEEKLY]: `${day} Bi-Weekly`,
+			[PaymentFrequency.MONTHLY]: `${rentDueDay}${getDaySuffix(rentDueDay)} of every month`,
+			[PaymentFrequency.ANNUALLY]: `${startDayAndMonth} every year`,
+			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
+			[PaymentFrequency.BI_MONTHLY]: `${rentDueDay}${getDaySuffix(rentDueDay)} of every other month`,
+			[PaymentFrequency.QUARTERLY]: `Quarterly on ${day}`,
+			// [PaymentFrequency.CUSTOM]: `See lease agreement`,
+		};
+	};
 
 	return (
 		<FormLayout Header='LEASE INFORMATION' sx={style.card}>
@@ -275,8 +322,11 @@ const AddLeaseForm = () => {
 						<img src={Logo} alt='logo' style={style.infoimg} />
 
 						<Typography variant='subtitle2' sx={style.infotypo}>
-							The first rent payment will be due on 24 April 2024 and then every
-							year on the same date
+							{formik.values.endDate &&
+							formik.values.startDate &&
+							formik.values.frequency
+								? `The first rent payment will be due on ${rentDueOn(formik.values.endDate, formik.values.startDate)[formik.values.frequency]}`
+								: 'Your payment due date will be determined'}
 						</Typography>
 					</Grid>
 
