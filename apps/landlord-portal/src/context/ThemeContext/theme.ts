@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import { fontWeight } from '@mui/system';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -71,13 +72,21 @@ export const LightTheme: Theme = createTheme({
 		secondary: {
 			main: '#FFD700',
 			light: '#6699CC',
-			dark: '#FF6400',
+			dark: '#1b1b1b',
 			contrastText: '#ffffff',
 		},
 
 		background: {
 			default: '#F3F6F8',
 			paper: '#F3F6F8',
+		},
+		notification: {
+			light: '#002147',
+		},
+		buttonColors: {
+			common: {
+				// color:
+			},
 		},
 	},
 	components: {
@@ -107,6 +116,11 @@ export const LightTheme: Theme = createTheme({
 						border: '1.6px solid #002147',
 					},
 				},
+
+				// contained: {
+				// 	color: '#ffffff',
+				// 	borderColor: '#002147',
+				// },
 			},
 
 			variants: [
@@ -123,6 +137,31 @@ export const LightTheme: Theme = createTheme({
 						},
 					},
 				},
+
+				{
+					props: { variant: 'filterButton' },
+					style: {
+						display: 'flex',
+						color: '#002147',
+						gap: '8px',
+						padding: '8px',
+						borderRadius: '8px',
+						outline: '1px dashed #002147',
+					},
+				},
+				{
+					props: { variant: 'borderlessFilterButton' },
+					style: {
+						color: '#002147',
+						padding: '0',
+						outline: 'none',
+						display: 'flex',
+						gap: '5px',
+						'&:hover': {
+							background: 'none',
+						},
+					},
+				},
 			],
 		},
 		MuiListItemButton: {
@@ -134,7 +173,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				colorPrimary: {
 					backgroundColor: '#FFFFFF',
-					color: '#000000',
+					color: '#1B1B1B',
 				},
 			},
 		},
@@ -185,7 +224,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					//background: '#ffffff',
-					color: '#000000 !important',
+					color: '#1B1B1B !important',
 				},
 			},
 		},
@@ -197,6 +236,27 @@ export const LightTheme: Theme = createTheme({
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
+
+			variants: [
+				{
+					props: { variant: 'expired' },
+					style: {
+						backgroundColor: '#D9D9D9B2',
+					},
+				},
+				{
+					props: { variant: 'overdue' },
+					style: {
+						backgroundColor: '#FF00001A',
+					},
+				},
+				{
+					props: { variant: 'active' },
+					style: {
+						backgroundColor: '#FFFFFF',
+					},
+				},
+			],
 		},
 
 		MuiButtonBase: {
@@ -278,6 +338,12 @@ export const LightTheme: Theme = createTheme({
 		h6: {
 			fontWeight: 600,
 			fontSize: '1rem',
+			lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+		},
+		h7: {
+			fontWeight: 500,
+			fontSize: '1.1rem',
 			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
@@ -380,14 +446,18 @@ export const DarkTheme: Theme = createTheme({
 			dark: '#1F305E',
 		},
 		secondary: {
-			main: '#0D0D0D',
-			dark: '#FF6400',
-			light: '#BBD9FF',
+			main: '#FFD700',
+			light: '#6699CC',
+			dark: '#1b1b1b',
+			contrastText: '#ffffff',
+		},
+		notification: {
+			light: '#B8D9FF',
 		},
 
 		background: {
 			default: '#0D0D0D',
-			paper: '#0D0D0D',
+			paper: '#282B2C',
 		},
 	},
 
@@ -497,6 +567,14 @@ export const DarkTheme: Theme = createTheme({
 						border: '1.6px solid #FFFFFF',
 					},
 				},
+				// contained: {
+				// 	backgroundColor: '#B8D9FF',
+				// 	borderColor: '#B8D9FF',
+				// 	color: '#1B1B1B',
+				// 	'&:hover': {
+				// 		color: '#FFFFFF',
+				// 	},
+				// },
 			},
 			variants: [
 				{
@@ -507,6 +585,30 @@ export const DarkTheme: Theme = createTheme({
 
 						'&:hover': {
 							color: '#0088F0',
+						},
+					},
+				},
+
+				{
+					props: { variant: 'filterButton' },
+					style: {
+						display: 'flex',
+						gap: '8px',
+						padding: '8px',
+						borderRadius: '8px',
+						outline: '1px dashed #E4E4E4',
+					},
+				},
+				{
+					props: { variant: 'borderlessFilterButton' },
+					style: {
+						color: '#E4E4E4',
+						padding: '0',
+						outline: 'none',
+						display: 'flex',
+						gap: '5px',
+						'&:hover': {
+							background: 'none',
 						},
 					},
 				},
@@ -521,6 +623,26 @@ export const DarkTheme: Theme = createTheme({
 					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},
+			variants: [
+				{
+					props: { variant: 'expired' },
+					style: {
+						backgroundColor: '#D9D9D9B2',
+					},
+				},
+				{
+					props: { variant: 'overdue' },
+					style: {
+						backgroundColor: '#FF00001A',
+					},
+				},
+				{
+					props: { variant: 'active' },
+					style: {
+						backgroundColor: '#FFFFFF',
+					},
+				},
+			],
 		},
 	},
 
@@ -560,6 +682,12 @@ export const DarkTheme: Theme = createTheme({
 		h6: {
 			fontWeight: 800,
 			fontSize: '1rem',
+			lineHeight: 1,
+			fontFamily: 'Maven Pro, sans-serif',
+		},
+		h7: {
+			fontWeight: 500,
+			fontSize: '1.1rem',
 			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},

@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@mui/material';
-import ViewPort from '../../components/Viewport/ViewPort';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { FC, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,7 @@ const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 		navigate(-1);
 	};
 	return (
-		<ViewPort>
+		<>
 			<Grid
 				sx={{
 					cursor: 'pointer',
@@ -41,7 +40,7 @@ const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 			>
 				{children}
 			</Grid>
-		</ViewPort>
+		</>
 	);
 };
 

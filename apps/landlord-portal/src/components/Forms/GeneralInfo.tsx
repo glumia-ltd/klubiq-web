@@ -72,7 +72,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		setAnchorElement(null);
 	};
 
-	const customAmenitiesArray = formik.values.customAmenities.map(
+	const customAmenitiesArray = formik?.values?.customAmenities?.map(
 		(amenity: string) => ({
 			id: amenity,
 			name: amenity,
@@ -155,7 +155,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const renderAmenities = (amenities: any) => {
 		if (
-			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
+			(currentUnitIndex !== null &&
+				formik?.values?.units &&
+				formik?.values?.units[currentUnitIndex]) ||
 			selectedUnitType !== 'multi'
 		) {
 			return amenities?.map(
@@ -168,11 +170,13 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								key={`${amenity?.name}--${index}`}
 								value={amenity?.name}
 								checked={
-									formik.values.units[currentUnitIndex]?.amenities?.includes(
-										amenity?.name,
-									) || false
+									(formik?.values?.units &&
+										formik?.values?.units[
+											currentUnitIndex
+										]?.amenities?.includes(amenity?.name)) ||
+									false
 								}
-								onChange={formik.handleChange}
+								onChange={formik?.handleChange}
 							/>
 						}
 						label={amenity?.name}

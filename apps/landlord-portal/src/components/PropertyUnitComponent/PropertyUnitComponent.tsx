@@ -1,5 +1,17 @@
-import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
-import { Container } from '@mui/system';
+import {
+	Grid,
+	Breadcrumbs,
+	Typography,
+	Button,
+	Chip,
+	Paper,
+	MenuList,
+	MenuItem,
+	ClickAwayListener,
+	Grow,
+	Popper,
+} from '@mui/material';
+// import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
 // import { HomeIcon } from '../Icons/HomeIcon';
@@ -11,7 +23,7 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { FC, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import {
 	HouseIcon,
 	TenantIcon,
@@ -21,8 +33,17 @@ import {
 import propertyImage from '../../assets/images/propertyImage.png';
 import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLocaleFormat } from '../../helpers/utils';
+import {
+	useArchivePropertyMutation,
+	useDeletePropertyMutation,
+} from '../../store/PropertyPageStore/propertyApiSlice';
+import { PropertiesActionsPrompts } from '../Dialogs/PropertiesActionsPrompts';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
@@ -39,7 +60,7 @@ const stackedImages = [
 	propertyImage,
 ];
 
-const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
+const allTabs = ['Overview', 'Lease', 'Document'];
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
@@ -48,16 +69,138 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	tenantColumns,
 	leaseTableBodyRows,
 }) => {
+	const location = useLocation();
+	const dispatch = useDispatch();
+
+	const currentUUId = location.pathname.split('/')[2]!;
+
 	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
+	const [open, setOpen] = useState<boolean>(false);
+	const [openArchivePropertyDialog, setOpenArchivePropertyDialog] =
+		useState<boolean>(false);
+	const [openDeletePropertyDialog, setOpenDeletePropertyDialog] =
+		useState<boolean>(false);
+	const [progress, setProgress] = useState<boolean>(false);
+
+	const [archiveProperty] = useArchivePropertyMutation();
+	const [deleteProperty] = useDeletePropertyMutation();
+
+	const { user } = useSelector(getAuthState);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
+
+	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
+
+	const anchorRef = useRef<HTMLButtonElement>(null);
 
 	const handleHomeClick = () => {
 		navigate(-1);
 	};
 
-	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
+	const handleArchiveProperty = () => {
+		setOpenArchivePropertyDialog(true);
+	};
+
+	const handleDeleteProperty = () => {
+		setOpenDeletePropertyDialog(true);
+	};
+
+	const handleEditProperty = () => {
+		navigate(`/properties/${currentUUId}/edit`);
+	};
+
+	const handleArchivePropertyRequest = async () => {
+		if (currentUUId) {
+			try {
+				setProgress(true);
+				await archiveProperty({ uuid: currentUUId }).unwrap();
+				setOpenArchivePropertyDialog(false);
+				setOpen(false);
+				setProgress(false);
+				dispatch(
+					openSnackbar({
+						message: 'You have successfully archived this property!',
+						severity: 'success',
+						isOpen: true,
+					}),
+				);
+				navigate('/properties');
+			} catch (e) {
+				console.log(e);
+			}
+		} else {
+			setOpenArchivePropertyDialog(false);
+		}
+	};
+
+	const handleDeletePropertyRequest = async () => {
+		if (currentUUId) {
+			try {
+				setProgress(true);
+				await deleteProperty({
+					uuid: currentUUId,
+					address: propertyAddress,
+					name: currentProperty?.name,
+					unitCount: currentProperty?.unitCount,
+				}).unwrap();
+				setOpenDeletePropertyDialog(false);
+				setOpen(false);
+				setProgress(false);
+				dispatch(
+					openSnackbar({
+						message: 'You have successfully deleted this property!',
+						severity: 'success',
+						isOpen: true,
+					}),
+				);
+				navigate('/properties');
+			} catch (e) {
+				console.log(e);
+				setProgress(false);
+				setOpen(false);
+				setOpenDeletePropertyDialog(false);
+				dispatch(
+					openSnackbar({
+						message: 'Error deleting this property',
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+			}
+		} else {
+			setOpenDeletePropertyDialog(false);
+		}
+	};
+
+	const handleArchiveDialogButtonAction = (event: any) => {
+		if (event === 'Cancel') {
+			setOpenArchivePropertyDialog(false);
+		} else {
+			handleArchivePropertyRequest();
+		}
+	};
+
+	const handleDeleteeDialogButtonAction = (event: any) => {
+		if (event === 'Cancel') {
+			setOpenDeletePropertyDialog(false);
+		} else {
+			handleDeletePropertyRequest();
+		}
+	};
+
+	function handleListKeyDown(event: React.KeyboardEvent) {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			setOpen(false);
+		} else if (event.key === 'Escape') {
+			setOpen(false);
+		}
+	}
+
+	const handleToggle = () => {
+		setOpen((prevOpen) => !prevOpen);
+	};
 
 	const mainImage =
 		currentProperty?.images && currentProperty?.images.length > 1
@@ -91,7 +234,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.container}>
+		// <Container maxWidth={'xl'} sx={styles.container}>
+		<>
 			<Grid>
 				<Grid>
 					<Breadcrumbs
@@ -114,10 +258,71 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
+					<Button
+						ref={anchorRef}
+						variant='propertyButton'
+						sx={styles.actionButtonStyle}
+						onClick={handleToggle}
+					>
 						<Typography fontWeight={500}>Action</Typography>
 						<MoreVertIcon />
 					</Button>
+
+					<Popper
+						open={open}
+						anchorEl={anchorRef.current}
+						role={undefined}
+						placement='bottom-start'
+						transition
+						disablePortal
+						sx={{ minWidth: '160px', zIndex: 10 }}
+					>
+						{({ TransitionProps, placement }) => (
+							<Grow
+								{...TransitionProps}
+								style={{
+									transformOrigin:
+										placement === 'bottom-start' ? 'left top' : 'left bottom',
+								}}
+							>
+								<Paper>
+									<ClickAwayListener onClickAway={() => setOpen(false)}>
+										<MenuList
+											id='composition-menu'
+											aria-labelledby='composition-button'
+											onKeyDown={handleListKeyDown}
+										>
+											<MenuItem
+												onClick={handleArchiveProperty}
+												value='Archive'
+												sx={{ padding: '10px' }}
+												divider
+											>
+												Archive Property
+											</MenuItem>
+
+											<MenuItem
+												onClick={handleEditProperty}
+												value='Edit'
+												sx={{ padding: '10px' }}
+												divider
+											>
+												Edit Property
+											</MenuItem>
+
+											<MenuItem
+												onClick={handleDeleteProperty}
+												value='Delete'
+												sx={{ padding: '10px' }}
+											>
+												Delete Property{' '}
+											</MenuItem>
+										</MenuList>
+									</ClickAwayListener>
+								</Paper>
+							</Grow>
+						)}
+					</Popper>
 				</Grid>
 				<Chip
 					label={currentProperty?.purpose?.displayText || 'For sale'}
@@ -134,7 +339,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						propertyAddress={propertyAddress}
 						propertyId={currentProperty?.id}
 						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
-						rent={`₦ ${currentProperty?.totalRent}`}
+						rent={`${getLocaleFormat(user, +currentProperty?.totalRent || 0, 'currency')} `}
 						totalArea={
 							currentProperty?.isMultiUnit
 								? ''
@@ -180,14 +385,15 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 											/>
 										)}
 
-										{!tenantTableBodyRows?.length && (
-											<AddFieldCard
-												heading={'Add Tenant'}
-												subtext={'Add tenants to your property'}
-												description={'Add Tenant'}
-												handleAdd={handleNavigation}
-											/>
-										)}
+										{!tenantTableBodyRows?.length &&
+											leaseTableBodyRows?.length && (
+												<AddFieldCard
+													heading={'Add Tenant'}
+													subtext={'Add tenants to your property'}
+													description={'Add Tenant'}
+													handleAdd={handleNavigation}
+												/>
+											)}
 									</>
 								)}
 
@@ -238,12 +444,33 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 				{/* MAINTENANCE TAB */}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
+				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
 				{/* DOCUMENT TAB */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
-		</Container>
+			<PropertiesActionsPrompts
+				open={openArchivePropertyDialog}
+				progress={progress}
+				title={`${progress ? 'Archive in progress' : 'Attention!'}`}
+				content='Are you sure you want to archive this property?'
+				rightButtonContent='Archive Property'
+				handleDialogButtonAction={(e) =>
+					handleArchiveDialogButtonAction(e.target.value)
+				}
+			/>
+			<PropertiesActionsPrompts
+				open={openDeletePropertyDialog}
+				progress={progress}
+				title={`${progress ? 'Deleting this property' : 'Delete Property'}`}
+				content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
+				rightButtonContent='Delete Property'
+				handleDialogButtonAction={(e) =>
+					handleDeleteeDialogButtonAction(e.target.value)
+				}
+			/>
+		</>
+		// </Container>
 	);
 };

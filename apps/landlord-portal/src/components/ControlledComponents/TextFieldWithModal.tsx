@@ -41,7 +41,11 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				onClick={handleOpen}
 				id='input-with-icon-textfield'
 				placeholder='Search Transactions,customers'
-				sx={styles.textFieldWithModalSx}
+
+				sx={{...styles.textFieldWithModalSx, ...styles.secondTextFieldWithModalSx }} 
+
+				// sx={}
+
 				InputProps={{
 					startAdornment: (
 						<InputAdornment position='start'>

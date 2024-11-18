@@ -19,13 +19,14 @@ import { styles } from './styles';
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';
 
 import { FilterSkeleton } from './FilterSkeleton';
-import { Container } from '@mui/system';
+// import { Container } from '@mui/system';
 
 export const PropertiesSkeleton = () => {
 	const [layout] = useState<'row' | 'column'>('column');
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.container}>
+		// <Container maxWidth={'xl'} sx={styles.container}>
+		<>
 			<Grid container rowSpacing={2}>
 				<Grid
 					xs={12}
@@ -99,6 +100,7 @@ export const PropertiesSkeleton = () => {
 					</Grid>
 				</Grid>
 			</Grid>
-		</Container>
+		</>
+		// </Container>
 	);
 };

@@ -12,13 +12,17 @@ import {
 	Avatar,
 	Badge,
 	Divider,
+	TextField,
+	InputAdornment,
+	Skeleton,
 } from '@mui/material';
 // import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
+// import ResponsiveTextFieldWithModal from '../ControlledComponents/TextFieldWithModal';
 import NotificationModal from '../../components/Modals/NotificationModal';
+import SearchIcon from '@mui/icons-material/Search';
 import { replace, startCase } from 'lodash';
 
 const NavBar = () => {
@@ -28,6 +32,7 @@ const NavBar = () => {
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing } =
 		useContext(Context);
 	const [isModalOpen, setOpenModal] = useState(false);
+	const [searchText, setSearchText] = useState('');
 	const simplifyRoleName = (role: string) => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
 		return startCase(simplifiedRole);
@@ -119,7 +124,39 @@ const NavBar = () => {
 							},
 						}}
 					>
-						<ResponsiveTextFieldWithModal />
+						{/* <ResponsiveTextFieldWithModal />
+						 */}
+
+						<TextField
+							value={searchText}
+							onChange={(e) => setSearchText(e.target.value)}
+							id='input-with-icon-textfield'
+							placeholder='Search Transactions,customers'
+							sx={{
+								width: { xs: '50px', sm: '250px', md: '320px' },
+								// height: '45px',
+								padding: '0 4 0 4',
+								border: { xs: 'none' },
+								borderRadius: '10px',
+								'& .MuiOutlinedInput-root': {
+									'& fieldset': {
+										border: isSmallScreen ? 'none' : undefined,
+									},
+								},
+							}}
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position='start'>
+										<SearchIcon />
+									</InputAdornment>
+								),
+
+								sx: {
+									height: '45px',
+								},
+							}}
+							variant='outlined'
+						/>
 						<IconButton
 							size='large'
 							disableRipple
@@ -135,7 +172,11 @@ const NavBar = () => {
 						>
 							<Badge badgeContent={'2'} color='error'>
 								<NotificationsNoneOutlinedIcon
-									sx={{ color: '#075450', width: '28px', height: '28px' }}
+									sx={{
+										color: 'notification.light',
+										width: '28px',
+										height: '28px',
+									}}
 								/>
 							</Badge>
 						</IconButton>
@@ -154,8 +195,15 @@ const NavBar = () => {
 							}}
 						>
 							{' '}
-							{user?.firstName ?? 'Klubiq User'} <br />
-							{simplifyRoleName(user?.roleName || '')}
+							{user?.firstName ?? (
+								<Skeleton variant='rectangular' width='30px' />
+							)}{' '}
+							<br />
+							{user?.roleName ? (
+								simplifyRoleName(user?.roleName)
+							) : (
+								<Skeleton variant='rectangular' width='40px' />
+							)}
 						</Typography>
 						<IconButton
 							edge='end'

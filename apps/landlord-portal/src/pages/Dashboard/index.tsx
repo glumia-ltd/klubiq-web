@@ -1,11 +1,11 @@
 import {
-	Container,
 	Grid,
 	Card,
 	Typography,
 	Box,
 	Button,
 	Stack,
+	Skeleton,
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -37,12 +37,12 @@ import {
 	useGetDashboardMetricsQuery,
 	useGetRevenueReportDataQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
-import { getData } from '../../services/indexedDb';
-import { get } from 'lodash';
+import { getLocaleFormat } from '../../helpers/utils';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import { consoleLog } from '../../helpers/debug-logger';
+import { getCurrencySymbol } from '../../helpers/utils';
 
 const DashBoard = () => {
 	const { user } = useSelector(getAuthState);
@@ -177,50 +177,14 @@ const DashBoard = () => {
 			consoleLog(e);
 		}
 	};
-	const getLocaleFormat = (
-		numberVal: number,
-		style: 'currency' | 'percent' | 'unit' | 'decimal',
-	) => {
-		let currencyCode = '';
-		let countryCode = '';
-		let lang = '';
-		if (!user.orgSettings) {
-			const orgSettings = getData('org-settings', 'client-config');
-			currencyCode = get(orgSettings, 'currency', '');
-			countryCode = get(orgSettings, 'countryCode', '');
-			lang = get(orgSettings, 'language', '');
-		}
-		currencyCode = get(user, 'orgSettings.currency', '');
-		countryCode = get(user, 'orgSettings.countryCode', '');
-		lang = get(user, 'orgSettings.language', '');
-		if (!currencyCode || !countryCode || !lang) {
-			currencyCode = 'NGN';
-			countryCode = 'NG';
-			lang = 'en';
-		}
-		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
-			style: `${style}`,
-			currency: `${currencyCode}`,
-			currencyDisplay: 'symbol',
-		}).format(numberVal);
-		return localCurrencyVal;
-	};
-	const getCurrencySymbol = () => {
-		if (!user.orgSettings) {
-			const orgSettings = getData('org-settings', 'client-config');
-			const currencySymbol = get(orgSettings, 'currencySymbol', '');
-			return currencySymbol;
-		}
-		const currencySymbol = get(user, 'orgSettings.currencySymbol', '');
-		return currencySymbol;
-	};
 
 	return (
 		<>
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.containerStyle}>
+				// <Container maxWidth={'xl'} sx={styles.containerStyle}>
+				<>
 					<Grid container spacing={2}>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 							{/* PROPERTIES */}
@@ -262,7 +226,7 @@ const DashBoard = () => {
 										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{getLocaleFormat(OCCUPANCYRATE || 0, 'percent')}
+										{getLocaleFormat(user, OCCUPANCYRATE || 0, 'percent')}
 									</Typography>
 
 									<Stack
@@ -282,6 +246,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
 											{getLocaleFormat(
+												user,
 												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
 												'percent',
 											)}
@@ -305,7 +270,7 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											{getLocaleFormat(OVERDUERENTSUM || 0.0, 'currency')}
+											{getLocaleFormat(user, OVERDUERENTSUM || 0.0, 'currency')}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
@@ -353,7 +318,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(TOTALREVENUE || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															TOTALREVENUE || 0.0,
+															'currency',
+														)}
 													</Typography>
 
 													{showTrendArrow(TOTALREVENUECHANGEINDICATOR)}
@@ -367,6 +336,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -391,7 +361,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(TOTALEXPENSES || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															TOTALEXPENSES || 0.0,
+															'currency',
+														)}
 													</Typography>
 
 													{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
@@ -405,6 +379,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -428,7 +403,11 @@ const DashBoard = () => {
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
-														{getLocaleFormat(NETCASHFLOW || 0.0, 'currency')}
+														{getLocaleFormat(
+															user,
+															NETCASHFLOW || 0.0,
+															'currency',
+														)}
 														{/* {NETCASHFLOW && NETCASHFLOW > 0
 														? `₦${NETCASHFLOW?.toFixed(2) || 0.0}`
 														: NETCASHFLOW && NETCASHFLOW < 0
@@ -444,6 +423,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
+															user,
 															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														)}
@@ -718,6 +698,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
+												user,
 												revenueReport?.totalRevenueLast12Months || 0.0,
 												'currency',
 											)}
@@ -737,6 +718,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
 											{getLocaleFormat(
+												user,
 												revenueReport?.percentageDifference || 0,
 												'percent',
 											)}
@@ -750,56 +732,62 @@ const DashBoard = () => {
 							item
 							xs={12}
 							sm={12}
-							md={7}
+							md={5}
 							lg={5}
 							xl={5}
 							alignItems={'center'}
 							justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
 							display={'flex'}
 						>
-							<DatePicker
-								defaultValue={dayjs().subtract(11, 'months')}
-								value={firstDay}
-								maxDate={
-									!secondDay
-										? dayjs().subtract(11, 'months')
-										: secondDay.subtract(11, 'months')
-								}
-								onChange={(date) => {
-									setFirstDay(dayjs(date));
-									setSecondDay(dayjs(date).add(11, 'months'));
-								}}
-								format='DD/MM/YYYY'
-								slotProps={{
-									inputAdornment: {
-										position: 'start',
-									},
-								}}
-							/>
-							<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-							<DatePicker
-								defaultValue={dayjs()}
-								value={secondDay}
-								maxDate={dayjs()}
-								onChange={(date) => {
-									setSecondDay(dayjs(date));
-									setFirstDay(dayjs(date).subtract(11, 'months'));
-								}}
-								format='DD/MM/YYYY'
-								slotProps={{
-									inputAdornment: {
-										position: 'start',
-									},
-								}}
-							/>
-
-							<Button
-								sx={styles.downloadButtonStyle}
-								variant='outlined'
-								onClick={handleDownload}
+							<Stack
+								direction={'row'}
+								spacing={1}
+								sx={styles.datepickerStackStyle}
 							>
-								<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
-							</Button>
+								<DatePicker
+									defaultValue={dayjs().subtract(11, 'months')}
+									value={firstDay}
+									maxDate={
+										!secondDay
+											? dayjs().subtract(11, 'months')
+											: secondDay.subtract(11, 'months')
+									}
+									onChange={(date) => {
+										setFirstDay(dayjs(date));
+										setSecondDay(dayjs(date).add(11, 'months'));
+									}}
+									format='DD/MM/YYYY'
+									slotProps={{
+										inputAdornment: {
+											position: 'start',
+										},
+									}}
+								/>
+								<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+								<DatePicker
+									defaultValue={dayjs()}
+									value={secondDay}
+									maxDate={dayjs()}
+									onChange={(date) => {
+										setSecondDay(dayjs(date));
+										setFirstDay(dayjs(date).subtract(11, 'months'));
+									}}
+									format='DD/MM/YYYY'
+									slotProps={{
+										inputAdornment: {
+											position: 'start',
+										},
+									}}
+								/>
+
+								<Button
+									sx={styles.downloadButtonStyle}
+									variant='outlined'
+									onClick={handleDownload}
+								>
+									<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
+								</Button>
+							</Stack>
 						</Grid>
 
 						<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
@@ -808,12 +796,13 @@ const DashBoard = () => {
 									seriesData={revenueReport?.revenueChart?.seriesData || []}
 									maxRevenue={revenueReport?.maxRevenue || 0}
 									xAxisData={revenueReport?.revenueChart?.xAxisData}
-									currencySymbol={getCurrencySymbol()}
+									currencySymbol={getCurrencySymbol(user)}
 								/>
 							)}
 						</Grid>
 					</Grid>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);
