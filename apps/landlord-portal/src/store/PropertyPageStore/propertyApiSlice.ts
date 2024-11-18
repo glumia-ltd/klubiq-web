@@ -6,7 +6,7 @@ import { customApiFunction } from '../customApiFunction';
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['Property'],
+	tagTypes: ['Property', 'Deleted'],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
@@ -30,7 +30,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getSinglePropery(params.uuid),
 				method: 'GET',
 			}),
-			providesTags: ['Property'],
+			providesTags: ['Deleted'],
 		}),
 
 		addProperty: builder.mutation({
