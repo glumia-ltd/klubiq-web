@@ -1,4 +1,4 @@
-import { typography, useMediaQuery } from "@mui/system";
+import { typography, useMediaQuery, Theme } from "@mui/system";
 const isSmallScreen = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('sm'),
 );
