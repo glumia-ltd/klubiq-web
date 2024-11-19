@@ -48,10 +48,19 @@ const AddLeaseForm = () => {
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
 
-	const propertyNameOptions = orgPropertiesViewList?.map(
+	console.log(orgPropertiesViewList);
+
+	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
 			id: property?.uuid,
 			name: property?.name,
+		}),
+	);
+
+	const tenantOptions = orgPropertiesViewList?.tenants?.map(
+		(tenant: { id: string; firstName: string; lastName: string }) => ({
+			id: tenant.id,
+			name: `${tenant.firstName} ${tenant.lastName}`,
 		}),
 	);
 
@@ -116,58 +125,41 @@ const AddLeaseForm = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
 
-	consoleLog(formik.values);
-
-	//  const RENT_DUE_ON = (
-	// rentDueDay: number,
-	// startDate: string,
-	//  ): Record<PaymentFrequency, string> => {
-
-	// const startDayAndMonth = DateTime.fromISO(startDate).toFormat('dd LLL');
-	// const day: string = DateTime.fromISO(startDate).weekdayLong;
-
-	// return ({
-	// [PaymentFrequency.WEEKLY]: ${day} every week,
-	// [PaymentFrequency.BI_WEEKLY]: ${day} Bi-Weekly,
-	// [PaymentFrequency.MONTHLY]: ${rentDueDay}<sup>${getDaySuffix(rentDueDay)}</sup> of every month,
-	// [PaymentFrequency.ANNUALLY]: ${startDayAndMonth} every year,
-	// [PaymentFrequency.ONE_TIME]: Once on ${startDayAndMonth},
-	// [PaymentFrequency.BI_MONTHLY]: ${rentDueDay}<sup>${getDaySuffix(rentDueDay)}</sup> of every other month,
-	// [PaymentFrequency.QUARTERLY]: Quarterly on ${day},
-	// [PaymentFrequency.CUSTOM]: See lease agreement,
-	//  });
-	// };
-
-	const getDaySuffix = (number: number) => {
-		if (number > 3 && number < 21) return 'th';
-		switch (number % 10) {
-			case 1:
-				return 'st';
-			case 2:
-				return 'nd';
-			case 3:
-				return 'rd';
-			default:
-				return 'th';
-		}
-	};
-
 	const rentDueOn = (
 		endDate: string,
 		startDate: string,
 	): Record<string, string> => {
-		const rentDueDay = dayjs(endDate).get('date');
-		const startDayAndMonth = dayjs(startDate).format('DD MMMM');
-		const day = days[dayjs(startDate).get('day')];
+		// const rentDueDay = dayjs(endDate).get('date');
+		const startDayAndMonth = dayjs(startDate).format('MMMM DD');
+
+		const quaterFromStartDay = dayjs(startDate).add(3, 'months');
+		const quaterFromStartDayDate = quaterFromStartDay.format('MMMM DD, YYYY');
+		const getQuarterDay = days[quaterFromStartDay.get('day')];
+
+		const biMonthlyFromStartDay = dayjs(startDate).add(2, 'months');
+		const biMonthlyDate = biMonthlyFromStartDay.format('MMMM DD, YYYY');
+		const getBiMonthlyDay = days[biMonthlyFromStartDay.get('day')];
+
+		const monthlyFromStartDay = dayjs(startDate).add(1, 'months');
+		const monthlyDate = monthlyFromStartDay.format('MMMM DD, YYYY');
+		const getMonthlyDay = days[monthlyFromStartDay.get('day')];
+
+		const weeklyFromStartDay = dayjs(startDate).add(1, 'week');
+		const weekDate = weeklyFromStartDay.format('MMMM DD, YYYY');
+		const getWeekDay = days[weeklyFromStartDay.get('day')];
+
+		const biWeeklyFromStartDay = dayjs(startDate).add(2, 'week');
+		const biWeekDate = biWeeklyFromStartDay.format('MMMM DD, YYYY');
+		const getBiWeekDay = days[biWeeklyFromStartDay.get('day')];
 
 		return {
-			[PaymentFrequency.WEEKLY]: `${day} every week`,
-			[PaymentFrequency.BI_WEEKLY]: `${day} Bi-Weekly`,
-			[PaymentFrequency.MONTHLY]: `${rentDueDay}${getDaySuffix(rentDueDay)} of every month`,
+			[PaymentFrequency.WEEKLY]: `${getWeekDay}, ${weekDate}.`,
+			[PaymentFrequency.BI_WEEKLY]: `${getBiWeekDay}, ${biWeekDate}.`,
+			[PaymentFrequency.MONTHLY]: `${getMonthlyDay}, ${monthlyDate}.`,
 			[PaymentFrequency.ANNUALLY]: `${startDayAndMonth} every year`,
 			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${rentDueDay}${getDaySuffix(rentDueDay)} of every other month`,
-			[PaymentFrequency.QUARTERLY]: `Quarterly on ${day}`,
+			[PaymentFrequency.BI_MONTHLY]: `${getBiMonthlyDay}, ${biMonthlyDate}.`,
+			[PaymentFrequency.QUARTERLY]: `${getQuarterDay}, ${quaterFromStartDayDate}.`,
 			// [PaymentFrequency.CUSTOM]: `See lease agreement`,
 		};
 	};
@@ -272,7 +264,7 @@ const AddLeaseForm = () => {
 							label='Tenant'
 							type='text'
 							formik={formik}
-							options={[]}
+							options={tenantOptions}
 						/>
 					</Grid>
 					<Grid item xs={12}>
