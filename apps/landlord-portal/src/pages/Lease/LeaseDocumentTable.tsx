@@ -25,7 +25,7 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 	documentTableData,
 }) => {
 	const documentTableBodyRows = documentTableData?.row;
-	const documentTableColumns = documentTableData?.column;
+	// const documentTableColumns = documentTableData?.column;
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +135,7 @@ export const LeaseDocumentTable: FC<LeaseTableComponentType> = ({
 				// 						const value = row[key];
 
 				// 						return (
-				// 							<TableCell
+				// 							<TableCel++++++
 				// 								key={column.id}
 				// 								align={'left'}
 				// 								sx={styles.tableBodyStyle}
