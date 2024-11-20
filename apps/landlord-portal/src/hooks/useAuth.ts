@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { multiFactor, onAuthStateChanged } from 'firebase/auth';
 import { getAuthState } from '../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { consoleLog } from '../helpers/debug-logger';
 import { useUpdateUserPreferencesMutation } from '../store/AuthStore/authApiSlice';
 
@@ -43,7 +43,8 @@ const useAuth = () => {
 	};
 	useEffect(() => {
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
-			if (currentUser && user) {
+			if (currentUser && !isEmpty(user)) {
+				consoleLog('User already logged in: ', user);
 				const lastLoginTime = currentUser?.metadata?.lastSignInTime;
 				const lastLogin = lastLoginTime ? new Date(lastLoginTime).getTime() : 0;
 				const currentLogin = new Date().getTime();
@@ -53,15 +54,19 @@ const useAuth = () => {
 					userMfa.enrolledFactors.length === 0 &&
 					currentLogin - lastLogin < LOGIN_THRESHOLD
 				) {
+					consoleLog('Enrolled factors: None');
 					if (
 						securityPreferences &&
 						securityPreferences.twoFactor?.optOut === true
 					) {
+						consoleLog('User opted out of 2fa');
 						setShowMFAPrompt(false);
 						return;
 					}
+					consoleLog('No 2fa enrolled and not opted out');
 					setShowMFAPrompt(true);
 				} else {
+					consoleLog('2fa enrolled or user logged in recently');
 					setShowMFAPrompt(false);
 					return;
 				}

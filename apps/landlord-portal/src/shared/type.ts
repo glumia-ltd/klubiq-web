@@ -43,18 +43,18 @@ export type LeaseType = {
 	tenants: any[];
 };
 export type UnitType = {
-	area: { value: number; unit: string };
-	bathrooms: number;
-	bedrooms: number;
-	floor: number | null;
-	id: string;
-	images: string[];
-	leases: LeaseType[];
-	offices: number | string | null;
-	rentAmount: string;
-	rooms: null;
-	toilets: 4;
-	unitNumber: string;
+	area?: { value: number; unit: string };
+	bathrooms?: number;
+	bedrooms?: number;
+	floor?: number | null;
+	id?: string;
+	images?: string[];
+	leases?: LeaseType[];
+	offices?: number | string | null;
+	rentAmount?: string;
+	rooms?: null;
+	toilets?: 4;
+	unitNumber?: string;
 };
 
 export type PropertyDataType = {

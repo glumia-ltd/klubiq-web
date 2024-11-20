@@ -1,6 +1,6 @@
 import { Stack, Button } from '@mui/material';
 import { styles } from './style';
-import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+// import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../components/Filter/Filter';
 import { useCallback, useEffect, useState } from 'react';
 import { LeaseTable } from './LeaseTable';
@@ -50,6 +50,10 @@ const Lease = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
+	const navigateToAddLease = () => {
+		navigate('/lease/add-lease');
+	};
+
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
@@ -69,9 +73,9 @@ const Lease = () => {
 					<Button
 						variant='contained'
 						sx={styles.addLeaseButton}
-						// onClick={handleAddProperties}
+						onClick={navigateToAddLease}
 					>
-						<LeftArrowIcon />
+						{/* <LeftArrowIcon /> */}
 						Add New Lease
 					</Button>
 				</Stack>

@@ -29,7 +29,7 @@ type UnitComponentType = {
 	leaseTableBodyRows?: any;
 };
 
-const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
+const allTabs = ['Overview', 'Lease', 'Document'];
 
 export const UnitSkeleton: FC<UnitComponentType> = ({
 	currentProperty,

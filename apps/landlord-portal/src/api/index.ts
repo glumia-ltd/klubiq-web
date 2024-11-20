@@ -39,6 +39,8 @@ function AxiosConfig(config: any) {
 	config.headers['x-correlation-id'] = crypto.randomUUID();
 
 	config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
+	config.headers['x-client-tz-name'] =
+		Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	config.headers['x-client-name'] = 'landlord-portal';
 

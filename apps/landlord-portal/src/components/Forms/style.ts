@@ -6,6 +6,7 @@ const styles = {
 		// maxWidth: '1150px',
 		alignItems: 'center',
 		JustifyContent: 'center',
+		width: '100%',
 		// minWidth: '360px',
 	},
 	cardTwo: {

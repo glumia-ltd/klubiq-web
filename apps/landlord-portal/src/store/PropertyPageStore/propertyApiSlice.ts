@@ -6,6 +6,7 @@ import { customApiFunction } from '../customApiFunction';
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
+	tagTypes: ['Property'],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
@@ -14,6 +15,7 @@ export const propertyApiSlice = createApi({
 					method: 'GET',
 					params,
 				}),
+				providesTags: ['Property'],
 			},
 		),
 		getPropertiesMetaData: builder.query<any, void>({
@@ -28,6 +30,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getSinglePropery(params.uuid),
 				method: 'GET',
 			}),
+			providesTags: ['Property'],
 		}),
 
 		addProperty: builder.mutation({
@@ -44,6 +47,39 @@ export const propertyApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
+		}),
+
+		archiveProperty: builder.mutation<any, { uuid: string }>({
+			query: (params) => ({
+				url: propertiesEndpoints.archiveProperty(params.uuid),
+				method: 'PUT',
+			}),
+			invalidatesTags: ['Property'],
+		}),
+		deleteProperty: builder.mutation<
+			any,
+			{ uuid: string; address: string; name: string; unitCount: number }
+		>({
+			query: (params) => ({
+				url: propertiesEndpoints.deleteProperty(params.uuid),
+				method: 'DELETE',
+				body: {
+					uuid: params.uuid,
+					address: params.address,
+					name: params.name,
+					unitCount: params.unitCount,
+				},
+			}),
+			invalidatesTags: ['Property'],
+		}),
+
+		editProperty: builder.mutation<any, { uuid: string; data: any }>({
+			query: ({ uuid, data }) => ({
+				url: propertiesEndpoints.editProperty(uuid),
+				method: 'PUT',
+				body: data,
+			}),
+			invalidatesTags: ['Property'],
 		}),
 	}),
 });
@@ -63,4 +99,7 @@ export const {
 	useGetSinglePropertyByUUIDQuery,
 	useAddPropertyMutation,
 	useGetSignedUrlMutation,
+	useArchivePropertyMutation,
+	useDeletePropertyMutation,
+	useEditPropertyMutation,
 } = propertyApiSlice;
