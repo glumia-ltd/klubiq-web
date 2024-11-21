@@ -51,7 +51,7 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 		>
 			<FormControl
 				required
-				error={(fieldTouched && fieldValue) || ''}
+				error={(fieldTouched && fieldValue) || ' '}
 				variant='standard'
 			>
 				<FormControlLabel
