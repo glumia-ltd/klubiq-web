@@ -42,6 +42,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -84,6 +85,8 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 							maxHeight: 'calc(100% - 200px)',
 						},
 					}}
+					displayEmpty={Boolean(props.placeholder)}
+					multiple={props.multiple}
 				>
 					{options?.map(({ id, name }) => (
 						<MenuItem value={id} key={`${name}-${id}-`}>

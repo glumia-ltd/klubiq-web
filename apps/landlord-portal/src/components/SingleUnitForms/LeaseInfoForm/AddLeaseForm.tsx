@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import Logo from '../../../assets/images/info.svg';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { consoleLog } from '../../../helpers/debug-logger';
 import { Stack } from '@mui/system';
 import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leaseApiSlice';
@@ -48,8 +48,6 @@ const AddLeaseForm = () => {
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
 
-	console.log(orgPropertiesViewList);
-
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
 			id: property?.uuid,
@@ -69,7 +67,7 @@ const AddLeaseForm = () => {
 		// description: yup.string().required('This field is required'),
 		unit: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
-		tenant: yup.string().required('Select an option'),
+		tenant: yup.string(),
 		rentAmount: yup.string().required('field is required'),
 		depositAmount: yup.string().required('field is required'),
 		frequency: yup.string().required('field is required'),
@@ -83,10 +81,11 @@ const AddLeaseForm = () => {
 		frequency: string;
 		rentAmount: string;
 		depositAmount: string;
-		nickname: string;
+		name: string;
 		propertyName: string;
-		unit: string;
-		tenant: string;
+		unitId: string;
+		unitName: string;
+		tenant: string[];
 	};
 
 	const onSubmit = async (values: formValues) => {
@@ -100,18 +99,24 @@ const AddLeaseForm = () => {
 			frequency: '',
 			rentAmount: '',
 			depositAmount: '',
-			nickname: '',
+			name: '',
 			propertyName: '',
-			unit: '',
-			tenant: '',
+			unitId: '',
+			unitName: '',
+			tenant: [],
 		},
 		validationSchema,
 		onSubmit,
 	});
 
-	const getUnitsInProperty = find(orgPropertiesViewList, {
-		uuid: formik.values.propertyName,
-	});
+	const getUnitsInProperty = useMemo(
+		() =>
+			find(orgPropertiesViewList?.properties, {
+				uuid: formik?.values?.propertyName,
+			}),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[formik?.values?.propertyName],
+	);
 
 	const unitsInProperty = getUnitsInProperty?.units?.map(
 		(unit: { id: string; unitNumber: string }) => ({
@@ -120,10 +125,24 @@ const AddLeaseForm = () => {
 		}),
 	);
 
+	const getUnitNumber = find(unitsInProperty, {
+		id: formik.values.unitId,
+	});
+
 	useEffect(() => {
-		formik.resetForm({ values: { ...formik.values, unit: '' } });
+		formik.resetForm({ values: { ...formik.values, unitId: '' } });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
+
+	useEffect(() => {
+		if (unitsInProperty?.length <= 1) {
+			const unit = unitsInProperty[0];
+
+			formik.setFieldValue('unitId', unit.id);
+			formik.setFieldValue('unitName', unit.name);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formik?.values?.propertyName]);
 
 	const rentDueOn = (
 		endDate: string,
@@ -156,11 +175,34 @@ const AddLeaseForm = () => {
 			[PaymentFrequency.WEEKLY]: `${getWeekDay}, ${weekDate}.`,
 			[PaymentFrequency.BI_WEEKLY]: `${getBiWeekDay}, ${biWeekDate}.`,
 			[PaymentFrequency.MONTHLY]: `${getMonthlyDay}, ${monthlyDate}.`,
-			[PaymentFrequency.ANNUALLY]: `${startDayAndMonth} every year`,
+			[PaymentFrequency.ANNUALLY]: `${startDayAndMonth}`,
 			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
 			[PaymentFrequency.BI_MONTHLY]: `${getBiMonthlyDay}, ${biMonthlyDate}.`,
 			[PaymentFrequency.QUARTERLY]: `${getQuarterDay}, ${quaterFromStartDayDate}.`,
 			// [PaymentFrequency.CUSTOM]: `See lease agreement`,
+		};
+	};
+
+	const handleAddLease = async () => {
+		const requestBody = {
+			name: formik.values.name,
+			startDate: formik.values.startDate,
+			endDate: formik.values.endDate,
+			newTenants: null,
+			tenantsIds: [0],
+			unitId: formik.values.unitId,
+			rentDueDay: 0,
+			rentAmount: formik.values.rentAmount,
+			securityDeposit: formik.values.depositAmount,
+			isDraft: true,
+			paymentFrequency: formik.values.frequency,
+			status: null,
+			propertyName: getUnitsInProperty?.name,
+			firstPaymentDate: rentDueOn(
+				formik.values?.endDate,
+				formik.values?.startDate,
+			)[formik.values?.frequency],
+			unitNumber: getUnitNumber?.name,
 		};
 	};
 
@@ -220,8 +262,8 @@ const AddLeaseForm = () => {
 				<Grid container spacing={0} sx={style.content}>
 					<Grid item xs={12}>
 						<ControlledTextField
-							name='nickname'
-							label='Lease Nickname'
+							name='name'
+							label='Lease Name'
 							formik={formik}
 							type='text'
 						/>
@@ -237,7 +279,7 @@ const AddLeaseForm = () => {
 					</Grid>
 					<Grid item xs={12}>
 						<ControlledSelect
-							name='unit'
+							name='unitId'
 							label='Unit'
 							type='text'
 							formik={formik}
@@ -260,6 +302,7 @@ const AddLeaseForm = () => {
 							Add tenant
 						</Link>
 						<ControlledSelect
+							multiple={true}
 							name='tenant'
 							label='Tenant'
 							type='text'
@@ -332,7 +375,11 @@ const AddLeaseForm = () => {
 						<Button variant='text' sx={style.button}>
 							Cancel
 						</Button>
-						<Button variant='contained' sx={style.button}>
+						<Button
+							variant='contained'
+							sx={style.button}
+							onClick={handleAddLease}
+						>
 							Add Lease
 						</Button>
 					</Stack>
