@@ -1,5 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-import { fontWeight } from '@mui/system';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -163,6 +162,18 @@ export const LightTheme: Theme = createTheme({
 					},
 				},
 			],
+		},
+		MuiSelect: {
+			styleOverrides: {
+				root: {
+					// 		maxHeight: 'calc(100% - 200px)',
+					maxHeight: 'calc(100% - 200px)',
+
+					// '&.Mui-disabled': {
+					//     background: grey[100],
+					// }
+				},
+			},
 		},
 		MuiListItemButton: {
 			defaultProps: {

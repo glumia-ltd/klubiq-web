@@ -243,7 +243,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								type='text'
 								formik={formik}
 								options={countries}
-								placeholder=''
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6} md={6}>
