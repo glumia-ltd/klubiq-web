@@ -39,7 +39,7 @@ import NotFound from '../pages/ErrorPages/404';
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
-			<Route path='/login' element={<Login />} />
+			<Route path='/' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />

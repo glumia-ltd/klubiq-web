@@ -31,7 +31,7 @@ import {
 	HomeIcon,
 } from '../Icons/CustomIcons';
 import propertyImage from '../../assets/images/propertyImage.png';
-import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
+// import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
