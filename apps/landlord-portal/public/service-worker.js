@@ -1,5 +1,9 @@
 const DATA_CACHE = 'klubiq-data-cache-v1';
-const ALLOWED_ORIGINS = ['https://klubiq.com', 'http://localhost:5173'];
+const ALLOWED_ORIGINS = [
+	'https://klubiq.com',
+	'http://localhost:5173',
+	'https://dev.klubiq.com',
+];
 const PUBLIC_CACHED_PATHS = ['/api/public/property-metadata'];
 
 self.addEventListener('sync', (event) => {
@@ -62,12 +66,34 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', function (event) {
+	console.log('Push received', event);
 	const data = event.data.json();
 	const options = {
 		body: data.body,
 		icon: '/icon.png',
 		badge: '/klubiq-logo.svg',
+		title: data.title,
+		data: {
+			url: data.actionLink,
+		},
 	};
 
 	event.waitUntil(self.registration.showNotification(data.title, options));
+});
+self.addEventListener('notificationclick', function (event) {
+	event.notification.close();
+	event.waitUntil(
+		clients.matchAll({ type: 'window' }).then(function (clientList) {
+			if (clientList.length > 0) {
+				let client = clientList[0];
+				for (let i = 0; i < clientList.length; i++) {
+					if (clientList[i].focused) {
+						client = clientList[i];
+					}
+				}
+				return client.focus();
+			}
+			return clients.openWindow(event.notification.data.url);
+		}),
+	);
 });
