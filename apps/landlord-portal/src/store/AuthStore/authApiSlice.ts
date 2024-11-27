@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { authEndpoints } from '../../helpers/endpoints';
+import { authEndpoints, notificationEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 
 export const authApiSlice = createApi({
@@ -19,6 +19,13 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
+		updateNotificationSubscription: builder.mutation({
+			query: (body) => ({
+				url: notificationEndpoints.subscribe(),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -26,4 +33,5 @@ export const {
 	useGetUserByFbidQuery,
 	useLazyGetUserByFbidQuery,
 	useUpdateUserPreferencesMutation,
+	useUpdateNotificationSubscriptionMutation,
 } = authApiSlice;

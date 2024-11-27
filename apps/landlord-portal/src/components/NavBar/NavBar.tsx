@@ -66,7 +66,13 @@ const NavBar = () => {
 						item
 						container
 						sx={{
-							width: { xs: '30%', sm: '50%', md: '50%', lg: '50%', xl: '50%' },
+							width: {
+								xs: '30%',
+								sm: '50%',
+								md: '50%',
+								lg: '50%',
+								xl: '50%',
+							},
 							alignItems: 'center',
 							display: {
 								xs: 'flex',
@@ -106,7 +112,13 @@ const NavBar = () => {
 					<Grid
 						item
 						sx={{
-							width: { xs: '70%', sm: '50%', md: '50%', lg: '50%', xl: '50%' },
+							width: {
+								xs: '70%',
+								sm: '50%',
+								md: '50%',
+								lg: '50%',
+								xl: '50%',
+							},
 							cursor: 'pointer',
 							alignItems: 'center',
 							justifyContent: {

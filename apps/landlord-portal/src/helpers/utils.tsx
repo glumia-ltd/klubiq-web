@@ -45,9 +45,9 @@ const getInfoFromUserSettings = (user: any) => {
 		lang = get(user, 'orgSettings.language', '');
 	}
 	if (!currencyCode || !countryCode || !lang) {
-		currencyCode = 'NGN';
-		countryCode = 'NG';
-		lang = 'en';
+		currencyCode = '';
+		countryCode = '';
+		lang = '';
 	}
 
 	return { currencyCode, countryCode, lang };
@@ -59,21 +59,25 @@ export const getLocaleFormat = (
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
 ) => {
 	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(user);
-
-	const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
-		style: `${style}`,
-		currency: `${currencyCode}`,
-		currencyDisplay: 'symbol',
-	}).format(numberVal);
-	return localCurrencyVal;
+	if (lang && countryCode && currencyCode) {
+		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
+			style: `${style}`,
+			currency: `${currencyCode}`,
+			currencyDisplay: 'symbol',
+		}).format(numberVal);
+		return localCurrencyVal;
+	}
+	return '';
 };
 
 export const getLocaleDateFormat = (user: any, date: string) => {
 	const { countryCode, lang } = getInfoFromUserSettings(user);
+	if (lang && countryCode) {
+		const newDate = new Date(date) || new Date();
 
-	const newDate = new Date(date) || new Date();
+		const locale = `${lang}-${countryCode}`;
 
-	const locale = `${lang}-${countryCode}`;
-
-	return new Intl.DateTimeFormat(locale).format(newDate);
+		return new Intl.DateTimeFormat(locale).format(newDate);
+	}
+	return '';
 };

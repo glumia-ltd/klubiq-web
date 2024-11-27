@@ -39,3 +39,8 @@ export const leaseEndpoints = {
 	getLeases: () => '/leases',
 	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
 };
+export const notificationEndpoints = {
+	subscribe: () => '/notifications-subscription/subscribe',
+	unsubscribe: (subId: string) =>
+		`/notifications-subscription/unsubscribe/${subId}`,
+};
