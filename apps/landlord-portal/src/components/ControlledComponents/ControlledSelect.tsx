@@ -47,7 +47,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 		<Stack
 			sx={{
 				justifyContent: 'center',
-				m: 0.1,
+				m: 0.3,
 				minWidth: 230,
 				...sx,
 			}}

@@ -182,7 +182,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 									formik={formik}
 									type='text'
 									multiline
-									minRows={20}
+									minRows={5}
 									sxTwo={{
 										'& .MuiOutlinedInput-root': {
 											height: 'max-content',
