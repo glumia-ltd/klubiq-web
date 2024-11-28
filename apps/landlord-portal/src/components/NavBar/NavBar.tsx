@@ -1,7 +1,7 @@
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
@@ -15,6 +15,12 @@ import {
 	TextField,
 	InputAdornment,
 	Skeleton,
+	ClickAwayListener,
+	Grow,
+	MenuItem,
+	MenuList,
+	Paper,
+	Popper,
 } from '@mui/material';
 // import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -24,6 +30,14 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import NotificationModal from '../../components/Modals/NotificationModal';
 import SearchIcon from '@mui/icons-material/Search';
 import { replace, startCase } from 'lodash';
+import { anchorRef } from 'material-ui-popup-state';
+import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { auth } from '../../firebase';
+import CustomPopper from '../Shared/CustomPopper';
+import { color } from '@mui/system';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
@@ -37,13 +51,90 @@ const NavBar = () => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
 		return startCase(simplifiedRole);
 	};
+	const [openAvatarPopper, setOpenAvatarPopper] = useState<boolean>(false);
 	// const { pathname } = useLocation();
 	// const section = pathname.split('/')[1];
-
+	const handleAvatarPopperToggle = () => {
+		setOpenAvatarPopper((prevOpen) => !prevOpen);
+	};
+	const anchorRef = useRef<HTMLButtonElement>(null);
 	const handleOpenSidebar = () => {
 		setIsclosing && setIsclosing(false);
 		toggleMobileSidebar && toggleMobileSidebar();
 	};
+	const stringToColor = (string: string) => {
+		let hash = 5;
+		let i;
+
+		/* eslint-disable no-bitwise */
+		for (i = 0; i < string.length; i += 1) {
+			hash = string.charCodeAt(i) + ((hash << 5) - hash);
+		}
+
+		let color = '#';
+
+		for (i = 0; i < 3; i += 1) {
+			const value = (hash >> (i * 8)) & 0xff;
+			color += `00${value.toString(16)}`.slice(-2);
+		}
+		/* eslint-enable no-bitwise */
+
+		return color;
+	};
+	const stringAvatar = (fname: string, lname: string) => {
+		return {
+			sx: {
+				bgcolor: stringToColor(`${fname} ${lname}`),
+				width: '40px',
+				height: '40px',
+				marginRight: '1rem',
+				borderRadius: '90px',
+			},
+			children: `${fname[0]}${lname[0]}`,
+		};
+	};
+	const handleListKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			setOpenAvatarPopper(false);
+		} else if (event.key === 'Escape') {
+			setOpenAvatarPopper(false);
+		}
+	};
+
+	const avatarMenus: menuItem[] = [
+		{
+			label: 'Profile',
+			onClick: () => {
+				console.log('profile');
+			},
+			icon: <PersonIcon color='primary' />,
+			sx: {
+				padding: '10px',
+			},
+		},
+		{
+			label: 'Settings',
+			onClick: () => {
+				console.log('profile');
+			},
+			icon: <SettingsIcon color='primary' />,
+			sx: {
+				padding: '10px',
+			},
+		},
+		{
+			label: 'Logout',
+			onClick: () => {
+				sessionStorage.clear();
+				auth.signOut();
+			},
+			icon: <LogoutIcon color='primary' />,
+			sx: {
+				padding: '10px',
+			},
+		},
+	];
 
 	return (
 		<AppBar position='fixed' elevation={2} sx={{ width: '100%' }}>
@@ -210,6 +301,9 @@ const NavBar = () => {
 							{user?.firstName ?? (
 								<Skeleton variant='rectangular' width='30px' />
 							)}{' '}
+							{user?.lastName ?? (
+								<Skeleton variant='rectangular' width='30px' />
+							)}{' '}
 							<br />
 							{user?.roleName ? (
 								simplifyRoleName(user?.roleName)
@@ -222,18 +316,86 @@ const NavBar = () => {
 							disableRipple
 							sx={{ color: 'black' }}
 							aria-haspopup='true'
+							ref={anchorRef}
+							onClick={handleAvatarPopperToggle}
 						>
-							<Avatar
-								alt={user?.firstName ?? 'K'}
-								src={user?.profilePicUrl ?? ''}
-								sx={{
-									width: '40px',
-									height: '40px',
-									marginRight: '1rem',
-									borderRadius: '90px',
-								}}
-							/>
+							{user?.profilePicUrl ? (
+								<Avatar
+									alt={`${user?.firstName} ${user?.lastName}`}
+									src={user?.profilePicUrl}
+									sx={{
+										width: '40px',
+										height: '40px',
+										marginRight: '1rem',
+										borderRadius: '90px',
+									}}
+								/>
+							) : (
+								<Avatar
+									{...(user?.firstName &&
+										user?.lastName &&
+										stringAvatar(user?.firstName, user?.lastName))}
+								/>
+							)}
 						</IconButton>
+						<CustomPopper
+							open={openAvatarPopper}
+							anchorEl={anchorRef.current}
+							onClose={() => setOpenAvatarPopper(false)}
+							children={
+								<KlbMenuList
+									id='avatar-menu'
+									handleKeyDown={handleListKeyDown}
+									menuItems={avatarMenus}
+								></KlbMenuList>
+							}
+						></CustomPopper>
+						{/* <Popper
+							open={openAvatarPopper}
+							anchorEl={anchorRef.current}
+							role={undefined}
+							placement='bottom-start'
+							transition
+							disablePortal
+							sx={{ minWidth: '160px', zIndex: 10 }}
+						>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{
+										transformOrigin:
+											placement === 'bottom-start' ? 'left top' : 'left bottom',
+									}}
+								>
+									<Paper>
+										<ClickAwayListener
+											onClickAway={() => setOpenAvatarPopper(false)}
+										>
+											<MenuList
+												id='composition-menu'
+												aria-labelledby='composition-button'
+											>
+												<MenuItem
+													value='Archive'
+													sx={{ padding: '10px' }}
+													divider
+												>
+													Profile
+												</MenuItem>
+
+												<MenuItem value='Edit' sx={{ padding: '10px' }} divider>
+													Settings
+												</MenuItem>
+
+												<MenuItem value='Delete' sx={{ padding: '10px' }}>
+													Log Out
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
+							)}
+						</Popper> */}
 					</Grid>
 				</Grid>
 			</Toolbar>
