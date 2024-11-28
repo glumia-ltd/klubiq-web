@@ -1,15 +1,18 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { styles } from './style';
 
-export const PasswordStrengthBar: FC<{ password: string }> = ({ password }) => {
+export const PasswordStrengthBar: FC<{
+	password: string;
+	handlePasswordChange: (message: string) => void;
+}> = ({ password, handlePasswordChange }) => {
+	const lengthIsGreaterThanEigth = password.length >= 8;
+	const thereIsALowerCase = password.match(/[a-z]+/);
+	const thereIsAnUpperCase = password.match(/[A-Z]+/);
+	const thereIsASpecialSymbol = password.match(/[^a-zA-Z0-9]+/);
+	const thereIsANumber = password.match(/[0-9]/);
+
 	const calculatePasswordStrength = () => {
 		let strength = 0;
-
-		const lengthIsGreaterThanEigth = password.length >= 8;
-		const thereIsALowerCase = password.match(/[a-z]+/);
-		const thereIsAnUpperCase = password.match(/[A-Z]+/);
-		const thereIsASpecialSymbol = password.match(/[^a-zA-Z0-9]+/);
-		const thereIsANumber = password.match(/[0-9]/);
 
 		if (
 			lengthIsGreaterThanEigth &&
@@ -52,10 +55,31 @@ export const PasswordStrengthBar: FC<{ password: string }> = ({ password }) => {
 		}
 	};
 
+	useEffect(() => {
+		let message = '';
+
+		if (password.length <= 0) {
+			message = '';
+			handlePasswordChange(message);
+			return;
+		}
+
+		if (!lengthIsGreaterThanEigth) {
+			message = `Your password should have a minimum of 8 symbols.`;
+		} else if (!thereIsALowerCase) {
+			message = 'Your password must contain a lower case';
+		} else if (!thereIsAnUpperCase) {
+			message = 'Your password must contain an upper case';
+		} else if (!thereIsASpecialSymbol) {
+			message = 'Your password must have a special symbol';
+		}
+
+		handlePasswordChange(message);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [password]);
+
 	const strength = calculatePasswordStrength();
 	const strengthBarColor = getStrengthByColor(strength);
-
-	console.log(strength, strengthBarColor);
 
 	const strengthBarStyle = {
 		width: `${(strength / 5) * 100}%`,

@@ -25,6 +25,10 @@ const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
+	const [passwordMessage, setPasswordMessage] = useState<string>('');
+
+	console.log(passwordMessage);
+
 	type CountryType = {
 		name: string;
 		code: string;
@@ -74,6 +78,20 @@ const CreateAccount: React.FC = () => {
 				companyName,
 				organizationCountry: selectedCountry,
 			};
+
+			if (passwordMessage) {
+				dispatch(
+					openSnackbar({
+						message: passwordMessage,
+						severity: 'info',
+						isOpen: true,
+					}),
+				);
+
+				setLoading(false);
+
+				return;
+			}
 
 			const {
 				data: { data: token },
@@ -247,7 +265,10 @@ const CreateAccount: React.FC = () => {
 							</Grid>
 
 							<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
-								<PasswordStrengthBar password={formik.values.password} />
+								<PasswordStrengthBar
+									password={formik.values.password}
+									handlePasswordChange={setPasswordMessage}
+								/>
 							</Grid>
 
 							<Typography
