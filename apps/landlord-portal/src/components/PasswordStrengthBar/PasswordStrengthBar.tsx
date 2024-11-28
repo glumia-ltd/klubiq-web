@@ -73,6 +73,8 @@ export const PasswordStrengthBar: FC<{
 		} else if (!thereIsASpecialSymbol) {
 			message =
 				'Password must include at least one special character (e.g., @, #, $, &).';
+		} else if (!thereIsANumber) {
+			message = 'Password must include at least one number.';
 		}
 
 		handlePasswordChange(message);
