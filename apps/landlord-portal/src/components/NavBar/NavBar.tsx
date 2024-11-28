@@ -95,6 +95,17 @@ const NavBar = () => {
 	};
 
 	const avatarMenus: menuItem[] = [
+		...(isSmallScreen
+			? [
+					{
+						label:
+							user?.firstName && user?.lastName
+								? `${user?.firstName} ${user?.lastName}`
+								: '',
+						hasDivider: true,
+					},
+				]
+			: []),
 		{
 			label: 'Profile',
 			onClick: () => {

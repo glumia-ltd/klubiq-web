@@ -5,12 +5,11 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Divider,
-	Typography,
 } from '@mui/material';
 
 export interface menuItem {
 	label: string;
-	onClick: () => void;
+	onClick?: () => void;
 	hasDivider?: boolean;
 	sx?: Record<string, unknown>;
 	icon?: React.ReactNode;
