@@ -5,6 +5,7 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Divider,
+	Typography,
 } from '@mui/material';
 
 export interface menuItem {
@@ -35,8 +36,8 @@ const KlbMenuList: React.FC<Props> = ({ id, handleKeyDown, menuItems }) => {
 						<ListItemText
 							primary={item.label}
 							primaryTypographyProps={{
-								color: 'primary',
-								variant: 'body2',
+								color: 'text.primary',
+								variant: 'body1',
 							}}
 						/>
 					</MenuItem>

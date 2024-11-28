@@ -15,12 +15,6 @@ import {
 	TextField,
 	InputAdornment,
 	Skeleton,
-	ClickAwayListener,
-	Grow,
-	MenuItem,
-	MenuList,
-	Paper,
-	Popper,
 } from '@mui/material';
 // import { useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -30,14 +24,12 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import NotificationModal from '../../components/Modals/NotificationModal';
 import SearchIcon from '@mui/icons-material/Search';
 import { replace, startCase } from 'lodash';
-import { anchorRef } from 'material-ui-popup-state';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
-import PersonIcon from '@mui/icons-material/Person';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutIcon from '@mui/icons-material/Logout';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { auth } from '../../firebase';
 import CustomPopper from '../Shared/CustomPopper';
-import { color } from '@mui/system';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
@@ -108,7 +100,7 @@ const NavBar = () => {
 			onClick: () => {
 				console.log('profile');
 			},
-			icon: <PersonIcon color='primary' />,
+			icon: <PersonOutlineOutlinedIcon sx={{ color: 'text.primary' }} />,
 			sx: {
 				padding: '10px',
 			},
@@ -118,7 +110,7 @@ const NavBar = () => {
 			onClick: () => {
 				console.log('profile');
 			},
-			icon: <SettingsIcon color='primary' />,
+			icon: <SettingsOutlinedIcon sx={{ color: 'text.primary' }} />,
 			sx: {
 				padding: '10px',
 			},
@@ -129,7 +121,7 @@ const NavBar = () => {
 				sessionStorage.clear();
 				auth.signOut();
 			},
-			icon: <LogoutIcon color='primary' />,
+			icon: <LogoutOutlinedIcon sx={{ color: 'text.primary' }} />,
 			sx: {
 				padding: '10px',
 			},
@@ -350,52 +342,6 @@ const NavBar = () => {
 								></KlbMenuList>
 							}
 						></CustomPopper>
-						{/* <Popper
-							open={openAvatarPopper}
-							anchorEl={anchorRef.current}
-							role={undefined}
-							placement='bottom-start'
-							transition
-							disablePortal
-							sx={{ minWidth: '160px', zIndex: 10 }}
-						>
-							{({ TransitionProps, placement }) => (
-								<Grow
-									{...TransitionProps}
-									style={{
-										transformOrigin:
-											placement === 'bottom-start' ? 'left top' : 'left bottom',
-									}}
-								>
-									<Paper>
-										<ClickAwayListener
-											onClickAway={() => setOpenAvatarPopper(false)}
-										>
-											<MenuList
-												id='composition-menu'
-												aria-labelledby='composition-button'
-											>
-												<MenuItem
-													value='Archive'
-													sx={{ padding: '10px' }}
-													divider
-												>
-													Profile
-												</MenuItem>
-
-												<MenuItem value='Edit' sx={{ padding: '10px' }} divider>
-													Settings
-												</MenuItem>
-
-												<MenuItem value='Delete' sx={{ padding: '10px' }}>
-													Log Out
-												</MenuItem>
-											</MenuList>
-										</ClickAwayListener>
-									</Paper>
-								</Grow>
-							)}
-						</Popper> */}
 					</Grid>
 				</Grid>
 			</Toolbar>
