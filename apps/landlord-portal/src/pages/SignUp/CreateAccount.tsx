@@ -83,7 +83,7 @@ const CreateAccount: React.FC = () => {
 				dispatch(
 					openSnackbar({
 						message: passwordMessage,
-						severity: 'info',
+						severity: 'warning',
 						isOpen: true,
 					}),
 				);

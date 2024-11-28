@@ -65,13 +65,14 @@ export const PasswordStrengthBar: FC<{
 		}
 
 		if (!lengthIsGreaterThanEigth) {
-			message = `Your password should have a minimum of 8 symbols.`;
+			message = `Password must be at least 8 characters long.`;
 		} else if (!thereIsALowerCase) {
-			message = 'Your password must contain a lower case';
+			message = 'Password must include at least one lowercase letter.';
 		} else if (!thereIsAnUpperCase) {
-			message = 'Your password must contain an upper case';
+			message = 'Password must include at least one uppercase letter.';
 		} else if (!thereIsASpecialSymbol) {
-			message = 'Your password must have a special symbol';
+			message =
+				'Password must include at least one special character (e.g., @, #, $, &).';
 		}
 
 		handlePasswordChange(message);
