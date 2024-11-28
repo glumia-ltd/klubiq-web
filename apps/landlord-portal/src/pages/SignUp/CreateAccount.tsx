@@ -20,6 +20,7 @@ import { filter, find, orderBy } from 'lodash';
 import countries from '../../helpers/countries-meta.json';
 import { styles } from './styles';
 import bgillustration from '../../assets/images/undraw_town_re_2ng5-removebg-preview.png';
+import { PasswordStrengthBar } from '../../components/PasswordStrengthBar/PasswordStrengthBar';
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -243,6 +244,10 @@ const CreateAccount: React.FC = () => {
 									formik={formik}
 									autoComplete='new-password'
 								/>
+							</Grid>
+
+							<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
+								<PasswordStrengthBar password={formik.values.password} />
 							</Grid>
 
 							<Typography
