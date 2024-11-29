@@ -15,6 +15,9 @@ import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
+import { getCurrencySymbol } from '../../../helpers/utils';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -44,6 +47,7 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 
 const AddLeaseForm = () => {
 	const { user } = useSelector(getAuthState);
+	const dispatch = useDispatch();
 
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
@@ -72,7 +76,8 @@ const AddLeaseForm = () => {
 		depositAmount: yup.string().required('field is required'),
 		frequency: yup.string().required('field is required'),
 		startDate: yup.string().required('field is required'),
-		endDate: yup.string().required('field is required'),
+		endDate: yup.string(),
+		rentDue: yup.string(),
 	});
 
 	type formValues = {
@@ -104,6 +109,7 @@ const AddLeaseForm = () => {
 			unitId: '',
 			unitName: '',
 			tenant: [],
+			rentDue: '',
 		},
 		validationSchema,
 		onSubmit,
@@ -129,10 +135,31 @@ const AddLeaseForm = () => {
 		id: formik.values.unitId,
 	});
 
+	const rentDueDayOptions = Array.from({ length: 31 }, (_, i) => i + 1).map(
+		(value) => ({ id: `${value}`, name: `${value} ` }),
+	);
+
 	useEffect(() => {
 		formik.resetForm({ values: { ...formik.values, unitId: '' } });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
+
+	useEffect(() => {
+		const startDate = formik.values.startDate;
+		const endDate = formik.values.endDate;
+		if (dayjs(startDate).isAfter(endDate)) {
+			formik.setFieldValue('endDate', '');
+
+			dispatch(
+				openSnackbar({
+					message: 'The lease end date cannot be after the start date',
+					severity: 'warning',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+		}
+	}, [formik.values.startDate, formik.values.endDate]);
 
 	useEffect(() => {
 		if (unitsInProperty?.length <= 1) {
@@ -316,6 +343,8 @@ const AddLeaseForm = () => {
 							label='Rent Amount'
 							formik={formik}
 							type='text'
+							showCurrency
+							currencySymbol={getCurrencySymbol(user)}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -324,6 +353,8 @@ const AddLeaseForm = () => {
 							label='Deposit Amount'
 							type='text'
 							formik={formik}
+							showCurrency
+							currencySymbol={getCurrencySymbol(user)}
 						/>
 					</Grid>
 					<Grid item xs={6}>
@@ -335,7 +366,18 @@ const AddLeaseForm = () => {
 							options={frequencyOptions}
 						/>
 					</Grid>
-					<Grid item xs={6}></Grid>
+					<Grid item xs={6}>
+						{formik.values.frequency === 'Monthly' ||
+						formik.values.frequency === 'Bi-Monthly' ? (
+							<ControlledSelect
+								name='rentDue'
+								label='Payment Day'
+								type='text'
+								formik={formik}
+								options={rentDueDayOptions}
+							/>
+						) : null}
+					</Grid>
 
 					<Grid item xs={6} sm={6} md={3} lg={3}>
 						<ControlledTextField
