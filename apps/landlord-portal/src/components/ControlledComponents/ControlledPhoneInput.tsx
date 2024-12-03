@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles from './style';
 import { TextField, Stack, Typography, SxProps } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-material-ui';
 import { getIn } from 'formik';
@@ -46,14 +46,15 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.controlledPhoneInputContainer}
+			sx={style.controlledPhoneInputContainer}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography style={styles.controlledPhoneInputTypography}>
+				<Typography style={style.controlledPhoneInputTypography}>
 					{label}
 				</Typography>
 			)}

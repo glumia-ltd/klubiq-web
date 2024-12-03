@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	Stack,
 	FormHelperText,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { SxProps } from '@mui/material';
 import { getIn } from 'formik';
+
 
 type ControlledCheckBoxProps = {
 	loading?: boolean;
@@ -44,10 +45,11 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.checkboxcontainer}
+			sx={style.checkboxcontainer}
 		>
 			<FormControl
 				required
@@ -69,10 +71,10 @@ const ControlledCheckBox: React.FC<ControlledCheckBoxProps> = ({
 					}
 					label={label}
 					labelPlacement='end'
-					sx={styles.formControlLabel}
-					componentsProps={styles.checkBoxComponentProps}
+					sx={style.formControlLabel}
+					componentsProps={style.checkBoxComponentProps}
 				/>
-				<FormHelperText sx={styles.formHelperText}>
+				<FormHelperText sx={style.formHelperText}>
 					{(fieldTouched && fieldError) || ''}
 				</FormHelperText>{' '}
 			</FormControl>

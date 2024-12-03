@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	FormControl,
 	InputLabel,
@@ -38,19 +38,20 @@ const ControlledAutocomplete: React.FC<ControlledAutocompleteProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.container}
+			sx={style.container}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography style={styles.typography}>
+				<Typography style={style.typography}>
 					{label}
 				</Typography>
 			)}
 			<FormControl
-				sx={styles.formcontrol}
+				sx={style.formcontrol}
 				variant='outlined'
 				fullWidth
 				error={fieldTouched && Boolean(fieldError)}

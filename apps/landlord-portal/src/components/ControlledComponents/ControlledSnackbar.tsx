@@ -2,7 +2,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { Alert } from '@mui/material';
 import { closeSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
-import { styles } from './style';
+import  styles  from './style';
 
 
 type Props = {
@@ -28,6 +28,7 @@ function ControlledSnackbar({
 	if (!message) {
 		return null;
 	}
+	const style = styles()
 
 	return (
 		<Snackbar
@@ -35,7 +36,7 @@ function ControlledSnackbar({
 			autoHideDuration={autoHideDuration}
 			onClose={() => dispatch(closeSnackbar())}
 			anchorOrigin={anchorOrigin}
-			sx={styles.controlledSnackBarSx}
+			sx={style.controlledSnackBarSx}
 		>
 			<Alert
 				onClose={() => dispatch(closeSnackbar())}

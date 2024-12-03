@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	FormControl,
 	InputLabel,
@@ -28,6 +28,7 @@ type ControlledSelectProps = {
 	required?: boolean;
 };
 
+
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	formik,
 	sx,
@@ -43,18 +44,20 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
+
 	return (
 		<Stack
-			sx={styles.controlledSelectContainer}
+			sx={style.controlledSelectContainer}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Stack sx={styles.controlledSelectStack}>
-					<Typography style={styles.controlledSelectTypography}>
+				<Stack sx={style.controlledSelectStack}>
+					<Typography style={style.controlledSelectTypography}>
 						{label}
 					</Typography>
 
-					<Typography style={styles.secondControlledSelectTypography}>
+					<Typography style={style.secondControlledSelectTypography}>
 						{required ? <i>(required)</i> : ''}
 					</Typography>
 				</Stack>
@@ -76,7 +79,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					onChange={!disableOnChange ? formik.handleChange : undefined}
 					onBlur={formik.handleBlur}
 					MenuProps={{
-						sx: styles.controlledSelectSx,
+						sx: style.controlledSelectSx,
 					}}
 				>
 					{options?.map(({ id, name }) => (

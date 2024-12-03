@@ -2,7 +2,7 @@
 import React from 'react';
 import { Stack, SxProps, TextField } from '@mui/material';
 import { getIn } from 'formik';
-import { styles } from './style';
+import  styles  from './style';
 
 
 type ControlledPinFieldProps = {
@@ -16,6 +16,7 @@ type ControlledPinFieldProps = {
 	validate?: any;
 	[key: string]: any;
 };
+
 
 const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 	formik,
@@ -35,10 +36,11 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.controlledPinFieldContainer}
+			sx={style.controlledPinFieldContainer}
 			direction='row'
 			spacing={1.2}
 		>
@@ -46,7 +48,7 @@ const ControlledPinField: React.FC<ControlledPinFieldProps> = ({
 				fullWidth
 				id={name}
 				name={name}
-				sx={styles.controlledPinFieldTextField}
+				sx={style.controlledPinFieldTextField}
 				variant='outlined'
 				type={type || 'text'}
 				value={fieldValue}

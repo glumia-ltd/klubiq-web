@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	TextField,
 	Stack,
@@ -64,19 +64,20 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.controlledTextFieldSx}
+			sx={style.controlledTextFieldSx}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Stack sx={styles.controlledTextFieldStack}>
-					<Typography  style={styles.controlledTextFieldTypography}>
+				<Stack sx={style.controlledTextFieldStack}>
+					<Typography  style={style.controlledTextFieldTypography}>
 						{label}
 					</Typography>
 
-					<Typography  style={styles.secondControlledTextFeldTypography}>
+					<Typography  style={style.secondControlledTextFeldTypography}>
 						{required ? <i>(required)</i> : ''}
 					</Typography>
 				</Stack>

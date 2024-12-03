@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	TextField,
 	Modal,
@@ -32,6 +32,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setText(event.target.value);
 	};
+	const style = styles()
 
 	return (
 		<>
@@ -42,7 +43,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				id='input-with-icon-textfield'
 				placeholder='Search Transactions,customers'
 
-				sx={{...styles.textFieldWithModalSx, ...styles.secondTextFieldWithModalSx }} 
+				sx={{...style.textFieldWithModalSx, ...style.secondTextFieldWithModalSx }} 
 
 				// sx={}
 
@@ -67,9 +68,9 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 				aria-describedby='modal-description'
 			>
 				<Box
-					sx={styles.textFieldWithModalBox}
+					sx={style.textFieldWithModalBox}
 				>
-					<Typography  sx={styles.textFieldWithModalTypography}>
+					<Typography  sx={style.textFieldWithModalTypography}>
 					</Typography>
 					<TextField
 						variant='outlined'
@@ -77,7 +78,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 						onChange={handleChange}
 						fullWidth
 					/>
-					<Button onClick={handleClose} variant='contained' sx={styles.textFieldWithModalButton}>
+					<Button onClick={handleClose} variant='contained' sx={style.textFieldWithModalButton}>
 						Close
 					</Button>
 				</Box>

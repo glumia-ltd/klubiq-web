@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
-import { styles } from './style';
+import  styles from './style';
 import {
 	Stack,
 	Typography,
@@ -61,17 +61,19 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 		formik.handleChange(e);
 	};
 
+
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+	const style = styles()
 
 	return (
 		<Stack
-			sx={styles.controlledTextAreaSx}
+			sx={style.controlledTextAreaSx}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography style={styles.controlledTextAreaTypography}>
+				<Typography style={style.controlledTextAreaTypography}>
 					{label}
 				</Typography>
 			)}
@@ -98,7 +100,7 @@ const ControlledTextArea: React.FC<ControlledTextFieldProps> = ({
 			/>
 			{Boolean(prioritizeError) ||
 				(Boolean(fieldTouched) && Boolean(fieldError) && (
-					<Typography style={styles.secondControlledTextAreaTypography}>
+					<Typography style={style.secondControlledTextAreaTypography}>
 						{label}
 					</Typography>
 				))}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Input as BaseInput } from '@mui/base/Input';
-import { styles } from './style';
+import  styles  from './style';
 import { Box, styled } from '@mui/system';
 import { consoleLog } from '../../helpers/debug-logger';
 
@@ -12,6 +12,8 @@ type OTPTextInput = {
 	errorMessage?: string;
 	onEnterKeyPress: () => void;
 };
+
+
 const OTPInput: React.FC<OTPTextInput> = ({
 	separator,
 	length,
@@ -166,10 +168,12 @@ const OTPInput: React.FC<OTPTextInput> = ({
 			onChange(otpArray.join(''));
 		}
 	};
-
+	const style = styles()
 	const OTPField = () => {
+	
+
 		return (
-			<Box sx={styles.otpInputFieldBox}>
+			<Box sx={style.otpInputFieldBox}>
 				{new Array(length).fill(null).map((_, index) => (
 					<React.Fragment key={index}>
 						<BaseInput
@@ -200,7 +204,7 @@ const OTPInput: React.FC<OTPTextInput> = ({
 	};
 
 	return (
-		<Box sx={styles.secondOtpInputField}>
+		<Box sx={style.secondOtpInputField}>
 			{OTPField()}
 		</Box>
 	);

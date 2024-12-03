@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { styles } from './style';
+import  styles  from './style';
 import {
 	TextField,
 	Stack,
@@ -29,6 +29,7 @@ type ControlledTextFieldProps = {
 	[key: string]: any;
 	color?: string;
 };
+
 
 const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 	loading,
@@ -74,13 +75,15 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 		formik.setFieldValue(name, value - 1);
 	};
 
+	const style = styles()
+
 	return (
 		<Stack
-			sx={styles.controlledNumberFieldContainer}
+			sx={style.controlledNumberFieldContainer}
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography  style={styles.controlledNumberFieldTypography}>
+				<Typography  style={style.controlledNumberFieldTypography}>
 					{label}
 				</Typography>
 			)}
