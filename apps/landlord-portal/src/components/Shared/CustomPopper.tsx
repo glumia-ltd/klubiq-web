@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Popper, Grow, Paper, ClickAwayListener } from '@mui/material';
 
 interface Props {
@@ -37,7 +37,7 @@ const CustomPopper: React.FC<Props> = ({
 			transition
 			placement={placement}
 			disablePortal
-			sx={{ minWidth: '160px', zIndex: 10 }}
+			sx={{ minWidth: '160px', zIndex: 2000 }}
 		>
 			{({ TransitionProps }) => (
 				<Grow

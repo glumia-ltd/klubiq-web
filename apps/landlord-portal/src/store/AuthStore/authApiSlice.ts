@@ -1,12 +1,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { authEndpoints, notificationEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
+import { UserProfile } from '../../shared/auth-types';
 
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
 	baseQuery: customApiFunction,
 	endpoints: (builder) => ({
-		getUserByFbid: builder.query<any, void>({
+		getUserByFbid: builder.query<UserProfile, void>({
 			query: () => ({
 				url: authEndpoints.getUserByFbid(),
 				method: 'GET',

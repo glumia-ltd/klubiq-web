@@ -9,7 +9,7 @@ import {
 
 export interface menuItem {
 	label: string;
-	onClick?: () => void;
+	onClick?: (param?: any) => void;
 	hasDivider?: boolean;
 	sx?: Record<string, unknown>;
 	icon?: React.ReactNode;

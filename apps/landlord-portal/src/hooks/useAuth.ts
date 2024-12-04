@@ -152,7 +152,7 @@ const useAuth = () => {
 				return () => listen();
 			}
 		});
-	}, [user, addBanner]);
+	});
 	const requestNotificationPermission = async () => {
 		try {
 			if ('Notification' in window) {

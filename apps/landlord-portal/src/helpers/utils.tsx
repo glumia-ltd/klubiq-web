@@ -70,7 +70,7 @@ export const getLocaleFormat = (
 	return '';
 };
 
-export const getLocaleDateFormat = (user: any, date: string) => {
+export const getLocaleDateFormat = (user: unknown, date: string) => {
 	const { countryCode, lang } = getInfoFromUserSettings(user);
 	if (lang && countryCode) {
 		const newDate = new Date(date) || new Date();
@@ -80,4 +80,34 @@ export const getLocaleDateFormat = (user: any, date: string) => {
 		return new Intl.DateTimeFormat(locale).format(newDate);
 	}
 	return '';
+};
+export const stringToColor = (string: string, hash: number = 5) => {
+	let i;
+
+	/* eslint-disable no-bitwise */
+	for (i = 0; i < string.length; i += 1) {
+		hash = string.charCodeAt(i) + ((hash << 5) - hash);
+	}
+
+	let color = '#';
+
+	for (i = 0; i < 3; i += 1) {
+		const value = (hash >> (i * 8)) & 0xff;
+		color += `00${value.toString(16)}`.slice(-2);
+	}
+	/* eslint-enable no-bitwise */
+
+	return color;
+};
+export const stringAvatar = (word1: string, word2: string) => {
+	return {
+		sx: {
+			bgcolor: stringToColor(`${word1} ${word2}`),
+			width: '40px',
+			height: '40px',
+			marginRight: '1rem',
+			borderRadius: '90px',
+		},
+		children: `${word1[0]}${word2[0]}`,
+	};
 };

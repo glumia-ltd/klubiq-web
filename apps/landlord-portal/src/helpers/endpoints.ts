@@ -43,4 +43,7 @@ export const notificationEndpoints = {
 	subscribe: () => '/notifications-subscription/subscribe',
 	unsubscribe: (subId: string) =>
 		`/notifications-subscription/unsubscribe/${subId}`,
+	notifications: () => '/notifications',
+	markAsRead: () => '/notifications/mark-as-read-or-delivered',
+	deleteNotifications: () => `/notifications/delete`,
 };
