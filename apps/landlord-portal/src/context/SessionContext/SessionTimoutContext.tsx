@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
 import { auth } from '../../firebase';
+import { consoleLog } from '../../helpers/debug-logger';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -75,6 +76,7 @@ export const SessionTimeoutProvider = ({
 
 	// Function to handle "Stay Logged In" button click
 	const stayLoggedIn = useCallback(() => {
+		consoleLog('stayLoggedIn Clicked');
 		setIsTimedOut(false);
 		setShowModal(false); // Hide the modal when the user confirms to stay logged in
 		setTimeLeft(COUNTDOWN_TIME); // Reset countdown timer

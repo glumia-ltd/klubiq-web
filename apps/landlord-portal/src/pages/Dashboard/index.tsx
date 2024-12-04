@@ -226,7 +226,9 @@ const DashBoard = () => {
 										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{getLocaleFormat(user, OCCUPANCYRATE || 0, 'percent')}
+										{getLocaleFormat(user, OCCUPANCYRATE || 0, 'percent') || (
+											<Skeleton variant='rounded' width='50px' />
+										)}
 									</Typography>
 
 									<Stack
@@ -249,7 +251,7 @@ const DashBoard = () => {
 												user,
 												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
 												'percent',
-											)}
+											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 										<Typography sx={styles.overdueTypo}>
 											{indicatorText(OCCUPANCYRATECHANGEINDICATOR)}
@@ -270,7 +272,11 @@ const DashBoard = () => {
 											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
-											{getLocaleFormat(user, OVERDUERENTSUM || 0.0, 'currency')}
+											{getLocaleFormat(
+												user,
+												OVERDUERENTSUM || 0.0,
+												'currency',
+											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 									</Box>
 									<Typography sx={styles.overdueTypo}>
@@ -322,7 +328,7 @@ const DashBoard = () => {
 															user,
 															TOTALREVENUE || 0.0,
 															'currency',
-														)}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 
 													{showTrendArrow(TOTALREVENUECHANGEINDICATOR)}
@@ -339,7 +345,7 @@ const DashBoard = () => {
 															user,
 															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
-														)}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 												</Box>
 											</Stack>
@@ -365,7 +371,7 @@ const DashBoard = () => {
 															user,
 															TOTALEXPENSES || 0.0,
 															'currency',
-														)}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 
 													{showTrendArrow(TOTALEXPENSESCHANGEINDICATOR)}
@@ -382,7 +388,7 @@ const DashBoard = () => {
 															user,
 															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
-														)}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 												</Box>
 											</Stack>
@@ -407,12 +413,7 @@ const DashBoard = () => {
 															user,
 															NETCASHFLOW || 0.0,
 															'currency',
-														)}
-														{/* {NETCASHFLOW && NETCASHFLOW > 0
-														? `₦${NETCASHFLOW?.toFixed(2) || 0.0}`
-														: NETCASHFLOW && NETCASHFLOW < 0
-															? `- ₦${(-1 * NETCASHFLOW).toFixed(2)}`
-															: `₦0.00`} */}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 
 													{showTrendArrow(NETCASHFLOWCHANGEINDICATOR)}
@@ -426,7 +427,7 @@ const DashBoard = () => {
 															user,
 															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
-														)}
+														) || <Skeleton variant='rounded' width='50px' />}
 													</Typography>
 												</Box>
 											</Stack>
@@ -701,7 +702,7 @@ const DashBoard = () => {
 												user,
 												revenueReport?.totalRevenueLast12Months || 0.0,
 												'currency',
-											)}
+											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 
 										<Typography
@@ -721,7 +722,7 @@ const DashBoard = () => {
 												user,
 												revenueReport?.percentageDifference || 0,
 												'percent',
-											)}
+											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 									</Box>
 								)}
