@@ -1,4 +1,5 @@
 import { Theme } from '@mui/material';
+import { alignProperty } from '@mui/material/styles/cssUtils';
 import { alpha } from '@mui/system';
 
 export const styles = (theme: Theme) => {
@@ -14,7 +15,12 @@ export const styles = (theme: Theme) => {
 			mb: 1,
 			borderRadius: 1,
 		},
-		badge: { mr: 3, width: '1%', bgcolor: theme.palette.primary.main },
+		badge: {
+			top: 20,
+			left: -7,
+			width: '1%',
+			bgcolor: theme.palette.primary.main,
+		},
 		secondaryText: { display: 'block', color: 'text.primary' },
 		actionLink: {
 			color: 'primary.main',
@@ -27,6 +33,7 @@ export const styles = (theme: Theme) => {
 		secondaryActionText: { display: 'block', color: 'text.primary' },
 		avatar: {
 			bgcolor: alpha(theme.palette.primary.main, 0.9),
+			ml: 0.5,
 		},
 	};
 };

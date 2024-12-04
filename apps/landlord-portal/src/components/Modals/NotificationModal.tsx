@@ -144,20 +144,22 @@ const NotificationModal = ({
 										alignItems='center'
 										sx={styles(theme).listItemButton}
 									>
-										<Badge
-											color='info'
-											variant='dot'
-											invisible={item.isRead}
-											sx={styles(theme).badge}
-										></Badge>
 										<ListItemAvatar>
-											<Avatar sx={styles(theme).avatar}>
-												{item.isAnnouncement ? (
-													<CampaignIcon color='secondary' />
-												) : (
-													<NotificationsIcon color='secondary' />
-												)}
-											</Avatar>
+											<Stack>
+												<Badge
+													color='info'
+													variant='dot'
+													invisible={item.isRead}
+													sx={styles(theme).badge}
+												></Badge>
+												<Avatar sx={styles(theme).avatar}>
+													{item.isAnnouncement ? (
+														<CampaignIcon color='secondary' />
+													) : (
+														<NotificationsIcon color='secondary' />
+													)}
+												</Avatar>
+											</Stack>
 										</ListItemAvatar>
 										<ListItemText
 											primary={item.title}
