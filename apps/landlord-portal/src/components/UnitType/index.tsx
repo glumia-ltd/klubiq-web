@@ -28,33 +28,31 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 	});
 
 	return (
-		<>
-			<Grid container spacing={2}>
-				<Grid item xs={12}>
-					<RadioCard
-						required
-						headerText='UNIT TYPE'
-						name='unitType'
-						options={options}
-						checkedValue={formik.values.unitType}
-						onChange={formik.handleChange}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<RadioCard
-						required
-						headerText='PROPERTY purpose'
-						name='purposeId'
-						options={purposes}
-						checkedValue={formik.values.purposeId}
-						onChange={formik.handleChange}
-					/>
-				</Grid>
-				<Grid item xs={12}>
-					<GeneralInfo formik={formik} amenities={amenities} />
-				</Grid>
+		<Grid container spacing={2}>
+			<Grid item xs={12}>
+				<RadioCard
+					required
+					headerText='UNIT TYPE'
+					name='unitType'
+					options={options}
+					checkedValue={formik.values.unitType}
+					onChange={formik.handleChange}
+				/>
 			</Grid>
-		</>
+			<Grid item xs={12}>
+				<RadioCard
+					required
+					headerText='PROPERTY purpose'
+					name='purposeId'
+					options={purposes}
+					checkedValue={formik.values.purposeId}
+					onChange={formik.handleChange}
+				/>
+			</Grid>
+			<Grid item xs={12}>
+				<GeneralInfo formik={formik} amenities={amenities} />
+			</Grid>
+		</Grid>
 	);
 };
 
