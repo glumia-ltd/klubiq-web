@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../../helpers/utils';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
+import { useAddLeaseMutation } from '../../../store/LeaseStore/leaseApiSlice';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -71,7 +72,7 @@ const AddLeaseForm = () => {
 		// description: yup.string().required('This field is required'),
 		unit: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
-		tenant: yup.string(),
+		tenantsIds: yup.array(),
 		rentAmount: yup.string().required('field is required'),
 		depositAmount: yup.string().required('field is required'),
 		frequency: yup.string().required('field is required'),
@@ -90,7 +91,7 @@ const AddLeaseForm = () => {
 		propertyName: string;
 		unitId: string;
 		unitName: string;
-		tenant: string[];
+		tenantsIds: string[];
 	};
 
 	const onSubmit = async (values: formValues) => {
@@ -108,7 +109,7 @@ const AddLeaseForm = () => {
 			propertyName: '',
 			unitId: '',
 			unitName: '',
-			tenant: [],
+			tenantsIds: [],
 			rentDue: '',
 		},
 		validationSchema,
@@ -135,9 +136,10 @@ const AddLeaseForm = () => {
 		id: formik.values.unitId,
 	});
 
-	const rentDueDayOptions = Array.from({ length: 31 }, (_, i) => i + 1).map(
-		(value) => ({ id: `${value}`, name: `${value} ` }),
-	);
+	const rentDueDayOptions = Array.from(
+		{ length: dayjs(formik?.values?.startDate).daysInMonth() },
+		(_, i) => i + 1,
+	).map((value) => ({ id: `${value}`, name: `${value} ` }));
 
 	useEffect(() => {
 		formik.resetForm({ values: { ...formik.values, unitId: '' } });
@@ -216,7 +218,7 @@ const AddLeaseForm = () => {
 			startDate: formik.values.startDate,
 			endDate: formik.values.endDate,
 			newTenants: null,
-			tenantsIds: [0],
+			tenantsIds: formik.values.tenantsIds,
 			unitId: formik.values.unitId,
 			rentDueDay: 0,
 			rentAmount: formik.values.rentAmount,
@@ -231,6 +233,8 @@ const AddLeaseForm = () => {
 			)[formik.values?.frequency],
 			unitNumber: getUnitNumber?.name,
 		};
+
+		console.log(requestBody);
 	};
 
 	return (
@@ -330,11 +334,11 @@ const AddLeaseForm = () => {
 						</Link>
 						<ControlledSelect
 							multiple={true}
-							name='tenant'
+							name='tenantsIds'
 							label='Tenant'
 							type='text'
 							formik={formik}
-							options={tenantOptions}
+							options={[{ id: '0', name: 'sample tenant' }]}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -357,6 +361,26 @@ const AddLeaseForm = () => {
 							currencySymbol={getCurrencySymbol(user)}
 						/>
 					</Grid>
+
+					<Grid container>
+						<Grid item xs={6} sm={6} md={6} lg={6}>
+							<ControlledTextField
+								name='startDate'
+								label='Lease Start Date'
+								formik={formik}
+								type='date'
+							/>
+						</Grid>
+						<Grid item xs={6} sm={6} md={6} lg={6}>
+							<ControlledTextField
+								name='endDate'
+								label='Lease End Date'
+								formik={formik}
+								type='date'
+							/>
+						</Grid>
+					</Grid>
+
 					<Grid item xs={6}>
 						<ControlledSelect
 							name='frequency'
@@ -379,22 +403,6 @@ const AddLeaseForm = () => {
 						) : null}
 					</Grid>
 
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<ControlledTextField
-							name='startDate'
-							label='Lease Start Date'
-							formik={formik}
-							type='date'
-						/>
-					</Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<ControlledTextField
-							name='endDate'
-							label='Lease End Date'
-							formik={formik}
-							type='date'
-						/>
-					</Grid>
 					<Grid item xs={12} sx={style.infobox}>
 						<img src={Logo} alt='logo' style={style.infoimg} />
 

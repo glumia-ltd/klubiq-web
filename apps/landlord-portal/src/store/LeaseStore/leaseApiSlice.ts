@@ -32,6 +32,13 @@ export const leaseApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		addLease: builder.mutation({
+			query: (body) => ({
+				url: leaseEndpoints.addLease(),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -45,4 +52,5 @@ export const {
 	useGetLeasesQuery,
 	useGetSingleLeaseByIdQuery,
 	useGetOrgPropertiesViewListQuery,
+	useAddLeaseMutation,
 } = leaseApiSlice;
