@@ -355,7 +355,7 @@ const AddLeaseForm = () => {
 							label='Tenant'
 							type='text'
 							formik={formik}
-							options={[{ id: '0', name: 'sample tenant' }]}
+							options={[]}
 						/>
 					</Grid>
 					<Grid item xs={12}>
