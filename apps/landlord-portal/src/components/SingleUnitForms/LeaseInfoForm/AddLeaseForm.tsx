@@ -52,6 +52,7 @@ const AddLeaseForm = () => {
 
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
+	const [addLease] = useAddLeaseMutation();
 
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
@@ -68,30 +69,31 @@ const AddLeaseForm = () => {
 	);
 
 	const validationSchema = yup.object({
-		nickname: yup.string().required('field is required'),
+		name: yup.string().required('field is required'),
 		// description: yup.string().required('This field is required'),
-		unit: yup.string().required('Select an option'),
+		unitId: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
 		tenantsIds: yup.array(),
-		rentAmount: yup.string().required('field is required'),
-		depositAmount: yup.string().required('field is required'),
+		rentAmount: yup.number().required('field is required'),
+		depositAmount: yup.number().required('field is required'),
 		frequency: yup.string().required('field is required'),
 		startDate: yup.string().required('field is required'),
 		endDate: yup.string(),
-		rentDue: yup.string(),
+		rentDueDay: yup.string(),
 	});
 
 	type formValues = {
 		endDate: string;
 		startDate: string;
 		frequency: string;
-		rentAmount: string;
-		depositAmount: string;
+		rentAmount: number | string;
+		depositAmount: number | string;
 		name: string;
 		propertyName: string;
-		unitId: string;
+		unitId: number | string;
 		unitName: string;
-		tenantsIds: string[];
+		tenantsIds: number[];
+		rentDueDay: number | string;
 	};
 
 	const onSubmit = async (values: formValues) => {
@@ -110,7 +112,7 @@ const AddLeaseForm = () => {
 			unitId: '',
 			unitName: '',
 			tenantsIds: [],
-			rentDue: '',
+			rentDueDay: '0',
 		},
 		validationSchema,
 		onSubmit,
@@ -136,10 +138,12 @@ const AddLeaseForm = () => {
 		id: formik.values.unitId,
 	});
 
-	const rentDueDayOptions = Array.from(
-		{ length: dayjs(formik?.values?.startDate).daysInMonth() },
-		(_, i) => i + 1,
-	).map((value) => ({ id: `${value}`, name: `${value} ` }));
+	const rentDueDayOptions = Array.from({ length: 31 }, (_, index) => index).map(
+		(value) => ({
+			id: `${value}`,
+			name: `${value === 0 ? 'select due day' : value} `,
+		}),
+	);
 
 	useEffect(() => {
 		formik.resetForm({ values: { ...formik.values, unitId: '' } });
@@ -154,7 +158,7 @@ const AddLeaseForm = () => {
 
 			dispatch(
 				openSnackbar({
-					message: 'The lease end date cannot be after the start date',
+					message: 'The lease end date cannot be before the start date',
 					severity: 'warning',
 					isOpen: true,
 					duration: 2000,
@@ -213,16 +217,21 @@ const AddLeaseForm = () => {
 	};
 
 	const handleAddLease = async () => {
+		await formik.validateForm();
+
+		// console.log(formik.errors);
+
 		const requestBody = {
 			name: formik.values.name,
 			startDate: formik.values.startDate,
 			endDate: formik.values.endDate,
 			newTenants: null,
 			tenantsIds: formik.values.tenantsIds,
-			unitId: formik.values.unitId,
-			rentDueDay: 0,
-			rentAmount: formik.values.rentAmount,
-			securityDeposit: formik.values.depositAmount,
+			unitId: formik.values.unitId && Number(formik.values.unitId),
+			rentDueDay: formik.values?.rentDueDay && Number(formik.values.rentDueDay),
+			rentAmount: formik.values.rentAmount && Number(formik.values.rentAmount),
+			securityDeposit:
+				formik.values.depositAmount && Number(formik.values.depositAmount),
 			isDraft: true,
 			paymentFrequency: formik.values.frequency,
 			status: null,
@@ -234,7 +243,15 @@ const AddLeaseForm = () => {
 			unitNumber: getUnitNumber?.name,
 		};
 
-		console.log(requestBody);
+		try {
+			const res = await addLease(requestBody).unwrap();
+
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
+
+		// console.log(requestBody);
 	};
 
 	return (
@@ -394,9 +411,9 @@ const AddLeaseForm = () => {
 						{formik.values.frequency === 'Monthly' ||
 						formik.values.frequency === 'Bi-Monthly' ? (
 							<ControlledSelect
-								name='rentDue'
+								name='rentDueDay'
 								label='Payment Day'
-								type='text'
+								type='number'
 								formik={formik}
 								options={rentDueDayOptions}
 							/>
