@@ -12,6 +12,7 @@ import {
 import { each } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 export const notificationApiSlice = createApi({
 	reducerPath: 'notificationApi',
@@ -110,10 +111,11 @@ const groupNotificationsByDate = (
 	notifications: NotificationData[],
 ): GroupedNotifications[] => {
 	dayjs.extend(utc);
-	const today = dayjs().utc().startOf('day');
-	const yesterday = today.subtract(1, 'days');
-	const last7Days = today.subtract(7, 'days');
-	const last30Days = today.subtract(30, 'days');
+	dayjs.extend(relativeTime, { rounding: Math.floor });
+	const today = dayjs().utc();
+	const yesterday = today.startOf('day').subtract(1, 'days');
+	const last7Days = today.startOf('day').subtract(7, 'days');
+	const last30Days = today.startOf('day').subtract(30, 'days');
 	const grouped: { [key: string]: NotificationData[] | undefined } = {
 		today: [] as NotificationData[],
 		yesterday: [] as NotificationData[],
@@ -124,18 +126,8 @@ const groupNotificationsByDate = (
 	const groupedNotifications: GroupedNotifications[] = [];
 	each(notifications, (notification) => {
 		const createdAt = dayjs(notification.createdAt);
-		const timeDiffInDays = today.diff(createdAt, 'day');
-		const timeDiffInHours = today.diff(createdAt, 'hour');
-		const timeDiffInMinutes = today.diff(createdAt, 'minute');
-		const timeDiffInSeconds = today.diff(createdAt, 'second');
-		notification.time =
-			timeDiffInSeconds < 60
-				? `${timeDiffInSeconds} seconds ago`
-				: timeDiffInMinutes < 60
-					? `${timeDiffInMinutes} minutes ago`
-					: timeDiffInHours < 24
-						? `${timeDiffInHours} hours ago`
-						: `${timeDiffInDays} days ago`;
+
+		notification.time = dayjs(createdAt).fromNow();
 		if (createdAt >= today) {
 			grouped.today?.push(notification);
 		} else if (createdAt >= yesterday) {
@@ -174,3 +166,22 @@ const groupNotificationsByDate = (
 	}
 	return groupedNotifications;
 };
+
+// // consoleDebug('createdAt', createdAt);
+// // consoleDebug('today', today);
+// // const timeDiffInDays = Math.abs(today.diff(createdAt, 'day'));
+// // consoleDebug('timeDiffInDays', timeDiffInDays);
+// // const timeDiffInHours = Math.abs(today.diff(createdAt, 'hour'));
+// // consoleDebug('timeDiffInHours', timeDiffInHours);
+// // const timeDiffInMinutes = Math.abs(today.diff(createdAt, 'minute'));
+// // consoleDebug('timeDiffInMinutes', timeDiffInMinutes);
+// // const timeDiffInSeconds = Math.abs(today.diff(createdAt, 'second'));
+// // consoleDebug('timeDiffInSeconds', timeDiffInSeconds);
+// // notification.time =
+// // 	timeDiffInSeconds < 60
+// // 		? `${timeDiffInSeconds} seconds ago`
+// // 		: timeDiffInMinutes < 60
+// // 			? `${timeDiffInMinutes} minutes ago`
+// // 			: timeDiffInHours < 24
+// // 				? `${timeDiffInHours} hours ago`
+// // 				: `${timeDiffInDays} days ago`;

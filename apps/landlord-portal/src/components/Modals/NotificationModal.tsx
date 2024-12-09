@@ -109,7 +109,7 @@ const NotificationModal = ({
 			<DialogTitle>
 				<Box sx={styles(theme).titleBox}>
 					<Typography variant='h6' fontSize={'1.75rem'}>
-						Notification
+						Notifications
 					</Typography>
 					<IconButton size='medium' onClick={onClose}>
 						<CancelIcon />
