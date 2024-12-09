@@ -12,33 +12,8 @@ import { useLocation } from 'react-router-dom';
 import { getCurrencySymbol } from '../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import dayjs from 'dayjs';
 
-const Datas = [
-	{
-		name: 'Rent',
-		amount: '500,000',
-	},
-
-	{
-		name: 'Due On',
-		amount: '2nd of every month',
-	},
-	{
-		name: 'Payment Period',
-		amount: 'Monthly',
-	},
-	{
-		name: 'Next Payment',
-		amount: '06/02/2024',
-	},
-	{
-		name: 'Tenant',
-	},
-	{
-		name: 'Lease Expires',
-		amount: '20 days',
-	},
-];
 const LeaseDetails = () => {
 	const location = useLocation();
 	const { user } = useSelector(getAuthState);
@@ -132,7 +107,7 @@ const LeaseDetails = () => {
 						status={data?.status}
 					/>
 					<MiniCard
-						value={`${data?.rentDueOn}`}
+						dangerouslySetInnerHTML={data?.rentDueOn}
 						name='Due On'
 						status={data?.status}
 					/>
@@ -142,7 +117,7 @@ const LeaseDetails = () => {
 						status={data?.status}
 					/>
 					<MiniCard
-						value={data?.nextPaymentDate}
+						value={dayjs(data?.nextPaymentDate).format('DD-MM-YYYY')}
 						name='Next Payment'
 						status={data?.status}
 					/>

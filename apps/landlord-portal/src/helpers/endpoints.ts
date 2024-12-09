@@ -28,6 +28,8 @@ export const propertiesEndpoints = {
 		`/properties/${propertyUuid}/archive`,
 	deleteProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	editProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	getOrgPropertiesViewList: (orgId: string) =>
+		`/public/org/${orgId}/properties`,
 };
 
 export const organizationEndpoints = {
@@ -38,6 +40,7 @@ export const leaseEndpoints = {
 	getLeaseMetaData: () => '/public/lease-metadata',
 	getLeases: () => '/leases',
 	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
+	addLease: () => '/leases',
 };
 export const notificationEndpoints = {
 	subscribe: () => '/notifications-subscription/subscribe',

@@ -25,6 +25,7 @@ type ControlledSelectProps = {
 	color?: string;
 	placeholder?: string;
 	required?: boolean;
+	defaultValue?: string;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -37,11 +38,13 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	inFieldLabel,
 	color,
 	required,
+	defaultValue,
 	...props
 }) => {
 	const fieldValue = getIn(formik.values, name);
 	const fieldError = getIn(formik.errors, name);
 	const fieldTouched = getIn(formik.touched, name);
+
 	return (
 		<Stack
 			sx={{
@@ -79,11 +82,14 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					value={props.value || fieldValue}
 					onChange={!disableOnChange ? formik.handleChange : undefined}
 					onBlur={formik.handleBlur}
+					defaultValue={defaultValue}
 					MenuProps={{
 						sx: {
 							maxHeight: 'calc(100% - 200px)',
 						},
 					}}
+					displayEmpty={Boolean(props.placeholder)}
+					multiple={props.multiple}
 				>
 					{options?.map(({ id, name }) => (
 						<MenuItem value={id} key={`${name}-${id}-`}>
