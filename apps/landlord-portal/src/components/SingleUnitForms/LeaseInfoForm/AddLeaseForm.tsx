@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import Logo from '../../../assets/images/info.svg';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { consoleLog } from '../../../helpers/debug-logger';
 import { Stack } from '@mui/system';
 import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leaseApiSlice';
@@ -49,6 +49,8 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 const AddLeaseForm = () => {
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
+
+	const [disabledButton, setDisabledButton] = useState(true);
 
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
@@ -216,11 +218,33 @@ const AddLeaseForm = () => {
 		};
 	};
 
+	useEffect(() => {
+		const {
+			name,
+			propertyName,
+			rentAmount,
+			startDate,
+			frequency,
+			depositAmount,
+			unitId,
+		} = formik.values;
+
+		if (
+			!name ||
+			!propertyName ||
+			!rentAmount ||
+			!startDate ||
+			!frequency ||
+			!depositAmount ||
+			!unitId
+		) {
+			setDisabledButton(true);
+		} else {
+			setDisabledButton(false);
+		}
+	}, [formik.values]);
+
 	const handleAddLease = async () => {
-		await formik.validateForm();
-
-		// console.log(formik.errors);
-
 		const requestBody = {
 			name: formik.values.name,
 			startDate: formik.values.startDate,
@@ -247,8 +271,17 @@ const AddLeaseForm = () => {
 			const res = await addLease(requestBody).unwrap();
 
 			console.log(res);
+
+			dispatch(
+				openSnackbar({
+					message: 'Lease successfully added',
+					severity: 'success',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
 		} catch (e) {
-			console.log(e);
+			console.log(e as Error);
 		}
 
 		// console.log(requestBody);
@@ -446,6 +479,7 @@ const AddLeaseForm = () => {
 							variant='contained'
 							sx={style.button}
 							onClick={handleAddLease}
+							disabled={disabledButton}
 						>
 							Add Lease
 						</Button>
