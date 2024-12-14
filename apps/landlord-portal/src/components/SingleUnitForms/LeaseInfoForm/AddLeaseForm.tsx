@@ -19,6 +19,7 @@ import { getCurrencySymbol } from '../../../helpers/utils';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 import { useAddLeaseMutation } from '../../../store/LeaseStore/leaseApiSlice';
+import { useNavigate } from 'react-router-dom';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -49,6 +50,7 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 const AddLeaseForm = () => {
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const [disabledButton, setDisabledButton] = useState(true);
 
@@ -268,9 +270,7 @@ const AddLeaseForm = () => {
 		};
 
 		try {
-			const res = await addLease(requestBody).unwrap();
-
-			console.log(res);
+			await addLease(requestBody).unwrap();
 
 			dispatch(
 				openSnackbar({
@@ -280,8 +280,19 @@ const AddLeaseForm = () => {
 					duration: 2000,
 				}),
 			);
+
+			navigate(-1);
 		} catch (e) {
-			console.log(e as Error);
+			// console.log(e as Error);
+
+			dispatch(
+				openSnackbar({
+					message: 'Error saving lease.Please try again',
+					severity: 'error',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
 		}
 
 		// console.log(requestBody);
