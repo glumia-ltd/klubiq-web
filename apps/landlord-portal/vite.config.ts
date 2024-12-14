@@ -61,7 +61,6 @@ export default ({ mode }: { mode: any }) => {
 				'@mui/material/Tooltip',
 				'@mui/material/Unstable_Grid2',
 			],
-
 			exclude: ['node_modules/.cache'],
 		},
 

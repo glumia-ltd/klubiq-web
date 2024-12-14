@@ -28,6 +28,8 @@ type ControlledTextFieldProps = {
 	inputRef?: React.Ref<HTMLInputElement>;
 	required?: boolean;
 	autoComplete?: string;
+	showCurrency?: boolean;
+	currencySymbol?: string;
 };
 
 const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
@@ -48,6 +50,8 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 	placeholder,
 	required,
 	autoComplete,
+	showCurrency,
+	currencySymbol,
 	...props
 }) => {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +113,9 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 						<InputAdornment position='end'>
 							<CircularProgress size={20} />
 						</InputAdornment>
+					) : undefined,
+					startAdornment: showCurrency ? (
+						<InputAdornment position='start'>{currencySymbol}</InputAdornment>
 					) : undefined,
 					...InputProps,
 				}}

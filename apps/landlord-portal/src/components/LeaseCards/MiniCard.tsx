@@ -5,9 +5,12 @@ type cardProps = {
 	name: string;
 	Icon?: React.FC;
 	status?: string;
+	dangerouslySetInnerHTML?: string;
 };
 
 const MiniCard = (props: cardProps) => {
+	// eslint-disable-next-line no-undef
+
 	return (
 		<Card
 			variant={
@@ -26,7 +29,13 @@ const MiniCard = (props: cardProps) => {
 				props.value
 			) : props.Icon ? (
 				<props.Icon />
-			) : null}
+			) : (
+				<div
+					dangerouslySetInnerHTML={{
+						__html: props.dangerouslySetInnerHTML || '',
+					}}
+				/>
+			)}
 		</Card>
 	);
 };
