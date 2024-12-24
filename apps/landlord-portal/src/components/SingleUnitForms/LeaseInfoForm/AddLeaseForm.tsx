@@ -249,10 +249,10 @@ const AddLeaseForm = () => {
 	}, [formik.values]);
 
 	const handleAddLease = async () => {
-		const requestBody = {
+		const requestBody: any = {
 			name: formik.values.name,
 			startDate: formik.values.startDate,
-			endDate: formik.values.endDate,
+			// endDate: formik.values.endDate,
 			newTenants: null,
 			tenantsIds: formik.values.tenantsIds,
 			unitId: formik.values.unitId && Number(formik.values.unitId),
@@ -271,6 +271,10 @@ const AddLeaseForm = () => {
 			unitNumber: getUnitNumber?.name,
 		};
 
+		if (formik.values.endDate) {
+			requestBody['endDate'] = formik.values.endDate;
+		}
+
 		try {
 			await addLease(requestBody).unwrap();
 
@@ -285,7 +289,8 @@ const AddLeaseForm = () => {
 
 			navigate(-1);
 		} catch (e) {
-			// console.log(e as Error);
+			// console.log((e as any)?.status);
+			console.log(e as any);
 
 			dispatch(
 				openSnackbar({
