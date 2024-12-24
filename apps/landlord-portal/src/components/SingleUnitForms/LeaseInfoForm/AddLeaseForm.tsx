@@ -49,14 +49,17 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 
 const AddLeaseForm = () => {
 	const { user } = useSelector(getAuthState);
+
 	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
 
 	const [disabledButton, setDisabledButton] = useState(true);
 
+	const [addLease] = useAddLeaseMutation();
+
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
-	const [addLease] = useAddLeaseMutation();
 
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
@@ -65,24 +68,23 @@ const AddLeaseForm = () => {
 		}),
 	);
 
-	const tenantOptions = orgPropertiesViewList?.tenants?.map(
-		(tenant: { id: string; firstName: string; lastName: string }) => ({
-			id: tenant.id,
-			name: `${tenant.firstName} ${tenant.lastName}`,
-		}),
-	);
+	// const tenantOptions = orgPropertiesViewList?.tenants?.map(
+	// 	(tenant: { id: string; firstName: string; lastName: string }) => ({
+	// 		id: tenant.id,
+	// 		name: `${tenant.firstName} ${tenant.lastName}`,
+	// 	}),
+	// );
 
 	const validationSchema = yup.object({
 		name: yup.string().required('field is required'),
-		// description: yup.string().required('This field is required'),
-		unitId: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
+		unitId: yup.string().required('Select an option'),
 		tenantsIds: yup.array(),
 		rentAmount: yup.number().required('field is required'),
 		depositAmount: yup.number().required('field is required'),
-		frequency: yup.string().required('field is required'),
 		startDate: yup.string().required('field is required'),
 		endDate: yup.string(),
+		frequency: yup.string().required('field is required'),
 		rentDueDay: yup.string(),
 	});
 
@@ -407,7 +409,7 @@ const AddLeaseForm = () => {
 							name='rentAmount'
 							label='Rent Amount'
 							formik={formik}
-							type='text'
+							type='number'
 							showCurrency
 							currencySymbol={getCurrencySymbol(user)}
 						/>
@@ -416,7 +418,7 @@ const AddLeaseForm = () => {
 						<ControlledTextField
 							name='depositAmount'
 							label='Deposit Amount'
-							type='text'
+							type='number'
 							formik={formik}
 							showCurrency
 							currencySymbol={getCurrencySymbol(user)}
