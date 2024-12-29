@@ -55,8 +55,8 @@ const Properties = () => {
 		isLoading: isPropertyLoading,
 		isFetching: isPropertyFetching,
 	} = useGetPropertiesQuery({
-		...filter,
 		...defaultParams,
+		...filter,
 	});
 
 	const {
