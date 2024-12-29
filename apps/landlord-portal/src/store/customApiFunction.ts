@@ -12,6 +12,6 @@ export const customApiFunction = async (args: any) => {
 
 		return { data: result.data.data };
 	} catch (error) {
-		return { error: (error as Error).message };
+		return { error: (error as any).response.data } as any;
 	}
 };
