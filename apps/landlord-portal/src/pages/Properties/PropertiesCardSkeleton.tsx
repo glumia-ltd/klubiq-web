@@ -93,7 +93,7 @@ const PropertiesCardSkeleton: FC<{ layout: 'column' | 'row' }> = ({
 				}}
 				disableSpacing
 			>
-				<Typography variant='link'>View Properties</Typography>
+				<Skeleton width='50%' />
 			</CardActions>
 		</Card>
 	) : (
@@ -140,7 +140,7 @@ const PropertiesCardSkeleton: FC<{ layout: 'column' | 'row' }> = ({
 						</Stack>
 						<Stack direction='row' spacing={1} justifyContent='space-between'>
 							<Skeleton width='10%' />
-							<Typography variant='link'>View Properties</Typography>
+							<Skeleton width='50%' />
 						</Stack>
 					</Stack>
 				</Stack>

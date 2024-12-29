@@ -338,7 +338,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 						propertyName={currentProperty?.name || ''}
 						propertyAddress={propertyAddress}
 						propertyId={currentProperty?.id}
-						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
+						numberOfUnits={
+							currentProperty?.isMultiUnit
+								? `${currentProperty.unitCount}`
+								: 'Single'
+						}
 						rent={`${getLocaleFormat(user, +currentProperty?.totalRent || 0, 'currency')} `}
 						totalArea={
 							currentProperty?.isMultiUnit

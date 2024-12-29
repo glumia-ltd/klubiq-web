@@ -6,6 +6,7 @@ import { Stackedimages } from '../StackedImages/Stackedimages';
 import { FC } from 'react';
 import { MEASUREMENTS } from '../../helpers/utils';
 import { find } from 'lodash';
+import defaultPropertyImage from '../../assets/images/defaultPropertyImage.png';
 
 type UnitCardPropType = {
 	propertyImage?: string;
@@ -35,7 +36,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 			<Card sx={styles.mainCardContainerStyle}>
 				<Grid sx={styles.mainCardStyle}>
 					<img
-						src={propertyImage}
+						src={propertyImage || defaultPropertyImage}
 						style={styles.mainPictureStyle}
 						alt='property picture'
 					/>

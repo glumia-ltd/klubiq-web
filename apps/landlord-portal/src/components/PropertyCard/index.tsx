@@ -127,7 +127,30 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 								</Typography>
 							</>
 						)}
-
+					{propertyData?.rooms !== undefined &&
+						propertyData?.rooms !== null && (
+							<>
+								<KlubiqIcons.Bedroom
+									sx={{
+										color: 'text.primary',
+										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+									}}
+								/>
+								<Typography
+									variant='cardContentText'
+									noWrap={true}
+									sx={
+										{
+											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
+										}
+									}
+								>
+									{propertyData?.rooms
+										? `${propertyData?.rooms} room${Number(propertyData?.rooms) > 1 ? 's' : ''}`
+										: '--'}
+								</Typography>
+							</>
+						)}
 					{propertyData?.offices !== undefined &&
 						propertyData?.offices !== null && (
 							<>
