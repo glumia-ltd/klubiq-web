@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import Logo from '../../assets/images/info.svg';
 import { useState, useEffect } from 'react';
+import { consoleDebug } from '../../helpers/debug-logger';
 
 const ViewLeaseForm = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -48,7 +49,7 @@ const ViewLeaseForm = () => {
 	];
 
 	const onSubmit = async (values: formValues) => {
-		// console.log(values, 'val');
+		consoleDebug(values, 'val');
 	};
 
 	const formik = useFormik({

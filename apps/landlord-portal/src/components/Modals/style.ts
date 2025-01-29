@@ -1,5 +1,5 @@
 import { Theme } from '@mui/material';
-import { alignProperty } from '@mui/material/styles/cssUtils';
+// import { alignProperty } from '@mui/material/styles/cssUtils';
 import { alpha } from '@mui/system';
 
 export const styles = (theme: Theme) => {

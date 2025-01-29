@@ -16,6 +16,7 @@ import ControlledSelect from '../../components/ControlledComponents/ControlledSe
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 // import AddTenantModal from '../../Modals/AddTenantModal';
 import LeaseFormLayout from '../../Layouts/LeaseFormLayout';
+import { consoleDebug } from '../../helpers/debug-logger';
 
 const TenantProfile = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -45,7 +46,7 @@ const TenantProfile = () => {
 	};
 
 	const onSubmit = async (values: formValues) => {
-		// console.log(values, 'val');
+		consoleDebug(values, 'val');
 	};
 
 	const formik = useFormik({

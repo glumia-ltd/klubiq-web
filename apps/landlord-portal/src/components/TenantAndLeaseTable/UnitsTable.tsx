@@ -82,7 +82,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 						{tableBodyRows?.map((row: UnitType) => (
 							<TableRow
 								hover
-								onClick={() => handleUnitClick(row?.id)}
+								onClick={() => row?.id !== undefined && handleUnitClick(row.id)}
 								tabIndex={-1}
 								key={row.id}
 								sx={{
