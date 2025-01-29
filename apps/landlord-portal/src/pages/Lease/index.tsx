@@ -29,8 +29,8 @@ const Lease = () => {
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
 
 	const { data: leaseData } = useGetLeasesQuery({
-		...filter,
 		...defaultParams,
+		...filter,
 	});
 
 	const filterOptions = leaseMetaData?.filterOptions;
