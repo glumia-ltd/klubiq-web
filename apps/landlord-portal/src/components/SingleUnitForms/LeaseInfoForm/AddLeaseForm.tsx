@@ -26,7 +26,7 @@ enum PaymentFrequency {
 	BI_MONTHLY = 'Bi-Monthly',
 	BI_WEEKLY = 'Bi-Weekly',
 	MONTHLY = 'Monthly',
-	ONE_TIME = 'One Time',
+	ONE_TIME = 'One-Time',
 	QUARTERLY = 'Quarterly',
 	WEEKLY = 'Weekly',
 	// CUSTOM = 'Custom',
