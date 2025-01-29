@@ -23,7 +23,7 @@ import PropertyPage from '../pages/PropertyPage';
 import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
 import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
-import PropertyLayout from '../Layouts/PropertyLayout/PropertyLayout';
+import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
 import Properties from '../pages/Properties';
 
@@ -31,18 +31,24 @@ import ViewPortLayout from '../Layouts/ViewPortLayout';
 
 import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
 import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
+import LeaseDetails from '../pages/Lease/LeaseDetails';
+
+import EditPropertyPage from '../pages/EditPropertyPage';
+import NotFound from '../pages/ErrorPages/404';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
+			<Route path='/' element={<Login />} />
 			<Route path='/login' element={<Login />} />
+			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='/2fa-enroll' element={<MFASetUp />} />
-			<Route path='*' element={<Navigate to='/login' replace />} />
+			<Route path='*' element={<Navigate to='/404' replace />} />
 
 			<Route element={<PrivateRoute />}>
 				<Route element={<ViewPortLayout />}>
@@ -57,13 +63,12 @@ export const router = createBrowserRouter(
 						errorElement={<ErrorComponent />}
 					/>
 
-					<Route path='/properties/:slug' element={<PropertyLayout />}>
+					<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 						<Route index element={<PropertyPage />} />
+						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
 						<Route path='add-tenant' element={<AddTenantPage />} />
-
-						<Route path='add-lease' element={<AddLeasePage />} />
 
 						<Route path='add-maintenance' element={<AddMaintenancePage />} />
 					</Route>
@@ -82,8 +87,12 @@ export const router = createBrowserRouter(
 					/>
 
 					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
+					<Route path='/lease' element={<NestedRoutesLayout />}>
+						<Route index element={<Lease />} />
+						<Route path='add-lease' element={<AddLeasePage />} />
+					</Route>
 
-					<Route path='/lease' element={<Lease />} />
+					<Route path='/lease/:id' element={<LeaseDetails />} />
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/message' element={<Message />} />
 					<Route path='/support' element={<Support />} />

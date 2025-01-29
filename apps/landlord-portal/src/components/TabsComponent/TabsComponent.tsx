@@ -24,6 +24,7 @@ export const TabsComponent: FC<TabsComponentProps> = ({
 				onChange={handleTabChange}
 				aria-label='navigation tabs'
 				sx={styles.tabsContainer}
+				variant='fullWidth'
 			>
 				{allTabs.map((tab, index) => (
 					<Tab key={`${tab}-${index}`} label={tab} sx={styles.tabItem} />

@@ -8,7 +8,7 @@ import {
 	InputBase,
 	Typography,
 	Skeleton,
-	Container,
+	// Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -27,8 +27,8 @@ import {
 	useGetPropertiesQuery,
 	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
-import { useDispatch } from 'react-redux';
-import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
+// import { useDispatch } from 'react-redux';
+// import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../components/DataPagination';
 import { useDebounce } from '../../hooks/useDebounce';
 
@@ -38,13 +38,14 @@ const Properties = () => {
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 24,
-		sortBy: 'name',
+		sortBy: 'createdDate',
+		order: 'DESC',
 	});
 	const [layout, setLayout] = useState<'row' | 'column'>('column');
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 	const debouncedPropertiesSearch = useDebounce(() => {
 		setDefaultParams((prev) => ({ ...prev, search: searchText }));
 	}, 500);
@@ -54,8 +55,8 @@ const Properties = () => {
 		isLoading: isPropertyLoading,
 		isFetching: isPropertyFetching,
 	} = useGetPropertiesQuery({
-		...filter,
 		...defaultParams,
+		...filter,
 	});
 
 	const {
@@ -120,14 +121,14 @@ const Properties = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
-	useEffect(() => {
-		const currentFilter = {
-			...filter,
-			...defaultParams,
-		};
+	// useEffect(() => {
+	// 	const currentFilter = {
+	// 		...filter,
+	// 		...defaultParams,
+	// 	};
 
-		dispatch(setCurrentFilter({ currentFilter }));
-	}, [defaultParams, dispatch, filter]);
+	// 	dispatch(setCurrentFilter({ currentFilter }));
+	// }, [defaultParams, dispatch, filter]);
 
 	useEffect(() => {
 		getCurrentPage(1);
@@ -138,7 +139,8 @@ const Properties = () => {
 			{isPropertyLoading ? (
 				<PropertiesSkeleton />
 			) : (
-				<Container maxWidth={'xl'} sx={styles.container}>
+				// <Container maxWidth={'xl'} sx={styles.container}>
+				<>
 					<Grid container rowSpacing={2}>
 						<Grid
 							xs={12}
@@ -267,7 +269,8 @@ const Properties = () => {
 							currentPage={currentPage}
 						/>
 					</Stack>
-				</Container>
+				</>
+				// </Container>
 			)}
 		</>
 	);

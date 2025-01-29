@@ -7,199 +7,239 @@ import {
 	Typography,
 	IconButton,
 	List,
-	ListItem,
 	ListItemAvatar,
 	Avatar,
 	ListItemText,
 	ListItemSecondaryAction,
 	Divider,
 	Button,
-	Tooltip,
+	Stack,
+	Card,
+	useTheme,
+	Badge,
+	ListItemButton,
+	Menu,
+	MenuItem,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import CancelIcon from '@mui/icons-material/Cancel';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-const notifications = [
-	{
-		date: 'Today',
-		items: [
-			{
-				status: 'success',
-				title: 'Rent payment successful',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '45m',
-				actionText: 'View Invoice',
-				avatar: '../../assets/manImage.svg',
-			},
-			{
-				status: 'success',
-				title: 'Rent payment successful',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '45m',
-				actionText: 'View Invoice',
-				avatar: '../../assets/manImage.svg',
-			},
-			{
-				status: 'success',
-				title: 'Rent payment successful',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '45m',
-				actionText: 'View Invoice',
-				avatar: '../../assets/manImage.svg',
-			},
-		],
-	},
-	{
-		date: 'Yesterday',
-		items: [
-			{
-				status: 'info',
-				title: 'New inspection assigned',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '20h',
-				actionText: '',
-				avatar: '../../assets/images/blueoctagon.png',
-			},
-			{
-				status: 'error',
-				title: 'Rent payment unsuccessful',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '10h',
-				actionText: 'View payment info',
-				avatar: '../../assets/images/blueoctagon.png',
-			},
-			{
-				status: 'info',
-				title: 'Maintenance request',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '23h',
-				actionText: '',
-				avatar: '../../assets/images/blueoctagon.png',
-			},
-		],
-	},
-	{
-		date: 'Last 7 days',
-		items: [
-			{
-				status: 'success',
-				title: 'Rent payment successful',
-				description: 'Apt 1011 Mayfairs Gardens',
-				time: '45m',
-				actionText: 'View Invoice',
-				avatar: '../../assets/images/blueoctagon.png',
-			},
-		],
-	},
-];
-
+import { GroupedNotifications } from '../../shared/global-types';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import DeleteIcon from '@mui/icons-material/Delete';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import React, { useRef, useState } from 'react';
+import { styles } from './style';
+import { menuItem } from '../Shared/CustomMenuList';
+import {
+	useDeleteNotificationsMutation,
+	useReadNotificationsMutation,
+} from '../../store/NotificationStore/NotificationApiSlice';
+import {
+	DeleteNotificationType,
+	ReadNotificationType,
+} from '../../store/NotificationStore/NotificationType';
 interface NotificationModalProps {
 	open: boolean;
 	onClose: () => void;
+	notifications: GroupedNotifications[];
 }
-const NotificationModal = ({ open, onClose }: NotificationModalProps) => {
-	// const NotificationModal: React.FC<NotificationModalProps> = ({ open, onClose }) => {
+
+const NotificationModal = ({
+	open,
+	onClose,
+	notifications,
+}: NotificationModalProps) => {
+	const theme = useTheme();
+	const [openPopper, setOpenPopper] = useState<boolean>(false);
+	const [currentAnchorEl, setCurrentAnchorEl] =
+		useState<HTMLButtonElement | null>(null);
+	const anchorRefs = useRef<{ [key: number]: HTMLButtonElement | null }>({});
+	const [readNotifications] = useReadNotificationsMutation();
+	const [deleteNotifications] = useDeleteNotificationsMutation();
+	const handlePopperToggle = (index: number) => {
+		setCurrentAnchorEl(anchorRefs.current[index] ?? null);
+		setOpenPopper((prevOpen) => !prevOpen);
+	};
+	const notificationMenu: menuItem[] = [
+		{
+			label: 'Mark as read',
+			onClick: (id) => {
+				handleReadNotifications(id);
+				setOpenPopper(false);
+			},
+			icon: <DoneAllIcon sx={{ color: 'text.primary' }} />,
+		},
+		{
+			label: 'Delete',
+			onClick: (id) => {
+				handleDeleteNotifications(id);
+				setOpenPopper(false);
+			},
+			icon: <DeleteIcon sx={{ color: 'text.primary' }} />,
+		},
+	];
+	const handleReadNotifications = async (id?: string) => {
+		const ids = id
+			? [id]
+			: notifications.flatMap((group) =>
+					group.notifications.map((notification) => notification.id),
+				);
+		const readPayload: ReadNotificationType = {
+			notificationIds: ids,
+			isRead: true,
+			isDelivered: false,
+		};
+		await readNotifications(readPayload).unwrap();
+	};
+
+	const handleDeleteNotifications = async (id?: string) => {
+		const ids = id
+			? [id]
+			: notifications.flatMap((group) =>
+					group.notifications.map((notification) => notification.id),
+				);
+		const deletePayload: DeleteNotificationType = {
+			notificationIds: ids,
+		};
+		await deleteNotifications(deletePayload).unwrap();
+	};
 	return (
-		<Dialog
-			open={open}
-			onClose={onClose}
-			maxWidth='sm'
-			fullWidth
-			sx={{ backgroundImage: 'none' }}
-		>
+		<Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
 			<DialogTitle>
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-					}}
-				>
-					<Typography variant='h6'>Notification</Typography>
-					<IconButton size='small' onClick={onClose}>
-						<CloseIcon />
+				<Box sx={styles(theme).titleBox}>
+					<Typography variant='h6' fontSize={'1.75rem'}>
+						Notifications
+					</Typography>
+					<IconButton size='medium' onClick={onClose}>
+						<CancelIcon />
 					</IconButton>
 				</Box>
 			</DialogTitle>
-			<DialogContent dividers>
-				<Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-					<Button variant='text' size='small'>
-						Mark all as read
-					</Button>
-				</Box>
+			<Divider color={'primary.light'} />
+			<DialogContent>
 				{notifications.map((section, index) => (
 					<Box key={index}>
-						<Typography variant='subtitle2' sx={{ mb: 1 }}>
-							{section.date}
-						</Typography>
-						<List dense>
-							{section.items.map((item, idx) => (
-								<Box key={idx}>
-									<ListItem
-										alignItems='flex-start'
-										sx={{
-											bgcolor:
-												item.status === 'success'
-													? 'rgba(33, 150, 243, 0.1)'
-													: 'inherit',
-											mb: 1,
-											borderRadius: 1,
-										}}
+						<Stack direction={'row'} sx={styles(theme).dialogContent}>
+							<Typography variant='subtitle2' sx={{ mb: 1 }}>
+								{section.period}
+							</Typography>
+							{index === 0 && (
+								<Button
+									startIcon={<DoneAllIcon />}
+									variant='text'
+									sx={{ color: 'primary.light' }}
+									size='small'
+									onClick={() => handleReadNotifications()}
+								>
+									Mark all as read
+								</Button>
+							)}
+						</Stack>
+
+						<List sx={{ width: '100%' }}>
+							{section.notifications.map((item, idx) => (
+								<Card key={idx}>
+									<ListItemButton
+										alignItems='center'
+										sx={styles(theme).listItemButton}
 									>
 										<ListItemAvatar>
-											<Avatar src={item.avatar} />
+											<Stack>
+												<Badge
+													color='info'
+													variant='dot'
+													invisible={item.isRead}
+													sx={styles(theme).badge}
+												></Badge>
+												<Avatar sx={styles(theme).avatar}>
+													{item.isAnnouncement ? (
+														<CampaignIcon color='secondary' />
+													) : (
+														<NotificationsIcon color='secondary' />
+													)}
+												</Avatar>
+											</Stack>
 										</ListItemAvatar>
 										<ListItemText
-											primary={
-												<Typography
-													// variant='body2'
-													sx={{ fontWeight: 'bold', color: 'text.secondary' }}
-												>
-													{item.title}
-												</Typography>
-											}
+											primary={item.title}
+											primaryTypographyProps={{
+												color: 'text.primary',
+												fontWeight: item.isRead ? 'normal' : 'bold',
+											}}
 											secondary={
-												<>
-													<Typography
-														variant='body2'
-														sx={{ display: 'block', color: 'text.secondary' }}
-													>
-														{item.description}
-													</Typography>
-													<Typography
-														variant='caption'
-														sx={{ display: 'block', color: 'text.secondary' }}
-													>
-														{item.time}
-													</Typography>
-													{item.actionText && (
-														<Button
-															// variant='body2'
-															sx={{
-																color: 'primary.main',
-
-																mt: 1,
-															}}
-														>
-															{item.actionText}
+												<React.Fragment>
+													{item.message}
+													{item.actionLink && (
+														<Button sx={styles(theme).actionLink}>
+															view details
 														</Button>
 													)}
-												</>
+												</React.Fragment>
 											}
+											secondaryTypographyProps={{
+												color: 'text.secondary',
+												fontWeight: 'normal',
+											}}
 										/>
 										<ListItemSecondaryAction>
-											<Tooltip title='More options'>
-												<IconButton edge='end'>
+											<Stack
+												direction={'column'}
+												sx={styles(theme).secondaryAction}
+											>
+												<Typography
+													variant='caption'
+													sx={styles(theme).secondaryActionText}
+												>
+													{item.time}
+												</Typography>
+												<IconButton
+													edge='end'
+													ref={(el) => (anchorRefs.current[idx] = el)}
+													onClick={() => handlePopperToggle(idx)}
+												>
 													<MoreHorizIcon />
 												</IconButton>
-											</Tooltip>
+												<Menu
+													open={
+														openPopper &&
+														currentAnchorEl === anchorRefs.current[idx]
+													}
+													anchorEl={currentAnchorEl}
+													onClose={() => setOpenPopper(false)}
+												>
+													{notificationMenu.map((menu, index) => (
+														<MenuItem
+															key={index}
+															onClick={() =>
+																menu.onClick && menu.onClick(item.id)
+															}
+														>
+															{menu.icon}
+															<Typography ml={1} variant='body2'>
+																{menu.label}
+															</Typography>
+														</MenuItem>
+													))}
+												</Menu>
+											</Stack>
 										</ListItemSecondaryAction>
-									</ListItem>
-									{idx < section.items.length - 1 && <Divider />}
-								</Box>
+									</ListItemButton>
+									{idx < section.notifications.length - 1 && <Divider />}
+								</Card>
 							))}
 						</List>
 					</Box>
 				))}
+				<Stack mt={2} sx={{ alignItems: 'center' }}>
+					{notifications.length > 0 ? (
+						<Typography variant='caption'>
+							Showing notifications from the last 14 days
+						</Typography>
+					) : (
+						<Typography variant='body1'>No notifications found</Typography>
+					)}
+				</Stack>
 			</DialogContent>
 		</Dialog>
 	);

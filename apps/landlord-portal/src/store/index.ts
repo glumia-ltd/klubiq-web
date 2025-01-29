@@ -10,6 +10,8 @@ import { dashboardApiSlice } from './DashboardStore/dashboardApiSlice';
 import { authApiSlice } from './AuthStore/authApiSlice';
 import { orgApiSlice } from './OrganizationStore/orgApiSlice';
 import orgReducer from './OrganizationStore/OrgSlice';
+import { leaseApiSlice } from './LeaseStore/leaseApiSlice';
+import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -25,6 +27,8 @@ const store: Store = configureStore({
 		[dashboardApiSlice.reducerPath]: dashboardApiSlice.reducer,
 		[authApiSlice.reducerPath]: authApiSlice.reducer,
 		[orgApiSlice.reducerPath]: orgApiSlice.reducer,
+		[leaseApiSlice.reducerPath]: leaseApiSlice.reducer,
+		[notificationApiSlice.reducerPath]: notificationApiSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware().concat(
@@ -32,6 +36,8 @@ const store: Store = configureStore({
 			dashboardApiSlice.middleware,
 			authApiSlice.middleware,
 			orgApiSlice.middleware,
+			leaseApiSlice.middleware,
+			notificationApiSlice.middleware,
 		),
 });
 

@@ -1,5 +1,5 @@
 import { Grid, Breadcrumbs, Typography, Button, Chip } from '@mui/material';
-import { Container } from '@mui/system';
+// import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
@@ -10,7 +10,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useState } from 'react';
 import { HomeIcon } from '../Icons/CustomIcons';
 import propertyImage from '../../assets/images/propertyImage.png';
-import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
+// import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
@@ -35,7 +35,7 @@ const leaseColumns = [
 	{ id: '4', label: 'Start Date' },
 	{ id: '5', label: 'End Date' },
 ];
-const allTabs = ['Overview', 'Lease', 'Maintenance', 'Document'];
+const allTabs = ['Overview', 'Lease', 'Document'];
 
 export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
@@ -74,7 +74,8 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.container}>
+		// <Container maxWidth={'xl'} sx={styles.container}>
+		<>
 			<Grid>
 				<Grid>
 					<Breadcrumbs
@@ -191,10 +192,11 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Grid>
 				)}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
+				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
-		</Container>
+		</>
+		// </Container>
 	);
 };

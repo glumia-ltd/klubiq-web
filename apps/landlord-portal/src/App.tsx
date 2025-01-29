@@ -21,25 +21,13 @@ import { consoleLog } from './helpers/debug-logger';
 
 function App() {
 	const { user } = useSelector(getAuthState);
-	//const { organization } = useSelector(getOrgState);
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
-	//const [triggerGetUserOrganization] = useLazyGetOrgByIdQuery();
 	const dispatch = useDispatch();
 	const configStoreName = 'client-config';
 	useEffect(() => {
-		// const requestNotificationPermission = async () => {
-		// 	if ('Notification' in window) {
-		// 		const permission = await Notification.requestPermission();
-		// 		if (permission === 'granted') {
-		// 			await subscribeUserToPush();
-		// 		} else {
-		// 			consoleLog('Notification permission denied.');
-		// 		}
-		// 	}
-		// };
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', () => {
 				navigator.serviceWorker
@@ -61,6 +49,7 @@ function App() {
 		};
 
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
+			consoleLog('currentUser called in app');
 			if (currentUser) {
 				const token = await currentUser.getIdToken();
 				if (!user.fbId) {
@@ -77,8 +66,6 @@ function App() {
 					await updateConfigStoreIdb(user.orgSettings);
 				}
 			} else {
-				consoleLog('AUTH STATE: ', auth);
-				consoleLog('no user found yet');
 				const payload = {
 					token: null,
 					user: {} as UserProfile,
@@ -114,12 +101,3 @@ function App() {
 }
 
 export default App;
-
-// const getOrg = async (orgUuid: string) => {
-// 	const response = await triggerGetUserOrganization({ uuid: orgUuid });
-// 	if (!response.data) throw new Error('Organization not found');
-// 	const payload = {
-// 		organization: response?.data as Organization,
-// 	};
-// 	dispatch(saveOrganization(payload));
-// };

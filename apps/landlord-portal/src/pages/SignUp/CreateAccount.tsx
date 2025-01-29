@@ -20,10 +20,15 @@ import { filter, find, orderBy } from 'lodash';
 import countries from '../../helpers/countries-meta.json';
 import { styles } from './styles';
 import bgillustration from '../../assets/images/undraw_town_re_2ng5-removebg-preview.png';
+import { PasswordStrengthBar } from '../../components/PasswordStrengthBar/PasswordStrengthBar';
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
+	const [passwordMessage, setPasswordMessage] = useState<string>('');
+
+	console.log(passwordMessage);
+
 	type CountryType = {
 		name: string;
 		code: string;
@@ -73,6 +78,20 @@ const CreateAccount: React.FC = () => {
 				companyName,
 				organizationCountry: selectedCountry,
 			};
+
+			if (passwordMessage) {
+				dispatch(
+					openSnackbar({
+						message: passwordMessage,
+						severity: 'warning',
+						isOpen: true,
+					}),
+				);
+
+				setLoading(false);
+
+				return;
+			}
 
 			const {
 				data: { data: token },
@@ -242,6 +261,13 @@ const CreateAccount: React.FC = () => {
 									placeholder='Enter your password'
 									formik={formik}
 									autoComplete='new-password'
+								/>
+							</Grid>
+
+							<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
+								<PasswordStrengthBar
+									password={formik.values.password}
+									handlePasswordChange={setPasswordMessage}
 								/>
 							</Grid>
 

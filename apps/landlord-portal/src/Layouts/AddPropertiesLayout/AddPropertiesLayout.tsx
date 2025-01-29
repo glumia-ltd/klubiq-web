@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Button,
-	Container,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -492,7 +491,7 @@ export const AddPropertiesLayout = () => {
 	};
 
 	return (
-		<Container sx={styles.containerStyle}>
+		<>
 			<>
 				<Grid container>
 					<Grid container sx={styles.addPropertiesContainer}>
@@ -580,6 +579,6 @@ export const AddPropertiesLayout = () => {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</Container>
+		</>
 	);
 };

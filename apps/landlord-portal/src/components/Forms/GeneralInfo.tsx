@@ -72,7 +72,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		setAnchorElement(null);
 	};
 
-	const customAmenitiesArray = formik.values.customAmenities.map(
+	const customAmenitiesArray = formik?.values?.customAmenities?.map(
 		(amenity: string) => ({
 			id: amenity,
 			name: amenity,
@@ -155,7 +155,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const renderAmenities = (amenities: any) => {
 		if (
-			(currentUnitIndex !== null && formik.values.units[currentUnitIndex]) ||
+			(currentUnitIndex !== null &&
+				formik?.values?.units &&
+				formik?.values?.units[currentUnitIndex]) ||
 			selectedUnitType !== 'multi'
 		) {
 			return amenities?.map(
@@ -168,11 +170,13 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								key={`${amenity?.name}--${index}`}
 								value={amenity?.name}
 								checked={
-									formik.values.units[currentUnitIndex]?.amenities?.includes(
-										amenity?.name,
-									) || false
+									(formik?.values?.units &&
+										formik?.values?.units[
+											currentUnitIndex
+										]?.amenities?.includes(amenity?.name)) ||
+									false
 								}
-								onChange={formik.handleChange}
+								onChange={formik?.handleChange}
 							/>
 						}
 						label={amenity?.name}
@@ -231,7 +235,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							/>
 						</Grid>
 
-						<Grid item xs={12} md={6}>
+						<Grid item xs={12} sm={6} md={6}>
 							<ControlledSelect
 								required
 								name='address.country'
@@ -239,24 +243,23 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								type='text'
 								formik={formik}
 								options={countries}
-								placeholder=''
 							/>
 						</Grid>
-						<Grid item xs={12} md={6}>
+						<Grid item xs={12} sm={6} md={6}>
 							<ControlledTextField
 								name='address.postalCode'
 								label='Postal Code'
 								formik={formik}
 							/>
 						</Grid>
-						<Grid item xs={12} md={6}>
+						<Grid item xs={12} sm={6} md={6}>
 							<ControlledTextField
 								name='address.state'
 								label='State (Province or Region)'
 								formik={formik}
 							/>
 						</Grid>
-						<Grid item xs={12} md={6}>
+						<Grid item xs={12} sm={6} md={6}>
 							<ControlledTextField
 								name='address.city'
 								label='City'
@@ -275,8 +278,8 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								Unit Details
 							</Typography>
 						</Grid>
-						<Grid container>
-							<Grid item xs={6}>
+						<Grid container spacing={2}>
+							<Grid item xs={12} sm={6}>
 								<ControlledTextField
 									required
 									name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
@@ -285,7 +288,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									formik={formik}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
@@ -293,7 +296,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									formik={formik}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].toilets`}
 									label='Toilets'
@@ -301,7 +304,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									formik={formik}
 								/>
 							</Grid>
-							<Grid item xs={6}>
+							<Grid item xs={12} sm={6}>
 								<ControlledTextField
 									required
 									name={`units[${currentUnitIndex}].area.value`}
@@ -334,7 +337,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									}}
 								/>
 							</Grid>
-							<Grid item xs={12}>
+							<Grid item xs={12} sm={12}>
 								<Typography variant='subtitle1'>Amenities</Typography>
 								{renderAmenities(allAmenities)}
 								<br />

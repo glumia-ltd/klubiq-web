@@ -1,11 +1,7 @@
-import { Container } from '@mui/material';
+// import { Container } from '@mui/material';
 
 const Message = () => {
-	return (
-		<>
-			<Container maxWidth='xl'>Messages</Container>
-		</>
-	);
+	return <>Messages</>;
 };
 
 export default Message;

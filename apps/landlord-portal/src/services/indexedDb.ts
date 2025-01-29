@@ -24,7 +24,7 @@ export const initDB = async () => {
 		upgrade(db) {
 			each(stores, (store) => {
 				if (!db.objectStoreNames.contains(store)) {
-					console.log('Creating object store:', store);
+					// console.log('Creating object store:', store);
 					db.createObjectStore(store, {
 						keyPath: 'key',
 					});

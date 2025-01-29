@@ -16,7 +16,7 @@ const subscribeUserToPush = async () => {
 
 			const pushSubscription =
 				await registration.pushManager.subscribe(subscribeOptions);
-			console.log('Push Subscription:', JSON.stringify(pushSubscription));
+			return pushSubscription;
 
 			// Send pushSubscription to your server
 		} catch (error) {

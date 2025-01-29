@@ -1,18 +1,27 @@
 const styles = {
 	card: {
-		height: '755px',
-		padding: { xs: '34px', sm: '40px', md: '34px', lg: '40px' },
+		// height: 'max-content',
+		// padding: { xs: '34px', sm: '40px', md: '34px', lg: '40px' },
+		// borderRadius: '8px',
+		// maxWidth: '1152px',
+		// gap: '32px',
+		// alignItems: 'center',
+		// JustifyContent: 'center',
+
+		minHeight: '26px',
+		padding: { xs: '15px', sm: '20px', md: '32px', lg: '32px' },
 		borderRadius: '8px',
-		maxWidth: '1152px',
-		gap: '32px',
+		// maxWidth: '1150px',
 		alignItems: 'center',
 		JustifyContent: 'center',
 	},
 	cardTwo: {
 		// height: '323.2px',
+		width: '100%',
+
 		padding: { xs: '34px', sm: '40px', md: '34px', lg: '40px' },
 		borderRadius: '8px',
-		maxWidth: '1152px',
+		// maxWidth: '1152px',
 		gap: '32px',
 		alignItems: 'center',
 		JustifyContent: 'center',

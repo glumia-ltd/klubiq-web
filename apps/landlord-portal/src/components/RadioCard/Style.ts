@@ -5,7 +5,6 @@ const styles = {
 		alignItems: 'center',
 		JustifyContent: 'center',
 		width: '100%',
-		display: 'flex',
 	},
 
 	typo: {
@@ -20,7 +19,7 @@ const styles = {
 		},
 		lineHeight: { xs: '20px', sm: '18px', md: '20px', lg: '20px' },
 		textTransform: 'capitalize` wz',
-
+		border: '2px solid pink',
 		fontWeight: '500',
 		fontFamily: 'Maven Pro, sans-serif',
 		'& .MuiRadio-root': {
@@ -48,6 +47,9 @@ const styles = {
 	},
 	formControl: {
 		width: '100%',
+		'& .MuiFormControlLabel-root': {
+			marginLeft: '-2px',
+		},
 	},
 };
 export default styles;

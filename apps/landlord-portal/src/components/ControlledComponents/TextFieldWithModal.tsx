@@ -44,7 +44,9 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 					width: { xs: '50px', sm: '250px', md: '320px' },
 					height: '45px',
 					padding: '0 4 0 4',
+					outline: '1px solid #e4e4e4',
 					border: { xs: 'none' },
+
 					'& fieldset': {
 						border: isSmallScreen ? 'none' : undefined,
 					},

@@ -11,7 +11,6 @@ declare module '@mui/material/styles' {
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
 	}
-
 	interface TypographyVariantsOptions {
 		dashboardTypography?: React.CSSProperties;
 		link: React.CSSProperties;
@@ -33,6 +32,34 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 	}
+
+	interface TypographyVariants {
+		h7: React.CSSProperties;
+	}
+
+	interface TypographyVariantsOptions {
+		h7?: React.CSSProperties;
+	}
+
+	interface Palette {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+		notification?: {
+			light?: string;
+			dark?: string;
+		};
+	}
+
+	interface PaletteOptions {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+		notification?: {
+			light?: string;
+			dark?: string;
+		};
+	}
 }
 
 // Update the Typography's variant prop options
@@ -46,11 +73,17 @@ declare module '@mui/material/Typography' {
 		filterResultText: true;
 		filterResultNumber: true;
 	}
+
+	interface TypographyPropsVariantOverrides {
+		h7: true;
+	}
 }
 
 declare module '@mui/material/Button' {
 	interface ButtonPropsVariantOverrides {
 		propertyButton: true;
+		filterButton: true;
+		borderlessFilterButton: true;
 	}
 }
 
@@ -59,5 +92,13 @@ declare module '@mui/material/Chip' {
 		rent: true;
 		sale: true;
 		propertyType: true;
+	}
+}
+
+declare module '@mui/material/Paper' {
+	interface PaperPropsVariantOverrides {
+		expired: true;
+		overdue: true;
+		active: true;
 	}
 }
