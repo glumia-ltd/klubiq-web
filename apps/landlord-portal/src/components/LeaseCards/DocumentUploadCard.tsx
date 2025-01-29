@@ -3,6 +3,7 @@ import { styles } from './style';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
+import { consoleDebug } from '../../helpers/debug-logger';
 const DocumentUploadCard = () => {
 	const property = [
 		{
@@ -25,7 +26,7 @@ const DocumentUploadCard = () => {
 	};
 
 	const onSubmit = async (values: formValuesType) => {
-		// console.log(values, 'hh');
+		consoleDebug(values, 'hh');
 	};
 	const formik = useFormik({
 		initialValues: {

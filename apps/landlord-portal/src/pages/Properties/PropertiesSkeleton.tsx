@@ -3,7 +3,7 @@ import { useState } from 'react';
 import {
 	Stack,
 	//Box,
-	Button,
+	// Button,
 	Paper,
 	IconButton,
 	InputBase,
@@ -14,7 +14,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 
 import SearchIcon from '@mui/icons-material/Search';
 
-import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
+// import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 
 import PropertiesCardSkeleton from './PropertiesCardSkeleton';

@@ -27,7 +27,7 @@ import {
 	useGetPropertiesQuery,
 	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 // import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../components/DataPagination';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -45,7 +45,7 @@ const Properties = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [searchText, setSearchText] = useState('');
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 	const debouncedPropertiesSearch = useDebounce(() => {
 		setDefaultParams((prev) => ({ ...prev, search: searchText }));
 	}, 500);

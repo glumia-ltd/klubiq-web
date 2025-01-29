@@ -187,6 +187,7 @@ const AddLeaseForm = () => {
 		endDate: string,
 		startDate: string,
 	): Record<string, string> => {
+		consoleLog(dayjs(endDate).get('date'), 'end date');
 		// const rentDueDay = dayjs(endDate).get('date');
 		const startDayAndMonth = dayjs(startDate).format('MMMM DD');
 
