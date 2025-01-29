@@ -109,7 +109,7 @@ const NotificationModal = ({
 			<DialogTitle>
 				<Box sx={styles(theme).titleBox}>
 					<Typography variant='h6' fontSize={'1.75rem'}>
-						Notification
+						Notifications
 					</Typography>
 					<IconButton size='medium' onClick={onClose}>
 						<CancelIcon />
@@ -229,19 +229,17 @@ const NotificationModal = ({
 								</Card>
 							))}
 						</List>
-						<Stack mt={2} sx={{ alignItems: 'center' }}>
-							{section.notifications.length > 0 ? (
-								<Typography variant='caption'>
-									Showing notifications from the last 14 days
-								</Typography>
-							) : (
-								<Typography variant='caption'>
-									No notifications found
-								</Typography>
-							)}
-						</Stack>
 					</Box>
 				))}
+				<Stack mt={2} sx={{ alignItems: 'center' }}>
+					{notifications.length > 0 ? (
+						<Typography variant='caption'>
+							Showing notifications from the last 14 days
+						</Typography>
+					) : (
+						<Typography variant='body1'>No notifications found</Typography>
+					)}
+				</Stack>
 			</DialogContent>
 		</Dialog>
 	);

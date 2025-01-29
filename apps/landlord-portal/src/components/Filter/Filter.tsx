@@ -205,7 +205,10 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 									}
 								}}
 							>
-								<Modal open={title === currentTitle}>
+								<Modal
+									open={title === currentTitle}
+									onClose={handleClearAllFilter}
+								>
 									<Box
 										sx={{
 											...styles.modalBackgroundStyle,

@@ -40,6 +40,7 @@ export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
 			<Route path='/' element={<Login />} />
+			<Route path='/login' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
 			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />

@@ -7,6 +7,7 @@ import {
 	Paper,
 	IconButton,
 	InputBase,
+	Skeleton,
 } from '@mui/material';
 
 import Grid from '@mui/material/Unstable_Grid2';
@@ -46,10 +47,11 @@ export const PropertiesSkeleton = () => {
 						spacing={2}
 						alignItems={'center'}
 					>
-						<Button variant='contained' sx={styles.addPropertyButton}>
+						{/* <Button variant='contained' sx={styles.addPropertyButton}>
 							<LeftArrowIcon />
 							Add New Property
-						</Button>
+						</Button> */}
+						<Skeleton width='50%' height={5} />
 					</Stack>
 				</Grid>
 

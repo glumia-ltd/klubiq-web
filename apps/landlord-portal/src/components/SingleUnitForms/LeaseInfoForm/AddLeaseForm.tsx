@@ -19,13 +19,14 @@ import { getCurrencySymbol } from '../../../helpers/utils';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 import { useAddLeaseMutation } from '../../../store/LeaseStore/leaseApiSlice';
+import { useNavigate } from 'react-router-dom';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
 	BI_MONTHLY = 'Bi-Monthly',
 	BI_WEEKLY = 'Bi-Weekly',
 	MONTHLY = 'Monthly',
-	ONE_TIME = 'One Time',
+	ONE_TIME = 'One-Time',
 	QUARTERLY = 'Quarterly',
 	WEEKLY = 'Weekly',
 	// CUSTOM = 'Custom',
@@ -48,13 +49,17 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 
 const AddLeaseForm = () => {
 	const { user } = useSelector(getAuthState);
+
 	const dispatch = useDispatch();
+
+	const navigate = useNavigate();
 
 	const [disabledButton, setDisabledButton] = useState(true);
 
+	const [addLease] = useAddLeaseMutation();
+
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery(user?.organizationId);
-	const [addLease] = useAddLeaseMutation();
 
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
@@ -63,24 +68,23 @@ const AddLeaseForm = () => {
 		}),
 	);
 
-	const tenantOptions = orgPropertiesViewList?.tenants?.map(
-		(tenant: { id: string; firstName: string; lastName: string }) => ({
-			id: tenant.id,
-			name: `${tenant.firstName} ${tenant.lastName}`,
-		}),
-	);
+	// const tenantOptions = orgPropertiesViewList?.tenants?.map(
+	// 	(tenant: { id: string; firstName: string; lastName: string }) => ({
+	// 		id: tenant.id,
+	// 		name: `${tenant.firstName} ${tenant.lastName}`,
+	// 	}),
+	// );
 
 	const validationSchema = yup.object({
 		name: yup.string().required('field is required'),
-		// description: yup.string().required('This field is required'),
-		unitId: yup.string().required('Select an option'),
 		propertyName: yup.string().required('Select an option'),
+		unitId: yup.string().required('Select an option'),
 		tenantsIds: yup.array(),
 		rentAmount: yup.number().required('field is required'),
 		depositAmount: yup.number().required('field is required'),
-		frequency: yup.string().required('field is required'),
 		startDate: yup.string().required('field is required'),
 		endDate: yup.string(),
+		frequency: yup.string().required('field is required'),
 		rentDueDay: yup.string(),
 	});
 
@@ -245,10 +249,10 @@ const AddLeaseForm = () => {
 	}, [formik.values]);
 
 	const handleAddLease = async () => {
-		const requestBody = {
+		const requestBody: any = {
 			name: formik.values.name,
 			startDate: formik.values.startDate,
-			endDate: formik.values.endDate,
+			// endDate: formik.values.endDate,
 			newTenants: null,
 			tenantsIds: formik.values.tenantsIds,
 			unitId: formik.values.unitId && Number(formik.values.unitId),
@@ -267,10 +271,12 @@ const AddLeaseForm = () => {
 			unitNumber: getUnitNumber?.name,
 		};
 
-		try {
-			const res = await addLease(requestBody).unwrap();
+		if (formik.values.endDate) {
+			requestBody['endDate'] = formik.values.endDate;
+		}
 
-			console.log(res);
+		try {
+			await addLease(requestBody).unwrap();
 
 			dispatch(
 				openSnackbar({
@@ -280,8 +286,20 @@ const AddLeaseForm = () => {
 					duration: 2000,
 				}),
 			);
+
+			navigate(-1);
 		} catch (e) {
-			console.log(e as Error);
+			// console.log((e as any)?.status);
+			console.log(e as any);
+
+			dispatch(
+				openSnackbar({
+					message: 'Error saving lease.Please try again',
+					severity: 'error',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
 		}
 
 		// console.log(requestBody);
@@ -396,7 +414,7 @@ const AddLeaseForm = () => {
 							name='rentAmount'
 							label='Rent Amount'
 							formik={formik}
-							type='text'
+							type='number'
 							showCurrency
 							currencySymbol={getCurrencySymbol(user)}
 						/>
@@ -405,7 +423,7 @@ const AddLeaseForm = () => {
 						<ControlledTextField
 							name='depositAmount'
 							label='Deposit Amount'
-							type='text'
+							type='number'
 							formik={formik}
 							showCurrency
 							currencySymbol={getCurrencySymbol(user)}

@@ -1,7 +1,7 @@
 import cityillustration from '../assets/images/undraw_city_life_gnpr-removebg-preview.png';
 const style = {
 	container: {
-		overflow: 'auto',
+		//overflow: 'auto',
 		paddingTop: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 	},
