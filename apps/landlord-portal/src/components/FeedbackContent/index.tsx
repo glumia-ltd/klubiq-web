@@ -5,13 +5,13 @@ interface FeedbackProps {
 	imageLink: string;
 	header: string;
 	content: string;
-	onClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
+	continueUrl: string;
 	onMFASetupClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 const FeedbackContent = ({
 	header,
 	content,
-	onClick,
+	continueUrl,
 	onMFASetupClick,
 	imageLink,
 	showButton = false,
@@ -42,7 +42,7 @@ const FeedbackContent = ({
 				</div>
 				{showButton && (
 					<Stack width='100%' direction={'row'} spacing={1}>
-						<SubmitButton onClick={onClick}> Sign In </SubmitButton>
+						<SubmitButton href={continueUrl}> Sign In </SubmitButton>
 						<SubmitButton onClick={onMFASetupClick}> Setup 2FA </SubmitButton>
 					</Stack>
 				)}

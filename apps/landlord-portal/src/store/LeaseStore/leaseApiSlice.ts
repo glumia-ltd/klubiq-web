@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { leaseEndpoints, propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
@@ -5,12 +6,14 @@ import { customApiFunction } from '../customApiFunction';
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
 	baseQuery: customApiFunction,
+	tagTypes: ['leases', 'lease-metadata', 'Deleted'],
 	endpoints: (builder) => ({
 		getLeaseMetaData: builder.query<any, void>({
 			query: () => ({
 				url: leaseEndpoints.getLeaseMetaData(),
 				method: 'GET',
 			}),
+			providesTags: ['lease-metadata'],
 		}),
 
 		getLeases: builder.query<GetLeasesResponse, { [key: string]: any }>({
@@ -19,6 +22,7 @@ export const leaseApiSlice = createApi({
 				method: 'GET',
 				params,
 			}),
+			providesTags: ['leases'],
 		}),
 		getSingleLeaseById: builder.query<any, { id: string | number }>({
 			query: (params) => ({
@@ -38,6 +42,7 @@ export const leaseApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
+			invalidatesTags: ['leases'],
 		}),
 	}),
 });
