@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { api } from '../../api';
 import { authEndpoints } from '../../helpers/endpoints';
-import { consoleLog } from '../../helpers/debug-logger';
+import { consoleDebug, consoleLog } from '../../helpers/debug-logger';
 import { styles } from './style';
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 
@@ -30,8 +30,9 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 
 	// const mode = searchParams.get('mode');
 	const oobCode = searchParams.get('oobCode');
-	const continueUrl = searchParams.get('continueUrl');
+	const continueUrl = searchParams.get('continueUrl') || '/dashboard';
 	const isPending = searchParams.get('is_pending');
+	consoleDebug('ContinueUrl', continueUrl);
 
 	const checkEmailVerification = async (oobCode: string) => {
 		try {
@@ -69,9 +70,9 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 		toggleResendEnabled();
 	};
 
-	const navigateToContinueUrl = () => {
-		continueUrl && navigate(continueUrl, { replace: true });
-	};
+	// const navigateToContinueUrl = () => {
+	// 	continueUrl && navigate(continueUrl, { replace: true });
+	// };
 	const navigateToMFASetUp = () => {
 		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
 	};
@@ -85,7 +86,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							? 'We are verifying your email address...'
 							: 'Your Email Address has been verified. You can continue using the application.'
 					}
-					onClick={navigateToContinueUrl}
+					continueUrl={continueUrl}
 					onMFASetupClick={navigateToMFASetUp}
 					showButton={loading ? false : true}
 					header={loading ? 'Please be patient' : 'Email Verified'}
@@ -96,7 +97,7 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 			return (
 				<FeedbackContent
 					content={(errorMessage as string) || 'An error occurred'}
-					onClick={navigateToContinueUrl}
+					continueUrl={continueUrl}
 					header={'Verify Your Email'}
 					imageLink={errorImage}
 				/>

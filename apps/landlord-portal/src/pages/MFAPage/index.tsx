@@ -164,16 +164,16 @@ const MFASetUp = () => {
 			setError('Please enter a valid OTP. OTP must be 6 digits.');
 		}
 	};
-	const continueToUrl = () => {
-		if (continueUrl) {
-			navigate(continueUrl, { replace: true });
-		}
-	};
-	const routeToLogin = () => {
-		auth.signOut();
-		sessionStorage.clear();
-		navigate('/login', { replace: true });
-	};
+	// const continueToUrl = () => {
+	// 	if (continueUrl) {
+	// 		navigate(continueUrl, { replace: true });
+	// 	}
+	// };
+	// const routeToLogin = () => {
+	// 	auth.signOut();
+	// 	sessionStorage.clear();
+	// 	navigate('/login', { replace: true });
+	// };
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
 	};
@@ -328,7 +328,7 @@ const MFASetUp = () => {
 							)}
 							{!initializing && (
 								<Button
-									onClick={continueUrl ? continueToUrl : routeToLogin}
+									href={continueUrl ? continueUrl : '/login'}
 									startIcon={<ArrowBackIos />}
 								>
 									{continueUrl ? 'Return to site' : 'Back to login'}
@@ -510,7 +510,7 @@ const MFASetUp = () => {
 										<Button
 											sx={styles.cancelEnrollStyle}
 											variant='contained'
-											onClick={continueUrl ? continueToUrl : routeToLogin}
+											href={continueUrl ? continueUrl : '/login'}
 										>
 											Cancel
 										</Button>
