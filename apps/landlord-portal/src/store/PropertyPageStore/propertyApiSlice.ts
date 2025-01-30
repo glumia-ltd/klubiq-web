@@ -39,6 +39,7 @@ export const propertyApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
+			invalidatesTags: ['Property'],
 		}),
 
 		getSignedUrl: builder.mutation({
