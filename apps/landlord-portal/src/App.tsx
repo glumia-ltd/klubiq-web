@@ -46,6 +46,7 @@ function App() {
 				consoleLog('ORG Config not found: ');
 				await addData({ key: 'org-settings', value: data }, 'client-config');
 			}
+			localStorage.setItem('org-settings', JSON.stringify(data));
 		};
 
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
