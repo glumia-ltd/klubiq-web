@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { firebaseResponseObject } from '../helpers/FirebaseResponse';
+import { get } from 'lodash';
+import { consoleDebug } from '../helpers/debug-logger';
 
 const baseURL =
 	import.meta.env.VITE_NODE_ENV !== 'local'
@@ -43,6 +45,16 @@ function AxiosConfig(config: any) {
 		Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	config.headers['x-client-name'] = 'landlord-portal';
+
+	if (token && token.length > 0) {
+		const orgSettingString = localStorage.getItem('org-settings');
+		//getData('org-settings', 'client-config');
+		const orgSettings = JSON.parse(orgSettingString as string);
+		consoleDebug('orgSettings: ', orgSettings);
+		config.headers['x-client-lang'] = get(orgSettings, 'language', '');
+		config.headers['x-client-locale'] = get(orgSettings, 'countryCode', '');
+		config.headers['x-client-currency'] = get(orgSettings, 'currency', '');
+	}
 
 	if (!skippedEndpoints.includes(config.url)) {
 		config.headers.Authorization = `Bearer ${token}`;
