@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { firebaseResponseObject } from '../helpers/FirebaseResponse';
-import { getData } from '../services/indexedDb';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
 
