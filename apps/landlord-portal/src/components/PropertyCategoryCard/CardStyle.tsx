@@ -3,7 +3,7 @@ const styles = {
 		height: { xs: '120px', sm: '180px', md: '290px', lg: '290px' },
 		padding: { xs: '5px', sm: '15px', md: '25px', lg: '25px' },
 		borderRadius: '10px',
-		maxWidth: '320px',
+		// maxWidth: '320px',
 		justifyContent: 'center',
 		alignItems: 'center',
 		cursor: 'pointer',

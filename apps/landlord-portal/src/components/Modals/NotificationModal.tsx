@@ -10,16 +10,16 @@ import {
 	ListItemAvatar,
 	Avatar,
 	ListItemText,
-	ListItemSecondaryAction,
 	Divider,
 	Button,
 	Stack,
-	Card,
 	useTheme,
 	Badge,
 	ListItemButton,
 	Menu,
 	MenuItem,
+	ListItem,
+	Link,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -139,11 +139,54 @@ const NotificationModal = ({
 
 						<List sx={{ width: '100%' }}>
 							{section.notifications.map((item, idx) => (
-								<Card key={idx}>
-									<ListItemButton
-										alignItems='center'
-										sx={styles(theme).listItemButton}
-									>
+								<ListItem
+									key={idx}
+									alignItems='center'
+									sx={styles(theme).listItemButton}
+									secondaryAction={
+										<Stack
+											direction={'column'}
+											sx={styles(theme).secondaryAction}
+										>
+											<Typography
+												variant='caption'
+												sx={styles(theme).secondaryActionText}
+											>
+												{item.time}
+											</Typography>
+											<IconButton
+												edge='end'
+												ref={(el) => (anchorRefs.current[idx] = el)}
+												onClick={() => handlePopperToggle(idx)}
+											>
+												<MoreHorizIcon />
+											</IconButton>
+											<Menu
+												open={
+													openPopper &&
+													currentAnchorEl === anchorRefs.current[idx]
+												}
+												anchorEl={currentAnchorEl}
+												onClose={() => setOpenPopper(false)}
+											>
+												{notificationMenu.map((menu, index) => (
+													<MenuItem
+														key={index}
+														onClick={() =>
+															menu.onClick && menu.onClick(item.id)
+														}
+													>
+														{menu.icon}
+														<Typography ml={1} variant='body2'>
+															{menu.label}
+														</Typography>
+													</MenuItem>
+												))}
+											</Menu>
+										</Stack>
+									}
+								>
+									<ListItemButton>
 										<ListItemAvatar>
 											<Stack>
 												<Badge
@@ -169,11 +212,15 @@ const NotificationModal = ({
 											}}
 											secondary={
 												<React.Fragment>
-													{item.message}
+													<p>{item.message}</p>
 													{item.actionLink && (
-														<Button sx={styles(theme).actionLink}>
+														<Link
+															sx={styles(theme).actionLink}
+															href={item.actionLink}
+															underline='none'
+														>
 															view details
-														</Button>
+														</Link>
 													)}
 												</React.Fragment>
 											}
@@ -182,51 +229,9 @@ const NotificationModal = ({
 												fontWeight: 'normal',
 											}}
 										/>
-										<ListItemSecondaryAction>
-											<Stack
-												direction={'column'}
-												sx={styles(theme).secondaryAction}
-											>
-												<Typography
-													variant='caption'
-													sx={styles(theme).secondaryActionText}
-												>
-													{item.time}
-												</Typography>
-												<IconButton
-													edge='end'
-													ref={(el) => (anchorRefs.current[idx] = el)}
-													onClick={() => handlePopperToggle(idx)}
-												>
-													<MoreHorizIcon />
-												</IconButton>
-												<Menu
-													open={
-														openPopper &&
-														currentAnchorEl === anchorRefs.current[idx]
-													}
-													anchorEl={currentAnchorEl}
-													onClose={() => setOpenPopper(false)}
-												>
-													{notificationMenu.map((menu, index) => (
-														<MenuItem
-															key={index}
-															onClick={() =>
-																menu.onClick && menu.onClick(item.id)
-															}
-														>
-															{menu.icon}
-															<Typography ml={1} variant='body2'>
-																{menu.label}
-															</Typography>
-														</MenuItem>
-													))}
-												</Menu>
-											</Stack>
-										</ListItemSecondaryAction>
 									</ListItemButton>
 									{idx < section.notifications.length - 1 && <Divider />}
-								</Card>
+								</ListItem>
 							))}
 						</List>
 					</Box>
