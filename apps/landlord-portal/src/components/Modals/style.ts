@@ -24,7 +24,6 @@ export const styles = (theme: Theme) => {
 		secondaryText: { display: 'block', color: 'text.primary' },
 		actionLink: {
 			color: 'primary.main',
-			mt: 1,
 		},
 		secondaryAction: {
 			alignItems: 'flex-end',

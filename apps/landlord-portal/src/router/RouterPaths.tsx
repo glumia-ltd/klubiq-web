@@ -86,7 +86,8 @@ export const router = createBrowserRouter(
 						element={<AddProperties />}
 					/>
 
-					{/* <Route path='*' element={<Navigate to='/properties' replace />} /> */}
+					<Route path='/leases' element={<Navigate to='/lease' replace />} />
+					<Route path='/leases/*' element={<Navigate to='/lease' replace />} />
 					<Route path='/lease' element={<NestedRoutesLayout />}>
 						<Route index element={<Lease />} />
 						<Route path='add-lease' element={<AddLeasePage />} />
