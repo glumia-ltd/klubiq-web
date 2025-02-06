@@ -64,7 +64,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 			const uploadTimeStamp = dayjs(new Date()).unix();
 			if (passportFiles.length === 0) {
 				const body = {
-					folder: uploadFolder,
+					folder: `${uploadFolder}`,
 					organization: user?.organization,
 					organizationUuid: user?.organizationUuid,
 					timestamp: uploadTimeStamp,
@@ -96,6 +96,8 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 						worker.terminate();
 					} else if (status === 'error') {
 						console.error('Upload error:', error);
+						worker.terminate();
+						handleImageRemove(0);
 					}
 				};
 			}

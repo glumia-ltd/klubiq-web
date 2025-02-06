@@ -212,16 +212,18 @@ const NotificationModal = ({
 											}}
 											secondary={
 												<React.Fragment>
-													<p>{item.message}</p>
-													{item.actionLink && (
-														<Link
-															sx={styles(theme).actionLink}
-															href={item.actionLink}
-															underline='none'
-														>
-															view details
-														</Link>
-													)}
+													{item.message}
+													<Box>
+														{item.actionLink && (
+															<Link
+																sx={styles(theme).actionLink}
+																href={item.actionLink}
+																underline='none'
+															>
+																view details
+															</Link>
+														)}
+													</Box>
 												</React.Fragment>
 											}
 											secondaryTypographyProps={{

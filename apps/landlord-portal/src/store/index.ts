@@ -12,6 +12,7 @@ import { orgApiSlice } from './OrganizationStore/orgApiSlice';
 import orgReducer from './OrganizationStore/OrgSlice';
 import { leaseApiSlice } from './LeaseStore/leaseApiSlice';
 import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
+import loaderReducer from './GlobalStore/LoaderSlice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -23,6 +24,7 @@ const store: Store = configureStore({
 		org: orgReducer,
 		propertyPage: propertyPageReducer,
 		addPropertyForm: addPropertyReducer,
+		loader: loaderReducer,
 		[propertyApiSlice.reducerPath]: propertyApiSlice.reducer,
 		[dashboardApiSlice.reducerPath]: dashboardApiSlice.reducer,
 		[authApiSlice.reducerPath]: authApiSlice.reducer,
