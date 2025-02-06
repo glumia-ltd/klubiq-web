@@ -5,7 +5,6 @@ export const styles = {
 		padding: '16px',
 		// color:'primary.main'
 	},
-
 	mainCardStyle: {
 		display: 'flex',
 		gap: '24px',
@@ -79,5 +78,39 @@ export const styles = {
 		position: 'relative',
 		height: '9rem',
 		width: '9rem',
+	},
+	cardContents: {
+		mainImage: {
+			width: '20%',
+			display: {
+				xs: 'none',
+				sm: 'block',
+			},
+		},
+		propertyDetail: {
+			width: '80%',
+		},
+	},
+	stacks: {
+		main: {
+			width: '100%',
+			alignItems: 'center',
+		},
+		secondary: {
+			width: '100%',
+			justifyContent: 'space-between',
+			alignItems: {
+				xs: 'flex-start',
+				sm: 'center',
+			},
+		},
+		propertyDetail: {
+			alignItems: 'start',
+
+			dataStack: {
+				justifyContent: 'space-between',
+				width: '100%',
+			},
+		},
 	},
 };

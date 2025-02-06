@@ -650,7 +650,7 @@ export const DarkTheme: Theme = createTheme({
 				{
 					props: { variant: 'active' },
 					style: {
-						backgroundColor: '#FFFFFF',
+						background: '#161616',
 					},
 				},
 			],
