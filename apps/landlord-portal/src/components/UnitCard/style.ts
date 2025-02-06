@@ -5,6 +5,11 @@ export const styles = {
 		padding: '16px',
 		// color:'primary.main'
 	},
+	mainCardStyle: {
+		display: 'flex',
+		gap: '24px',
+		padding: '16px',
+	},
 	skelPic: {
 		minWidth: '182px',
 		minHeight: '182px',
