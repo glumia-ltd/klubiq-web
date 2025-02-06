@@ -87,11 +87,11 @@ export const PropertiesSkeleton = () => {
 					<Grid xs={12} mb={3}></Grid>
 
 					<Grid xs={12} container spacing={3}>
-						{[1, 2, 3, 4, 5]?.map((index) => (
+						{[1, 2, 3, 4, 5, 6.7, 8, 9, 10, 11, 12]?.map((index) => (
 							<Grid
 								xs={12}
 								sm={layout === 'row' ? 12 : 6}
-								md={layout === 'row' ? 12 : 4}
+								md={layout === 'row' ? 12 : 6}
 								lg={layout === 'row' ? 12 : 4}
 								xl={layout === 'row' ? 12 : 3}
 								key={index}

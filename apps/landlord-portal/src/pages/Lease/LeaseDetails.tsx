@@ -117,7 +117,11 @@ const LeaseDetails = () => {
 						status={data?.status}
 					/>
 					<MiniCard
-						value={dayjs(data?.nextPaymentDate).format('DD-MM-YYYY')}
+						value={
+							data?.nextPaymentDate
+								? dayjs(data.nextPaymentDate).format('DD-MM-YYYY')
+								: ''
+						}
 						name='Next Payment'
 						status={data?.status}
 					/>

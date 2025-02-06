@@ -20,9 +20,7 @@ const MiniCard = (props: cardProps) => {
 						? 'overdue'
 						: 'active'
 			}
-			sx={{
-				...styles.cardContainer,
-			}}
+			sx={styles.cardContainer}
 		>
 			<Typography sx={styles.typo}> {props.name}</Typography>
 			{props.value !== undefined ? (

@@ -18,7 +18,6 @@ import { UserProfile } from './shared/auth-types';
 import { useLazyGetUserByFbidQuery } from './store/AuthStore/authApiSlice';
 import { addData, getData, initDB } from './services/indexedDb';
 import { consoleLog } from './helpers/debug-logger';
-
 function App() {
 	const { user } = useSelector(getAuthState);
 	const { message, severity, isOpen, duration } = useSelector(
@@ -77,7 +76,6 @@ function App() {
 				sessionStorage.clear();
 			}
 		});
-
 		return () => listen();
 	}, []);
 
