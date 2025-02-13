@@ -8,14 +8,18 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { AppBar, Paper, useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
+import useAuth from '../../hooks/useAuth';
+import AlertBanner from '../AlertBannerComponent/AlertBanner';
+
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
 };
 
 const ViewPort = ({ children }: ViewPortProp) => {
+	const { banners } = useAuth();
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -28,50 +32,58 @@ const ViewPort = ({ children }: ViewPortProp) => {
 	}, [pathname]);
 
 	return (
-		<NavToggleProvider>
-			<CssBaseline />
-			{isMediumScreen && <MobileSideBar />}
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'row',
-					flexGrow: 1,
-					overflow: 'hidden',
-					'&.MuiBox-root': {
-						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
-					},
-				}}
-			>
-				{!isMediumScreen && <Sidebar />}
-				<Box display='flex' flexGrow={1} flexDirection='column' width={'100%'}>
-					<NavBar />
+		<>
+			<NavToggleProvider>
+				<CssBaseline />
+				{isMediumScreen && <MobileSideBar />}
+				<Box
+					sx={{
+						display: 'flex',
+						flexDirection: 'row',
+						flexGrow: 1,
+						overflow: 'hidden',
+						'&.MuiBox-root': {
+							backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
+						},
+					}}
+				>
+					{!isMediumScreen && <Sidebar />}
 					<Box
+						display='flex'
+						flexGrow={1}
+						flexDirection='column'
 						width={'100%'}
-						mt={'80px'}
-						mb={'20px'}
-						ml={'24px'}
-						pr={'32px'}
-						sx={{
-							marginLeft: {
-								xs: '0px',
-								sm: '1rem',
-								md: '1.5rem',
-								lg: '1.5rem',
-							},
-							paddingRight: {
-								xs: '0px',
-								sm: '1.5rem',
-								md: '2rem',
-								lg: '2rem',
-							},
-						}}
 					>
-						{' '}
-						{children}
+						<NavBar />
+
+						<Box
+							width={'100%'}
+							mt={banners.length > 0 ? `${banners.length * 50 + 80}px` : '80px'}
+							mb={'20px'}
+							ml={'24px'}
+							pr={'32px'}
+							sx={{
+								marginLeft: {
+									xs: '0px',
+									sm: '1rem',
+									md: '1.5rem',
+									lg: '1.5rem',
+								},
+								paddingRight: {
+									xs: '0px',
+									sm: '1.5rem',
+									md: '2rem',
+									lg: '2rem',
+								},
+							}}
+						>
+							{' '}
+							{children}
+						</Box>
 					</Box>
 				</Box>
-			</Box>
-		</NavToggleProvider>
+			</NavToggleProvider>
+		</>
 	);
 };
 

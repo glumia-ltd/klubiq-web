@@ -30,8 +30,6 @@ export const SessionTimeoutProvider = ({
 	const WARNING_TIME = 25 * 60 * 1000; // Show warning after 25 minutes of inactivity
 	const COUNTDOWN_TIME = 60; // 60 seconds countdown before auto-logout
 
-	// let timeout: ReturnType<typeof setTimeout>;
-	// let warningTimeout: ReturnType<typeof setTimeout>;
 	let countdownInterval: ReturnType<typeof setInterval>;
 
 	// Function to update the last activity timestamp in sessionStorage
