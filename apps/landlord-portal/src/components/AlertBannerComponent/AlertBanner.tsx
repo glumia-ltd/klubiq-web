@@ -24,14 +24,16 @@ const AlertBanner: FC<{
 				direction={'row'}
 				spacing={2}
 				width={'100%'}
-				sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+				sx={{ alignItems: 'center', justifyContent: 'space-around' }}
 			>
 				<Typography variant='body1'>{message}</Typography>
-				<div>{actions}</div>
+				<Stack direction={'row'}>
+					{actions}
+					<IconButton onClick={onClose} sx={{ color: bannerStyle.color }}>
+						<CloseIcon />
+					</IconButton>
+				</Stack>
 			</Stack>
-			<IconButton onClick={onClose} sx={{ color: bannerStyle.color }}>
-				<CloseIcon />
-			</IconButton>
 		</Box>
 	);
 };

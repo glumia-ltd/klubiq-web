@@ -32,8 +32,11 @@ import { useGetNotificationsQuery } from '../../store/NotificationStore/Notifica
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
+import useAuth from '../../hooks/useAuth';
+import AlertBanner from '../AlertBannerComponent/AlertBanner';
 
 const NavBar = () => {
+	const { banners } = useAuth();
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
 	const [unreadCount, setUnreadCount] = useState(0);
@@ -125,153 +128,164 @@ const NavBar = () => {
 		}
 	}, [notificationData]);
 	return (
-		<AppBar position='fixed' elevation={2} sx={{ width: '100%' }}>
-			<Toolbar variant='regular' sx={styles(isSmallScreen).toolBarSx}>
-				<Grid
-					key={'main-container'}
-					container
-					spacing={1}
-					sx={styles(isSmallScreen).mainContainer}
-				>
+		<>
+			<AppBar position='fixed' elevation={2} sx={{ width: '100%' }}>
+				<Toolbar variant='regular' sx={styles(isSmallScreen).toolBarSx}>
 					<Grid
-						key={'left-grid'}
-						item
+						key={'main-container'}
 						container
-						sx={styles(isSmallScreen).leftGridContainer}
+						spacing={1}
+						sx={styles(isSmallScreen).mainContainer}
 					>
-						{isSmallScreen && !mobileSideBarOpen && (
+						<Grid
+							key={'left-grid'}
+							item
+							container
+							sx={styles(isSmallScreen).leftGridContainer}
+						>
+							{isSmallScreen && !mobileSideBarOpen && (
+								<IconButton
+									// sx={{ marginRight: '1rem' }}
+									onClick={handleOpenSidebar}
+									size={'large'}
+									edge='end'
+									color='inherit'
+									aria-label='menu'
+								>
+									<MenuIcon />
+								</IconButton>
+							)}
+							<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
+								<Typography sx={styles(isSmallScreen).appSectionTitle}>
+									{' '}
+									{/* {section}{' '} */}
+								</Typography>
+							</Grid>
+						</Grid>
+
+						<Grid
+							key={'right-grid'}
+							item
+							sx={styles(isSmallScreen).rightGridContainer}
+						>
+							{/* <ResponsiveTextFieldWithModal />
+							 */}
+
+							<TextField
+								value={searchText}
+								onChange={(e) => setSearchText(e.target.value)}
+								id='input-with-icon-textfield'
+								placeholder='Search Transactions,customers'
+								sx={styles(isSmallScreen).searchInput}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position='start'>
+											<SearchIcon />
+										</InputAdornment>
+									),
+
+									sx: styles(isSmallScreen).searchAdornment,
+								}}
+								variant='outlined'
+							/>
 							<IconButton
-								// sx={{ marginRight: '1rem' }}
-								onClick={handleOpenSidebar}
-								size={'large'}
-								edge='end'
-								color='inherit'
-								aria-label='menu'
+								size='large'
+								disableRipple
+								sx={styles(isSmallScreen).notificationIconButton}
+								onClick={() => {
+									setOpenModal(true);
+								}}
 							>
-								<MenuIcon />
+								<Badge
+									badgeContent={unreadCount}
+									invisible={unreadCount <= 0}
+									color='error'
+								>
+									<NotificationsNoneOutlinedIcon
+										sx={styles(isSmallScreen).notificationIcon}
+									/>
+								</Badge>
 							</IconButton>
-						)}
-						<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
-							<Typography sx={styles(isSmallScreen).appSectionTitle}>
+							<Divider
+								orientation='vertical'
+								variant='middle'
+								color={theme.palette.primary.main}
+								flexItem
+							/>
+							<Typography ml={1} sx={styles(isSmallScreen).nameRoleText}>
 								{' '}
-								{/* {section}{' '} */}
+								{user?.firstName ?? (
+									<Skeleton variant='rectangular' width='30px' />
+								)}{' '}
+								{user?.lastName ?? (
+									<Skeleton variant='rectangular' width='30px' />
+								)}{' '}
+								<br />
+								{user?.roleName ? (
+									simplifyRoleName(user?.roleName)
+								) : (
+									<Skeleton variant='rectangular' width='40px' />
+								)}
 							</Typography>
+							<div>
+								<IconButton
+									edge='end'
+									disableRipple
+									sx={{ color: 'black' }}
+									aria-haspopup='true'
+									ref={anchorRef}
+									onClick={handleAvatarPopperToggle}
+								>
+									{user?.profilePicUrl ? (
+										<Avatar
+											alt={`${user?.firstName} ${user?.lastName}`}
+											src={user?.profilePicUrl}
+											sx={styles(isSmallScreen).profilePic}
+										/>
+									) : (
+										<Avatar
+											{...(user?.firstName &&
+												user?.lastName &&
+												stringAvatar(user?.firstName, user?.lastName))}
+										/>
+									)}
+								</IconButton>
+								<CustomPopper
+									open={openAvatarPopper}
+									anchorEl={anchorRef.current}
+									onClose={() => setOpenAvatarPopper(false)}
+									children={
+										<KlbMenuList
+											id='avatar-menu'
+											handleKeyDown={handleListKeyDown}
+											menuItems={avatarMenus}
+										></KlbMenuList>
+									}
+								></CustomPopper>
+							</div>
 						</Grid>
 					</Grid>
-
-					<Grid
-						key={'right-grid'}
-						item
-						sx={styles(isSmallScreen).rightGridContainer}
-					>
-						{/* <ResponsiveTextFieldWithModal />
-						 */}
-
-						<TextField
-							value={searchText}
-							onChange={(e) => setSearchText(e.target.value)}
-							id='input-with-icon-textfield'
-							placeholder='Search Transactions,customers'
-							sx={styles(isSmallScreen).searchInput}
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'>
-										<SearchIcon />
-									</InputAdornment>
-								),
-
-								sx: styles(isSmallScreen).searchAdornment,
-							}}
-							variant='outlined'
-						/>
-						<IconButton
-							size='large'
-							disableRipple
-							sx={styles(isSmallScreen).notificationIconButton}
-							onClick={() => {
-								setOpenModal(true);
-							}}
-						>
-							<Badge
-								badgeContent={unreadCount}
-								invisible={unreadCount <= 0}
-								color='error'
-							>
-								<NotificationsNoneOutlinedIcon
-									sx={styles(isSmallScreen).notificationIcon}
-								/>
-							</Badge>
-						</IconButton>
-						<Divider
-							orientation='vertical'
-							variant='middle'
-							color={theme.palette.primary.main}
-							flexItem
-						/>
-						<Typography ml={1} sx={styles(isSmallScreen).nameRoleText}>
-							{' '}
-							{user?.firstName ?? (
-								<Skeleton variant='rectangular' width='30px' />
-							)}{' '}
-							{user?.lastName ?? (
-								<Skeleton variant='rectangular' width='30px' />
-							)}{' '}
-							<br />
-							{user?.roleName ? (
-								simplifyRoleName(user?.roleName)
-							) : (
-								<Skeleton variant='rectangular' width='40px' />
-							)}
-						</Typography>
-						<div>
-							<IconButton
-								edge='end'
-								disableRipple
-								sx={{ color: 'black' }}
-								aria-haspopup='true'
-								ref={anchorRef}
-								onClick={handleAvatarPopperToggle}
-							>
-								{user?.profilePicUrl ? (
-									<Avatar
-										alt={`${user?.firstName} ${user?.lastName}`}
-										src={user?.profilePicUrl}
-										sx={styles(isSmallScreen).profilePic}
-									/>
-								) : (
-									<Avatar
-										{...(user?.firstName &&
-											user?.lastName &&
-											stringAvatar(user?.firstName, user?.lastName))}
-									/>
-								)}
-							</IconButton>
-							<CustomPopper
-								open={openAvatarPopper}
-								anchorEl={anchorRef.current}
-								onClose={() => setOpenAvatarPopper(false)}
-								children={
-									<KlbMenuList
-										id='avatar-menu'
-										handleKeyDown={handleListKeyDown}
-										menuItems={avatarMenus}
-									></KlbMenuList>
-								}
-							></CustomPopper>
-						</div>
-					</Grid>
-				</Grid>
-			</Toolbar>
-			{isModalOpen && (
-				<NotificationModal
-					open={isModalOpen}
-					onClose={() => {
-						setOpenModal(false);
-					}}
-					notifications={notificationData ?? []}
-				/>
-			)}
-		</AppBar>
+				</Toolbar>
+				{isModalOpen && (
+					<NotificationModal
+						open={isModalOpen}
+						onClose={() => {
+							setOpenModal(false);
+						}}
+						notifications={notificationData ?? []}
+					/>
+				)}
+				{banners.map((banner) => (
+					<AlertBanner
+						key={banner.id}
+						message={banner.message}
+						type={banner.type as 'info' | 'error' | 'success'}
+						onClose={banner.close}
+						actions={banner.actions || <></>}
+					/>
+				))}
+			</AppBar>
+		</>
 	);
 };
 
