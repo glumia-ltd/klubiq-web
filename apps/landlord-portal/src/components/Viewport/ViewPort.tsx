@@ -8,10 +8,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
-import { AppBar, Paper, useMediaQuery, useTheme } from '@mui/material';
+import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
 import useAuth from '../../hooks/useAuth';
-import AlertBanner from '../AlertBannerComponent/AlertBanner';
 
 type ViewPortProp = {
 	children: React.ReactNode;
