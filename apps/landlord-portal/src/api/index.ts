@@ -45,9 +45,13 @@ function AxiosConfig(config: any) {
 		Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	config.headers['x-client-name'] = 'landlord-portal';
-
-	if (token && token.length > 0) {
-		const orgSettingString = localStorage.getItem('org-settings');
+	const orgSettingString = sessionStorage.getItem('org-settings');
+	if (
+		token &&
+		token.length > 0 &&
+		orgSettingString &&
+		orgSettingString.length > 0
+	) {
 		//getData('org-settings', 'client-config');
 		const orgSettings = JSON.parse(orgSettingString as string);
 		consoleDebug('orgSettings: ', orgSettings);
@@ -101,8 +105,8 @@ api.interceptors.response.use(
 				);
 
 				// if (access_token && refresh_token) {
-				// 	localStorage.setItem('token', access_token);
-				// 	localStorage.setItem('refreshToken', refresh_token);
+				//  localStorage.setItem('token', access_token);
+				//  localStorage.setItem('refreshToken', refresh_token);
 				// }
 
 				// Retry the original request with the new token

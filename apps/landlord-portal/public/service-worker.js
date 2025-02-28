@@ -1,32 +1,74 @@
-const DATA_CACHE = 'klubiq-data-cache-v1';
-const ALLOWED_ORIGINS = [
-	'https://klubiq.com',
-	'http://localhost:5173',
-	'https://dev.klubiq.com',
-];
-const PUBLIC_CACHED_PATHS = ['/api/public/property-metadata'];
-
-self.addEventListener('sync', (event) => {
-	if (event.tag === 'syncFormData') {
-		event.waitUntil(syncFormData());
-	}
-});
+/* eslint-disable no-undef */
+const DATA_CACHE = process.env.REACT_APP_DATA_CACHE; //'klubiq-data-cache-v1';
+const ALLOWED_ORIGINS = process.env.REACT_APP_ALLOWED_ORIGINS.split(',');
+// [
+// 	'https://klubiq.com',
+// 	'http://localhost:5173',
+// 	'https://dev.klubiq.com',
+// ];
+const PUBLIC_CACHED_PATHS =
+	process.env.REACT_APP_PUBLIC_CACHED_PATHS.split(','); //['/api/public/property-metadata'];
+const CACHE_EXPIRATION_TIME = parseInt(
+	process.env.REACT_APP_CACHE_EXPIRATION_TIME,
+	10,
+); //24 * 60 * 60 * 1000; // 24 hours in milliseconds
+// self.addEventListener('sync', (event) => {
+// 	if (event.tag === 'syncFormData') {
+// 		event.waitUntil(syncFormData());
+// 	}
+// });
 self.addEventListener('fetch', (event) => {
 	const requestURL = new URL(event.request.url);
 	const eventOrigin = requestURL.origin;
 	const path = requestURL.pathname;
+
+	async function callServerAndCacheResponse() {
+		const fetchResponse = await fetch(event.request.url);
+		const responseCopy = fetchResponse.clone();
+		cache.put(event.request.url, responseCopy);
+		cache.put(
+			event.request.url + ':timestamp',
+			new Response(Date.now().toString()),
+		);
+		return fetchResponse;
+	}
 	async function returnPublicCachedResponse() {
 		// open app's cache
 		const cache = await caches.open(DATA_CACHE);
 		// find response in cache
 		const cachedResponse = await cache.match(event.request.url);
 		if (cachedResponse) {
+			const cachedTime = await cache.match(event.request.url + ':timestamp');
+			const currentTime = Date.now();
+			if (!cachedTime && cachedResponse) {
+				await cache.delete(event.request.url);
+				return await callServerAndCacheResponse();
+			}
+			if (cachedTime && currentTime - cachedTime > CACHE_EXPIRATION_TIME) {
+				await cache.delete(event.request.url);
+				await cache.delete(event.request.url + ':timestamp');
+				return await callServerAndCacheResponse();
+				// const fetchResponse = await fetch(event.request.url);
+				// const responseCopy = fetchResponse.clone();
+				// cache.put(event.request.url, responseCopy);
+				// cache.put(
+				// 	event.request.url + ':timestamp',
+				// 	new Response(currentTime.toString()),
+				// );
+				// return fetchResponse;
+			}
 			return cachedResponse;
 		} else {
-			const fetchResponse = await fetch(event.request.url);
-			const responseCopy = fetchResponse.clone();
-			cache.put(event.request.url, responseCopy);
-			return fetchResponse;
+			return await callServerAndCacheResponse();
+			// const fetchResponse = await fetch(event.request.url);
+			// const responseCopy = fetchResponse.clone();
+			// cache.put(event.request.url, responseCopy);
+			// cache.put(
+			// 	event.request.url + ':timestamp',
+			// 	new Response(Date.now().toString()),
+			// );
+
+			// return fetchResponse;
 		}
 	}
 	if (event.request.method !== 'GET') {

@@ -13,6 +13,7 @@ import orgReducer from './OrganizationStore/OrgSlice';
 import { leaseApiSlice } from './LeaseStore/leaseApiSlice';
 import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
 import loaderReducer from './GlobalStore/LoaderSlice';
+import { globalApiSlice } from './GlobalStore/globalApiSlice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -31,6 +32,7 @@ const store: Store = configureStore({
 		[orgApiSlice.reducerPath]: orgApiSlice.reducer,
 		[leaseApiSlice.reducerPath]: leaseApiSlice.reducer,
 		[notificationApiSlice.reducerPath]: notificationApiSlice.reducer,
+		[globalApiSlice.reducerPath]: globalApiSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware().concat(
@@ -40,6 +42,7 @@ const store: Store = configureStore({
 			orgApiSlice.middleware,
 			leaseApiSlice.middleware,
 			notificationApiSlice.middleware,
+			globalApiSlice.middleware,
 		),
 });
 

@@ -30,9 +30,14 @@ import { authEndpoints } from '../../helpers/endpoints';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
-import { useLazyGetUserByFbidQuery } from '../../store/AuthStore/authApiSlice';
+import {
+	useLazyGetOrgSettingsQuery,
+	useLazyGetOrgSubscriptionQuery,
+	useLazyGetUserByFbidQuery,
+} from '../../store/AuthStore/authApiSlice';
 import { UserProfile } from '../../shared/auth-types';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
+import { consoleLog } from '../../helpers/debug-logger';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -54,8 +59,11 @@ const Login = () => {
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
 	const [otp, setOtp] = useState('');
 	const [otpError, setOtpError] = useState('');
+	// const [orgSettings, setOrgSettings] = useState({});
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
+	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
+	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue_path');
@@ -104,6 +112,10 @@ const Login = () => {
 		setMFAResolver(resolver);
 		set2FARequired(true);
 	};
+	const deAuthenticateUser = () => {
+		sessionStorage.clear();
+		auth.signOut();
+	};
 
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
@@ -133,10 +145,23 @@ const Login = () => {
 					const response = await triggerGetUserByFbid();
 					if (!response.data) throw new Error('User not found');
 
+					if (!response.data?.organizationUuid) {
+						throw new Error('Organization ID is undefined');
+					}
+					const orgSettings = await triggerGetOrgSettingsQuery({
+						orgId: response.data?.organizationUuid,
+					}).unwrap();
+					const orgSubscription = await triggerGetOrgSubscriptionQuery({
+						orgId: response.data?.organizationUuid,
+					}).unwrap();
+					consoleLog('Org Settings:', orgSettings);
+					consoleLog('Org Subscription:', orgSubscription);
 					const payload = {
 						token: userToken,
 						user: response?.data as UserProfile,
 						isSignedIn: true,
+						orgSettings: orgSettings,
+						orgSubscription: orgSubscription,
 					};
 					dispatch(saveUser(payload));
 
@@ -158,6 +183,8 @@ const Login = () => {
 					initOTP(error as MultiFactorError);
 					break;
 				default:
+					consoleLog('Error:', error);
+					deAuthenticateUser();
 					dispatch(
 						openSnackbar({
 							message:

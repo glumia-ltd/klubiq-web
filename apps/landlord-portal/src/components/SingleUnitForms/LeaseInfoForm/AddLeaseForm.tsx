@@ -48,7 +48,7 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 }));
 
 const AddLeaseForm = () => {
-	const { user } = useSelector(getAuthState);
+	const { user, orgSettings } = useSelector(getAuthState);
 
 	const dispatch = useDispatch();
 
@@ -417,7 +417,7 @@ const AddLeaseForm = () => {
 							formik={formik}
 							type='number'
 							showCurrency
-							currencySymbol={getCurrencySymbol(user)}
+							currencySymbol={getCurrencySymbol(orgSettings) as string}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -427,7 +427,7 @@ const AddLeaseForm = () => {
 							type='number'
 							formik={formik}
 							showCurrency
-							currencySymbol={getCurrencySymbol(user)}
+							currencySymbol={getCurrencySymbol(orgSettings) as string}
 						/>
 					</Grid>
 

@@ -8,6 +8,8 @@ const initialState: AuthType = {
 	user: {} as UserProfile,
 	token: null,
 	isSignedIn: false,
+	orgSettings: {},
+	orgSubscription: {},
 };
 
 const options = {
@@ -20,6 +22,8 @@ const options = {
 				token: action.payload.token,
 				user: action.payload.user,
 				isSignedIn: action.payload.isSignedIn,
+				orgSettings: action.payload.orgSettings,
+				orgSubscription: action.payload.orgSubscription,
 			};
 		},
 		removeUser: (state: AuthType) => {
