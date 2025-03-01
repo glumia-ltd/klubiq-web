@@ -45,7 +45,7 @@ import { consoleLog } from '../../helpers/debug-logger';
 import { getCurrencySymbol } from '../../helpers/utils';
 
 const DashBoard = () => {
-	const { user } = useSelector(getAuthState);
+	const { orgSettings } = useSelector(getAuthState);
 	const { mode } = useContext(ThemeContext);
 	const [firstDay, setFirstDay] = useState<Dayjs>(
 		dayjs().subtract(11, 'months'),
@@ -83,12 +83,6 @@ const DashBoard = () => {
 
 	const MAINTENANCEUNITS = dashboardMetrics?.propertyMetrics?.maintenanceUnits;
 
-	// const MAINTENANCEUNITSCHANGEINDICATOR =
-	// 	dashboardMetrics?.propertyMetrics?.maintenanceUnitsChangeIndicator;
-
-	// const MAINTENANCEUNITSPERCENTAGEDIFFERENCE =
-	// 	dashboardMetrics?.propertyMetrics?.maintenanceUnitsPercentageDifference;
-
 	const TOTALREVENUE = dashboardMetrics?.transactionMetrics?.totalRevenue;
 
 	const TOTALREVENUECHANGEINDICATOR =
@@ -116,13 +110,7 @@ const DashBoard = () => {
 	const EXPIRINGLEASEFORPERIODCOUNT =
 		dashboardMetrics?.leaseMetrics?.expiringLeaseForPeriodCount;
 	const TENANTCOUNT = dashboardMetrics?.leaseMetrics?.tenantCount;
-	// const AVGLEASEDURATION = dashboardMetrics?.leaseMetrics?.avgLeaseDuration;
 	const ACTIVELEASECOUNT = dashboardMetrics?.leaseMetrics?.activeLeaseCount;
-	// const ACTIVELEASEFORPERIODCHANGEDIFFERENCE =
-	// 	dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodPercentageDifference;
-	// const ACTIVELEASEFORPERIODCHANGEINDICATOR =
-	// 	dashboardMetrics?.leaseMetrics?.activeLeaseForPeriodChangeIndicator;
-
 	const guageData = {
 		occupied: dashboardMetrics?.propertyMetrics?.occupiedUnits || 0,
 		vacant: dashboardMetrics?.propertyMetrics?.vacantUnits || 0,
@@ -226,9 +214,11 @@ const DashBoard = () => {
 										sx={styles.occupancyTextStyle}
 										variant='dashboardTypography'
 									>
-										{getLocaleFormat(user, OCCUPANCYRATE || 0, 'percent') || (
-											<Skeleton variant='rounded' width='50px' />
-										)}
+										{getLocaleFormat(
+											orgSettings,
+											OCCUPANCYRATE || 0,
+											'percent',
+										) || <Skeleton variant='rounded' width='50px' />}
 									</Typography>
 
 									<Stack
@@ -248,7 +238,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
 											{getLocaleFormat(
-												user,
+												orgSettings,
 												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
 												'percent',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -273,7 +263,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
-												user,
+												orgSettings,
 												OVERDUERENTSUM || 0.0,
 												'currency',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -325,7 +315,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															TOTALREVENUE || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -342,7 +332,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -368,7 +358,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															TOTALEXPENSES || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -385,7 +375,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -410,7 +400,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															NETCASHFLOW || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -424,7 +414,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															user,
+															orgSettings,
 															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -699,7 +689,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
-												user,
+												orgSettings,
 												revenueReport?.totalRevenueLast12Months || 0.0,
 												'currency',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -719,7 +709,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
 											{getLocaleFormat(
-												user,
+												orgSettings,
 												revenueReport?.percentageDifference || 0,
 												'percent',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -797,7 +787,7 @@ const DashBoard = () => {
 									seriesData={revenueReport?.revenueChart?.seriesData || []}
 									maxRevenue={revenueReport?.maxRevenue || 0}
 									xAxisData={revenueReport?.revenueChart?.xAxisData}
-									currencySymbol={getCurrencySymbol(user)}
+									currencySymbol={getCurrencySymbol(orgSettings) as string}
 								/>
 							)}
 						</Grid>

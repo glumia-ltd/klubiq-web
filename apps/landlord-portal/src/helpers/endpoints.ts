@@ -1,13 +1,16 @@
 export const authEndpoints = {
-	login: () => 'auth/login',
-	signup: () => 'auth/landlord/signup',
-	emailVerification: () => 'auth/email-verification-link',
-	refreshToken: () => 'auth/exchange-refresh-token',
-	getUserByFbid: () => `auth/user`,
-	sendResetPasswordEmail: () => `auth/reset-password-link`,
-	resetPassword: () => `auth/reset-password`,
-	verifyOobCode: () => `auth/verify-email`,
-	updateUserPreferences: () => `auth/update-preferences`,
+	login: () => '/auth/login',
+	signup: () => '/auth/landlord/signup',
+	emailVerification: () => '/auth/email-verification-link',
+	refreshToken: () => '/auth/exchange-refresh-token',
+	getUserByFbid: () => `/auth/user`,
+	sendResetPasswordEmail: () => `/auth/reset-password-link`,
+	resetPassword: () => `/auth/reset-password`,
+	verifyOobCode: () => `/auth/verify-email`,
+	updateUserPreferences: () => `/auth/update-preferences`,
+	getOrgSettings: (orgId: string) => `/auth/org/${orgId}/settings`,
+	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
+	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 };
 
 export const dashboardEndpoints = {
@@ -21,7 +24,7 @@ export const propertiesEndpoints = {
 	getProperties: () => '/properties',
 	addProperty: () => `/properties`,
 	getPropertiesMetaData: () => '/public/property-metadata',
-	getSinglePropery: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	getSingleProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getSignedUrl: () => '/properties/signed-url',
 	getPropertiesNames: () => '/properties/view/list',
 	archiveProperty: (propertyUuid: string) =>
@@ -49,4 +52,9 @@ export const notificationEndpoints = {
 	notifications: () => '/notifications',
 	markAsRead: () => '/notifications/mark-as-read-or-delivered',
 	deleteNotifications: () => `/notifications/delete`,
+};
+export const publicEndpoints = {
+	getRoles: () => '/public/organization-roles',
+	getFeatures: () => '/public/features',
+	getPermissions: () => '/public/permissions',
 };

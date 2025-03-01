@@ -33,6 +33,7 @@ export type UserProfile = {
 	orgSettings?: {
 		[key: string]: unknown;
 	};
+	organizationUuid?: string | null;
 };
 
 export type Organization = {

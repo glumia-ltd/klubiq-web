@@ -13,6 +13,18 @@ export const authApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		getOrgSettings: builder.query<any, { orgId: string }>({
+			query: (params) => ({
+				url: authEndpoints.getOrgSettings(params.orgId),
+				method: 'GET',
+			}),
+		}),
+		getOrgSubscription: builder.query<any, { orgId: string }>({
+			query: (params) => ({
+				url: authEndpoints.getOrgSubscription(params.orgId),
+				method: 'GET',
+			}),
+		}),
 		updateUserPreferences: builder.mutation({
 			query: (body) => ({
 				url: authEndpoints.updateUserPreferences(),
@@ -33,6 +45,10 @@ export const authApiSlice = createApi({
 export const {
 	useGetUserByFbidQuery,
 	useLazyGetUserByFbidQuery,
+	useLazyGetOrgSettingsQuery,
+	useLazyGetOrgSubscriptionQuery,
+	useGetOrgSubscriptionQuery,
+	useGetOrgSettingsQuery,
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
 } = authApiSlice;

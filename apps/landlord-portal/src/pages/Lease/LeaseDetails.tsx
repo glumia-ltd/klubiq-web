@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 
 const LeaseDetails = () => {
 	const location = useLocation();
-	const { user } = useSelector(getAuthState);
+	const { orgSettings } = useSelector(getAuthState);
 
 	const currentLeaseId = location.pathname.split('/')[2]!;
 
@@ -102,7 +102,7 @@ const LeaseDetails = () => {
 					}}
 				>
 					<MiniCard
-						value={`${getCurrencySymbol(user)}${data?.rentAmount}`}
+						value={`${getCurrencySymbol(orgSettings)}${data?.rentAmount}`}
 						name='Rent'
 						status={data?.status}
 					/>

@@ -4,11 +4,11 @@ import { getAuthState } from '../store/AuthStore/AuthSlice';
 import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 import useAuth from '../hooks/useAuth';
 import MFAPrompt from '../components/Dialogs/MfaPrompts';
-import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimoutContext';
+import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimeoutContext';
 import { useLocation } from 'react-router-dom';
 
 const PrivateRoute = () => {
-	const { showMFAPrompt, goToMFASetup, setShowMFAPrompt, optOutOf2fa } =
+	const { showMFAPrompt, goToMFASetup, optOutOf2fa, handleCloseMFAPrompt } =
 		useAuth();
 	const { token } = useSelector(getAuthState);
 	const location = useLocation();
@@ -29,7 +29,7 @@ const PrivateRoute = () => {
 					<MFAPrompt
 						open={showMFAPrompt}
 						onClose={() => {
-							setShowMFAPrompt(false);
+							handleCloseMFAPrompt();
 						}}
 						onMFASetupClick={goToMFASetup}
 						onOptOutClick={optOutOf2fa}
