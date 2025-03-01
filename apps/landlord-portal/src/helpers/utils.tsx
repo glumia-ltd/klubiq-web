@@ -1,5 +1,6 @@
 import { getData } from '../../src/services/indexedDb';
 import { get } from 'lodash';
+import { consoleLog } from './debug-logger';
 
 export const MEASUREMENTS: any[] = [
 	{
@@ -20,29 +21,34 @@ export const MEASUREMENTS: any[] = [
 	},
 ];
 
-export const getCurrencySymbol = (user: any) => {
-	if (!user.orgSettings) {
-		const orgSettings = getData('org-settings', 'client-config');
-		const currencySymbol = get(orgSettings, 'currencySymbol', '');
-		return currencySymbol;
+export const getCurrencySymbol = (orgSettings: Record<string, unknown>) => {
+	let currencySymbol = '';
+	if (orgSettings) {
+		return get(orgSettings, 'currencySymbol', '');
+	} else {
+		consoleLog('No orgSettings found -vvv');
+		getData('org-settings', 'client-config').then((data) => {
+			currencySymbol = get(data, 'orgSettings.currencySymbol', '');
+			return currencySymbol;
+		});
 	}
-	const currencySymbol = get(user, 'orgSettings.currencySymbol', '');
-	return currencySymbol;
 };
 
-const getInfoFromUserSettings = (user: any) => {
+const getInfoFromUserSettings = (orgSettings: Record<string, unknown>) => {
 	let currencyCode = '';
 	let countryCode = '';
 	let lang = '';
-	if (!user.orgSettings) {
-		const orgSettings = getData('org-settings', 'client-config');
-		currencyCode = get(orgSettings, 'currency', '');
-		countryCode = get(orgSettings, 'countryCode', '');
-		lang = get(orgSettings, 'language', '');
+	if (!orgSettings) {
+		consoleLog('No orgSettings found');
+		getData('org-settings', 'client-config').then((data) => {
+			currencyCode = get(data, 'orgSettings.currency', '') as string;
+			countryCode = get(data, 'orgSettings.countryCode', '') as string;
+			lang = get(data, 'orgSettings.language', '') as string;
+		});
 	} else {
-		currencyCode = get(user, 'orgSettings.currency', '');
-		countryCode = get(user, 'orgSettings.countryCode', '');
-		lang = get(user, 'orgSettings.language', '');
+		currencyCode = get(orgSettings, 'currency', '') as string;
+		countryCode = get(orgSettings, 'countryCode', '') as string;
+		lang = get(orgSettings, 'language', '') as string;
 	}
 	if (!currencyCode || !countryCode || !lang) {
 		currencyCode = '';
@@ -54,11 +60,12 @@ const getInfoFromUserSettings = (user: any) => {
 };
 
 export const getLocaleFormat = (
-	user: any,
+	orgSettings: Record<string, unknown>,
 	numberVal: number,
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
 ) => {
-	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(user);
+	const { countryCode, currencyCode, lang } =
+		getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode && currencyCode) {
 		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
 			style: `${style}`,
@@ -70,8 +77,11 @@ export const getLocaleFormat = (
 	return '';
 };
 
-export const getLocaleDateFormat = (user: unknown, date: string) => {
-	const { countryCode, lang } = getInfoFromUserSettings(user);
+export const getLocaleDateFormat = (
+	orgSettings: Record<string, unknown>,
+	date: string,
+) => {
+	const { countryCode, lang } = getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode) {
 		const newDate = new Date(date) || new Date();
 

@@ -21,13 +21,15 @@ import countries from '../../helpers/countries-meta.json';
 import { styles } from './styles';
 import bgillustration from '../../assets/images/undraw_town_re_2ng5-removebg-preview.png';
 import { PasswordStrengthBar } from '../../components/PasswordStrengthBar/PasswordStrengthBar';
+import { useGetRolesQuery } from '../../store/GlobalStore/globalApiSlice';
+import { consoleLog } from '../../helpers/debug-logger';
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
-
-	console.log(passwordMessage);
+	const { data } = useGetRolesQuery();
+	consoleLog(passwordMessage);
 
 	type CountryType = {
 		name: string;
@@ -42,7 +44,7 @@ const CreateAccount: React.FC = () => {
 		'priority',
 		'asc',
 	) as CountryType[];
-
+	const role = find(data, ['name', 'Organization_Owner']);
 	const validationSchema = yup.object({
 		firstName: yup.string().required('This field is required'),
 		companyName: yup.string().required('This field is required'),
@@ -68,6 +70,17 @@ const CreateAccount: React.FC = () => {
 		const selectedCountry = find(activeCountries, ['code', country]);
 
 		try {
+			if (!role) {
+				consoleLog('Role not found');
+				dispatch(
+					openSnackbar({
+						message: 'Something went wrong. Please try again later.',
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+				return;
+			}
 			setLoading(true);
 
 			const userDetails = {
@@ -77,6 +90,7 @@ const CreateAccount: React.FC = () => {
 				lastName,
 				companyName,
 				organizationCountry: selectedCountry,
+				role,
 			};
 
 			if (passwordMessage) {
@@ -113,7 +127,13 @@ const CreateAccount: React.FC = () => {
 			const userInfo = { email: user.email };
 
 			dispatch(
-				saveUser({ user: userInfo, token: user.accessToken, isSignedIn: true }),
+				saveUser({
+					user: userInfo,
+					token: user.accessToken,
+					isSignedIn: true,
+					orgSettings: {},
+					orgSubscription: {},
+				}),
 			);
 			navigate('/verify-email?is_pending=true', { replace: true });
 		} catch (error) {

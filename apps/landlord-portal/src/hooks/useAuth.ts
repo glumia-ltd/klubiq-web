@@ -8,12 +8,15 @@ import { get, isEmpty } from 'lodash';
 import {
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
+	useLazyGetOrgSettingsQuery,
+	useLazyGetOrgSubscriptionQuery,
 } from '../store/AuthStore/authApiSlice';
 import { Button } from '@mui/material';
 import React from 'react';
 import { Stack } from '@mui/system';
 import { subscribeUserToPush } from '../services/pushNotification';
 import { consoleLog } from '../helpers/debug-logger';
+import { addData, getData } from '../services/indexedDb';
 
 type Banner = {
 	id: string;
@@ -23,17 +26,20 @@ type Banner = {
 	close: () => void;
 };
 const useAuth = () => {
-	const { user } = useSelector(getAuthState);
+	const configStoreName = 'client-config';
+	const { user, orgSettings, orgSubscription } = useSelector(getAuthState);
 	const navigate = useNavigate();
 	const [banners, setBanners] = useState<Banner[]>([]);
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
+	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
+	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
 	const [updateUserPreferences] = useUpdateUserPreferencesMutation();
 	const [updateNotificationSubscription] =
 		useUpdateNotificationSubscriptionMutation();
-	const LOGIN_THRESHOLD = 3000;
 	const silentNotificationPermissionRequest = localStorage.getItem(
 		'kbq-silent-browser-notification',
 	);
+	const silentMfaRequest = localStorage.getItem('kbq-silent-mfa-prompt');
 	const goToMFASetup = () => {
 		setShowMFAPrompt(false);
 		navigate(`/2fa-enroll?continueUrl=${window.location.pathname}`, {
@@ -57,6 +63,10 @@ const useAuth = () => {
 		},
 		[banners],
 	);
+	const handleCloseMFAPrompt = () => {
+		setShowMFAPrompt(false);
+		localStorage.setItem('kbq-silent-mfa-prompt', 'true');
+	};
 	const optOutOf2fa = async () => {
 		try {
 			const preferences = user?.preferences
@@ -74,17 +84,39 @@ const useAuth = () => {
 			console.error('Error opting out of 2fa', error);
 		}
 	};
+
 	useEffect(() => {
+		const updateConfigStoreIdb = async (data: object, objectName: string) => {
+			const orgConfig = await getData(objectName, configStoreName);
+			if (!orgConfig) {
+				consoleLog('ORG Config not found: ');
+				await addData({ key: objectName, value: data }, configStoreName);
+			}
+			sessionStorage.setItem(objectName, JSON.stringify(data));
+		};
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
 			if (currentUser && !isEmpty(user)) {
-				const lastLoginTime = currentUser?.metadata?.lastSignInTime;
-				const lastLogin = lastLoginTime ? new Date(lastLoginTime).getTime() : 0;
-				const currentLogin = new Date().getTime();
 				const userMfa = multiFactor(currentUser);
 				const securityPreferences = get(user, 'preferences.security', '');
+				if (orgSettings !== null) {
+					await updateConfigStoreIdb(orgSettings, 'org-settings');
+				} else {
+					const orgSettingsData = await triggerGetOrgSettingsQuery(
+						user.organizationUuid,
+					).unwrap();
+					await updateConfigStoreIdb(orgSettingsData, 'org-settings');
+				}
+				if (orgSubscription !== null) {
+					await updateConfigStoreIdb(orgSubscription, 'org-subscription');
+				} else {
+					const orgSubscriptionData = await triggerGetOrgSubscriptionQuery(
+						user.organizationUuid,
+					).unwrap();
+					await updateConfigStoreIdb(orgSubscriptionData, 'org-subscription');
+				}
 				if (
 					userMfa.enrolledFactors.length === 0 &&
-					currentLogin - lastLogin < LOGIN_THRESHOLD
+					silentMfaRequest !== 'true'
 				) {
 					if (
 						securityPreferences &&
@@ -93,10 +125,7 @@ const useAuth = () => {
 						setShowMFAPrompt(false);
 					}
 					setShowMFAPrompt(true);
-				} else {
-					setShowMFAPrompt(false);
 				}
-				// Check if user has notification subscription
 				if (
 					user.notificationSubscription == null &&
 					Notification.permission !== 'granted' &&
@@ -203,6 +232,7 @@ const useAuth = () => {
 		optOutOf2fa,
 		banners,
 		handleCloseBanner,
+		handleCloseMFAPrompt,
 	};
 };
 export default useAuth;
