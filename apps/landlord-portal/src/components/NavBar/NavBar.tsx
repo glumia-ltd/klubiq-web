@@ -15,13 +15,17 @@ import {
 	TextField,
 	InputAdornment,
 	Skeleton,
+	List,
+	ListItem,
+	ListItemText,
+	Box,
+	Link,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import NotificationModal from '../../components/Modals/NotificationModal';
 import SearchIcon from '@mui/icons-material/Search';
-import { reduce, replace, startCase } from 'lodash';
+import { replace, startCase } from 'lodash';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -32,8 +36,10 @@ import { useGetNotificationsQuery } from '../../store/NotificationStore/Notifica
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
-
-const NavBar = () => {
+interface NavBarProps {
+	section: string;
+}
+const NavBar = ({ section }: NavBarProps) => {
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
 	const [unreadCount, setUnreadCount] = useState(0);
@@ -41,7 +47,6 @@ const NavBar = () => {
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing } =
 		useContext(Context);
-	const [isModalOpen, setOpenModal] = useState(false);
 	const [searchText, setSearchText] = useState('');
 	const simplifyRoleName = (role: string) => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
@@ -63,6 +68,16 @@ const NavBar = () => {
 		} else if (event.key === 'Escape') {
 			setOpenAvatarPopper(false);
 		}
+	};
+	const [isNotificationPopperOpen, setNotificationPopperOpen] = useState(false);
+	const notificationAnchorRef = useRef<HTMLButtonElement>(null);
+
+	const handleNotificationPopperToggle = () => {
+		setNotificationPopperOpen((prevOpen) => !prevOpen);
+	};
+
+	const handleNotificationPopperClose = () => {
+		setNotificationPopperOpen(false);
 	};
 
 	const avatarMenus: menuItem[] = [
@@ -111,19 +126,15 @@ const NavBar = () => {
 	];
 	useEffect(() => {
 		if (notificationData) {
-			const unreadCount = reduce(
-				notificationData,
-				(sum, gn) =>
-					sum +
-					(gn.notifications.reduce(
-						(unreadSum, n) => (n.isRead ? unreadSum + 0 : unreadSum + 1),
-						0,
-					) || 0),
-				0,
-			);
+			const unreadCount = notificationData.filter((n) => !n.isRead).length;
 			setUnreadCount(unreadCount);
 		}
 	}, [notificationData]);
+
+	const handleNotificationAction = (actionLink: string) => {
+		window.location.href = actionLink;
+	};
+
 	return (
 		<>
 			<AppBar position='fixed' elevation={2} sx={{ width: '100%' }}>
@@ -154,7 +165,7 @@ const NavBar = () => {
 							)}
 							<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
 								<Typography sx={styles(isSmallScreen).appSectionTitle}>
-									{' '}
+									{section}
 									{/* {section}{' '} */}
 								</Typography>
 							</Grid>
@@ -189,9 +200,8 @@ const NavBar = () => {
 								size='large'
 								disableRipple
 								sx={styles(isSmallScreen).notificationIconButton}
-								onClick={() => {
-									setOpenModal(true);
-								}}
+								onClick={handleNotificationPopperToggle}
+								ref={notificationAnchorRef}
 							>
 								<Badge
 									badgeContent={unreadCount}
@@ -203,6 +213,56 @@ const NavBar = () => {
 									/>
 								</Badge>
 							</IconButton>
+							<CustomPopper
+								open={isNotificationPopperOpen}
+								anchorEl={notificationAnchorRef.current}
+								onClose={handleNotificationPopperClose}
+							>
+								<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
+									<List>
+										{notificationData?.map((item, idx) => (
+											<>
+												<ListItem
+													key={idx}
+													sx={{
+														alignItems: 'start',
+														'&:hover': { backgroundColor: 'secondary.light' },
+													}}
+													onClick={() =>
+														handleNotificationAction(item.actionLink)
+													}
+												>
+													<ListItemText
+														primary={item.title}
+														secondary={item.message}
+														primaryTypographyProps={{
+															color: 'text.primary',
+															marginBottom: '2px',
+															variant: 'body2',
+															fontWeight: item.isRead ? 'normal' : 'bold',
+														}}
+														secondaryTypographyProps={{
+															color: 'text.secondary',
+															variant: 'caption',
+															fontWeight: item.isRead ? 'normal' : 'bold',
+														}}
+													/>
+												</ListItem>
+												<Divider />
+											</>
+										))}
+										<ListItem sx={styles(isSmallScreen, theme).seeMoreLink}>
+											<Link
+												//href='/notifications'
+												variant='caption'
+												underline='none'
+											>
+												See more
+											</Link>
+										</ListItem>
+									</List>
+								</Box>
+							</CustomPopper>
 							<Divider
 								orientation='vertical'
 								variant='middle'
@@ -216,7 +276,7 @@ const NavBar = () => {
 								)}{' '}
 								{user?.lastName ?? (
 									<Skeleton variant='rectangular' width='30px' />
-								)}{' '}
+								)}
 								<br />
 								{user?.roleName ? (
 									simplifyRoleName(user?.roleName)
@@ -263,15 +323,6 @@ const NavBar = () => {
 						</Grid>
 					</Grid>
 				</Toolbar>
-				{isModalOpen && (
-					<NotificationModal
-						open={isModalOpen}
-						onClose={() => {
-							setOpenModal(false);
-						}}
-						notifications={notificationData ?? []}
-					/>
-				)}
 			</AppBar>
 		</>
 	);

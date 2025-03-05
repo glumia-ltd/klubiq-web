@@ -1,4 +1,6 @@
-export const styles = (isSmallScreen: boolean) => {
+import { alpha, Theme } from '@mui/material';
+
+export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 	return {
 		toolBarSx: {
 			justifyContent: 'space-between',
@@ -90,6 +92,51 @@ export const styles = (isSmallScreen: boolean) => {
 			height: '40px',
 			marginRight: '1rem',
 			borderRadius: '90px',
+		},
+		titleBox: {
+			display: 'flex',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+		},
+		dialogContent: { alignItems: 'center', justifyContent: 'space-between' },
+		listItemButton: {
+			bgcolor: alpha(
+				theme?.palette.secondary.light || 'rgba(255, 255, 255, 0)',
+				0.2,
+			),
+			mb: 1,
+			borderRadius: 1,
+		},
+		badge: {
+			top: 20,
+			left: -7,
+			width: '1%',
+			bgcolor: theme?.palette.primary.main || 'rgba(255, 255, 255, 0)',
+		},
+		secondaryText: { display: 'block', color: 'text.primary' },
+		actionLink: {
+			color: 'primary.main',
+		},
+		secondaryAction: {
+			alignItems: 'flex-end',
+			justifyContent: 'center',
+		},
+		secondaryActionText: { display: 'block', color: 'text.primary' },
+		avatar: {
+			bgcolor: alpha(
+				theme?.palette.primary.main || 'rgba(255, 255, 255, 0)',
+				0.9,
+			),
+			ml: 0.5,
+			width: '30px',
+			height: '30px',
+		},
+		seeMoreLink: {
+			display: 'flex',
+			justifyContent: 'center',
+			p: 2,
+			'&:hover': { backgroundColor: 'secondary.light' },
+
 		},
 	};
 };
