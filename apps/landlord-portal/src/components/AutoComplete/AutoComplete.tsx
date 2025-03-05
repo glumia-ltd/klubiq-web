@@ -42,23 +42,24 @@ export const AutoComplete: FC<{
 	const [options, setOptions] = useState<readonly PlaceType[]>([]);
 	const loaded = useRef(false);
 
-	if (typeof window !== 'undefined' && !loaded.current) {
-		if (!document.querySelector('#google-maps')) {
-			loadScript(
-				`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}&libraries=places`,
-				document.querySelector('head'),
-				'google-maps',
-			);
+	// Load Google Maps script only once
+	useEffect(() => {
+		if (typeof window !== 'undefined' && !loaded.current) {
+			if (!document.querySelector('#google-maps')) {
+				loadScript(
+					`https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}&libraries=places`,
+					document.querySelector('head'),
+					'google-maps',
+				);
+			}
+			loaded.current = true;
 		}
-
-		loaded.current = true;
-	}
+	}, []);
 
 	const placesService = useRef<any>(null);
 
 	// Function to get place details using placeId
 	const getPlaceDetails = (placeId: string) => {
-		// Initialize PlacesService if not already done
 		if (!placesService.current && window.google) {
 			placesService.current = new window.google.maps.places.PlacesService(
 				document.createElement('div'),
@@ -90,7 +91,6 @@ export const AutoComplete: FC<{
 				)?.long_name;
 
 				const latitude = geometry.location.lat().toFixed(5);
-
 				const longitude = geometry.location.lng().toFixed(5);
 
 				formik.setValues({
@@ -155,8 +155,6 @@ export const AutoComplete: FC<{
 			const parts = description.split(',');
 			return parts.slice(0, -2).join(',');
 		};
-
-		//TODO: Get Longitude and Latitude
 
 		fetch(
 			{
@@ -224,12 +222,9 @@ export const AutoComplete: FC<{
 				setValue(value);
 
 				if (typeof value === 'string') {
-					// Handle custom typed value
 					formik.setFieldValue(name, value);
-
 					formik.setFieldValue('address.isManualAddress', true);
 				} else if (value) {
-					// Handle selected autocomplete suggestion
 					formik.setFieldValue(name, value.description);
 					formik.setFieldValue('address.isManualAddress', false);
 				}

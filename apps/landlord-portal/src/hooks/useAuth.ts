@@ -1,36 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-import { multiFactor, onAuthStateChanged } from 'firebase/auth';
-import { getAuthState } from '../store/AuthStore/AuthSlice';
-import { useSelector } from 'react-redux';
+import { multiFactor, MultiFactorUser, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuthState, saveUser } from '../store/AuthStore/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
 	useLazyGetOrgSettingsQuery,
 	useLazyGetOrgSubscriptionQuery,
+	useLazyGetUserByFbidQuery,
 } from '../store/AuthStore/authApiSlice';
-import { Button } from '@mui/material';
-import React from 'react';
-import { Stack } from '@mui/system';
 import { subscribeUserToPush } from '../services/pushNotification';
 import { consoleLog } from '../helpers/debug-logger';
 import { addData, getData } from '../services/indexedDb';
+import { UserProfile } from '../shared/auth-types';
+import { DialogProps } from '../components/Dialogs/AlertDialog';
 
-type Banner = {
-	id: string;
-	message: string;
-	type: 'info' | 'error' | 'success';
-	actions?: JSX.Element;
-	close: () => void;
-};
 const useAuth = () => {
 	const configStoreName = 'client-config';
-	const { user, orgSettings, orgSubscription } = useSelector(getAuthState);
+	const { user, orgSettings, orgSubscription, isSignedIn } = useSelector(getAuthState);
 	const navigate = useNavigate();
-	const [banners, setBanners] = useState<Banner[]>([]);
+	const dispatch = useDispatch();
+	const [alertDialogs, setAlertDialogs] = useState<DialogProps[]>([]);
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
+	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
 	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
 	const [updateUserPreferences] = useUpdateUserPreferencesMutation();
@@ -46,22 +41,22 @@ const useAuth = () => {
 			replace: true,
 		});
 	};
-	const handleCloseBanner = (id: string | number) => {
-		consoleLog('closing banner', id);
-		setBanners((prevBanners) =>
-			prevBanners.filter((banner) => banner.id !== id),
+	const handleCloseAlertDialog = (id: string | number) => {
+		consoleLog('closing alert', id);
+		setAlertDialogs((prev) =>
+			prev.filter((alert) => alert.id !== id),
 		);
 		localStorage.setItem('kbq-silent-browser-notification', 'true');
 	};
-	const addBanner = useCallback(
-		(banner: Banner) => {
-			const existingBanner = banners.find((b) => b.id === banner.id);
-			if (existingBanner) {
+	const addAlertDialog = useCallback(
+		(alert: DialogProps) => {
+			const existingAlert = alertDialogs.find((b) => b.id === alert.id);
+			if (existingAlert) {
 				return;
 			}
-			setBanners((prevBanners) => [...prevBanners, banner]);
+			setAlertDialogs((prev) => [...prev, alert]);
 		},
-		[banners],
+		[alertDialogs],
 	);
 	const handleCloseMFAPrompt = () => {
 		setShowMFAPrompt(false);
@@ -84,104 +79,123 @@ const useAuth = () => {
 			console.error('Error opting out of 2fa', error);
 		}
 	};
+	const updateConfigStoreIdb = async (data: object, objectName: string) => {
+		const orgConfig = await getData(objectName, configStoreName);
+		if (!orgConfig) {
+			consoleLog('ORG Config not found: ');
+			await addData({ key: objectName, value: data }, configStoreName);
+		}
+		sessionStorage.setItem(objectName, JSON.stringify(data));
+	};
+	const handleAuthStateChange = async (currentUser:User, userProfile: UserProfile, userMfa?: MultiFactorUser) => {
+		let orgSettingsData = null;
+		let orgSubscriptionData = null;
+		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(userProfile, 'preferences.security', {});
+		if ( isEmpty(orgSettings) && userProfile.organizationUuid) {
+			orgSettingsData = await triggerGetOrgSettingsQuery(
+				{ orgId: userProfile?.organizationUuid },
+			).unwrap();
+			await updateConfigStoreIdb(orgSettingsData, 'org-settings');
+		} else if(userProfile.organizationUuid) {
+			await updateConfigStoreIdb(orgSettings, 'org-settings');
+		}
+		if (isEmpty(orgSubscription) && userProfile.organizationUuid) {
+			orgSubscriptionData = await triggerGetOrgSubscriptionQuery(
+				{ orgId: userProfile.organizationUuid },
+			).unwrap();
+			await updateConfigStoreIdb(orgSubscriptionData, 'org-subscription');
+			
+		} else if(userProfile.organizationUuid)  {
+			await updateConfigStoreIdb(orgSubscription, 'org-subscription');
+		}
+		const payload = {
+			token: await currentUser.getIdToken(),
+			user: userProfile,
+			isSignedIn: true,
+			orgSettings: isEmpty(orgSettings) ? orgSettingsData : orgSettings,
+			orgSubscription: isEmpty(orgSubscription) ? orgSubscriptionData : orgSubscription,
+		};
+		dispatch(saveUser(payload));
+		if (
+			userMfa?.enrolledFactors.length === 0 &&
+			silentMfaRequest !== 'true'
+		) {
+			if (
+				securityPreferences &&
+				securityPreferences?.twoFactor?.optOut === true
+			) {
+				setShowMFAPrompt(false);
+			}
+			setShowMFAPrompt(true);
+		}
+		if (
+			userProfile.notificationSubscription == null &&
+			Notification.permission !== 'granted' &&
+			silentNotificationPermissionRequest !== 'true'
+		) {
+			consoleLog('No notification subscription found');
+			addAlertDialog({
+				id: 'notification-subscription',
+				message: 'Enable web notifications to receive important updates',
+				title: 'Turn On Web Notifications',
+				onClose: () => {
+					handleCloseAlertDialog('notification-subscription');
+				},
+				onConfirmClick: () => {
+					updateWebNotificationStatus(
+						true,
+						'notification-subscription',
+					);
+				},
+				onCancelClick: () => {
+					updateWebNotificationStatus(
+						false,
+						'notification-subscription',
+					);
+				},
+				open: true,
+				confirmButtonText: 'Enable',
+				cancelButtonText: 'Cancel',
+			});
+		}
+
+	}
 
 	useEffect(() => {
-		const updateConfigStoreIdb = async (data: object, objectName: string) => {
-			const orgConfig = await getData(objectName, configStoreName);
-			if (!orgConfig) {
-				consoleLog('ORG Config not found: ');
-				await addData({ key: objectName, value: data }, configStoreName);
-			}
-			sessionStorage.setItem(objectName, JSON.stringify(data));
-		};
+		const invTime = Date.now();
+		consoleLog('useAuth mounted at', invTime);
+    	consoleLog('auth:', auth);
+    	consoleLog('user:', user);
+
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
 			if (currentUser && !isEmpty(user)) {
+				consoleLog('User is signed in');
 				const userMfa = multiFactor(currentUser);
-				const securityPreferences = get(user, 'preferences.security', '');
-				if (orgSettings !== null) {
-					await updateConfigStoreIdb(orgSettings, 'org-settings');
-				} else {
-					const orgSettingsData = await triggerGetOrgSettingsQuery(
-						user.organizationUuid,
-					).unwrap();
-					await updateConfigStoreIdb(orgSettingsData, 'org-settings');
-				}
-				if (orgSubscription !== null) {
-					await updateConfigStoreIdb(orgSubscription, 'org-subscription');
-				} else {
-					const orgSubscriptionData = await triggerGetOrgSubscriptionQuery(
-						user.organizationUuid,
-					).unwrap();
-					await updateConfigStoreIdb(orgSubscriptionData, 'org-subscription');
-				}
-				if (
-					userMfa.enrolledFactors.length === 0 &&
-					silentMfaRequest !== 'true'
-				) {
-					if (
-						securityPreferences &&
-						securityPreferences.twoFactor?.optOut === true
-					) {
-						setShowMFAPrompt(false);
-					}
-					setShowMFAPrompt(true);
-				}
-				if (
-					user.notificationSubscription == null &&
-					Notification.permission !== 'granted' &&
-					silentNotificationPermissionRequest !== 'true'
-				) {
-					consoleLog('No notification subscription found');
-					addBanner({
-						id: 'notification-subscription',
-						message: 'Enable web notifications to receive important updates',
-						type: 'info',
-						close: () => {
-							handleCloseBanner('notification-subscription');
-						},
-						actions: React.createElement(
-							Stack,
-							{ spacing: 1, direction: 'row' },
-							[
-								React.createElement(
-									Button,
-									{
-										key: 'ok',
-										onClick: () => {
-											updateWebNotificationStatus(
-												true,
-												'notification-subscription',
-											);
-										},
-										variant: 'contained',
-										color: 'primary',
-									},
-									'Enable',
-								),
-								React.createElement(
-									Button,
-									{
-										key: 'cancel',
-										onClick: () => {
-											updateWebNotificationStatus(
-												false,
-												'notification-subscription',
-											);
-										},
-										variant: 'text',
-										color: 'secondary',
-									},
-									'Dismiss',
-								),
-							],
-						),
-					});
-				}
-
-				return () => listen();
+				await handleAuthStateChange(currentUser, user as UserProfile, userMfa);
+			} else if (currentUser && isEmpty(user)) {
+				consoleLog('User is signed in but not in store');
+				const userMfa = multiFactor(currentUser);
+				const userProfileData = await triggerGetUserByFbid().unwrap();
+				await handleAuthStateChange(currentUser, userProfileData, userMfa);
+			}
+			else {
+				consoleLog('User is not signed in');
+				const payload = {
+					token: '',
+					user: {},
+					isSignedIn: false,
+					orgSettings: null,
+					orgSubscription: null,
+				};
+				dispatch(saveUser(payload));
+				sessionStorage.clear();
+				auth.signOut();
 			}
 		});
-	});
+		if(!isSignedIn) {
+			return () => listen();
+		}
+	}, []);
 	const requestNotificationPermission = async () => {
 		try {
 			if ('Notification' in window) {
@@ -207,7 +221,7 @@ const useAuth = () => {
 	) => {
 		try {
 			consoleLog('Updating notification status', status);
-			handleCloseBanner(bannerId);
+			handleCloseAlertDialog(bannerId);
 			if (status) {
 				await requestNotificationPermission();
 			}
@@ -230,8 +244,8 @@ const useAuth = () => {
 		goToMFASetup,
 		setShowMFAPrompt,
 		optOutOf2fa,
-		banners,
-		handleCloseBanner,
+		alertDialogs,
+		handleCloseAlertDialog,
 		handleCloseMFAPrompt,
 	};
 };

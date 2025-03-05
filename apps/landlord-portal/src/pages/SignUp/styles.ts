@@ -50,5 +50,6 @@ export const styles = {
 	mainContainer: {
 		justifyContent: 'center',
 		margin: 'auto',
+		paddingBottom: '2rem',
 	},
 };

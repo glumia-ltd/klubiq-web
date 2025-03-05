@@ -10,7 +10,6 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
-import useAuth from '../../hooks/useAuth';
 
 type ViewPortProp = {
 	children: React.ReactNode;
@@ -18,7 +17,6 @@ type ViewPortProp = {
 };
 
 const ViewPort = ({ children }: ViewPortProp) => {
-	const { banners } = useAuth();
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -57,7 +55,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 
 						<Box
 							width={'100%'}
-							mt={banners.length > 0 ? `${banners.length * 50 + 80}px` : '80px'}
+							mt={'80px'}
 							mb={'20px'}
 							ml={'24px'}
 							pr={'32px'}

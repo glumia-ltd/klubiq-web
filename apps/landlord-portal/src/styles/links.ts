@@ -8,9 +8,9 @@ export const BoldTextLink = styled(Link)<LinkProps>(({ theme }) => ({
 	cursor: 'pointer',
 	pointerEvents: 'auto',
 	'&:hover': {
-		color: theme.palette.secondary.dark,
+		color: theme.palette.secondary.light,
 	},
 	'&:active': {
-		color: theme.palette.secondary.dark,
+		color: theme.palette.secondary.light,
 	},
 }));

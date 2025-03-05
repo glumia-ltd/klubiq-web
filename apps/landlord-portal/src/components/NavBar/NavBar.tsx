@@ -32,11 +32,8 @@ import { useGetNotificationsQuery } from '../../store/NotificationStore/Notifica
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
-import useAuth from '../../hooks/useAuth';
-import AlertBanner from '../AlertBannerComponent/AlertBanner';
 
 const NavBar = () => {
-	const { banners } = useAuth();
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
 	const [unreadCount, setUnreadCount] = useState(0);
@@ -119,7 +116,7 @@ const NavBar = () => {
 				(sum, gn) =>
 					sum +
 					(gn.notifications.reduce(
-						(unreadSum, n) => (!n.isRead ? unreadSum + 1 : unreadSum + 0),
+						(unreadSum, n) => (n.isRead ? unreadSum + 0 : unreadSum + 1),
 						0,
 					) || 0),
 				0,
@@ -275,15 +272,6 @@ const NavBar = () => {
 						notifications={notificationData ?? []}
 					/>
 				)}
-				{banners.map((banner) => (
-					<AlertBanner
-						key={banner.id}
-						message={banner.message}
-						type={banner.type as 'info' | 'error' | 'success'}
-						onClose={banner.close}
-						actions={banner.actions || <></>}
-					/>
-				))}
 			</AppBar>
 		</>
 	);
