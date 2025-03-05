@@ -13,7 +13,6 @@ const PropertyPage = () => {
 		useGetSinglePropertyByUUIDQuery({
 			uuid: currentUUId || '',
 		});
-
 	return isCurrentPropertyLoading ? (
 		<UnitSkeleton currentProperty={currentProperty} />
 	) : (

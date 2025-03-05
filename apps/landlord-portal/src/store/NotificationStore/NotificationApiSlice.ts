@@ -19,7 +19,7 @@ export const notificationApiSlice = createApi({
 	baseQuery: customApiFunction,
 	tagTypes: ['Notifications'],
 	endpoints: (builder) => ({
-		getNotifications: builder.query<GroupedNotifications[], void>({
+		getGroupedNotifications: builder.query<GroupedNotifications[], void>({
 			query: () => ({
 				url: notificationEndpoints.notifications(),
 				method: 'GET',
@@ -27,6 +27,13 @@ export const notificationApiSlice = createApi({
 			transformResponse: (response: NotificationData[]) => {
 				return groupNotificationsByDate(response);
 			},
+			providesTags: ['Notifications'],
+		}),
+		getNotifications: builder.query<NotificationData[], void>({
+			query: () => ({
+				url: notificationEndpoints.notifications(),
+				method: 'GET',
+			}),
 			providesTags: ['Notifications'],
 		}),
 		// getNotifications: builder.query<GroupedNotifications[], void>({
@@ -49,7 +56,7 @@ export const notificationApiSlice = createApi({
 				// Optimistic Update
 				const patchResult = dispatch(
 					notificationApiSlice.util.updateQueryData(
-						'getNotifications',
+						'getGroupedNotifications',
 						undefined,
 						(draft) => {
 							draft.forEach((group) => {
@@ -80,7 +87,7 @@ export const notificationApiSlice = createApi({
 				// Optimistic Update
 				const patchResult = dispatch(
 					notificationApiSlice.util.updateQueryData(
-						'getNotifications',
+						'getGroupedNotifications',
 						undefined,
 						(draft) => {
 							draft.forEach((group) => {
@@ -103,6 +110,7 @@ export const notificationApiSlice = createApi({
 	}),
 });
 export const {
+	useGetGroupedNotificationsQuery,
 	useGetNotificationsQuery,
 	useReadNotificationsMutation,
 	useDeleteNotificationsMutation,

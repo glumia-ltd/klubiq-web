@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../ControlledComponents/ControlledSelect';
 import Logo from '../../../assets/images/info.svg';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, FC } from 'react';
 import { consoleLog } from '../../../helpers/debug-logger';
 import { Stack } from '@mui/system';
 import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leaseApiSlice';
@@ -47,7 +47,11 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 	name: freq,
 }));
 
-const AddLeaseForm = () => {
+interface AddLeaseFormProps {
+	propertyId: string | null;
+}
+
+const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	const { user, orgSettings } = useSelector(getAuthState);
 
 	const dispatch = useDispatch();
@@ -124,7 +128,7 @@ const AddLeaseForm = () => {
 		onSubmit,
 	});
 
-	const getUnitsInProperty = useMemo(
+	const propertyData = useMemo(
 		() =>
 			find(orgPropertiesViewList?.properties, {
 				uuid: formik?.values?.propertyName,
@@ -133,7 +137,7 @@ const AddLeaseForm = () => {
 		[formik?.values?.propertyName],
 	);
 
-	const unitsInProperty = getUnitsInProperty?.units?.map(
+	const unitsInProperty = propertyData?.units?.map(
 		(unit: { id: string; unitNumber: string }) => ({
 			id: unit?.id,
 			name: unit?.unitNumber,
@@ -157,8 +161,7 @@ const AddLeaseForm = () => {
 	}, [formik.values.propertyName]);
 
 	useEffect(() => {
-		const startDate = formik.values.startDate;
-		const endDate = formik.values.endDate;
+		const {startDate, endDate} = formik.values;
 		if (dayjs(startDate).isAfter(endDate)) {
 			formik.setFieldValue('endDate', '');
 
@@ -182,6 +185,16 @@ const AddLeaseForm = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik?.values?.propertyName]);
+
+	useEffect(() => {
+		if (propertyId && orgPropertiesViewList) {
+			const property = find(orgPropertiesViewList.properties, { uuid: propertyId });
+			if (property) {
+				formik.setFieldValue('propertyName', property.uuid);
+			}
+		}
+	}, [propertyId, orgPropertiesViewList]);
+
 
 	const rentDueOn = (
 		endDate: string,
@@ -264,7 +277,7 @@ const AddLeaseForm = () => {
 			isDraft: true,
 			paymentFrequency: formik.values.frequency,
 			status: null,
-			propertyName: getUnitsInProperty?.name,
+			propertyName: propertyData?.name,
 			firstPaymentDate: rentDueOn(
 				formik.values?.endDate,
 				formik.values?.startDate,

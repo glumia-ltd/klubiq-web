@@ -67,12 +67,11 @@ export const getLocaleFormat = (
 	const { countryCode, currencyCode, lang } =
 		getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode && currencyCode) {
-		const localCurrencyVal = new Intl.NumberFormat(`${lang}-${countryCode}`, {
-			style: `${style}`,
-			currency: `${currencyCode}`,
-			currencyDisplay: 'symbol',
-		}).format(numberVal);
-		return localCurrencyVal;
+		return new Intl.NumberFormat(`${lang}-${countryCode}`, {
+  			style: `${style}`,
+  			currency: `${currencyCode}`,
+  			currencyDisplay: 'symbol',
+  		}).format(numberVal);
 	}
 	return '';
 };

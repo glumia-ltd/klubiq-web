@@ -74,7 +74,6 @@ export const LightTheme: Theme = createTheme({
 			dark: '#1b1b1b',
 			contrastText: '#ffffff',
 		},
-
 		background: {
 			default: '#F3F6F8',
 			paper: '#F3F6F8',
@@ -89,6 +88,14 @@ export const LightTheme: Theme = createTheme({
 		},
 	},
 	components: {
+		MuiCssBaseline: {
+			styleOverrides: {
+				body: {
+					background: '#F3F6F8',
+					height: '100%',
+				},
+			},
+		},
 		MuiAlert: {
 			styleOverrides: {
 				root: {
@@ -468,11 +475,19 @@ export const DarkTheme: Theme = createTheme({
 
 		background: {
 			default: '#0D0D0D',
-			paper: '#282B2C',
+			paper: '#0D0D0D',
 		},
 	},
 
 	components: {
+		MuiCssBaseline: {
+			styleOverrides: {
+				body: {
+					background:'#0D0D0D',
+					height: '100%',
+				},
+			},
+		},
 		MuiAlert: {
 			styleOverrides: {
 				root: {
