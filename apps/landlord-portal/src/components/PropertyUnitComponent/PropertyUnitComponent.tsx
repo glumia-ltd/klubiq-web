@@ -46,7 +46,6 @@ import { PropertiesActionsPrompts } from '../Dialogs/PropertiesActionsPrompts';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 type PropertyUnitComponentType = {
-	handleNavigation?: (path?: string) => void;
 	currentProperty: PropertyDataType;
 	tenantTableBodyRows?: any;
 	tenantColumns?: any;
@@ -65,7 +64,6 @@ const allTabs = ['Overview', 'Lease', 'Document'];
 export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
 	tenantTableBodyRows,
-	handleNavigation,
 	tenantColumns,
 	leaseTableBodyRows,
 }) => {
@@ -108,6 +106,18 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 
 	const handleEditProperty = () => {
 		navigate(`/properties/${currentUUId}/edit`);
+	};
+
+	const handleAddLease = () => {
+		navigate(`/lease/add-lease?property=${currentUUId}`);
+	};
+
+	const handleAddTenant = () => {
+		navigate(`/properties/${currentUUId}/tenant`);
+	};
+
+	const handleAddUnit = () => {
+		navigate(`/properties/${currentUUId}/unit`);
 	};
 
 	const handleArchivePropertyRequest = async () => {
@@ -383,7 +393,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 											<TenantAndLeaseTable
 												title='Tenant'
 												buttonText='Add Tenant'
-												handleAdd={handleNavigation}
+												handleAdd={handleAddTenant}
 												columns={tenantColumns}
 												tableBodyRows={tenantTableBodyRows}
 											/>
@@ -395,7 +405,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 													heading={'Add Tenant'}
 													subtext={'Add tenants to your property'}
 													description={'Add Tenant'}
-													handleAdd={handleNavigation}
+													handleAdd={handleAddTenant}
 												/>
 											)}
 									</>
@@ -406,7 +416,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 										heading={'Add Lease'}
 										subtext={'Add lease to your property'}
 										description={'Add Lease'}
-										handleAdd={handleNavigation}
+										handleAdd={handleAddLease}
 									/>
 								)}
 							</Grid>
@@ -428,7 +438,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 							{currentProperty?.units && currentProperty?.units?.length > 0 && (
 								<UnitsTable
 									title='Units'
-									handleAdd={handleNavigation}
+									handleAdd={handleAddUnit}
 									buttonText='Add Unit'
 									tableBodyRows={currentProperty?.units}
 								/>
@@ -439,7 +449,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 									heading={'Add Unit'}
 									subtext={'Add units to this property'}
 									description={'Add Unit'}
-									handleAdd={handleNavigation}
+									handleAdd={handleAddUnit}
 								/>
 							)}
 						</Grid>
