@@ -1,5 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-import { height } from '@mui/system';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
