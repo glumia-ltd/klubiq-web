@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Paper, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
@@ -178,8 +178,7 @@ const CreateAccount: React.FC = () => {
 	});
 
 	return (
-		<Paper>
-			<Grid
+		<Grid
 				container
 				component='form'
 				sx={styles.container}
@@ -366,7 +365,6 @@ const CreateAccount: React.FC = () => {
 						display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 						borderTopRightRadius: '1.3rem',
 						borderBottomLeftRadius: '1.3rem',
-						height: '100vh',
 						alignContent: 'center',
 						backgroundBlendMode: 'overlay',
 						backgroundSize: 'fixed',
@@ -391,7 +389,6 @@ const CreateAccount: React.FC = () => {
 					</Stack>
 				</Grid>
 			</Grid>
-		</Paper>
 	);
 };
 

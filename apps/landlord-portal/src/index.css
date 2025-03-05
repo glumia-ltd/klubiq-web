@@ -7,6 +7,9 @@
 
 html {
   font-size: 15px;
+  scroll-behavior: smooth;
+  height: 100%;
+  width: 100%;
 }
 body {
   transition: background-color 0.3s ease, color 0.3s ease;

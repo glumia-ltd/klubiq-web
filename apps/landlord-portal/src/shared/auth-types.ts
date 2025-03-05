@@ -30,10 +30,10 @@ export type UserProfile = {
 	state?: string | null;
 	street?: string | null;
 	systemRole?: string | null;
-	orgSettings?: {
-		[key: string]: unknown;
+	organizationUuid?: string;
+	notificationSubscription?: {
+		[key: string]: boolean;
 	};
-	organizationUuid?: string | null;
 };
 
 export type Organization = {

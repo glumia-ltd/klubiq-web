@@ -59,7 +59,6 @@ const Login = () => {
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
 	const [otp, setOtp] = useState('');
 	const [otpError, setOtpError] = useState('');
-	// const [orgSettings, setOrgSettings] = useState({});
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
@@ -84,7 +83,7 @@ const Login = () => {
 			try {
 				await mfaResolver.resolveSignIn(multiFactorAssertion);
 				setOtpError('');
-				navigate(continuePath ? continuePath : '/dashboard', { replace: true });
+				navigate(continuePath || '/dashboard', { replace: true });
 			} catch (error: any) {
 				dispatch(
 					openSnackbar({
@@ -143,8 +142,9 @@ const Login = () => {
 					);
 				} else {
 					const response = await triggerGetUserByFbid();
-					if (!response.data) throw new Error('User not found');
-
+					if (!response.data) {
+       					throw new Error('User not found');
+     				}
 					if (!response.data?.organizationUuid) {
 						throw new Error('Organization ID is undefined');
 					}
@@ -154,8 +154,6 @@ const Login = () => {
 					const orgSubscription = await triggerGetOrgSubscriptionQuery({
 						orgId: response.data?.organizationUuid,
 					}).unwrap();
-					consoleLog('Org Settings:', orgSettings);
-					consoleLog('Org Subscription:', orgSubscription);
 					const payload = {
 						token: userToken,
 						user: response?.data as UserProfile,
@@ -164,7 +162,6 @@ const Login = () => {
 						orgSubscription: orgSubscription,
 					};
 					dispatch(saveUser(payload));
-
 					openSnackbar({
 						message: 'That was easy',
 						severity: 'success',

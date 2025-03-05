@@ -18,6 +18,7 @@ function App() {
 		(state: RootState) => state.snack,
 	);
 	useEffect(() => {
+		consoleLog('App mounted globally');
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', () => {
 				navigator.serviceWorker

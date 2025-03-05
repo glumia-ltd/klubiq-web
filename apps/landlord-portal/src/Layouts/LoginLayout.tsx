@@ -39,7 +39,6 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 					...style.background,
 					borderTopRightRadius: '1.3rem',
 					borderBottomLeftRadius: '1.3rem',
-					height: '100vh',
 					alignContent: 'center',
 					display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
 				}}

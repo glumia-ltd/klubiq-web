@@ -60,15 +60,18 @@ export const SessionTimeoutProvider = ({
 
 	// Function to start the countdown timer
 	const startCountdown = useCallback(() => {
-		let countdown = COUNTDOWN_TIME; // 60 seconds countdown
+		clearInterval(countdownInterval); // Clear any existing interval
 		countdownInterval = setInterval(() => {
-			setTimeLeft(--countdown);
-			if (countdown <= 0) {
-				clearInterval(countdownInterval);
-				auth.signOut();
-				sessionStorage.clear();
-				window.location.href = '/login'; // Auto logout after countdown ends
-			}
+			setTimeLeft((prevTimeLeft) => {
+				if (prevTimeLeft <= 1) {
+					clearInterval(countdownInterval);
+					auth.signOut();
+					sessionStorage.clear();
+					window.location.href = '/login'; // Auto logout after countdown ends
+					return 0;
+				}
+				return prevTimeLeft - 1;
+			});
 		}, 1000); // Decrease countdown every second
 	}, []);
 
@@ -90,6 +93,11 @@ export const SessionTimeoutProvider = ({
 			// Update last activity timestamp on any user interaction
 			const handleUserActivity = () => {
 				updateLastActivity();
+				if (showModal) {
+					setShowModal(false);
+					clearInterval(countdownInterval);
+					setTimeLeft(COUNTDOWN_TIME);
+				}
 			};
 			// Attach event listeners for activity detection
 			activityEvents.forEach((event) => {
@@ -110,7 +118,7 @@ export const SessionTimeoutProvider = ({
 				clearInterval(countdownInterval);
 			};
 		}
-	}, [checkInactivity]);
+	}, [checkInactivity, showModal]);
 
 	return (
 		<SessionTimeoutContext.Provider value={{ isTimedOut, stayLoggedIn }}>

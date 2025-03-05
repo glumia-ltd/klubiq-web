@@ -6,10 +6,16 @@ import useAuth from '../hooks/useAuth';
 import MFAPrompt from '../components/Dialogs/MfaPrompts';
 import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimeoutContext';
 import { useLocation } from 'react-router-dom';
+import AlertDialog from '../components/Dialogs/AlertDialog';
 
 const PrivateRoute = () => {
-	const { showMFAPrompt, goToMFASetup, optOutOf2fa, handleCloseMFAPrompt } =
-		useAuth();
+	const {
+		showMFAPrompt,
+		goToMFASetup,
+		optOutOf2fa,
+		handleCloseMFAPrompt,
+		alertDialogs,
+	} = useAuth();
 	const { token } = useSelector(getAuthState);
 	const location = useLocation();
 	const storedSession = sessionStorage.getItem(
@@ -35,6 +41,21 @@ const PrivateRoute = () => {
 						onOptOutClick={optOutOf2fa}
 					></MFAPrompt>
 				)}
+				{alertDialogs.length > 0 &&
+					alertDialogs.map((alert) => (
+						<AlertDialog
+							key={alert.id}
+							open={alert.open}
+							title={alert.title}
+							message={alert.message}
+							onClose={alert.onClose}
+							onConfirmClick={alert.onConfirmClick}
+							onCancelClick={alert.onCancelClick}
+							id={alert.id}
+							cancelButtonText={alert.cancelButtonText}
+							confirmButtonText={alert.confirmButtonText}
+						></AlertDialog>
+					))}
 				<Outlet />
 			</SessionTimeoutProvider>
 		</>

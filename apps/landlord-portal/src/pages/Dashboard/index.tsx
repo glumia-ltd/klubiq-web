@@ -67,6 +67,7 @@ const DashBoard = () => {
 	} = useGetRevenueReportDataQuery({ startDate, endDate });
 
 	const TOTALUNITS = dashboardMetrics?.propertyMetrics?.totalUnits;
+	//const TOTALPROPERTIES = dashboardMetrics?.propertyMetrics?.totalProperties;
 
 	const OVERDUERENTSUM = dashboardMetrics?.rentsOverDueSummary?.overDueRentSum;
 
@@ -178,9 +179,20 @@ const DashBoard = () => {
 							{/* PROPERTIES */}
 							<Grid item xs={12} sm={12} md={4} lg={4}>
 								<Card sx={styles.cardStyle}>
-									<Stack sx={styles.boxStyle} direction={'row'}>
+									{/* <Stack sx={styles.boxStyle} direction={'row'}>
 										<Typography sx={styles.typoStyle}>
 											Total Properties{' '}
+										</Typography>{' '}
+										<Typography
+											sx={styles.valueTextStyle}
+											variant='dashboardTypography'
+										>
+											{TOTALPROPERTIES || 0}
+										</Typography>
+									</Stack> */}
+									<Stack sx={styles.boxStyle} direction={'row'}>
+										<Typography sx={styles.typoStyle}>
+											Total Units{' '}
 										</Typography>{' '}
 										<Typography
 											sx={styles.valueTextStyle}

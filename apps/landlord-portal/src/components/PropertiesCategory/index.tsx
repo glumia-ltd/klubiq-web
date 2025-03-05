@@ -52,7 +52,7 @@ const PropertyCategory: FC<{ formik: any }> = ({ formik }) => {
 
 	return (
 		<Card sx={PropertyLayoutStyle.card}>
-			<Grid container spacing={3}>
+			<Grid container spacing={3} sx={{justifyContent: 'space-between'}}>
 				<Grid item xs={12}>
 					<Typography
 						variant='h1'
