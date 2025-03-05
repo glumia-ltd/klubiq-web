@@ -51,7 +51,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 						flexDirection='column'
 						width={'100%'}
 					>
-						<NavBar />
+						<NavBar section={''} />
 
 						<Box
 							width={'100%'}
