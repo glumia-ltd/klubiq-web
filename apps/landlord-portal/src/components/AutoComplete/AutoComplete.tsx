@@ -185,7 +185,7 @@ export const AutoComplete: FC<{
 
 					setOptions(newOptions);
 
-					if (results && results.length > 0) {
+					if (results && results.length > 0 && !value) {
 						const placeId = results[0]?.place_id;
 						getPlaceDetails(placeId!);
 					}
@@ -227,6 +227,12 @@ export const AutoComplete: FC<{
 				} else if (value) {
 					formik.setFieldValue(name, value.description);
 					formik.setFieldValue('address.isManualAddress', false);
+				} else {
+					formik.setFieldValue(name, '');
+					formik.setFieldValue('address.city', '');
+					formik.setFieldValue('address.country', '');
+					formik.setFieldValue('address.state', '');
+					formik.setFieldValue('address.postalCode', '');
 				}
 			}}
 			onInputChange={(_event, newInputValue) => {
