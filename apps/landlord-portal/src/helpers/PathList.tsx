@@ -8,7 +8,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 const adminPathList = [
 	{
-		title: 'Board',
+		title: 'Dashboard',
 		icon: DashboardIcon,
 		path: '/dashboard',
 	},

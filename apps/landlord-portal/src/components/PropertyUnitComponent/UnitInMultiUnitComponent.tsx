@@ -14,6 +14,9 @@ import propertyImage from '../../assets/images/propertyImage.png';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { getLocaleFormat } from '../../helpers/utils';
 
 type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
@@ -48,16 +51,20 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	const location = useLocation();
 
 	const currentUnitId = location.pathname.split('/').at(-1);
-
+	const { orgSettings } = useSelector(getAuthState);
 	const currentUnitInformation = currentProperty?.units?.find(
-		(unit) => Number(unit.id) === Number(currentUnitId),
+		(unit) => unit.id === currentUnitId,
 	);
 
-	const leaseTableBodyRows = currentUnitInformation?.leases || [];
+	const leaseTableBodyRows = currentUnitInformation?.lease ? [currentUnitInformation.lease] : [];
 
 	const handleHomeClick = (position: number) => {
 		navigate(position);
 	};
+	const handleAddLease = () => {
+		navigate(`/lease/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`);
+	};
+
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 
@@ -113,22 +120,24 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 						<MoreVertIcon />
 					</Button>
 				</Grid>
-				<Chip
-					label={currentProperty?.purpose?.displayText || 'For sale'}
-					variant={
-						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
-							? 'rent'
-							: 'sale'
-					}
-				/>
+				{currentProperty?.purpose && (
+					<Chip
+						label={currentProperty?.purpose?.displayText || 'For sale'}
+						variant={
+							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+								? 'rent'
+								: 'sale'
+						}
+					/>
+				)}
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCard
 						propertyImage={mainImage?.url}
 						propertyName={currentProperty?.name || ''}
 						propertyAddress={propertyAddress}
-						propertyId={currentUnitInformation?.id}
+						propertyId={currentProperty?.id}
 						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
-						rent={`₦ ${currentUnitInformation?.rentAmount}`}
+						rent={`${getLocaleFormat(orgSettings, +(currentUnitInformation?.rentAmount ?? 0), 'currency')}`}
 						buildingType={currentProperty?.type?.name}
 						additionalImages={stackedImages}
 					/>
@@ -174,7 +183,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 										heading={'Add Lease'}
 										subtext={'Add lease to your property'}
 										description={'Add Lease'}
-										handleAdd={handleNavigation}
+										handleAdd={handleAddLease}
 									/>
 								)}
 
@@ -182,7 +191,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 									<TenantAndLeaseTable
 										title='Lease'
 										buttonText='Add Lease'
-										handleAdd={handleNavigation}
+										handleAdd={handleAddLease}
 										columns={leaseColumns}
 										tableBodyRows={leaseTableBodyRows}
 									/>

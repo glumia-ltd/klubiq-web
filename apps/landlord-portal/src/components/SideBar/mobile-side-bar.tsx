@@ -1,5 +1,5 @@
 import { styled, useTheme } from '@mui/material/styles';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
@@ -22,7 +22,11 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
-function MobileSideBar() {
+function MobileSideBar({
+	onSelectSection,
+}: {
+	onSelectSection: (section: string) => void;
+}) {
 	const theme = useTheme();
 
 	const { getPathList } = useContext(SectionContext);
@@ -69,10 +73,18 @@ function MobileSideBar() {
 
 	const handleLinkClick = (title: string) => {
 		handleDrawerClose();
-		if (title !== 'Logout') return;
+		if (title !== 'Logout') {
+			onSelectSection(title);
+			return;
+		}
 		sessionStorage.clear();
 		auth.signOut();
 	};
+	useEffect(() => {
+		if (pathname && pathname !== '/') {
+			onSelectSection(pathname?.split('/')[1] || '');
+		}
+	}, [onSelectSection]);
 
 	return (
 		<Drawer

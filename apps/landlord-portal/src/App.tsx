@@ -18,9 +18,8 @@ function App() {
 		(state: RootState) => state.snack,
 	);
 	useEffect(() => {
-		consoleLog('App mounted globally');
 		if ('serviceWorker' in navigator) {
-			window.addEventListener('load', () => {
+			const executeOnLoad = () => {
 				navigator.serviceWorker
 					.register('/service-worker.js')
 					.then(() => {
@@ -29,7 +28,13 @@ function App() {
 					.catch((error) => {
 						consoleLog('ServiceWorker registration failed: ', error);
 					});
-			});
+			};
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', executeOnLoad);
+			} else {
+				executeOnLoad();
+			}
 		}
 	}, []);
 

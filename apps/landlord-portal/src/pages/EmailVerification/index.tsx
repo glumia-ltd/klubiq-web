@@ -76,6 +76,10 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	const navigateToMFASetUp = () => {
 		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
 	};
+	const navigateToLogin = () => {
+		navigate('/login', { replace: true });
+	};
+
 
 	const renderViewContent = () => {
 		if (!error) {
@@ -136,13 +140,16 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 								your inbox.
 							</Typography>
 							{user?.email && (
-								<Button
+								<Stack direction={'row'} spacing={1}>
+									<Button
 									variant='contained'
 									disabled={!resendEnabled}
 									onClick={resendVerificationEmail}
 								>
 									Resend Verification Email
 								</Button>
+								<Button variant='outlined' onClick={navigateToLogin}>Login</Button>
+								</Stack>
 							)}
 						</Paper>
 					</Stack>
