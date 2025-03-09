@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../SideBar';
 import Box from '@mui/system/Box';
 import { useContext } from 'react';
@@ -24,6 +24,9 @@ const ViewPort = ({ children }: ViewPortProp) => {
 
 	const { pathname } = useLocation();
 
+	// Step 1: Add state for selected section
+	const [selectedSection, setSelectedSection] = useState('');
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [pathname]);
@@ -32,7 +35,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 		<>
 			<NavToggleProvider>
 				<CssBaseline />
-				{isMediumScreen && <MobileSideBar />}
+				{isMediumScreen && <MobileSideBar onSelectSection={setSelectedSection} />}
 				<Box
 					sx={{
 						display: 'flex',
@@ -44,14 +47,14 @@ const ViewPort = ({ children }: ViewPortProp) => {
 						},
 					}}
 				>
-					{!isMediumScreen && <Sidebar />}
+					{!isMediumScreen && <Sidebar onSelectSection={setSelectedSection} />}
 					<Box
 						display='flex'
 						flexGrow={1}
 						flexDirection='column'
 						width={'100%'}
 					>
-						<NavBar section={''} />
+						<NavBar section={selectedSection} />
 
 						<Box
 							width={'100%'}

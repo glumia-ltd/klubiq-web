@@ -84,8 +84,8 @@ export const styles = {
 	},
 
 	tenantTableContainer: {
-		maxHeight: '312px',
-		overflow: 'scroll',
+		//maxHeight: '312px',
+		overflow: 'auto',
 	},
 
 	tableCell: {

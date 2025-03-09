@@ -84,7 +84,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	const [archiveProperty] = useArchivePropertyMutation();
 	const [deleteProperty] = useDeletePropertyMutation();
 
-	const { user } = useSelector(getAuthState);
+	const { orgSettings } = useSelector(getAuthState);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
@@ -353,7 +353,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 								? `${currentProperty.unitCount}`
 								: 'Single'
 						}
-						rent={`${getLocaleFormat(user, +currentProperty?.totalRent || 0, 'currency')} `}
+						rent={`${getLocaleFormat(orgSettings, +currentProperty?.totalRent || 0, 'currency')} `}
 						totalArea={
 							currentProperty?.isMultiUnit
 								? ''
@@ -389,15 +389,18 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 							<Grid sx={styles.addfieldStyle}>
 								{tabValue !== 1 && (
 									<>
-										{tenantTableBodyRows?.length > 0 && (
+										{currentProperty?.units?.[0]?.lease?.tenants?.length &&
+										currentProperty?.units?.[0]?.lease?.tenants?.length > 0 ? (
 											<TenantAndLeaseTable
 												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleAddTenant}
 												columns={tenantColumns}
-												tableBodyRows={tenantTableBodyRows}
+												tableBodyRows={
+													currentProperty?.units?.[0]?.lease?.tenants
+												}
 											/>
-										)}
+										) : null}
 
 										{!tenantTableBodyRows?.length &&
 											leaseTableBodyRows?.length && (

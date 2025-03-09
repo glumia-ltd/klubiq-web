@@ -14,7 +14,13 @@ import {
 } from '@mui/material';
 import { styles } from './style';
 import { FC } from 'react';
-import { Bedroom, Bathroom, FloorPlan } from '../Icons/CustomIcons';
+import {
+	Bedroom,
+	Bathroom,
+	FloorPlan,
+	ShowerIcon,
+	EmojiOneBuildingIcon,
+} from '../Icons/CustomIcons';
 import bukky from '../../assets/images/bukky.png';
 import { UnitType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
@@ -93,12 +99,14 @@ export const UnitsTable: FC<UnitsTableType> = ({
 								<TableCell align={'left'} sx={styles.tableBodyStyle}>
 									Unit {row?.unitNumber}
 								</TableCell>
-								<TableCell align={'center'} sx={styles.tableBodyStyle}>
-									<span style={styles.tenantInfoStyle}>
-										<img src={bukky} alt='tenant picture' />{' '}
-										{'No tenant added yet'}
-									</span>
-								</TableCell>
+								{
+									<TableCell align={'center'} sx={styles.tableBodyStyle}>
+										<span style={styles.tenantInfoStyle}>
+											<img src={bukky} alt='tenant picture' />{' '}
+											{'No tenant added yet'}
+										</span>
+									</TableCell>
+								}
 								<TableCell align={'center'} sx={styles.tableBodyStyle}>
 									<Stack direction={'row'} alignItems={'center'}>
 										<FloorPlan />
@@ -109,14 +117,36 @@ export const UnitsTable: FC<UnitsTableType> = ({
 								</TableCell>
 								<TableCell sx={styles.tableBodyStyle}>
 									<Stack direction={'row'} spacing={2}>
-										<>
-											<Bedroom />
-											{row?.bedrooms}
-										</>
-										<>
-											<Bathroom />
-											{row?.bathrooms}
-										</>
+										{row?.offices && Number(row?.offices) > 0 && (
+											<>
+												<EmojiOneBuildingIcon />
+												{row?.offices}
+											</>
+										)}
+										{row?.bedrooms && Number(row?.bedrooms) > 0 && (
+											<>
+												<Bedroom />
+												{row?.bedrooms}
+											</>
+										)}
+										{row?.rooms && Number(row?.rooms) > 0 && (
+											<>
+												<Bedroom />
+												{row?.rooms}
+											</>
+										)}
+										{row?.bathrooms && Number(row?.bathrooms) > 0 && (
+											<>
+												<ShowerIcon />
+												{row?.bathrooms}
+											</>
+										)}
+										{row?.toilets && Number(row?.toilets) > 0 && (
+											<>
+												<Bathroom />
+												{row?.toilets}
+											</>
+										)}
 									</Stack>
 								</TableCell>
 							</TableRow>

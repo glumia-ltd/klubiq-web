@@ -9,10 +9,11 @@ const useQuery = () => {
 const AddLeasePage = () => {
 	const query = useQuery();
 	const propertyId = query.get('property');
+	const unitId = query.get('unit');
 
 	return (
 		<AddPropertiesInformationLayout>
-			<AddLeaseForm propertyId={propertyId} />
+			<AddLeaseForm propertyId={propertyId} unitId={unitId} />
 		</AddPropertiesInformationLayout>
 	);
 };

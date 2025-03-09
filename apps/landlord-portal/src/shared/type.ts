@@ -49,7 +49,7 @@ export type UnitType = {
 	floor?: number | null;
 	id?: string;
 	images?: string[];
-	leases?: LeaseType[];
+	lease?: LeaseType;
 	offices?: number | string | null;
 	rentAmount?: string;
 	rooms?: null;

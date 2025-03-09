@@ -9,12 +9,7 @@ const baseURL =
 	import.meta.env.VITE_NODE_ENV !== 'local'
 		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
 		: '/api';
-const api = axios.create({
-	baseURL:
-		import.meta.env.VITE_NODE_ENV !== 'local'
-			? `${import.meta.env.VITE_BASE_URL_DEV}/api`
-			: '/api',
-});
+const api = axios.create({baseURL});
 
 const skippedEndpoints = [
 	authEndpoints.login(),
@@ -98,7 +93,7 @@ api.interceptors.response.use(
 						},
 					},
 				} = await axios.post(
-					`https://devapi.klubiq.com/api/${authEndpoints.refreshToken()}`,
+					`${baseURL}${authEndpoints.refreshToken()}`,
 					{
 						refreshToken,
 					},

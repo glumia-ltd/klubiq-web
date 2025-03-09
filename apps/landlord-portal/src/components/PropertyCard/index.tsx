@@ -177,39 +177,46 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							</>
 						)}
 
-					<KlubiqIcons.ShowerIcon
-						sx={{
-							color: 'text.primary',
-							height: '16px',
-							// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
-						}}
-					/>
-					<Typography
-						variant='cardContentText'
-						noWrap={true}
-						// sx={{ opacity: `${!propertyData?.bathrooms ? 0.5 : 1}` }}
-					>
-						{propertyData?.bathrooms
-							? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
-							: '--'}
-					</Typography>
+					{propertyData?.bathrooms && Number(propertyData?.bathrooms) > 0 && (
+						<>
+							<KlubiqIcons.ShowerIcon
+								sx={{
+									color: 'text.primary',
+									height: '16px',
+									// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
+								}}
+							/>
+							<Typography
+								variant='cardContentText'
+								noWrap={true}
+								// sx={{ opacity: `${!propertyData?.bathrooms ? 0.5 : 1}` }}
+							>
+								{propertyData?.bathrooms
+									? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
+									: '--'}
+							</Typography>
+						</>
+					)}
 
-					<KlubiqIcons.Bathroom
-						sx={{
-							color: 'text.primary',
-							// opacity: `${!propertyData?.toilets ? 0 : 1}`,
-						}}
-					/>
-
-					<Typography
-						variant='cardContentText'
-						noWrap={true}
-						// sx={{ opacity: `${!propertyData?.toilets ? 0 : 1}` }}
-					>
-						{propertyData?.toilets
-							? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
-							: '--'}
-					</Typography>
+					{propertyData?.toilets && Number(propertyData?.toilets) > 0 && (
+						<>
+							<KlubiqIcons.Bathroom
+								sx={{
+									color: 'text.primary',
+									// opacity: `${!propertyData?.toilets ? 0 : 1}`,
+								}}
+							/>
+							<Typography
+								variant='cardContentText'
+								noWrap={true}
+								// sx={{ opacity: `${!propertyData?.toilets ? 0 : 1}` }}
+							>
+								{propertyData?.toilets
+									? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
+									: '--'}
+							</Typography>
+						</>
+					)}
 				</Stack>
 				{
 					<Stack

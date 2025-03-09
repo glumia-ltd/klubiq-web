@@ -52,6 +52,7 @@ export const notificationEndpoints = {
 	notifications: () => '/notifications',
 	markAsRead: () => '/notifications/mark-as-read-or-delivered',
 	deleteNotifications: () => `/notifications/delete`,
+	countNotifications: () => '/notifications/count',
 };
 export const publicEndpoints = {
 	getRoles: () => '/public/organization-roles',
