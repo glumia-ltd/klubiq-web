@@ -49,9 +49,10 @@ const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
 
 interface AddLeaseFormProps {
 	propertyId: string | null;
+	unitId: string | null;
 }
 
-const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
+const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	const { user, orgSettings } = useSelector(getAuthState);
 
 	const dispatch = useDispatch();
@@ -61,9 +62,8 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	const [disabledButton, setDisabledButton] = useState(true);
 
 	const [addLease] = useAddLeaseMutation();
-
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
-		useGetOrgPropertiesViewListQuery(user?.organizationId);
+		useGetOrgPropertiesViewListQuery({ orgId: user?.organizationUuid });
 
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
@@ -156,15 +156,14 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	);
 
 	useEffect(() => {
-		formik.resetForm({ values: { ...formik.values, unitId: '' } });
+		formik.resetForm({ values: { ...formik.values, unitId: unitId ?? '' } });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
 
-	useEffect(() => {
+	useEffect(() => {	
 		const {startDate, endDate} = formik.values;
 		if (dayjs(startDate).isAfter(endDate)) {
 			formik.setFieldValue('endDate', '');
-
 			dispatch(
 				openSnackbar({
 					message: 'The lease end date cannot be before the start date',
@@ -179,7 +178,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	useEffect(() => {
 		if (unitsInProperty?.length <= 1) {
 			const unit = unitsInProperty[0];
-
 			formik.setFieldValue('unitId', unit.id);
 			formik.setFieldValue('unitName', unit.name);
 		}
@@ -188,9 +186,17 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 
 	useEffect(() => {
 		if (propertyId && orgPropertiesViewList) {
+			consoleLog('propertyId', propertyId);
 			const property = find(orgPropertiesViewList.properties, { uuid: propertyId });
 			if (property) {
 				formik.setFieldValue('propertyName', property.uuid);
+				if (unitId) {
+					consoleLog('unitId', unitId);
+					const unit = find(property?.units, { id: unitId });
+					consoleLog('unit', unit);
+					formik.setFieldValue('unitId', unit?.id);
+					formik.setFieldValue('unitName', unit?.unitNumber);
+				}
 			}
 		}
 	}, [propertyId, orgPropertiesViewList]);
@@ -269,12 +275,12 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 			// endDate: formik.values.endDate,
 			newTenants: null,
 			tenantsIds: formik.values.tenantsIds,
-			unitId: formik.values.unitId && Number(formik.values.unitId),
+			unitId: formik.values.unitId,
 			rentDueDay: formik.values?.rentDueDay && Number(formik.values.rentDueDay),
 			rentAmount: formik.values.rentAmount && Number(formik.values.rentAmount),
 			securityDeposit:
 				formik.values.depositAmount && Number(formik.values.depositAmount),
-			isDraft: true,
+			isDraft: false,
 			paymentFrequency: formik.values.frequency,
 			status: null,
 			propertyName: propertyData?.name,

@@ -107,6 +107,12 @@ export const notificationApiSlice = createApi({
 				}
 			},
 		}),
+		countNotifications: builder.query<number, void>({
+			query: () => ({
+				url: notificationEndpoints.countNotifications(),
+				method: 'GET',
+			}),
+		}),
 	}),
 });
 export const {
@@ -114,6 +120,7 @@ export const {
 	useGetNotificationsQuery,
 	useReadNotificationsMutation,
 	useDeleteNotificationsMutation,
+	useCountNotificationsQuery,	
 } = notificationApiSlice;
 const groupNotificationsByDate = (
 	notifications: NotificationData[],

@@ -12,19 +12,19 @@ import {
 	Avatar,
 	Badge,
 	Divider,
-	TextField,
-	InputAdornment,
+	// TextField,
+	// InputAdornment,
 	Skeleton,
 	List,
 	ListItem,
 	ListItemText,
 	Box,
-	Link,
+	ListItemButton,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import SearchIcon from '@mui/icons-material/Search';
+// import SearchIcon from '@mui/icons-material/Search';
 import { replace, startCase } from 'lodash';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -32,7 +32,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { auth } from '../../firebase';
 import CustomPopper from '../Shared/CustomPopper';
-import { useGetNotificationsQuery } from '../../store/NotificationStore/NotificationApiSlice';
+import { useCountNotificationsQuery, useGetNotificationsQuery } from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
@@ -42,12 +42,12 @@ interface NavBarProps {
 const NavBar = ({ section }: NavBarProps) => {
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
-	const [unreadCount, setUnreadCount] = useState(0);
+	const { data: notificationCount } = useCountNotificationsQuery();
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing } =
+	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
 		useContext(Context);
-	const [searchText, setSearchText] = useState('');
+	// const [searchText, setSearchText] = useState('');
 	const simplifyRoleName = (role: string) => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
 		return startCase(simplifiedRole);
@@ -125,10 +125,6 @@ const NavBar = ({ section }: NavBarProps) => {
 		},
 	];
 	useEffect(() => {
-		if (notificationData) {
-			const unreadCount = notificationData.filter((n) => !n.isRead).length;
-			setUnreadCount(unreadCount);
-		}
 	}, [notificationData]);
 
 	const handleNotificationAction = (actionLink: string) => {
@@ -163,10 +159,9 @@ const NavBar = ({ section }: NavBarProps) => {
 									<MenuIcon />
 								</IconButton>
 							)}
-							<Grid item xs={2} ml={{ xs: '1rem', sm: '0.5rem', md: '1rem' }}>
+							<Grid item xs={2} ml={{xs: `${drawerWidth.smallClosed}px`, md: sidebarOpen ? `${drawerWidth.largeOpen}px` : `${drawerWidth.largeClosed}px`}}>
 								<Typography sx={styles(isSmallScreen).appSectionTitle}>
 									{section}
-									{/* {section}{' '} */}
 								</Typography>
 							</Grid>
 						</Grid>
@@ -179,7 +174,7 @@ const NavBar = ({ section }: NavBarProps) => {
 							{/* <ResponsiveTextFieldWithModal />
 							 */}
 
-							<TextField
+							{/* <TextField
 								value={searchText}
 								onChange={(e) => setSearchText(e.target.value)}
 								id='input-with-icon-textfield'
@@ -195,7 +190,7 @@ const NavBar = ({ section }: NavBarProps) => {
 									sx: styles(isSmallScreen).searchAdornment,
 								}}
 								variant='outlined'
-							/>
+							/> */}
 							<IconButton
 								size='large'
 								disableRipple
@@ -204,8 +199,8 @@ const NavBar = ({ section }: NavBarProps) => {
 								ref={notificationAnchorRef}
 							>
 								<Badge
-									badgeContent={unreadCount}
-									invisible={unreadCount <= 0}
+									badgeContent={notificationCount || 0}
+									invisible={!notificationCount || notificationCount <= 0}
 									color='error'
 								>
 									<NotificationsNoneOutlinedIcon
@@ -213,6 +208,7 @@ const NavBar = ({ section }: NavBarProps) => {
 									/>
 								</Badge>
 							</IconButton>
+							{ notificationData && notificationData.length > 0 && (
 							<CustomPopper
 								open={isNotificationPopperOpen}
 								anchorEl={notificationAnchorRef.current}
@@ -220,14 +216,11 @@ const NavBar = ({ section }: NavBarProps) => {
 							>
 								<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
 									<List>
-										{notificationData?.map((item, idx) => (
-											<>
+										{notificationData?.map((item) => (
+											<Box key={`notification-${item.id}`}>
 												<ListItem
-													key={idx}
-													sx={{
-														alignItems: 'start',
-														'&:hover': { backgroundColor: 'secondary.light' },
-													}}
+													key={`notification-${item.id}`}
+													sx={styles(isSmallScreen, theme).listItem}
 													onClick={() =>
 														handleNotificationAction(item.actionLink)
 													}
@@ -240,6 +233,7 @@ const NavBar = ({ section }: NavBarProps) => {
 															marginBottom: '2px',
 															variant: 'body2',
 															fontWeight: item.isRead ? 'normal' : 'bold',
+															
 														}}
 														secondaryTypographyProps={{
 															color: 'text.secondary',
@@ -248,21 +242,16 @@ const NavBar = ({ section }: NavBarProps) => {
 														}}
 													/>
 												</ListItem>
-												<Divider />
-											</>
+												<Divider  />
+											</Box>
 										))}
-										<ListItem sx={styles(isSmallScreen, theme).seeMoreLink}>
-											<Link
-												//href='/notifications'
-												variant='caption'
-												underline='none'
-											>
-												See more
-											</Link>
-										</ListItem>
+										<ListItemButton key={'see-more-link'} alignItems='center' component='a' sx={styles(isSmallScreen, theme).seeMoreLink}>
+											<ListItemText primary='See more' sx={{color: 'text.primary', textAlign: 'center'}}>
+											</ListItemText>
+										</ListItemButton>
 									</List>
 								</Box>
-							</CustomPopper>
+							</CustomPopper>)}
 							<Divider
 								orientation='vertical'
 								variant='middle'

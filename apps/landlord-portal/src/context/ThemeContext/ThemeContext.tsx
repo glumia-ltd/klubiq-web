@@ -63,10 +63,19 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 
 	const switchMode = (mode: ThemeMode) => {
 		localStorage.setItem('mode', mode);
-
 		setMode(mode);
+		setBodyBackgroundColor(mode);
 	};
-
+	const setBodyBackgroundColor = (themeMode: ThemeMode) => {
+		const {body} = document;
+		if (themeMode === ThemeMode.DARK) {
+			body.classList.add('dark');
+			body.classList.remove('light');
+		} else {
+			body.classList.remove('dark');
+			body.classList.add('light');
+		}
+	}
 	useEffect(() => {
 		if (mode === ThemeMode.LIGHT) {
 			setMuiTheme(LightTheme);

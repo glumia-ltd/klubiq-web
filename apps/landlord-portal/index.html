@@ -101,6 +101,37 @@
 		<meta name="ROBOTS" content="NOINDEX, FOLLOW" />
 		<title>Klubiq</title>
 		<link rel="stylesheet" href="/src/index.css">
+
+		<script>
+			// Function to get the stored theme mode or default to device preference
+			function getStoredThemeMode() {
+				const storedMode = localStorage.getItem('mode');
+				if (storedMode) {
+					return storedMode;
+				}
+				// Detect device theme preference
+				const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				return prefersDarkScheme ? 'dark' : 'light';
+			}
+
+			// Function to set the body background color based on the theme mode
+			function setBodyBackgroundColor(themeMode) {
+				const body = document.body;
+				if (themeMode === 'dark') {
+					body.classList.add('dark');
+					body.classList.remove('light');
+				} else {
+					body.classList.remove('dark');
+					body.classList.add('light');
+				}
+			}
+
+			// Set the initial background color
+			document.addEventListener('DOMContentLoaded', () => {
+				const themeMode = getStoredThemeMode();
+				setBodyBackgroundColor(themeMode);
+			});
+		</script>
 	</head>
 	<body>
 		

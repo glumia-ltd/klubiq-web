@@ -53,8 +53,9 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 		},
 		appSectionTitle: {
 			textTransform: 'capitalize',
-			fontWeight: '500',
-			fontSize: '18px',
+			fontWeight: '600',
+			fontSize: '30px',
+			paddingLeft: '1rem',
 		},
 		searchInput: {
 			width: { xs: '50px', sm: '250px', md: '320px' },
@@ -132,11 +133,12 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 			height: '30px',
 		},
 		seeMoreLink: {
-			display: 'flex',
-			justifyContent: 'center',
-			p: 2,
-			'&:hover': { backgroundColor: 'secondary.light' },
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
 
+		},
+		listItem: {
+			alignItems: 'start',
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
 		},
 	};
 };

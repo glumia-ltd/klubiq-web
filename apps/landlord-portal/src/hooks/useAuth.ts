@@ -145,17 +145,19 @@ const useAuth = () => {
 					updateWebNotificationStatus(
 						true,
 						'notification-subscription',
+						userProfile?.organizationUuid,
 					);
 				},
 				onCancelClick: () => {
 					updateWebNotificationStatus(
 						false,
 						'notification-subscription',
+						userProfile?.organizationUuid,
 					);
 				},
 				open: true,
 				confirmButtonText: 'Enable',
-				cancelButtonText: 'Cancel',
+				cancelButtonText: 'Skip',
 			});
 		}
 
@@ -196,16 +198,21 @@ const useAuth = () => {
 			return () => listen();
 		}
 	}, []);
-	const requestNotificationPermission = async () => {
+	const requestNotificationPermission = async (orgUuid?: string) => {
 		try {
 			if ('Notification' in window) {
 				const permission = await Notification.requestPermission();
 				if (permission === 'granted') {
+					consoleLog('Requesting notification permission = granted');
 					const subscription = await subscribeUserToPush();
+					consoleLog('Subscription:', subscription);
 					const subscriptionPayload = {
-						organizationUuid: user.organizationUuid,
 						subscription: { 'web-push': subscription },
-					};
+					} as { subscription: { 'web-push': PushSubscription | undefined }, organizationUuid?: string };
+					if(orgUuid) {
+						subscriptionPayload.organizationUuid = orgUuid;
+					}
+					consoleLog('Subscription payload:', subscriptionPayload);
 					await updateNotificationSubscription(subscriptionPayload).unwrap();
 				} else {
 					consoleLog('Notification permission denied.');
@@ -218,12 +225,13 @@ const useAuth = () => {
 	const updateWebNotificationStatus = async (
 		status: boolean,
 		bannerId: string,
+		orgUuid?: string,
 	) => {
 		try {
 			consoleLog('Updating notification status', status);
 			handleCloseAlertDialog(bannerId);
 			if (status) {
-				await requestNotificationPermission();
+				await requestNotificationPermission(orgUuid);
 			}
 			const preferences = user?.preferences
 				? {

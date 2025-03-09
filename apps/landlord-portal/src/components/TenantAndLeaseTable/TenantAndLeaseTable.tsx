@@ -16,6 +16,9 @@ import { styles } from './style';
 import { FC } from 'react';
 import aisha from '../../assets/images/aisha.jpg';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+import { getLocaleFormat } from '../../helpers/utils';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 
 type ColumnType = { id: string; label: string };
 type RowType = {
@@ -45,7 +48,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 	showSecondHeader = true,
 }) => {
 	const path = title === 'Tenant' ? 'add-tenant' : 'add-lease';
-
+	const { orgSettings } = useSelector(getAuthState);
 	const handleClick = () => {
 		handleAdd && handleAdd(path);
 	};
@@ -147,7 +150,8 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 										{row?.status}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										{row?.rentAmount}
+									{`${getLocaleFormat(orgSettings, +(row?.rentAmount ?? 0), 'currency')}`}
+									
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
 										{row.startDate}
