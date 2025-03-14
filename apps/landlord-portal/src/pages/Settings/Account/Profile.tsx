@@ -116,7 +116,6 @@ const Profile = () => {
 					/>
 				</Stack>
 			</Stack>
-			{/* Contact Info Section */}
 			<Stack sx={styles.contentStyle} direction={'column'}>
 				<Typography variant='h6' sx={styles.headerText}>
 					Contact Info
@@ -151,7 +150,6 @@ const Profile = () => {
 					type='text'
 				/>
 			</Stack>
-			{/* Password Section */}
 			<Stack direction={'column'} sx={styles.contentStyle}>
 				<Typography variant='h6' sx={styles.headerText}>
 					Password

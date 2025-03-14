@@ -42,7 +42,6 @@ const Notificaton: React.FC = () => {
 				</Stack>
 				<Divider sx={{ mt: 2 }} />
 			</Box>
-			{/* Security Section */}
 			<NotificationCheckbox
 				title='Security'
 				// description='Notification about all login activity'
@@ -55,7 +54,6 @@ const Notificaton: React.FC = () => {
 				]}
 			/>
 
-			{/* Communication Section */}
 			<NotificationCheckbox
 				title='Communication'
 				// description='Notification about new messages'
@@ -68,7 +66,6 @@ const Notificaton: React.FC = () => {
 				]}
 			/>
 
-			{/* Lease Section */}
 			<NotificationCheckbox
 				title='Lease'
 				description='Notifications about lease updates, notices, and insurance'
@@ -98,7 +95,6 @@ const Notificaton: React.FC = () => {
 				]}
 			/>
 
-			{/* Notifications sent to Tenant Section */}
 			<NotificationCheckbox
 				title='Notifications sent to Tenant'
 				description='Notifications about lease updates, notices, and insurance'
