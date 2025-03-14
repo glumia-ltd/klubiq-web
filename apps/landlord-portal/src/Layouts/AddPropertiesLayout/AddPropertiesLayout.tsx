@@ -511,7 +511,7 @@ export const AddPropertiesLayout = () => {
 						</Button> */}
 					</Grid>
 
-					<Grid sx={styles.stepperContainer}>
+					<Grid item xs={12} sx={styles.stepperContainer}>
 						<CustomStepper active={activeStep} routes={routeObject} />
 					</Grid>
 				</Grid>
