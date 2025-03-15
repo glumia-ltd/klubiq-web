@@ -122,6 +122,9 @@ const Login = () => {
 			setLoading(true);
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
 			const userToken: any = await user.getIdTokenResult();
+			const {claims} = userToken;
+			const tenant_id = claims['tenantId'] || claims['organizationId'] || null;
+			sessionStorage.setItem('tenant_id', tenant_id);
 			if (userToken) {
 				const userName = user?.displayName?.split(' ');
 				const firstName = userName && userName[0];
