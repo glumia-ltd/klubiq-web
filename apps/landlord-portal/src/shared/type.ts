@@ -64,9 +64,9 @@ export type PropertyDataType = {
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedrooms: string | number;
-	bathrooms: string | number;
-	toilets: string | number;
+	bedrooms:  number;
+	bathrooms: number;
+	toilets: number;
 	isArchived: boolean;
 	createdDate: string;
 	updatedDate: string;
@@ -91,8 +91,8 @@ export type PropertyDataType = {
 	totalRent: string;
 	images?: { isMain: boolean; url: string }[] | null;
 	totalTenants: number;
-	offices?: string | number;
-	rooms?: string | number;
+	offices: number;
+	rooms: number;
 };
 
 // export type PropertyType = {

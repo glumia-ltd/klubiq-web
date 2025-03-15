@@ -39,8 +39,9 @@ function AxiosConfig(config: any) {
 	config.headers['x-client-tz-name'] =
 		Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-	config.headers['x-client-name'] = 'landlord-portal';
+	config.headers['x-client-id'] = 'app-web';
 	const orgSettingString = sessionStorage.getItem('org-settings');
+	const tenant_id = sessionStorage.getItem('tenant_id');
 	if (
 		token &&
 		token.length > 0 &&
@@ -53,10 +54,18 @@ function AxiosConfig(config: any) {
 		config.headers['x-client-lang'] = get(orgSettings, 'language', '');
 		config.headers['x-client-locale'] = get(orgSettings, 'countryCode', '');
 		config.headers['x-client-currency'] = get(orgSettings, 'currency', '');
+		config.headers['x-tenant-id'] = tenant_id ?? '';
 	}
+	const csrfToken = document.cookie
+		.split('; ')
+		.find(row => row.startsWith('_kbq_csrf'))
+		?.split('=')[1] ?? '';
 
 	if (!skippedEndpoints.includes(config.url)) {
 		config.headers.Authorization = `Bearer ${token}`;
+	}
+	if (csrfToken && config.method !== 'GET') {
+		config.headers['x-csrf-token'] = csrfToken;
 	}
 
 	return config;
@@ -84,7 +93,7 @@ api.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const refreshToken = getSessionToken()?.stsTokenManager.refreshToken;
+				const {refreshToken} = getSessionToken()?.stsTokenManager;
 				const {
 					data: {
 						data: {
