@@ -31,7 +31,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 	};
 
 	const getFullAddress = () => {
-		return `${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2 ? propertyData?.address?.addressLine2 : ''}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`;
+		return `${propertyData?.address?.addressLine1} ${propertyData?.address?.addressLine2 || ''}, ${propertyData?.address?.city}, ${propertyData?.address?.state}`;
+	};
+	const getPropertyComponentText = (text: string, count: number) => {
+		return `${count} ${text}${count > 1 ? 's' : ''}`;
 	};
 
 	return layout === 'column' ? (
@@ -103,146 +106,105 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent='flex-start'
 					alignItems='center'
 				>
-					{propertyData?.bedrooms !== undefined &&
-						propertyData?.bedrooms !== null && (
-							<>
-								<KlubiqIcons.Bedroom
-									sx={{
-										color: 'text.primary',
-										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-									}}
-								/>
-								<Typography
-									variant='cardContentText'
-									noWrap={true}
-									sx={
-										{
-											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-										}
-									}
-								>
-									{propertyData?.bedrooms
-										? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 1 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
-						)}
-					{propertyData?.rooms !== undefined &&
-						propertyData?.rooms !== null && (
-							<>
-								<KlubiqIcons.Bedroom
-									sx={{
-										color: 'text.primary',
-										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-									}}
-								/>
-								<Typography
-									variant='cardContentText'
-									noWrap={true}
-									sx={
-										{
-											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-										}
-									}
-								>
-									{propertyData?.rooms
-										? `${propertyData?.rooms} room${Number(propertyData?.rooms) > 1 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
-						)}
-					{propertyData?.offices !== undefined &&
-						propertyData?.offices !== null && (
-							<>
-								<KlubiqIcons.EmojiOneBuildingIcon
-									sx={{
-										color: 'text.primary',
-										height: '15px',
-										// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-									}}
-								/>
-								<Typography
-									variant='cardContentText'
-									noWrap={true}
-									sx={
-										{
-											// opacity: `${!propertyData?.bedrooms ? 0 : 1}`,
-										}
-									}
-								>
-									{propertyData?.offices
-										? `${propertyData?.offices} Office${Number(propertyData?.offices) > 1 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
-						)}
+					{propertyData?.bedrooms > 0 && 
+						<>
+							<KlubiqIcons.Bedroom
+								sx={{
+									color: 'text.primary',
+								}}
+							/>
+							{<Typography variant='cardContentText' noWrap={true}>
+								{getPropertyComponentText('Bedroom', propertyData?.bedrooms)}
+							</Typography>}
+						</>
+					}
+					{propertyData?.rooms > 0 && (
+						<>
+							<KlubiqIcons.Bedroom
+								sx={{
+									color: 'text.primary',
+								}}
+							/>
+							<Typography variant='cardContentText' noWrap={true}>
+								{getPropertyComponentText('Room', Number(propertyData?.rooms))}
+							</Typography>
+						</>
+					)}
+					{propertyData?.offices > 0 && (
+						<>
+							<KlubiqIcons.EmojiOneBuildingIcon
+								sx={{
+									color: 'text.primary',
+									height: '15px',
+								}}
+							/>
+							<Typography variant='cardContentText' noWrap={true}>
+								{getPropertyComponentText(
+									'Office',
+									Number(propertyData?.offices),
+								)}
+							</Typography>
+						</>
+					)}
 
-					{propertyData?.bathrooms && Number(propertyData?.bathrooms) > 0 && (
+					{propertyData?.bathrooms > 0 && (
 						<>
 							<KlubiqIcons.ShowerIcon
 								sx={{
 									color: 'text.primary',
 									height: '16px',
-									// opacity: `${!propertyData?.bathrooms ? 0.5 : 1}`,
 								}}
 							/>
-							<Typography
-								variant='cardContentText'
-								noWrap={true}
-								// sx={{ opacity: `${!propertyData?.bathrooms ? 0.5 : 1}` }}
-							>
-								{propertyData?.bathrooms
-									? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
-									: '--'}
+							<Typography variant='cardContentText' noWrap={true}>
+								{getPropertyComponentText(
+									'Bathroom',
+									Number(propertyData?.bathrooms),
+								)}
 							</Typography>
 						</>
 					)}
 
-					{propertyData?.toilets && Number(propertyData?.toilets) > 0 && (
+					{propertyData?.toilets > 0 && (
 						<>
 							<KlubiqIcons.Bathroom
 								sx={{
 									color: 'text.primary',
-									// opacity: `${!propertyData?.toilets ? 0 : 1}`,
 								}}
 							/>
-							<Typography
-								variant='cardContentText'
-								noWrap={true}
-								// sx={{ opacity: `${!propertyData?.toilets ? 0 : 1}` }}
-							>
-								{propertyData?.toilets
-									? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
-									: '--'}
+							<Typography variant='cardContentText' noWrap={true}>
+								{getPropertyComponentText(
+									'Toilet',
+									Number(propertyData?.toilets),
+								)}
 							</Typography>
 						</>
 					)}
 				</Stack>
-				{
-					<Stack
-						sx={{
-							paddingTop: '0.5rem',
-						}}
-						direction='row'
-						spacing={1}
-						justifyContent='flex-start'
-						alignItems='center'
-					>
-						<KlubiqIcons.FloorPlan
-							sx={{
-								color: 'text.primary',
-							}}
-						/>
 
-						{
-							<Typography variant='cardContentText' noWrap={true}>
-								{propertyData?.area?.value
-									? `${propertyData?.area?.value} ${propertyData?.area?.unit}`
-									: `${propertyData?.unitCount} unit${propertyData?.unitCount > 1 ? 's' : ''}`}
-							</Typography>
-						}
-					</Stack>
-				}
+				<Stack
+					sx={{
+						paddingTop: '0.5rem',
+					}}
+					direction='row'
+					spacing={1}
+					justifyContent='flex-start'
+					alignItems='center'
+				>
+					<KlubiqIcons.FloorPlan
+						sx={{
+							color: 'text.primary',
+						}}
+					/>
+
+					{
+						<Typography variant='cardContentText' noWrap={true}>
+							{propertyData?.area?.value
+								? `${propertyData?.area?.value} ${propertyData?.area?.unit}`
+								: `${propertyData?.unitCount} unit${propertyData?.unitCount > 1 ? 's' : ''}`}
+						</Typography>
+					}
+				</Stack>
+
 				<Stack
 					sx={{
 						paddingTop: '1rem',
@@ -326,7 +288,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 							justifyContent='flex-start'
 							alignItems='center'
 						>
-							{propertyData?.bedrooms && (
+							{propertyData?.bedrooms > 0 && (
 								<>
 									<KlubiqIcons.Bedroom
 										sx={{
@@ -334,13 +296,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.bedrooms
-											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
-											: '--'}
+										{getPropertyComponentText(
+											'Bedroom',
+											Number(propertyData?.bedrooms),
+										)}
 									</Typography>
 								</>
 							)}
-							{propertyData?.offices && (
+							{propertyData?.offices > 0 && (
 								<>
 									<KlubiqIcons.EmojiOneBuildingIcon
 										sx={{
@@ -348,13 +311,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.offices
-											? `${propertyData?.offices} Office${Number(propertyData?.offices) > 0 ? 's' : ''}`
-											: '--'}
+										{getPropertyComponentText(
+											'Office',
+											Number(propertyData?.offices),
+										)}
 									</Typography>
 								</>
 							)}
-							{propertyData?.rooms && (
+							{propertyData?.rooms > 0 && (
 								<>
 									<KlubiqIcons.Bedroom
 										sx={{
@@ -362,58 +326,46 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 										}}
 									/>
 									<Typography variant='cardContentText'>
-										{propertyData?.rooms
-											? `${propertyData?.rooms} Room${Number(propertyData?.rooms) > 0 ? 's' : ''}`
-											: '--'}
+										{getPropertyComponentText(
+											'Room',
+											Number(propertyData?.rooms),
+										)}
 									</Typography>
 								</>
 							)}
 
-							{/* {propertyData?.bedrooms ? (
+							{propertyData?.bathrooms > 0 && (
 								<>
-									<KlubiqIcons.Bedroom
+									<KlubiqIcons.Bathroom
+										sx={{
+												color: 'text.primary',
+											}}
+										/>
+										<Typography variant='cardContentText'>
+											{getPropertyComponentText(
+												'Bathroom',
+												Number(propertyData?.bathrooms),
+											)}
+										</Typography>
+									</>
+								)}
+
+							{propertyData?.toilets > 0 && (
+								<>
+									<KlubiqIcons.Bathroom
 										sx={{
 											color: 'text.primary',
 										}}
 									/>
+
 									<Typography variant='cardContentText'>
-										{propertyData?.bedrooms
-											? `${propertyData?.bedrooms} Bedroom${Number(propertyData?.bedrooms) > 0 ? 's' : ''}`
-											: '--'}
+										{getPropertyComponentText(
+											'Toilet',
+											Number(propertyData?.toilets),
+										)}
 									</Typography>
 								</>
-							) : null} */}
-
-							{/* {propertyData?.bathrooms ? ( */}
-							<>
-								<KlubiqIcons.Bathroom
-									sx={{
-										color: 'text.primary',
-									}}
-								/>
-								<Typography variant='cardContentText'>
-									{propertyData?.bathrooms
-										? `${propertyData?.bathrooms} Bathroom${Number(propertyData?.bathrooms) > 0 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
-							{/* ) : null} */}
-
-							{/* {propertyData?.toilets ? ( */}
-							<>
-								<KlubiqIcons.Bathroom
-									sx={{
-										color: 'text.primary',
-									}}
-								/>
-
-								<Typography variant='cardContentText'>
-									{propertyData?.toilets
-										? `${propertyData?.toilets} Toilet${Number(propertyData?.toilets) > 0 ? 's' : ''}`
-										: '--'}
-								</Typography>
-							</>
-							{/* ) : null} */}
+							)}
 
 							<KlubiqIcons.FloorPlan
 								sx={{
