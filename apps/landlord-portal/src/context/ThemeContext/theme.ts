@@ -173,12 +173,7 @@ export const LightTheme: Theme = createTheme({
 		MuiSelect: {
 			styleOverrides: {
 				root: {
-					// 		maxHeight: 'calc(100% - 200px)',
 					maxHeight: 'calc(100% - 200px)',
-
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
 				},
 			},
 		},
