@@ -7,7 +7,7 @@ import { styles } from './styles';
 
 const AccountSettings: React.FC = () => {
 	const [activeTab, setActiveTab] = useState(0);
-	const tabChange = (event: React.SyntheticEvent, newValue: number) => {
+	const tabChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setActiveTab(newValue);
 	};
 

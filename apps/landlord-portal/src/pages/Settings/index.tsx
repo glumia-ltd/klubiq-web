@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Card, Stack } from '@mui/material';
+import { Typography, Card, Stack } from '@mui/material';
 import SettingsSwitch from './SettingsSwitch';
 import { styles } from './style';
 import AccountSettings from './Account/AccountSettings';
@@ -7,7 +7,7 @@ import NotificationPage from './Notification/Notification';
 
 const Setting: React.FC = () => {
 	const [activeTab, setActiveTab] = useState(0);
-	const tabChange = (event: React.SyntheticEvent, newValue: number) => {
+	const tabChange = (_event: React.SyntheticEvent, newValue: number) => {
 		setActiveTab(newValue);
 	};
 	return (
