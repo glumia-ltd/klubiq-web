@@ -162,6 +162,19 @@ const useAuth = () => {
 		}
 
 	}
+	const handleSignOut = async () => {
+		const payload = {
+			token: null,
+			user: {},
+			isSignedIn: false,
+			orgSettings: null,
+			orgSubscription: null,
+		};
+		dispatch(saveUser(payload));
+		sessionStorage.clear();
+		auth.signOut();
+		navigate('/login', { replace: true });
+	};
 
 	useEffect(() => {
 		const invTime = Date.now();
@@ -180,18 +193,8 @@ const useAuth = () => {
 				const userProfileData = await triggerGetUserByFbid().unwrap();
 				await handleAuthStateChange(currentUser, userProfileData, userMfa);
 			}
-			else {
-				consoleLog('User is not signed in');
-				const payload = {
-					token: '',
-					user: {},
-					isSignedIn: false,
-					orgSettings: null,
-					orgSubscription: null,
-				};
-				dispatch(saveUser(payload));
-				sessionStorage.clear();
-				auth.signOut();
+			else if (!currentUser && isSignedIn) {
+				handleSignOut();
 			}
 		});
 		if(!isSignedIn) {

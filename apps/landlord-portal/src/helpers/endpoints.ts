@@ -1,6 +1,7 @@
 export const authEndpoints = {
 	login: () => '/auth/login',
 	signup: () => '/auth/landlord/signup',
+	signOut: () => '/auth/signout',
 	emailVerification: () => '/auth/email-verification-link',
 	refreshToken: () => '/auth/exchange-refresh-token',
 	getUserByFbid: () => `/auth/user`,
