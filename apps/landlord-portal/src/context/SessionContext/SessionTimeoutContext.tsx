@@ -10,6 +10,10 @@ import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
 import { auth } from '../../firebase';
 import { consoleLog } from '../../helpers/debug-logger';
+import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
+import { useDispatch } from 'react-redux';
+import { saveUser } from '../../store/AuthStore/AuthSlice';
+import { useNavigate } from 'react-router-dom';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -23,6 +27,9 @@ interface SessionTimeoutProviderProps {
 export const SessionTimeoutProvider = ({
 	children,
 }: SessionTimeoutProviderProps) => {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const [userSignOut] = useSignOutMutation();
 	const [isTimedOut, setIsTimedOut] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [timeLeft, setTimeLeft] = useState(60); // 60 seconds warning before logout
@@ -40,6 +47,21 @@ export const SessionTimeoutProvider = ({
 		);
 	};
 
+	const handleSignOut = async () => {
+		await userSignOut({}).unwrap();
+		const payload = {
+			token: null,
+			user: {},
+			isSignedIn: false,
+			orgSettings: null,
+			orgSubscription: null,
+		};
+		dispatch(saveUser(payload));
+		sessionStorage.clear();
+		auth.signOut();
+		navigate('/login', { replace: true });
+	};
+
 	// Function to check whether the user has been inactive for too long
 	const checkInactivity = useCallback(() => {
 		const lastActivity = sessionStorage.getItem('lastActivity');
@@ -48,9 +70,7 @@ export const SessionTimeoutProvider = ({
 			const timeSinceLastActivity = currentTime - parseInt(lastActivity, 10);
 			if (timeSinceLastActivity >= INACTIVITY_LIMIT) {
 				setIsTimedOut(true);
-				sessionStorage.clear();
-				auth.signOut();
-				window.location.href = '/login'; // Redirect to login after timeout
+				handleSignOut();
 			} else if (timeSinceLastActivity >= WARNING_TIME) {
 				setShowModal(true); // Show inactivity warning modal
 				startCountdown();
@@ -65,9 +85,7 @@ export const SessionTimeoutProvider = ({
 			setTimeLeft((prevTimeLeft) => {
 				if (prevTimeLeft <= 1) {
 					clearInterval(countdownInterval);
-					auth.signOut();
-					sessionStorage.clear();
-					window.location.href = '/login'; // Auto logout after countdown ends
+					handleSignOut();
 					return 0;
 				}
 				return prevTimeLeft - 1;
