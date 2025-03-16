@@ -13,7 +13,6 @@ const firebaseConfig = {
 	measurementId: import.meta.env.VITE_MEASUREMENTID,
 };
 const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-
 const app = initializeApp(
 	firebaseConfig,
 	import.meta.env.VITE_APPLICATION_NAME,

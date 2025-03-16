@@ -6,6 +6,7 @@ import { UserProfile } from '../../shared/auth-types';
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
 	baseQuery: customApiFunction,
+	tagTypes: ['Property', 'leases', 'lease-metadata', 'Notifications'],
 	endpoints: (builder) => ({
 		getUserByFbid: builder.query<UserProfile, void>({
 			query: () => ({
@@ -39,6 +40,13 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
+		signOut: builder.mutation({
+			query: () => ({
+				url: authEndpoints.signOut(),
+				method: 'POST',
+			}),
+			invalidatesTags: ['Property', 'leases', 'lease-metadata', 'Notifications'],
+		}),
 	}),
 });
 
@@ -51,4 +59,5 @@ export const {
 	useGetOrgSettingsQuery,
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
+	useSignOutMutation,
 } = authApiSlice;

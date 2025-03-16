@@ -34,6 +34,7 @@ import {
 	useLazyGetOrgSettingsQuery,
 	useLazyGetOrgSubscriptionQuery,
 	useLazyGetUserByFbidQuery,
+	useSignOutMutation,
 } from '../../store/AuthStore/authApiSlice';
 import { UserProfile } from '../../shared/auth-types';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
@@ -66,6 +67,7 @@ const Login = () => {
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue_path');
+	const [userSignOut] = useSignOutMutation();
 	const verifyOTP = async () => {
 		setIsVerifying(true);
 		if (otp.length != 6) {
@@ -111,7 +113,17 @@ const Login = () => {
 		setMFAResolver(resolver);
 		set2FARequired(true);
 	};
-	const deAuthenticateUser = () => {
+
+	const deAuthenticateUser = async () => {
+		await userSignOut({}).unwrap();
+		const payload = {
+			token: null,
+			user: {},
+			isSignedIn: false,
+			orgSettings: null,
+			orgSubscription: null,
+		};
+		dispatch(saveUser(payload));
 		sessionStorage.clear();
 		auth.signOut();
 	};
