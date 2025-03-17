@@ -22,7 +22,7 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
+import { removeUser } from '../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 
@@ -33,7 +33,6 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 	const allContexts = useContext(Context);
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
@@ -91,17 +90,9 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		dispatch(removeUser());
 		sessionStorage.clear();
 		auth.signOut();
-		navigate('/login', { replace: true });
 	};
 
 	const handleLinkClick = (title: string) => {

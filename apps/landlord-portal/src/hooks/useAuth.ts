@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { multiFactor, MultiFactorUser, onAuthStateChanged, User } from 'firebase/auth';
-import { getAuthState, saveUser } from '../store/AuthStore/AuthSlice';
+import { getAuthState, removeUser, saveUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
@@ -162,19 +162,11 @@ const useAuth = () => {
 		}
 
 	}
-	const handleSignOut = async () => {
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
-		sessionStorage.clear();
-		auth.signOut();
-		navigate('/login', { replace: true });
-	};
+	// const handleSignOut = async () => {
+	// 	dispatch(removeUser());
+	// 	sessionStorage.clear();
+	// 	auth.signOut();
+	// };
 
 	useEffect(() => {
 		const invTime = Date.now();
@@ -192,9 +184,6 @@ const useAuth = () => {
 				const userMfa = multiFactor(currentUser);
 				const userProfileData = await triggerGetUserByFbid().unwrap();
 				await handleAuthStateChange(currentUser, userProfileData, userMfa);
-			}
-			else if (!currentUser && isSignedIn) {
-				handleSignOut();
 			}
 		});
 		if(!isSignedIn) {

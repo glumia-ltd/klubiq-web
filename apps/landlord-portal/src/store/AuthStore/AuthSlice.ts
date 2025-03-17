@@ -27,7 +27,7 @@ const options = {
 			};
 		},
 		removeUser: (state: AuthType) => {
-			return { ...state, user: {}, token: null, isSignedIn: false };
+			return { ...state, user: {}, token: null, isSignedIn: false, orgSettings: {}, orgSubscription: {} };
 		},
 	},
 };

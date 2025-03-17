@@ -37,7 +37,7 @@ import {
 	useSignOutMutation,
 } from '../../store/AuthStore/authApiSlice';
 import { UserProfile } from '../../shared/auth-types';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
+import { removeUser, saveUser } from '../../store/AuthStore/AuthSlice';
 import { consoleLog } from '../../helpers/debug-logger';
 
 const validationSchema = yup.object({
@@ -66,7 +66,7 @@ const Login = () => {
 	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
-	const continuePath = searchParams.get('continue_path');
+	const continuePath = searchParams.get('continue');
 	const [userSignOut] = useSignOutMutation();
 	const verifyOTP = async () => {
 		setIsVerifying(true);
@@ -116,14 +116,7 @@ const Login = () => {
 
 	const deAuthenticateUser = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		dispatch(removeUser());
 		sessionStorage.clear();
 		auth.signOut();
 	};
