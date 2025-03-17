@@ -11,8 +11,7 @@ import { Typography } from '@mui/material';
 import { auth } from '../../firebase';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { useDispatch } from 'react-redux';
-import { removeUser } from '../../store/AuthStore/AuthSlice';
+import { resetStore } from '../../store';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -26,7 +25,6 @@ interface SessionTimeoutProviderProps {
 export const SessionTimeoutProvider = ({
 	children,
 }: SessionTimeoutProviderProps) => {
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const [isTimedOut, setIsTimedOut] = useState(false);
 	const [showModal, setShowModal] = useState(false);
@@ -47,7 +45,7 @@ export const SessionTimeoutProvider = ({
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		dispatch(removeUser());
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
 	};

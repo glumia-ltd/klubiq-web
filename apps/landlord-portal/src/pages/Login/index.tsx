@@ -37,8 +37,9 @@ import {
 	useSignOutMutation,
 } from '../../store/AuthStore/authApiSlice';
 import { UserProfile } from '../../shared/auth-types';
-import { removeUser, saveUser } from '../../store/AuthStore/AuthSlice';
+import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { consoleLog } from '../../helpers/debug-logger';
+import { resetStore } from '../../store';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -116,7 +117,7 @@ const Login = () => {
 
 	const deAuthenticateUser = async () => {
 		await userSignOut({}).unwrap();
-		dispatch(removeUser());
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
 	};

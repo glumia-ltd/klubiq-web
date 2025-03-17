@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { multiFactor, MultiFactorUser, onAuthStateChanged, User } from 'firebase/auth';
-import { getAuthState, removeUser, saveUser } from '../store/AuthStore/AuthSlice';
+import { getAuthState, saveUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
@@ -162,11 +162,6 @@ const useAuth = () => {
 		}
 
 	}
-	// const handleSignOut = async () => {
-	// 	dispatch(removeUser());
-	// 	sessionStorage.clear();
-	// 	auth.signOut();
-	// };
 
 	useEffect(() => {
 		const invTime = Date.now();

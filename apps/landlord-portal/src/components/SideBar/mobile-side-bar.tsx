@@ -23,8 +23,7 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { removeUser } from '../../store/AuthStore/AuthSlice';
-import { useDispatch } from 'react-redux';
+import { resetStore } from '../../store';
 function MobileSideBar({
 	onSelectSection,
 }: {
@@ -37,7 +36,6 @@ function MobileSideBar({
 	const allContexts = useContext(Context);
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const {
 		sidebarOpen,
@@ -78,7 +76,7 @@ function MobileSideBar({
 	
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		dispatch(removeUser());
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
 	};

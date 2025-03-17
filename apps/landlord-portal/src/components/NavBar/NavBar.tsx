@@ -2,8 +2,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAuthState, removeUser } from '../../store/AuthStore/AuthSlice';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import {
 	Grid,
@@ -37,6 +37,7 @@ import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
+import { resetStore } from '../../store';
 interface NavBarProps {
 	section: string;
 }
@@ -46,7 +47,6 @@ const NavBar = ({ section }: NavBarProps) => {
 	const { data: notificationCount } = useCountNotificationsQuery();
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
 		useContext(Context);
@@ -84,7 +84,7 @@ const NavBar = ({ section }: NavBarProps) => {
 	};
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		dispatch(removeUser());
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
 	};
