@@ -11,9 +11,7 @@ import { Typography } from '@mui/material';
 import { auth } from '../../firebase';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { useDispatch } from 'react-redux';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
-import { useNavigate } from 'react-router-dom';
+import { resetStore } from '../../store';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -27,8 +25,6 @@ interface SessionTimeoutProviderProps {
 export const SessionTimeoutProvider = ({
 	children,
 }: SessionTimeoutProviderProps) => {
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const [isTimedOut, setIsTimedOut] = useState(false);
 	const [showModal, setShowModal] = useState(false);
@@ -49,17 +45,9 @@ export const SessionTimeoutProvider = ({
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
-		navigate('/login', { replace: true });
 	};
 
 	// Function to check whether the user has been inactive for too long
@@ -178,7 +166,9 @@ export const SessionTimeoutProvider = ({
 					</Button>
 					<Button
 						variant='outlined'
-						onClick={() => ((window.location.href = '/login'), auth.signOut())}
+						onClick={() => {
+							handleSignOut();
+						}}
 					>
 						Logout
 					</Button>

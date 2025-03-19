@@ -27,14 +27,15 @@ const options = {
 			};
 		},
 		removeUser: (state: AuthType) => {
-			return { ...state, user: {}, token: null, isSignedIn: false };
+			return { ...state, user: {}, token: null, isSignedIn: false, orgSettings: {}, orgSubscription: {} };
 		},
+		resetAuth: () => initialState,
 	},
 };
 
 const authSlice = createSlice(options);
 
-export const { saveUser, removeUser } = authSlice.actions;
+export const { saveUser, removeUser, resetAuth } = authSlice.actions;
 
 export const getAuthState = (state: RootState) => state.auth;
 

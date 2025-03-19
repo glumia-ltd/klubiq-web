@@ -1,5 +1,5 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
-import authReducer from './AuthStore/AuthSlice';
+import authReducer, { resetAuth } from './AuthStore/AuthSlice';
 import snackbarReducer from './SnackbarStore/SnackbarSlice';
 import navReducer from './NavStore/NavSlice';
 import propertyPageReducer from './PropertyPageStore/PropertySlice';
@@ -47,5 +47,14 @@ const store: Store = configureStore({
 });
 
 setupListeners(store.dispatch);
-
+export const resetStore = () => {
+	store.dispatch(resetAuth());
+	store.dispatch(propertyApiSlice.util.resetApiState());
+	store.dispatch(dashboardApiSlice.util.resetApiState());
+	store.dispatch(authApiSlice.util.resetApiState());
+	store.dispatch(orgApiSlice.util.resetApiState());
+	store.dispatch(leaseApiSlice.util.resetApiState());
+	store.dispatch(notificationApiSlice.util.resetApiState());
+	store.dispatch(globalApiSlice.util.resetApiState());
+};
 export default store;
