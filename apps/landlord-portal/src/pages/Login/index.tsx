@@ -39,6 +39,7 @@ import {
 import { UserProfile } from '../../shared/auth-types';
 import { saveUser } from '../../store/AuthStore/AuthSlice';
 import { consoleLog } from '../../helpers/debug-logger';
+import { resetStore } from '../../store';
 
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
@@ -66,7 +67,7 @@ const Login = () => {
 	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
-	const continuePath = searchParams.get('continue_path');
+	const continuePath = searchParams.get('continue');
 	const [userSignOut] = useSignOutMutation();
 	const verifyOTP = async () => {
 		setIsVerifying(true);
@@ -116,14 +117,7 @@ const Login = () => {
 
 	const deAuthenticateUser = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
 	};

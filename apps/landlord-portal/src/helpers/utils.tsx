@@ -28,7 +28,7 @@ export const getCurrencySymbol = (orgSettings: Record<string, unknown>) => {
 	} else {
 		consoleLog('No orgSettings found -vvv');
 		getData('org-settings', 'client-config').then((data) => {
-			currencySymbol = get(data, 'orgSettings.currencySymbol', '');
+			currencySymbol = get(data, 'orgSettings.currencySymbol', '₦');
 			return currencySymbol;
 		});
 	}
@@ -41,14 +41,14 @@ const getInfoFromUserSettings = (orgSettings: Record<string, unknown>) => {
 	if (!orgSettings) {
 		consoleLog('No orgSettings found');
 		getData('org-settings', 'client-config').then((data) => {
-			currencyCode = get(data, 'orgSettings.currency', '') as string;
-			countryCode = get(data, 'orgSettings.countryCode', '') as string;
-			lang = get(data, 'orgSettings.language', '') as string;
+			currencyCode = get(data, 'orgSettings.currency', 'NGN') as string;
+			countryCode = get(data, 'orgSettings.countryCode', 'NG') as string;
+			lang = get(data, 'orgSettings.language', 'en') as string;
 		});
 	} else {
-		currencyCode = get(orgSettings, 'currency', '') as string;
-		countryCode = get(orgSettings, 'countryCode', '') as string;
-		lang = get(orgSettings, 'language', '') as string;
+		currencyCode = get(orgSettings, 'currency', 'NGN') as string;
+		countryCode = get(orgSettings, 'countryCode', 'NG') as string;
+		lang = get(orgSettings, 'language', 'en') as string;
 	}
 	if (!currencyCode || !countryCode || !lang) {
 		currencyCode = '';

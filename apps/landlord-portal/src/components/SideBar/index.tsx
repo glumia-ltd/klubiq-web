@@ -2,7 +2,7 @@ import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import { useContext, useEffect } from 'react';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -22,9 +22,8 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
-import { useDispatch } from 'react-redux';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
+import { resetStore } from '../../store';
 
 function SideBar({ onSelectSection }: { onSelectSection: (section: string) => void }) {
 	const theme = useTheme();
@@ -33,8 +32,6 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 	const allContexts = useContext(Context);
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
 		allContexts;
@@ -91,17 +88,9 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
-		navigate('/login', { replace: true });
 	};
 
 	const handleLinkClick = (title: string) => {

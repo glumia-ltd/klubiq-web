@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import { useContext, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -23,8 +23,7 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { saveUser } from '../../store/AuthStore/AuthSlice';
-import { useDispatch } from 'react-redux';
+import { resetStore } from '../../store';
 function MobileSideBar({
 	onSelectSection,
 }: {
@@ -37,8 +36,6 @@ function MobileSideBar({
 	const allContexts = useContext(Context);
 	const pathList = getPathList();
 	const { pathname } = useLocation();
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const {
 		sidebarOpen,
@@ -79,17 +76,9 @@ function MobileSideBar({
 	
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		const payload = {
-			token: null,
-			user: {},
-			isSignedIn: false,
-			orgSettings: null,
-			orgSubscription: null,
-		};
-		dispatch(saveUser(payload));
+		resetStore();
 		sessionStorage.clear();
 		auth.signOut();
-		navigate('/login', { replace: true });
 	};
 
 	const handleLinkClick = (title: string) => {

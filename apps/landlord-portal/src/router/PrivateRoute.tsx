@@ -5,7 +5,7 @@ import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 import useAuth from '../hooks/useAuth';
 import MFAPrompt from '../components/Dialogs/MfaPrompts';
 import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimeoutContext';
-import { useLocation } from 'react-router-dom';
+//import { useLocation } from 'react-router-dom';
 import AlertDialog from '../components/Dialogs/AlertDialog';
 
 const PrivateRoute = () => {
@@ -17,16 +17,14 @@ const PrivateRoute = () => {
 		alertDialogs,
 	} = useAuth();
 	const { token } = useSelector(getAuthState);
-	const location = useLocation();
+	//const location = useLocation();
 	const storedSession = sessionStorage.getItem(
 		firebaseResponseObject.sessionStorage || '',
 	);
 	const storedSessionObject = storedSession && JSON.parse(storedSession);
 
 	const userToken = token || storedSessionObject?.stsTokenManager?.accessToken;
-	const loginUrl = location.pathname
-		? `login?continue_path=${location.pathname}`
-		: 'login';
+	const loginUrl = 'login';
 
 	return userToken ? (
 		<>
