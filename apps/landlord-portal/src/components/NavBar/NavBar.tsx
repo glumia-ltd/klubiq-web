@@ -32,12 +32,14 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { auth } from '../../firebase';
 import CustomPopper from '../Shared/CustomPopper';
-import { useCountNotificationsQuery, useGetNotificationsQuery } from '../../store/NotificationStore/NotificationApiSlice';
+import { useCountNotificationsQuery, useGetNotificationsQuery, useReadNotificationsMutation } from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
+import { NotificationData } from '../../shared/global-types';
+import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
 interface NavBarProps {
 	section: string;
 }
@@ -48,6 +50,8 @@ const NavBar = ({ section }: NavBarProps) => {
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const [userSignOut] = useSignOutMutation();
+	const [readNotifications] = useReadNotificationsMutation();
+
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
 		useContext(Context);
 	// const [searchText, setSearchText] = useState('');
@@ -134,8 +138,14 @@ const NavBar = ({ section }: NavBarProps) => {
 	useEffect(() => {
 	}, [notificationData]);
 
-	const handleNotificationAction = (actionLink: string) => {
-		window.location.href = actionLink;
+	const handleNotificationAction = async (item: NotificationData) => {
+		const readPayload: ReadNotificationType = {
+			notificationIds: [item.id],
+			isRead: true,
+			isDelivered: false,
+		};
+		await readNotifications(readPayload).unwrap();
+		window.location.href = item.actionLink;
 	};
 
 	return (
@@ -229,7 +239,7 @@ const NavBar = ({ section }: NavBarProps) => {
 													key={`notification-${item.id}`}
 													sx={styles(isSmallScreen, theme).listItem}
 													onClick={() =>
-														handleNotificationAction(item.actionLink)
+														handleNotificationAction(item)
 													}
 												>
 													<ListItemText
