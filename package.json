@@ -5,13 +5,13 @@
   "private": true,
   "author": "Glumia Solutions",
   "scripts": {
-    "buildLP": "turbo build --filter='./apps/landlord-portal'",
-    "buildAP": "turbo build --filter='./apps/admin-portal'",
-    "devLP": "turbo dev --filter='./apps/landlord-portal'",
-    "startAP": "turbo start --filter='./apps/admin-portal'",
-    "resetAP": "turbo reset --filter='./apps/admin-portal'",
-    "lintAP": "turbo lint --filter='./apps/admin-portal'",
-    "lintLP": "turbo lint --filter='./apps/landlord-portal'",
+    "buildLP": "turbo build --filter=./apps/landlord-portal",
+    "buildAP": "turbo build --filter=./apps/admin-portal",
+    "devLP": "turbo dev --filter=./apps/landlord-portal",
+    "startAP": "turbo start --filter=./apps/admin-portal",
+    "resetAP": "turbo reset --filter=./apps/admin-portal",
+    "lintAP": "turbo lint --filter=./apps/admin-portal",
+    "lintLP": "turbo lint --filter=./apps/landlord-portal",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "node .husky/install.mjs"
   },
@@ -21,14 +21,15 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
-    "turbo": "latest"
+    "turbo": "^2.4.4"
   },
   "engines": {
     "node": ">=18"
   },
   "packageManager": "npm@10.5.0",
   "workspaces": [
-    "apps/*",
+    "apps/landlord-portal",
+    "apps/admin-portal",
     "packages/*"
   ],
   "dependencies": {

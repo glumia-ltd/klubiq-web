@@ -14,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../components/PropertiesGuage';
@@ -45,7 +45,7 @@ import { consoleLog } from '../../helpers/debug-logger';
 import { getCurrencySymbol } from '../../helpers/utils';
 
 const DashBoard = () => {
-	const { orgSettings } = useSelector(getAuthState);
+	const { orgSettings, user } = useSelector(getAuthState);
 	const { mode } = useContext(ThemeContext);
 	const [firstDay, setFirstDay] = useState<Dayjs>(
 		dayjs().subtract(11, 'months'),
@@ -53,6 +53,14 @@ const DashBoard = () => {
 	const [secondDay, setSecondDay] = useState<Dayjs>(dayjs());
 
 	const dispatch = useDispatch();
+
+	const greeting = useMemo(() => {
+		const hour = dayjs().hour();
+
+		if (hour >= 17) return 'Good Evening';
+		if (hour >= 12) return 'Good Afternoon';
+		return 'Good Morning';
+	}, []); // Empty dependency array since we only need this to calculate once per mount
 
 	const { data: dashboardMetrics, isLoading: isDashboardMetricsLoading } =
 		useGetDashboardMetricsQuery();
@@ -174,7 +182,24 @@ const DashBoard = () => {
 			) : (
 				// <Container maxWidth={'xl'} sx={styles.containerStyle}>
 				<>
-					<Grid container spacing={2}>
+					<Grid item xs={12}>
+						<Typography
+							variant='h5'
+							sx={{
+								mb: 3,
+								color: 'text.primary',
+								// Add transition for smooth theme changes
+								transition: 'color 0.2s ease-in-out',
+							}}
+						>
+							{`${greeting}, ${user?.firstName || 'User'}`}
+						</Typography>
+					</Grid>
+					<Grid
+						container
+						spacing={2}
+						direction={{ lg: 'row', xs: 'column-reverse' }}
+					>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 							{/* PROPERTIES */}
 							<Grid item xs={12} sm={12} md={4} lg={4}>
@@ -191,9 +216,7 @@ const DashBoard = () => {
 										</Typography>
 									</Stack> */}
 									<Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography sx={styles.typoStyle}>
-											Total Units{' '}
-										</Typography>{' '}
+										<Typography sx={styles.typoStyle}>Total Units </Typography>{' '}
 										<Typography
 											sx={styles.valueTextStyle}
 											variant='dashboardTypography'
@@ -669,7 +692,6 @@ const DashBoard = () => {
 								</Card>
 							</Grid>
 						</Grid>
-
 						<Grid container item xs={12} sm={12} md={12} lg={3}>
 							<ReportCard />
 						</Grid>
