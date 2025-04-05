@@ -1,4 +1,4 @@
-import { Grid, Skeleton, Container, Box, Card, Stack } from '@mui/material';
+import { Grid, Skeleton, Box, Card, Stack } from '@mui/material';
 import { styles } from './style';
 import { useContext } from 'react';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
