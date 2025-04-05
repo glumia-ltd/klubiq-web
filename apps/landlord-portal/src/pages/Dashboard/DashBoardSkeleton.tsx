@@ -7,177 +7,201 @@ const DashBoardSkeleton = () => {
 	const { mode } = useContext(ThemeContext);
 
 	return (
-		<Container maxWidth={'xl'} sx={styles.containerStyle}>
-			<Grid container spacing={2}>
+		<>
+			<Grid
+				container
+				spacing={2}
+				direction={{ lg: 'row', xs: 'column-reverse' }}
+			>
 				<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 					<Grid item xs={12} sm={12} md={4} lg={4}>
 						<Card sx={styles.cardStyle}>
-							<Stack direction={'column'} spacing={2}>
+							<Stack direction={'column'} spacing={2} sx={{ width: '100%' }}>
 								<Stack direction={'row'} sx={styles.boxStyle}>
-									<Skeleton variant='text' sx={styles.typoStyle} width='35%' />
 									<Skeleton
 										variant='text'
 										sx={styles.valueTextStyle}
 										width='50%'
 									/>
+									<Skeleton
+										variant='text'
+										sx={styles.valueTextStyle}
+										width='5%'
+									/>
 								</Stack>
-								<Stack direction={'row'} sx={styles.boxStyle}>
-									<div>
+								<Stack direction={'row'} spacing={2} sx={styles.boxStyle}>
+									<Box width={'50%'}>
 										<Skeleton
 											variant='text'
 											sx={styles.valueTextStyle}
-											width='5rem'
-											height={15}
+											width='100%'
 										/>
 										<Skeleton
 											variant='text'
 											sx={styles.valueTextStyle}
-											width='5rem'
-											height={15}
-										/>{' '}
-										<Skeleton
-											variant='text'
-											sx={styles.valueTextStyle}
-											width='5rem'
-											height={15}
-										/>{' '}
-										<Skeleton
-											variant='text'
-											sx={styles.valueTextStyle}
-											width='5rem'
-											height={15}
+											width='100%'
 										/>
-									</div>
-									<div>
+										<Skeleton
+											variant='text'
+											sx={styles.valueTextStyle}
+											width='100%'
+										/>
+									</Box>
+									<Box width={'50%'} justifyItems={'end'}>
 										<Skeleton variant='circular' width={100} height={100} />
-									</div>
+									</Box>
 								</Stack>
 							</Stack>
 						</Card>
 					</Grid>
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={styles.cardStyleTwo}>
-							<Box>
+							<Stack
+								direction={'column'}
+								spacing={2}
+								sx={{
+									width: '100%',
+									height: '100%',
+									justifyContent: 'space-between',
+								}}
+							>
 								<Skeleton
 									variant='text'
-									height={15}
-									width='40%'
-									sx={styles.typoStyle}
-								/>
-								<Skeleton
-									variant='text'
-									height={30}
 									width='100%'
-									sx={styles.typoStyle}
+									sx={styles.valueTextStyle}
 								/>
-							</Box>
-
-							<Box sx={styles.changeArrowBoxStyle}>
 								<Skeleton
-									variant='rounded'
-									height={20}
-									width='20%'
-									sx={styles.icons}
+									variant='text'
+									width='100%'
+									sx={styles.valueTextStyle}
 								/>
+								<Box sx={styles.changeArrowBoxStyle}>
+									<Skeleton
+										variant='rounded'
+										height={20}
+										width='15%'
+										sx={styles.icons}
+									/>
 
-								<Skeleton variant='text' height={10} width='60%' />
-							</Box>
+									<Skeleton
+										variant='text'
+										sx={styles.valueTextStyle}
+										width='85%'
+									/>
+								</Box>
+							</Stack>
 						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={styles.cardStyleTwo}>
-							<Skeleton
-								variant='text'
-								height={10}
-								width='40%'
-								sx={styles.typoStyle}
-							/>{' '}
-							<Box display={'flex'} alignItems={'center'}>
+							<Stack
+								direction={'column'}
+								spacing={2}
+								sx={{
+									width: '100%',
+									height: '100%',
+									justifyContent: 'space-between',
+								}}
+							>
 								<Skeleton
-									variant='rectangular'
-									style={styles.calendarTodayStyle}
+									variant='text'
+									width='100%'
+									sx={styles.valueTextStyle}
 								/>
-								<Skeleton variant='text' height={30} width='35%' />
-							</Box>
-							<Box mt='2.5rem'>
-								<Skeleton variant='text' height={10} width='43%' />
-							</Box>
+								<Skeleton
+									variant='text'
+									width='100%'
+									sx={styles.valueTextStyle}
+								/>
+								<Skeleton
+									variant='text'
+									width='100%'
+									sx={styles.valueTextStyle}
+								/>
+							</Stack>
 						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={8} lg={8}>
 						<Card sx={styles.cardStyleThree}>
-							<Skeleton variant='text' height={15} width='40%' />
-							<Box sx={styles.occupancyBoxStyle}>
-								<Skeleton
-									variant='text'
-									height={20}
-									width='30%'
-									sx={styles.icons}
-								/>
-								<Skeleton
-									variant='rounded'
-									height={20}
-									width='10%'
-									sx={styles.icons}
-								/>{' '}
-							</Box>
-							<Box sx={styles.totalExpensesStyle} mt='150px'>
-								<Box>
-									<Skeleton variant='text' height={12} width='80%' />
-									<Box
-										sx={{ ...styles.boxStyle, alignItems: 'flex-start' }}
-										mt='25px'
-									>
-										<Skeleton variant='text' height={25} width='240px' />
-
-										<Skeleton variant='text' height={15} width='50px' />
-									</Box>
-								</Box>
-
-								<Box>
-									<Skeleton variant='text' height={12} width='80%' />
-									<Box
-										display={'flex'}
-										justifyContent={'space-between'}
-										mt='25px'
-									>
-										<Skeleton variant='text' height={20} width='240px' />
-										<Skeleton variant='text' height={15} width='50px' />
-									</Box>
-								</Box>
-							</Box>
+						<Stack
+									direction={'row'}
+									spacing={2}
+									sx={{
+										width: '100%',
+										height: '100%',
+										justifyContent: 'space-between',
+									}}
+								>
+									<Stack direction={'column'}  width={'50%'} justifyContent={'space-between'}>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+									</Stack>
+									<Stack direction={'column'} spacing={2} width={'50%'} justifyContent={'space-between'}>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+										<Skeleton
+											variant='text'
+											width='100%'
+											sx={styles.valueTextStyle}
+										/>
+									</Stack>
+								</Stack>
 						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={styles.cardStyleFour}>
-							<Box>
+						<Stack
+								direction={'column'}
+								spacing={2}
+								sx={{
+									width: '100%',
+									height: '100%',
+									justifyContent: 'space-between',
+								}}
+							>
 								<Skeleton
 									variant='text'
-									height={10}
 									width='100%'
-									sx={styles.typoStyle}
+									height={40}
+									sx={styles.valueTextStyle}
 								/>
 								<Skeleton
 									variant='text'
-									height={30}
 									width='100%'
-									sx={styles.typoStyle}
+									height={40}
+									sx={styles.valueTextStyle}
 								/>
-							</Box>
-
-							<Box sx={styles.changeArrowBoxStyle}>
 								<Skeleton
-									variant='rounded'
-									height={20}
-									width='20%'
-									sx={styles.icons}
+									variant='text'
+									width='100%'
+									height={40}
+									sx={styles.valueTextStyle}
 								/>
-
-								<Skeleton variant='text' height={10} width='60%' />
-							</Box>
+							</Stack>
 						</Card>
 					</Grid>
 				</Grid>
@@ -200,44 +224,37 @@ const DashBoardSkeleton = () => {
 							: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				}}
 			>
-				<Grid item xs={12} sm={12} md={7}>
-					<Skeleton variant='text' height={15} width='20%' />
-					<Box
-						display={'flex'}
-						textAlign={'center'}
-						alignItems={'center'}
-						mt='10px'
-					>
-						<Skeleton
-							variant='text'
-							height={15}
-							width='30%'
-							sx={styles.icons}
-						/>
-
-						<Skeleton
-							variant='rounded'
-							height={20}
-							width='6%'
-							sx={styles.icons}
-						/>
-					</Box>
-				</Grid>
-
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={5}
-					alignItems={'center'}
-					justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
-					display={'flex'}
-				>
-					<Skeleton variant='rounded' height={35} width='35%' />
-					<Skeleton variant='text' height={15} width='5%' />
-					<Skeleton variant='rounded' height={35} width='35%' />
-
-					<Skeleton variant='rounded' height={25} width='8%' />
+				<Grid item xs={12} sm={12} md={12}>
+				<Skeleton
+									variant='text'
+									width='20%'
+									sx={styles.valueTextStyle}
+								/>
+					<Stack direction={'row'} sx={{ justifyContent: 'space-between'}}	>
+					<Skeleton
+									variant='text'
+									width='30%'
+									height={50}
+									sx={styles.valueTextStyle}
+								/>
+								<Stack direction={'row'} spacing={2} sx={{ width: '50%', justifyContent:'flex-end'}}>
+								<Skeleton
+									variant='text'
+									height={50}
+									width={'30%'}
+									sx={styles.valueTextStyle}
+								/>
+								<Skeleton
+									variant='text'
+									height={50}
+									width={'5%'}
+									sx={styles.valueTextStyle}
+								/>
+								</Stack>
+								
+					
+					</Stack>
+				
 				</Grid>
 
 				<Grid
@@ -250,10 +267,23 @@ const DashBoardSkeleton = () => {
 					display={'flex'}
 					justifyContent={'center'}
 				>
-					<Skeleton variant='rounded' height={400} width='70%' />
+					<Stack direction={'row'} spacing={2} sx={{width: '80%', height: '100%', justifyContent: 'space-around'}}	>
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+						<Skeleton variant='rounded' height={400} width='3%' />
+					</Stack>
 				</Grid>
 			</Grid>
-		</Container>
+		</>
 	);
 };
 
