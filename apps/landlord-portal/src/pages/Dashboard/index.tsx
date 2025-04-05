@@ -56,9 +56,8 @@ const DashBoard = () => {
 
 	const greeting = useMemo(() => {
 		const hour = dayjs().hour();
-
-		if (hour >= 17) return 'Good Evening';
-		if (hour >= 12) return 'Good Afternoon';
+		if (hour >= 17) {return 'Good Evening'};
+		if (hour >= 12) {return 'Good Afternoon'};
 		return 'Good Morning';
 	}, []); // Empty dependency array since we only need this to calculate once per mount
 
@@ -177,13 +176,8 @@ const DashBoard = () => {
 
 	return (
 		<>
-			{isDashboardMetricsLoading ? (
-				<DashBoardSkeleton />
-			) : (
-				// <Container maxWidth={'xl'} sx={styles.containerStyle}>
-				<>
-					<Grid item xs={12}>
-						<Typography
+		<Grid item xs={12}>
+					{user && user?.firstName ? <Typography
 							variant='h5'
 							sx={{
 								mb: 3,
@@ -193,8 +187,17 @@ const DashBoard = () => {
 							}}
 						>
 							{`${greeting}, ${user?.firstName || 'User'}`}
-						</Typography>
+						</Typography> : <Skeleton
+											variant='text'
+											sx={{...styles.valueTextStyle, mb: 3}}
+											width='20rem'
+											height={50}
+										/>}
 					</Grid>
+			{isDashboardMetricsLoading ? (
+				<DashBoardSkeleton />
+			) : (
+				<>
 					<Grid
 						container
 						spacing={2}
@@ -827,7 +830,6 @@ const DashBoard = () => {
 						</Grid>
 					</Grid>
 				</>
-				// </Container>
 			)}
 		</>
 	);
