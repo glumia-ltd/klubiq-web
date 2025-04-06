@@ -9,15 +9,17 @@ import MiniCard from '../../components/LeaseCards/MiniCard';
 import { LeaseDocumentTable } from './LeaseDocumentTable';
 import { useGetSingleLeaseByIdQuery } from '../../store/LeaseStore/leaseApiSlice';
 import { useLocation } from 'react-router-dom';
-import { getCurrencySymbol } from '../../helpers/utils';
+import { DateStyle, getCurrencySymbol, getLocaleDateFormat } from '../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import dayjs from 'dayjs';
 
 const LeaseDetails = () => {
 	const location = useLocation();
 	const { orgSettings } = useSelector(getAuthState);
-
+	const timeDateOptions = {
+		dateStyle: DateStyle.FULL,
+		hour12: true,
+	};
 	const currentLeaseId = location.pathname.split('/')[2]!;
 
 	const { data } = useGetSingleLeaseByIdQuery({ id: currentLeaseId || '' });
@@ -119,7 +121,7 @@ const LeaseDetails = () => {
 					<MiniCard
 						value={
 							data?.nextPaymentDate
-								? dayjs(data.nextPaymentDate).format('DD-MM-YYYY')
+								? getLocaleDateFormat(orgSettings, data.nextPaymentDate, timeDateOptions)
 								: ''
 						}
 						name='Next Payment'

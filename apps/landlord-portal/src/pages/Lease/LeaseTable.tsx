@@ -14,6 +14,9 @@ import { styles } from './style';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { GroupedAvatar } from '../../components/GroupedAvatar/GroupedAvatar';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { getLocaleDateFormat, DateStyle } from '../../helpers/utils';
 
 type LeaseTableType = {
 	title: string;
@@ -24,6 +27,11 @@ type LeaseTableType = {
 };
 
 export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
+	const { orgSettings } = useSelector(getAuthState);
+	const timeDateOptions = {
+		dateStyle: DateStyle.MEDIUM,
+		hour12: true,
+	};
 	const statusColors: Record<string, string> = {
 		Active: 'success',
 		Expiring: 'warning',
@@ -90,8 +98,8 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 							</TableCell>
 							<TableCell align='center'>{lease?.property?.name}</TableCell>
 							<TableCell align='center'>{lease?.unitNumber}</TableCell>
-							<TableCell align='center'>{lease?.startDate}</TableCell>
-							<TableCell align='center'>{lease?.endDate}</TableCell>
+							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.startDate, timeDateOptions)}</TableCell>
+							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.endDate, timeDateOptions)}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

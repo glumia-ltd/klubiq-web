@@ -1,3 +1,5 @@
+import { UserProfile } from "./auth-types";
+
 export interface RouteObjectType {
 	'Property Category': { label: string; icon: React.ReactNode };
 	'Property Details': { label: string; icon: React.ReactNode };
@@ -28,6 +30,11 @@ export type PropertyMetaData = {
 	isMain?: boolean;
 };
 
+export type TenantType = {
+	id: string | number;
+	profile: UserProfile;
+}
+
 export type LeaseType = {
 	endDate: string;
 	id: number;
@@ -40,7 +47,7 @@ export type LeaseType = {
 	securityDeposit: string;
 	startDate: string;
 	status: string;
-	tenants: any[];
+	tenants: TenantType[];
 };
 export type UnitType = {
 	area?: { value: number; unit: string };

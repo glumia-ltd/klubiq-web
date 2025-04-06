@@ -1,4 +1,4 @@
-import { Card, Typography } from '@mui/material';
+import { Card, Stack, Typography } from '@mui/material';
 import { styles } from './style';
 type cardProps = {
 	value?: string;
@@ -22,18 +22,16 @@ const MiniCard = (props: cardProps) => {
 			}
 			sx={styles.cardContainer}
 		>
-			<Typography sx={styles.typo}> {props.name}</Typography>
-			{props.value !== undefined ? (
-				props.value
-			) : props.Icon ? (
-				<props.Icon />
-			) : (
-				<div
-					dangerouslySetInnerHTML={{
-						__html: props.dangerouslySetInnerHTML || '',
-					}}
-				/>
-			)}
+			<Stack direction='column' sx={styles.cardContent}>
+				<Typography variant='h6'> {props.name}</Typography>
+				{props.value !== undefined ? (
+					<Typography variant='body1'>{props.value}</Typography>
+				) : props.Icon ? (
+					<props.Icon />
+				) : (
+					<Typography variant='body1' dangerouslySetInnerHTML={{ __html: props.dangerouslySetInnerHTML || '' }} />
+				)}
+			</Stack>
 		</Card>
 	);
 };

@@ -134,7 +134,7 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 					</DrawerHeader>
 					<List>
 						{pathList.map((props, index) => {
-							const path = props.path;
+							const {path} = props;
 							return (
 								<ListItem
 									disablePadding

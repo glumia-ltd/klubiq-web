@@ -178,7 +178,7 @@ const DashBoard = () => {
 		<>
 		<Grid item xs={12}>
 					{user && user?.firstName ? <Typography
-							variant='h5'
+							variant='h4'
 							sx={{
 								mb: 3,
 								color: 'text.primary',

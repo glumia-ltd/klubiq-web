@@ -52,17 +52,23 @@ export const styles = {
 	},
 	typoText: {
 		fontWeight: '700',
-		fontSize: { xs: '12px', md: '20px', lg: '24px' },
+		fontSize: { xs: '8px', md: '16px', lg: '24px' },
 	},
 	amountText: {
 		fontWeight: '400',
-		fontSize: { xs: '12px', md: '24px', lg: '16px' },
+		fontSize: { xs: '8px', md: '16px' },
 	},
 	typo: {
 		fontWeight: '700',
-		fontSize: { xs: '12px', md: '15px', lg: '18px' },
-		marginBottom: '15px',
+		fontSize: { xs: '16px', md: '20px' },
+		marginBottom: '8px',
 		lineHeight: '24px',
+	},
+	cardContent: {
+		display: 'flex',
+		alignItems: 'start',
+		justifyContent: 'space-around',
+		height: '100%',
 	},
 	paginationStyle: {
 		mt: 2,
