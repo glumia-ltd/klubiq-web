@@ -1,6 +1,7 @@
 import { getData } from '../../src/services/indexedDb';
 import { get } from 'lodash';
 import { consoleLog } from './debug-logger';
+import dayjs from 'dayjs';
 
 export const MEASUREMENTS: any[] = [
 	{
@@ -76,17 +77,29 @@ export const getLocaleFormat = (
 	return '';
 };
 
+export const enum DateStyle {
+	FULL = 'full',
+	SHORT = 'short',
+	LONG = 'long',
+	MEDIUM = 'medium',
+}
+
 export const getLocaleDateFormat = (
 	orgSettings: Record<string, unknown>,
 	date: string,
+	options?: {
+		dateStyle?: 'full' | 'short' | 'long' | 'medium',
+		timeStyle?: 'full' | 'short' | 'long' | 'medium',
+		hour12?: boolean,
+	},
 ) => {
 	const { countryCode, lang } = getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode) {
-		const newDate = new Date(date) || new Date();
+		const newDate = dayjs(date).toDate() || dayjs().toDate();
 
 		const locale = `${lang}-${countryCode}`;
 
-		return new Intl.DateTimeFormat(locale).format(newDate);
+		return new Intl.DateTimeFormat(locale, options).format(newDate);
 	}
 	return '';
 };

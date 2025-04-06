@@ -19,15 +19,15 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { getLocaleFormat } from '../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-
+import { TenantType } from '../../shared/type';
 type ColumnType = { id: string; label: string };
 type RowType = {
 	id: string | number;
-	tenants?: { firstName: string; lastName: string; image?: string }[];
+	tenants?: TenantType[];
 	status?: string;
 	rentAmount?: string;
-	startDate: string;
-	endDate: string;
+	startDate?: string;
+	endDate?: string;
 };
 
 type TenantAndLeaseTableProps = {
@@ -123,7 +123,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 																<Typography sx={{ p: 2 }}>
 																	{row?.tenants?.map(
 																		(tenant) =>
-																			`${tenant?.firstName} ${tenant?.lastName}`,
+																			`${tenant?.profile?.firstName} ${tenant?.profile?.lastName}`,
 																	)}
 																</Typography>
 															</Popover>
@@ -136,12 +136,12 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 										{row?.tenants && row?.tenants?.length === 1 && (
 											<>
 												<Avatar
-													alt={row.tenants[0]?.firstName}
-													src={row.tenants[0]?.image}
+													alt={row.tenants[0]?.profile?.firstName}
+													src={row.tenants[0]?.profile?.profilePicUrl ?? ''}
 												/>
 												<Typography sx={{ p: 2 }}>
-													{row?.tenants[0]?.firstName}{' '}
-													{row?.tenants[0]?.lastName}
+													{row?.tenants[0]?.profile?.firstName}{' '}
+													{row?.tenants[0]?.profile?.lastName}
 												</Typography>
 											</>
 										)}
