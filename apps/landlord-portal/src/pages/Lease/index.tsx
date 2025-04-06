@@ -4,7 +4,6 @@ import { styles } from './style';
 import Filter from '../../components/Filter/Filter';
 import { useCallback, useEffect, useState } from 'react';
 import { LeaseTable } from './LeaseTable';
-import { leases } from './data';
 import {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
@@ -25,7 +24,7 @@ const Lease = () => {
 		order: 'ASC',
 	});
 	const filterObjectLength = Object.keys(filter).length;
-	const allLeases = Boolean(leases?.length);
+
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
 
 	const { data: leaseData } = useGetLeasesQuery({
@@ -89,7 +88,7 @@ const Lease = () => {
 						getFilterResult={(options) => {
 							setFilter(options);
 						}}
-						disable={filterObjectLength ? false : !allLeases}
+						disable={filterObjectLength ? false : !allLease}
 					/>
 				</Stack>
 				<Stack direction={'row'}>

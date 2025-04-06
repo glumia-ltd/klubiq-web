@@ -14,8 +14,8 @@ import EmailVerification from '../pages/EmailVerification';
 import DashBoard from '../pages/Dashboard';
 import Setting from '../pages/Settings';
 import Support from '../pages/Support';
-import Message from '../pages/Message';
-import Maintenance from '../pages/Maintenance';
+// import Message from '../pages/Message';
+// import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
 import MFASetUp from '../pages/MFAPage';
 import AddProperties from '../pages/AddProperties';
@@ -94,9 +94,10 @@ export const router = createBrowserRouter(
 					</Route>
 
 					<Route path='/lease/:id' element={<LeaseDetails />} />
-					<Route path='/maintenance' element={<Maintenance />} />
-					<Route path='/message' element={<Message />} />
-					<Route path='/support' element={<Support />} />
+					<Route path='/tenants' element={<Support />} />
+					{/* <Route path='/maintenance' element={<Maintenance />} /> */}
+					{/* <Route path='/message' element={<Message />} /> */}
+					{/* <Route path='/support' element={<Support />} /> */}
 					<Route path='/settings' element={<Setting />} />
 				</Route>
 			</Route>

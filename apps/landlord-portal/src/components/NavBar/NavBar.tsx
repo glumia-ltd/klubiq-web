@@ -284,6 +284,10 @@ const NavBar = ({ section }: NavBarProps) => {
 									<Skeleton variant='rectangular' width='30px' />
 								)}
 								<br />
+								{user?.organization ?? (
+									<Skeleton variant='rectangular' width='30px' />
+								)}
+								<br />
 								{user?.roleName ? (
 									simplifyRoleName(user?.roleName)
 								) : (

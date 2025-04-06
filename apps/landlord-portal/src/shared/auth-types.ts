@@ -15,6 +15,7 @@ export type UserProfile = {
 	};
 	fbId?: string;
 	firstName?: string;
+	lastName?: string;
 	formOfIdentity?: string | null;
 	gender?: string | null;
 	isAccountVerified?: boolean;
