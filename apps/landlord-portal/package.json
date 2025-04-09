@@ -21,7 +21,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.7",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "dayjs": "^1.11.12",
     "firebase": "^10.10.0",
     "formik": "^2.4.5",
