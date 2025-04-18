@@ -57,6 +57,12 @@ export const styles = {
 		justifyContent: 'space-between',
 		gap: '10px',
 	},
+	buttonsDiv: {
+		width: '100%',
+		display: 'flex',
+		justifyContent: 'space-between',
+		gap: '10px',
+	},
 	headingText: {
 		fontWeight: '600',
 		fontSize: '24px',
