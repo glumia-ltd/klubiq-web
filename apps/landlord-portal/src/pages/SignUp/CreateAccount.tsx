@@ -31,7 +31,7 @@ const CreateAccount: React.FC = () => {
 	const { data } = useGetRolesQuery();
 	consoleLog(passwordMessage);
 
-	const isGloballyAvailable = import.meta.env.VITE_IS_GLOBALLY_AVAILABLE ?? false;
+	const isGloballyAvailable = import.meta.env.VITE_IS_GLOBALLY_AVAILABLE.toLowerCase() === 'true';
 
 	type CountryType = {
 		name: string;
