@@ -31,6 +31,8 @@ const CreateAccount: React.FC = () => {
 	const { data } = useGetRolesQuery();
 	consoleLog(passwordMessage);
 
+	const isGloballyAvailable = import.meta.env.VITE_IS_GLOBALLY_AVAILABLE.toLowerCase() === 'true';
+
 	type CountryType = {
 		name: string;
 		code: string;
@@ -47,7 +49,7 @@ const CreateAccount: React.FC = () => {
 	const role = find(data, ['name', 'Organization_Owner']);
 	const validationSchema = yup.object({
 		firstName: yup.string().required('This field is required'),
-		companyName: yup.string().required('This field is required'),
+		companyName: yup.string(),
 		lastName: yup.string().required('This field is required'),
 		password: yup.string().required('Please enter your password'),
 		email: yup.string().email().required('Please enter your email'),
@@ -249,7 +251,7 @@ const CreateAccount: React.FC = () => {
 									autoComplete='organization'
 								/>
 							</Grid>
-							<Grid item sm={12} xs={12} lg={12}>
+							{ isGloballyAvailable && <Grid item sm={12} xs={12} lg={12}>
 								<ControlledSelect
 									name='country'
 									label='Select Country'
@@ -261,6 +263,7 @@ const CreateAccount: React.FC = () => {
 									}))}
 								/>
 							</Grid>
+							}
 							<Grid item sm={12} xs={12} lg={12}>
 								<ControlledTextField
 									name='email'

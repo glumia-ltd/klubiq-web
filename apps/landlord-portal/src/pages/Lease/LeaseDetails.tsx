@@ -9,7 +9,7 @@ import MiniCard from '../../components/LeaseCards/MiniCard';
 import { LeaseDocumentTable } from './LeaseDocumentTable';
 import { useGetSingleLeaseByIdQuery } from '../../store/LeaseStore/leaseApiSlice';
 import { useLocation } from 'react-router-dom';
-import { DateStyle, getCurrencySymbol, getLocaleDateFormat } from '../../helpers/utils';
+import { DateStyle, getLocaleDateFormat, getLocaleFormat } from '../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 
@@ -104,7 +104,7 @@ const LeaseDetails = () => {
 					}}
 				>
 					<MiniCard
-						value={`${getCurrencySymbol(orgSettings)}${data?.rentAmount}`}
+						value={`${getLocaleFormat(orgSettings, data?.rentAmount, 'currency')}`}
 						name='Rent'
 						status={data?.status}
 					/>
