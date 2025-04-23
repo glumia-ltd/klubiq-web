@@ -16,17 +16,31 @@ import { MessageService } from 'primeng/api';
 
 const firebaseConfig = env.environment.firebase;
 const recaptchaSiteKey = env.environment.recaptchaSiteKey;
-const recaptchaValidationUrl = env.environment.recaptchaValidationUrl;
 const recaptchaDebugToken = env.environment.recaptchaDebugToken;
 
-(self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = recaptchaDebugToken;
+// Set debug token before initializing Firebase
+if (recaptchaDebugToken) {
+	(self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = recaptchaDebugToken;
+}
+
 export const app = initializeApp(firebaseConfig, env.environment.appName);
 const auth = getAuth(app);
 auth.setPersistence(browserSessionPersistence);
-initializeAppCheck(app, {
-	provider: new ReCaptchaV3Provider(recaptchaSiteKey!),
-	isTokenAutoRefreshEnabled: true,
-});
+
+// Initialize App Check with error handling
+if (recaptchaSiteKey) {
+	try {
+		initializeAppCheck(app, {
+			provider: new ReCaptchaV3Provider(recaptchaSiteKey),
+			isTokenAutoRefreshEnabled: true,
+		});
+		console.log('App Check initialized successfully');
+	} catch (error) {
+		console.error('Failed to initialize App Check:', error);
+	}
+} else {
+	console.warn('reCAPTCHA site key is missing. App Check will not be initialized.');
+}
 
 export const appConfig: ApplicationConfig = {
 	providers: [

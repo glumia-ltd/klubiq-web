@@ -20,6 +20,10 @@
     },
     "reset": {
       "cache": false
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
