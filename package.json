@@ -5,6 +5,9 @@
   "private": true,
   "author": "Glumia Solutions",
   "scripts": {
+    "buildUIC": "turbo build --filter=./packages/ui-components",
+    "devStorybook": "turbo storybook --filter=./packages/ui-components",
+    "devUIC": "turbo dev --filter=./packages/ui-components",
     "buildLP": "turbo build --filter=./apps/landlord-portal",
     "buildAP": "turbo build --filter=./apps/admin-portal",
     "buildTP": "turbo build --filter=./apps/tenant-portal", 

@@ -3,7 +3,10 @@ import { defineConfig } from 'tsup'
 export default defineConfig({
   entry: ['src/index.tsx'],
   format: ['esm', 'cjs'],
-  dts: true,
+  dts: {
+    entry: 'src/index.tsx',
+    resolve: true,
+  },
   splitting: false,
   sourcemap: true,
   clean: true,
@@ -28,6 +31,7 @@ export default defineConfig({
       'process.env.NODE_ENV': '"production"',
     }
     options.jsx = 'automatic'
+    options.jsxImportSource = 'react'
   },
   minify: true,
   outDir: 'dist',
