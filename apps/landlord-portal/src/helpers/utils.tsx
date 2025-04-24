@@ -69,10 +69,10 @@ export const getLocaleFormat = (
 		getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode && currencyCode) {
 		return new Intl.NumberFormat(`${lang}-${countryCode}`, {
-  			style: `${style}`,
-  			currency: `${currencyCode}`,
-  			currencyDisplay: 'symbol',
-  		}).format(numberVal);
+			style: `${style}`,
+			currency: `${currencyCode}`,
+			currencyDisplay: 'symbol',
+		}).format(numberVal);
 	}
 	return '';
 };
@@ -88,9 +88,9 @@ export const getLocaleDateFormat = (
 	orgSettings: Record<string, unknown>,
 	date: string,
 	options?: {
-		dateStyle?: 'full' | 'short' | 'long' | 'medium',
-		timeStyle?: 'full' | 'short' | 'long' | 'medium',
-		hour12?: boolean,
+		dateStyle?: 'full' | 'short' | 'long' | 'medium';
+		timeStyle?: 'full' | 'short' | 'long' | 'medium';
+		hour12?: boolean;
 	},
 ) => {
 	const { countryCode, lang } = getInfoFromUserSettings(orgSettings);

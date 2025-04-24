@@ -35,7 +35,9 @@ const ViewPort = ({ children }: ViewPortProp) => {
 		<>
 			<NavToggleProvider>
 				<CssBaseline />
-				{isMediumScreen && <MobileSideBar onSelectSection={setSelectedSection} />}
+				{isMediumScreen && (
+					<MobileSideBar onSelectSection={setSelectedSection} />
+				)}
 				<Box
 					sx={{
 						display: 'flex',

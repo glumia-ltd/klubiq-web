@@ -73,7 +73,7 @@ function MobileSideBar({
 		alignItems: 'center',
 		width: drawerWidth.smallOpen,
 	}));
-	
+
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();

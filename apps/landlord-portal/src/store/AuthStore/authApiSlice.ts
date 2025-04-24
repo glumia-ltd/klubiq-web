@@ -45,7 +45,12 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signOut(),
 				method: 'POST',
 			}),
-			invalidatesTags: ['Property', 'leases', 'lease-metadata', 'Notifications'],
+			invalidatesTags: [
+				'Property',
+				'leases',
+				'lease-metadata',
+				'Notifications',
+			],
 		}),
 	}),
 });

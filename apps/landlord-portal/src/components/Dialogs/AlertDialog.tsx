@@ -15,7 +15,7 @@ export type DialogProps = {
 	onCancelClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
 	onClose: React.MouseEventHandler<HTMLButtonElement> | undefined;
 	onConfirmClick: React.MouseEventHandler<HTMLButtonElement> | undefined;
-}
+};
 const AlertDialog = ({
 	open,
 	title,
@@ -52,16 +52,13 @@ const AlertDialog = ({
 				<Typography variant='h4' sx={styles.twoFaStyles.title}>
 					{title}
 				</Typography>
-				<Typography variant='body2'>
-					{message}
-				</Typography>
+				<Typography variant='body2'>{message}</Typography>
 				<Stack direction={'row'} spacing={1}>
-					
-					<Button variant='contained' onClick={onConfirmClick }>
-					{confirmButtonText} 
+					<Button variant='contained' onClick={onConfirmClick}>
+						{confirmButtonText}
 					</Button>
 					<Button variant='outlined' onClick={onCancelClick}>
-					{cancelButtonText}
+						{cancelButtonText}
 					</Button>
 				</Stack>
 			</Stack>

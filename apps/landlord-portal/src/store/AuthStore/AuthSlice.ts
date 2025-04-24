@@ -27,7 +27,14 @@ const options = {
 			};
 		},
 		removeUser: (state: AuthType) => {
-			return { ...state, user: {}, token: null, isSignedIn: false, orgSettings: {}, orgSubscription: {} };
+			return {
+				...state,
+				user: {},
+				token: null,
+				isSignedIn: false,
+				orgSettings: {},
+				orgSubscription: {},
+			};
 		},
 		resetAuth: () => initialState,
 	},

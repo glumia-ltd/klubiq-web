@@ -9,7 +9,7 @@ const baseURL =
 	import.meta.env.VITE_NODE_ENV !== 'local'
 		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
 		: '/api';
-const api = axios.create({baseURL});
+const api = axios.create({ baseURL });
 
 const skippedEndpoints = [
 	authEndpoints.login(),
@@ -56,10 +56,11 @@ function AxiosConfig(config: any) {
 		config.headers['x-client-currency'] = get(orgSettings, 'currency', '');
 		config.headers['x-tenant-id'] = tenant_id ?? '';
 	}
-	const csrfToken = document.cookie
-		.split('; ')
-		.find(row => row.startsWith('_kbq_csrf'))
-		?.split('=')[1] ?? '';
+	const csrfToken =
+		document.cookie
+			.split('; ')
+			.find((row) => row.startsWith('_kbq_csrf'))
+			?.split('=')[1] ?? '';
 
 	if (!skippedEndpoints.includes(config.url)) {
 		config.headers.Authorization = `Bearer ${token}`;
@@ -93,7 +94,7 @@ api.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const {refreshToken} = getSessionToken()?.stsTokenManager;
+				const { refreshToken } = getSessionToken()?.stsTokenManager;
 				const {
 					data: {
 						data: {
@@ -101,12 +102,9 @@ api.interceptors.response.use(
 							// refresh_token
 						},
 					},
-				} = await axios.post(
-					`${baseURL}${authEndpoints.refreshToken()}`,
-					{
-						refreshToken,
-					},
-				);
+				} = await axios.post(`${baseURL}${authEndpoints.refreshToken()}`, {
+					refreshToken,
+				});
 
 				// if (access_token && refresh_token) {
 				//  localStorage.setItem('token', access_token);

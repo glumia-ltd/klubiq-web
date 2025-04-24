@@ -96,14 +96,17 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 					</Button>
 				</Grid>
 				{currentProperty?.purpose ? (
-						<Chip
+					<Chip
 						label={currentProperty?.purpose?.displayText || 'For sale'}
 						variant={
 							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
 								? 'rent'
 								: 'sale'
 						}
-					/>) : (<Skeleton width='50px' height='20px' />) }
+					/>
+				) : (
+					<Skeleton width='50px' height='20px' />
+				)}
 
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCardSkeleton

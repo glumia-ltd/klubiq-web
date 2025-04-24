@@ -478,7 +478,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					background:'#0D0D0D',
+					background: '#0D0D0D',
 					height: '100%',
 				},
 			},

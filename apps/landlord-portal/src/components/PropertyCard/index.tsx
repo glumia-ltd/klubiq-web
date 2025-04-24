@@ -106,18 +106,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 					justifyContent='flex-start'
 					alignItems='center'
 				>
-					{propertyData?.bedrooms > 0 && 
+					{propertyData?.bedrooms > 0 && (
 						<>
 							<KlubiqIcons.Bedroom
 								sx={{
 									color: 'text.primary',
 								}}
 							/>
-							{<Typography variant='cardContentText' noWrap={true}>
-								{getPropertyComponentText('Bedroom', propertyData?.bedrooms)}
-							</Typography>}
+							{
+								<Typography variant='cardContentText' noWrap={true}>
+									{getPropertyComponentText('Bedroom', propertyData?.bedrooms)}
+								</Typography>
+							}
 						</>
-					}
+					)}
 					{propertyData?.rooms > 0 && (
 						<>
 							<KlubiqIcons.Bedroom
@@ -338,17 +340,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 								<>
 									<KlubiqIcons.Bathroom
 										sx={{
-												color: 'text.primary',
-											}}
-										/>
-										<Typography variant='cardContentText'>
-											{getPropertyComponentText(
-												'Bathroom',
-												Number(propertyData?.bathrooms),
-											)}
-										</Typography>
-									</>
-								)}
+											color: 'text.primary',
+										}}
+									/>
+									<Typography variant='cardContentText'>
+										{getPropertyComponentText(
+											'Bathroom',
+											Number(propertyData?.bathrooms),
+										)}
+									</Typography>
+								</>
+							)}
 
 							{propertyData?.toilets > 0 && (
 								<>

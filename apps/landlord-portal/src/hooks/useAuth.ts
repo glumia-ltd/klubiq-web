@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-import { multiFactor, MultiFactorUser, onAuthStateChanged, User } from 'firebase/auth';
+import {
+	multiFactor,
+	MultiFactorUser,
+	onAuthStateChanged,
+	User,
+} from 'firebase/auth';
 import { getAuthState, saveUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
@@ -20,7 +25,8 @@ import { DialogProps } from '../components/Dialogs/AlertDialog';
 
 const useAuth = () => {
 	const configStoreName = 'client-config';
-	const { user, orgSettings, orgSubscription, isSignedIn } = useSelector(getAuthState);
+	const { user, orgSettings, orgSubscription, isSignedIn } =
+		useSelector(getAuthState);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [alertDialogs, setAlertDialogs] = useState<DialogProps[]>([]);
@@ -43,9 +49,7 @@ const useAuth = () => {
 	};
 	const handleCloseAlertDialog = (id: string | number) => {
 		consoleLog('closing alert', id);
-		setAlertDialogs((prev) =>
-			prev.filter((alert) => alert.id !== id),
-		);
+		setAlertDialogs((prev) => prev.filter((alert) => alert.id !== id));
 		localStorage.setItem('kbq-silent-browser-notification', 'true');
 	};
 	const addAlertDialog = useCallback(
@@ -87,25 +91,32 @@ const useAuth = () => {
 		}
 		sessionStorage.setItem(objectName, JSON.stringify(data));
 	};
-	const handleAuthStateChange = async (currentUser:User, userProfile: UserProfile, userMfa?: MultiFactorUser) => {
+	const handleAuthStateChange = async (
+		currentUser: User,
+		userProfile: UserProfile,
+		userMfa?: MultiFactorUser,
+	) => {
 		let orgSettingsData = null;
 		let orgSubscriptionData = null;
-		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(userProfile, 'preferences.security', {});
-		if ( isEmpty(orgSettings) && userProfile.organizationUuid) {
-			orgSettingsData = await triggerGetOrgSettingsQuery(
-				{ orgId: userProfile?.organizationUuid },
-			).unwrap();
+		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(
+			userProfile,
+			'preferences.security',
+			{},
+		);
+		if (isEmpty(orgSettings) && userProfile.organizationUuid) {
+			orgSettingsData = await triggerGetOrgSettingsQuery({
+				orgId: userProfile?.organizationUuid,
+			}).unwrap();
 			await updateConfigStoreIdb(orgSettingsData, 'org-settings');
-		} else if(userProfile.organizationUuid) {
+		} else if (userProfile.organizationUuid) {
 			await updateConfigStoreIdb(orgSettings, 'org-settings');
 		}
 		if (isEmpty(orgSubscription) && userProfile.organizationUuid) {
-			orgSubscriptionData = await triggerGetOrgSubscriptionQuery(
-				{ orgId: userProfile.organizationUuid },
-			).unwrap();
+			orgSubscriptionData = await triggerGetOrgSubscriptionQuery({
+				orgId: userProfile.organizationUuid,
+			}).unwrap();
 			await updateConfigStoreIdb(orgSubscriptionData, 'org-subscription');
-			
-		} else if(userProfile.organizationUuid)  {
+		} else if (userProfile.organizationUuid) {
 			await updateConfigStoreIdb(orgSubscription, 'org-subscription');
 		}
 		const payload = {
@@ -113,13 +124,12 @@ const useAuth = () => {
 			user: userProfile,
 			isSignedIn: true,
 			orgSettings: isEmpty(orgSettings) ? orgSettingsData : orgSettings,
-			orgSubscription: isEmpty(orgSubscription) ? orgSubscriptionData : orgSubscription,
+			orgSubscription: isEmpty(orgSubscription)
+				? orgSubscriptionData
+				: orgSubscription,
 		};
 		dispatch(saveUser(payload));
-		if (
-			userMfa?.enrolledFactors.length === 0 &&
-			silentMfaRequest !== 'true'
-		) {
+		if (userMfa?.enrolledFactors.length === 0 && silentMfaRequest !== 'true') {
 			if (
 				securityPreferences &&
 				securityPreferences?.twoFactor?.optOut === true
@@ -160,14 +170,13 @@ const useAuth = () => {
 				cancelButtonText: 'Skip',
 			});
 		}
-
-	}
+	};
 
 	useEffect(() => {
 		const invTime = Date.now();
 		consoleLog('useAuth mounted at', invTime);
-    	consoleLog('auth:', auth);
-    	consoleLog('user:', user);
+		consoleLog('auth:', auth);
+		consoleLog('user:', user);
 
 		const listen = onAuthStateChanged(auth, async (currentUser) => {
 			if (currentUser && !isEmpty(user)) {
@@ -181,7 +190,7 @@ const useAuth = () => {
 				await handleAuthStateChange(currentUser, userProfileData, userMfa);
 			}
 		});
-		if(!isSignedIn) {
+		if (!isSignedIn) {
 			return () => listen();
 		}
 	}, []);
@@ -195,8 +204,11 @@ const useAuth = () => {
 					consoleLog('Subscription:', subscription);
 					const subscriptionPayload = {
 						subscription: { 'web-push': subscription },
-					} as { subscription: { 'web-push': PushSubscription | undefined }, organizationUuid?: string };
-					if(orgUuid) {
+					} as {
+						subscription: { 'web-push': PushSubscription | undefined };
+						organizationUuid?: string;
+					};
+					if (orgUuid) {
 						subscriptionPayload.organizationUuid = orgUuid;
 					}
 					consoleLog('Subscription payload:', subscriptionPayload);

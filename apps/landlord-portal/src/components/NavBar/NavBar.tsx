@@ -32,7 +32,11 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { auth } from '../../firebase';
 import CustomPopper from '../Shared/CustomPopper';
-import { useCountNotificationsQuery, useGetNotificationsQuery, useReadNotificationsMutation } from '../../store/NotificationStore/NotificationApiSlice';
+import {
+	useCountNotificationsQuery,
+	useGetNotificationsQuery,
+	useReadNotificationsMutation,
+} from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
@@ -52,8 +56,13 @@ const NavBar = ({ section }: NavBarProps) => {
 	const [userSignOut] = useSignOutMutation();
 	const [readNotifications] = useReadNotificationsMutation();
 
-	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
-		useContext(Context);
+	const {
+		toggleMobileSidebar,
+		mobileSideBarOpen,
+		setIsclosing,
+		drawerWidth,
+		sidebarOpen,
+	} = useContext(Context);
 	// const [searchText, setSearchText] = useState('');
 	const simplifyRoleName = (role: string) => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
@@ -135,8 +144,7 @@ const NavBar = ({ section }: NavBarProps) => {
 			},
 		},
 	];
-	useEffect(() => {
-	}, [notificationData]);
+	useEffect(() => {}, [notificationData]);
 
 	const handleNotificationAction = async (item: NotificationData) => {
 		const readPayload: ReadNotificationType = {
@@ -176,7 +184,16 @@ const NavBar = ({ section }: NavBarProps) => {
 									<MenuIcon />
 								</IconButton>
 							)}
-							<Grid item xs={2} ml={{xs: `${drawerWidth.smallClosed}px`, md: sidebarOpen ? `${drawerWidth.largeOpen}px` : `${drawerWidth.largeClosed}px`}}>
+							<Grid
+								item
+								xs={2}
+								ml={{
+									xs: `${drawerWidth.smallClosed}px`,
+									md: sidebarOpen
+										? `${drawerWidth.largeOpen}px`
+										: `${drawerWidth.largeClosed}px`,
+								}}
+							>
 								<Typography sx={styles(isSmallScreen).appSectionTitle}>
 									{section}
 								</Typography>
@@ -225,50 +242,55 @@ const NavBar = ({ section }: NavBarProps) => {
 									/>
 								</Badge>
 							</IconButton>
-							{ notificationData && notificationData.length > 0 && (
-							<CustomPopper
-								open={isNotificationPopperOpen}
-								anchorEl={notificationAnchorRef.current}
-								onClose={handleNotificationPopperClose}
-							>
-								<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
-									<List>
-										{notificationData?.map((item) => (
-											<Box key={`notification-${item.id}`}>
-												<ListItem
-													key={`notification-${item.id}`}
-													sx={styles(isSmallScreen, theme).listItem}
-													onClick={() =>
-														handleNotificationAction(item)
-													}
-												>
-													<ListItemText
-														primary={item.title}
-														secondary={item.message}
-														primaryTypographyProps={{
-															color: 'text.primary',
-															marginBottom: '2px',
-															variant: 'body2',
-															fontWeight: item.isRead ? 'normal' : 'bold',
-															
-														}}
-														secondaryTypographyProps={{
-															color: 'text.secondary',
-															variant: 'caption',
-															fontWeight: item.isRead ? 'normal' : 'bold',
-														}}
-													/>
-												</ListItem>
-												<Divider  />
-											</Box>
-										))}
-										<ListItemButton key={'see-more-link'} alignItems='center' component='a' sx={styles(isSmallScreen, theme).seeMoreLink}>
-											<ListItemText primary='See more' sx={{color: 'text.primary', textAlign: 'center'}}>
-											</ListItemText>
-										</ListItemButton>
-									</List>
-								</Box>
-							</CustomPopper>)}
+							{notificationData && notificationData.length > 0 && (
+								<CustomPopper
+									open={isNotificationPopperOpen}
+									anchorEl={notificationAnchorRef.current}
+									onClose={handleNotificationPopperClose}
+								>
+									<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
+										<List>
+											{notificationData?.map((item) => (
+												<Box key={`notification-${item.id}`}>
+													<ListItem
+														key={`notification-${item.id}`}
+														sx={styles(isSmallScreen, theme).listItem}
+														onClick={() => handleNotificationAction(item)}
+													>
+														<ListItemText
+															primary={item.title}
+															secondary={item.message}
+															primaryTypographyProps={{
+																color: 'text.primary',
+																marginBottom: '2px',
+																variant: 'body2',
+																fontWeight: item.isRead ? 'normal' : 'bold',
+															}}
+															secondaryTypographyProps={{
+																color: 'text.secondary',
+																variant: 'caption',
+																fontWeight: item.isRead ? 'normal' : 'bold',
+															}}
+														/>
+													</ListItem>
+													<Divider />
+												</Box>
+											))}
+											<ListItemButton
+												key={'see-more-link'}
+												alignItems='center'
+												component='a'
+												sx={styles(isSmallScreen, theme).seeMoreLink}
+											>
+												<ListItemText
+													primary='See more'
+													sx={{ color: 'text.primary', textAlign: 'center' }}
+												></ListItemText>
+											</ListItemButton>
+										</List>
+									</Box>
+								</CustomPopper>
+							)}
 							<Divider
 								orientation='vertical'
 								variant='middle'

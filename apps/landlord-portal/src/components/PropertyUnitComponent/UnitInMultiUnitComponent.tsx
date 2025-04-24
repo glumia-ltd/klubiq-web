@@ -56,15 +56,18 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 		(unit) => unit.id === currentUnitId,
 	);
 
-	const leaseTableBodyRows = currentUnitInformation?.lease ? [currentUnitInformation.lease] : [];
+	const leaseTableBodyRows = currentUnitInformation?.lease
+		? [currentUnitInformation.lease]
+		: [];
 
 	const handleHomeClick = (position: number) => {
 		navigate(position);
 	};
 	const handleAddLease = () => {
-		navigate(`/lease/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`);
+		navigate(
+			`/lease/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`,
+		);
 	};
-
 
 	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
 

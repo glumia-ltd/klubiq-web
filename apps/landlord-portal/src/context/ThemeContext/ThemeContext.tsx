@@ -67,7 +67,7 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 		setBodyBackgroundColor(mode);
 	};
 	const setBodyBackgroundColor = (themeMode: ThemeMode) => {
-		const {body} = document;
+		const { body } = document;
 		if (themeMode === ThemeMode.DARK) {
 			body.classList.add('dark');
 			body.classList.remove('light');
@@ -75,7 +75,7 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 			body.classList.remove('dark');
 			body.classList.add('light');
 		}
-	}
+	};
 	useEffect(() => {
 		if (mode === ThemeMode.LIGHT) {
 			setMuiTheme(LightTheme);

@@ -150,8 +150,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 										{row?.status}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-									{`${getLocaleFormat(orgSettings, +(row?.rentAmount ?? 0), 'currency')}`}
-									
+										{`${getLocaleFormat(orgSettings, +(row?.rentAmount ?? 0), 'currency')}`}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
 										{row.startDate}

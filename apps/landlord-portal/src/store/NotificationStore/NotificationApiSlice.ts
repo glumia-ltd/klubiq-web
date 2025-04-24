@@ -120,7 +120,7 @@ export const {
 	useGetNotificationsQuery,
 	useReadNotificationsMutation,
 	useDeleteNotificationsMutation,
-	useCountNotificationsQuery,	
+	useCountNotificationsQuery,
 } = notificationApiSlice;
 const groupNotificationsByDate = (
 	notifications: NotificationData[],

@@ -98,8 +98,20 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 							</TableCell>
 							<TableCell align='center'>{lease?.property?.name}</TableCell>
 							<TableCell align='center'>{lease?.unitNumber}</TableCell>
-							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.startDate, timeDateOptions)}</TableCell>
-							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.endDate, timeDateOptions)}</TableCell>
+							<TableCell align='center'>
+								{getLocaleDateFormat(
+									orgSettings,
+									lease?.startDate,
+									timeDateOptions,
+								)}
+							</TableCell>
+							<TableCell align='center'>
+								{getLocaleDateFormat(
+									orgSettings,
+									lease?.endDate,
+									timeDateOptions,
+								)}
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

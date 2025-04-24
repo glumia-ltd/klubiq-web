@@ -29,7 +29,12 @@ const MiniCard = (props: cardProps) => {
 				) : props.Icon ? (
 					<props.Icon />
 				) : (
-					<Typography variant='body1' dangerouslySetInnerHTML={{ __html: props.dangerouslySetInnerHTML || '' }} />
+					<Typography
+						variant='body1'
+						dangerouslySetInnerHTML={{
+							__html: props.dangerouslySetInnerHTML || '',
+						}}
+					/>
 				)}
 			</Stack>
 		</Card>

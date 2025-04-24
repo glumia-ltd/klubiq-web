@@ -56,8 +56,12 @@ const DashBoard = () => {
 
 	const greeting = useMemo(() => {
 		const hour = dayjs().hour();
-		if (hour >= 17) {return 'Good Evening'};
-		if (hour >= 12) {return 'Good Afternoon'};
+		if (hour >= 17) {
+			return 'Good Evening';
+		}
+		if (hour >= 12) {
+			return 'Good Afternoon';
+		}
 		return 'Good Morning';
 	}, []); // Empty dependency array since we only need this to calculate once per mount
 
@@ -176,24 +180,28 @@ const DashBoard = () => {
 
 	return (
 		<>
-		<Grid item xs={12}>
-					{user && user?.firstName ? <Typography
-							variant='h4'
-							sx={{
-								mb: 3,
-								color: 'text.primary',
-								// Add transition for smooth theme changes
-								transition: 'color 0.2s ease-in-out',
-							}}
-						>
-							{`${greeting}, ${user?.firstName || 'User'}`}
-						</Typography> : <Skeleton
-											variant='text'
-											sx={{...styles.valueTextStyle, mb: 3}}
-											width='20rem'
-											height={50}
-										/>}
-					</Grid>
+			<Grid item xs={12}>
+				{user && user?.firstName ? (
+					<Typography
+						variant='h4'
+						sx={{
+							mb: 3,
+							color: 'text.primary',
+							// Add transition for smooth theme changes
+							transition: 'color 0.2s ease-in-out',
+						}}
+					>
+						{`${greeting}, ${user?.firstName || 'User'}`}
+					</Typography>
+				) : (
+					<Skeleton
+						variant='text'
+						sx={{ ...styles.valueTextStyle, mb: 3 }}
+						width='20rem'
+						height={50}
+					/>
+				)}
+			</Grid>
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (

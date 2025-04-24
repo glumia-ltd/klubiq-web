@@ -1,4 +1,4 @@
-import { UserProfile } from "./auth-types";
+import { UserProfile } from './auth-types';
 
 export interface RouteObjectType {
 	'Property Category': { label: string; icon: React.ReactNode };
@@ -33,7 +33,7 @@ export type PropertyMetaData = {
 export type TenantType = {
 	id: string | number;
 	profile: UserProfile;
-}
+};
 
 export type LeaseType = {
 	endDate: string;
@@ -71,7 +71,7 @@ export type PropertyDataType = {
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedrooms:  number;
+	bedrooms: number;
 	bathrooms: number;
 	toilets: number;
 	isArchived: boolean;

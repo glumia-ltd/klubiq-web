@@ -128,7 +128,7 @@ const Login = () => {
 			setLoading(true);
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
 			const userToken: any = await user.getIdTokenResult();
-			const {claims} = userToken;
+			const { claims } = userToken;
 			const tenant_id = claims['tenantId'] || claims['organizationId'] || null;
 			sessionStorage.setItem('tenant_id', tenant_id);
 			if (userToken) {
@@ -152,8 +152,8 @@ const Login = () => {
 				} else {
 					const response = await triggerGetUserByFbid();
 					if (!response.data) {
-       					throw new Error('User not found');
-     				}
+						throw new Error('User not found');
+					}
 					if (!response.data?.organizationUuid) {
 						throw new Error('Organization ID is undefined');
 					}

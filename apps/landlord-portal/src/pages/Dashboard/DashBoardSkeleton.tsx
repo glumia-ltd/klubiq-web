@@ -125,56 +125,65 @@ const DashBoardSkeleton = () => {
 
 					<Grid item xs={12} sm={6} md={8} lg={8}>
 						<Card sx={styles.cardStyleThree}>
-						<Stack
-									direction={'row'}
-									spacing={2}
-									sx={{
-										width: '100%',
-										height: '100%',
-										justifyContent: 'space-between',
-									}}
+							<Stack
+								direction={'row'}
+								spacing={2}
+								sx={{
+									width: '100%',
+									height: '100%',
+									justifyContent: 'space-between',
+								}}
+							>
+								<Stack
+									direction={'column'}
+									width={'50%'}
+									justifyContent={'space-between'}
 								>
-									<Stack direction={'column'}  width={'50%'} justifyContent={'space-between'}>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-									</Stack>
-									<Stack direction={'column'} spacing={2} width={'50%'} justifyContent={'space-between'}>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-									</Stack>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
 								</Stack>
+								<Stack
+									direction={'column'}
+									spacing={2}
+									width={'50%'}
+									justifyContent={'space-between'}
+								>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+								</Stack>
+							</Stack>
 						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={styles.cardStyleFour}>
-						<Stack
+							<Stack
 								direction={'column'}
 								spacing={2}
 								sx={{
@@ -225,36 +234,33 @@ const DashBoardSkeleton = () => {
 				}}
 			>
 				<Grid item xs={12} sm={12} md={12}>
-				<Skeleton
-									variant='text'
-									width='20%'
-									sx={styles.valueTextStyle}
-								/>
-					<Stack direction={'row'} sx={{ justifyContent: 'space-between'}}	>
-					<Skeleton
-									variant='text'
-									width='30%'
-									height={50}
-									sx={styles.valueTextStyle}
-								/>
-								<Stack direction={'row'} spacing={2} sx={{ width: '50%', justifyContent:'flex-end'}}>
-								<Skeleton
-									variant='text'
-									height={50}
-									width={'30%'}
-									sx={styles.valueTextStyle}
-								/>
-								<Skeleton
-									variant='text'
-									height={50}
-									width={'5%'}
-									sx={styles.valueTextStyle}
-								/>
-								</Stack>
-								
-					
+					<Skeleton variant='text' width='20%' sx={styles.valueTextStyle} />
+					<Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
+						<Skeleton
+							variant='text'
+							width='30%'
+							height={50}
+							sx={styles.valueTextStyle}
+						/>
+						<Stack
+							direction={'row'}
+							spacing={2}
+							sx={{ width: '50%', justifyContent: 'flex-end' }}
+						>
+							<Skeleton
+								variant='text'
+								height={50}
+								width={'30%'}
+								sx={styles.valueTextStyle}
+							/>
+							<Skeleton
+								variant='text'
+								height={50}
+								width={'5%'}
+								sx={styles.valueTextStyle}
+							/>
+						</Stack>
 					</Stack>
-				
 				</Grid>
 
 				<Grid
@@ -267,7 +273,15 @@ const DashBoardSkeleton = () => {
 					display={'flex'}
 					justifyContent={'center'}
 				>
-					<Stack direction={'row'} spacing={2} sx={{width: '80%', height: '100%', justifyContent: 'space-around'}}	>
+					<Stack
+						direction={'row'}
+						spacing={2}
+						sx={{
+							width: '80%',
+							height: '100%',
+							justifyContent: 'space-around',
+						}}
+					>
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />

@@ -25,7 +25,11 @@ import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 
-function SideBar({ onSelectSection }: { onSelectSection: (section: string) => void }) {
+function SideBar({
+	onSelectSection,
+}: {
+	onSelectSection: (section: string) => void;
+}) {
 	const theme = useTheme();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
@@ -134,7 +138,7 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 					</DrawerHeader>
 					<List>
 						{pathList.map((props, index) => {
-							const {path} = props;
+							const { path } = props;
 							return (
 								<ListItem
 									disablePadding

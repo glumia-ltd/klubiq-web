@@ -112,7 +112,7 @@ const Profile = () => {
 						label='Last Name'
 						formik={formik}
 						type='text'
-						sx={{ width: '100%' }}
+						sx={{ width: '100%', color: 'red' }}
 					/>
 				</Stack>
 			</Stack>

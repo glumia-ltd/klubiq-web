@@ -160,8 +160,8 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
 
-	useEffect(() => {	
-		const {startDate, endDate} = formik.values;
+	useEffect(() => {
+		const { startDate, endDate } = formik.values;
 		if (dayjs(startDate).isAfter(endDate)) {
 			formik.setFieldValue('endDate', '');
 			dispatch(
@@ -187,7 +187,9 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	useEffect(() => {
 		if (propertyId && orgPropertiesViewList) {
 			consoleLog('propertyId', propertyId);
-			const property = find(orgPropertiesViewList.properties, { uuid: propertyId });
+			const property = find(orgPropertiesViewList.properties, {
+				uuid: propertyId,
+			});
 			if (property) {
 				formik.setFieldValue('propertyName', property.uuid);
 				if (unitId) {
@@ -200,7 +202,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			}
 		}
 	}, [propertyId, orgPropertiesViewList]);
-
 
 	const rentDueOn = (
 		endDate: string,
