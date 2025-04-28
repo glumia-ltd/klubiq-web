@@ -24,6 +24,7 @@ export const GroupedAvatar: FC<TenantType> = ({
 				if (tenant.profile.profilePicUrl) {
 					return (
 						<Avatar
+							key={tenant.id}
 							alt={`${tenant.profile.firstName} ${tenant.profile.lastName}`}
 							src={tenant.profile.profilePicUrl} 
 							sx={{width: '40px', height: '40px'}}
@@ -31,7 +32,7 @@ export const GroupedAvatar: FC<TenantType> = ({
 					);
 				} else {
 					return (
-						<Avatar sx={{width: '40px', height: '40px'}}>
+						<Avatar key={tenant.id} sx={{width: '40px', height: '40px'}}>
 							{tenant.profile.firstName?.charAt(0)}{tenant.profile.lastName?.charAt(0)}
 						</Avatar>
 					);

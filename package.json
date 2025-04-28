@@ -6,11 +6,11 @@
   "author": "Glumia Solutions",
   "scripts": {
     "buildUIC": "turbo build --filter=./packages/ui-components",
-    "devStorybook": "turbo storybook --filter=./packages/ui-components",
+    "storybook": "turbo storybook --filter=./packages/ui-components",
     "devUIC": "turbo dev --filter=./packages/ui-components",
     "buildLP": "turbo build --filter=./apps/landlord-portal",
     "buildAP": "turbo build --filter=./apps/admin-portal",
-    "buildTP": "turbo build --filter=./apps/tenant-portal", 
+    "buildTP": "turbo build --filter=./apps/tenant-portal",
     "devLP": "turbo dev --filter=./apps/landlord-portal",
     "startAP": "turbo start --filter=./apps/admin-portal",
     "devTP": "turbo dev --filter=./apps/tenant-portal",
@@ -41,6 +41,7 @@
   ],
   "dependencies": {
     "@mui/x-data-grid": "^7.13.0",
+    "framer-motion": "^12.9.2",
     "react-qr-code": "^2.0.15"
   }
 }
