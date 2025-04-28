@@ -10,6 +10,7 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
+import { motion } from 'framer-motion';
 
 type ViewPortProp = {
 	children: React.ReactNode;
@@ -32,7 +33,12 @@ const ViewPort = ({ children }: ViewPortProp) => {
 	}, [pathname]);
 
 	return (
-		<>
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ duration: 0.5 }}
+		>
 			<NavToggleProvider>
 				<CssBaseline />
 				{isMediumScreen && <MobileSideBar onSelectSection={setSelectedSection} />}
@@ -83,7 +89,7 @@ const ViewPort = ({ children }: ViewPortProp) => {
 					</Box>
 				</Box>
 			</NavToggleProvider>
-		</>
+		</motion.div>
 	);
 };
 

@@ -13,6 +13,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { initDB } from './services/indexedDb';
 import { consoleLog } from './helpers/debug-logger';
+import { AnimatePresence } from 'framer-motion';
+import { PageTransition } from './components/PageTransition';
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
@@ -40,7 +42,9 @@ function App() {
 
 	return (
 		<ThemeContextProvider>
-			<LocalizationProvider dateAdapter={AdapterDayjs}>
+			<AnimatePresence mode='wait'>
+				<PageTransition key={location.pathname}>
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<RouterProvider router={router} />
 			</LocalizationProvider>
 			<ControlledSnackbar
@@ -54,6 +58,10 @@ function App() {
 				severity={severity}
 				open={isOpen}
 			/>
+				</PageTransition>
+			
+			</AnimatePresence>
+			
 		</ThemeContextProvider>
 	);
 }
