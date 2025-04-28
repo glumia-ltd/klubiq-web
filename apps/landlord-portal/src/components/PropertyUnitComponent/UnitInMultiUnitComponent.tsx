@@ -62,7 +62,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 		navigate(position);
 	};
 	const handleAddLease = () => {
-		navigate(`/lease/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`);
+		navigate(`/leases/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`);
 	};
 
 

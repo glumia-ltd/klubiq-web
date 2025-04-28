@@ -50,7 +50,7 @@ const Lease = () => {
 	};
 
 	const navigateToAddLease = () => {
-		navigate('/lease/add-lease');
+		navigate('/leases/add-lease');
 	};
 
 	useEffect(() => {
@@ -58,7 +58,7 @@ const Lease = () => {
 	}, [filter, getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
-		navigate(`/lease/${id}`);
+		navigate(`/leases/${id}`);
 	};
 
 	return (

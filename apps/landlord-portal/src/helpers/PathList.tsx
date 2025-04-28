@@ -21,7 +21,7 @@ const adminPathList = [
 	{
 		title: 'Lease',
 		icon: RateReviewIcon,
-		path: '/lease',
+		path: '/leases',
 	},
 	{
 		title: 'Tenants',

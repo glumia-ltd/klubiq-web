@@ -124,7 +124,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 																	{row?.tenants?.map(
 																		(tenant) =>
 																			`${tenant?.profile?.firstName} ${tenant?.profile?.lastName}`,
-																	)}
+																	).join(', ')}
 																</Typography>
 															</Popover>
 														</div>

@@ -3,9 +3,13 @@ import { FC } from 'react';
 
 type TenantType = {
 	tenants: {
-		firstName?: string;
-		lastName?: string;
-		profilePicture?: string;
+		id: string;
+		profile: {
+			firstName?: string;
+			lastName?: string;
+			profilePicUrl?: string;
+		},
+		isPrimaryTenant: boolean;
 	}[];
 	maximumImage?: number;
 };
@@ -15,19 +19,20 @@ export const GroupedAvatar: FC<TenantType> = ({
 	maximumImage = 2,
 }) => {
 	return (
-		<AvatarGroup max={maximumImage}>
+		<AvatarGroup spacing={'small'} max={maximumImage} total={tenants.length} renderSurplus={(surplus) => <Avatar>+{surplus}</Avatar>}>
 			{tenants.map((tenant) => {
-				if (tenant.profilePicture) {
+				if (tenant.profile.profilePicUrl) {
 					return (
 						<Avatar
-							alt={`${tenant.firstName} ${tenant.lastName}`}
-							src={tenant.profilePicture}
+							alt={`${tenant.profile.firstName} ${tenant.profile.lastName}`}
+							src={tenant.profile.profilePicUrl} 
+							sx={{width: '40px', height: '40px'}}
 						/>
 					);
 				} else {
 					return (
-						<Avatar>
-							{tenant.firstName?.charAt(0)} {tenant.lastName?.charAt(0)}
+						<Avatar sx={{width: '40px', height: '40px'}}>
+							{tenant.profile.firstName?.charAt(0)}{tenant.profile.lastName?.charAt(0)}
 						</Avatar>
 					);
 				}

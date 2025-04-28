@@ -8,6 +8,7 @@ import {
 	TableRow,
 	Chip,
 	Typography,
+	Box,
 } from '@mui/material';
 
 import { styles } from './style';
@@ -17,13 +18,14 @@ import { GroupedAvatar } from '../../components/GroupedAvatar/GroupedAvatar';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { getLocaleDateFormat, DateStyle } from '../../helpers/utils';
+import { LeaseType } from '../../shared/type';
 
 type LeaseTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
 	filters?: Record<string, string | number>;
 	onRowClick?: (lease: any) => void;
-	allLease: any;
+	allLease: LeaseType[];
 };
 
 export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
@@ -86,15 +88,19 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 									sx={styles.chip}
 								/>
 							</TableCell>
-							<TableCell align='center'>
-								{lease.tenants.length > 0 ? (
-									<GroupedAvatar tenants={lease.tenants} />
-								) : (
-									<NavLink to='/add-tenant'>Add Tenant</NavLink>
-								)}
-								<Typography fontWeight='600' ml='15px'>
-									{lease?.tenants[0]}
-								</Typography>
+							<TableCell sx={{}} align='center'>
+								<Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+									{lease.tenants.length > 0 ? (
+										<GroupedAvatar tenants={lease.tenants} />
+									) : (
+										<NavLink to='/add-tenant'>Add Tenant</NavLink>
+									)}
+									{ lease.tenants.length === 1 &&(
+										<Typography fontWeight='600' ml='15px'>
+										{lease?.tenants[0]?.profile?.firstName} {lease?.tenants[0]?.profile?.lastName}
+									</Typography>
+									)}
+								</Box>
 							</TableCell>
 							<TableCell align='center'>{lease?.property?.name}</TableCell>
 							<TableCell align='center'>{lease?.unitNumber}</TableCell>
