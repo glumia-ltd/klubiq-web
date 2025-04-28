@@ -31,8 +31,9 @@ export type PropertyMetaData = {
 };
 
 export type TenantType = {
-	id: string | number;
+	id: string;
 	profile: UserProfile;
+	isPrimaryTenant: boolean;
 }
 
 export type LeaseType = {
