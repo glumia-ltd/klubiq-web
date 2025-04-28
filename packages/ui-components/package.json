@@ -36,7 +36,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "storybook": "^7.x.x"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.3",

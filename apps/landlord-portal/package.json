@@ -11,6 +11,7 @@
     "build:prod": "vite build"
   },
   "dependencies": {
+    "@klubiq/ui-components": "^0.0.1",
     "@mui/icons-material": "^5.15.15",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.15",

@@ -1,6 +1,5 @@
-import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { useContext, useEffect } from 'react';
-import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
@@ -17,6 +16,7 @@ import {
 	Button,
 	Stack,
 	Typography,
+	Drawer,
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
@@ -24,8 +24,10 @@ import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
+import { motion } from 'framer-motion';
 
-function SideBar({ onSelectSection }: { onSelectSection: (section: string) => void }) {
+
+const SideBar = ({ onSelectSection }: { onSelectSection: (section: string) => void }) => {
 	const theme = useTheme();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
@@ -44,12 +46,12 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 	const handleDrawerTransitionEnd = () => {
 		setIsclosing(true);
 	};
-	const transitionedMixin = (theme: Theme): CSSObject => ({
-		transition: theme.transitions.create('width', {
-			easing: theme.transitions.easing.easeInOut,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	});
+	// const transitionedMixin = (theme: Theme): CSSObject => ({
+	// 	transition: theme.transitions.create('width', {
+	// 		easing: theme.transitions.easing.easeInOut,
+	// 		duration: theme.transitions.duration.enteringScreen,
+	// 	}),
+	// });
 
 	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
@@ -71,20 +73,70 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 		alignItems: 'center',
 	}));
 
-	const Drawer = styled(MuiDrawer, {
-		shouldForwardProp: (prop) => prop !== 'open',
-	})(({ theme, open }) => ({
-		'& .MuiDrawer-paper': {
-			width: 'inherit',
+	const MotionDrawer = motion(Drawer);
+
+	// Define animation variants
+	const smoothTransition = {
+		type: "spring",
+		stiffness: 100,
+		damping: 20,
+		mass: 1,
+		duration: 0.8
+	  };
+	const drawerVariants = {
+		expanded: {
+		  width: `${drawerWidth.largeOpen}px`, // expanded width
+		  transition: smoothTransition
 		},
-		...transitionedMixin(theme),
-		...(open && {
-			width: `${drawerWidth.largeOpen}px`,
-		}),
-		...(!open && {
-			width: `${drawerWidth.largeClosed}px`,
-		}),
-	}));
+		collapsed: {
+		  width: `${drawerWidth.largeClosed}px`, // collapsed width
+		  transition: smoothTransition
+		}
+	  };
+	
+	  // Define content animation variants
+	  const contentVariants = {
+		expanded: {
+		  opacity: 1,
+		  transition: {
+			duration: 0.2,
+			delay: 0.1
+		  }
+		},
+		collapsed: {
+		  opacity: 0.5,
+		  transition: {
+			duration: 0.2
+		  }
+		}
+	  };
+
+	// const Drawer = styled(MuiDrawer, {
+	// 	shouldForwardProp: (prop) => prop !== 'open',
+	// })(({ theme, open }) => ({
+	// 	'& .MuiDrawer-paper': {
+	// 		width: 'inherit',
+	// 	},
+	// 	...transitionedMixin(theme),
+	// 	...(open && {
+	// 		width: `${drawerWidth.largeOpen}px`,
+	// 	}),
+	// 	...(!open && {
+	// 		width: `${drawerWidth.largeClosed}px`,
+	// 	}),
+	// }));
+	const drawerStyles = {
+		'& .MuiDrawer-paper': {
+		  width: 'auto',
+		  transition: 'none',
+		  overflowX: 'hidden',
+		  willChange: 'transform', // Optimize performance
+		  backfaceVisibility: 'hidden', // Prevent flickering
+		  WebkitBackfaceVisibility: 'hidden',
+		  transform: 'translateZ(0)', // Force GPU acceleration
+		  WebkitTransform: 'translateZ(0)',
+		}
+	  };
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
@@ -107,16 +159,24 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 	}, [onSelectSection]);
 
 	return (
-		<Drawer
+		<MotionDrawer
 			variant='permanent'
+			initial="collapsed"
+			animate={sidebarOpen ? 'expanded' : 'collapsed'}
+			variants={drawerVariants}
 			open={sidebarOpen}
 			onMouseEnter={() => setSidebarOpen(true)}
 			onMouseLeave={() => setSidebarOpen(false)}
 			onTransitionEnd={handleDrawerTransitionEnd}
 			onClose={handleDrawerClose}
+			sx={drawerStyles}
+			anchor='left'
 		>
-			<DrawerChildren>
-				<div
+		<DrawerChildren>
+				<motion.div
+					variants={contentVariants}
+					initial="collapsed"
+					animate={sidebarOpen ? 'expanded' : 'collapsed'}
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
@@ -216,9 +276,14 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 							);
 						})}
 					</List>
-				</div>
+				</motion.div>
 				<ThemeSwitcher>
-					<Stack
+					<motion.div
+						variants={contentVariants}
+						initial="collapsed"
+						animate={sidebarOpen ? 'expanded' : 'collapsed'}
+					>
+						<Stack
 						direction={{ xs: sidebarOpen ? 'row' : 'column' }}
 						sx={{
 							borderRadius: '10px',
@@ -291,9 +356,10 @@ function SideBar({ onSelectSection }: { onSelectSection: (section: string) => vo
 							)}
 						</Button>
 					</Stack>
+					</motion.div>
 				</ThemeSwitcher>
 			</DrawerChildren>
-		</Drawer>
+		</MotionDrawer>
 	);
 }
 
