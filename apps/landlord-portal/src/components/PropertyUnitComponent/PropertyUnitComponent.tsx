@@ -109,7 +109,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	const handleAddLease = () => {
-		navigate(`/lease/add-lease?property=${currentUUId}`);
+		navigate(`/leases/add-lease?property=${currentUUId}`);
 	};
 
 	const handleAddTenant = () => {
