@@ -68,7 +68,6 @@ export const router = createBrowserRouter(
 						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 
-						<Route path='add-tenant' element={<AddTenantPage />} />
 
 						<Route path='add-maintenance' element={<AddMaintenancePage />} />
 					</Route>
@@ -95,6 +94,11 @@ export const router = createBrowserRouter(
 
 					<Route path='/lease/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<Support />} />
+					<Route path='/lease/:id' element={<LeaseDetails />} />
+					<Route path='/tenants' element={<NestedRoutesLayout />}>
+						<Route index element={<Support />} />
+						<Route path='add-tenant' element={<AddTenantPage />} />
+					</Route>
 					{/* <Route path='/maintenance' element={<Maintenance />} /> */}
 					{/* <Route path='/message' element={<Message />} /> */}
 					{/* <Route path='/support' element={<Support />} /> */}
