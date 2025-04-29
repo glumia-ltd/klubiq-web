@@ -36,7 +36,7 @@ const AddTenant = ({ propertyDetails }: AddTenantFormProps) => {
 console.log("propertyDetails",propertyDetails)
 	const onSubmit = async (values: formValues) => {
 		try {
-			const response = await api.post(tenantEndpoints.addTenant(), {
+			const response = await api.post(tenantEndpoints.onboardTenant(),{
 				firstName: values.firstName,
 				lastName: values.lastName,
 				email: values.email,
