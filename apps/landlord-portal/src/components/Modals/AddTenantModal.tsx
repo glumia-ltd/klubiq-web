@@ -11,8 +11,9 @@ import successImage from '../../assets/images/check.svg';
 interface AddTenantModalProps {
 	open: boolean;
 	onClose: () => void;
+	message: string;
 }
-const AddTenantModal = ({ open, onClose }: AddTenantModalProps) => {
+const AddTenantModal = ({ open, onClose,message }: AddTenantModalProps) => {
 	return (
 		<Dialog
 			open={open}
@@ -37,17 +38,18 @@ const AddTenantModal = ({ open, onClose }: AddTenantModalProps) => {
 							marginBottom: '23px',
 						}}
 					/>
-
-					<Typography
-						variant='subtitle1'
-						sx={{ fontWeight: '600', fontSize: '25px', gap: '32px' }}
-					>
-						You’ve successfully added your tenant!{' '}
-					</Typography>
+					{message && (
+						<Typography
+							variant='subtitle1'
+							sx={{ fontWeight: '600', fontSize: '25px', gap: '32px' }}
+						>
+							{message} ||You’ve successfully added your tenant!
+						</Typography>
+					)}
 				</Box>
 				<Divider />
 				<Box sx={{ textAlign: 'center' }}>
-					<Button variant='text' size='small'>
+					<Button variant='text' size='small' sx={{ mt: 2 }} onClick={onClose}>
 						Continue
 					</Button>
 				</Box>

@@ -44,24 +44,22 @@ function App() {
 		<ThemeContextProvider>
 			<AnimatePresence mode='wait'>
 				<PageTransition key={location.pathname}>
-				<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<RouterProvider router={router} />
-			</LocalizationProvider>
-			<ControlledSnackbar
-				anchorOrigin={{
-					vertical: 'top',
-					horizontal: 'right',
-				}}
-				autoHideDuration={duration || 2000}
-				key={message}
-				message={message}
-				severity={severity}
-				open={isOpen}
-			/>
+					<LocalizationProvider dateAdapter={AdapterDayjs}>
+						<RouterProvider router={router} />
+					</LocalizationProvider>
+					<ControlledSnackbar
+						anchorOrigin={{
+							vertical: 'top',
+							horizontal: 'right',
+						}}
+						autoHideDuration={duration || 2000}
+						key={message}
+						message={message}
+						severity={severity}
+						open={isOpen}
+					/>
 				</PageTransition>
-			
 			</AnimatePresence>
-			
 		</ThemeContextProvider>
 	);
 }

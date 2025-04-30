@@ -1,5 +1,5 @@
 import { styled, useTheme } from '@mui/material/styles';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { Link, useLocation } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
@@ -27,7 +27,7 @@ import { resetStore } from '../../store';
 import { motion } from 'framer-motion';
 
 
-const SideBar = ({ onSelectSection }: { onSelectSection: (section: string) => void }) => {
+const SideBar = () => {
 	const theme = useTheme();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
@@ -147,16 +147,10 @@ const SideBar = ({ onSelectSection }: { onSelectSection: (section: string) => vo
 
 	const handleLinkClick = (title: string) => {
 		if (title !== 'Logout') {
-			onSelectSection(title);
 			return;
 		}
 		handleSignOut();
 	};
-	useEffect(() => {
-		if (pathname && pathname !== '/') {
-			onSelectSection(pathname?.split('/')[1] || '');
-		}
-	}, [onSelectSection]);
 
 	return (
 		<MotionDrawer

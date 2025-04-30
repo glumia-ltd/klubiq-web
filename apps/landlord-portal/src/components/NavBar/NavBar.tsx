@@ -40,10 +40,8 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { NotificationData } from '../../shared/global-types';
 import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
-interface NavBarProps {
-	section: string;
-}
-const NavBar = ({ section }: NavBarProps) => {
+
+const NavBar = () => {
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
 	const { data: notificationCount } = useCountNotificationsQuery();
@@ -55,6 +53,24 @@ const NavBar = ({ section }: NavBarProps) => {
 	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
 		useContext(Context);
 	// const [searchText, setSearchText] = useState('');
+	 // Format the section name from the path
+	 const getFormattedSection = () => {
+        // Get the first segment of the path (after the first /)
+        const section = location.pathname.split('/')[1];
+        
+        // Handle empty path
+        if (!section) {
+          return 'Dashboard';
+        }
+        
+        // Convert kebab-case or snake_case to Title Case
+        // e.g., 'property-units' -> 'Property Units'
+        return section
+            .split(/[-_]/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
 	const simplifyRoleName = (role: string) => {
 		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
 		return startCase(simplifiedRole);
@@ -178,7 +194,7 @@ const NavBar = ({ section }: NavBarProps) => {
 							)}
 							<Grid item xs={2} ml={{xs: `${drawerWidth.smallClosed}px`, md: sidebarOpen ? `${drawerWidth.largeOpen}px` : `${drawerWidth.largeClosed}px`}}>
 								<Typography sx={styles(isSmallScreen).appSectionTitle}>
-									{section}
+									{getFormattedSection()}
 								</Typography>
 							</Grid>
 						</Grid>

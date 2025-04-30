@@ -8,7 +8,7 @@ import {
 	Typography,
 	Card,
 } from '@mui/material';
-import { styles } from './style';
+import { styles } from './styles';
 import fileIcon from '../../assets/images/Vector (2).svg';
 
 const TenantDocument = () => {

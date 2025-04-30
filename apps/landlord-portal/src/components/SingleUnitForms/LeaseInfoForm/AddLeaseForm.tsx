@@ -415,7 +415,11 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 								right: '25px',
 							}}
 							onClick={() => {
-								console.log('clicked');
+								navigate(`/tenants/add-tenant?property=${propertyData?.uuid}`, {
+									state: {
+										currentProperty: propertyData,
+									},
+								});
 							}}
 						>
 							Add tenant

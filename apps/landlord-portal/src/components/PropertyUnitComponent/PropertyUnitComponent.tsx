@@ -47,7 +47,7 @@ import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 type PropertyUnitComponentType = {
 	currentProperty: PropertyDataType;
-	tenantTableBodyRows?: any;
+	// tenantTableBodyRows?: any;
 	tenantColumns?: any;
 	leaseTableBodyRows?: any;
 };
@@ -63,7 +63,7 @@ const allTabs = ['Overview', 'Lease', 'Document'];
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
-	tenantTableBodyRows,
+	// tenantTableBodyRows,
 	tenantColumns,
 	leaseTableBodyRows,
 }) => {
@@ -113,7 +113,17 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	const handleAddTenant = () => {
-		navigate(`/properties/${currentUUId}/tenant`);
+		navigate(`/tenants/invite-tenant`, {
+			state: {
+				mode: 'onboarding',
+				propertyDetails: {
+					propertyName: currentProperty?.name,
+					unitId: currentProperty?.units?.[0]?.id,
+					unitNumber: currentProperty?.units?.[0]?.unitNumber,
+				},
+				returnPath: `/properties/${currentUUId}`,
+			},
+		});
 	};
 
 	const handleAddUnit = () => {
@@ -402,15 +412,14 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 											/>
 										) : null}
 
-										{!tenantTableBodyRows?.length &&
-											leaseTableBodyRows?.length && (
-												<AddFieldCard
-													heading={'Add Tenant'}
-													subtext={'Add tenants to your property'}
-													description={'Add Tenant'}
-													handleAdd={handleAddTenant}
-												/>
-											)}
+										{!leaseTableBodyRows?.length && (
+											<AddFieldCard
+												heading={'Add Tenant'}
+												subtext={'Add tenants to your property'}
+												description={'Add Tenant'}
+												handleAdd={handleAddTenant}
+											/>
+										)}
 									</>
 								)}
 
