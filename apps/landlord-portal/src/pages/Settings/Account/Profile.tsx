@@ -14,6 +14,7 @@ import ControlledPasswordField from '../../../components/ControlledComponents/Co
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
 import { styles } from './styles';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { consoleLog } from '../../../helpers/debug-logger';
 
 const Profile = () => {
 	const validationSchema = yup.object({
@@ -42,7 +43,7 @@ const Profile = () => {
 	};
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values, 'val');
+		consoleLog(values, 'val');
 	};
 	const formik = useFormik({
 		initialValues: {

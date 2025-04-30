@@ -17,7 +17,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 export const notificationApiSlice = createApi({
 	reducerPath: 'notificationApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['Notifications'],
+	tagTypes: ['Notification'],
 	endpoints: (builder) => ({
 		getGroupedNotifications: builder.query<GroupedNotifications[], void>({
 			query: () => ({
@@ -27,14 +27,14 @@ export const notificationApiSlice = createApi({
 			transformResponse: (response: NotificationData[]) => {
 				return groupNotificationsByDate(response);
 			},
-			providesTags: ['Notifications'],
+			providesTags: ['Notification'],
 		}),
 		getNotifications: builder.query<NotificationData[], void>({
 			query: () => ({
 				url: notificationEndpoints.notifications(),
 				method: 'GET',
 			}),
-			providesTags: ['Notifications'],
+			providesTags: ['Notification'],
 		}),
 		// getNotifications: builder.query<GroupedNotifications[], void>({
 		//     query: () => ({

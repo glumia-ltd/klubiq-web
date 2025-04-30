@@ -4,7 +4,6 @@ const { GenerateSW } = require('workbox-webpack-plugin');
 const dotenv = require('dotenv');
 
 dotenv.config();
-console.log('process.env: ', process.env);
 module.exports = {
 	// ...other webpack config
 	plugins: [
