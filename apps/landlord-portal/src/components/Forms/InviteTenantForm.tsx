@@ -89,6 +89,7 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 		name: 'invitationMethod',
 		label: 'Invite Tenant by',
 		type: 'radio',
+		radioGroupDirection: 'row',
 		required: true,
 		options: [
 			{ value: 'email', label: 'Email' },
@@ -109,7 +110,6 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			disabled: true,
 			predefinedValue: propertyDetails?.propertyName,
 			defaultValue: propertyDetails?.propertyName,
-			validation: Yup.string().required('Required'),
 		},
 		{
 			name: 'leaseDetails.unitNumber',
@@ -119,7 +119,6 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			readonly: true,
 			disabled: true,
 			predefinedValue: propertyDetails?.unitNumber,
-			validation: Yup.string().required('Required'),
 		},
 		{
 			name: 'leaseDetails.unitId',
@@ -128,20 +127,19 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			required: true,
 			hidden: true,
 			predefinedValue: propertyDetails?.unitId,
-			validation: Yup.string().required('Required'),
 		},
 		{
 			name: 'leaseDetails.startDate',
 			label: 'Start Date',
 			type: 'date',
 			required: true,
-			validation: Yup.date().required('Required'),
+			validation: Yup.date().required('Start Date is required'),
 		},
 		{
 			name: 'leaseDetails.endDate',
 			label: 'End Date',
 			type: 'date',
-			required: true,
+			required: false,
 			validation: Yup.date().min(Yup.ref('leaseDetails.startDate'), 'End date must be after start date'),
 		},
 		{
@@ -154,7 +152,7 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 				prefix: getCurrencySymbol(orgSettings),
 			} as InputAdornment,
 			required: true,
-			validation: Yup.number().required('Optional'),
+			validation: Yup.number().required('Rent Amount is required'),
 		},
 		
 		]
@@ -168,7 +166,7 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			validation: Yup.string()
         		.min(2, 'Too Short!')
         		.max(50, 'Too Long!')
-        		.required('Required'),
+        		.required('First Name is required'),
 		},
 		{
 			name: 'lastName',
@@ -178,14 +176,14 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			validation: Yup.string()
         		.min(2, 'Too Short!')
         		.max(50, 'Too Long!')
-        		.required('Required'),
+        		.required('Last Name is required'),
 		},
 		{
 			name: 'email',
 			label: 'Email',
 			type: 'email',
 			required: true,
-			validation: Yup.string().email('Invalid email').required('Required'),
+			validation: Yup.string().email('Invalid email').required('Email is required'),
 		},
 		{
 			name: 'phoneNumber',
@@ -247,7 +245,6 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 							enableReset={true} 
 							submitButtonText='Invite Tenant'
 							resetButtonText='Cancel'
-							orgSettings={orgSettings}
 							/>
 			)}
 		</FormLayout>
