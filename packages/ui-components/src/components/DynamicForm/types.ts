@@ -58,6 +58,8 @@ export interface FormField {
   group?: string; // Reference to parent group
   isGroup?: boolean;
   groupFields?: FormField[];
+  isInFieldLabel?: boolean;
+  radioGroupDirection?: 'row' | 'column';
 }
 
 export interface DynamicFormProps {
@@ -67,7 +69,6 @@ export interface DynamicFormProps {
   submitButtonText?: string;
   enableReset?: boolean;
   resetButtonText?: string;
-  orgSettings: Record<string, unknown>;
   formatters?: {
     currency?: (value: number, decimals?: number) => string;
     percentage?: (value: number, decimals?: number) => string;

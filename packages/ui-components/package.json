@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": false,
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
@@ -52,5 +52,12 @@
     "@zxcvbn-ts/core": "^3.0.4",
     "react-hook-form": "^7.56.1",
     "yup": "^1.6.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
   }
 }

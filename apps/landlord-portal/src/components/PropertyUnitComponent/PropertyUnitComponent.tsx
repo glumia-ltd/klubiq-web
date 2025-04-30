@@ -44,6 +44,7 @@ import {
 } from '../../store/PropertyPageStore/propertyApiSlice';
 import { PropertiesActionsPrompts } from '../Dialogs/PropertiesActionsPrompts';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { consoleError } from '../../helpers/debug-logger';
 
 type PropertyUnitComponentType = {
 	currentProperty: PropertyDataType;
@@ -147,7 +148,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 				);
 				navigate('/properties');
 			} catch (e) {
-				console.log(e);
+				consoleError(e);
 			}
 		} else {
 			setOpenArchivePropertyDialog(false);
@@ -176,7 +177,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 				);
 				navigate('/properties');
 			} catch (e) {
-				console.log(e);
+				consoleError(e);
 				setProgress(false);
 				setOpen(false);
 				setOpenDeletePropertyDialog(false);
