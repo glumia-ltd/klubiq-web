@@ -309,8 +309,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 
 			navigate(-1);
 		} catch (e) {
-			// console.log((e as any)?.status);
-			console.log(e as any);
+			consoleLog(e as any);
 
 			dispatch(
 				openSnackbar({
@@ -322,7 +321,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			);
 		}
 
-		// console.log(requestBody);
 	};
 
 	return (

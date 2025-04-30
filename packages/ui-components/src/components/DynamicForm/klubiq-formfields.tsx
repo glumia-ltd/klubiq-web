@@ -8,10 +8,8 @@ import {
 	FormControl,
 	FormControlLabel,
 	FormHelperText,
-	InputLabel,
 	Radio,
 	RadioGroup,
-	FormLabel,
 	InputAdornment,
 	Stack,
 	Typography,
@@ -19,7 +17,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { DynamicFormProps, FormatType, FormField, FormGroup } from './types';
-import { parseCurrency, parsePercentage } from '../../helpers/utils';
+import { parseCurrency, parsePercentage } from '../../utils';
 import React from 'react';
 import { style } from './style';
 

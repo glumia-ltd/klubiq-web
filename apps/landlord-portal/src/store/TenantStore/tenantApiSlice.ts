@@ -2,11 +2,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {tenantEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-
+import { API_TAGS, invalidateMultipleTags } from '../api-tags';
 export const tenantApiSlice = createApi({
 	reducerPath: 'tenantApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['tenants', 'tenant-filter-metadata'],
+	tagTypes: [API_TAGS.TENANT, API_TAGS.TENANT_FILTER_METADATA],
 	endpoints: (builder) => ({
 		// getTenantFilterMetaData: builder.query<any, void>({
 		// 	query: () => ({
@@ -37,7 +37,14 @@ export const tenantApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: ['tenants'],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {	
+					await queryFulfilled;
+					invalidateMultipleTags(dispatch, [API_TAGS.TENANT, API_TAGS.LEASE, API_TAGS.TENANT_FILTER_METADATA]);
+				} catch (error) {
+					console.error(error);
+				}
+			},
 		}),
 	}),
 });

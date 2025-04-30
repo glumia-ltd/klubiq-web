@@ -10,12 +10,12 @@ import { useDispatch } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
 import { consoleLog } from '../../helpers/debug-logger';
-import { KlubiqForm } from '../DynamicForm/klubiq-form';
+//import { KlubiqForm } from '../DynamicForm/klubiq-form';
 import * as Yup from 'yup';
 import { formValues } from '../SingleUnitForms/TenantForm/validation';
-import { FormField, FormGroup, InputAdornment } from '../DynamicForm/types';
 import { useOnboardTenantMutation } from '../../store/TenantStore/tenantApiSlice';
 import { InviteTenantFormValues } from '../../shared/type';
+import { KlubiqForm, FormField, FormGroup, InputAdornment } from '@klubiq/ui-components';
 
 interface InviteTenantFormProps {
     propertyDetails: {

@@ -53,6 +53,7 @@ export default ({ mode }: { mode: any }) => {
 		plugins: [react(), VitePWA(manifestForPlugin)],
 		optimizeDeps: {
 			include: [
+				'@klubiq/ui-components',
 				'react',
 				'react-dom',
 				'material-ui',

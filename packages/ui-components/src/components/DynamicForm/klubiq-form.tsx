@@ -1,4 +1,6 @@
 // src/components/DynamicForm/DynamicForm.tsx
+'use client';
+
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -13,14 +15,18 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { style } from './style';
 
-export const KlubiqForm = ({
+export interface KlubiqFormProps extends DynamicFormProps {
+  // ... any additional props ...
+}
+
+export const KlubiqForm: React.FC<KlubiqFormProps> = ({
   fields,
   onSubmit,
   initialValues = {},
   submitButtonText = 'Submit',
   enableReset = false,
   resetButtonText = 'Reset',
-}: DynamicFormProps) => {
+}) => {
   // Generate validation schema based on fields
   const validationSchema = Yup.object().shape(
     fields.reduce((acc, field) => {

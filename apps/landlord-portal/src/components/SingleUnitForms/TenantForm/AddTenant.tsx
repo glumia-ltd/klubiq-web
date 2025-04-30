@@ -33,7 +33,6 @@ const AddTenant = ({ propertyDetails }: AddTenantFormProps) => {
 	const role = find(data, ['name', 'Organization_Owner']);
 	const [apiMessage, setApiMessage] = useState<string>('');
 	const propertyNames = propertyDetails?.name;
-console.log("propertyDetails",propertyDetails)
 	const onSubmit = async (values: formValues) => {
 		try {
 			const response = await api.post(tenantEndpoints.onboardTenant(),{
@@ -55,11 +54,8 @@ console.log("propertyDetails",propertyDetails)
 					unitNumber: UnitNumber?.name,
 				},
 			});
-			console.log(response, 'res');
 
 			if (response.status >= 200 && response.status < 300) {
-				const data = response.data;
-				console.log('Success:', data);
 				formik.resetForm();
 				setApiMessage(response.data.message || 'Tenant added successfully!');
 				setOpenModal(true);
@@ -216,8 +212,7 @@ console.log("propertyDetails",propertyDetails)
 				>
 					<Grid item xs={12} sx={style.infobox}>
 						<Typography variant='subtitle2' sx={style.infotypo}>
-							We’ll invite the tenant to setup their tenant portal so they can
-							send messages, pay rent, and request maintenance.
+							We’ll invite the tenant to setup their tenant portal so they can pay rent, and request maintenance.
 						</Typography>
 					</Grid>
 					<Grid item xs={12} sm={12}>
