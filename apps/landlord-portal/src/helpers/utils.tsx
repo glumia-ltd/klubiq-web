@@ -3,6 +3,8 @@ import { get } from 'lodash';
 import { consoleLog } from './debug-logger';
 import dayjs from 'dayjs';
 
+
+ 
 export const MEASUREMENTS: any[] = [
 	{
 		unit: 'SqM',
@@ -27,7 +29,7 @@ export const getCurrencySymbol = (orgSettings: Record<string, unknown>) => {
 	if (orgSettings) {
 		return get(orgSettings, 'currencySymbol', '');
 	} else {
-		consoleLog('No orgSettings found -vvv');
+		consoleLog('No orgSettings found for currency symbol');
 		getData('org-settings', 'client-config').then((data) => {
 			currencySymbol = get(data, 'orgSettings.currencySymbol', '₦');
 			return currencySymbol;
@@ -64,6 +66,7 @@ export const getLocaleFormat = (
 	orgSettings: Record<string, unknown>,
 	numberVal: number,
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
+	decimals: number = 2
 ) => {
 	const { countryCode, currencyCode, lang } =
 		getInfoFromUserSettings(orgSettings);
@@ -72,6 +75,8 @@ export const getLocaleFormat = (
   			style: `${style}`,
   			currency: `${currencyCode}`,
   			currencyDisplay: 'symbol',
+  			minimumFractionDigits: style === 'percent' ? 0 : decimals,
+  			maximumFractionDigits: style === 'percent' ? 0 : decimals,
   		}).format(numberVal);
 	}
 	return '';
@@ -133,3 +138,12 @@ export const stringAvatar = (word1: string, word2: string) => {
 		children: `${word1[0]}${word2[0]}`,
 	};
 };
+
+ // Parse formatted values back to numbers
+ export const parseCurrency = (value: string): number => {
+    return Number(value.replace(/[^0-9.-]+/g, ''));
+  };
+
+  export const parsePercentage = (value: string): number => {
+    return Number(value.replace(/[^0-9.-]+/g, ''));
+  };

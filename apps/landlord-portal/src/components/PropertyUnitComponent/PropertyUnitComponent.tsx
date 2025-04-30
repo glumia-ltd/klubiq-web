@@ -109,13 +109,19 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 	};
 
 	const handleAddLease = () => {
-		navigate(`/lease/add-lease?property=${currentUUId}`);
+		navigate(`/leases/add-lease?property=${currentUUId}`);
 	};
 
 	const handleAddTenant = () => {
-		navigate(`/tenants/add-tenant?property=${currentProperty?.uuid}`, {
+		navigate(`/tenants/invite-tenant`, {
 			state: {
-				currentProperty: currentProperty,
+				mode: 'onboarding',
+				propertyDetails: {
+					propertyName: currentProperty?.name,
+					unitId: currentProperty?.units?.[0]?.id,
+					unitNumber: currentProperty?.units?.[0]?.unitNumber,
+				},
+				returnPath: `/properties/${currentUUId}`,
 			},
 		});
 	};

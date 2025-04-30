@@ -67,18 +67,7 @@ export const styles = {
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	// rowCard: {
-	// 	width: '100%',
-	// 	maxWidth: { xs: '100%', sm: '650px', md: '100%', lg: '370px' },
-
-	// 	padding: { xs: '20px', sm: '32px', md: '32px', lg: '32px' },
-	// 	height: { xs: '500px', sm: '500px', md: '550px', lg: '502px' },
-	// 	borderRadius: '10px',
-	// 	display: 'flex',
-	// 	justifyContent: 'center',
-	// 	textAlign: 'left',
-	// 	alignItems: 'center',
-	// },
+	
 	skeletonImage: {
 		width: '',
 		height: '240px',

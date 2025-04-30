@@ -65,9 +65,15 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 		navigate(`/leases/add-lease?property=${currentProperty?.uuid}&unit=${currentUnitId}`);
 	};
 	const handleAddTenant = () => {
-		navigate(`/tenants/add-tenant?property=${currentProperty?.uuid}`, {
+		navigate(`/tenants/invite-tenant`, {
 			state: {
-				currentProperty: currentProperty,
+				mode: 'onboarding',
+				propertyDetails: {
+					propertyName: currentProperty?.name,
+					unitId: currentUnitId,
+					unitNumber: currentUnitInformation?.unitNumber,
+				},
+				returnPath: `/properties/${currentProperty?.uuid}/units/${currentUnitId}`,
 			},
 		});
 	};

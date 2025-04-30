@@ -13,6 +13,7 @@ import {
 	Radio,
 } from '@mui/material';
 import AddTenantModal from '../../Modals/AddTenantModal';
+import { screenMessages } from '../../../helpers/screen-messages';
 import { consoleError, consoleLog } from '../../../helpers/debug-logger';
 
 const AddTenant = () => {
@@ -187,6 +188,7 @@ const AddTenant = () => {
 					onClose={() => {
 						setOpenModal(false);
 					}}
+					message={screenMessages.tenant.invite.confirm}
 				/>
 			)}
 		</FormLayout>

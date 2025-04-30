@@ -13,14 +13,14 @@ import UserProfileDetails from '../pages/UserProfileDetails';
 import EmailVerification from '../pages/EmailVerification';
 import DashBoard from '../pages/Dashboard';
 import Setting from '../pages/Settings';
-import Support from '../pages/Support';
+// import Support from '../pages/Support';
 // import Message from '../pages/Message';
 // import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
 import MFASetUp from '../pages/MFAPage';
 import AddProperties from '../pages/AddProperties';
 import PropertyPage from '../pages/PropertyPage';
-import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
+// import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
 import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
@@ -35,6 +35,8 @@ import LeaseDetails from '../pages/Lease/LeaseDetails';
 
 import EditPropertyPage from '../pages/EditPropertyPage';
 import NotFound from '../pages/ErrorPages/404';
+import AddTenant from '../pages/Tenant/AddTenant';
+import Tenant from '../pages/Tenant';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -91,13 +93,11 @@ export const router = createBrowserRouter(
 						<Route index element={<Lease />} />
 						<Route path='add-lease' element={<AddLeasePage />} />
 					</Route>
-
-					<Route path='/lease/:id' element={<LeaseDetails />} />
-					<Route path='/tenants' element={<Support />} />
-					<Route path='/lease/:id' element={<LeaseDetails />} />
+					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
-						<Route index element={<Support />} />
-						<Route path='add-tenant' element={<AddTenantPage />} />
+						<Route index element={<Tenant />} />
+						<Route path='add-tenant' element={<AddTenant />} />
+						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
 					{/* <Route path='/maintenance' element={<Maintenance />} /> */}
 					{/* <Route path='/message' element={<Message />} /> */}

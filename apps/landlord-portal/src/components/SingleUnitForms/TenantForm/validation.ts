@@ -76,6 +76,7 @@ export interface propertyName {
     units?: Unit[];
 
 }
+
 export interface AddTenantFormProps {
     propertyDetails: {
         uuid: string;

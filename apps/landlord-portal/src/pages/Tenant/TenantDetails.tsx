@@ -1,4 +1,4 @@
-import { styles } from './style';
+import { styles } from '../Lease/style';
 import {
 	// Container,
 	Stack,
@@ -10,8 +10,8 @@ import {
 import bukky from '../../assets/images/bukky.png';
 import * as KlubiqIcons from '../../components/Icons/CustomIcons';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
-import { HistoryTable } from './HistoryTable';
-import TenantDocument from './TenantDocument';
+import { HistoryTable } from '../Lease/HistoryTable';
+import TenantDocument from '../Tenant/TenantDocument';
 
 const TenantDetails = () => {
 	const Datas = [
