@@ -46,6 +46,14 @@ export const leaseEndpoints = {
 	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
 	addLease: () => '/leases',
 };
+export const tenantEndpoints = {
+	// getTenantMetaData: () => '/public/tenant-metadata',
+	// getTenants: () => '/tenants',
+	// getTenant: (tenantId: string) => `/tenants/${tenantId}`,
+	onboardTenant: () => '/auth/onboard-tenant',
+	// 	editTenant: (tenantId: string) => `/tenants/${tenantId}`,
+	// 	deleteTenant: (tenantId: string) => `/tenants/${tenantId}`,
+};
 export const notificationEndpoints = {
 	subscribe: () => '/notifications-subscription/subscribe',
 	unsubscribe: (subId: string) =>

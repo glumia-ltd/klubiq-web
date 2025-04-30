@@ -33,6 +33,8 @@ export type PropertyMetaData = {
 export type TenantType = {
 	id: string;
 	profile: UserProfile;
+	leaseDetails: LeaseType;
+	propertyDetails: PropertyDataType;
 	isPrimaryTenant: boolean;
 }
 
@@ -277,4 +279,25 @@ export type PropertyImageType = {
 	url: string;
 	fileSize: number;
 	unitNumber?: string;
+};
+export type InviteTenantPropertyDetailsType = {
+	propertyName: string;
+	unitId: string;
+	unitNumber: string;
+};
+
+export type InviteTenantFormValues = {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: string;
+    leaseDetails?: {
+        name?: string;
+        startDate?: string;
+        endDate?: string;
+        unitId?: string;
+        rentAmount?: number | string;
+        propertyName?: string;
+        unitNumber?: string;
+    };
 };

@@ -14,7 +14,7 @@ import { leaseApiSlice } from './LeaseStore/leaseApiSlice';
 import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
 import loaderReducer from './GlobalStore/LoaderSlice';
 import { globalApiSlice } from './GlobalStore/globalApiSlice';
-
+import { tenantApiSlice } from './TenantStore/tenantApiSlice';
 export type RootState = ReturnType<typeof store.getState>;
 
 const store: Store = configureStore({
@@ -33,6 +33,7 @@ const store: Store = configureStore({
 		[leaseApiSlice.reducerPath]: leaseApiSlice.reducer,
 		[notificationApiSlice.reducerPath]: notificationApiSlice.reducer,
 		[globalApiSlice.reducerPath]: globalApiSlice.reducer,
+		[tenantApiSlice.reducerPath]: tenantApiSlice.reducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware().concat(
@@ -43,6 +44,7 @@ const store: Store = configureStore({
 			leaseApiSlice.middleware,
 			notificationApiSlice.middleware,
 			globalApiSlice.middleware,
+			tenantApiSlice.middleware,
 		),
 });
 
@@ -56,5 +58,6 @@ export const resetStore = () => {
 	store.dispatch(leaseApiSlice.util.resetApiState());
 	store.dispatch(notificationApiSlice.util.resetApiState());
 	store.dispatch(globalApiSlice.util.resetApiState());
+	store.dispatch(tenantApiSlice.util.resetApiState());
 };
 export default store;

@@ -7,7 +7,7 @@ import {
 	Avatar,
 	IconButton,
 } from '@mui/material';
-import { styles } from './style';
+import { styles } from './styles';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import * as yup from 'yup';
 import { useState, useEffect } from 'react';
@@ -82,7 +82,7 @@ const TenantProfile = () => {
 	return (
 		<LeaseFormLayout
 			Header='LandMark Estate > Single unit'
-			sx={styles.leaseCard}
+			sx={styles.tenantCard}
 		>
 			{loading ? (
 				<Grid container spacing={1} sx={styles.content}>

@@ -146,7 +146,7 @@ export const styles = {
 			cursor: 'pointer',
 		},
 	},
-	leaseCard: {
+	tenantCard: {
 		width: '100%',
 		maxWidth: '810px',
 	},
@@ -156,7 +156,7 @@ export const styles = {
 		display: 'flex',
 		marginTop: '15px',
 	},
-	addLeaseButton: {
+	addTenantButton: {
 		display: 'flex',
 		padding: '8px 16px',
 		borderRadius: '10px',
@@ -169,11 +169,17 @@ export const styles = {
 		gap: '8px',
 		width: '180px',
 	},
-	leaseTableContainer: {
+	tenantTableContainer: {
 		textAlign: 'center',
 		alignItems: 'center',
 	},
-
+	inputStyle: {
+		p: '2px 4px',
+		display: 'flex',
+		alignItems: 'center',
+		border: '1px solid #262626',
+		borderRadius: '10px',
+	},
 	tableCell: {
 		// padding: '10px',
 		fontSize: '24px',

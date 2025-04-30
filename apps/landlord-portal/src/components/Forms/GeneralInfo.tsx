@@ -441,8 +441,11 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															onClose={handleCloseDropdown}
 														>
 															<MenuItem
+														
 																onClick={() => {
 																	cloneUnit(unitIndex);
+																	const clonedUnitNumber = `${getIn(formik.values, `units[${unitIndex}]`)}-clone`;
+																	formik.setFieldValue(`units[${formik.values.units.length}]`, clonedUnitNumber);
 																	handleCloseDropdown();
 																}}
 															>
@@ -456,6 +459,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 																	handleRemoveUnit(unitIndex);
 																	handleCloseDropdown();
 																}}
+																disabled={formik.values.units.length <= 1}
 															>
 																<RemoveIcon
 																	sx={{ marginRight: '5px', height: '12px' }}
