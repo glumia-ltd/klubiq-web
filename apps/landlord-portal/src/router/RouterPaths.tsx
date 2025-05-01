@@ -13,16 +13,12 @@ import UserProfileDetails from '../pages/UserProfileDetails';
 import EmailVerification from '../pages/EmailVerification';
 import DashBoard from '../pages/Dashboard';
 import Setting from '../pages/Settings';
-// import Support from '../pages/Support';
-// import Message from '../pages/Message';
-// import Maintenance from '../pages/Maintenance';
 import Lease from '../pages/Lease';
 import MFASetUp from '../pages/MFAPage';
 import AddProperties from '../pages/AddProperties';
 import PropertyPage from '../pages/PropertyPage';
-// import AddTenantPage from '../pages/AddTenantPage/AddTenantPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
-import AddMaintenancePage from '../pages/AddMaintenancePage/AddMaintenancePage';
+
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
 import Properties from '../pages/Properties';
@@ -69,9 +65,6 @@ export const router = createBrowserRouter(
 						<Route index element={<PropertyPage />} />
 						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
-
-
-						<Route path='add-maintenance' element={<AddMaintenancePage />} />
 					</Route>
 
 					<Route
@@ -99,9 +92,6 @@ export const router = createBrowserRouter(
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
-					{/* <Route path='/maintenance' element={<Maintenance />} /> */}
-					{/* <Route path='/message' element={<Message />} /> */}
-					{/* <Route path='/support' element={<Support />} /> */}
 					<Route path='/settings' element={<Setting />} />
 				</Route>
 			</Route>

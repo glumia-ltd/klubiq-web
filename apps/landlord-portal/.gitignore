@@ -24,3 +24,6 @@ vite.config.ts.timestamp-*.mjs
 *.sw?
 .env
 .env.*
+src/components/DynamicForm-local/*.ts
+src/components/DynamicForm-local/*.tsx
+src/components/DynamicForm-local
