@@ -287,11 +287,11 @@ export type InviteTenantPropertyDetailsType = {
 };
 
 export type InviteTenantFormValues = {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
     phoneNumber?: string;
-    leaseDetails?: {
+    leaseDetails: {
         name?: string;
         startDate?: string;
         endDate?: string;

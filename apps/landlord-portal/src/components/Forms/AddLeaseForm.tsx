@@ -1,25 +1,26 @@
 /* eslint-disable no-unused-vars */
-import FormLayout from '../../../Layouts/FormLayout';
-import { Grid, Typography, Skeleton, Button, Link } from '@mui/material';
-import style from './style';
-import ControlledTextField from '../../ControlledComponents/ControlledTextField';
+import FormLayout from '../../Layouts/FormLayout';
+import { Grid, Typography, Button, Link } from '@mui/material';
+import { LeaseFormStyle } from './style';
+import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import ControlledSelect from '../../ControlledComponents/ControlledSelect';
-import Logo from '../../../assets/images/info.svg';
+import ControlledSelect from '../ControlledComponents/ControlledSelect';
+import Logo from '../../assets/images/info.svg';
 import { useEffect, useMemo, useState, FC } from 'react';
-import { consoleLog } from '../../../helpers/debug-logger';
+import { consoleLog } from '../../helpers/debug-logger';
 import { Stack } from '@mui/system';
-import { useGetOrgPropertiesViewListQuery } from '../../../store/LeaseStore/leaseApiSlice';
-import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { useGetOrgPropertiesViewListQuery } from '../../store/LeaseStore/leaseApiSlice';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
-import { getCurrencySymbol } from '../../../helpers/utils';
-import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { getCurrencySymbol } from '../../helpers/utils';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
-import { useAddLeaseMutation } from '../../../store/LeaseStore/leaseApiSlice';
+import { useAddLeaseMutation } from '../../store/LeaseStore/leaseApiSlice';
 import { useNavigate } from 'react-router-dom';
+import FormSkeleton from '../skeletons/FormSkeleton';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -324,59 +325,11 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	};
 
 	return (
-		<FormLayout Header='LEASE INFORMATION' sx={style.card}>
+		<FormLayout Header='LEASE INFORMATION' sx={LeaseFormStyle.card}>
 			{isLoadingOrgPropertiesView ? (
-				<Grid container spacing={1} sx={style.content}>
-					<Grid item xs={12}>
-						<Skeleton variant='text' height={25} width='50%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.skeleton}>
-						<Skeleton variant='text' height={25} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={6} sx={style.skeleton}>
-						<Skeleton variant='text' height={20} width='40%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>{' '}
-					<Grid item xs={6}></Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} />
-					</Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} />
-					</Grid>
-					<Grid item xs={12}>
-						<Skeleton variant='text' sx={style.skeleton} width='90%' />
-					</Grid>
-				</Grid>
+				<FormSkeleton rows={8} columns={[1, 1, 1, 1, 1, 1, 1, 1]} sx={LeaseFormStyle.content} />
 			) : (
-				<Grid container spacing={0} sx={style.content}>
+				<Grid container spacing={0} sx={LeaseFormStyle.content}>
 					<Grid item xs={12}>
 						<ControlledTextField
 							name='name'
@@ -493,10 +446,10 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 						) : null}
 					</Grid>
 
-					<Grid item xs={12} sx={style.infobox}>
-						<img src={Logo} alt='logo' style={style.infoimg} />
+					<Grid item xs={12} sx={LeaseFormStyle.infobox}>
+						<img src={Logo} alt='logo' style={LeaseFormStyle.infoimg} />
 
-						<Typography variant='subtitle2' sx={style.infotypo}>
+						<Typography variant='subtitle2' sx={LeaseFormStyle.infotypo}>
 							{formik.values.endDate &&
 							formik.values.startDate &&
 							formik.values.frequency
@@ -512,12 +465,12 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 						width={'100%'}
 						mt={10}
 					>
-						<Button variant='text' sx={style.button}>
+						<Button variant='text' sx={LeaseFormStyle.button}>
 							Cancel
 						</Button>
 						<Button
 							variant='contained'
-							sx={style.button}
+							sx={LeaseFormStyle.button}
 							onClick={handleAddLease}
 							disabled={disabledButton}
 						>

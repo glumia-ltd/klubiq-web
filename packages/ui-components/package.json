@@ -21,12 +21,13 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^7.6.10",
-    "@storybook/addon-interactions": "^7.6.10",
-    "@storybook/addon-links": "^7.6.10",
-    "@storybook/blocks": "^7.6.10",
-    "@storybook/react": "^7.6.10",
-    "@storybook/react-vite": "^7.6.10",
+    "@chromatic-com/storybook": "^3.2.6",
+    "@storybook/addon-essentials": "^8.6.12",
+    "@storybook/addon-interactions": "^8.6.12",
+    "@storybook/addon-links": "^8.6.12",
+    "@storybook/blocks": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
     "@storybook/testing-library": "^0.2.2",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
@@ -35,9 +36,9 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "storybook": "^8.6.12",
     "tsup": "^8.0.2",
-    "typescript": "^5.2.2",
-    "storybook": "^7.x.x"
+    "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.3",
@@ -51,6 +52,8 @@
     "@hookform/resolvers": "^5.0.1",
     "@zxcvbn-ts/core": "^3.0.4",
     "react-hook-form": "^7.56.1",
+    "vite": "6.3.4",
+    "vite-plugin-pwa": "1.0.0",
     "yup": "^1.6.1"
   },
   "exports": {
