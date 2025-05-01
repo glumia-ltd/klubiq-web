@@ -359,9 +359,9 @@ export const CurrencyPercentageForm: Story = {
       {
         name: 'amount',
         label: 'Amount',
-        type: 'currency',
+        type: 'decimal',
         required: true,
-        formatType: 'currency',
+        formatType: 'decimal',
         adornment: {
           prefix: '$',
         },

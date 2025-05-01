@@ -14,7 +14,7 @@ export type FieldType =
   | 'checkbox'
   | 'radio'
   | 'textarea'
-  | 'currency'
+  | 'decimal'
   | 'percent'
   | 'file'
   | 'hidden';
@@ -24,7 +24,7 @@ export interface SelectOption {
   value: string | number;
 }
 
-export type FormatType = 'currency' | 'percent' | 'unit' | 'decimal';
+export type FormatType = 'percent' | 'unit' | 'decimal';
 
 export interface InputAdornment {
   prefix?: string | ReactNode;
@@ -60,6 +60,10 @@ export interface FormField {
   groupFields?: FormField[];
   isInFieldLabel?: boolean;
   radioGroupDirection?: 'row' | 'column';
+  minDate?: string;
+  maxDate?: string;
+  dependsOn?: DependsOn[];
+
 }
 
 export interface DynamicFormProps {
@@ -75,6 +79,11 @@ export interface DynamicFormProps {
     [key: string]: ((value: any, ...args: any[]) => any) | undefined;
   };
   
+}
+ 
+export interface DependsOn {
+  field: string;
+  value: string;
 }
 
 export interface FormGroup {
