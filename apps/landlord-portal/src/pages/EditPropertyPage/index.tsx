@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import { AddPropertyType, CategoryMetaDataType } from '../../shared/type';
 import { consoleLog } from '../../helpers/debug-logger';
 import GeneralInfo from '../../components/Forms/GeneralInfo';
-import styles from '../../components/Forms/style';
+import { GeneralFormStyle } from '../../components/Forms/style';
 import addPropertyStyles from '../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
 import { ArrowLeftIcon } from '../../components/Icons/CustomIcons';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -274,7 +274,7 @@ const EditProperty = () => {
 					<Grid item xs={12}>
 						<Grid container spacing={1}>
 							<Grid container>
-								<Card sx={styles.card}>
+								<Card sx={GeneralFormStyle.card}>
 									<Grid container spacing={2}>
 										<Grid item xs={12}>
 											{isCurrentPropertyLoading ? (
@@ -347,7 +347,7 @@ const EditProperty = () => {
 						{isCurrentPropertyLoading ? (
 							<Grid container spacing={1}>
 								<Grid container>
-									<Card sx={styles.card}>
+									<Card sx={GeneralFormStyle.card}>
 										<InputSkeleton />
 										<InputSkeleton />
 										<InputSkeleton />

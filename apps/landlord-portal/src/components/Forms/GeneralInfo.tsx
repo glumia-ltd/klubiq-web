@@ -23,7 +23,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 // import StateList from '../../helpers/stateList.json';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
-import styles from './style';
+import { GeneralFormStyle } from './style';
 import { Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 // import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
@@ -143,9 +143,18 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const cloneUnit = (index: number) => {
-		const unitToClone = { ...formik.values.units[index] };
-		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
+		const unitToClone = formik.values.units?.[index];
+		if (!unitToClone) return;
+		const clonedUnit = {
+			...unitToClone,
+			unitNumber: unitToClone.unitNumber
+				? `${unitToClone.unitNumber}-clone`
+				: `unit-${formik.values.units.length + 1}`,
+		};
+
+		formik.setFieldValue('units', [...formik.values.units, clonedUnit]);
 	};
+	
 
 	const handleRemoveUnit = (index: number) => {
 		const units = [...formik.values.units];
@@ -211,10 +220,10 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	return (
 		<Grid container spacing={1}>
 			<Grid container>
-				<Card sx={styles.card}>
+				<Card sx={GeneralFormStyle.card}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
-							<Typography variant='h6' sx={styles.typo}>
+							<Typography variant='h6' sx={GeneralFormStyle.typo}>
 								General Information
 							</Typography>
 						</Grid>
@@ -272,9 +281,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 			{selectedUnitType !== 'multi' && (
 				<Grid container mt={1}>
-					<Card sx={styles.cardTwo}>
+					<Card sx={GeneralFormStyle.cardTwo}>
 						<Grid item xs={12}>
-							<Typography variant='h6' sx={styles.typo}>
+							<Typography variant='h6' sx={GeneralFormStyle.typo}>
 								Unit Details
 							</Typography>
 						</Grid>
@@ -357,10 +366,10 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 			)}
 			{selectedUnitType === 'multi' && (
 				<Grid container>
-					<Card sx={styles.cardTwo}>
+					<Card sx={GeneralFormStyle.cardTwo}>
 						<Grid container spacing={0}>
 							{selectedUnitType === 'multi' && (
-								<Grid item xs={12} sx={styles.addButton}>
+								<Grid item xs={12} sx={GeneralFormStyle.addButton}>
 									<Button
 										color='primary'
 										onClick={addUnit}
@@ -377,9 +386,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									spacing={0}
 									key={`${unitIndex}-${unitIndex}-unit`}
 								>
-									<Grid container spacing={0} sx={styles.boxContent}>
+									<Grid container spacing={0} sx={GeneralFormStyle.boxContent}>
 										<Grid item xs={12}>
-											<Card sx={styles.titleDiv}>
+											<Card sx={GeneralFormStyle.titleDiv}>
 												<Typography
 													fontWeight={'500'}
 													fontSize={'16px'}
@@ -441,11 +450,13 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 															onClose={handleCloseDropdown}
 														>
 															<MenuItem
-														
 																onClick={() => {
 																	cloneUnit(unitIndex);
 																	const clonedUnitNumber = `${getIn(formik.values, `units[${unitIndex}]`)}-clone`;
-																	formik.setFieldValue(`units[${formik.values.units.length}]`, clonedUnitNumber);
+																	formik.setFieldValue(
+																		`units[${formik.values.units.length}]`,
+																		clonedUnitNumber,
+																	);
 																	handleCloseDropdown();
 																}}
 															>
@@ -478,9 +489,16 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 											orientation='vertical'
 											in={collapseUnit.includes(unitIndex) ? false : true}
 										>
-											<Grid container spacing={0} sx={styles.cardContent}>
+											<Grid
+												container
+												spacing={0}
+												sx={GeneralFormStyle.cardContent}
+											>
 												<Grid item xs={12} md={12}>
-													<Typography variant='h6' sx={styles.subText}>
+													<Typography
+														variant='h6'
+														sx={GeneralFormStyle.subText}
+													>
 														Unit name
 													</Typography>
 													<ControlledTextField
@@ -489,12 +507,15 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 													/>
 												</Grid>
 												<Grid item xs={12}>
-													<Typography variant='h3' sx={styles.subText}>
+													<Typography
+														variant='h3'
+														sx={GeneralFormStyle.subText}
+													>
 														Unit Details
 													</Typography>
 												</Grid>
 
-												<Grid item xs={6} sx={styles.unitIcon}>
+												<Grid item xs={6} sx={GeneralFormStyle.unitIcon}>
 													<Tooltip
 														title={`Click to adjust ${getNameByPropertyCategory().slice(
 															0,
