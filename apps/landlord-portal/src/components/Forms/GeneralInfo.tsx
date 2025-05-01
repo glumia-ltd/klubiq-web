@@ -143,9 +143,18 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const cloneUnit = (index: number) => {
-		const unitToClone = { ...formik.values.units[index] };
-		formik.setFieldValue('units', [...formik.values.units, unitToClone]);
+		const unitToClone = formik.values.units?.[index];
+		if (!unitToClone) return;
+		const clonedUnit = {
+			...unitToClone,
+			unitNumber: unitToClone.unitNumber
+				? `${unitToClone.unitNumber}-clone`
+				: `unit-${formik.values.units.length + 1}`,
+		};
+
+		formik.setFieldValue('units', [...formik.values.units, clonedUnit]);
 	};
+	
 
 	const handleRemoveUnit = (index: number) => {
 		const units = [...formik.values.units];
