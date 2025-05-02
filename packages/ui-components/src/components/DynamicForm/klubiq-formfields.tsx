@@ -13,7 +13,9 @@ import {
 	InputAdornment,
 	Stack,
 	Typography,
+	IconButton,
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { DynamicFormProps, FormatType, FormField, FormGroup } from './types';
@@ -27,8 +29,12 @@ interface FormFieldsProps {
 }
 
 export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
-    const [perDecimalDisplayValue, setPerDecimalDisplayValue] = useState('');
-    // Add effect to handle form reset
+	const [perDecimalDisplayValue, setPerDecimalDisplayValue] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
+	const handleTogglePassword = () => {
+		setShowPassword(!showPassword);
+	};
+	// Add effect to handle form reset
 
 	if (field.hidden) {
 		return (
@@ -154,6 +160,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 								</Typography>
 								<Select
 									{...formikField}
+									sx={{ width: field.width || '100%' }}
 									label={field.label}
 									multiple={field.multiple}
 									value={
@@ -192,6 +199,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 									</Typography>
 								)}
 								<FormControlLabel
+									sx={{ width: field.width || '100%' }}
 									control={
 										<Checkbox {...formikField} checked={formikField.value} />
 									}
@@ -220,6 +228,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 								<RadioGroup
 									{...formikField}
 									row={field.radioGroupDirection === 'row'}
+									sx={{ width: field.width || '100%' }}
 								>
 									{field.options?.map((option) => (
 										<FormControlLabel
@@ -252,6 +261,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 									</Typography>
 								)}
 								<DatePicker
+									sx={{ width: field.width || '100%' }}
 									label={field.isInFieldLabel && field.label}
 									value={
 										field.readonly
@@ -319,6 +329,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 							)}
 							<TextField
 								{...formikField}
+								sx={{ width: field.width || '100%' }}
 								fullWidth
 								multiline
 								value={
@@ -341,18 +352,82 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 
 		case 'decimal':
 		case 'percent':
-            
 			return (
 				<Field name={field.name}>
 					{({ field: formikField, form, meta }: any) => {
-                        useEffect(() => {
-                            // If formik value is empty and form is pristine, reset display value
-                            if (!formikField.value && !form.dirty) {
-                                setPerDecimalDisplayValue('');
-                            }
-                          }, [form.dirty, formikField.value]);
+						useEffect(() => {
+							// If formik value is empty and form is pristine, reset display value
+							if (!formikField.value && !form.dirty) {
+								setPerDecimalDisplayValue('');
+							}
+						}, [form.dirty, formikField.value]);
 						return (
-                            <Stack sx={style.fieldStack}>
+							<Stack sx={style.fieldStack}>
+								{!field.isInFieldLabel && (
+									<Typography variant='subtitle1' component='h3'>
+										{field.label}
+										{field.required && '*'}
+									</Typography>
+								)}
+								<TextField
+									readOnly={field.readonly}
+									disabled={field.disabled}
+									sx={{ width: field.width || '100%' }}
+									{...getInputProps(formikField, meta)}
+									// Remove the touched condition and use raw value during input
+									value={
+										field.readonly
+											? formatValue(field.predefinedValue, field.formatType) ??
+												''
+											: perDecimalDisplayValue ||
+												formatValue(formikField.value, field.formatType) ||
+												''
+									}
+									onChange={(e) => {
+										// Allow direct input of numbers and decimal point
+										const inputValue = e.target.value;
+										const unformatted = parseValue(inputValue);
+										// Only allow numbers and one decimal point
+										if (
+											inputValue === '' ||
+											/^-?\d*\.?\d*$/.test(unformatted)
+										) {
+											setPerDecimalDisplayValue(unformatted);
+											form.setFieldValue(field.name, unformatted);
+										}
+									}}
+									onFocus={() => {
+										// When focused, ensure we're showing the unformatted value
+										if (formikField.value) {
+											const unformatted = parseValue(formikField.value);
+											setPerDecimalDisplayValue(unformatted);
+										}
+									}}
+									onBlur={(e) => {
+										formikField.onBlur(e);
+										const value = parseValue(e.target.value);
+										// Parse and format only when leaving the field
+										if (value && value !== '') {
+											setPerDecimalDisplayValue(
+												formatValue(value, field.formatType),
+											);
+											form.setFieldValue(field.name, value);
+										} else {
+											setPerDecimalDisplayValue('');
+											form.setFieldValue(field.name, '');
+										}
+									}}
+								/>
+							</Stack>
+						);
+					}}
+				</Field>
+			);
+		case 'password':
+			return (
+				<Field name={field.name}>
+					{({ field: formikField, meta }: any) => (
+						<Stack sx={style.fieldStack}>
 							{!field.isInFieldLabel && (
 								<Typography variant='subtitle1' component='h3'>
 									{field.label}
@@ -360,51 +435,32 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 								</Typography>
 							)}
 							<TextField
-								readOnly={field.readonly}
-								disabled={field.disabled}
-								{...getInputProps(formikField, meta)}
-								// Remove the touched condition and use raw value during input
-								value={
-									field.readonly
-										? formatValue(field.predefinedValue, field.formatType) ?? ''
-										:perDecimalDisplayValue || formatValue(formikField.value, field.formatType) || ''
+								{...formikField}
+								sx={{ width: field.width || '100%' }}
+								type={showPassword ? 'text' : 'password'}
+								label={field.isInFieldLabel && field.label}
+								placeholder={field.placeholder}
+								error={meta.touched && !!meta.error}
+								helperText={
+									meta.touched && meta.error ? meta.error : field.helperText
 								}
-								onChange={(e) => {
-									// Allow direct input of numbers and decimal point
-									const inputValue = e.target.value;
-                                    const unformatted = parseValue(inputValue);
-									// Only allow numbers and one decimal point
-									if (inputValue === '' || /^-?\d*\.?\d*$/.test(unformatted)) {
-                                        setPerDecimalDisplayValue(unformatted);
-										form.setFieldValue(field.name, unformatted);
-									}
-								}}
-								onFocus={() => {
-									// When focused, ensure we're showing the unformatted value
-									if (formikField.value) {
-										const unformatted = parseValue(formikField.value);
-										setPerDecimalDisplayValue(unformatted);
-									}
-								}}
-								onBlur={(e) => {
-									formikField.onBlur(e);
-									const value  = parseValue(e.target.value);
-									// Parse and format only when leaving the field
-									if (value && value !== '') {
-										setPerDecimalDisplayValue(formatValue(
-											value,
-											field.formatType,
-										));
-										form.setFieldValue(field.name, value);
-									} else {
-										setPerDecimalDisplayValue('');
-										form.setFieldValue(field.name, '');
-									}
+								disabled={field.disabled}
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position='end'>
+											<IconButton
+												aria-label='toggle password visibility'
+												onClick={handleTogglePassword}
+												edge='end'
+											>
+												{showPassword ? <VisibilityOff /> : <Visibility />}
+											</IconButton>
+										</InputAdornment>
+									),
 								}}
 							/>
 						</Stack>
-                        )
-					}}
+					)}
 				</Field>
 			);
 
@@ -421,6 +477,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 							)}
 							<TextField
 								{...formikField}
+								sx={{ width: field.width || '100%' }}
 								fullWidth
 								type={field.type}
 								label={field.isInFieldLabel && field.label}

@@ -49,7 +49,6 @@ const InviteTenantForm = ({
 	const dispatch = useDispatch();
 	const [onboardTenant] = useOnboardTenantMutation();
 	const { orgSettings } = useSelector(getAuthState);
-	consoleLog('propertyDetails', propertyDetails);
 	const validateLeaseDates = (startDate: string, endDate: string) => {
 		if (dayjs(startDate).isAfter(dayjs(endDate))) {
 			return 'End date must be after start date';
@@ -66,16 +65,27 @@ const InviteTenantForm = ({
 					return;
 				}
 			}
-			await onboardTenant(values).unwrap();
-			dispatch(
-				openSnackbar({
-					message: 'Tenant successfully added',
-					severity: 'success',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
-			navigate(returnPath);
+			const response = await onboardTenant(values).unwrap();
+			consoleLog('response', response);
+			if(response.success) {
+				dispatch(
+					openSnackbar({
+						message: 'Tenant successfully added',
+						severity: 'success',
+						isOpen: true,
+						duration: 2000,
+					}),
+				);
+				navigate(returnPath);
+			} else {
+				dispatch(
+					openSnackbar({
+						message: response.message,
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+			}
 		} catch (error) {
 			dispatch(
 				openSnackbar({
