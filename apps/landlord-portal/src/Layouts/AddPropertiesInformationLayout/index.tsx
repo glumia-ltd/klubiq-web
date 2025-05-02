@@ -2,7 +2,6 @@ import { Grid, Typography } from '@mui/material';
 import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import { FC, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 
 const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 	children,
@@ -13,12 +12,7 @@ const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 		navigate(-1);
 	};
 	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.5 }}
-		>
+		<>
 			<Grid
 				sx={{
 					cursor: 'pointer',
@@ -46,7 +40,7 @@ const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 			>
 				{children}
 			</Grid>
-		</motion.div>
+		</>
 	);
 };
 
