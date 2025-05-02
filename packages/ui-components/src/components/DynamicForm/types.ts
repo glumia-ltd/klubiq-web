@@ -63,7 +63,7 @@ export interface FormField {
   minDate?: string;
   maxDate?: string;
   dependsOn?: DependsOn[];
-
+  width?: string | number;
 }
 
 export interface DynamicFormProps {
@@ -78,7 +78,7 @@ export interface DynamicFormProps {
     percentage?: (value: number, decimals?: number) => string;
     [key: string]: ((value: any, ...args: any[]) => any) | undefined;
   };
-  
+  formWidth?: string | number;
 }
  
 export interface DependsOn {
