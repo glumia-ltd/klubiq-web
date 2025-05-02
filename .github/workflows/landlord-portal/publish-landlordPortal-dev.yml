@@ -2,10 +2,10 @@ name: Deploy Landlord Portal
 on:
   push:
     branches:
-      - main
-    # paths:
-    #   - "apps/landlord-portal/**"
-    #   - "packages/**"
+      - dev
+    paths:
+      - "apps/landlord-portal/**"
+      - "packages/**"
 env:
   VITE_APIKEY: ${{ secrets.FIREBASE_API_KEY }}
   VITE_AUTHDOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}

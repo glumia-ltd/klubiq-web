@@ -1,0 +1,10 @@
+branch_name="$(git rev-parse --abbrev-ref HEAD)"
+# only allow pushes on branches containing '/CU-'
+allowed_pattern="/CU-"
+
+if ! echo "$branch_name" | grep -Eq "$allowed_pattern"; then
+  echo "error: Pushes are only allowed on branches matching pattern: $allowed_pattern"
+  echo "       Current branch: $branch_name"
+  exit 1
+fi
+

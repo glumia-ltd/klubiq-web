@@ -254,6 +254,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 	submitButtonText = 'Submit',
 	enableReset = false,
 	resetButtonText = 'Reset',
+	formWidth = '100%',
 }) => {
 
 	const createDateValidation = (field: FormField, isRequired: boolean) => {
@@ -480,7 +481,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			validateOnChange={true}
 		>
 			{({ handleReset, isSubmitting, isValid, dirty, errors }) => (
-				<Box sx={style.container}>
+				<Box sx={{...style.container, width: formWidth}}>
 					<Form>
 						<Stack spacing={2}>
 							{fields.map((field) => (
