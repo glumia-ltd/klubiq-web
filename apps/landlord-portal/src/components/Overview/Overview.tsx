@@ -1,8 +1,8 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
 import { styles } from './style';
 // import editImage from '../../assets/images/edit.svg';
-import { EditIcon } from '../Icons/CustomIcons';
+import { EditIcon, CloseIcon } from '../Icons/CustomIcons';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 
@@ -23,7 +23,6 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 	useEffect(() => {
 		if (overviewContentRef.current) {
 			const element = overviewContentRef.current;
-
 			setNeedsTruncation(element.scrollHeight > element.clientHeight);
 		}
 	}, [textContent, showTextField]);
@@ -40,6 +39,10 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		setTextContent(event.target.value);
+	};
+	const handleCancelText = () => {
+		setShowTextField(false);
+		setTextContent(initialText || '');
 	};
 
 	const handleSaveText = () => {
@@ -67,66 +70,77 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 	};
 	return (
 		<Grid container sx={styles.overviewStyle}>
-			<Grid sx={styles.overviewHeader}>
+			<Stack direction='row' sx={styles.overviewHeader}>
 				<Typography variant='h3'>Overview</Typography>
-				<EditIcon onClick={handleEditOverview} style={styles.editImageStyle} />
-			</Grid>
+				{!showTextField && <EditIcon onClick={handleEditOverview} style={styles.editImageStyle} />}
+				{showTextField && <CloseIcon onClick={handleCancelText} style={styles.editImageStyle} />}
+			</Stack>
+				<Grid sx={styles.overviewTextContainer}>
+							{!showTextField && textContent && (
+								<Typography
+									ref={overviewContentRef}
+									sx={{
+										WebkitLineClamp: truncateText ? 2 : 'none',
+										...styles.overviewContent,
+										height: `${truncateText ? '50px' : ''}`,
+									}}
+								>
+									{textContent}
+								</Typography>
+							)}
+			
+							{showTextField && (
+								<TextField
+									id='standard-multiline-flexible'
+									variant='outlined'
+									defaultValue={textContent}
+									multiline
+									onChange={handleTextFieldChange}
+									fullWidth
+									InputProps={{
+										sx: {
+											alignItems: 'flex-start',
+											padding: '8px 12px',
+											'&.MuiInputBase-root': {
+												maxWidth: '100%',
+											},
+										},
+									}}
+									sx={styles.textFieldStyle}
+								/>
+							) }
+			
+							{!showTextField ? (
+								needsTruncation && (
+									<Button
+										variant='propertyButton'
+										onClick={toggleTextView}
+										sx={styles.showHideTextStyle}
+									>
+										{truncateText ? 'Read more' : 'Hide Text'}
+									</Button>
+								) 
+							) : (
+								<Stack direction='row' spacing={2} sx={styles.saveTextButtonStack}>
+								<Button
+									variant='outlined'
+									onClick={handleCancelText}
+									sx={styles.saveTextButton}
+								>
+									Cancel
+								</Button>
+									<Button
+									variant='contained'
+									onClick={handleSaveText}
+									sx={styles.saveTextButton}
+								>
+									Save
+								</Button>
 
-			<Grid sx={styles.overviewTextContainer}>
-				{!showTextField ? (
-					<Typography
-						ref={overviewContentRef}
-						sx={{
-							WebkitLineClamp: truncateText ? 2 : 'none',
-							...styles.overviewContent,
-							height: `${truncateText ? '50px' : ''}`,
-						}}
-					>
-						{textContent}
-					</Typography>
-				) : null}
+								</Stack>
+							)}
+						</Grid>
 
-				{showTextField ? (
-					<TextField
-						id='standard-multiline-flexible'
-						variant='outlined'
-						defaultValue={textContent}
-						multiline
-						onChange={handleTextFieldChange}
-						fullWidth
-						InputProps={{
-							sx: {
-								alignItems: 'flex-start',
-								padding: '8px 12px',
-								'&.MuiInputBase-root': {
-									maxWidth: '100%',
-								},
-							},
-						}}
-						sx={styles.textFieldStyle}
-					/>
-				) : null}
-
-				{!showTextField ? (
-					needsTruncation ? (
-						<Button
-							variant='propertyButton'
-							onClick={toggleTextView}
-							sx={styles.showHideTextStyle}
-						>
-							{truncateText ? 'Read more' : 'Hide Text'}
-						</Button>
-					) : null
-				) : (
-					<Button
-						variant='propertyButton'
-						onClick={handleSaveText}
-						sx={styles.saveTextButton}
-					>
-						Save
-					</Button>
-				)}
-			</Grid>
 		</Grid>
 	);
 };

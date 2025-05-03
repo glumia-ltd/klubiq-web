@@ -32,7 +32,8 @@ const getInitials = (name: string) => {
 const SingleAvatar: React.FC<{
   item: AvatarItem;
   size?: 'small' | 'medium' | 'large';
-}> = ({ item, size }) => {
+  showName?: boolean;
+}> = ({ item, size, showName }) => {
   const displayText = item.name || item.label || '';
   const avatarSize = getAvatarSize(size);
 
@@ -49,9 +50,11 @@ const SingleAvatar: React.FC<{
           {!item.image && getInitials(displayText)}
         </Avatar>
       </Tooltip>
-      <Typography variant="caption" noWrap>
-        {displayText}
-      </Typography>
+      {showName && (
+        <Typography variant="caption" noWrap sx={{ mt: 0.5, textAlign: 'center', maxWidth: 80, wordBreak: 'break-word' }}>
+          {displayText}
+        </Typography>
+      )}
     </Stack>
   );
 };
@@ -62,6 +65,7 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
   spacing = 'medium',
   size = 'medium',
   showTotal = true,
+  showName = true,
 }) => {
   if (!items || items.length === 0) {
     return null;
@@ -69,7 +73,7 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
 
   // Single avatar with name/label below
   if (items.length === 1) {
-    return <SingleAvatar item={items[0]} size={size} />;
+    return <SingleAvatar item={items[0]} size={size} showName={showName} />;
   }
 
   // Group of avatars

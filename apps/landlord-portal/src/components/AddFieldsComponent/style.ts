@@ -36,7 +36,6 @@ const style = {
 	},
 
 	button: {
-		width: '144px',
 		height: '32px',
 		padding: '6px 8px, 6px 8px',
 		borderRadius: '8px',

@@ -2,11 +2,13 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
+import { API_TAGS } from '../types';
+// import { invalidateMultipleTags } from '../tags-invalidator';
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['Property', 'Deleted'],
+	tagTypes: [API_TAGS.PROPERTY],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
@@ -30,7 +32,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getSingleProperty(params.uuid),
 				method: 'GET',
 			}),
-			providesTags: ['Deleted'],
+			providesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
 		}),
 
 		addProperty: builder.mutation({
@@ -39,7 +41,7 @@ export const propertyApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: ['Property'],
+			invalidatesTags: [API_TAGS.PROPERTY],
 		}),
 
 		getSignedUrl: builder.mutation({
@@ -55,7 +57,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.archiveProperty(params.uuid),
 				method: 'PUT',
 			}),
-			invalidatesTags: ['Property'],
+			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
 		}),
 		deleteProperty: builder.mutation<
 			any,
@@ -71,7 +73,7 @@ export const propertyApiSlice = createApi({
 					unitCount: params.unitCount,
 				},
 			}),
-			invalidatesTags: ['Property'],
+			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
 		}),
 
 		editProperty: builder.mutation<any, { uuid: string; data: any }>({
@@ -80,7 +82,7 @@ export const propertyApiSlice = createApi({
 				method: 'PUT',
 				body: data,
 			}),
-			invalidatesTags: ['Property'],
+			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
 		}),
 	}),
 });
