@@ -11,4 +11,5 @@ export interface AvatarItem {
     spacing?: 'small' | 'medium' | number;
     size?: 'small' | 'medium' | 'large';
     showTotal?: boolean;
+    showName?: boolean;
   }

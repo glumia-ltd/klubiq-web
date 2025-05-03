@@ -65,6 +65,8 @@ export type UnitType = {
 	rooms?: null;
 	toilets?: 4;
 	unitNumber?: string;
+	totalTenants?: number;
+	tenants?: TenantType[];
 };
 
 export type PropertyDataType = {
