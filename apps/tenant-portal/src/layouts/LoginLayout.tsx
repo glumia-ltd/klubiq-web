@@ -2,16 +2,14 @@ import { Grid } from '@mui/material';
 import { FC } from 'react';
 
 type LoginLayoutType = {
-	children: JSX.Element;
-	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+	children: JSX.Element
 };
 
-const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
+const LoginLayout: FC<LoginLayoutType> = ({ children }) => {
 	return (
 		<Grid
 			container
 			spacing={0}
-			component='form'
 			sx={{
         justifyContent: 'center',
         alignItems: 'center',
@@ -25,7 +23,6 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 					backgroundColor: '#F8FBFF',
 				},
 			}}
-			onSubmit={handleSubmit}
 			columnSpacing={{ xss: 1, sm: 1, md: 1 }}
 		>
 			{children}

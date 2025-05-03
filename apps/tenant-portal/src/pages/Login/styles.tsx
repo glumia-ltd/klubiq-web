@@ -1,7 +1,7 @@
 export const styles = {
 	title: {
-    textAlign: 'center',
-    fontWeight: 'semibold',
+		textAlign: 'center',
+		fontWeight: 'semibold',
 		fontSize: {
 			xs: '1.5rem',
 			sm: '2rem',
@@ -14,5 +14,10 @@ export const styles = {
 			md: '3rem',
 			lg: '3rem',
 		},
+	},
+	text: {
+		color: '#717171',
+		fontSize: '14px',
+		textAlign: 'center'
 	},
 };
