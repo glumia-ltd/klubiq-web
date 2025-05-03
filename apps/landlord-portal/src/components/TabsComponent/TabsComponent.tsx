@@ -2,9 +2,9 @@
 import { Grid, Tab, Tabs } from '@mui/material';
 import { styles } from './style';
 import { FC } from 'react';
-
+import { PROPERTY_CONSTANTS } from '../../helpers/constanta';
 type TabsComponentProps = {
-	allTabs: string[];
+	allTabs: typeof PROPERTY_CONSTANTS.tabs;
 	tabValue: number;
 	handleTabChange?: (
 		event: React.SyntheticEvent<Element, Event>,

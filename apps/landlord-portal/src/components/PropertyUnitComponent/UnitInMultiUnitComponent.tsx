@@ -17,6 +17,7 @@ import { PropertyDataType } from '../../shared/type';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { getLocaleFormat } from '../../helpers/utils';
+import { PROPERTY_CONSTANTS } from '../../helpers/constanta';
 
 type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
@@ -31,14 +32,7 @@ const stackedImages = [
 	propertyImage,
 ];
 
-const leaseColumns = [
-	{ id: '1', label: 'Tenant' },
-	{ id: '2', label: 'Status' },
-	{ id: '3', label: 'Rent Amount' },
-	{ id: '4', label: 'Start Date' },
-	{ id: '5', label: 'End Date' },
-];
-const allTabs = ['Overview', 'Lease', 'Document'];
+
 
 export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 	currentProperty,
@@ -158,7 +152,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 						<TabsComponent
 							handleTabChange={handleTabChange}
 							tabValue={tabValue}
-							allTabs={allTabs}
+							allTabs={PROPERTY_CONSTANTS.tabs}
 						/>
 					}
 				</Grid>
@@ -174,7 +168,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 												title='Tenant'
 												buttonText='Add Tenant'
 												handleAdd={handleNavigation}
-												columns={leaseColumns}
+												columns={PROPERTY_CONSTANTS.leaseTableColumns}
 												tableBodyRows={tenantTableBodyRows}
 											/>
 										)}
@@ -204,7 +198,7 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 										title='Lease'
 										buttonText='Add Lease'
 										handleAdd={handleAddLease}
-										columns={leaseColumns}
+										columns={PROPERTY_CONSTANTS.leaseTableColumns}
 										tableBodyRows={leaseTableBodyRows}
 									/>
 								)}

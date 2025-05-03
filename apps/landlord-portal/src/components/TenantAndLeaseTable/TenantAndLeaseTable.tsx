@@ -20,7 +20,7 @@ import { getLocaleFormat } from '../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { TenantType } from '../../shared/type';
-type ColumnType = { id: string; label: string };
+import { TableColumn } from '../../page-tytpes/properties/detail-page.types';
 type RowType = {
 	id: string | number;
 	tenants?: TenantType[];
@@ -34,7 +34,7 @@ type TenantAndLeaseTableProps = {
 	handleAdd?: (path: string) => void;
 	title: string;
 	buttonText: string;
-	columns: ColumnType[];
+	columns: TableColumn[];
 	tableBodyRows: RowType[];
 	showSecondHeader?: boolean;
 };
