@@ -1,4 +1,4 @@
-import { TableColumn } from "../page-tytpes/properties/detail-page.types";
+import { SimpleTableColumn } from "../page-tytpes/properties/detail-page.types";
 export const ALL_TABS = ['Overview', 'Lease', 'Document'];
 export const PROPERTY_CONSTANTS = {
     tabs: ALL_TABS,
@@ -8,7 +8,7 @@ export const PROPERTY_CONSTANTS = {
       { id: '3', label: 'Rent Amount' },
       { id: '4', label: 'Start Date' },
       { id: '5', label: 'End Date' },
-    ] as TableColumn[]
+    ] as SimpleTableColumn[]
   } as const;
 
   

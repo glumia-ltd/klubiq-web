@@ -24,12 +24,12 @@ type UnitsTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
 	buttonText: string;
-	// tableBodyRows: UnitsTableRowType[];
 	tableBodyRows: any;
 };
 interface UnitsTableData {
 	tableColumns: TableColumn[];
 	rows: Array<{
+		unitUuid: string;
 		unitNumber: string;
 		tenants: Array<{
 			name?: string;
@@ -139,6 +139,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 		];
 		const rows =
 			units?.map((unit) => ({
+				unitUuid: unit.id ?? '',
 				unitNumber: unit.unitNumber ?? '',
 				tenants:
 					unit?.tenants?.map((tenant) => ({
@@ -167,8 +168,15 @@ export const UnitsTable: FC<UnitsTableType> = ({
 		[tableBodyRows],
 	);
 
-	const handleUnitClick = (id: string | number) => {
-		navigate(`unit/${id}`);
+	const handleUnitClick = (id: string | number, unitNumber: string) => {
+		navigate(`unit/${id}`, {
+			state: {
+				mode: 'multi-unit',
+				unitUuid: id,
+				returnPath: `/properties`,
+				multiUnitNumber: unitNumber,
+			},
+		});
 	};
 	const handleButtonClick = () => {
 		handleAdd && handleAdd('');
@@ -184,7 +192,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 			header={title}
 			buttonLabel={buttonText}
 			onButtonClick={handleButtonClick}
-			onRowClick={handleUnitClick}
+			onRowClick={(rowData: any) => handleUnitClick(rowData?.unitUuid, rowData?.unitNumber)}
 		/>
 	);
 };

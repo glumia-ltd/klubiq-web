@@ -2,7 +2,7 @@
 import { Grid, Tab, Tabs } from '@mui/material';
 import { styles } from './style';
 import { FC } from 'react';
-import { PROPERTY_CONSTANTS } from '../../helpers/constanta';
+import { PROPERTY_CONSTANTS } from '../../helpers/constants';
 type TabsComponentProps = {
 	allTabs: typeof PROPERTY_CONSTANTS.tabs;
 	tabValue: number;

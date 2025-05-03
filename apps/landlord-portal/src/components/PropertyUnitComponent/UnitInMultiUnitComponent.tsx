@@ -17,7 +17,7 @@ import { PropertyDataType } from '../../shared/type';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { getLocaleFormat } from '../../helpers/utils';
-import { PROPERTY_CONSTANTS } from '../../helpers/constanta';
+import { PROPERTY_CONSTANTS } from '../../helpers/constants';
 
 type PropertyUnitComponentType = {
 	handleNavigation?: (path?: string) => void;
@@ -207,7 +207,6 @@ export const UnitInMultiUnitComponent: FC<PropertyUnitComponentType> = ({
 					</Grid>
 				)}
 
-				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
 
 				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Grid>
