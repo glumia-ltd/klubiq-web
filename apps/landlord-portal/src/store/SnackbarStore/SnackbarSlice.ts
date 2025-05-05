@@ -28,6 +28,7 @@ const options = {
 				message: action.payload.message,
 				severity: action.payload.severity,
 				isOpen: true,
+				duration: action.payload.duration,
 			};
 		},
 		closeSnackbar: (state: snackbarType) => {

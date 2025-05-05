@@ -19,6 +19,10 @@ import {
 } from '@klubiq/ui-components';
 import dayjs from 'dayjs';
 import FormSkeleton from '../skeletons/FormSkeleton';
+import { Typography } from '@mui/material';
+import { PERSON_TITLES } from '../../helpers/constants';
+import { omit } from 'lodash';
+import { screenMessages } from '../../helpers/screen-messages';
 
 interface InviteTenantFormProps {
 	propertyDetails: {
@@ -65,33 +69,25 @@ const InviteTenantForm = ({
 					return;
 				}
 			}
-			const response = await onboardTenant(values).unwrap();
+			let requestData = omit(values, ['tenantType', 'heading']);
+			const response = await onboardTenant(requestData).unwrap();
 			consoleLog('response', response);
-			if(response.success) {
-				dispatch(
-					openSnackbar({
-						message: 'Tenant successfully added',
-						severity: 'success',
-						isOpen: true,
-						duration: 2000,
-					}),
-				);
-				navigate(returnPath);
-			} else {
-				dispatch(
-					openSnackbar({
-						message: response.message,
-						severity: 'error',
-						isOpen: true,
-					}),
-				);
-			}
+			consoleLog('response was successful', response);
+			dispatch(
+				openSnackbar({
+					message: screenMessages.tenant.invite.success,
+					severity: 'success',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			navigate(returnPath);
 		} catch (error) {
 			dispatch(
 				openSnackbar({
 					message: getErrorResponseMessage({
 						response: (error as any)?.response,
-						message: (error as any)?.message,
+						message: (error as any)?.message || screenMessages.tenant.invite.error,
 					}),
 					severity: 'error',
 					isOpen: true,
@@ -107,6 +103,8 @@ const InviteTenantForm = ({
 				lastName: '',
 				email: '',
 				phoneNumber: '',
+				title: 'Mr',
+				company: '',
 				leaseDetails: {
 					name: '',
 					startDate: '',
@@ -123,7 +121,7 @@ const InviteTenantForm = ({
 
 	const inviteMethodFields: FormField = {
 		name: 'invitationMethod',
-		label: 'Invite Tenant by',
+		label: 'Send the tenant an invite by',
 		type: 'radio',
 		radioGroupDirection: 'row',
 		required: true,
@@ -218,6 +216,50 @@ const InviteTenantForm = ({
 		],
 	};
 	const tenantFormFields: (FormField | FormGroup)[] = [
+		
+		{
+			name: 'heading',
+			label: '',
+			type: 'text',
+			customComponent: <Typography variant='subtitle2'>We'll invite the tenant to setup their tenant account so they can pay their rent.</Typography>,
+		},
+		{
+			name: 'tenantType',
+			label: 'Tenant Type',
+			type: 'radio',
+			required: true,
+			radioGroupDirection: 'row',
+			options: [
+				{ value: 'company', label: 'Company' },
+				{ value: 'individual', label: 'Individual' },
+			],
+		},
+		{
+			name: 'companyName',
+			label: 'Company Name',
+			type: 'text',
+			required: true,
+			validation: Yup.string().when('tenantType', {
+				is: 'company',
+				then: (schema) => schema.required('Company name is required'),
+				otherwise: (schema) => schema.notRequired(),
+			}),
+			showIf: (values) => values.tenantType === 'company'
+		},
+		{
+			name: 'title',
+			label: 'Title',
+			type: 'select',
+			placeholder: 'Select Title',
+			options: PERSON_TITLES.map((title) => ({ value: title, label: title })),
+			showIf: (values) => values.tenantType === 'individual',
+			dependsOn: [
+				{
+					field: 'tenantType',
+					value: 'individual',
+				},
+			],
+		},
 		{
 			name: 'firstName',
 			label: 'First Name',
@@ -226,7 +268,12 @@ const InviteTenantForm = ({
 			validation: Yup.string()
 				.min(2, 'Too Short!')
 				.max(50, 'Too Long!')
-				.required('First Name is required'),
+				.when('tenantType', {
+					is: 'individual',
+					then: (schema) => schema.required('First name is required'),
+					otherwise: (schema) => schema.notRequired(),
+				}),
+			showIf: (values) => values.tenantType === 'individual'
 		},
 		{
 			name: 'lastName',
@@ -236,7 +283,12 @@ const InviteTenantForm = ({
 			validation: Yup.string()
 				.min(2, 'Too Short!')
 				.max(50, 'Too Long!')
-				.required('Last Name is required'),
+				.when('tenantType', {
+					is: 'individual',
+					then: (schema) => schema.required('Last name is required'),
+					otherwise: (schema) => schema.notRequired(),
+				}),
+			showIf: (values) => values.tenantType === 'individual',
 		},
 		{
 			name: 'email',
@@ -259,7 +311,6 @@ const InviteTenantForm = ({
 	if (isMobileInvitationEnables) {
 		tenantFormFields.push(inviteMethodFields);
 	}
-	consoleLog('tenantFormFields', tenantFormFields);
 
 	return (
 		<FormLayout Header={formHeader || 'Add Tenant'}>

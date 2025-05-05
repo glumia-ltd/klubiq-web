@@ -287,12 +287,36 @@ export type InviteTenantPropertyDetailsType = {
 	unitId: string;
 	unitNumber: string;
 };
+export type AddTenantToLeaseDetailsType = {
+	leaseId: string;
+	unitId: string;
+	unitNumber: string;
+	propertyId: string;
+	propertyName: string;
+}
+
+export type AddTenantFormValues = {
+	title?:  string;
+	firstName?: string;
+	lastName?: string;
+	email: string;
+	phoneNumber?: string;
+	companyName?: string;
+	dateOfBirth?: string;
+	notes?: string;
+	leaseId?: string;
+	unitId?: string;
+	tenantType?: string;
+}
+
 
 export type InviteTenantFormValues = {
     firstName: string;
     lastName: string;
     email: string;
     phoneNumber?: string;
+	title?: string;
+	company?: string;
     leaseDetails: {
         name?: string;
         startDate?: string;

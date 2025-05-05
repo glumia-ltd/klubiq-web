@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react';
-import {tenantEndpoints } from '../../helpers/endpoints';
+import { tenantEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
 import { invalidateMultipleTags } from '../tags-invalidator';
@@ -39,9 +39,31 @@ export const tenantApiSlice = createApi({
 				body,
 			}),
 			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				try {	
+				try {
 					await queryFulfilled;
-					invalidateMultipleTags(dispatch, [API_TAGS.TENANT, API_TAGS.LEASE, API_TAGS.TENANT_FILTER_METADATA]);
+					invalidateMultipleTags(dispatch, [
+						API_TAGS.TENANT,
+						API_TAGS.LEASE,
+						API_TAGS.TENANT_FILTER_METADATA,
+					]);
+				} catch (error) {
+					console.error(error);
+				}
+			},
+		}),
+		addNewTenantWithoutLease: builder.mutation({
+			query: (body) => ({
+				url: tenantEndpoints.createTenant(),
+				method: 'POST',
+				body,
+			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					await queryFulfilled;
+					invalidateMultipleTags(dispatch, [
+						API_TAGS.TENANT,
+						API_TAGS.TENANT_FILTER_METADATA,
+					]);
 				} catch (error) {
 					console.error(error);
 				}
@@ -55,6 +77,4 @@ export const tenantApiSlice = createApi({
 // 	meta: any;
 // }
 
-export const {
-	useOnboardTenantMutation,
-} = tenantApiSlice;
+export const { useOnboardTenantMutation, useAddNewTenantWithoutLeaseMutation } = tenantApiSlice;
