@@ -2,7 +2,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import {tenantEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-import { API_TAGS, invalidateMultipleTags } from '../api-tags';
+import { API_TAGS } from '../types';
+import { invalidateMultipleTags } from '../tags-invalidator';
 export const tenantApiSlice = createApi({
 	reducerPath: 'tenantApi',
 	baseQuery: customApiFunction,

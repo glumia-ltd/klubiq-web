@@ -2,18 +2,19 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { leaseEndpoints, propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
+import { API_TAGS } from '../types';
 
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['leases', 'lease-metadata', 'Deleted'],
+	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA],
 	endpoints: (builder) => ({
 		getLeaseMetaData: builder.query<any, void>({
 			query: () => ({
 				url: leaseEndpoints.getLeaseMetaData(),
 				method: 'GET',
 			}),
-			providesTags: ['lease-metadata'],
+			providesTags: [API_TAGS.LEASE_METADATA],
 		}),
 
 		getLeases: builder.query<GetLeasesResponse, { [key: string]: any }>({
@@ -22,11 +23,17 @@ export const leaseApiSlice = createApi({
 				method: 'GET',
 				params,
 			}),
-			providesTags: ['leases'],
+			providesTags: [API_TAGS.LEASE],
 		}),
 		getSingleLeaseById: builder.query<any, { id: string | number }>({
 			query: (params) => ({
 				url: leaseEndpoints.getLease(params?.id),
+				method: 'GET',
+			}),
+		}),
+		getUnitLeases: builder.query<any, { id: string | number }>({
+			query: (params) => ({
+				url: leaseEndpoints.getUnitLeases(params?.id),
 				method: 'GET',
 			}),
 		}),
@@ -42,7 +49,7 @@ export const leaseApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: ['leases'],
+			invalidatesTags: [API_TAGS.LEASE],
 		}),
 	}),
 });
@@ -58,4 +65,6 @@ export const {
 	useGetSingleLeaseByIdQuery,
 	useGetOrgPropertiesViewListQuery,
 	useAddLeaseMutation,
+	useGetUnitLeasesQuery,
+	useLazyGetUnitLeasesQuery,
 } = leaseApiSlice;

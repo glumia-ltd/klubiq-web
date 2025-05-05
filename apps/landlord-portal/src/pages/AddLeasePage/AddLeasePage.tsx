@@ -1,4 +1,4 @@
-import AddLeaseForm from '../../components/SingleUnitForms/LeaseInfoForm/AddLeaseForm';
+import AddLeaseForm from '../../components/Forms/AddLeaseForm';
 import AddPropertiesInformationLayout from '../../Layouts/AddPropertiesInformationLayout';
 import { useLocation } from 'react-router-dom';
 

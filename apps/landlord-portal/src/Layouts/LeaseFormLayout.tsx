@@ -1,6 +1,5 @@
 import { Card, Grid, Typography, SxProps } from '@mui/material';
 import style from './style';
-import { motion } from 'framer-motion';
 
 type Props = {
 	children: React.ReactNode;
@@ -10,12 +9,7 @@ type Props = {
 
 const LeaseFormLayout = ({ children, Header, sx }: Props) => {
 	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.5 }}
-		>
+		<>
 		<Grid container spacing={1} alignItems='center' justifyContent={'center'}>
 			<Card sx={sx}>
 				{' '}
@@ -35,7 +29,7 @@ const LeaseFormLayout = ({ children, Header, sx }: Props) => {
 				</Grid>
 				</Card>
 			</Grid>
-		</motion.div>
+		</>
 	);
 };
 

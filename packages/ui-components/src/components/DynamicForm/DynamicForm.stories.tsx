@@ -359,9 +359,9 @@ export const CurrencyPercentageForm: Story = {
       {
         name: 'amount',
         label: 'Amount',
-        type: 'currency',
+        type: 'decimal',
         required: true,
-        formatType: 'currency',
+        formatType: 'decimal',
         adornment: {
           prefix: '$',
         },
@@ -385,3 +385,44 @@ export const CurrencyPercentageForm: Story = {
     enableReset: true,
   },
 };
+
+export const PasswordForm: Story = {
+    args: {
+      formWidth: '400px',
+      fields: [
+        {
+          name: 'username',
+          label: 'Username',
+          type: 'text',
+          required: true,
+          width: '100%',
+        },
+        {
+          name: 'password',
+          label: 'Password',
+          type: 'password',
+          required: true,
+          width: '100%',
+          helperText: 'Must be at least 8 characters',
+          validation: Yup.string()
+            .required('Password is required')
+            .min(8, 'Password must be at least 8 characters'),
+        },
+        {
+          name: 'confirmPassword',
+          label: 'Confirm Password',
+          type: 'password',
+          required: true,
+          width: '100%',
+          validation: Yup.string()
+            .required('Please confirm your password')
+            .oneOf([Yup.ref('password')], 'Passwords must match'),
+        },
+      ],
+      onSubmit: (values) => {
+        console.log('Form submitted:', values);
+        alert(JSON.stringify(values, null, 2));
+      },
+      submitButtonText: 'Create Account',
+    },
+  };

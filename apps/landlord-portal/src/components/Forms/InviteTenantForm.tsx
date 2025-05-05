@@ -1,56 +1,91 @@
 import FormLayout from '../../Layouts/FormLayout';
-import { Grid,  Box, Skeleton } from '@mui/material';
-import style from './TenantForm/style';
 import { useState, useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
-import { getCurrencySymbol, getLocaleFormat } from '../../helpers/utils';
+import { useNavigate } from 'react-router-dom';
+import { getCurrencySymbol } from '../../helpers/utils';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { getErrorResponseMessage } from '../../helpers/getErrorResponseMessage';
 import { useDispatch } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
 import { consoleLog } from '../../helpers/debug-logger';
-//import { KlubiqForm } from '../DynamicForm/klubiq-form';
 import * as Yup from 'yup';
-import { formValues } from '../SingleUnitForms/TenantForm/validation';
 import { useOnboardTenantMutation } from '../../store/TenantStore/tenantApiSlice';
 import { InviteTenantFormValues } from '../../shared/type';
-import { KlubiqForm, FormField, FormGroup, InputAdornment } from '@klubiq/ui-components';
+import {
+	KlubiqForm,
+	FormField,
+	FormGroup,
+	InputAdornment,
+} from '@klubiq/ui-components';
+import dayjs from 'dayjs';
+import FormSkeleton from '../skeletons/FormSkeleton';
 
 interface InviteTenantFormProps {
-    propertyDetails: {
-        propertyName: string;
+	propertyDetails: {
+		propertyName: string;
 		unitNumber: string;
 		unitId: string;
-    },
+	};
 	returnPath: string;
 	formHeader?: string;
 }
-
-
-const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTenantFormProps) => {
-	const isMobileInvitationEnables = import.meta.env.VITE_MOBILE_INVITATION_ENABLED.toLowerCase() === 'true';
+const defaultValues: InviteTenantFormValues = {
+	firstName: '',
+	lastName: '',
+	email: '',
+	phoneNumber: '',
+	leaseDetails: {},
+};
+const InviteTenantForm = ({
+	propertyDetails,
+	returnPath,
+	formHeader,
+}: InviteTenantFormProps) => {
+	const isMobileInvitationEnables =
+		import.meta.env.VITE_MOBILE_INVITATION_ENABLED.toLowerCase() === 'true';
 	const [loading, setLoading] = useState<boolean>(true);
-	const [initialValues, setInitialValues] = useState<InviteTenantFormValues>({});
+	const [initialValues, setInitialValues] = useState<InviteTenantFormValues>(defaultValues);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [onboardTenant] = useOnboardTenantMutation();
 	const { orgSettings } = useSelector(getAuthState);
-	consoleLog("propertyDetails",propertyDetails)
-	const onSubmit = async (values: formValues) => {
-		try {
-			consoleLog("values",values)
-			await onboardTenant(values).unwrap();
+	const validateLeaseDates = (startDate: string, endDate: string) => {
+		if (dayjs(startDate).isAfter(dayjs(endDate))) {
+			return 'End date must be after start date';
+		}
+		return true;
+	};
 
-			dispatch(
-				openSnackbar({
-					message: 'Tenant successfully added',
-					severity: 'success',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
-			navigate(returnPath);
+	const onSubmit = async (values: InviteTenantFormValues) => {
+		try {
+			if(values.leaseDetails.endDate && values.leaseDetails.startDate) {
+				const isValid = validateLeaseDates(values.leaseDetails.startDate, values.leaseDetails.endDate);
+				if(!isValid) {
+					dispatch(openSnackbar({message: 'End date must be after start date', severity: 'error', isOpen: true}));
+					return;
+				}
+			}
+			const response = await onboardTenant(values).unwrap();
+			consoleLog('response', response);
+			if(response.success) {
+				dispatch(
+					openSnackbar({
+						message: 'Tenant successfully added',
+						severity: 'success',
+						isOpen: true,
+						duration: 2000,
+					}),
+				);
+				navigate(returnPath);
+			} else {
+				dispatch(
+					openSnackbar({
+						message: response.message,
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+			}
 		} catch (error) {
 			dispatch(
 				openSnackbar({
@@ -65,25 +100,26 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 		}
 	};
 	useEffect(() => {
-		if(propertyDetails){
+		consoleLog('orgSettings', orgSettings);
+		if (propertyDetails) {
 			setInitialValues({
 				firstName: '',
 				lastName: '',
 				email: '',
 				phoneNumber: '',
-				leaseDetails: {	
+				leaseDetails: {
 					name: '',
 					startDate: '',
 					endDate: '',
 					unitId: propertyDetails?.unitId,
 					rentAmount: '',
-					propertyName: propertyDetails?.propertyName,	
+					propertyName: propertyDetails?.propertyName,
 					unitNumber: propertyDetails?.unitNumber,
 				},
 			});
 			setLoading(false);
 		}
-    }, []); // Empty dependency array means this runs once on mount
+	}, []); // Empty dependency array means this runs once on mount
 
 	const inviteMethodFields: FormField = {
 		name: 'invitationMethod',
@@ -96,66 +132,90 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			{ value: 'text', label: 'Text' },
 		],
 		validation: Yup.string().required('Required'),
-	}
+	};
 	const leaseDetailsFields: FormGroup = {
 		name: 'leaseDetails',
 		columns: 1,
 		fields: [
-		{
-			name: 'leaseDetails.propertyName',
-			label: 'Property Name',
-			type: 'text',
-			required: true,
-			readonly: true,
-			disabled: true,
-			predefinedValue: propertyDetails?.propertyName,
-			defaultValue: propertyDetails?.propertyName,
-		},
-		{
-			name: 'leaseDetails.unitNumber',
-			label: 'Unit',
-			type: 'text',
-			required: true,
-			readonly: true,
-			disabled: true,
-			predefinedValue: propertyDetails?.unitNumber,
-		},
-		{
-			name: 'leaseDetails.unitId',
-			label: 'Unit Id',
-			type: 'hidden',
-			required: true,
-			hidden: true,
-			predefinedValue: propertyDetails?.unitId,
-		},
-		{
-			name: 'leaseDetails.startDate',
-			label: 'Start Date',
-			type: 'date',
-			required: true,
-			validation: Yup.date().required('Start Date is required'),
-		},
-		{
-			name: 'leaseDetails.endDate',
-			label: 'End Date',
-			type: 'date',
-			required: false,
-			validation: Yup.date().min(Yup.ref('leaseDetails.startDate'), 'End date must be after start date'),
-		},
-		{
-			name: 'leaseDetails.rentAmount',
-			label: 'Rent Amount',
-			type: 'currency',
-			formatType: 'currency',
-			formatFunction: (value: number) => getLocaleFormat(orgSettings, value, 'currency', 2),
-			adornment: {
-				prefix: getCurrencySymbol(orgSettings),
-			} as InputAdornment,
-			required: true,
-			validation: Yup.number().required('Rent Amount is required'),
-		},
-		
-		]
+			{
+				name: 'leaseDetails.propertyName',
+				label: 'Property Name',
+				type: 'text',
+				readonly: true,
+				disabled: true,
+				predefinedValue: propertyDetails?.propertyName,
+				defaultValue: propertyDetails?.propertyName,
+			},
+			{
+				name: 'leaseDetails.unitNumber',
+				label: 'Unit',
+				type: 'text',
+				readonly: true,
+				disabled: true,
+				predefinedValue: propertyDetails?.unitNumber,
+				defaultValue: propertyDetails?.unitNumber,
+			},
+			{
+				name: 'leaseDetails.unitId',
+				label: 'Unit Id',
+				type: 'hidden',
+				hidden: true,
+				predefinedValue: propertyDetails?.unitId,
+				defaultValue: propertyDetails?.unitId,
+			},
+			{
+				name: 'leaseDetails.startDate',
+				label: 'Start Date',
+				type: 'date',
+				required: true,
+				validation: Yup.date()
+				.transform((value) => (dayjs(value).toDate()))
+				.required('Start Date is required')
+			},
+			{
+				name: 'leaseDetails.endDate',
+				label: 'End Date',
+				type: 'date',
+				required: false,
+				minDate: 'startDate',
+				dependsOn: [
+					{
+						field: 'startDate',
+						value: 'startDate',
+					}
+				],
+				validation: Yup.date()
+					.transform((value) => (dayjs(value).toDate()))
+					.min(
+						Yup.ref('leaseDetails.startDate'),
+						'End date must be after start date',
+					)
+					.test(
+						'date-comparison',
+						'End date must be after start date',
+						function (value) {
+							const { startDate } = this.parent;
+            				if (!value || !startDate) {
+                 				return true;
+                			}
+            				return dayjs(value).isAfter(dayjs(startDate));
+						},
+					)
+			},
+			{
+				name: 'leaseDetails.rentAmount',
+				label: 'Rent Amount',
+				type: 'decimal',
+				formatType: 'decimal',
+				decimals: 2,
+				adornment: {
+					prefix: getCurrencySymbol(orgSettings),
+				} as InputAdornment,
+				required: true,
+				validation: Yup.string()
+				.required('Rent Amount is required'),
+			},
+		],
 	};
 	const tenantFormFields: (FormField | FormGroup)[] = [
 		{
@@ -164,9 +224,9 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			type: 'text',
 			required: true,
 			validation: Yup.string()
-        		.min(2, 'Too Short!')
-        		.max(50, 'Too Long!')
-        		.required('First Name is required'),
+				.min(2, 'Too Short!')
+				.max(50, 'Too Long!')
+				.required('First Name is required'),
 		},
 		{
 			name: 'lastName',
@@ -174,16 +234,18 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 			type: 'text',
 			required: true,
 			validation: Yup.string()
-        		.min(2, 'Too Short!')
-        		.max(50, 'Too Long!')
-        		.required('Last Name is required'),
+				.min(2, 'Too Short!')
+				.max(50, 'Too Long!')
+				.required('Last Name is required'),
 		},
 		{
 			name: 'email',
 			label: 'Email',
 			type: 'email',
 			required: true,
-			validation: Yup.string().email('Invalid email').required('Email is required'),
+			validation: Yup.string()
+				.email('Invalid email')
+				.required('Email is required'),
 		},
 		{
 			name: 'phoneNumber',
@@ -194,58 +256,24 @@ const InviteTenantForm = ({ propertyDetails, returnPath, formHeader }: InviteTen
 		},
 		leaseDetailsFields,
 	];
-	if(isMobileInvitationEnables){
+	if (isMobileInvitationEnables) {
 		tenantFormFields.push(inviteMethodFields);
 	}
-	consoleLog("tenantFormFields",tenantFormFields)
+	consoleLog('tenantFormFields', tenantFormFields);
 
 	return (
-		<FormLayout Header={formHeader || 'Add Tenant'} sx={style.card}>
+		<FormLayout Header={formHeader || 'Add Tenant'}>
 			{loading ? (
-				<Grid container spacing={2} sx={style.content}>
-					{[...Array(1)].map((_, index) => (
-						<Grid item xs={12} key={`text-skeleton-${index}`}>
-							<Skeleton variant='text' height={15} width='100%' />
-							<Skeleton variant='text' height={15} width='100%' />
-						</Grid>
-					))}
-					{[...Array(4)].map((_, index) => (
-						<Grid item xs={12} key={`rectangular-skeleton-${index}`}>
-							<Skeleton variant='text' height={25} width='50%' />
-							<Skeleton variant='rectangular' height={30} width='100%' />
-						</Grid>
-					))}
-					<Grid item xs={12}>
-						<Skeleton variant='text' height={25} width='60%' />
-					</Grid>
-					<Grid item xs={12} sx={style.boxTwo}>
-						{[...Array(3)].map((_, index) => (
-							<Box sx={style.boxThree} key={`circular-skeleton-${index}`}>
-								<Skeleton variant='circular' height={20} width={20} />
-								<Skeleton variant='rectangular' height={10} width={80} />
-							</Box>
-						))}
-					</Grid>
-					<Grid item xs={12}>
-						<Skeleton variant='text' height={25} width='50%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={style.box}>
-						{[...Array(2)].map((_, index) => (
-							<Box key={`button-skeleton-${index}`}>
-								<Skeleton variant='rectangular' height={30} width={150} />
-							</Box>
-						))}
-					</Grid>
-				</Grid>
+				<FormSkeleton rows={tenantFormFields.length} columns={[1, 1, 1]} />
 			) : (
-				<KlubiqForm fields={tenantFormFields as FormField[]} 
-							onSubmit={onSubmit} 
-							initialValues={initialValues}
-							enableReset={true} 
-							submitButtonText='Invite Tenant'
-							resetButtonText='Cancel'
-							/>
+				<KlubiqForm
+					fields={tenantFormFields as FormField[]}
+					onSubmit={onSubmit}
+					initialValues={initialValues}
+					enableReset={true}
+					submitButtonText='Invite Tenant'
+					resetButtonText='Cancel'
+				/>
 			)}
 		</FormLayout>
 	);

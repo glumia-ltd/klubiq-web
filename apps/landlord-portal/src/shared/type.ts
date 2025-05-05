@@ -65,6 +65,8 @@ export type UnitType = {
 	rooms?: null;
 	toilets?: 4;
 	unitNumber?: string;
+	totalTenants?: number;
+	tenants?: TenantType[];
 };
 
 export type PropertyDataType = {
@@ -287,11 +289,11 @@ export type InviteTenantPropertyDetailsType = {
 };
 
 export type InviteTenantFormValues = {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
     phoneNumber?: string;
-    leaseDetails?: {
+    leaseDetails: {
         name?: string;
         startDate?: string;
         endDate?: string;

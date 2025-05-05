@@ -10,48 +10,48 @@ import {
 	ClickAwayListener,
 	Grow,
 	Popper,
+	Stack,
+	Link,
 } from '@mui/material';
-// import { Container } from '@mui/system';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
-// import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../Overview/Overview';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
-import { TenantAndLeaseTable } from '../TenantAndLeaseTable/TenantAndLeaseTable';
 import { UnitsTable } from '../TenantAndLeaseTable/UnitsTable';
+import dayjs from 'dayjs';
 import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { FC, useRef, useState } from 'react';
+import { FC, useMemo, useRef, useState } from 'react';
 import {
 	HouseIcon,
 	TenantIcon,
 	VacantHomeIcon,
 	HomeIcon,
 } from '../Icons/CustomIcons';
-import propertyImage from '../../assets/images/propertyImage.png';
-// import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { PropertyDataType } from '../../shared/type';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getLocaleFormat } from '../../helpers/utils';
-import {
-	useArchivePropertyMutation,
-	useDeletePropertyMutation,
-} from '../../store/PropertyPageStore/propertyApiSlice';
 import { PropertiesActionsPrompts } from '../Dialogs/PropertiesActionsPrompts';
-import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { consoleError } from '../../helpers/debug-logger';
-
-type PropertyUnitComponentType = {
-	currentProperty: PropertyDataType;
-	// tenantTableBodyRows?: any;
-	tenantColumns?: any;
-	leaseTableBodyRows?: any;
-};
+import { useLazyGetUnitLeasesQuery } from '../../store/LeaseStore/leaseApiSlice';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import {
+	DynamicTable,
+	TableColumn,
+	DynamicAvatar,
+} from '@klubiq/ui-components';
+import { PROPERTY_CONSTANTS } from '../../helpers/constants';
+import {
+	LeaseTableData,
+	PropertyUnitComponentProps,
+	TenantsTableData,
+} from '../../page-tytpes/properties/detail-page.types';
+import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
+import { LeaseType, PropertyDataType } from '../../shared/type';
+import propertyImage from '../../assets/images/propertyImage.png';
 
 const stackedImages = [
 	propertyImage,
@@ -60,58 +60,262 @@ const stackedImages = [
 	propertyImage,
 ];
 
-const allTabs = ['Overview', 'Lease', 'Document'];
-
-export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
+export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
-	// tenantTableBodyRows,
-	tenantColumns,
-	leaseTableBodyRows,
+	multiUnitMode = false,
+	multiUnitNumber = '',
 }) => {
+	if (!currentProperty) {
+		return null;
+	}
+
 	const location = useLocation();
-	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const anchorRef = useRef<HTMLButtonElement>(null);
+	const { orgSettings } = useSelector(getAuthState);
 
 	const currentUUId = location.pathname.split('/')[2]!;
+	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
-	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [open, setOpen] = useState<boolean>(false);
+	const [leaseTableBodyRows, setLeaseTableBodyRows] = useState<any>([]);
 	const [openArchivePropertyDialog, setOpenArchivePropertyDialog] =
 		useState<boolean>(false);
 	const [openDeletePropertyDialog, setOpenDeletePropertyDialog] =
 		useState<boolean>(false);
-	const [progress, setProgress] = useState<boolean>(false);
 
-	const [archiveProperty] = useArchivePropertyMutation();
-	const [deleteProperty] = useDeletePropertyMutation();
+	const [getUnitLeases, { isLoading: isLoadingUnitLeases }] =
+		useLazyGetUnitLeasesQuery();
+	const propertyAddress = useMemo(() => {
+		const { addressLine1, addressLine2, city, state } =
+			currentProperty?.address || {};
+		return `${addressLine1} ${addressLine2 || ''}, ${city}, ${state}`;
+	}, [currentProperty?.address]);
+	const {
+		progress,
+		handleArchivePropertyRequest,
+		handleDeletePropertyRequest,
+		tableSx,
+		tableStyles,
+	} = usePropertyActions(
+		currentUUId,
+		currentProperty,
+		propertyAddress,
+		setOpenDeletePropertyDialog,
+		setOpenArchivePropertyDialog,
+		setOpen,
+	);
 
-	const { orgSettings } = useSelector(getAuthState);
+	const mainImage = useMemo(() => {
+		if (!currentProperty?.images?.length) {
+			return null;
+		}
+		return currentProperty.images.length > 1
+			? currentProperty.images.find((image) => image.isMain)
+			: currentProperty.images[0];
+	}, [currentProperty?.images]);
 
-	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
+	const unitInfoData = useMemo(
+		() => [
+			{
+				label: 'UNIT',
+				value: currentProperty?.unitCount || 0,
+				imgSrc: HouseIcon,
+			},
+			{
+				label: 'VACANT UNIT',
+				value: currentProperty?.vacantUnitCount || 0,
+				valueColor: 'green',
+				imgSrc: VacantHomeIcon,
+			},
+			{
+				label: 'TENANT',
+				value: currentProperty?.totalTenants || 0,
+				imgSrc: TenantIcon,
+			},
+		],
+		[currentProperty],
+	);
 
-	const propertyAddress = `${currentProperty?.address?.addressLine1} ${currentProperty?.address?.addressLine2 || ''}, ${currentProperty?.address?.city}, ${currentProperty?.address?.state}`;
+	const getTenantTableData = (property: PropertyDataType): TenantsTableData => {
+		const tableColumns: TableColumn[] = [
+			{
+				key: 'tenant',
+				label: 'Tenant',
+				align: 'center',
+				render: (rowData) => (
+					<Stack direction='row' alignItems='center' spacing={2}>
+						<DynamicAvatar
+							items={[rowData.tenant]}
+							size='medium'
+							showName={false}
+						/>
+						<Typography variant='body2'>{rowData.tenant.name}</Typography>
+					</Stack>
+				),
+			},
+			{
+				key: 'phone',
+				label: 'Phone',
+				align: 'center',
+			},
+			{
+				key: 'email',
+				label: 'Email',
+				render: (rowData) => (
+					<Link
+						href={`mailto:${rowData.email}`}
+						underline='none'
+						variant='body2'
+					>
+						{rowData.email}
+					</Link>
+				),
+				align: 'center',
+			},
+			{
+				key: 'moveInDate',
+				label: 'Move In Date',
+				align: 'center',
+			},
+			{
+				key: 'moveOutDate',
+				label: 'Move Out Date',
+				align: 'center',
+			},
+			{
+				key: 'isPrimaryTenant',
+				label: 'Primary Tenant',
+				render: (rowData) => (
+					<Stack direction='row' alignItems='center' spacing={1}>
+						{rowData.isPrimaryTenant && <CheckCircleIcon color='success' />}
+						<Typography variant='body2'>
+							{rowData.isPrimaryTenant ? 'Yes' : 'No'}
+						</Typography>
+					</Stack>
+				),
+				align: 'center',
+			},
+		];
 
-	const anchorRef = useRef<HTMLButtonElement>(null);
+		const rows =
+			property?.units?.[0]?.tenants?.map((tenant) => ({
+				id: tenant.id,
+				tenant: {
+					name: `${tenant.profile.firstName} ${tenant.profile.lastName}`,
+					image: tenant.profile?.profilePicUrl ?? null,
+				},
+				phone: tenant.profile?.phoneNumber ?? null,
+				email: tenant.profile?.email ?? '',
+				isPrimaryTenant: tenant.isPrimaryTenant,
+				moveInDate:
+					dayjs(property?.units?.[0]?.lease?.startDate).format('ll') ?? null,
+				moveOutDate:
+					dayjs(property?.units?.[0]?.lease?.endDate).format('ll') ?? null,
+			})) ?? [];
 
-	const handleHomeClick = () => {
-		navigate(-1);
+		return { tableColumns, rows };
 	};
 
-	const handleArchiveProperty = () => {
-		setOpenArchivePropertyDialog(true);
+	const getLeaseTableData = (leases: LeaseType[]): LeaseTableData => {
+		const tableColumns: TableColumn[] = [
+			{
+				key: 'tenants',
+				label: 'Tenant',
+				align: 'left',
+				render: (rowData: any) => (
+					<Stack direction='row' alignItems='center' spacing={2}>
+						<DynamicAvatar
+							items={rowData.tenants}
+							size='medium'
+							showName={false}
+						/>
+						{rowData?.tenants?.length === 1 && (
+							<Typography variant='body2'>{rowData.tenants[0].name}</Typography>
+						)}
+					</Stack>
+				),
+			},
+			{
+				key: 'rentAmount',
+				label: 'Rent Amount',
+				align: 'left',
+			},
+			{
+				key: 'startDate',
+				label: 'Start Date',
+				align: 'left',
+			},
+			{
+				key: 'endDate',
+				label: 'End Date',
+				align: 'left',
+			},
+			{
+				key: 'status',
+				label: 'Status',
+				align: 'left',
+			},
+		];
+
+		const rows =
+			leases?.map((lease) => ({
+				id: lease.id,
+				tenants:
+					lease?.tenants?.map((tenant) => ({
+						name:
+							`${tenant.profile.firstName} ${tenant.profile.lastName}` ||
+							'Tenant',
+						image: tenant.profile?.profilePicUrl ?? '',
+					})) || [],
+				rentAmount: `${getLocaleFormat(orgSettings, +(lease?.rentAmount ?? 0), 'currency')}`,
+				startDate: dayjs(lease?.startDate).format('ll'),
+				endDate: dayjs(lease?.endDate).format('ll'),
+				status: lease?.status ?? '',
+			})) ?? [];
+
+		return { tableColumns, rows };
 	};
 
-	const handleDeleteProperty = () => {
-		setOpenDeletePropertyDialog(true);
+	const tenantTableData = useMemo(
+		() => getTenantTableData(currentProperty),
+		[currentProperty],
+	);
+	const leaseTableData = useMemo(
+		() => getLeaseTableData(leaseTableBodyRows),
+		[leaseTableBodyRows],
+	);
+
+	const handleTabChange = async (
+		_event: React.SyntheticEvent<Element, Event>,
+		newValue: number,
+	) => {
+		if (
+			newValue === 1 &&
+			currentProperty?.units?.[0]?.id &&
+			!isLoadingUnitLeases
+			//&&!currentProperty?.isMultiUnit
+		) {
+			try {
+				const res = await getUnitLeases({
+					id: currentProperty.units[0].id,
+				}).unwrap();
+				setLeaseTableBodyRows(res);
+			} catch (error) {
+				console.error('Failed to fetch unit leases:', error);
+			}
+		}
+		setTabValue(newValue);
 	};
 
-	const handleEditProperty = () => {
-		navigate(`/properties/${currentUUId}/edit`);
-	};
-
-	const handleAddLease = () => {
+	const handleHomeClick = () => navigate(-1);
+	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
+	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
+	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`);
+	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
-	};
+	const handleAddUnit = () => navigate(`/properties/${currentUUId}/unit`);
 
 	const handleAddTenant = () => {
 		navigate(`/tenants/invite-tenant`, {
@@ -127,73 +331,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		});
 	};
 
-	const handleAddUnit = () => {
-		navigate(`/properties/${currentUUId}/unit`);
-	};
-
-	const handleArchivePropertyRequest = async () => {
-		if (currentUUId) {
-			try {
-				setProgress(true);
-				await archiveProperty({ uuid: currentUUId }).unwrap();
-				setOpenArchivePropertyDialog(false);
-				setOpen(false);
-				setProgress(false);
-				dispatch(
-					openSnackbar({
-						message: 'You have successfully archived this property!',
-						severity: 'success',
-						isOpen: true,
-					}),
-				);
-				navigate('/properties');
-			} catch (e) {
-				consoleError(e);
-			}
-		} else {
-			setOpenArchivePropertyDialog(false);
-		}
-	};
-
-	const handleDeletePropertyRequest = async () => {
-		if (currentUUId) {
-			try {
-				setProgress(true);
-				await deleteProperty({
-					uuid: currentUUId,
-					address: propertyAddress,
-					name: currentProperty?.name,
-					unitCount: currentProperty?.unitCount,
-				}).unwrap();
-				setOpenDeletePropertyDialog(false);
-				setOpen(false);
-				setProgress(false);
-				dispatch(
-					openSnackbar({
-						message: 'You have successfully deleted this property!',
-						severity: 'success',
-						isOpen: true,
-					}),
-				);
-				navigate('/properties');
-			} catch (e) {
-				consoleError(e);
-				setProgress(false);
-				setOpen(false);
-				setOpenDeletePropertyDialog(false);
-				dispatch(
-					openSnackbar({
-						message: 'Error deleting this property',
-						severity: 'error',
-						isOpen: true,
-					}),
-				);
-			}
-		} else {
-			setOpenDeletePropertyDialog(false);
-		}
-	};
-
 	const handleArchiveDialogButtonAction = (event: any) => {
 		if (event === 'Cancel') {
 			setOpenArchivePropertyDialog(false);
@@ -202,7 +339,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		}
 	};
 
-	const handleDeleteeDialogButtonAction = (event: any) => {
+	const handleDeleteDialogButtonAction = (event: any) => {
 		if (event === 'Cancel') {
 			setOpenDeletePropertyDialog(false);
 		} else {
@@ -210,141 +347,231 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 		}
 	};
 
-	function handleListKeyDown(event: React.KeyboardEvent) {
-		if (event.key === 'Tab') {
+	const handleListKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === 'Tab' || event.key === 'Escape') {
 			event.preventDefault();
 			setOpen(false);
-		} else if (event.key === 'Escape') {
-			setOpen(false);
 		}
-	}
-
-	const handleToggle = () => {
-		setOpen((prevOpen) => !prevOpen);
 	};
 
-	const mainImage =
-		currentProperty?.images && currentProperty?.images.length > 1
-			? currentProperty?.images?.find((image) => image.isMain)
-			: currentProperty?.images && currentProperty?.images[0];
+	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
 
-	const unitInfoData = [
-		{
-			label: 'UNIT',
-			value: currentProperty?.unitCount || 0,
-			imgSrc: HouseIcon,
-		},
-		{
-			label: 'VACANT UNIT',
-			value: currentProperty?.vacantUnitCount || 0,
-			valueColor: 'green',
-			imgSrc: VacantHomeIcon,
-		},
-		{
-			label: 'TENANT',
-			value: currentProperty?.totalTenants || 0,
-			imgSrc: TenantIcon,
-		},
-	];
+	const renderUnitCard = () => {
+		const commonProps = {
+			propertyImage: mainImage?.url,
+			propertyName: currentProperty?.name || '',
+			propertyAddress,
+			buildingType: currentProperty?.type?.name,
+			additionalImages: stackedImages,
+		};
 
-	const handleTabChange = (
-		_event: React.SyntheticEvent<Element, Event>,
-		newValue: number,
-	) => {
-		setTabValue(newValue);
+		if (multiUnitMode) {
+			return (
+				<UnitCard
+					{...commonProps}
+					propertyId={multiUnitNumber}
+					numberOfUnits={`${currentProperty?.units?.length}`}
+					rent={getLocaleFormat(
+						orgSettings,
+						+(currentProperty?.units?.[0]?.rentAmount || 0),
+						'currency',
+					)}
+					totalArea={`${currentProperty?.units?.[0]?.area?.value} ${currentProperty?.units?.[0]?.area?.unit}`}
+				/>
+			);
+		}
+
+		return (
+			<UnitCard
+				{...commonProps}
+				propertyId={currentProperty?.id}
+				numberOfUnits={
+					currentProperty?.isMultiUnit
+						? `${currentProperty.unitCount}`
+						: 'Single'
+				}
+				rent={getLocaleFormat(
+					orgSettings,
+					+currentProperty?.totalRent || 0,
+					'currency',
+				)}
+				totalArea={
+					currentProperty?.isMultiUnit
+						? ''
+						: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
+				}
+			/>
+		);
+	};
+	const renderTabsContent = (tabValue: number) => {
+		return (
+			<Grid item xs={12}>
+				{!multiUnitMode && (
+					<Grid sx={styles.unitInfoCardStyle}>
+						<UnitInfoCard data={unitInfoData} />
+					</Grid>
+				)}
+
+				{tabValue === 0 && (
+					<>
+						<Overview initialText={currentProperty?.description} />
+						<Grid sx={styles.addfieldStyle}>
+							{currentProperty?.units?.[0]?.tenants?.length ? (
+								<DynamicTable
+									colors={tableSx}
+									styles={tableStyles}
+									header='Tenant'
+									buttonLabel='Add Tenant'
+									columns={tenantTableData.tableColumns}
+									rows={tenantTableData.rows}
+									onButtonClick={handleAddTenant}
+									onRowClick={(rowData) => {
+										console.log('Tenant clicked:', rowData);
+									}}
+								/>
+							) : (
+								<AddFieldCard
+									heading={
+										currentProperty?.units?.[0]?.lease
+											? 'Add Tenant'
+											: 'Invite Tenant'
+									}
+									subtext={'Add tenant to your property'}
+									description={
+										currentProperty?.units?.[0]?.lease
+											? 'Add Tenant'
+											: 'Invite Tenant'
+									}
+									handleAdd={handleAddTenant}
+								/>
+							)}
+
+							{!currentProperty?.units?.[0]?.lease && (
+								<AddFieldCard
+									heading='Add Lease'
+									subtext='Create a lease for your property'
+									description='Add Lease'
+									handleAdd={handleAddLease}
+								/>
+							)}
+						</Grid>
+					</>
+				)}
+
+				{tabValue === 1 && leaseTableBodyRows?.length > 0 && (
+					// <Grid sx={styles.addfieldStyle}>
+					// 	<TenantAndLeaseTable
+					// 		title='Lease'
+					// 		buttonText='Add Tenant'
+					// 		handleAdd={handleAddTenant}
+					// 		columns={PROPERTY_CONSTANTS.leaseTableColumns}
+					// 		tableBodyRows={leaseTableBodyRows}
+					// 	/>
+					// </Grid>
+					<DynamicTable
+						colors={tableSx}
+						styles={tableStyles}
+						header='Lease'
+						buttonLabel='Add Tenant'
+						columns={leaseTableData.tableColumns}
+						rows={leaseTableData.rows}
+						onButtonClick={handleAddTenant}
+						onRowClick={(rowData) => {
+							console.log('Lease clicked:', rowData);
+						}}
+					/>
+				)}
+			</Grid>
+		);
 	};
 
 	return (
-		// <Container maxWidth={'xl'} sx={styles.container}>
-		<>
-			<Grid>
-				<Grid>
-					<Breadcrumbs
-						separator={
-							<ArrowForwardIosIcon
-								sx={{
-									...styles.iconStyle,
-									...styles.arrowIconStyle,
-								}}
-							/>
-						}
-						aria-label='breadcrumb'
-						sx={styles.breadCrumbStyle}
-					>
-						<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
-
+		<Grid container spacing={2}>
+			<Grid item xs={12}>
+				<Breadcrumbs
+					separator={
+						<ArrowForwardIosIcon
+							sx={{ ...styles.iconStyle, ...styles.arrowIconStyle }}
+						/>
+					}
+					aria-label='breadcrumb'
+					sx={styles.breadCrumbStyle}
+				>
+					<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
+					<Typography fontWeight={700} sx={styles.textStyle}>
+						{currentProperty?.name}
+					</Typography>
+					{multiUnitMode && multiUnitNumber && (
 						<Typography fontWeight={700} sx={styles.textStyle}>
-							{currentProperty?.name}
+							{multiUnitNumber}
 						</Typography>
-					</Breadcrumbs>
-				</Grid>
-				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button
-						ref={anchorRef}
-						variant='propertyButton'
-						sx={styles.actionButtonStyle}
-						onClick={handleToggle}
-					>
-						<Typography fontWeight={500}>Action</Typography>
-						<MoreVertIcon />
-					</Button>
+					)}
+				</Breadcrumbs>
+			</Grid>
 
-					<Popper
-						open={open}
-						anchorEl={anchorRef.current}
-						role={undefined}
-						placement='bottom-start'
-						transition
-						disablePortal
-						sx={{ minWidth: '160px', zIndex: 10 }}
-					>
-						{({ TransitionProps, placement }) => (
-							<Grow
-								{...TransitionProps}
-								style={{
-									transformOrigin:
-										placement === 'bottom-start' ? 'left top' : 'left bottom',
-								}}
-							>
-								<Paper>
-									<ClickAwayListener onClickAway={() => setOpen(false)}>
-										<MenuList
-											id='composition-menu'
-											aria-labelledby='composition-button'
-											onKeyDown={handleListKeyDown}
+			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+				<Button
+					ref={anchorRef}
+					variant='propertyButton'
+					sx={styles.actionButtonStyle}
+					onClick={handleToggle}
+				>
+					<Typography fontWeight={500}>Action</Typography>
+					<MoreVertIcon />
+				</Button>
+
+				<Popper
+					open={open}
+					anchorEl={anchorRef.current}
+					placement='bottom-start'
+					transition
+					disablePortal
+					sx={{ minWidth: '160px', zIndex: 10 }}
+				>
+					{({ TransitionProps, placement }) => (
+						<Grow
+							{...TransitionProps}
+							style={{
+								transformOrigin:
+									placement === 'bottom-start' ? 'left top' : 'left bottom',
+							}}
+						>
+							<Paper>
+								<ClickAwayListener onClickAway={() => setOpen(false)}>
+									<MenuList
+										id='composition-menu'
+										aria-labelledby='composition-button'
+										onKeyDown={handleListKeyDown}
+									>
+										<MenuItem
+											onClick={handleArchiveProperty}
+											sx={{ padding: '10px' }}
+											divider
 										>
-											<MenuItem
-												onClick={handleArchiveProperty}
-												value='Archive'
-												sx={{ padding: '10px' }}
-												divider
-											>
-												Archive Property
-											</MenuItem>
+											Archive Property
+										</MenuItem>
+										<MenuItem
+											onClick={handleEditProperty}
+											sx={{ padding: '10px' }}
+											divider
+										>
+											Edit Property
+										</MenuItem>
+										<MenuItem
+											onClick={handleDeleteProperty}
+											sx={{ padding: '10px' }}
+										>
+											Delete Property
+										</MenuItem>
+									</MenuList>
+								</ClickAwayListener>
+							</Paper>
+						</Grow>
+					)}
+				</Popper>
+			</Grid>
 
-											<MenuItem
-												onClick={handleEditProperty}
-												value='Edit'
-												sx={{ padding: '10px' }}
-												divider
-											>
-												Edit Property
-											</MenuItem>
-
-											<MenuItem
-												onClick={handleDeleteProperty}
-												value='Delete'
-												sx={{ padding: '10px' }}
-											>
-												Delete Property{' '}
-											</MenuItem>
-										</MenuList>
-									</ClickAwayListener>
-								</Paper>
-							</Grow>
-						)}
-					</Popper>
-				</Grid>
+			<Grid item xs={12}>
 				<Chip
 					label={currentProperty?.purpose?.displayText || 'For sale'}
 					variant={
@@ -353,151 +580,73 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentType> = ({
 							: 'sale'
 					}
 				/>
-				<Grid sx={styles.firstCardContainer}>
-					<UnitCard
-						propertyImage={mainImage?.url}
-						propertyName={currentProperty?.name || ''}
-						propertyAddress={propertyAddress}
-						propertyId={currentProperty?.id}
-						numberOfUnits={
-							currentProperty?.isMultiUnit
-								? `${currentProperty.unitCount}`
-								: 'Single'
-						}
-						rent={`${getLocaleFormat(orgSettings, +currentProperty?.totalRent || 0, 'currency')} `}
-						totalArea={
-							currentProperty?.isMultiUnit
-								? ''
-								: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
-						}
-						buildingType={currentProperty?.type?.name}
-						additionalImages={stackedImages}
+			</Grid>
+
+			<Grid item xs={12} sx={styles.firstCardContainer}>
+				{renderUnitCard()}
+				{(propertyType === 'Single' || multiUnitMode) && (
+					<TabsComponent
+						handleTabChange={handleTabChange}
+						tabValue={tabValue}
+						allTabs={PROPERTY_CONSTANTS.tabs}
 					/>
-
-					{/* Render conditionally based on property type */}
-
-					{propertyType === 'Single' && (
-						<TabsComponent
-							handleTabChange={handleTabChange}
-							tabValue={tabValue}
-							allTabs={allTabs}
-						/>
-					)}
-				</Grid>
-
-				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
-				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={unitInfoData} />
-						</Grid>
-
-						<Overview initialText={currentProperty?.description} />
-
-						{/* Single unit table and add cards */}
-
-						{
-							<Grid sx={styles.addfieldStyle}>
-								{tabValue !== 1 && (
-									<>
-										{currentProperty?.units?.[0]?.lease?.tenants?.length &&
-										currentProperty?.units?.[0]?.lease?.tenants?.length > 0 ? (
-											<TenantAndLeaseTable
-												title='Tenant'
-												buttonText='Add Tenant'
-												handleAdd={handleAddTenant}
-												columns={tenantColumns}
-												tableBodyRows={
-													currentProperty?.units?.[0]?.lease?.tenants
-												}
-											/>
-										) : null}
-
-										{!leaseTableBodyRows?.length && (
-											<AddFieldCard
-												heading={'Add Tenant'}
-												subtext={'Add tenants to your property'}
-												description={'Add Tenant'}
-												handleAdd={handleAddTenant}
-											/>
-										)}
-									</>
-								)}
-
-								{!leaseTableBodyRows?.length && (
-									<AddFieldCard
-										heading={'Add Lease'}
-										subtext={'Add lease to your property'}
-										description={'Add Lease'}
-										handleAdd={handleAddLease}
-									/>
-								)}
-							</Grid>
-						}
-					</Grid>
 				)}
+			</Grid>
 
-				{/* Multi unit */}
+			{propertyType === 'Single' &&
+				(tabValue === 0 || tabValue === 1) &&
+				renderTabsContent(tabValue)}
 
-				{propertyType === 'Multi' && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<UnitInfoCard data={unitInfoData} />
-						</Grid>
+			{/* Multi Unit Section */}
+			{propertyType === 'Multi' && !multiUnitMode && (
+				<Grid item xs={12}>
+					<Grid sx={styles.unitInfoCardStyle}>
+						<UnitInfoCard data={unitInfoData} />
+					</Grid>
 
-						<Overview initialText={currentProperty?.description} />
+					<Overview initialText={currentProperty?.description} />
 
-						<Grid sx={styles.addfieldStyle}>
-							{currentProperty?.units && currentProperty?.units?.length > 0 && (
+					<Grid sx={styles.addfieldStyle}>
+						{currentProperty?.units?.length &&
+							currentProperty?.units?.length > 0 && (
 								<UnitsTable
 									title='Units'
 									handleAdd={handleAddUnit}
 									buttonText='Add Unit'
-									tableBodyRows={currentProperty?.units}
+									tableBodyRows={currentProperty.units}
 								/>
 							)}
-							{currentProperty?.units &&
-							currentProperty?.units?.length > 0 ? null : (
-								<AddFieldCard
-									heading={'Add Unit'}
-									subtext={'Add units to this property'}
-									description={'Add Unit'}
-									handleAdd={handleAddUnit}
-								/>
-							)}
-						</Grid>
 					</Grid>
-				)}
+				</Grid>
+			)}
 
-				{/* MAINTENANCE TAB */}
+			{propertyType === 'Multi' && multiUnitMode && renderTabsContent(tabValue)}
 
-				{/* {tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />} */}
+			{/* Document Tab */}
+			{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 
-				{/* DOCUMENT TAB */}
-
-				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
-			</Grid>
+			{/* Dialogs */}
 			<PropertiesActionsPrompts
 				open={openArchivePropertyDialog}
 				progress={progress}
-				title={`${progress ? 'Archive in progress' : 'Attention!'}`}
+				title={progress ? 'Archive in progress' : 'Attention!'}
 				content='Are you sure you want to archive this property?'
 				rightButtonContent='Archive Property'
 				handleDialogButtonAction={(e) =>
 					handleArchiveDialogButtonAction(e.target.value)
 				}
 			/>
+
 			<PropertiesActionsPrompts
 				open={openDeletePropertyDialog}
 				progress={progress}
-				title={`${progress ? 'Deleting this property' : 'Delete Property'}`}
+				title={progress ? 'Deleting this property' : 'Delete Property'}
 				content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
 				rightButtonContent='Delete Property'
 				handleDialogButtonAction={(e) =>
-					handleDeleteeDialogButtonAction(e.target.value)
+					handleDeleteDialogButtonAction(e.target.value)
 				}
 			/>
-		</>
-		// </Container>
+		</Grid>
 	);
 };

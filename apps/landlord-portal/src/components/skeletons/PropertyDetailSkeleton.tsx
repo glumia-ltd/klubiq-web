@@ -1,5 +1,5 @@
 import { Grid, Skeleton } from '@mui/material';
-import PropertiesFormStyle from './PropertiesDetailsStyle';
+import PropertiesFormStyle from '../PropertiesDetails/PropertiesDetailsStyle';
 
 const PropertyDetailSkeleton = () => {
 	return (
