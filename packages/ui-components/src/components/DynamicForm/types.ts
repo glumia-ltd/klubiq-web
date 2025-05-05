@@ -64,6 +64,7 @@ export interface FormField {
   maxDate?: string;
   dependsOn?: DependsOn[];
   width?: string | number;
+  showIf?: (values: Record<string, any>) => boolean;
 }
 
 export interface DynamicFormProps {

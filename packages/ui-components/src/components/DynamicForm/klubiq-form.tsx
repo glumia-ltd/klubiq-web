@@ -232,7 +232,6 @@
 /// THE CODE BELOW IS THE NEW CODE THAT IS WORKING //
 /// WE WILL DELETE THE CODE ABOVE AFTER WE HAVE TESTED THE NEW CODE //
 
-
 'use client';
 
 import { Formik, Form } from 'formik';
@@ -256,7 +255,6 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 	resetButtonText = 'Reset',
 	formWidth = '100%',
 }) => {
-
 	const createDateValidation = (field: FormField, isRequired: boolean) => {
 		const getFieldValue = (fieldPath: string, parent: any) => {
 			const parts = fieldPath.split('.');
@@ -338,6 +336,79 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		return schema;
 	};
 
+	// const createDependentValidation = (field: FormField, isRequired: boolean) => {
+	// 	const getFieldValue = (fieldPath: string, parent: any) => {
+	// 		const parts = fieldPath.split('.');
+	// 		if (parts.length === 1) {
+	// 			return parent[fieldPath];
+	// 		}
+	// 		const [groupName, fieldName] = parts;
+	// 		if (groupName && fieldName) {
+	// 			return parent?.[groupName]?.[fieldName];
+	// 		}
+	// 		return undefined;
+	// 	};
+
+	// 	let schema = Yup.string();
+
+	// 	// Handle dependencies
+	// 	if (field.dependsOn?.length) {
+	// 		schema = schema.when('*', (_, schema) => {
+	// 			return field.dependsOn!.reduce((acc, { field: parentField, value: requiredValue }) => {
+	// 				const fieldName = parentField.split('.').pop()!;
+	// 				return acc.test(
+	// 					`depends-on-${fieldName}`,
+	// 					`Must be equal to ${requiredValue}`,
+	// 					function () {
+	// 						const dependentValue = getFieldValue(parentField, this.parent);
+	// 						if (
+	// 							dependentValue &&
+	// 							dependentValue === requiredValue
+	// 						) {
+	// 							schema = schema.required(`${field.label} is required`);
+	// 						}
+	// 					},
+	// 				);
+	// 			}, schema);
+	// 		});
+	// 	} else if (isRequired) {
+	// 		schema = schema.required(`${field.label} is required`);
+	// 	}
+	// 	return schema;
+	// };
+
+	const createDependentValidation = (field: FormField, isRequired: boolean) => {
+		// If there are dependencies
+		if (field.dependsOn?.length) {
+			// Collect dependency field names
+			const dependencyFields = field.dependsOn.map((dep) => dep.field);
+			console.log(dependencyFields);
+
+			// Use Yup's .when() with array of dependencies
+			return Yup.string().when(dependencyFields, (...args) => {
+				// The last argument is the schema
+				const schema = args[args.length - 1];
+				// The dependency values are in order
+				const dependencyValues = args.slice(0, -1);
+				console.log(dependencyValues);
+
+				// Check if all dependencies match their required values
+				const allMatch = field.dependsOn!.every(
+					(dep, idx) => dependencyValues[idx] === dep.value,
+				);
+
+				if (allMatch) {
+					return Yup.string().required(`${field.label} is required`);
+				}
+				return Yup.string().notRequired();
+			});
+		}
+
+		// If no dependencies, just required or not
+		return isRequired
+			? Yup.string().required(`${field.label} is required`)
+			: Yup.string();
+	};
 	const createFieldValidation = (field: FormField) => {
 		if (field.validation) {
 			if (field.type === 'date') {
@@ -346,7 +417,9 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			return field.validation;
 		}
 
-		if (!field.required) return Yup.mixed().nullable();
+		if (!field.required) {
+			return Yup.mixed().nullable();
+		}
 
 		switch (field.type) {
 			case 'date':
@@ -364,7 +437,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 					.email('Invalid email format')
 					.required(`${field.label} is required`);
 			default:
-				return Yup.string().required(`${field.label} is required`);
+				return createDependentValidation(field, field.required ?? false);
 		}
 	};
 
@@ -426,11 +499,14 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		switch (type) {
 			case 'number':
 			case 'decimal':
-				return null;
+				return ''; // Changed from null to empty string
 			case 'date':
-				return null;
+				return null; // Keep null for date fields as they handle null differently
 			case 'boolean':
 				return false;
+			case 'select':
+			case 'multiselect':
+				return ''; // Added handling for select inputs
 			default:
 				return '';
 		}
@@ -480,19 +556,25 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			validateOnMount={true}
 			validateOnChange={true}
 		>
-			{({ handleReset, isSubmitting, isValid, dirty, errors }) => (
-				<Box sx={{...style.container, width: formWidth}}>
+			{({ handleReset, isSubmitting, isValid, dirty, errors, values }) => (
+				<Box sx={{ ...style.container, width: formWidth }}>
 					<Form>
 						<Stack spacing={2}>
-							{fields.map((field) => (
-								<Box key={field.name}>
-									{field.customComponent || (
-										<LocalizationProvider dateAdapter={AdapterDayjs}>
-											<KlubiqFormFields field={field} />
-										</LocalizationProvider>
-									)}
-								</Box>
-							))}
+							{fields.map((field) => {
+								const shouldShowField = !field.showIf || field.showIf(values);
+								if (!shouldShowField) {
+									return null;
+								}
+								return (
+									<Box key={field.name}>
+										{field.customComponent || (
+											<LocalizationProvider dateAdapter={AdapterDayjs}>
+												<KlubiqFormFields field={field} />
+											</LocalizationProvider>
+										)}
+									</Box>
+								);
+							})}
 							<FormButtons
 								isSubmitting={isSubmitting}
 								isValid={isValid}

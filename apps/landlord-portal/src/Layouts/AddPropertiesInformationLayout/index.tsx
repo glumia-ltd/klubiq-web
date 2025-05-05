@@ -31,7 +31,6 @@ const AddPropertiesInformationLayout: FC<{ children: ReactElement }> = ({
 			</Grid>
 			<Grid
 				sx={{
-					minHeight: '90vh',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',

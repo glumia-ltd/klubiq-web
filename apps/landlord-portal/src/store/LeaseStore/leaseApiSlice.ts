@@ -51,6 +51,13 @@ export const leaseApiSlice = createApi({
 			}),
 			invalidatesTags: [API_TAGS.LEASE],
 		}),
+		addNewTenantToLease: builder.mutation({
+			query: (body) => ({
+				url: leaseEndpoints.addNewTenantToLease(body?.leaseId),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -67,4 +74,5 @@ export const {
 	useAddLeaseMutation,
 	useGetUnitLeasesQuery,
 	useLazyGetUnitLeasesQuery,
+	useAddNewTenantToLeaseMutation,
 } = leaseApiSlice;

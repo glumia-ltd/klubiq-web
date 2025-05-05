@@ -37,3 +37,12 @@ export * from './components/DynamicAvatar/types';
 // Re-export everything from DynamicTable
 export * from './components/DynamicTable/DynamicTable';
 
+// Re-export everything from DynamicHighlights
+export * from './components/DynamicHighlights/index';
+
+// Re-export everything from DynamicBreadcrumb
+export * from './components/Errors/ErrorBoundary';
+
+// Re-export everything from DynamicModal
+export * from './components/DynamicModal/DynamicModal';
+

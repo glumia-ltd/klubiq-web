@@ -1,6 +1,5 @@
 import {
 	Grid,
-	Breadcrumbs,
 	Typography,
 	Button,
 	Chip,
@@ -21,9 +20,8 @@ import { UnitsTable } from '../TenantAndLeaseTable/UnitsTable';
 import dayjs from 'dayjs';
 import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	HouseIcon,
 	TenantIcon,
@@ -52,6 +50,10 @@ import {
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 import { LeaseType, PropertyDataType } from '../../shared/type';
 import propertyImage from '../../assets/images/propertyImage.png';
+import { Breadcrumb } from '../Breadcrumb/index';
+import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
+import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
+import { statusColors } from '../../page-tytpes/leases/list-page.type';
 
 const stackedImages = [
 	propertyImage,
@@ -68,10 +70,10 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	if (!currentProperty) {
 		return null;
 	}
-
 	const location = useLocation();
 	const navigate = useNavigate();
 	const anchorRef = useRef<HTMLButtonElement>(null);
+	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const { orgSettings } = useSelector(getAuthState);
 
 	const currentUUId = location.pathname.split('/')[2]!;
@@ -143,22 +145,26 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			{
 				key: 'tenant',
 				label: 'Tenant',
-				align: 'center',
+				align: 'left',
 				render: (rowData) => (
 					<Stack direction='row' alignItems='center' spacing={2}>
-						<DynamicAvatar
-							items={[rowData.tenant]}
-							size='medium'
-							showName={false}
-						/>
-						<Typography variant='body2'>{rowData.tenant.name}</Typography>
+						{rowData.tenant && (
+							<>
+								<DynamicAvatar
+									items={[rowData.tenant]}
+									size='medium'
+									showName={false}
+								/>
+								<Typography variant='body2'>{rowData.tenant.name}</Typography>
+							</>
+						)}
 					</Stack>
 				),
 			},
 			{
 				key: 'phone',
 				label: 'Phone',
-				align: 'center',
+				align: 'left',
 			},
 			{
 				key: 'email',
@@ -172,30 +178,30 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						{rowData.email}
 					</Link>
 				),
-				align: 'center',
+				align: 'left',
 			},
 			{
 				key: 'moveInDate',
 				label: 'Move In Date',
-				align: 'center',
+				align: 'left',
 			},
 			{
 				key: 'moveOutDate',
 				label: 'Move Out Date',
-				align: 'center',
+				align: 'left',
 			},
 			{
 				key: 'isPrimaryTenant',
 				label: 'Primary Tenant',
 				render: (rowData) => (
-					<Stack direction='row' alignItems='center' spacing={1}>
+					<Stack direction='row' sx={styles.primaryTenantStyle} spacing={1}>
 						{rowData.isPrimaryTenant && <CheckCircleIcon color='success' />}
 						<Typography variant='body2'>
 							{rowData.isPrimaryTenant ? 'Yes' : 'No'}
 						</Typography>
 					</Stack>
 				),
-				align: 'center',
+				align: 'left',
 			},
 		];
 
@@ -226,13 +232,19 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				align: 'left',
 				render: (rowData: any) => (
 					<Stack direction='row' alignItems='center' spacing={2}>
-						<DynamicAvatar
-							items={rowData.tenants}
-							size='medium'
-							showName={false}
-						/>
-						{rowData?.tenants?.length === 1 && (
-							<Typography variant='body2'>{rowData.tenants[0].name}</Typography>
+						{rowData?.tenants && rowData?.tenants.length > 0 && (
+							<>
+								<DynamicAvatar
+									items={rowData.tenants}
+									size='medium'
+									showName={false}
+								/>
+								{rowData.tenants.length === 1 && (
+									<Typography variant='body2'>
+										{rowData.tenants[0].name}
+									</Typography>
+								)}
+							</>
 						)}
 					</Stack>
 				),
@@ -256,6 +268,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				key: 'status',
 				label: 'Status',
 				align: 'left',
+				render: (rowData: any) => (
+					<Chip
+						label={rowData.status}
+						color={statusColors[rowData.status] as any}
+						variant='outlined'
+					/>
+				),
 			},
 		];
 
@@ -309,15 +328,16 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		setTabValue(newValue);
 	};
 
-	const handleHomeClick = () => navigate(-1);
 	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
 	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
 	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`);
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
+	const handleLeaseDetailClick = (lease: LeaseType) =>
+		navigate(`/leases/${lease.id}`);
 	const handleAddUnit = () => navigate(`/properties/${currentUUId}/unit`);
 
-	const handleAddTenant = () => {
+	const handleInviteTenant = () => {
 		navigate(`/tenants/invite-tenant`, {
 			state: {
 				mode: 'onboarding',
@@ -329,6 +349,28 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				returnPath: `/properties/${currentUUId}`,
 			},
 		});
+	};
+
+	const handleAddTenant = (
+		currentProperty: PropertyDataType | null,
+		leaseId: string | null = null,
+	) => {
+		const returnPath = `/properties/${currentUUId}`;
+		const unit = currentProperty?.units?.[0];
+		const state = {
+			mode: 'new-tenant' as const,
+			returnPath,
+			...(currentProperty && {
+				leaseAndUnitDetails: {
+					leaseId: leaseId || unit?.lease?.id,
+					unitId: unit?.id,
+					unitNumber: unit?.unitNumber,
+					propertyId: currentProperty.id,
+					propertyName: currentProperty.name,
+				},
+			}),
+		};
+		navigate('/tenants/add-tenant', { state });
 	};
 
 	const handleArchiveDialogButtonAction = (event: any) => {
@@ -424,7 +466,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 									buttonLabel='Add Tenant'
 									columns={tenantTableData.tableColumns}
 									rows={tenantTableData.rows}
-									onButtonClick={handleAddTenant}
+									onButtonClick={() => handleAddTenant(null)}
 									onRowClick={(rowData) => {
 										console.log('Tenant clicked:', rowData);
 									}}
@@ -442,7 +484,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 											? 'Add Tenant'
 											: 'Invite Tenant'
 									}
-									handleAdd={handleAddTenant}
+									handleAdd={
+										currentProperty?.units?.[0]?.lease
+											? () => handleAddTenant(currentProperty)
+											: handleInviteTenant
+									}
 								/>
 							)}
 
@@ -457,56 +503,72 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						</Grid>
 					</>
 				)}
-
-				{tabValue === 1 && leaseTableBodyRows?.length > 0 && (
-					// <Grid sx={styles.addfieldStyle}>
-					// 	<TenantAndLeaseTable
-					// 		title='Lease'
-					// 		buttonText='Add Tenant'
-					// 		handleAdd={handleAddTenant}
-					// 		columns={PROPERTY_CONSTANTS.leaseTableColumns}
-					// 		tableBodyRows={leaseTableBodyRows}
-					// 	/>
-					// </Grid>
-					<DynamicTable
-						colors={tableSx}
-						styles={tableStyles}
-						header='Lease'
-						buttonLabel='Add Tenant'
-						columns={leaseTableData.tableColumns}
-						rows={leaseTableData.rows}
-						onButtonClick={handleAddTenant}
-						onRowClick={(rowData) => {
-							console.log('Lease clicked:', rowData);
-						}}
-					/>
+				{tabValue === 1 && (
+					<Grid sx={styles.addfieldStyle}>
+						{leaseTableBodyRows?.length > 0 ? (
+							<DynamicTable
+								colors={tableSx}
+								styles={tableStyles}
+								header='Lease'
+								columns={leaseTableData.tableColumns}
+								rows={leaseTableData.rows}
+								onRowClick={(rowData) => handleLeaseDetailClick(rowData)}
+							/>
+						) : (
+							<AddFieldCard
+								heading='Add Lease'
+								subtext='Create a lease for your property'
+								description='Add Lease'
+								handleAdd={handleAddLease}
+							/>
+						)}
+					</Grid>
 				)}
 			</Grid>
 		);
 	};
 
+	useEffect(() => {
+		const sectionRoot: BreadcrumbItem = {
+			label: 'Properties',
+			icon: (
+				<HomeIcon
+					key={1}
+					sx={styles.iconStyle}
+					aria-label='Properties'
+					onClick={() => navigate(`/properties`)}
+				/>
+			),
+			showIcon: true,
+			isSectionRoot: true,
+		};
+		updateBreadcrumb({ properties: sectionRoot });
+		if (currentProperty?.name && currentUUId) {
+			const propertyItem: BreadcrumbItem = {
+				label: currentProperty?.name,
+				path: `/properties/${currentUUId}`,
+				icon: null,
+				showIcon: false,
+			};
+			updateBreadcrumb({ [currentProperty?.name]: propertyItem });
+			if (multiUnitMode && multiUnitNumber) {
+				const unitUUId = location.pathname.split('/')[4]!;
+				const path = `/properties/${currentUUId}/units/${unitUUId}`;
+				const unitItem: BreadcrumbItem = {
+					label: multiUnitNumber,
+					path,
+					icon: null,
+					showIcon: false,
+				};
+				updateBreadcrumb({ [multiUnitNumber]: unitItem });
+			}
+		}
+	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
+
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
-				<Breadcrumbs
-					separator={
-						<ArrowForwardIosIcon
-							sx={{ ...styles.iconStyle, ...styles.arrowIconStyle }}
-						/>
-					}
-					aria-label='breadcrumb'
-					sx={styles.breadCrumbStyle}
-				>
-					<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
-					<Typography fontWeight={700} sx={styles.textStyle}>
-						{currentProperty?.name}
-					</Typography>
-					{multiUnitMode && multiUnitNumber && (
-						<Typography fontWeight={700} sx={styles.textStyle}>
-							{multiUnitNumber}
-						</Typography>
-					)}
-				</Breadcrumbs>
+				<Breadcrumb />
 			</Grid>
 
 			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
