@@ -38,9 +38,17 @@ export interface DynamicTableStyles {
 	paperElevation: number;
 	titleVariant?: 'h4' | 'h5' | 'h6';
 	titleFontWeight?: number;
-	headerVariant?: 'body1' | 'body2' | 'subtitle1' | 'subtitle2' | 'caption' | 'button' | 'overline';
+	headerVariant?:
+		| 'body1'
+		| 'body2'
+		| 'subtitle1'
+		| 'subtitle2'
+		| 'caption'
+		| 'button'
+		| 'overline';
 	headerFontWeight?: number;
-  }
+	cellAlign?: 'left' | 'right' | 'center';
+}
 
 export interface DynamicTableColors {
 	headerBg: string;
@@ -69,16 +77,25 @@ export interface DynamicTableProps {
 	styles: DynamicTableStyles;
 	getNestedRows?: (row: any) => any[] | undefined;
 	nestedColumns?: TableColumn[];
+	showHeader?: boolean;
+	cellAlign?: 'left' | 'right' | 'center';
 }
 
-
-const NestedTable: React.FC<{ columns: TableColumn[]; rows: any[]; colors: DynamicTableColors; styles: DynamicTableStyles }> = ({
-	columns,
-	rows,
-	colors,
-	styles,
-}) => (
-	<Table size='small' sx={{ background: colors?.headerBg, borderColor: colors?.tableBorderColor || 'inherit', borderStyle: styles?.borderStyle || 'inherit', borderRadius: styles?.borderRadius || 'inherit' }}>
+const NestedTable: React.FC<{
+	columns: TableColumn[];
+	rows: any[];
+	colors: DynamicTableColors;
+	styles: DynamicTableStyles;
+}> = ({ columns, rows, colors, styles }) => (
+	<Table
+		size='small'
+		sx={{
+			background: colors?.headerBg,
+			borderColor: colors?.tableBorderColor || 'inherit',
+			borderStyle: styles?.borderStyle || 'inherit',
+			borderRadius: styles?.borderRadius || 'inherit',
+		}}
+	>
 		<TableHead>
 			<TableRow>
 				{columns.map((col) => (
@@ -90,7 +107,14 @@ const NestedTable: React.FC<{ columns: TableColumn[]; rows: any[]; colors: Dynam
 		</TableHead>
 		<TableBody>
 			{rows.map((row, idx) => (
-				<TableRow key={row.id || idx} hover sx={{ background: colors?.rowBg, '&:hover': { background: colors?.rowHoverBg } }}>
+				<TableRow
+					key={row.id || idx}
+					hover
+					sx={{
+						background: colors?.rowBg,
+						'&:hover': { background: colors?.rowHoverBg },
+					}}
+				>
 					{columns.map((col) => (
 						<TableCell key={col.key} align={col.align || 'left'}>
 							{col.render ? col.render(row) : renderCellValue(row, col)}
@@ -106,8 +130,8 @@ const NestedTable: React.FC<{ columns: TableColumn[]; rows: any[]; colors: Dynam
 function renderCellValue(row: any, col: TableColumn, avatarColumnKey?: string) {
 	const value = getValue(row, col.key);
 	if (col.render) {
-   return col.render(row);
- }
+		return col.render(row);
+	}
 	if (col.key === avatarColumnKey && value) {
 		return (
 			<Stack direction='row' alignItems='center' spacing={1}>
@@ -141,58 +165,60 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 	styles,
 	getNestedRows,
 	nestedColumns,
+	showHeader = true,
+	cellAlign = 'left',
 }) => {
-  // Destructure colors with defaults
-  const {
-    headerBg = '#f8fbfd',
-    headerColor = '#222',
-    rowBg = '#fff',
-    rowHoverBg = '#f0f4fa',
-    cellColor = '#222',
-    borderColor = '#e0e0e0',
-	headerBorderColor = borderColor,
-	cellBorderColor = borderColor,
-	cardBorderColor = borderColor,
-	cardBgColor = '#fff',
-  } = colors;
+	// Destructure colors with defaults
+	const {
+		headerBg = '#f8fbfd',
+		headerColor = '#222',
+		rowBg = '#fff',
+		rowHoverBg = '#f0f4fa',
+		cellColor = '#222',
+		borderColor = '#e0e0e0',
+		headerBorderColor = borderColor,
+		cellBorderColor = borderColor,
+		cardBorderColor = borderColor,
+		cardBgColor = '#fff',
+	} = colors;
 
-  // Destructure styles with defaults
-  const {
-    borderStyle = 'none',
-    buttonVariant = 'contained',
-    borderRadius = 3,
-    borderWidth = 1,
-	headerVariant = 'body1',
-	titleVariant = 'h4',
-	titleFontWeight = 700,
-	headerFontWeight = 400,
-  } = styles;
+	// Destructure styles with defaults
+	const {
+		borderStyle = 'none',
+		buttonVariant = 'contained',
+		borderRadius = 3,
+		borderWidth = 1,
+		headerVariant = 'body1',
+		titleVariant = 'h4',
+		titleFontWeight = 700,
+		headerFontWeight = 400,
+	} = styles;
 
-  // Get border styles based on borderStyle prop
-  const getBorderStyles = () => {
-    switch (borderStyle) {
-      case 'outlined':
-        return {
-          border: `${borderWidth}px solid ${borderColor}`,
-          '& .MuiTableCell-root': {
-            borderBottom: `${borderWidth}px solid ${cellBorderColor}`,
-          },
-        };
-      case 'bordered':
-        return {
-          border: `${borderWidth}px solid ${borderColor}`,
-          '& .MuiTableCell-root': {
-            border: `${borderWidth}px solid ${cellBorderColor}`,
-          },
-        };
-      default:
-        return {
-          '& .MuiTableCell-root': {
-            borderBottom: `${borderWidth}px solid ${cellBorderColor}`,
-          },
-        };
-    }
-  };
+	// Get border styles based on borderStyle prop
+	const getBorderStyles = () => {
+		switch (borderStyle) {
+			case 'outlined':
+				return {
+					border: `${borderWidth}px solid ${borderColor}`,
+					'& .MuiTableCell-root': {
+						borderBottom: `${borderWidth}px solid ${cellBorderColor}`,
+					},
+				};
+			case 'bordered':
+				return {
+					border: `${borderWidth}px solid ${borderColor}`,
+					'& .MuiTableCell-root': {
+						border: `${borderWidth}px solid ${cellBorderColor}`,
+					},
+				};
+			default:
+				return {
+					'& .MuiTableCell-root': {
+						borderBottom: `${borderWidth}px solid ${cellBorderColor}`,
+					},
+				};
+		}
+	};
 
 	const [openRow, setOpenRow] = useState<string | number | null>(null);
 
@@ -205,7 +231,14 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 	};
 
 	return (
-		<Card sx={{ p: 2, borderColor: cardBorderColor, background: cardBgColor, ...getBorderStyles() }}>
+		<Card
+			sx={{
+				p: 2,
+				borderColor: cardBorderColor,
+				background: cardBgColor,
+				...getBorderStyles(),
+			}}
+		>
 			<Stack
 				direction='row'
 				justifyContent='space-between'
@@ -214,48 +247,60 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 			>
 				<Box>
 					{header && (
-						<Typography variant={titleVariant} fontWeight={titleFontWeight} color={headerColor}>
+						<Typography
+							variant={titleVariant}
+							fontWeight={titleFontWeight}
+							color={headerColor}
+						>
 							{header}
 						</Typography>
 					)}
 					{subHeader && (
-						<Typography variant={headerVariant} fontWeight={headerFontWeight} color={cellColor}>
+						<Typography
+							variant={headerVariant}
+							fontWeight={headerFontWeight}
+							color={cellColor}
+						>
 							{subHeader}
 						</Typography>
 					)}
 				</Box>
 				{buttonLabel && (
-					<Button
-						variant={buttonVariant}
-						onClick={onButtonClick}
-					>
+					<Button variant={buttonVariant} onClick={onButtonClick}>
 						{buttonLabel}
 					</Button>
 				)}
 			</Stack>
 			<TableContainer>
-				<Table sx={{ borderColor: borderColor, borderStyle: borderStyle, borderRadius: borderRadius }}>
-					<TableHead sx={{ background: headerBg, borderColor: headerBorderColor }}>
-						<TableRow>
-							{getNestedRows && nestedColumns && <TableCell />}
-							{columns.map((col) => (
-								<TableCell
-									key={col.key}
-									sx={{
-										fontWeight: headerFontWeight,
-										
-										// background: headerBg,
-										// borderColor: headerBorderColor,
-									}}
-									align={col.align || 'left'}
-									width={col.width}
-									color={headerColor}
-								>
-									{col.label}
-								</TableCell>
-							))}
-						</TableRow>
-					</TableHead>
+				<Table
+					sx={{
+						borderColor: borderColor,
+						borderStyle: borderStyle,
+						borderRadius: borderRadius,
+					}}
+				>
+					{showHeader && (
+						<TableHead
+							sx={{ background: headerBg, borderColor: headerBorderColor }}
+						>
+							<TableRow>
+								{getNestedRows && nestedColumns && <TableCell />}
+								{columns.map((col) => (
+									<TableCell
+										key={col.key}
+										sx={{
+											fontWeight: headerFontWeight,
+										}}
+										align={col.align || 'left'}
+										width={col.width}
+										color={headerColor}
+									>
+										{col.label}
+									</TableCell>
+								))}
+							</TableRow>
+						</TableHead>
+					)}
 					<TableBody>
 						{rows.map((row, idx) => {
 							const rowId = row.id || idx;
@@ -264,12 +309,16 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 							return (
 								<React.Fragment key={rowId}>
 									<TableRow
-										hover	
-										sx={{ cursor: onRowClick ? 'pointer' : 'default', background: rowBg, '&:hover': { background: rowHoverBg } }}
+										hover
+										sx={{
+											cursor: onRowClick ? 'pointer' : 'default',
+											background: rowBg,
+											'&:hover': { background: rowHoverBg },
+										}}
 										onClick={onRowClick ? () => onRowClick(row) : undefined}
 									>
 										{hasNested && (
-											<TableCell>
+											<TableCell align={cellAlign}>
 												<IconButton
 													size='small'
 													onClick={(e) => handleExpandClick(e, rowId)}
@@ -293,7 +342,7 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 											</TableCell>
 										)}
 										{!hasNested && getNestedRows && nestedColumns && (
-											<TableCell />
+											<TableCell align={cellAlign} />
 										)}
 										{columns.map((col) => (
 											<TableCell key={col.key} align={col.align || 'left'}>

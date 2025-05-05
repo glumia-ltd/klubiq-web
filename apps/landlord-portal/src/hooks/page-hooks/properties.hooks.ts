@@ -110,6 +110,7 @@ import { useTheme } from "@mui/material";
 		titleFontWeight: 700,
 		headerVariant: 'body1',
 		headerFontWeight: 400,
+		cellAlign: 'left',
 	};
 
   
