@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-	Typography,
-	Stack,
-} from '@mui/material';
+import { Typography, Stack } from '@mui/material';
 import { FC, useMemo } from 'react';
 import {
 	Bedroom,
@@ -72,13 +69,19 @@ export const UnitsTable: FC<UnitsTableType> = ({
 				align: 'left',
 				render: (rowData: any) => (
 					<Stack direction='row' alignItems='center' spacing={2}>
-						<DynamicAvatar
-							items={rowData.tenants}
-							size='medium'
-							showName={false}
-						/>
-						{rowData.tenants.length === 1 && (
-							<Typography variant='body2'>{rowData.tenants[0].name}</Typography>
+						{rowData.tenants.length > 0 && (
+							<>
+								<DynamicAvatar
+									items={rowData.tenants}
+									size='medium'
+									showName={false}
+								/>
+								{rowData.tenants.length === 1 && (
+									<Typography variant='body2'>
+										{rowData.tenants[0].name}
+									</Typography>
+								)}
+							</>
 						)}
 					</Stack>
 				),
@@ -184,7 +187,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 
 	return (
 		<DynamicTable
-			//showHeader={false}
+			showHeader={false}
 			columns={unitTableData.tableColumns}
 			rows={unitTableData.rows || []}
 			colors={tableSx}
@@ -192,7 +195,9 @@ export const UnitsTable: FC<UnitsTableType> = ({
 			header={title}
 			buttonLabel={buttonText}
 			onButtonClick={handleButtonClick}
-			onRowClick={(rowData: any) => handleUnitClick(rowData?.unitUuid, rowData?.unitNumber)}
+			onRowClick={(rowData: any) =>
+				handleUnitClick(rowData?.unitUuid, rowData?.unitNumber)
+			}
 		/>
 	);
 };

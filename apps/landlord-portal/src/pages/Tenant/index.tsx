@@ -10,6 +10,7 @@ import {
 import { DataPagination } from '../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
+
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
@@ -56,9 +57,9 @@ const Lease = () => {
 	};
 
 	const navigateToAddTenant = () => {
-		navigate('/tenants/invite-tenant', {
+		navigate('/tenants/add-tenant', {
 			state: {
-				mode: 'onboarding',
+				mode: 'new-tenant',
 				returnPath: '/tenants',
 			},
 		});

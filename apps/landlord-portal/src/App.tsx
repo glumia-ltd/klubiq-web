@@ -15,6 +15,7 @@ import { initDB } from './services/indexedDb';
 import { consoleLog } from './helpers/debug-logger';
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
+import { BreadcrumbProvider } from './context/BreadcrumbContext/BreadcrumbContext';
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
@@ -45,7 +46,9 @@ function App() {
 			<AnimatePresence mode='wait'>
 				<PageTransition key={location.pathname}>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<RouterProvider router={router} />
+						<BreadcrumbProvider>
+							<RouterProvider router={router} />
+						</BreadcrumbProvider>
 					</LocalizationProvider>
 					<ControlledSnackbar
 						anchorOrigin={{

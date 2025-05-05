@@ -1,5 +1,5 @@
 // src/components/DynamicForm/FormFields.tsx
-import { Field } from 'formik';
+import { Field, FormikConsumer } from 'formik';
 import {
 	TextField,
 	Select,
@@ -78,13 +78,27 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 						},
 					}}
 				>
-					{field.fields.map((subField, index) => (
-						<KlubiqFormFields
-							key={`${subField.name}-${index}`}
-							field={subField}
-							formatters={formatters}
-						/>
-					))}
+					<FormikConsumer>
+						{({ values }) => (
+							<>
+								{field.fields.map((subField, index) => {
+									// Check if field should be shown
+									const shouldShow =
+										!subField.showIf || subField.showIf(values);
+
+									if (!shouldShow) return null;
+
+									return (
+										<KlubiqFormFields
+											key={`${subField.name}-${index}`}
+											field={subField}
+											formatters={formatters}
+										/>
+									);
+								})}
+							</>
+						)}
+					</FormikConsumer>
 				</Stack>
 			</Stack>
 		);
@@ -154,14 +168,16 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 					{({ field: formikField, meta }: any) => (
 						<FormControl fullWidth error={meta.touched && !!meta.error}>
 							<Stack sx={style.fieldStack}>
-								<Typography variant='subtitle1' component='h3'>
-									{field.label}
-									{field.required && '*'}
-								</Typography>
+								{!field.isInFieldLabel && (
+									<Typography variant='subtitle1' component='h3'>
+										{field.label}
+										{field.required && '*'}
+									</Typography>
+								)}
 								<Select
 									{...formikField}
 									sx={{ width: field.width || '100%' }}
-									label={field.label}
+									label={field.isInFieldLabel && field.label}
 									multiple={field.multiple}
 									value={
 										field.readonly
@@ -329,7 +345,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 							)}
 							<TextField
 								{...formikField}
-								sx={{ width: field.width || '100%' }}
+								sx={{ width: field.width || '100%', height: '100%' }}
 								fullWidth
 								multiline
 								value={

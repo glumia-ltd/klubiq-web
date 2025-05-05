@@ -11,4 +11,4 @@ export const PROPERTY_CONSTANTS = {
     ] as SimpleTableColumn[]
   } as const;
 
-  
+  export const PERSON_TITLES = ['Mr', 'Mrs', 'Ms', 'Dr', 'Chief'] as const;
