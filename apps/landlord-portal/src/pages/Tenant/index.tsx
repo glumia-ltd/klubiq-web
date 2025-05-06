@@ -10,22 +10,21 @@ import {
 import { DataPagination } from '../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-
-// import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import { TenantType } from '../../shared/type';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
-    const [searchText, setSearchText] = useState('');
+	const [searchText, setSearchText] = useState('');
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
 		sortBy: 'createdDate',
 		order: 'ASC',
 	});
-    const inputRef = useRef<HTMLElement>(null);
+	const inputRef = useRef<HTMLElement>(null);
 	const filterObjectLength = Object.keys(filter).length;
 
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
@@ -57,9 +56,9 @@ const Lease = () => {
 	};
 
 	const navigateToAddTenant = () => {
-		navigate('/tenants/add-tenant', {
+		navigate('/tenants/invite-tenant', {
 			state: {
-				mode: 'new-tenant',
+				mode: 'onboarding',
 				returnPath: '/tenants',
 			},
 		});
@@ -69,14 +68,49 @@ const Lease = () => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
 
-	const handleRowClick = (id: number) => {
-		navigate(`/tenants/${id}`);
+	const handleRowClick = (tenant: TenantType) => {
+		navigate(`/tenants/${tenant.id}`);
 	};
+	const pseudoTenant: TenantType = {
+		id: '0',
+		isPrimaryTenant: true,
+		profile: {
+			profilePicUrl: '',
+			firstName: 'John',
+			lastName: 'Doe',
+			email: 'john.doe@example.com',
+			phoneNumber: '123-456-7890',
+		},
+		propertyDetails: {
+			name: 'Sunset Villas',
+			unitNumber: 'B12',
+			address: {
+				addressLine1: '123 Palm Street',
+				addressLine2: 'Apt 4B',
+			},
+		},
+		leaseDetails: {
+			startDate: '2023-01-01',
+			endDate: '2024-01-01',
+			status: 'Pending',
+			rentAmount: '1500',
+			paymentFrequency: 'Monthly',
+			id: 0,
+			isArchived: false,
+			isDraft: false,
+			name: '',
+			rentDueDay: 0,
+			securityDeposit: '',
+			tenants: [],
+		},
+	};
+	
+
+	const allTenantsWithPseudo = [pseudoTenant];
 
 	return (
 		<>
-
-			<Stack spacing={5}>
+			<Stack spacing={2}>
 				<Stack
 					direction={'row'}
 					spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -91,21 +125,21 @@ const Lease = () => {
 						Add New Tenant
 					</Button>
 				</Stack>
-                <Stack>
-                <Paper component='form' sx={styles.inputStyle}>
-									<IconButton aria-label='search'>
-										<SearchIcon />
-									</IconButton>
-									<InputBase
-										ref={inputRef}
-										sx={{ ml: 1, flex: 1 }}
-										placeholder='Search Tenant'
-										inputProps={{ 'aria-label': 'search tenant' }}
-										value={searchText}
-										onChange={handleTenantSearch}
-									/>
-								</Paper>    
-                </Stack>
+				<Stack>
+					<Paper component='form' sx={styles.inputStyle}>
+						<IconButton aria-label='search'>
+							<SearchIcon />
+						</IconButton>
+						<InputBase
+							ref={inputRef}
+							sx={{ ml: 1, flex: 1 }}
+							placeholder='Search Tenant'
+							inputProps={{ 'aria-label': 'search tenant' }}
+							value={searchText}
+							onChange={handleTenantSearch}
+						/>
+					</Paper>
+				</Stack>
 				<Stack
 					direction={'row'}
 					spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -119,10 +153,10 @@ const Lease = () => {
 						disable={filterObjectLength ? false : !allLease}
 					/>
 				</Stack>
-				<Stack direction={'row'}>
+				<Stack>
 					<TenantTable
 						title='Tenant'
-						allTenant={allLease}
+						allTenant={allTenantsWithPseudo ?? []}
 						onRowClick={handleRowClick}
 					/>
 				</Stack>

@@ -1,3 +1,4 @@
+import { number } from "yup";
 import { UserProfile } from "./auth-types";
 
 export interface RouteObjectType {
@@ -34,10 +35,21 @@ export type TenantType = {
 	id: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
-	propertyDetails: PropertyDataType;
+	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
 }
 
+export type TenantTablePropertyDetailsType={
+	name: string;
+	address: {
+		addressLine1: string;
+		addressLine2: string | null;
+		
+	};
+	unitNumber: string | number;
+
+
+}
 export type LeaseType = {
 	endDate: string;
 	id: number;
