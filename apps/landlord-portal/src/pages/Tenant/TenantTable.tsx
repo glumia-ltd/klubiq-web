@@ -83,7 +83,6 @@ export const TenantTable: FC<TenantTableProps> = ({
 
 	return (
 		<DynamicTable
-
 			header={title}
 			columns={columns}
 			rows={allTenant}
