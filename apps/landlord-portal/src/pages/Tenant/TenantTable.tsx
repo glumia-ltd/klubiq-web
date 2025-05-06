@@ -32,9 +32,9 @@ export const TenantTable: FC<TenantTableProps> = ({
 		{
 			key: 'profile',
 			label: 'Name',
-			align: 'left',
+			align: 'center',
 			render: (tenant) => (
-				<Box display='flex'>
+				<Box display='flex' alignItems={'center'} justifyContent={'center'}>
 					<DynamicAvatar
 						items={[tenant?.profile?.profilePicUrl || '']}
 						size='medium'
@@ -49,27 +49,27 @@ export const TenantTable: FC<TenantTableProps> = ({
 		{
 			key: 'propertyDetails.name',
 			label: 'Property',
-			align: 'left',
+			align: 'center',
 		},
 		{
 			key: 'propertyDetails.unitNumber',
 			label: 'Unit',
-			align: 'left',
+			align: 'center',
 		},
 		{
 			key: 'propertyDetails.address.addressLine1',
 			label: 'Address Line 1',
-			align: 'left',
+			align: 'center',
 		},
 		{
 			key: 'propertyDetails.address.addressLine2',
 			label: 'Address Line 2',
-			align: 'left',
+			align: 'center',
 		},
 		{
 			key: 'leaseDetails.status',
 			label: 'Status',
-			align: 'left',
+			align: 'center',
 			render: (tenant) => (
 				<Chip
 					label={tenant?.leaseDetails?.status ?? 'Unknown'}
