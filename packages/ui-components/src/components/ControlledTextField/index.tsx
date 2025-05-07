@@ -6,7 +6,7 @@ interface ControlledTextFieldProps<T extends FieldValues> extends Omit<TextField
   name: Path<T>
 }
 
-const ControlledTextField = <T extends FieldValues>({
+export const ControlledTextField = <T extends FieldValues>({
   control,
   name,
   ...props

@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
+import loaderReducer from './GlobalStore/LoaderSlice'
 
 export const store = configureStore({
   reducer: {
-    // Add reducers here
+    loader: loaderReducer
   },
 })
 
