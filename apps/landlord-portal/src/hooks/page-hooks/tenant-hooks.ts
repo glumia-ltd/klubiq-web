@@ -27,8 +27,8 @@ export const useTenantActions = () => {
         buttonVariant: 'text',
         titleVariant: 'h5',
         titleFontWeight: 500,
-        headerVariant: 'subtitle1',
-        headerFontWeight: 600,
+        headerVariant: 'body1',
+        headerFontWeight: 700,
         cellAlign: 'left',
     };
 

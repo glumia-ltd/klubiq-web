@@ -3,16 +3,12 @@ import { styles } from './styles';
 import Filter from '../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
-import {
-	useGetLeaseMetaDataQuery,
-	useGetLeasesQuery,
-} from '../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import { TenantType } from '../../shared/type';
 
-const ITEMSCOUNTOPTIONS = [5,10,20, 40, 60];
+const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
 
 const Tenant = () => {
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
@@ -42,7 +38,6 @@ const Tenant = () => {
 	const handleTenantSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchText(e.target.value);
 	};
-	
 
 	const navigateToAddTenant = () => {
 		navigate('/tenants/invite-tenant', {
@@ -57,9 +52,16 @@ const Tenant = () => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
 
-	const handleRowClick = (tenant: TenantType) => {
-		navigate(`/tenants/${tenant.id}`);
-	};
+	const handleRowClick = useCallback(
+		(tenant: TenantType) => {
+			navigate(`/tenants/${tenant.id}/tenant-details`, {
+				state: {
+					selectedRow: tenant,
+				},
+			});
+		},
+		[navigate],
+	);
 	const allTenants: TenantType[] = Array.from({ length: 105 }, (_, i) => ({
 		id: `${i + 1}`,
 		isPrimaryTenant: true,
@@ -102,37 +104,44 @@ const Tenant = () => {
 		{
 			id: 'propertyName',
 			title: 'Property Name',
-			options: Array.from({ length: 5 }, (_, i) => `Property ${i}`).map((p) => ({ label: p, value: p })),
+			options: Array.from({ length: 5 }, (_, i) => `Property ${i}`).map(
+				(p) => ({ label: p, value: p }),
+			),
 		},
 		{
 			id: 'paymentFrequency',
 			title: 'Payment Frequency',
 			options: ['Monthly'].map((f) => ({ label: f, value: f })),
 		},
-		
+
 		{
-			id:"date",
-			title:"Date",
-			options:[
-				{label:"Last 7 days",value:"last7Days"},
-				{label:"Last 30 days",value:"last30Days"},
-				{label:"Last 60 days",value:"last60Days"},
-				{label:"Last 90 days",value:"last90Days"},
-			]
+			id: 'date',
+			title: 'Date',
+			options: [
+				{ label: 'Last 7 days', value: 'last7Days' },
+				{ label: 'Last 30 days', value: 'last30Days' },
+				{ label: 'Last 60 days', value: 'last60Days' },
+				{ label: 'Last 90 days', value: 'last90Days' },
+			],
 		},
-		
 	];
 
-	
 	const filteredTenants = allTenants.filter((tenant) => {
-		const fullName = `${tenant.profile.firstName} ${tenant.profile.lastName}`.toLowerCase();
+		const fullName =
+			`${tenant.profile.firstName} ${tenant.profile.lastName}`.toLowerCase();
 		const matchesSearch = fullName.includes(searchText.toLowerCase());
-		const matchesStatus = !filter.status || tenant.leaseDetails.status === filter.status;
-		const matchesProperty = !filter.propertyName || tenant.propertyDetails.name === filter.propertyName;
-		const matchesFrequency = !filter.paymentFrequency || tenant.leaseDetails.paymentFrequency === filter.paymentFrequency;
-		return matchesSearch && matchesStatus && matchesProperty && matchesFrequency;
+		const matchesStatus =
+			!filter.status || tenant.leaseDetails.status === filter.status;
+		const matchesProperty =
+			!filter.propertyName ||
+			tenant.propertyDetails.name === filter.propertyName;
+		const matchesFrequency =
+			!filter.paymentFrequency ||
+			tenant.leaseDetails.paymentFrequency === filter.paymentFrequency;
+		return (
+			matchesSearch && matchesStatus && matchesProperty && matchesFrequency
+		);
 	});
-
 
 	// Apply pagination
 	const startIndex = (currentPage - 1) * defaultParams.take;
@@ -174,11 +183,7 @@ const Tenant = () => {
 						/>
 					</Paper>
 				</Stack>
-				<Stack
-					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 4 }}
-					// sx={styles.buttonContainer}
-				>
+				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
 					<Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
@@ -191,11 +196,13 @@ const Tenant = () => {
 					<TenantTable
 						title='Tenant'
 						allTenant={paginatedTenants}
-						onRowClick={handleRowClick}
+						onRowClick={(tenant) => {
+							console.log('here');
+							handleRowClick(tenant);
+						}}
 					/>
 				</Stack>
 			</Stack>
-
 			<Stack mt={4}>
 				<DataPagination
 					getCurrentPage={getCurrentPage}

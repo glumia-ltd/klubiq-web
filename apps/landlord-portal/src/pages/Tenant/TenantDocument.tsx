@@ -1,80 +1,49 @@
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-	Card,
-} from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { styles } from './styles';
 import fileIcon from '../../assets/images/Vector (2).svg';
+import { useTenantActions } from '../../hooks/page-hooks/tenant-hooks';
+import { DynamicTable } from '@klubiq/ui-components';
+
+type TenantDocumentRow = {
+	name: string;
+	dueDate: string;
+};
 
 const TenantDocument = () => {
-	const details = [
-		{
-			name: 'Maintenance fee ',
-			dueDate: 'March 13,2025',
-		},
+	const { tableSx, tableStyles } = useTenantActions();
 
-		{
-			name: 'Insurance fee  ',
-			dueDate: 'April 4, 2024',
-		},
-		{
-			name: 'Landmark House unit 1 Lease payment ',
-			dueDate: 'March 13,2025',
-		},
-		{
-			name: 'Landmark House unit 2 Lease payment ',
-			dueDate: 'April 4, 2024',
-		},
+	const rows: TenantDocumentRow[] = [
+		{ name: 'Maintenance fee', dueDate: 'March 13, 2025' },
+		{ name: 'Insurance fee', dueDate: 'April 4, 2024' },
+		{ name: 'Landmark House unit 1 Lease payment', dueDate: 'March 13, 2025' },
+		{ name: 'Landmark House unit 2 Lease payment', dueDate: 'April 4, 2024' },
 	];
 
+	const columns = [
+		{
+			key: 'name',
+			label: 'Name',
+			render: (name: { name: string }) => (
+				<Box sx={styles.tableDiv} display='flex' alignItems='center'>
+					<img src={fileIcon} alt='file icon' />
+					<Typography sx={styles.cellText} ml='25px'>
+						{name.name}
+					</Typography>
+				</Box>
+			),
+		},
+		{ key: 'dueDate', label: 'Due Date' },
+	];
 	return (
-		<TableContainer component={Card}>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableCell align='left' colSpan={12} sx={{ ...styles.tableCell }}>
-							Tenant Documents
-							<Typography sx={styles.subheadText}>
-								{' '}
-								Keep track of all documents related to this property in one
-								place.
-							</Typography>
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableHead>
-					<TableRow>
-						<TableCell align='left' sx={styles.headerText3}>
-							Name
-						</TableCell>
-						<TableCell align='left' sx={styles.headerText3}>
-							Date
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{details.map((detail, index) => (
-						<TableRow key={index}>
-							<TableCell sx={styles.tableDiv} align='left'>
-								<img src={fileIcon} alt='tenant picture' />
-								<Typography sx={styles.cellText} ml='25px'>
-									{detail.name}
-								</Typography>
-							</TableCell>
-
-							<TableCell align='left' sx={styles.cellText}>
-								{detail.dueDate}
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
+		<DynamicTable
+			header='Tenant Documents'
+			subHeader='Keep track of all documents related to this property in one place.'
+			columns={columns}
+			rows={rows}
+			styles={tableStyles}
+			colors={tableSx}
+		/>
 	);
 };
+
 export default TenantDocument;

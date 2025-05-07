@@ -1,4 +1,3 @@
-import { number } from "yup";
 import { UserProfile } from "./auth-types";
 
 export interface RouteObjectType {
@@ -7,7 +6,23 @@ export interface RouteObjectType {
 	'Unit Type': { label: string; icon: React.ReactNode };
 	[key: string]: { label: string; icon: React.ReactNode };
 }
-
+export interface LeaseDetail {
+	name: string;
+	amount: string;
+  }
+  export interface TenantLocationState {
+	selectedRow: TenantType;
+	tenantId: string;
+	tenantName: string;
+  }
+  export interface TenantInfo {
+	name: string;
+	phone: string;
+	email: string;
+	since: string;
+	image: string;
+  }
+  
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
