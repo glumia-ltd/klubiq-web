@@ -1,3 +1,4 @@
+
 export const styles = {
 	container: {
 		overflow: 'auto',
@@ -20,6 +21,11 @@ export const styles = {
 	card: {
 		width: '100%',
 		maxWidth: '814px',
+	},
+	rowButton: {
+		fontSize: "14px",
+		fontWeight: "500",
+		textAlign: "center",
 	},
 	detailsCard: {
 		width: '100%',

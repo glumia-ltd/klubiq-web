@@ -18,7 +18,7 @@ import MFASetUp from '../pages/MFAPage';
 import AddProperties from '../pages/AddProperties';
 import PropertyPage from '../pages/PropertyPage';
 import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
-
+import TenantDetails from '../pages/Tenant/TenantDetails';
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
 import Properties from '../pages/Properties';
@@ -89,6 +89,7 @@ export const router = createBrowserRouter(
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
 						<Route index element={<Tenant />} />
+						<Route path=':id/tenant-details' element={<TenantDetails />} />
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>

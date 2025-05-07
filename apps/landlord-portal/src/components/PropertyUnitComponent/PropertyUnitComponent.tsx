@@ -143,7 +143,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const getTenantTableData = (property: PropertyDataType): TenantsTableData => {
 		const tableColumns: TableColumn[] = [
 			{
-				key: 'tenant',
+				key: 'tenant',  
 				label: 'Tenant',
 				align: 'left',
 				render: (rowData) => (

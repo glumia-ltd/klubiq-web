@@ -6,7 +6,23 @@ export interface RouteObjectType {
 	'Unit Type': { label: string; icon: React.ReactNode };
 	[key: string]: { label: string; icon: React.ReactNode };
 }
-
+export interface LeaseDetail {
+	name: string;
+	amount: string;
+  }
+  export interface TenantLocationState {
+	selectedRow: TenantType;
+	tenantId: string;
+	tenantName: string;
+  }
+  export interface TenantInfo {
+	name: string;
+	phone: string;
+	email: string;
+	since: string;
+	image: string;
+  }
+  
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -34,10 +50,21 @@ export type TenantType = {
 	id: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
-	propertyDetails: PropertyDataType;
+	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
 }
 
+export type TenantTablePropertyDetailsType={
+	name: string;
+	address: {
+		addressLine1: string;
+		addressLine2: string | null;
+		
+	};
+	unitNumber: string | number;
+
+
+}
 export type LeaseType = {
 	endDate: string;
 	id: number;

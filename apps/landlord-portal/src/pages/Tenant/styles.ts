@@ -23,7 +23,7 @@ export const styles = {
 	},
 	detailsCard: {
 		width: '100%',
-		maxWidth: '1150px',
+		maxWidth: '1250px',
 		padding: '8px 24px 8px 24px',
 	},
 	imageStyle: {

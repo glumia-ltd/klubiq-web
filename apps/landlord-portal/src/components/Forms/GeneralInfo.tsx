@@ -154,7 +154,6 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 		formik.setFieldValue('units', [...formik.values.units, clonedUnit]);
 	};
-	
 
 	const handleRemoveUnit = (index: number) => {
 		const units = [...formik.values.units];
