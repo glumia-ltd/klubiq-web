@@ -1,12 +1,14 @@
 import TenantDashboardLayout from "@/layouts/DashboardLayout";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 const TenantDashboard = () => {
   return (
     <TenantDashboardLayout>
-      {/* <Grid>
-        Hello
-      </Grid> */}
+      <Grid container>
+        <Grid item>
+          <Typography variant="h6">Welcome Blessing</Typography>
+        </Grid>
+      </Grid>
     </TenantDashboardLayout>
   )
 }

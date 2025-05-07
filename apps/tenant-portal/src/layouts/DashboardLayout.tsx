@@ -1,29 +1,63 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
+import { useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+
+import {
+	Grid,
+	Typography,
+	Toolbar,
+	ListItemText,
+	ListItemIcon,
+	ListItemButton,
+	ListItem,
+	List,
+	Drawer,
+	CssBaseline,
+	Box,
+	AppBar,
+	Link,
+	Avatar,
+} from '@mui/material';
+
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
+
+import Logo from '@/assets/images/icons.svg';
+import { styles } from './styles';
+
+type Props = {
+	children: React.ReactNode
+}
 
 const drawerWidth = 240;
+const routes = [
+	{
+		title: 'Dashboard',
+		route: '/dashboard',
+		icon: DashboardOutlinedIcon,
+	},
+	{
+		title: 'Rents',
+		route: '/rents',
+		icon: MonetizationOnOutlinedIcon,
+	},
+	{
+		title: 'Issues',
+		route: '/issues',
+		icon: HandymanOutlinedIcon,
+	},
+];
 
-export default function ResponsiveDrawer() {
-	const [mobileOpen, setMobileOpen] = React.useState(false);
-	const [isClosing, setIsClosing] = React.useState(false);
+export default function TenantDashboardLayout({ children } : Props) {
+	const { pathname } = useLocation();
+
+	const [mobileOpen, setMobileOpen] = useState(false);
+	const [isClosing, setIsClosing] = useState(false);
 
 	const handleDrawerClose = () => {
-		setIsClosing(true);
+		// setIsClosing(true);
 		setMobileOpen(false);
 	};
 
@@ -38,39 +72,49 @@ export default function ResponsiveDrawer() {
 	};
 
 	const drawer = (
-		<div>
-			<Toolbar />
-			<Divider />
-			<List>
-				{['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItemButton>
-					</ListItem>
+		<Grid container>
+			<Grid
+				container
+				sx={{
+					justifyContent: 'center',
+					alignItems: 'center',
+					p: {
+						xs: '20px 40px',
+						lg: '36px 65px',
+					},
+				}}
+			>
+				<img src={Logo} alt='Klubiq logo' />
+			</Grid>
+
+			<List sx={styles.list}>
+				{routes.map(({ title, route, icon: Icon }, index) => (
+					<Link
+						component={NavLink}
+						key={index}
+						to={route}
+						underline='none'
+						sx={pathname == route ? styles['link-active'] : styles.link}
+					>
+						<ListItem
+							disablePadding
+							sx={pathname == route ? styles['link-active'] : styles.link}
+						>
+							<ListItemButton>
+								<ListItemIcon>
+									<Icon sx={styles['link-icon']} />
+								</ListItemIcon>
+								<ListItemText primary={title} />
+							</ListItemButton>
+						</ListItem>
+					</Link>
 				))}
 			</List>
-			<Divider />
-			<List>
-				{['All mail', 'Trash', 'Spam'].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
-		</div>
+		</Grid>
 	);
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<Box sx={{ display: 'flex', backgroundColor: '#F1F1F1' }}>
 			<CssBaseline />
 			<AppBar
 				position='fixed'
@@ -78,26 +122,57 @@ export default function ResponsiveDrawer() {
 					width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${drawerWidth}px` },
 				}}
+				elevation={0}
 			>
-				<Toolbar>
-					<IconButton
-						color='inherit'
-						aria-label='open drawer'
-						edge='start'
-						onClick={handleDrawerToggle}
-						sx={{ mr: 2, display: { sm: 'none' } }}
+				<Toolbar sx={{ backgroundColor: '#F2F8FF', color: '#1B1B1B' }}>
+					<Grid
+						container
+						direction={'row'}
+						alignItems={'center'}
+						justifyContent={'space-between'}
 					>
-						<MenuIcon />
-					</IconButton>
-					<Typography variant='h6' noWrap component='div'>
-						Responsive drawer
-					</Typography>
+						<Grid item>
+							<Grid container alignItems={'center'} direction={'row'}>
+								<IconButton
+									color='inherit'
+									aria-label='open drawer'
+									edge='start'
+									onClick={handleDrawerToggle}
+									sx={{ mr: 2, display: { sm: 'none' } }}
+								>
+									<MenuIcon />
+								</IconButton>
+								<Typography
+									variant='h6'
+									noWrap
+									component='div'
+									sx={styles.header}
+								>
+									{pathname.split('/')[1]}
+								</Typography>
+							</Grid>
+						</Grid>
+
+						<Grid item>
+							<Grid container alignItems={'center'} gap={'1rem'}>
+								<Grid item>
+									<Avatar sx={styles.avatar}>B</Avatar>
+								</Grid>
+								<Grid
+									item
+									sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
+								>
+									<Typography variant='h6'>Blessing Bella</Typography>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Grid>
 				</Toolbar>
 			</AppBar>
 			<Box
 				component='nav'
 				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-				aria-label='mailbox folders'
+				aria-label='app-drawer'
 			>
 				<Drawer
 					variant='temporary'
@@ -134,26 +209,12 @@ export default function ResponsiveDrawer() {
 					flexGrow: 1,
 					p: 3,
 					width: { sm: `calc(100% - ${drawerWidth}px)` },
+					minHeight: '100vh',
+					backgroundColor: '#F2F8FF',
 				}}
 			>
-        <Toolbar />
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 21,66 ,34].map(() =>
-          <Typography sx={{ marginBottom: 2 }}>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-						dolor purus non enim praesent elementum facilisis leo vel. Risus at
-						ultrices mi tempus imperdiet. Semper risus in hendrerit gravida
-						rutrum quisque non tellus. Convallis convallis tellus id interdum
-						velit laoreet id donec ultrices. Odio morbi quis commodo odio aenean
-						sed adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-						integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-						eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-						quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-						vivamus at augue. At augue eget arcu dictum varius duis at
-						consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-						donec massa sapien faucibus et molestie ac.
-					</Typography>
-        )}
+				<Toolbar />
+				{ children }
 			</Box>
 		</Box>
 	);

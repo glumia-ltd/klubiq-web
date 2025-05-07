@@ -1,15 +1,14 @@
 import * as Yup from 'yup';
 import { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
 
 import { Grid, Typography } from '@mui/material';
-
 import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
 
-import LoginLayout from '@/layouts/LoginLayout';
 import { styles } from './styles';
 import Logo from '@/assets/images/icons.svg';
-import { useNavigate } from 'react-router-dom';
+import LoginLayout from '@/layouts/LoginLayout';
 
 type IValuesType = {
 	password: string;
