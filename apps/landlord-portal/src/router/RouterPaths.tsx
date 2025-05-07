@@ -5,34 +5,34 @@ import {
 	createRoutesFromElements,
 } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
-import SignUpPage from '../pages/SignUp/CreateAccount';
-import Login from '../pages/Login';
-import SetPassword from '../pages/SetPassword';
-import ForgotPassword from '../pages/ForgotPassword';
-import UserProfileDetails from '../pages/UserProfileDetails';
-import EmailVerification from '../pages/EmailVerification';
-import DashBoard from '../pages/Dashboard';
+import SignUpPage from '../pages/Auth/SignUp/CreateAccount';
+import Login from '../pages/Auth/Login';
+import SetPassword from '../pages/Auth/SetPassword';
+import ForgotPassword from '../pages/Auth/ForgotPassword';
+import UserProfileDetails from '../pages/Auth/UserProfileDetails';
+import EmailVerification from '../pages/Auth/EmailVerification';
+import DashBoard from '../pages/Features/Dashboard';
 import Setting from '../pages/Settings';
-import Lease from '../pages/Lease';
-import MFASetUp from '../pages/MFAPage';
-import AddProperties from '../pages/AddProperties';
-import PropertyPage from '../pages/PropertyPage';
-import AddLeasePage from '../pages/AddLeasePage/AddLeasePage';
+import Lease from '../pages/Features/Lease';
+import MFASetUp from '../pages/Auth/MFAPage';
+import AddProperties from '../pages/Features/properties/AppProperties';
+import PropertyPage from '../pages/Features/properties/PropertyDetail';
+import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
-import Properties from '../pages/Properties';
+import Properties from '../pages/Features/properties';
 
 import ViewPortLayout from '../Layouts/ViewPortLayout';
 
 import ErrorComponent from '../components/ErrorComponent/ErrorComponent';
-import UnitInMultiUnitPage from '../pages/UnitInMultiUnitPage/UnitInMultiUnitPage';
-import LeaseDetails from '../pages/Lease/LeaseDetails';
+import UnitInMultiUnitPage from '../pages/Features/properties/UnitInMultiUnitPage';
+import LeaseDetails from '../pages/Features/Lease/LeaseDetails';
 
-import EditPropertyPage from '../pages/EditPropertyPage';
+import EditPropertyPage from '../pages/Features/properties/EditProperty';
 import NotFound from '../pages/ErrorPages/404';
-import AddTenant from '../pages/Tenant/AddTenant';
-import Tenant from '../pages/Tenant';
+import AddTenant from '../pages/Features/Tenant/AddTenant';
+import Tenant from '../pages/Features/Tenant';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
