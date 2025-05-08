@@ -72,8 +72,6 @@ function MobileSideBar() {
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		// sessionStorage.clear();
-		// auth.signOut();
 	};
 
 	const handleLinkClick = (title: string) => {

@@ -11,16 +11,13 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext } from 'react';
 import { ThemeMode } from '../../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../../components/PropertiesGuage';
-import { dashboardEndpoints } from '../../../helpers/endpoints';
-import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { api } from '../../../api';
 import { styles } from './style';
 import {
 	indicatorColor,
@@ -29,19 +26,12 @@ import {
 	showChangeArrow,
 	showTrendArrow,
 } from './dashboardUtils';
-import { useDispatch, useSelector } from 'react-redux';
-import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
-import { AxiosRequestConfig } from 'axios';
 import DashBoardSkeleton from './DashBoardSkeleton';
-import {
-	useGetDashboardMetricsQuery,
-	useGetRevenueReportDataQuery,
-} from '../../../store/DashboardStore/dashboardApiSlice';
 import { getLocaleFormat } from '../../../helpers/utils';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
-import { consoleDebug, consoleLog } from '../../../helpers/debug-logger';
+import { consoleDebug } from '../../../helpers/debug-logger';
 import { getCurrencySymbol } from '../../../helpers/utils';
 import { useDashboardActions } from '../../../hooks/page-hooks/dashboard.hooks';
 
@@ -120,54 +110,6 @@ const DashBoard = () => {
 		maintenance: MAINTENANCEUNITS || 0,
 	};
 
-	// const handleDownload = async () => {
-	// 	if (!firstDay?.isValid() || !secondDay?.isValid()) {
-	// 		return;
-	// 	}
-	// 	const headers = { 'Content-Type': 'blob' };
-
-	// 	const config: AxiosRequestConfig = {
-	// 		method: 'POST',
-	// 		responseType: 'arraybuffer',
-	// 		headers,
-	// 	};
-
-	// 	const startDate = firstDay?.format('YYYY-MM-DD');
-	// 	const endDate = secondDay?.format('YYYY-MM-DD');
-
-	// 	try {
-	// 		const response = await api.post(
-	// 			dashboardEndpoints.downloadReport(),
-	// 			{ startDate, endDate },
-	// 			config,
-	// 		);
-
-	// 		const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
-	// 		const url = URL.createObjectURL(
-	// 			new Blob([response?.data], {
-	// 				type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-	// 			}),
-	// 		);
-
-	// 		const link = document.createElement('a');
-	// 		link.href = url;
-	// 		link.setAttribute('download', outputFilename);
-	// 		document.body.appendChild(link);
-	// 		link.click();
-
-	// 		dispatch(
-	// 			openSnackbar({
-	// 				message:
-	// 					"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
-	// 				severity: 'info',
-	// 				isOpen: true,
-	// 				duration: 2000,
-	// 			}),
-	// 		);
-	// 	} catch (e) {
-	// 		consoleLog(e);
-	// 	}
-	// };
 
 	return (
 		<>

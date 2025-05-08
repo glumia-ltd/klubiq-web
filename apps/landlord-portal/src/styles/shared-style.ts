@@ -14,6 +14,10 @@ export const SharedStyles = {
 			gap: '10px',
 		},
 	},
+	arrowIconStyle: {
+		height: '15px',
+		width: '15px',
+	},
 };
 
 export default SharedStyles;

@@ -21,6 +21,7 @@ import { MaintenanceTableComponent } from '../MaintenaceTableComponent/Maintenan
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
+import SharedStyles from '../../styles/shared-style';
 
 type UnitComponentType = {
 	currentProperty?: PropertyDataType;
@@ -76,15 +77,15 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 						separator={
 							<ArrowForwardIosIcon
 								sx={{
-									...styles.iconStyle,
-									...styles.arrowIconStyle,
+									...SharedStyles.iconStyle,
+									...SharedStyles.arrowIconStyle,
 								}}
 							/>
 						}
 						aria-label='breadcrumb'
-						sx={styles.breadCrumbStyle}
+						sx={SharedStyles.breadCrumbStyle}
 					>
-						<HomeIcon sx={styles.iconStyle} onClick={handleHomeClick} />
+						<HomeIcon sx={SharedStyles.iconStyle} onClick={handleHomeClick} />
 
 						<Skeleton variant='rectangular' width='90px' height='10px' />
 					</Breadcrumbs>

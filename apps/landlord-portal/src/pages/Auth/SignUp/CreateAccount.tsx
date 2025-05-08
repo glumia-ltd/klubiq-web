@@ -131,10 +131,7 @@ const CreateAccount: React.FC = () => {
 			dispatch(
 				saveUser({
 					user: userInfo,
-					token: user.accessToken,
 					isSignedIn: true,
-					orgSettings: {},
-					orgSubscription: {},
 				}),
 			);
 			navigate('/verify-email?is_pending=true', { replace: true });

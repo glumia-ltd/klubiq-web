@@ -166,13 +166,13 @@ export const stringAvatar = (word1: string, word2: string) => {
   /**
  * Returns the current line number by inspecting the Error stack trace.
  */
-function getCurrentLine(): number | null {
-	const err = new Error();
-	if (!err.stack) return null;
-	const stackLines = err.stack.split('\n');
-	// Caller is typically at index 2 in the stack trace
-	const callerLine = stackLines[2] || '';
-	const match = callerLine.match(/:(\d+):\d+\)?$/);
-	return match?.[1] ? parseInt(match[1], 10) : null;
-  }
+// function getCurrentLine(): number | null {
+// 	const err = new Error();
+// 	if (!err.stack) return null;
+// 	const stackLines = err.stack.split('\n');
+// 	// Caller is typically at index 2 in the stack trace
+// 	const callerLine = stackLines[2] || '';
+// 	const match = callerLine.match(/:(\d+):\d+\)?$/);
+// 	return match?.[1] ? parseInt(match[1], 10) : null;
+//   }
   

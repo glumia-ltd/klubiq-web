@@ -26,7 +26,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 // import SearchIcon from '@mui/icons-material/Search';
-import { replace, startCase } from 'lodash';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -71,10 +70,10 @@ const NavBar = () => {
             .join(' ');
     };
 
-	const simplifyRoleName = (role: string) => {
-		const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
-		return startCase(simplifiedRole);
-	};
+	// const simplifyRoleName = (role: string) => {
+	// 	const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
+	// 	return startCase(simplifiedRole);
+	// };
 	const [openAvatarPopper, setOpenAvatarPopper] = useState<boolean>(false);
 	const handleAvatarPopperToggle = () => {
 		setOpenAvatarPopper((prevOpen) => !prevOpen);
@@ -105,8 +104,7 @@ const NavBar = () => {
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		// sessionStorage.clear();
-		// auth.signOut();
+		window.location.href = '/login';
 	};
 	const avatarMenus: menuItem[] = [
 		...(isSmallScreen
