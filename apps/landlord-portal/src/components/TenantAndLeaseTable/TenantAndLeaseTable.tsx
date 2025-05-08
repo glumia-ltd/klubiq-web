@@ -48,7 +48,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 	showSecondHeader = true,
 }) => {
 	const path = title === 'Tenant' ? 'add-tenant' : 'add-lease';
-	const { orgSettings } = useSelector(getAuthState);
+	const { user } = useSelector(getAuthState);
 	const handleClick = () => {
 		handleAdd && handleAdd(path);
 	};
@@ -150,7 +150,7 @@ export const TenantAndLeaseTable: FC<TenantAndLeaseTableProps> = ({
 										{row?.status}
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-									{`${getLocaleFormat(orgSettings, +(row?.rentAmount ?? 0), 'currency')}`}
+									{`${getLocaleFormat(user?.orgSettings, +(row?.rentAmount ?? 0), 'currency')}`}
 									
 									</TableCell>
 									<TableCell align={'center'} sx={styles.tableBodyStyle}>

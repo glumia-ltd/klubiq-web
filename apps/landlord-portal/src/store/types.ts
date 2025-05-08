@@ -7,4 +7,6 @@ export const API_TAGS = {
     TENANT_FILTER_METADATA: 'Tenant-Filter-Metadata',
     ORGANIZATION: 'Organization',
     NOTIFICATION: 'Notification',
+    USER: 'User',
   } as const;
+export const ALL_TAGS = Object.values(API_TAGS);

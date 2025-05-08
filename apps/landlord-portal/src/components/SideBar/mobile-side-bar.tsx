@@ -21,7 +21,6 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 function MobileSideBar() {
@@ -73,8 +72,6 @@ function MobileSideBar() {
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
 	};
 
 	const handleLinkClick = (title: string) => {
@@ -83,6 +80,7 @@ function MobileSideBar() {
 			return;
 		}
 		handleSignOut();
+		window.location.href = '/login';
 	};
 
 	return (
