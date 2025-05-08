@@ -37,7 +37,6 @@ import Tenant from '../pages/Features/Tenant';
 export const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route>
-			<Route path='/' element={<Login />} />
 			<Route path='/login' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
@@ -49,6 +48,7 @@ export const router = createBrowserRouter(
 			<Route path='*' element={<Navigate to='/404' replace />} />
 
 			<Route element={<PrivateRoute />}>
+				<Route path='/' element={<Navigate to='/dashboard' replace />} />
 				<Route element={<ViewPortLayout />}>
 					<Route
 						path='/dashboard'

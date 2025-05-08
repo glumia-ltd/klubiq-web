@@ -1,23 +1,38 @@
-import { useCallback, useContext, useMemo } from "react";
-import { BreadcrumbContext, BreadcrumbItem } from "../context/BreadcrumbContext/BreadcrumbContext";
+import { useCallback, useContext, useMemo } from 'react';
+import {
+	BreadcrumbContext,
+	BreadcrumbItem,
+} from '../context/BreadcrumbContext/BreadcrumbContext';
+import { isEmpty } from 'lodash';
 
 export const useDynamicBreadcrumbs = () => {
-  const { breadcrumbLabels, setBreadcrumbData } = useContext(BreadcrumbContext);
+	const { breadcrumbLabels, setBreadcrumbData } = useContext(BreadcrumbContext);
 
-  // Return the breadcrumb items based on what has been saved in context
-  const breadcrumbs = useMemo(() => {
-    return Object.entries(breadcrumbLabels).map(([path, item]) => ({
-      path,
-      ...item,
-    }));
-  }, [breadcrumbLabels]);
+	// Return the breadcrumb items based on what has been saved in context
+	const breadcrumbs = useMemo(
+		() =>
+			Object.entries(breadcrumbLabels)
+				.filter(([, item]) => !isEmpty(item))
+				.map(([path, item]) => ({
+					path,
+					...item,
+				})),
+		[breadcrumbLabels],
+	);
 
-  const updateBreadcrumb = useCallback(
-    (data: Record<string, BreadcrumbItem>) => {
-      setBreadcrumbData(data);
-    },
-    [setBreadcrumbData]
-  );
+	const updateBreadcrumb = useCallback(
+		(data: Record<string, BreadcrumbItem>) => {
+			// If data is empty, clear all breadcrumbs
+			if (Object.keys(data).length === 0) {
+				setBreadcrumbData({});
+				return;
+			}
 
-  return { breadcrumbs, updateBreadcrumb };
+			// For new breadcrumbs, start fresh
+			setBreadcrumbData(data);
+		},
+		[setBreadcrumbData],
+	);
+
+	return { breadcrumbs, updateBreadcrumb };
 };

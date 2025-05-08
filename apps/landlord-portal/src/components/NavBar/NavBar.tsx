@@ -20,6 +20,7 @@ import {
 	ListItemText,
 	Box,
 	ListItemButton,
+	Stack,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -30,7 +31,6 @@ import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import { auth } from '../../firebase';
 import CustomPopper from '../Shared/CustomPopper';
 import { useCountNotificationsQuery, useGetNotificationsQuery, useReadNotificationsMutation } from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
@@ -105,8 +105,8 @@ const NavBar = () => {
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
+		// sessionStorage.clear();
+		// auth.signOut();
 	};
 	const avatarMenus: menuItem[] = [
 		...(isSmallScreen
@@ -291,25 +291,21 @@ const NavBar = () => {
 								color={theme.palette.primary.main}
 								flexItem
 							/>
-							<Typography ml={1} sx={styles(isSmallScreen).nameRoleText}>
-								{' '}
-								{user?.firstName ?? (
-									<Skeleton variant='rectangular' width='30px' />
-								)}{' '}
-								{user?.lastName ?? (
-									<Skeleton variant='rectangular' width='30px' />
-								)}
-								<br />
-								{user?.organization ?? (
-									<Skeleton variant='rectangular' width='30px' />
-								)}
-								<br />
-								{user?.roleName ? (
-									simplifyRoleName(user?.roleName)
-								) : (
-									<Skeleton variant='rectangular' width='40px' />
-								)}
-							</Typography>
+							{user ?( <Stack direction='column' sx={{ml: 1}}>
+								<Typography sx={styles(isSmallScreen).nameRoleText}>
+									{user?.firstName || ''}{' '}{user?.lastName || ''}
+								</Typography>
+								<Typography sx={styles(isSmallScreen).nameRoleText}>
+									{user?.organization || ''}
+								</Typography>
+								<Typography sx={styles(isSmallScreen).nameRoleText}>
+									{user?.roleName || ''}
+								</Typography>
+							</Stack>): (<Stack>
+								<Skeleton variant='rectangular' width='30px' />
+								<Skeleton variant='rectangular' width='30px' />
+								<Skeleton variant='rectangular' width='30px' />
+							</Stack>)}
 							<div>
 								<IconButton
 									edge='end'

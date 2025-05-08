@@ -20,27 +20,21 @@ import {
 	getMultiFactorResolver,
 	MultiFactorError,
 	MultiFactorResolver,
-	signInWithEmailAndPassword,
 	TotpMultiFactorGenerator,
 } from 'firebase/auth';
 import { useState } from 'react';
 import { firebaseResponseObject } from '../../../helpers/FirebaseResponse';
-import { api } from '../../../api';
-import { authEndpoints } from '../../../helpers/endpoints';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
 import {
-	useLazyGetOrgSettingsQuery,
-	useLazyGetOrgSubscriptionQuery,
 	useLazyGetUserByFbidQuery,
 	useSignOutMutation,
+	useSignInMutation,
 } from '../../../store/AuthStore/authApiSlice';
-import { UserProfile } from '../../../shared/auth-types';
 import { saveUser } from '../../../store/AuthStore/AuthSlice';
-import { consoleLog } from '../../../helpers/debug-logger';
+import { consoleDebug, consoleLog } from '../../../helpers/debug-logger';
 import { resetStore } from '../../../store';
-
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
 	email: yup.string().email().required('Please enter your email'),
@@ -49,7 +43,6 @@ type IValuesType = {
 	password: string;
 	email: string;
 };
-
 const Login = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
@@ -63,12 +56,12 @@ const Login = () => {
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
-	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
-	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
+
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
 	const [userSignOut] = useSignOutMutation();
+	const [signIn] = useSignInMutation();
 	const verifyOTP = async () => {
 		setIsVerifying(true);
 		if (otp.length != 6) {
@@ -118,72 +111,108 @@ const Login = () => {
 	const deAuthenticateUser = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
+	};
+	const setSessionStorage = (record: Record<string, any>[]) => {
+		record.forEach((item) => {
+			const value = typeof item.value === 'object' 
+				? JSON.stringify(item.value) 
+				: item.value;
+			sessionStorage.setItem(item.key, value);
+			consoleDebug(`Setting ${item.key} in session storage:`, value);
+		});
 	};
 
+
+
 	const onSubmit = async (values: IValuesType) => {
+		
 		const { email, password } = values;
 		try {
 			setLoading(true);
-			const { user } = await signInWithEmailAndPassword(auth, email, password);
-			const userToken: any = await user.getIdTokenResult();
-			const {claims} = userToken;
-			const tenant_id = claims['tenantId'] || claims['organizationId'] || null;
-			sessionStorage.setItem('tenant_id', tenant_id);
-			if (userToken) {
-				const userName = user?.displayName?.split(' ');
-				const firstName = userName && userName[0];
-				const lastName = userName && userName[1];
+			const signInResult = await signIn({ email, password });
+			if (!signInResult) {
+				throw new Error('Invalid credentials');
+			}
+			const user = await triggerGetUserByFbid().unwrap();
+			if (user && user.profileUuid) {
+				const sessionStorageData = [
+					{
+						key: 'tenant_id',
+						value: user.tenantId || user.organizationUuid || '',
+					},
+					{ key: 'org-settings', value: JSON.stringify(user.orgSettings)  },
+					{ key: 'org-subscription', value: JSON.stringify(user.orgSubscription) },
+				];
+				setSessionStorage(sessionStorageData);
+				// const userName = user?.displayName?.split(' ');
+				// const firstName = userName && userName[0];
+				// const lastName = userName && userName[1];
 
-				if (!user.emailVerified) {
-					const requestBody = { email, firstName, lastName };
+				// if (!user.emailVerified) {
+				// 	const requestBody = { email, firstName, lastName };
 
-					await api.post(authEndpoints.emailVerification(), requestBody);
+				// 	await api.post(authEndpoints.emailVerification(), requestBody);
 
-					setLoading(false);
-					dispatch(
-						openSnackbar({
-							message: 'Please verify your email!',
-							severity: 'info',
-							isOpen: true,
-						}),
-					);
+				// 	setLoading(false);
+				// 	dispatch(
+				// 		openSnackbar({
+				// 			message: 'Please verify your email!',
+				// 			severity: 'info',
+				// 			isOpen: true,
+				// 		}),
+				// 	);
+				// } else {
+				// 	const response = await triggerGetUserByFbid();
+				// 	if (!response.data) {
+				// 		throw new Error('User not found');
+				// 	}
+				// 	if (!response.data?.organizationUuid) {
+				// 		throw new Error('Organization ID is undefined');
+				// 	}
+				// 	const orgSettings = await triggerGetOrgSettingsQuery({
+				// 		orgId: response.data?.organizationUuid,
+				// 	}).unwrap();
+				// 	const orgSubscription = await triggerGetOrgSubscriptionQuery({
+				// 		orgId: response.data?.organizationUuid,
+				// 	}).unwrap();
+				// 	const payload = {
+				// 		token: userToken,
+				// 		user: response?.data as UserProfile,
+				// 		isSignedIn: true,
+				// 		orgSettings: orgSettings,
+				// 		orgSubscription: orgSubscription,
+				// 	};
+				// 	dispatch(saveUser(payload));
+				// 	openSnackbar({
+				// 		message: 'That was easy',
+				// 		severity: 'success',
+				// 		isOpen: true,
+				// 	});
+				// 	if (setupMFA) {
+				// 		navigate('/2fa-enroll', { replace: true });
+				// 	} else {
+				// 		navigate('/dashboard', { replace: true });
+				// 	}
+				// }
+				const payload = {
+					user: user,
+					isSignedIn: true,
+				};
+				dispatch(saveUser(payload));
+				
+				openSnackbar({
+					message: 'That was easy',
+					severity: 'success',
+					isOpen: true,
+				});
+				if (setupMFA) {
+					navigate('/2fa-enroll', { replace: true });
 				} else {
-					const response = await triggerGetUserByFbid();
-					if (!response.data) {
-       					throw new Error('User not found');
-     				}
-					if (!response.data?.organizationUuid) {
-						throw new Error('Organization ID is undefined');
-					}
-					const orgSettings = await triggerGetOrgSettingsQuery({
-						orgId: response.data?.organizationUuid,
-					}).unwrap();
-					const orgSubscription = await triggerGetOrgSubscriptionQuery({
-						orgId: response.data?.organizationUuid,
-					}).unwrap();
-					const payload = {
-						token: userToken,
-						user: response?.data as UserProfile,
-						isSignedIn: true,
-						orgSettings: orgSettings,
-						orgSubscription: orgSubscription,
-					};
-					dispatch(saveUser(payload));
-					openSnackbar({
-						message: 'That was easy',
-						severity: 'success',
-						isOpen: true,
-					});
-					if (setupMFA) {
-						navigate('/2fa-enroll', { replace: true });
-					} else {
-						navigate('/dashboard', { replace: true });
-					}
+					navigate('/dashboard', { replace: true });
 				}
 			}
 		} catch (error: any) {
+			console.error('Login error:', error);
 			switch (error.code) {
 				case 'auth/multi-factor-auth-required':
 					initOTP(error as MultiFactorError);
@@ -202,6 +231,7 @@ const Login = () => {
 					);
 					break;
 			}
+			consoleDebug('Sign in failed, setting loading to false');
 			setLoading(false);
 		}
 	};

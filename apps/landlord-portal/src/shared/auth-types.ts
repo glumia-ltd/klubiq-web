@@ -2,10 +2,7 @@ export type UserProfile = {
 	addressLine2?: string | null;
 	bio?: string | null;
 	city?: string | null;
-	company?: string;
-	companyId?: number;
-	companyRole?: string;
-	companyUuid?: string;
+	organization?: string;
 	country?: string | null;
 	countryPhoneCode?: string | null;
 	dateOfBirth?: string | null;
@@ -13,7 +10,7 @@ export type UserProfile = {
 	entitlements?: {
 		[key: string]: string;
 	};
-	fbId?: string;
+	firebaseId?: string;
 	firstName?: string;
 	lastName?: string;
 	formOfIdentity?: string | null;
@@ -22,19 +19,24 @@ export type UserProfile = {
 	isPrivacyPolicyAgreed?: boolean;
 	isTermsAndConditionAccepted?: boolean;
 	organizationUserId?: number;
-	organizationUserUuid?: string;
-	phoneNumber?: string | null;
+	uuid?: string;
+	phone?: string | null;
 	postalCode?: string | null;
 	profileId?: number;
 	profilePicUrl?: string | null;
 	profileUuid?: string;
 	state?: string | null;
 	street?: string | null;
-	systemRole?: string | null;
+	roleName?: string | null;
 	organizationUuid?: string;
 	notificationSubscription?: {
 		[key: string]: boolean;
 	};
+	tenantId?: string;
+	role?: string;
+	orgSettings?: Record<string, any> | null;
+	orgSubscription?: Record<string, any> | null;
+	phoneNumber?: string | null;
 };
 
 export type Organization = {

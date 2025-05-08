@@ -29,7 +29,7 @@ type LeaseTableType = {
 };
 
 export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
-	const { orgSettings } = useSelector(getAuthState);
+	const { user } = useSelector(getAuthState);
 	const timeDateOptions = {
 		dateStyle: DateStyle.MEDIUM,
 		hour12: true,
@@ -104,8 +104,8 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 							</TableCell>
 							<TableCell align='center'>{lease?.property?.name}</TableCell>
 							<TableCell align='center'>{lease?.unitNumber}</TableCell>
-							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.startDate, timeDateOptions)}</TableCell>
-							<TableCell align='center'>{getLocaleDateFormat(orgSettings, lease?.endDate, timeDateOptions)}</TableCell>
+							<TableCell align='center'>{getLocaleDateFormat(user?.orgSettings, lease?.startDate, timeDateOptions)}</TableCell>
+							<TableCell align='center'>{getLocaleDateFormat(user?.orgSettings, lease?.endDate, timeDateOptions)}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

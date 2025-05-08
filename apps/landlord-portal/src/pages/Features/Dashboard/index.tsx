@@ -14,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeMode } from '../../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../../components/PropertiesGuage';
@@ -41,37 +41,32 @@ import { getLocaleFormat } from '../../../helpers/utils';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
-import { consoleLog } from '../../../helpers/debug-logger';
+import { consoleDebug, consoleLog } from '../../../helpers/debug-logger';
 import { getCurrencySymbol } from '../../../helpers/utils';
+import { useDashboardActions } from '../../../hooks/page-hooks/dashboard.hooks';
 
 const DashBoard = () => {
-	const { orgSettings, user } = useSelector(getAuthState);
+	consoleDebug('Dashboard component rendering');
+	
+	const { 
+		handleDownload, 
+		firstDay, 
+		setFirstDay, 
+		user, 
+		secondDay, 
+		setSecondDay, 
+		greeting, 
+		isDashboardMetricsLoading, 
+		dashboardMetrics, 
+		isRevenueReportLoading, 
+		revenueReport 
+	} = useDashboardActions();
+
+	consoleDebug('Dashboard - User state:', user);
+	consoleDebug('Dashboard - Loading states:', { isDashboardMetricsLoading, isRevenueReportLoading });
+	consoleDebug('Dashboard - Data:', { dashboardMetrics, revenueReport });
+
 	const { mode } = useContext(ThemeContext);
-	const [firstDay, setFirstDay] = useState<Dayjs>(
-		dayjs().subtract(11, 'months'),
-	);
-	const [secondDay, setSecondDay] = useState<Dayjs>(dayjs());
-
-	const dispatch = useDispatch();
-
-	const greeting = useMemo(() => {
-		const hour = dayjs().hour();
-		if (hour >= 17) {return 'Good Evening'};
-		if (hour >= 12) {return 'Good Afternoon'};
-		return 'Good Morning';
-	}, []); // Empty dependency array since we only need this to calculate once per mount
-
-	const { data: dashboardMetrics, isLoading: isDashboardMetricsLoading } =
-		useGetDashboardMetricsQuery();
-
-	const startDate = firstDay?.format('YYYY-MM-DD');
-	const endDate = secondDay?.format('YYYY-MM-DD');
-
-	const {
-		data: revenueReport,
-		//error,
-		isLoading: isRevenueReportLoading,
-	} = useGetRevenueReportDataQuery({ startDate, endDate });
 
 	const TOTALUNITS = dashboardMetrics?.propertyMetrics?.totalUnits;
 	//const TOTALPROPERTIES = dashboardMetrics?.propertyMetrics?.totalProperties;
@@ -125,75 +120,79 @@ const DashBoard = () => {
 		maintenance: MAINTENANCEUNITS || 0,
 	};
 
-	const handleDownload = async () => {
-		if (!firstDay?.isValid() || !secondDay?.isValid()) {
-			return;
-		}
-		const headers = { 'Content-Type': 'blob' };
+	// const handleDownload = async () => {
+	// 	if (!firstDay?.isValid() || !secondDay?.isValid()) {
+	// 		return;
+	// 	}
+	// 	const headers = { 'Content-Type': 'blob' };
 
-		const config: AxiosRequestConfig = {
-			method: 'POST',
-			responseType: 'arraybuffer',
-			headers,
-		};
+	// 	const config: AxiosRequestConfig = {
+	// 		method: 'POST',
+	// 		responseType: 'arraybuffer',
+	// 		headers,
+	// 	};
 
-		const startDate = firstDay?.format('YYYY-MM-DD');
-		const endDate = secondDay?.format('YYYY-MM-DD');
+	// 	const startDate = firstDay?.format('YYYY-MM-DD');
+	// 	const endDate = secondDay?.format('YYYY-MM-DD');
 
-		try {
-			const response = await api.post(
-				dashboardEndpoints.downloadReport(),
-				{ startDate, endDate },
-				config,
-			);
+	// 	try {
+	// 		const response = await api.post(
+	// 			dashboardEndpoints.downloadReport(),
+	// 			{ startDate, endDate },
+	// 			config,
+	// 		);
 
-			const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
-			const url = URL.createObjectURL(
-				new Blob([response?.data], {
-					type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				}),
-			);
+	// 		const outputFilename = `${crypto.randomUUID()}_revenue_report.xlsx`;
+	// 		const url = URL.createObjectURL(
+	// 			new Blob([response?.data], {
+	// 				type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+	// 			}),
+	// 		);
 
-			const link = document.createElement('a');
-			link.href = url;
-			link.setAttribute('download', outputFilename);
-			document.body.appendChild(link);
-			link.click();
+	// 		const link = document.createElement('a');
+	// 		link.href = url;
+	// 		link.setAttribute('download', outputFilename);
+	// 		document.body.appendChild(link);
+	// 		link.click();
 
-			dispatch(
-				openSnackbar({
-					message:
-						"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
-					severity: 'info',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
-		} catch (e) {
-			consoleLog(e);
-		}
-	};
+	// 		dispatch(
+	// 			openSnackbar({
+	// 				message:
+	// 					"Sit back and relax – your report is being processed. It will download automatically when it's ready for you.",
+	// 				severity: 'info',
+	// 				isOpen: true,
+	// 				duration: 2000,
+	// 			}),
+	// 		);
+	// 	} catch (e) {
+	// 		consoleLog(e);
+	// 	}
+	// };
 
 	return (
 		<>
-		<Grid item xs={12}>
-					{user && user?.firstName ? <Typography
-							variant='h4'
-							sx={{
-								mb: 3,
-								color: 'text.primary',
-								// Add transition for smooth theme changes
-								transition: 'color 0.2s ease-in-out',
-							}}
-						>
-							{`${greeting}, ${user?.firstName || 'User'}`}
-						</Typography> : <Skeleton
-											variant='text'
-											sx={{...styles.valueTextStyle, mb: 3}}
-											width='20rem'
-											height={50}
-										/>}
-					</Grid>
+			<Grid item xs={12}>
+				{user && user?.firstName ? (
+					<Typography
+						variant='h4'
+						sx={{
+							mb: 3,
+							color: 'text.primary',
+							// Add transition for smooth theme changes
+							transition: 'color 0.2s ease-in-out',
+						}}
+					>
+						{`${greeting}, ${user?.firstName || 'User'}`}
+					</Typography>
+				) : (
+					<Skeleton
+						variant='text'
+						sx={{ ...styles.valueTextStyle, mb: 3 }}
+						width='20rem'
+						height={50}
+					/>
+				)}
+			</Grid>
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
@@ -253,7 +252,7 @@ const DashBoard = () => {
 										variant='dashboardTypography'
 									>
 										{getLocaleFormat(
-											orgSettings,
+											user?.orgSettings,
 											OCCUPANCYRATE || 0,
 											'percent',
 										) || <Skeleton variant='rounded' width='50px' />}
@@ -276,7 +275,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
 											{getLocaleFormat(
-												orgSettings,
+												user?.orgSettings,
 												OCCUPANCYRATEPERCENTAGEDIFFERENCE || 0,
 												'percent',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -301,7 +300,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
-												orgSettings,
+												user?.orgSettings,
 												OVERDUERENTSUM || 0.0,
 												'currency',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -353,7 +352,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															TOTALREVENUE || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -370,7 +369,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															TOTALREVENUEPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -396,7 +395,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															TOTALEXPENSES || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -413,7 +412,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															TOTALEXPENSESPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -438,7 +437,7 @@ const DashBoard = () => {
 														variant='dashboardTypography'
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															NETCASHFLOW || 0.0,
 															'currency',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -452,7 +451,7 @@ const DashBoard = () => {
 														}}
 													>
 														{getLocaleFormat(
-															orgSettings,
+															user?.orgSettings,
 															NETCASHFLOWPERCENTAGEDIFFERENCE || 0.0,
 															'percent',
 														) || <Skeleton variant='rounded' width='50px' />}
@@ -726,7 +725,7 @@ const DashBoard = () => {
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
-												orgSettings,
+												user?.orgSettings,
 												revenueReport?.totalRevenueLast12Months || 0.0,
 												'currency',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -746,7 +745,7 @@ const DashBoard = () => {
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
 											{getLocaleFormat(
-												orgSettings,
+												user?.orgSettings,
 												revenueReport?.percentageDifference || 0,
 												'percent',
 											) || <Skeleton variant='rounded' width='50px' />}
@@ -824,7 +823,9 @@ const DashBoard = () => {
 									seriesData={revenueReport?.revenueChart?.seriesData || []}
 									maxRevenue={revenueReport?.maxRevenue || 0}
 									xAxisData={revenueReport?.revenueChart?.xAxisData}
-									currencySymbol={getCurrencySymbol(orgSettings) as string}
+									currencySymbol={
+										getCurrencySymbol(user?.orgSettings) as string
+									}
 								/>
 							)}
 						</Grid>

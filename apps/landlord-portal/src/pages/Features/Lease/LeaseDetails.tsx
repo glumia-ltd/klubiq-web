@@ -1,28 +1,40 @@
-import { Stack, Button, Typography, Chip } from '@mui/material';
+import { Stack, Button, Chip } from '@mui/material';
 import { styles } from './style';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { LeaseIcon } from '../../../components/Icons/CustomIcons';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import LeasePropertyCard from '../../../components/LeaseCards/LeasePropertyCard';
 import MiniCard from '../../../components/LeaseCards/MiniCard';
 // import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
 import { LeaseDocumentTable } from './LeaseDocumentTable';
 import { useGetSingleLeaseByIdQuery } from '../../../store/LeaseStore/leaseApiSlice';
-import { useLocation } from 'react-router-dom';
-import { DateStyle, getLocaleDateFormat, getLocaleFormat } from '../../../helpers/utils';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+	DateStyle,
+	getLocaleDateFormat,
+	getLocaleFormat,
+} from '../../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { useEffect } from 'react';
+import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
+import SharedStyles from '../../../styles/shared-style';
+import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
+import { Breadcrumb } from '../../../components/Breadcrumb';
 
 const LeaseDetails = () => {
 	const location = useLocation();
-	const { orgSettings } = useSelector(getAuthState);
+	const navigate = useNavigate();
+	const { user } = useSelector(getAuthState);
+	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
 	};
 	const currentLeaseId = location.pathname.split('/')[2]!;
 
-	const { data } = useGetSingleLeaseByIdQuery({ id: currentLeaseId || '' });
+	const { data: leaseData } = useGetSingleLeaseByIdQuery({
+		id: currentLeaseId || '',
+	});
 
 	const documentTableData = {
 		column: [
@@ -32,6 +44,35 @@ const LeaseDetails = () => {
 		row: [{ name: 'Maintenance Fee', date: 'second' }],
 	};
 
+	useEffect(() => {
+		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
+			feature: {
+				label: 'Leases',
+				icon: (
+					<LeaseIcon
+						sx={SharedStyles.iconStyle}
+						aria-label='Leases'
+						onClick={() => navigate(`/leases`)}
+					/>
+				),
+				showIcon: true,
+				isSectionRoot: true,
+				path: '/leases',
+			},
+		};
+
+		// Add the current lease as the second breadcrumb
+		if (currentLeaseId) {
+			newBreadcrumbs['feature-details'] = {
+				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`, // Prefer a human-readable name if available
+				path: `/leases/${currentLeaseId}`,
+				icon: null,
+				showIcon: false,
+			};
+		}
+		newBreadcrumbs['feature-details-sub'] = {};
+		updateBreadcrumb(newBreadcrumbs);
+	}, [leaseData?.name, currentLeaseId, location.pathname]);
 	return (
 		<>
 			<Stack
@@ -51,12 +92,14 @@ const LeaseDetails = () => {
 						width: '100%',
 					}}
 				>
-					<Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
+					{/* Breadcrumb Component goes here */}
+					{/* <Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
 						<LeaseIcon sx={{ cursor: 'pointer' }} />
 						<ArrowForwardIosIcon sx={styles.topIcon} />
 						<Typography sx={styles.detailsText}> Lease Detail</Typography>
-					</Stack>
-
+					</Stack> */}
+					<Breadcrumb />
+					{/* Action Button Component goes here */}
 					<Stack>
 						<Button variant='contained' sx={styles.actionButton}>
 							Action
@@ -80,10 +123,10 @@ const LeaseDetails = () => {
 					sx={{ width: '100%' }}
 				>
 					<LeasePropertyCard
-						propertyName={data?.propertyName}
-						isMultiUnitProperty={data?.isMultiUnitProperty}
-						propertyAddress={data?.propertyAddress}
-						propertyType={data?.propertyType}
+						propertyName={leaseData?.propertyName}
+						isMultiUnitProperty={leaseData?.isMultiUnitProperty}
+						propertyAddress={leaseData?.propertyAddress}
+						propertyType={leaseData?.propertyType}
 					/>
 				</Stack>
 
@@ -96,42 +139,46 @@ const LeaseDetails = () => {
 						width: '100%',
 						flexWrap: {
 							xs: 'nowrap',
-							sm: 'wrap',
-							md: 'wrap',
+							sm: 'nowrap',
+							md: 'nowrap',
 							lg: 'nowrap',
 							xl: 'nowrap',
 						},
 					}}
 				>
 					<MiniCard
-						value={`${getLocaleFormat(orgSettings, data?.rentAmount, 'currency')}`}
+						value={`${getLocaleFormat(user?.orgSettings, leaseData?.rentAmount, 'currency')}`}
 						name='Rent'
-						status={data?.status}
+						status={leaseData?.status}
 					/>
 					<MiniCard
-						dangerouslySetInnerHTML={data?.rentDueOn}
+						dangerouslySetInnerHTML={leaseData?.rentDueOn}
 						name='Due On'
-						status={data?.status}
+						status={leaseData?.status}
 					/>
 					<MiniCard
-						value={data?.paymentFrequency}
+						value={leaseData?.paymentFrequency}
 						name='Payment Period'
-						status={data?.status}
+						status={leaseData?.status}
 					/>
 					<MiniCard
 						value={
-							data?.nextPaymentDate
-								? getLocaleDateFormat(orgSettings, data.nextPaymentDate, timeDateOptions)
+							leaseData?.nextPaymentDate
+								? getLocaleDateFormat(
+										user?.orgSettings,
+										leaseData.nextPaymentDate,
+										timeDateOptions,
+									)
 								: ''
 						}
 						name='Next Payment'
-						status={data?.status}
+						status={leaseData?.status}
 					/>
-					<MiniCard value={''} name='Tenant' status={data?.status} />
+					<MiniCard value={''} name='Tenant' status={leaseData?.status} />
 					<MiniCard
-						value={`${data?.daysToLeaseExpires} day${Number(data?.daysToLeaseExpires) > 1 ? 's' : ''}`}
+						value={`${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`}
 						name='Lease Expires'
-						status={data?.status}
+						status={leaseData?.status}
 					/>
 				</Stack>
 				<Stack
