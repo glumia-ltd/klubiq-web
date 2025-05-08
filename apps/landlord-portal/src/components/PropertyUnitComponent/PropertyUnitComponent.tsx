@@ -54,6 +54,7 @@ import { Breadcrumb } from '../Breadcrumb/index';
 import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
 import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
+import SharedStyles from '../../styles/shared-style';
 
 const stackedImages = [
 	propertyImage,
@@ -74,7 +75,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const navigate = useNavigate();
 	const anchorRef = useRef<HTMLButtonElement>(null);
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
-	const { orgSettings } = useSelector(getAuthState);
+	const { user } = useSelector(getAuthState);
 
 	const currentUUId = location.pathname.split('/')[2]!;
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
@@ -288,7 +289,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 							'Tenant',
 						image: tenant.profile?.profilePicUrl ?? '',
 					})) || [],
-				rentAmount: `${getLocaleFormat(orgSettings, +(lease?.rentAmount ?? 0), 'currency')}`,
+				rentAmount: `${getLocaleFormat(user?.orgSettings, +(lease?.rentAmount ?? 0), 'currency')}`,
 				startDate: dayjs(lease?.startDate).format('ll'),
 				endDate: dayjs(lease?.endDate).format('ll'),
 				status: lease?.status ?? '',
@@ -414,7 +415,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					propertyId={multiUnitNumber}
 					numberOfUnits={`${currentProperty?.units?.length}`}
 					rent={getLocaleFormat(
-						orgSettings,
+						user?.orgSettings,
 						+(currentProperty?.units?.[0]?.rentAmount || 0),
 						'currency',
 					)}
@@ -433,7 +434,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						: 'Single'
 				}
 				rent={getLocaleFormat(
-					orgSettings,
+					user?.orgSettings,
 					+currentProperty?.totalRent || 0,
 					'currency',
 				)}
@@ -529,42 +530,49 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	};
 
 	useEffect(() => {
-		const sectionRoot: BreadcrumbItem = {
-			label: 'Properties',
+		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
+			feature: {
+				label: 'Properties',
 			icon: (
 				<HomeIcon
 					key={1}
-					sx={styles.iconStyle}
+					sx={SharedStyles.iconStyle}
 					aria-label='Properties'
 					onClick={() => navigate(`/properties`)}
 				/>
 			),
-			showIcon: true,
-			isSectionRoot: true,
+				showIcon: true,
+				isSectionRoot: true,
+				path: '/leases',
+			},
 		};
-		updateBreadcrumb({ properties: sectionRoot });
-		if (currentProperty?.name && currentUUId) {
-			const propertyItem: BreadcrumbItem = {
+
+		if (currentUUId) {
+			newBreadcrumbs['feature-details'] = {
 				label: currentProperty?.name,
 				path: `/properties/${currentUUId}`,
 				icon: null,
 				showIcon: false,
 			};
-			updateBreadcrumb({ [currentProperty?.name]: propertyItem });
-			if (multiUnitMode && multiUnitNumber) {
-				const unitUUId = location.pathname.split('/')[4]!;
-				const path = `/properties/${currentUUId}/units/${unitUUId}`;
-				const unitItem: BreadcrumbItem = {
-					label: multiUnitNumber,
-					path,
-					icon: null,
-					showIcon: false,
-				};
-				updateBreadcrumb({ [multiUnitNumber]: unitItem });
-			}
 		}
+		if (multiUnitNumber) {
+			const unitUUId = location.pathname.split('/')[4]!;
+			const path = `/properties/${currentUUId}/units/${unitUUId}`;
+			newBreadcrumbs['feature-details-sub'] = {
+				label: multiUnitNumber,
+				path,
+				icon: null,
+				showIcon: false,
+			};
+		}
+		updateBreadcrumb(newBreadcrumbs);
 	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
-
+	useEffect(() => {
+		return () => {
+		  // Clear breadcrumbs on unmount
+		  updateBreadcrumb({});
+		};
+	  }, []); 
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>

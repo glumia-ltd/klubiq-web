@@ -49,4 +49,5 @@ const ControlledPasswordField = <T extends FieldValues>({
   )
 }
 
+export { ControlledPasswordField }
 export default ControlledPasswordField 

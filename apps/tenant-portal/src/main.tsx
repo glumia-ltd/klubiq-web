@@ -12,12 +12,12 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      {/* <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          <CssBaseline /> */}
           <App />
-        </ThemeProvider>
-      </BrowserRouter>
+        {/* </ThemeProvider>
+      </BrowserRouter> */}
     </Provider>
   </React.StrictMode>,
 ) 

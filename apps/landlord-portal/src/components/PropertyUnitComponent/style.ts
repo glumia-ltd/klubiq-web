@@ -4,17 +4,7 @@ export const styles = {
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		// color: 'primary.main',
 	},
-	breadCrumbStyle: {
-		paddingLeft: '18px',
-		'& .css-4pdmu4-MuiBreadcrumbs-ol': {
-			gap: '10px',
-		},
-	},
-	iconStyle: {
-		width: '16px',
-		height: '16px',
-		cursor: 'pointer',
-	},
+	
 	subheadText: {
 		fontWeight: '400',
 		fontSize: '12px',

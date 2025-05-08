@@ -21,7 +21,6 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { motion } from 'framer-motion';
@@ -46,12 +45,6 @@ const SideBar = () => {
 	const handleDrawerTransitionEnd = () => {
 		setIsclosing(true);
 	};
-	// const transitionedMixin = (theme: Theme): CSSObject => ({
-	// 	transition: theme.transitions.create('width', {
-	// 		easing: theme.transitions.easing.easeInOut,
-	// 		duration: theme.transitions.duration.enteringScreen,
-	// 	}),
-	// });
 
 	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
@@ -73,7 +66,7 @@ const SideBar = () => {
 		alignItems: 'center',
 	}));
 
-	const MotionDrawer = motion(Drawer);
+	const MotionDrawer = motion.create(Drawer);
 
 	// Define animation variants
 	const smoothTransition = {
@@ -111,20 +104,6 @@ const SideBar = () => {
 		}
 	  };
 
-	// const Drawer = styled(MuiDrawer, {
-	// 	shouldForwardProp: (prop) => prop !== 'open',
-	// })(({ theme, open }) => ({
-	// 	'& .MuiDrawer-paper': {
-	// 		width: 'inherit',
-	// 	},
-	// 	...transitionedMixin(theme),
-	// 	...(open && {
-	// 		width: `${drawerWidth.largeOpen}px`,
-	// 	}),
-	// 	...(!open && {
-	// 		width: `${drawerWidth.largeClosed}px`,
-	// 	}),
-	// }));
 	const drawerStyles = {
 		'& .MuiDrawer-paper': {
 		  width: 'auto',
@@ -141,8 +120,6 @@ const SideBar = () => {
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
 		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
 	};
 
 	const handleLinkClick = (title: string) => {
@@ -150,6 +127,7 @@ const SideBar = () => {
 			return;
 		}
 		handleSignOut();
+		window.location.href = '/login';
 	};
 
 	return (

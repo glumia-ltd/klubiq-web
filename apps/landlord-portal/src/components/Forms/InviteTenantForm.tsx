@@ -52,7 +52,7 @@ const InviteTenantForm = ({
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [onboardTenant] = useOnboardTenantMutation();
-	const { orgSettings } = useSelector(getAuthState);
+	const { user } = useSelector(getAuthState);
 	const validateLeaseDates = (startDate: string, endDate: string) => {
 		if (dayjs(startDate).isAfter(dayjs(endDate))) {
 			return 'End date must be after start date';
@@ -96,7 +96,7 @@ const InviteTenantForm = ({
 		}
 	};
 	useEffect(() => {
-		consoleLog('orgSettings', orgSettings);
+		consoleLog('orgSettings', user?.orgSettings);
 		if (propertyDetails) {
 			setInitialValues({
 				firstName: '',
@@ -207,7 +207,7 @@ const InviteTenantForm = ({
 				formatType: 'decimal',
 				decimals: 2,
 				adornment: {
-					prefix: getCurrencySymbol(orgSettings),
+					prefix: getCurrencySymbol(user?.orgSettings),
 				} as InputAdornment,
 				required: true,
 				validation: Yup.string()

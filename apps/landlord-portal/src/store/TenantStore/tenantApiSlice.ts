@@ -44,6 +44,7 @@ export const tenantApiSlice = createApi({
 					invalidateMultipleTags(dispatch, [
 						API_TAGS.TENANT,
 						API_TAGS.LEASE,
+						API_TAGS.PROPERTY,
 						API_TAGS.TENANT_FILTER_METADATA,
 					]);
 				} catch (error) {
@@ -63,6 +64,7 @@ export const tenantApiSlice = createApi({
 					invalidateMultipleTags(dispatch, [
 						API_TAGS.TENANT,
 						API_TAGS.TENANT_FILTER_METADATA,
+						API_TAGS.PROPERTY,
 					]);
 				} catch (error) {
 					console.error(error);
