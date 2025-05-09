@@ -26,7 +26,6 @@ import {
 	HouseIcon,
 	TenantIcon,
 	VacantHomeIcon,
-	HomeIcon,
 } from '../Icons/CustomIcons';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -54,7 +53,7 @@ import { Breadcrumb } from '../Breadcrumb/index';
 import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
 import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
-import SharedStyles from '../../styles/shared-style';
+import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 
 const stackedImages = [
 	propertyImage,
@@ -510,7 +509,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 							<DynamicTable
 								colors={tableSx}
 								styles={tableStyles}
-								header='Lease'
+								header='Leases'
 								columns={leaseTableData.tableColumns}
 								rows={leaseTableData.rows}
 								onRowClick={(rowData) => handleLeaseDetailClick(rowData)}
@@ -534,9 +533,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			feature: {
 				label: 'Properties',
 			icon: (
-				<HomeIcon
+				<ViewListOutlinedIcon
 					key={1}
-					sx={SharedStyles.iconStyle}
 					aria-label='Properties'
 					onClick={() => navigate(`/properties`)}
 				/>
@@ -567,12 +565,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		}
 		updateBreadcrumb(newBreadcrumbs);
 	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
-	useEffect(() => {
-		return () => {
-		  // Clear breadcrumbs on unmount
-		  updateBreadcrumb({});
-		};
-	  }, []); 
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
