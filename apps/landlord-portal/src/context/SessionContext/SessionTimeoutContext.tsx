@@ -43,9 +43,9 @@ export const SessionTimeoutProvider = ({
 	};
 
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
-		window.location.href = '/login';
+		await userSignOut({}).unwrap();
+
 	};
 
 	// Function to check whether the user has been inactive for too long

@@ -102,9 +102,9 @@ const NavBar = () => {
 		setNotificationPopperOpen(false);
 	};
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
-		window.location.href = '/login';
+		await userSignOut({}).unwrap();
+
 	};
 	const avatarMenus: menuItem[] = [
 		...(isSmallScreen

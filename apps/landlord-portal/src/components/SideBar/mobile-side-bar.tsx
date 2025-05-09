@@ -81,7 +81,6 @@ function MobileSideBar() {
 			return;
 		}
 		handleSignOut();
-		window.location.href = '/login';
 	};
 
 	return (

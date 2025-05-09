@@ -29,12 +29,10 @@ import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
 import {
 	useLazyGetUserByFbidQuery,
-	useSignOutMutation,
 	useSignInMutation,
 } from '../../../store/AuthStore/authApiSlice';
 import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleLog } from '../../../helpers/debug-logger';
-import { resetStore } from '../../../store';
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
 	email: yup.string().email().required('Please enter your email'),
@@ -57,10 +55,8 @@ const Login = () => {
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 
-
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
-	const [userSignOut] = useSignOutMutation();
 	const [signIn] = useSignInMutation();
 	const verifyOTP = async () => {
 		setIsVerifying(true);
@@ -108,24 +104,18 @@ const Login = () => {
 		set2FARequired(true);
 	};
 
-	const deAuthenticateUser = async () => {
-		await userSignOut({}).unwrap();
-		resetStore();
-	};
 	const setSessionStorage = (record: Record<string, any>[]) => {
 		record.forEach((item) => {
-			const value = typeof item.value === 'object' 
-				? JSON.stringify(item.value) 
-				: item.value;
+			const value =
+				typeof item.value === 'object'
+					? JSON.stringify(item.value)
+					: item.value;
 			sessionStorage.setItem(item.key, value);
 			consoleDebug(`Setting ${item.key} in session storage:`, value);
 		});
 	};
 
-
-
 	const onSubmit = async (values: IValuesType) => {
-		
 		const { email, password } = values;
 		try {
 			setLoading(true);
@@ -140,8 +130,11 @@ const Login = () => {
 						key: 'tenant_id',
 						value: user.tenantId || user.organizationUuid || '',
 					},
-					{ key: 'org-settings', value: JSON.stringify(user.orgSettings)  },
-					{ key: 'org-subscription', value: JSON.stringify(user.orgSubscription) },
+					{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
+					{
+						key: 'org-subscription',
+						value: JSON.stringify(user.orgSubscription),
+					},
 				];
 				setSessionStorage(sessionStorageData);
 				// const userName = user?.displayName?.split(' ');
@@ -199,7 +192,7 @@ const Login = () => {
 					isSignedIn: true,
 				};
 				dispatch(saveUser(payload));
-				
+
 				openSnackbar({
 					message: 'That was easy',
 					severity: 'success',
@@ -219,7 +212,7 @@ const Login = () => {
 					break;
 				default:
 					consoleLog('Error:', error);
-					deAuthenticateUser();
+					set2FARequired(false);
 					dispatch(
 						openSnackbar({
 							message:
@@ -254,32 +247,44 @@ const Login = () => {
 
 	return (
 		<>
-			<LoginLayout handleSubmit={formik.handleSubmit}>
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={6}
-					lg={6}
-					xl={6}
-					sx={{
-						width: '33rem',
-					}}
-				>
-					<Grid container sx={styles.container}>
-						<Grid container sx={styles.formContainer}>
-							<Grid
-								item
-								xs={12}
-								sm={12}
-								md={12}
-								lg={12}
-								mt={4}
-								sx={{
-									textAlign: 'right',
-								}}
-							>
-								{/* <Typography>
+			{is2faRequired ? (
+				<OTPPrompt
+					open={is2faRequired}
+					onCancel={cancelOtpVerification}
+					onVerifyOtpClick={verifyOTP}
+					otp={otp}
+					setOtp={setOtp}
+					otpError={otpError}
+					verifying={verifying}
+					verifyOtp={verifyOTP}
+				/>
+			) : (
+				<LoginLayout handleSubmit={formik.handleSubmit}>
+					<Grid
+						item
+						xs={12}
+						sm={12}
+						md={6}
+						lg={6}
+						xl={6}
+						sx={{
+							width: '33rem',
+						}}
+					>
+						<Grid container sx={styles.container}>
+							<Grid container sx={styles.formContainer}>
+								<Grid
+									item
+									xs={12}
+									sm={12}
+									md={12}
+									lg={12}
+									mt={4}
+									sx={{
+										textAlign: 'right',
+									}}
+								>
+									{/* <Typography>
                 Are you a tenant?{' '}
                 <span
                   style={{
@@ -291,119 +296,117 @@ const Login = () => {
                   Sign in here
                 </span>
               </Typography> */}
-							</Grid>
-							<Grid
-								container
-								sx={{
-									height: '25rem',
-								}}
-								mt={-15}
-							>
-								<Grid item xs={12} sm={12} md={12} lg={12}>
-									<Typography variant='h1' sx={styles.title}>
-										Sign in
-									</Typography>
-								</Grid>
-								<Grid item xs={12} sm={12} md={12} lg={12}>
-									<Typography sx={styles.subTitle}>
-										Welcome back! Please enter your details.
-									</Typography>
-								</Grid>
-
-								<Grid item sm={12} xs={12} lg={12}>
-									<ControlledTextField
-										name='email'
-										label='Email'
-										type='email'
-										autoComplete='username'
-										placeholder='Enter your email address'
-										formik={formik}
-										inputProps={{
-											sx: {
-												height: '40px',
-											},
-										}}
-									/>
-								</Grid>
-
-								<Grid item sm={12} xs={12} lg={12}>
-									<ControlledPasswordField
-										name='password'
-										label='Password'
-										type='password'
-										autoComplete='current-password'
-										placeholder='Enter your password'
-										formik={formik}
-										inputProps={{
-											sx: {
-												height: '40px',
-											},
-										}}
-									/>
 								</Grid>
 								<Grid
-									item
-									sm={12}
-									xs={12}
-									lg={12}
-									mt={-1}
-									m={0.5}
-									sx={styles.forgotPassword}
+									container
+									sx={{
+										height: '25rem',
+									}}
+									mt={-15}
 								>
-									{/* <FormGroup>
+									<Grid item xs={12} sm={12} md={12} lg={12}>
+										<Typography variant='h1' sx={styles.title}>
+											Sign in
+										</Typography>
+									</Grid>
+									<Grid item xs={12} sm={12} md={12} lg={12}>
+										<Typography sx={styles.subTitle}>
+											Welcome back! Please enter your details.
+										</Typography>
+									</Grid>
+
+									<Grid item sm={12} xs={12} lg={12}>
+										<ControlledTextField
+											name='email'
+											label='Email'
+											type='email'
+											autoComplete='username'
+											placeholder='Enter your email address'
+											formik={formik}
+											inputProps={{
+												sx: {
+													height: '40px',
+												},
+											}}
+										/>
+									</Grid>
+
+									<Grid item sm={12} xs={12} lg={12}>
+										<ControlledPasswordField
+											name='password'
+											label='Password'
+											type='password'
+											autoComplete='current-password'
+											placeholder='Enter your password'
+											formik={formik}
+											inputProps={{
+												sx: {
+													height: '40px',
+												},
+											}}
+										/>
+									</Grid>
+									<Grid
+										item
+										sm={12}
+										xs={12}
+										lg={12}
+										mt={-1}
+										m={0.5}
+										sx={styles.forgotPassword}
+									>
+										{/* <FormGroup>
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Remember this computer"
                   />
                 </FormGroup> */}
-									<Typography onClick={routeToForgotPassword}>
-										<BoldTextLink>Forgot password</BoldTextLink>
-									</Typography>
-								</Grid>
+										<Typography onClick={routeToForgotPassword}>
+											<BoldTextLink>Forgot password</BoldTextLink>
+										</Typography>
+									</Grid>
 
-								<Grid item sm={12} xs={12} lg={12} sx={styles.buttonGroupStyle}>
-									{loading ? (
-										<LoadingSubmitButton
-											loading
-											loadingPosition='center'
-											variant='outlined'
-										>
-											Sign In
-										</LoadingSubmitButton>
-									) : (
-										<SubmitButton type='submit'> Sign In </SubmitButton>
-									)}
-								</Grid>
+									<Grid
+										item
+										sm={12}
+										xs={12}
+										lg={12}
+										sx={styles.buttonGroupStyle}
+									>
+										{loading ? (
+											<LoadingSubmitButton
+												loading
+												loadingPosition='center'
+												variant='outlined'
+											>
+												Sign In
+											</LoadingSubmitButton>
+										) : (
+											<SubmitButton type='submit'> Sign In </SubmitButton>
+										)}
+									</Grid>
 
-								<Grid
-									item
-									sm={12}
-									xs={12}
-									lg={12}
-									mt={2}
-									sx={styles.lastGridStyle}
-									onClick={routeToSignUp}
-								>
-									<Typography>
-										Don't have an account? <BoldTextLink>Sign up</BoldTextLink>
-									</Typography>
+									<Grid
+										item
+										sm={12}
+										xs={12}
+										lg={12}
+										mt={2}
+										sx={styles.lastGridStyle}
+										onClick={routeToSignUp}
+									>
+										<Typography>
+											Don't have an account?{' '}
+											<BoldTextLink>Sign up</BoldTextLink>
+										</Typography>
+									</Grid>
 								</Grid>
 							</Grid>
 						</Grid>
 					</Grid>
-				</Grid>
-				{/* <ControlledSnackbar/> */}
-			</LoginLayout>
-			<OTPPrompt
-				open={is2faRequired}
-				onCancel={cancelOtpVerification}
-				onVerifyOtpClick={verifyOTP}
-				otp={otp}
-				setOtp={setOtp}
-				otpError={otpError}
-				verifying={verifying}
-				verifyOtp={verifyOTP}
-			/>
+					{/* <ControlledSnackbar/> */}
+				</LoginLayout>
+			)}
 		</>
 	);
 };
