@@ -70,8 +70,9 @@ function MobileSideBar() {
 	}));
 	
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
+		await userSignOut({}).unwrap();
+		
 	};
 
 	const handleLinkClick = (title: string) => {

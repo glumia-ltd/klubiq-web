@@ -46,9 +46,10 @@ export const router = createBrowserRouter(
 			<Route path='/verify-email' element={<EmailVerification />} />
 			<Route path='/2fa-enroll' element={<MFASetUp />} />
 			<Route path='*' element={<Navigate to='/404' replace />} />
+			<Route path='/' element={<Navigate to='/login' replace />} />
 
 			<Route element={<PrivateRoute />}>
-				<Route path='/' element={<Navigate to='/dashboard' replace />} />
+				
 				<Route element={<ViewPortLayout />}>
 					<Route
 						path='/dashboard'
