@@ -1,6 +1,5 @@
 import { Card, Stack, Chip, Typography, Divider } from '@mui/material';
 import { styles } from './style';
-import bukky from '../../assets/images/bukky.png';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import { FC } from 'react';
 import { TenantType } from '../../shared/type';

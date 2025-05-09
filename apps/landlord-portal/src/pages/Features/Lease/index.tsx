@@ -3,11 +3,9 @@ import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LeaseTable } from './LeaseTable';
 import {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
-	useLazyGetLeasesQuery,
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';

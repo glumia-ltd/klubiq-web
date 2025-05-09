@@ -1,7 +1,7 @@
 // LOGO LOADER
 
 import { Box } from '@mui/material';
-import Logo2 from '../../assets/images/icons.svg';
+// import Logo2 from '../../assets/images/icons.svg';
 import { keyframes } from '@mui/system';
 // import { HomeIcon } from '../Icons/CustomIcons';
 

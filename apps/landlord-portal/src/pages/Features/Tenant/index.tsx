@@ -2,7 +2,7 @@ import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
 import { styles } from './styles';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { TenantTable } from './TenantTable';
+// import { TenantTable } from './TenantTable';
 import {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
@@ -10,6 +10,8 @@ import {
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
+// import { TenantType } from '../../../shared/type';
+import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
@@ -69,9 +71,9 @@ const Lease = () => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
 
-	const handleRowClick = (id: number) => {
-		navigate(`/tenants/${id}`);
-	};
+	// const handleRowClick = (id: number) => {
+	// 	navigate(`/tenants/${id}`);
+	// };
 
 	return (
 		<>
@@ -120,11 +122,7 @@ const Lease = () => {
 					/>
 				</Stack>
 				<Stack direction={'row'}>
-					<TenantTable
-						title='Tenant'
-						allTenant={allLease}
-						onRowClick={handleRowClick}
-					/>
+					<TableSkeleton />
 				</Stack>
 			</Stack>
 
