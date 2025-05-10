@@ -3,20 +3,10 @@ import { styles } from './styles';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
-import { DataPagination } from '../../components/DataPagination';
-import { useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
-import { TenantType } from '../../shared/type';
-// import { TenantTable } from './TenantTable';
-import {
-	useGetLeaseMetaDataQuery,
-	useGetLeasesQuery,
-} from '../../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-// import { TenantType } from '../../../shared/type';
-import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
+import { TenantType } from '../../../shared/type';
 
 const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
 
@@ -72,7 +62,7 @@ const Tenant = () => {
 		},
 		[navigate],
 	);
-	const allTenants: TenantType[] = Array.from({ length: 105 }, (_, i) => ({
+	const allTenants: any[] = Array.from({ length: 105 }, (_, i) => ({
 		id: `${i + 1}`,
 		isPrimaryTenant: true,
 		profile: {
@@ -160,9 +150,6 @@ const Tenant = () => {
 		startIndex + defaultParams.take,
 	);
 	const pageCount = Math.ceil(filteredTenants.length / defaultParams.take);
-	// const handleRowClick = (id: number) => {
-	// 	navigate(`/tenants/${id}`);
-	// };
 
 	return (
 		<>
@@ -214,8 +201,6 @@ const Tenant = () => {
 							handleRowClick(tenant);
 						}}
 					/>
-				<Stack direction={'row'}>
-					<TableSkeleton />
 				</Stack>
 			</Stack>
 			<Stack mt={4}>

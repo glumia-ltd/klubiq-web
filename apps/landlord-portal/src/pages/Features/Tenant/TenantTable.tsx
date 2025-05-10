@@ -1,19 +1,13 @@
 import { Chip, Typography, Box } from '@mui/material';
 import { FC } from 'react';
 import { styles } from './styles';
-import { TenantType } from '../../shared/type';
+import { TenantType } from '../../../shared/type';
 import {
 	DynamicTable,
 	TableColumn,
 	DynamicAvatar,
 } from '@klubiq/ui-components';
-import { useTenantActions } from '../../hooks/page-hooks/tenant-hooks';
-// import { NavLink } from 'react-router-dom';
-// import { GroupedAvatar } from '../../components/GroupedAvatar/GroupedAvatar';
-// import { useSelector } from 'react-redux';
-// import { getAuthState } from '../../store/AuthStore/AuthSlice';
-// import { getLocaleDateFormat, DateStyle } from '../../helpers/utils';
-import { TenantType } from '../../../shared/type';
+import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 
 type TenantTableProps = {
 	title: string;
