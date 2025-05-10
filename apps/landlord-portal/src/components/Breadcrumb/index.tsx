@@ -54,7 +54,7 @@ export const Breadcrumb: FC = () => {
 					/>
 				);
 			} else if (item.isSectionRoot) {
-				return <Icon key={`${item.path}-${idx}`} sx={styles.iconStyle}>{item.icon}</Icon>;
+				return <Icon key={`${item.path}-${idx}`} sx={{ cursor: 'pointer' }}>{item.icon}</Icon>;
 			} else if (isLast) {
 				return (
 					<Typography

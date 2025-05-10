@@ -2,8 +2,17 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
+// import { visualizer } from 'rollup-plugin-visualizer';
+
 
 const manifestForPlugin: Partial<VitePWAOptions> = {
+	workbox: {
+		maximumFileSizeToCacheInBytes: 25 * 1024 * 1024, // 5MB
+		// globPatterns: [
+		// 	'**/*.{js,css,html,ico,png,svg,woff,woff2}',
+		// 	'!stats.html' // Exclude stats.html from PWA cache
+		//   ]
+	},
 	registerType: 'prompt',
 	includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
 	manifest: {

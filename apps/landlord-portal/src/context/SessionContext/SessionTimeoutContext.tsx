@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
-import { auth } from '../../firebase';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
@@ -44,10 +43,9 @@ export const SessionTimeoutProvider = ({
 	};
 
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
+		await userSignOut({}).unwrap();
+
 	};
 
 	// Function to check whether the user has been inactive for too long

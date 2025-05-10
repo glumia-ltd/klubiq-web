@@ -63,6 +63,7 @@ export type TenantType = {
 	leaseDetails: LeaseType;
 	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
+	
 }
 
 export type TenantTablePropertyDetailsType = {
@@ -89,7 +90,35 @@ export type LeaseType = {
 	startDate: string;
 	status: string;
 	tenants: TenantType[];
+	property: PropertyDataType;
+	unitNumber?: string;
+	unitId?: string;
 };
+
+export type LeaseDetailsType = {
+	endDate: string;
+	id: number;
+	isArchived: boolean;
+	isDraft: boolean;
+	name: string;
+	paymentFrequency: string;
+	rentAmount: string;
+	rentDueDay: number;
+	securityDeposit: string;
+	startDate: string;
+	status: string;
+	tenants: TenantType[];
+	propertyName: string;
+	propertyAddress: string;
+	propertyType: string;
+	unitNumber?: string;
+	isMultiUnitProperty: boolean;
+	rentDueOn: string;
+	daysToLeaseExpires: number;
+	nextPaymentDate: string;
+	unitId?: string;
+};
+
 export type UnitType = {
 	area?: { value: number; unit: string };
 	bathrooms?: number;
