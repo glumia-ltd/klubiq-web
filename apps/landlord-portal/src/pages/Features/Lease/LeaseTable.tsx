@@ -88,7 +88,7 @@ export const LeaseTable: FC<LeaseTableType> = ({ onRowClick, allLease }) => {
 									sx={styles.chip}
 								/>
 							</TableCell>
-							<TableCell sx={{}} align='center'>
+							<TableCell sx={{}} align='left'>
 								<Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 									{lease.tenants.length > 0 ? (
 										<GroupedAvatar tenants={lease.tenants} />

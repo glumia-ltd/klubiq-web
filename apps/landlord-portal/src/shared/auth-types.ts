@@ -37,6 +37,7 @@ export type UserProfile = {
 	orgSettings?: Record<string, any> | null;
 	orgSubscription?: Record<string, any> | null;
 	phoneNumber?: string | null;
+	companyName?: string;
 };
 
 export type Organization = {

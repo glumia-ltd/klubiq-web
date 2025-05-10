@@ -17,6 +17,9 @@ const DOWNLOAD_ENDPOINTS =[
 // 	authEndpoints.login(),
 // 	authEndpoints.signup(),
 // 	authEndpoints.emailVerification(),
+// 	authEndpoints.refreshToken(),
+// 	authEndpoints.resetPassword(),
+// 	authEndpoints.sendResetPasswordEmail()
 // ];
 
 // const getSessionToken = () => {
@@ -27,6 +30,18 @@ const DOWNLOAD_ENDPOINTS =[
 // };
 // const accessToken = getSessionToken()?.stsTokenManager?.accessToken;
 // request config
+// const getCookie = (name: string) => {
+// 	return document.cookie
+// 		.split('; ')
+// 		.find((row) => row.startsWith(name))
+// 		?.split('=')[1];
+// };
+
+// const hasCookie = (name: string) => {
+// 	return document.cookie
+// 		.split('; ')
+// 		.some((row) => row.startsWith(name));
+// };
 
 function AxiosConfig(config: any) {
 	// const token = getSessionToken()?.stsTokenManager?.accessToken;
@@ -55,6 +70,8 @@ function AxiosConfig(config: any) {
 		config.responseType = 'arraybuffer';
 		config.headers['content-type'] = 'blob';
 	}
+
+
 	const csrfToken =
 		document.cookie
 			.split('; ')

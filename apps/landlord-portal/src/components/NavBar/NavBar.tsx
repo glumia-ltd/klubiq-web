@@ -39,6 +39,7 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { NotificationData } from '../../shared/global-types';
 import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
@@ -102,9 +103,10 @@ const NavBar = () => {
 		setNotificationPopperOpen(false);
 	};
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
-		window.location.href = '/login';
+		await userSignOut({}).unwrap();
+		navigate('/login');
+
 	};
 	const avatarMenus: menuItem[] = [
 		...(isSmallScreen
@@ -149,6 +151,7 @@ const NavBar = () => {
 			},
 		},
 	];
+	const navigate = useNavigate();
 	useEffect(() => {
 	}, [notificationData]);
 

@@ -3,6 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { leaseEndpoints, propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
+import { LeaseDetailsType, LeaseType } from '../../shared/type';
 
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
@@ -25,7 +26,7 @@ export const leaseApiSlice = createApi({
 			}),
 			providesTags: [API_TAGS.LEASE],
 		}),
-		getSingleLeaseById: builder.query<any, { id: string | number }>({
+		getSingleLeaseById: builder.query<LeaseDetailsType, { id: string | number }>({
 			query: (params) => ({
 				url: leaseEndpoints.getLease(params?.id),
 				method: 'GET',
@@ -62,13 +63,14 @@ export const leaseApiSlice = createApi({
 });
 
 interface GetLeasesResponse {
-	pageData: any;
+	pageData: LeaseType[];
 	meta: any;
 }
 
 export const {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
+	useLazyGetLeasesQuery,
 	useGetSingleLeaseByIdQuery,
 	useGetOrgPropertiesViewListQuery,
 	useAddLeaseMutation,
