@@ -14,14 +14,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { auth } from '../../../firebase';
 import { useDispatch } from 'react-redux';
-import {
-	getMultiFactorResolver,
-	MultiFactorError,
-	MultiFactorResolver,
-	TotpMultiFactorGenerator,
-} from 'firebase/auth';
 import { useState } from 'react';
 import { firebaseResponseObject } from '../../../helpers/FirebaseResponse';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
@@ -30,9 +23,10 @@ import { styles } from './style';
 import {
 	useLazyGetUserByFbidQuery,
 	useSignInMutation,
+	useVerifyMFAOtpMutation,
 } from '../../../store/AuthStore/authApiSlice';
 import { saveUser } from '../../../store/AuthStore/AuthSlice';
-import { consoleDebug, consoleLog } from '../../../helpers/debug-logger';
+import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
 	email: yup.string().email().required('Please enter your email'),
@@ -46,9 +40,7 @@ const Login = () => {
 	const [searchParams] = useSearchParams();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [verifying, setIsVerifying] = useState<boolean>(false);
-	const [mfaResolver, setMFAResolver] = useState<MultiFactorResolver | null>(
-		null,
-	);
+	const [verifyMFAOtp] = useVerifyMFAOtpMutation();
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
 	const [otp, setOtp] = useState('');
 	const [otpError, setOtpError] = useState('');
@@ -65,29 +57,25 @@ const Login = () => {
 			setIsVerifying(false);
 			return;
 		}
-		if (
-			mfaResolver?.hints[0]?.factorId === TotpMultiFactorGenerator.FACTOR_ID
-		) {
-			const multiFactorAssertion = TotpMultiFactorGenerator.assertionForSignIn(
-				mfaResolver.hints[0].uid,
-				otp,
-			);
-			try {
-				await mfaResolver.resolveSignIn(multiFactorAssertion);
+		try {
+			const verifyResult = await verifyMFAOtp({otp});
+			if(!verifyResult){
+				throw new Error('Invalid OTP')
+			} else {
 				setOtpError('');
-				navigate(continuePath || '/dashboard', { replace: true });
-			} catch (error: any) {
-				dispatch(
-					openSnackbar({
-						message: error.message || 'An error occurred',
-						severity: 'error',
-						isOpen: true,
-					}),
-				);
-				set2FARequired(false);
+				loadUserAfterSignIn();
 			}
-			setIsVerifying(false);
+		} catch (error: any) {
+			dispatch(
+				openSnackbar({
+					message: error.message || 'An error occurred',
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+			set2FARequired(false);
 		}
+		setIsVerifying(false);
 
 		//
 	};
@@ -96,12 +84,6 @@ const Login = () => {
 		setOtpError('');
 		setOtp('');
 		setIsVerifying(false);
-		setMFAResolver(null);
-	};
-	const initOTP = (error: MultiFactorError) => {
-		const resolver = getMultiFactorResolver(auth, error);
-		setMFAResolver(resolver);
-		set2FARequired(true);
 	};
 
 	const setSessionStorage = (record: Record<string, any>[]) => {
@@ -115,15 +97,8 @@ const Login = () => {
 		});
 	};
 
-	const onSubmit = async (values: IValuesType) => {
-		const { email, password } = values;
-		try {
-			setLoading(true);
-			const signInResult = await signIn({ email, password });
-			if (!signInResult) {
-				throw new Error('Invalid credentials');
-			}
-			const user = await triggerGetUserByFbid().unwrap();
+	const loadUserAfterSignIn = async () => {
+		const user = await triggerGetUserByFbid().unwrap();
 			if (user && user.profileUuid) {
 				const sessionStorageData = [
 					{
@@ -137,56 +112,6 @@ const Login = () => {
 					},
 				];
 				setSessionStorage(sessionStorageData);
-				// const userName = user?.displayName?.split(' ');
-				// const firstName = userName && userName[0];
-				// const lastName = userName && userName[1];
-
-				// if (!user.emailVerified) {
-				// 	const requestBody = { email, firstName, lastName };
-
-				// 	await api.post(authEndpoints.emailVerification(), requestBody);
-
-				// 	setLoading(false);
-				// 	dispatch(
-				// 		openSnackbar({
-				// 			message: 'Please verify your email!',
-				// 			severity: 'info',
-				// 			isOpen: true,
-				// 		}),
-				// 	);
-				// } else {
-				// 	const response = await triggerGetUserByFbid();
-				// 	if (!response.data) {
-				// 		throw new Error('User not found');
-				// 	}
-				// 	if (!response.data?.organizationUuid) {
-				// 		throw new Error('Organization ID is undefined');
-				// 	}
-				// 	const orgSettings = await triggerGetOrgSettingsQuery({
-				// 		orgId: response.data?.organizationUuid,
-				// 	}).unwrap();
-				// 	const orgSubscription = await triggerGetOrgSubscriptionQuery({
-				// 		orgId: response.data?.organizationUuid,
-				// 	}).unwrap();
-				// 	const payload = {
-				// 		token: userToken,
-				// 		user: response?.data as UserProfile,
-				// 		isSignedIn: true,
-				// 		orgSettings: orgSettings,
-				// 		orgSubscription: orgSubscription,
-				// 	};
-				// 	dispatch(saveUser(payload));
-				// 	openSnackbar({
-				// 		message: 'That was easy',
-				// 		severity: 'success',
-				// 		isOpen: true,
-				// 	});
-				// 	if (setupMFA) {
-				// 		navigate('/2fa-enroll', { replace: true });
-				// 	} else {
-				// 		navigate('/dashboard', { replace: true });
-				// 	}
-				// }
 				const payload = {
 					user: user,
 					isSignedIn: true,
@@ -201,30 +126,41 @@ const Login = () => {
 				if (setupMFA) {
 					navigate('/2fa-enroll', { replace: true });
 				} else {
-					navigate('/dashboard', { replace: true });
+					navigate(continuePath || '/dashboard', { replace: true });
 				}
 			}
-		} catch (error: any) {
-			console.error('Login error:', error);
-			switch (error.code) {
-				case 'auth/multi-factor-auth-required':
-					initOTP(error as MultiFactorError);
-					break;
-				default:
-					consoleLog('Error:', error);
-					set2FARequired(false);
-					dispatch(
-						openSnackbar({
-							message:
-								firebaseResponseObject[(error as Error).message] ||
-								'An error occurred',
-							severity: 'error',
-							isOpen: true,
-						}),
-					);
-					break;
+	}
+
+	const onSubmit = async (values: IValuesType) => {
+		const { email, password } = values;
+		try {
+			setLoading(true);
+			const signInResult = await signIn({ email, password });
+			if (!signInResult) {
+				throw new Error('Invalid credentials');
 			}
-			consoleDebug('Sign in failed, setting loading to false');
+			if(signInResult?.data?.message === 'MFA-required'){
+                throw new Error('MFA-required')
+			}
+			loadUserAfterSignIn();
+		} catch (error: any) {
+			console.error(error);
+			if(error.message === 'MFA-required'){
+				consoleError('MFA Required to continue sign in');
+				set2FARequired(true);
+			} else {
+				set2FARequired(false);
+				dispatch(
+					openSnackbar({
+						message:
+							firebaseResponseObject[(error as Error).message] ||
+							'An error occurred',
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+			}
+			consoleError('Sign in failed, setting loading to false');
 			setLoading(false);
 		}
 	};

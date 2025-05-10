@@ -1,23 +1,24 @@
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Button,
-} from '@mui/material';
+import { Button } from '@mui/material';
+import { DynamicTable } from '@klubiq/ui-components';
+import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { styles } from './style';
 
-export const HistoryTable = () => {
-	const details = [
+type HistoryRow = {
+	no: string;
+	dueDate: string;
+	amount: string;
+	action: string;
+};
+
+const HistoryTable = () => {
+	const { tableSx, tableStyles } = useTenantActions();
+	const rows: HistoryRow[] = [
 		{
 			no: '1234567',
 			dueDate: 'April 4, 2024',
 			amount: '₦2,000,000',
 			action: 'View Lease',
 		},
-
 		{
 			no: '1234567',
 			dueDate: 'April 4, 2024',
@@ -26,45 +27,34 @@ export const HistoryTable = () => {
 		},
 	];
 
+	const handleActionClick = (row: HistoryRow) => {
+		console.log('Selected row:', row);
+	};
+
+	const columns = [
+		{ key: 'no', label: 'Invoice No', align: 'center' as 'center' },
+		{ key: 'dueDate', label: 'Due Date', align: 'center' as 'center' },
+		{ key: 'amount', label: 'Amount', align: 'center' as 'center' },
+		{
+			key: 'action',
+			label: 'Action',
+			align: 'center' as 'center',
+			render: (row: HistoryRow) => (
+				<Button sx={styles.rowButton} onClick={() => handleActionClick(row)}>
+					{row.action}
+				</Button>
+			),
+		},
+	];
+
 	return (
-		<TableContainer>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableCell align='left' colSpan={8} sx={{ ...styles.tableCell }}>
-							History
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableHead>
-					<TableRow>
-						<TableCell align='left' sx={styles.headerText2}>
-							Invoice No
-						</TableCell>
-						<TableCell align='left' sx={styles.headerText2}>
-							Due Date
-						</TableCell>
-						<TableCell align='left' sx={styles.headerText2}>
-							Amount
-						</TableCell>
-						<TableCell align='left' sx={styles.headerText2}>
-							Action
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{details.map((detail, index) => (
-						<TableRow key={index}>
-							<TableCell align='left'>{detail.no}</TableCell>
-							<TableCell align='left'>{detail.dueDate}</TableCell>
-							<TableCell align='left'>{detail.amount}</TableCell>
-							<TableCell align='left'>
-								<Button> {detail.action}</Button>
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
+		<DynamicTable
+			header='History'
+			columns={columns}
+			rows={rows}
+			styles={tableStyles}
+			colors={tableSx}
+		/>
 	);
 };
+export default HistoryTable;
