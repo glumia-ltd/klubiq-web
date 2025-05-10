@@ -29,6 +29,13 @@ export const authApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		verifyMFAOtp: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.verifyMFAOtp(),
+				method: 'POST',
+				body,
+			}),
+		}),
 		updateUserPreferences: builder.mutation({
 			query: (body) => ({
 				url: authEndpoints.updateUserPreferences(),
@@ -79,4 +86,5 @@ export const {
 	useUpdateNotificationSubscriptionMutation,
 	useSignOutMutation,
 	useSignInMutation,
+	useVerifyMFAOtpMutation,
 } = authApiSlice;

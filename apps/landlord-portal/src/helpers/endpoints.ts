@@ -13,6 +13,7 @@ export const authEndpoints = {
 	getOrgSettings: (orgId: string) => `/auth/org/${orgId}/settings`,
 	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
+	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 };
 
 export const dashboardEndpoints = {
