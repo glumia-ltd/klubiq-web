@@ -54,7 +54,7 @@ const Tenant = () => {
 
 	const handleRowClick = useCallback(
 		(tenant: TenantType) => {
-			navigate(`/tenants/${tenant.id}/tenant-details`, {
+			navigate(`/tenants/tenant-details/${tenant.id}`, {
 				state: {
 					selectedRow: tenant,
 				},

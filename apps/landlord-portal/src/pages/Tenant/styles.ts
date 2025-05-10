@@ -19,11 +19,11 @@ export const styles = {
 	},
 	card: {
 		width: '100%',
-		maxWidth: '814px',
+		// maxWidth: '814px',
 	},
 	detailsCard: {
 		width: '100%',
-		maxWidth: '1250px',
+		// maxWidth: '1250px',
 		padding: '8px 24px 8px 24px',
 	},
 	imageStyle: {
@@ -148,7 +148,7 @@ export const styles = {
 	},
 	tenantCard: {
 		width: '100%',
-		maxWidth: '810px',
+		// maxWidth: '810px',
 	},
 	buttonGrid: {
 		justifyContent: 'flex-end',
