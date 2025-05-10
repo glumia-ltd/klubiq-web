@@ -39,6 +39,7 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { NotificationData } from '../../shared/global-types';
 import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
@@ -104,6 +105,7 @@ const NavBar = () => {
 	const handleSignOut = async () => {
 		resetStore();
 		await userSignOut({}).unwrap();
+		navigate('/login');
 
 	};
 	const avatarMenus: menuItem[] = [
@@ -149,6 +151,7 @@ const NavBar = () => {
 			},
 		},
 	];
+	const navigate = useNavigate();
 	useEffect(() => {
 	}, [notificationData]);
 
