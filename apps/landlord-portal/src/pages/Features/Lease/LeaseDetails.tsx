@@ -1,7 +1,6 @@
 import { Stack, Button, Chip } from '@mui/material';
 import { styles } from './style';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { LeaseIcon } from '../../../components/Icons/CustomIcons';
 import LeasePropertyCard from '../../../components/LeaseCards/LeasePropertyCard';
 import MiniCard from '../../../components/LeaseCards/MiniCard';
 // import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
@@ -17,9 +16,11 @@ import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { useEffect } from 'react';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
-import SharedStyles from '../../../styles/shared-style';
+import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { Breadcrumb } from '../../../components/Breadcrumb';
+import { statusColors } from '../../../page-tytpes/leases/list-page.type';
+
 
 const LeaseDetails = () => {
 	const location = useLocation();
@@ -49,8 +50,8 @@ const LeaseDetails = () => {
 			feature: {
 				label: 'Leases',
 				icon: (
-					<LeaseIcon
-						sx={SharedStyles.iconStyle}
+					<ViewListOutlinedIcon
+						key={1}
 						aria-label='Leases'
 						onClick={() => navigate(`/leases`)}
 					/>
@@ -60,7 +61,6 @@ const LeaseDetails = () => {
 				path: '/leases',
 			},
 		};
-
 		// Add the current lease as the second breadcrumb
 		if (currentLeaseId) {
 			newBreadcrumbs['feature-details'] = {
@@ -92,14 +92,7 @@ const LeaseDetails = () => {
 						width: '100%',
 					}}
 				>
-					{/* Breadcrumb Component goes here */}
-					{/* <Stack direction='row' sx={{ alignItems: 'center' }} spacing={2}>
-						<LeaseIcon sx={{ cursor: 'pointer' }} />
-						<ArrowForwardIosIcon sx={styles.topIcon} />
-						<Typography sx={styles.detailsText}> Lease Detail</Typography>
-					</Stack> */}
 					<Breadcrumb />
-					{/* Action Button Component goes here */}
 					<Stack>
 						<Button variant='contained' sx={styles.actionButton}>
 							Action
@@ -110,8 +103,8 @@ const LeaseDetails = () => {
 
 				<Stack direction={'row'} fontWeight={600}>
 					<Chip
-						label={'Active'}
-						color={'success'}
+						label={leaseData?.status}
+						color={statusColors[leaseData?.status ?? ''] as any}
 						variant='outlined'
 						sx={styles.chip}
 					/>
@@ -123,10 +116,11 @@ const LeaseDetails = () => {
 					sx={{ width: '100%' }}
 				>
 					<LeasePropertyCard
-						propertyName={leaseData?.propertyName}
-						isMultiUnitProperty={leaseData?.isMultiUnitProperty}
-						propertyAddress={leaseData?.propertyAddress}
-						propertyType={leaseData?.propertyType}
+						propertyName={leaseData?.propertyName ?? ''}
+						isMultiUnitProperty={leaseData?.isMultiUnitProperty ?? false}
+						propertyAddress={leaseData?.propertyAddress ?? ''}
+						propertyType={leaseData?.propertyType ?? ''}
+						tenants={leaseData?.tenants ?? []}
 					/>
 				</Stack>
 
@@ -147,7 +141,7 @@ const LeaseDetails = () => {
 					}}
 				>
 					<MiniCard
-						value={`${getLocaleFormat(user?.orgSettings, leaseData?.rentAmount, 'currency')}`}
+						value={`${getLocaleFormat(user?.orgSettings, +(leaseData?.rentAmount ?? 0), 'currency')}`}
 						name='Rent'
 						status={leaseData?.status}
 					/>
@@ -169,12 +163,12 @@ const LeaseDetails = () => {
 										leaseData.nextPaymentDate,
 										timeDateOptions,
 									)
-								: ''
+								: 'N/A'
 						}
 						name='Next Payment'
 						status={leaseData?.status}
 					/>
-					<MiniCard value={''} name='Tenant' status={leaseData?.status} />
+					<MiniCard value={leaseData?.tenants?.length?.toString() ?? '0'} name='Tenant' status={leaseData?.status} />
 					<MiniCard
 						value={`${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`}
 						name='Lease Expires'

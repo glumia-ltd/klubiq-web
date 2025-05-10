@@ -8,10 +8,10 @@ import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 const manifestForPlugin: Partial<VitePWAOptions> = {
 	workbox: {
 		maximumFileSizeToCacheInBytes: 25 * 1024 * 1024, // 5MB
-		globPatterns: [
-			'**/*.{js,css,html,ico,png,svg,woff,woff2}',
-			'!stats.html' // Exclude stats.html from PWA cache
-		  ]
+		// globPatterns: [
+		// 	'**/*.{js,css,html,ico,png,svg,woff,woff2}',
+		// 	'!stats.html' // Exclude stats.html from PWA cache
+		//   ]
 	},
 	registerType: 'prompt',
 	includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],

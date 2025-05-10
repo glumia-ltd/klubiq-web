@@ -4,8 +4,8 @@ export const SharedStyles = {
 		color: 'white',
 	},
 	iconStyle: {
-		width: '16px',
-		height: '16px',
+		width: '24px',
+		height: '24px',
 		cursor: 'pointer',
 	},
     breadCrumbStyle: {

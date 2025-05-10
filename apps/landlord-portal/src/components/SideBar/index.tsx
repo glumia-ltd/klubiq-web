@@ -25,7 +25,6 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { motion } from 'framer-motion';
 
-
 const SideBar = () => {
 	const theme = useTheme();
 	const { getPathList } = useContext(SectionContext);
@@ -70,56 +69,56 @@ const SideBar = () => {
 
 	// Define animation variants
 	const smoothTransition = {
-		type: "spring",
+		type: 'spring',
 		stiffness: 100,
 		damping: 20,
 		mass: 1,
-		duration: 0.8
-	  };
+		duration: 0.8,
+	};
 	const drawerVariants = {
 		expanded: {
-		  width: `${drawerWidth.largeOpen}px`, // expanded width
-		  transition: smoothTransition
+			width: `${drawerWidth.largeOpen}px`, // expanded width
+			transition: smoothTransition,
 		},
 		collapsed: {
-		  width: `${drawerWidth.largeClosed}px`, // collapsed width
-		  transition: smoothTransition
-		}
-	  };
-	
-	  // Define content animation variants
-	  const contentVariants = {
+			width: `${drawerWidth.largeClosed}px`, // collapsed width
+			transition: smoothTransition,
+		},
+	};
+
+	// Define content animation variants
+	const contentVariants = {
 		expanded: {
-		  opacity: 1,
-		  transition: {
-			duration: 0.2,
-			delay: 0.1
-		  }
+			opacity: 1,
+			transition: {
+				duration: 0.2,
+				delay: 0.1,
+			},
 		},
 		collapsed: {
-		  opacity: 0.5,
-		  transition: {
-			duration: 0.2
-		  }
-		}
-	  };
+			opacity: 0.5,
+			transition: {
+				duration: 0.2,
+			},
+		},
+	};
 
 	const drawerStyles = {
 		'& .MuiDrawer-paper': {
-		  width: 'auto',
-		  transition: 'none',
-		  overflowX: 'hidden',
-		  willChange: 'transform', // Optimize performance
-		  backfaceVisibility: 'hidden', // Prevent flickering
-		  WebkitBackfaceVisibility: 'hidden',
-		  transform: 'translateZ(0)', // Force GPU acceleration
-		  WebkitTransform: 'translateZ(0)',
-		}
-	  };
-
+			width: 'auto',
+			transition: 'none',
+			overflowX: 'hidden',
+			willChange: 'transform', // Optimize performance
+			backfaceVisibility: 'hidden', // Prevent flickering
+			WebkitBackfaceVisibility: 'hidden',
+			transform: 'translateZ(0)', // Force GPU acceleration
+			WebkitTransform: 'translateZ(0)',
+		},
+	};
 	const handleSignOut = async () => {
-		await userSignOut({}).unwrap();
 		resetStore();
+		await userSignOut({}).unwrap();
+		
 	};
 
 	const handleLinkClick = (title: string) => {
@@ -127,13 +126,12 @@ const SideBar = () => {
 			return;
 		}
 		handleSignOut();
-		window.location.href = '/login';
 	};
 
 	return (
 		<MotionDrawer
 			variant='permanent'
-			initial="collapsed"
+			initial='collapsed'
 			animate={sidebarOpen ? 'expanded' : 'collapsed'}
 			variants={drawerVariants}
 			open={sidebarOpen}
@@ -144,10 +142,10 @@ const SideBar = () => {
 			sx={drawerStyles}
 			anchor='left'
 		>
-		<DrawerChildren>
+			<DrawerChildren>
 				<motion.div
 					variants={contentVariants}
-					initial="collapsed"
+					initial='collapsed'
 					animate={sidebarOpen ? 'expanded' : 'collapsed'}
 					style={{
 						display: 'flex',
@@ -166,7 +164,7 @@ const SideBar = () => {
 					</DrawerHeader>
 					<List>
 						{pathList.map((props, index) => {
-							const {path} = props;
+							const { path } = props;
 							return (
 								<ListItem
 									disablePadding
@@ -252,87 +250,88 @@ const SideBar = () => {
 				<ThemeSwitcher>
 					<motion.div
 						variants={contentVariants}
-						initial="collapsed"
+						initial='collapsed'
 						animate={sidebarOpen ? 'expanded' : 'collapsed'}
 					>
 						<Stack
-						direction={{ xs: sidebarOpen ? 'row' : 'column' }}
-						sx={{
-							borderRadius: '10px',
-							background: '#ffffff',
-							padding: sidebarOpen ? '8px 8px' : '0.9px',
-							height: sidebarOpen ? '60px' : '96px',
-							width: sidebarOpen ? 'auto' : '60px',
-							gap: '8px',
-							alignItems: 'center',
-							justifyContent: 'space-around',
-						}}
-					>
-						<Button
-							onClick={() => switchMode(ThemeMode.LIGHT)}
+							direction={{ xs: sidebarOpen ? 'row' : 'column' }}
 							sx={{
-								color: mode === ThemeMode.LIGHT ? '#ffffff' : '#002147',
-								background:
-									mode === ThemeMode.LIGHT ? '#002147' : 'transparent',
-								borderRadius: sidebarOpen ? '18px' : '18px',
-								padding: sidebarOpen ? '10px' : '0px',
-								fontSize: '10px',
-								marginTop: sidebarOpen ? '0px' : '8px',
-								height: '36px',
-								minWidth: '44px',
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
-									height: '36px',
-									minWidth: '44px',
-								},
+								borderRadius: '10px',
+								background: '#ffffff',
+								padding: sidebarOpen ? '8px 8px' : '0.9px',
+								height: sidebarOpen ? '60px' : '96px',
+								width: sidebarOpen ? 'auto' : '60px',
+								gap: '8px',
+								alignItems: 'center',
+								justifyContent: 'space-around',
 							}}
 						>
-							{sidebarOpen ? (
-								<>
-									<LightModeIcon sx={{ fontSize: 20 }} /> <h3>Light</h3>
-								</>
-							) : (
-								<LightModeIcon />
-							)}
-						</Button>
-						<Button
-							onClick={() => switchMode(ThemeMode.DARK)}
-							sx={{
-								color: mode === ThemeMode.DARK ? '#ffffff' : '#002147',
-								background: mode === ThemeMode.DARK ? '#002147' : 'transparent',
-								borderRadius: sidebarOpen ? '18px' : '18px',
-								fontSize: '10px',
-								padding: sidebarOpen ? '10px' : '0px',
-								marginBottom: sidebarOpen ? '0px' : '8px',
-								height: '36px',
-								minWidth: '44px',
-								'&:hover': {
-									color: '#ffffff',
-									background: '#002147',
-									cursor: 'pointer',
+							<Button
+								onClick={() => switchMode(ThemeMode.LIGHT)}
+								sx={{
+									color: mode === ThemeMode.LIGHT ? '#ffffff' : '#002147',
+									background:
+										mode === ThemeMode.LIGHT ? '#002147' : 'transparent',
+									borderRadius: sidebarOpen ? '18px' : '18px',
+									padding: sidebarOpen ? '10px' : '0px',
+									fontSize: '10px',
+									marginTop: sidebarOpen ? '0px' : '8px',
 									height: '36px',
 									minWidth: '44px',
-								},
-							}}
-						>
-							{sidebarOpen ? (
-								<>
-									{' '}
+									'&:hover': {
+										color: '#ffffff',
+										background: '#002147',
+										cursor: 'pointer',
+										height: '36px',
+										minWidth: '44px',
+									},
+								}}
+							>
+								{sidebarOpen ? (
+									<>
+										<LightModeIcon sx={{ fontSize: 20 }} /> <h3>Light</h3>
+									</>
+								) : (
+									<LightModeIcon />
+								)}
+							</Button>
+							<Button
+								onClick={() => switchMode(ThemeMode.DARK)}
+								sx={{
+									color: mode === ThemeMode.DARK ? '#ffffff' : '#002147',
+									background:
+										mode === ThemeMode.DARK ? '#002147' : 'transparent',
+									borderRadius: sidebarOpen ? '18px' : '18px',
+									fontSize: '10px',
+									padding: sidebarOpen ? '10px' : '0px',
+									marginBottom: sidebarOpen ? '0px' : '8px',
+									height: '36px',
+									minWidth: '44px',
+									'&:hover': {
+										color: '#ffffff',
+										background: '#002147',
+										cursor: 'pointer',
+										height: '36px',
+										minWidth: '44px',
+									},
+								}}
+							>
+								{sidebarOpen ? (
+									<>
+										{' '}
+										<DarkModeIcon sx={{ fontSize: 20 }} />
+										<h3>Dark</h3>
+									</>
+								) : (
 									<DarkModeIcon sx={{ fontSize: 20 }} />
-									<h3>Dark</h3>
-								</>
-							) : (
-								<DarkModeIcon sx={{ fontSize: 20 }} />
-							)}
-						</Button>
-					</Stack>
+								)}
+							</Button>
+						</Stack>
 					</motion.div>
 				</ThemeSwitcher>
 			</DrawerChildren>
 		</MotionDrawer>
 	);
-}
+};
 
 export default SideBar;
