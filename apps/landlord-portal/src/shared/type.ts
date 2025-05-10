@@ -6,7 +6,34 @@ export interface RouteObjectType {
 	'Unit Type': { label: string; icon: React.ReactNode };
 	[key: string]: { label: string; icon: React.ReactNode };
 }
-
+export type LeaseDetail = {
+	name: string;
+	amount: string;
+}
+export type TenantCardProps = {
+	tenant: TenantInfo;
+}
+export type TenantDocumentRow = {
+	name: string;
+	dueDate: string;
+}
+export type TenantLocationState = {
+	selectedRow: TenantType;
+	tenantId: string;
+	tenantName: string;
+}
+export type TenantInfo = {
+	name: string;
+	phone: string;
+	email: string;
+	since: string;
+	image: string;
+}
+export type LeaseDetailsCardProps = {
+	unit: string;
+	address: string;
+	details: LeaseDetail[];
+}
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -34,11 +61,22 @@ export type TenantType = {
 	id: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
-	propertyDetails: PropertyDataType;
+	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
 	
 }
 
+export type TenantTablePropertyDetailsType = {
+	name: string;
+	address: {
+		addressLine1: string;
+		addressLine2: string | null;
+
+	};
+	unitNumber: string | number;
+
+
+}
 export type LeaseType = {
 	endDate: string;
 	id: number;
@@ -105,7 +143,7 @@ export type PropertyDataType = {
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedrooms:  number;
+	bedrooms: number;
 	bathrooms: number;
 	toilets: number;
 	isArchived: boolean;
@@ -325,7 +363,7 @@ export type AddTenantToLeaseDetailsType = {
 }
 
 export type AddTenantFormValues = {
-	title?:  string;
+	title?: string;
 	firstName?: string;
 	lastName?: string;
 	email: string;
@@ -340,19 +378,19 @@ export type AddTenantFormValues = {
 
 
 export type InviteTenantFormValues = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber?: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phoneNumber?: string;
 	title?: string;
 	company?: string;
-    leaseDetails: {
-        name?: string;
-        startDate?: string;
-        endDate?: string;
-        unitId?: string;
-        rentAmount?: number | string;
-        propertyName?: string;
-        unitNumber?: string;
-    };
+	leaseDetails: {
+		name?: string;
+		startDate?: string;
+		endDate?: string;
+		unitId?: string;
+		rentAmount?: number | string;
+		propertyName?: string;
+		unitNumber?: string;
+	};
 };
