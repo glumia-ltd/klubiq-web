@@ -18,7 +18,7 @@ import MFASetUp from '../pages/Auth/MFAPage';
 import AddProperties from '../pages/Features/properties/AppProperties';
 import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
-
+import TenantDetails from '../pages/Features/Tenant/TenantDetails';
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
 
 import Properties from '../pages/Features/properties';
@@ -50,7 +50,6 @@ export const router = createBrowserRouter(
 			<Route path='/' element={<Navigate to='/login' replace />} />
 
 			<Route element={<PrivateRoute />}>
-				
 				<Route element={<ViewPortLayout />}>
 					<Route
 						path='/dashboard'
@@ -91,6 +90,8 @@ export const router = createBrowserRouter(
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
 						<Route index element={<Tenant />} />
+						<Route path='tenant-details/:id' element={<TenantDetails />} />
+
 						<Route path='tenants/:id' element={<TenantProfile />} />
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
