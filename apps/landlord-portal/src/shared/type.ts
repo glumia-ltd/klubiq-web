@@ -18,17 +18,73 @@ export type TenantDocumentRow = {
 	dueDate: string;
 }
 export type TenantLocationState = {
-	selectedRow: TenantType;
-	tenantId: string;
-	tenantName: string;
-}
+	selectedRow?: TenantType;
+	tenantId?: string;
+	tenantName?: string;
+};
+export type TenantTableType = {
+	uuid?: string;
+	tenantId?: string;
+	organizationUuid?: string;
+	tenant?: {
+		id?: string;
+		companyName?: string;
+		isActive?: boolean;
+		notes?: string | null;
+		createdDate?: string;
+		updatedDate?: string;
+		__profile__?: {
+			profileUuid?: string;
+			firstName?: string;
+			title?: string;
+			lastName?: string;
+			firebaseId?: string;
+			email?: string;
+			profilePicUrl?: string | null;
+			phoneNumber?: string;
+			countryPhoneCode?: string | null;
+			street?: string | null;
+			addressLine2?: string | null;
+			state?: string | null;
+			city?: string | null;
+			country?: string | null;
+			postalCode?: string | null;
+			formOfIdentity?: string | null;
+			dateOfBirth?: string | null;
+			gender?: string | null;
+			bio?: string | null;
+			isTermsAndConditionAccepted?: boolean;
+			isPrivacyPolicyAgreed?: boolean;
+			createdDate?: string;
+			updatedDate?: string;
+			isKYCVerified?: boolean;
+		};
+	};
+};
 export type TenantInfo = {
-	name: string;
-	phone: string;
-	email: string;
-	since: string;
-	image: string;
-}
+	name?: string;
+	phone?: string;
+	email?: string;
+	since?: string;
+	image?: string;
+	tenant?: {
+		id?: string;
+		fullName?: string;
+		email?: string;
+		phone?: string;
+	};
+	leases?: {
+		id?: string;
+		leaseStart?: string;
+		leaseEnd?: string;
+		rentAmount?: string;
+		paymentFrequency?: string;
+		lastPaymentDate?: string | null;
+		nextDueDate?: string | null;
+		lateFeeAmount?: string | null;
+		securityDeposit?: string | null;
+	}[];
+};
 export type LeaseDetailsCardProps = {
 	unit: string;
 	address: string;
@@ -58,12 +114,12 @@ export type PropertyMetaData = {
 };
 
 export type TenantType = {
-	id: string;
+	tenantId: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
 	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
-	
+
 }
 
 export type TenantTablePropertyDetailsType = {
