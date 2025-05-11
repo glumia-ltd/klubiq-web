@@ -82,7 +82,7 @@ const OTPPrompt = ({
 						onClick={onVerifyOtpClick}
 						loading={verifying}
 						loadingIndicator='verifying...'
-						variant='contained'
+						variant='klubiqMainButton'
 					>
 						Verify
 					</LoadingButton>

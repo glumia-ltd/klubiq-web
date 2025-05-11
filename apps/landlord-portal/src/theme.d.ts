@@ -81,9 +81,14 @@ declare module '@mui/material/Typography' {
 
 declare module '@mui/material/Button' {
 	interface ButtonPropsVariantOverrides {
-		propertyButton: true;
 		filterButton: true;
 		borderlessFilterButton: true;
+		klubiqMainButton: true;
+		klubiqSecondaryButton: true;
+		klubiqTertiaryButton: true;
+		klubiqAccentButton: true;
+		klubiqTextButton: true;
+		klubiqOutlinedButton: true;
 	}
 }
 

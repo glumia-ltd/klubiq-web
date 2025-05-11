@@ -627,7 +627,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 						<Grid item xs={12}>
 							<Button
-								variant='contained'
+								variant='klubiqMainButton'
 								color='primary'
 								onClick={handleAddCustomAmenites}
 							>

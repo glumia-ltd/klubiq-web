@@ -273,7 +273,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 										</FormControl>
 										<Divider sx={{ marginY: 2 }} />
 										<Button
-											variant='contained'
+											variant='klubiqMainButton'
 											sx={styles.applyButtonStyle}
 											onClick={handleCloseModal}
 										>

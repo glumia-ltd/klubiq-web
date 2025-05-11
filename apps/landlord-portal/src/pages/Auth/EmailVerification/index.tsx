@@ -142,13 +142,14 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							{user?.email && (
 								<Stack direction={'row'} spacing={1}>
 									<Button
-									variant='contained'
+									variant='klubiqMainButton'
 									disabled={!resendEnabled}
 									onClick={resendVerificationEmail}
 								>
 									Resend Verification Email
 								</Button>
-								<Button variant='outlined' onClick={navigateToLogin}>Login</Button>
+
+								<Button variant='klubiqOutlinedButton' onClick={navigateToLogin}>Login</Button>
 								</Stack>
 							)}
 						</Paper>

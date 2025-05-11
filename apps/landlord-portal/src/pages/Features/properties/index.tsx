@@ -170,8 +170,28 @@ const Properties = () => {
 									</div>
 								)}
 								<Button
-									variant='contained'
-									sx={styles.addPropertyButton}
+									variant='klubiqTertiaryButton'
+									onClick={handleAddProperties}
+								>
+									<LeftArrowIcon />
+									Add New Property
+								</Button>
+								<Button
+									variant='klubiqAccentButton'
+									onClick={handleAddProperties}
+								>
+									<LeftArrowIcon />
+									Add New Property
+								</Button>
+								<Button
+									variant='klubiqSecondaryButton'
+									onClick={handleAddProperties}
+								>
+									<LeftArrowIcon />
+									Add New Property
+								</Button>
+								<Button
+									variant='klubiqMainButton'
 									onClick={handleAddProperties}
 								>
 									<LeftArrowIcon />

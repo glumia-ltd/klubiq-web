@@ -113,7 +113,7 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 							{!showTextField ? (
 								needsTruncation && (
 									<Button
-										variant='propertyButton'
+										variant='klubiqMainButton'
 										onClick={toggleTextView}
 										sx={styles.showHideTextStyle}
 									>
