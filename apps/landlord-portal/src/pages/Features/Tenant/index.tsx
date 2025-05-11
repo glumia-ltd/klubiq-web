@@ -160,8 +160,7 @@ const Tenant = () => {
 					sx={styles.buttonContainer}
 				>
 					<Button
-						variant='contained'
-						sx={styles.addTenantButton}
+						variant='klubiqMainButton'
 						onClick={navigateToAddTenant}
 					>
 						{/* <LeftArrowIcon /> */}

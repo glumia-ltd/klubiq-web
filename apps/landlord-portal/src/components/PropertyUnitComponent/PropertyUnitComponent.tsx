@@ -574,14 +574,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
 				<Button
 					ref={anchorRef}
-					variant='propertyButton'
-					sx={styles.actionButtonStyle}
+					variant='klubiqMainButton'
 					onClick={handleToggle}
 				>
 					<Typography fontWeight={500}>Action</Typography>
 					<MoreVertIcon />
 				</Button>
-
 				<Popper
 					open={open}
 					anchorEl={anchorRef.current}
@@ -634,14 +632,16 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			</Grid>
 
 			<Grid item xs={12}>
-				<Chip
-					label={currentProperty?.purpose?.displayText || 'For sale'}
+				{currentProperty?.purpose?.displayText && (
+					<Chip
+						label={currentProperty?.purpose?.displayText}
 					variant={
 						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
 							? 'rent'
 							: 'sale'
 					}
 				/>
+				)}
 			</Grid>
 
 			<Grid item xs={12} sx={styles.firstCardContainer}>

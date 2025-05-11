@@ -20,6 +20,7 @@ import {
 import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
+import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
@@ -166,11 +167,10 @@ const Lease = () => {
 					sx={styles.buttonContainer}
 				>
 					<Button
-						variant='contained'
-						sx={styles.addLeaseButton}
+						variant='klubiqMainButton'
 						onClick={navigateToAddLease}
 					>
-						{/* <LeftArrowIcon /> */}
+						<LeftArrowIcon />
 						Add New Lease
 					</Button>
 				</Stack>

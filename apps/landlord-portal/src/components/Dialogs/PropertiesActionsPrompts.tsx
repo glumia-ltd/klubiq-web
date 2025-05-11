@@ -66,7 +66,7 @@ export const PropertiesActionsPrompts: FC<PropertiesActionsPromptsType> = ({
 					Cancel
 				</Button>
 				<Button
-					variant='contained'
+					variant='klubiqMainButton'
 					onClick={handleDialogButtonAction}
 					autoFocus
 					sx={styles.propertiesDialogButtons}

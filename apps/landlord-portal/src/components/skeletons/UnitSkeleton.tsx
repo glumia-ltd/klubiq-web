@@ -91,7 +91,7 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
+					<Button variant='klubiqMainButton'>
 						<Skeleton variant='rectangular' width='30px' height='10px' />
 						<MoreVertIcon />
 					</Button>

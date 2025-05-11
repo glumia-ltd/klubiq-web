@@ -51,7 +51,7 @@ const MFAPrompt = ({
 					<Button variant='outlined' onClick={onOptOutClick}>
 						Opt Out
 					</Button>
-					<Button variant='contained' onClick={onMFASetupClick}>
+					<Button variant='klubiqMainButton' onClick={onMFASetupClick}>
 						Enable
 					</Button>
 				</Stack>

@@ -57,7 +57,7 @@ const AlertDialog = ({
 				</Typography>
 				<Stack direction={'row'} spacing={1}>
 					
-					<Button variant='contained' onClick={onConfirmClick }>
+					<Button variant='klubiqMainButton' onClick={onConfirmClick }>
 					{confirmButtonText} 
 					</Button>
 					<Button variant='outlined' onClick={onCancelClick}>
