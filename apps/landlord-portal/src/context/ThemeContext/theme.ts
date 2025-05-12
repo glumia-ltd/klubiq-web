@@ -177,7 +177,6 @@ export const LightTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -198,7 +197,6 @@ export const LightTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -219,7 +217,6 @@ export const LightTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -238,7 +235,6 @@ export const LightTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 
 						},
@@ -258,7 +254,6 @@ export const LightTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -734,7 +729,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -755,7 +749,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -776,7 +769,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -805,7 +797,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
@@ -825,7 +816,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 
 						},
@@ -845,7 +835,6 @@ export const DarkTheme: Theme = createTheme({
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
