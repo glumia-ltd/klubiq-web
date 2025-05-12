@@ -48,7 +48,7 @@ const MFAPrompt = ({
 					secure your account and protect your data, please set it up.
 				</Typography>
 				<Stack direction={'row'} spacing={1}>
-					<Button variant='outlined' onClick={onOptOutClick}>
+					<Button variant='klubiqOutlinedButton' onClick={onOptOutClick}>
 						Opt Out
 					</Button>
 					<Button variant='klubiqMainButton' onClick={onMFASetupClick}>

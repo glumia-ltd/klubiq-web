@@ -373,13 +373,13 @@ const EditProperty = () => {
 					}}
 				>
 					<Grid sx={addPropertyStyles.buttonContainer}>
+						
 						<Button
-							variant='contained'
-							sx={addPropertyStyles.directionButton}
+							variant='klubiqMainButton'
 							onClick={handleEditProperty}
 							disabled={isCurrentPropertyLoading}
 						>
-							<Typography>Save</Typography>
+							Save
 						</Button>
 					</Grid>
 				</Grid>
