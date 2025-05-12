@@ -24,7 +24,7 @@ export const useTenantActions = () => {
         borderRadius: 0,
         borderWidth: 0,
         paperElevation: 0,
-        buttonVariant: 'text',
+        buttonVariant: 'klubiqMainButton',
         titleVariant: 'h5',
         titleFontWeight: 500,
         headerVariant: 'body1',
