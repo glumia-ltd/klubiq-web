@@ -154,7 +154,7 @@ export const SessionTimeoutProvider = ({
 				</DialogContent>
 				<DialogActions>
 					<Button
-						variant='contained'
+						variant='klubiqMainButton'
 						sx={{
 							backgroundColor: 'primary.main',
 						}}
@@ -163,7 +163,7 @@ export const SessionTimeoutProvider = ({
 						Stay Logged In
 					</Button>
 					<Button
-						variant='outlined'
+						variant='klubiqOutlinedButton'
 						onClick={() => {
 							handleSignOut();
 						}}

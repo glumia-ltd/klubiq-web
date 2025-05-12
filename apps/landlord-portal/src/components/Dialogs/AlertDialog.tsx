@@ -60,7 +60,7 @@ const AlertDialog = ({
 					<Button variant='klubiqMainButton' onClick={onConfirmClick }>
 					{confirmButtonText} 
 					</Button>
-					<Button variant='outlined' onClick={onCancelClick}>
+					<Button variant='klubiqOutlinedButton' onClick={onCancelClick}>
 					{cancelButtonText}
 					</Button>
 				</Stack>

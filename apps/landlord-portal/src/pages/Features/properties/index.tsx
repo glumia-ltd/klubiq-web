@@ -170,27 +170,6 @@ const Properties = () => {
 									</div>
 								)}
 								<Button
-									variant='klubiqTertiaryButton'
-									onClick={handleAddProperties}
-								>
-									<LeftArrowIcon />
-									Add New Property
-								</Button>
-								<Button
-									variant='klubiqAccentButton'
-									onClick={handleAddProperties}
-								>
-									<LeftArrowIcon />
-									Add New Property
-								</Button>
-								<Button
-									variant='klubiqSecondaryButton'
-									onClick={handleAddProperties}
-								>
-									<LeftArrowIcon />
-									Add New Property
-								</Button>
-								<Button
 									variant='klubiqMainButton'
 									onClick={handleAddProperties}
 								>

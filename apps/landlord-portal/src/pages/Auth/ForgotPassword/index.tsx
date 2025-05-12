@@ -175,7 +175,7 @@ const ForgotPassword = () => {
 									<LoadingSubmitButton
 										loading
 										loadingPosition='center'
-										variant='outlined'
+										variant='klubiqOutlinedButton'
 									>
 										Set Password
 									</LoadingSubmitButton>
@@ -272,27 +272,7 @@ const ForgotPassword = () => {
 							.
 						</Typography>
 
-						<Button
-							sx={{
-								mt: 2,
-								border: '1px solid #002147',
-								borderRadius: '0.5rem',
-								color: 'white',
-								background: '#002147',
-								padding: '6px 8px',
-								height: '40px',
-								width: '144px',
-								fontSize: '18px',
-								alignSelf: 'flex-end',
-								'&:hover': {
-									color: '#FFFFFF',
-									background: '#6699CC',
-									cursor: 'pointer',
-									border: 'none',
-								},
-							}}
-							onClick={handleClose}
-						>
+						<Button variant='klubiqTextButton' onClick={handleClose}>
 							Close
 						</Button>
 					</Box>

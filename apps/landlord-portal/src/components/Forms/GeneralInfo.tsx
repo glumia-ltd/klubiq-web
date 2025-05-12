@@ -370,7 +370,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							{selectedUnitType === 'multi' && (
 								<Grid item xs={12} sx={GeneralFormStyle.addButton}>
 									<Button
-										color='primary'
+										variant='klubiqMainButton'
 										onClick={addUnit}
 										startIcon={<AddIcon />}
 									>
@@ -720,7 +720,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							</i>
 						</Grid>
 						<Grid item xs={12}>
-							<Button variant='contained' color='primary' onClick={handleClose}>
+							<Button variant='klubiqMainButton' onClick={handleClose}>
 								Save unit details
 							</Button>
 						</Grid>

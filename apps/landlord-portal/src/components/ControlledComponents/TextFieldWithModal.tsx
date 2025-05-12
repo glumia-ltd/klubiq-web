@@ -92,7 +92,7 @@ const ResponsiveTextFieldWithModal: React.FC = () => {
 						onChange={handleChange}
 						fullWidth
 					/>
-					<Button onClick={handleClose} variant='contained' sx={{ mt: 2 }}>
+					<Button onClick={handleClose} variant='klubiqMainButton' sx={{ mt: 2 }}>
 						Close
 					</Button>
 				</Box>

@@ -750,8 +750,7 @@ const DashBoard = () => {
 								/>
 
 								<Button
-									sx={styles.downloadButtonStyle}
-									variant='outlined'
+									variant='klubiqOutlinedButton'
 									onClick={handleDownload}
 								>
 									<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />

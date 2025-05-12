@@ -127,8 +127,7 @@ const NotificationModal = ({
 							{index === 0 && (
 								<Button
 									startIcon={<DoneAllIcon />}
-									variant='text'
-									sx={{ color: 'primary.light' }}
+									variant='klubiqTextButton'
 									size='small'
 									onClick={() => handleReadNotifications()}
 								>

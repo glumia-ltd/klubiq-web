@@ -1,5 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-import { rgba } from 'framer-motion';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -75,7 +74,7 @@ export const LightTheme: Theme = createTheme({
 			xl: 1536,
 		},
 	},
-	spacing: 8,
+
 	palette: {
 		mode: 'light',
 		primary: {
@@ -102,10 +101,10 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		// error:{},
-		// warning:{},
-		// info:{},
-		// success:{},
+		error:{},
+		warning:{},
+		info:{},
+		success:{},
 	},
 	components: {
 		MuiCssBaseline: {
@@ -572,7 +571,7 @@ export const DarkTheme: Theme = createTheme({
 			xl: 1536,
 		},
 	},
-	spacing: 8,
+
 	palette: {
 		mode: 'dark',
 		primary: {

@@ -274,7 +274,6 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 										<Divider sx={{ marginY: 2 }} />
 										<Button
 											variant='klubiqMainButton'
-											sx={styles.applyButtonStyle}
 											onClick={handleCloseModal}
 										>
 											Apply

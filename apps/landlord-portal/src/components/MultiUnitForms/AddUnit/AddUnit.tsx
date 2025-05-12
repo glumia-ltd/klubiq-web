@@ -204,8 +204,8 @@ const AddUnit = () => {
 						))}{' '}
 					</Grid>
 					<Grid item xs={12} sx={style.buttonGrid}>
-						<Button sx={style.plainButton}>Cancel </Button>
-						<Button type='submit' sx={style.blueButton}>
+						<Button variant='klubiqTextButton'>Cancel </Button>
+						<Button type='submit' variant='klubiqMainButton'>
 							Add Unit{' '}
 						</Button>
 					</Grid>
