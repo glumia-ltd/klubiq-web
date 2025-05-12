@@ -26,8 +26,8 @@ const AccountSettings: React.FC = () => {
 			{activeTab === 0 && <Profile />}
 
 			<Stack direction='row' justifyContent='space-between' mt={3}>
-				<Button variant='outlined'>Cancel</Button>
-				<Button variant='contained'>Save</Button>
+				<Button variant='klubiqOutlinedButton'>Cancel</Button>
+				<Button variant='klubiqMainButton'>Save</Button>
 			</Stack>
 		</Stack>
 	);

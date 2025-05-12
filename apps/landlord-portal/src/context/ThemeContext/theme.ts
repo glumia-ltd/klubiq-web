@@ -156,9 +156,8 @@ export const LightTheme: Theme = createTheme({
 							background: secondaryColors.blue,
 						},
 						'&:disabled': {
-							opacity: '0.5',
+							opacity: '1',
 							cursor: 'not-allowed',
-							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
