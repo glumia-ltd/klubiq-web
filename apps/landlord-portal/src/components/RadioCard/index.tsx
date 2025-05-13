@@ -43,63 +43,49 @@ const RadioCard = React.memo(
 		};
 
 		return (
-			<Grid container spacing={1}>
+			<Stack spacing={1}>
 				<Card sx={styles.card}>
-					<Grid container spacing={1}>
-						<Grid item xs={12}>
-							<Stack direction={'row'} alignItems={'center'} gap={1}>
-								<Typography variant='h6' sx={styles.typo}>
-									{headerText}
-								</Typography>
-
-								<Typography
-									fontWeight={100}
-									fontSize={'12px'}
-									sx={{
-										...styles.typo,
-										textTransform: 'none',
-										fontSize: '12px',
-									}}
-								>
-									{required ? <i>(required)</i> : ''}
-								</Typography>
-							</Stack>
-						</Grid>
-						<Grid item xs={12}>
-							<FormControl sx={styles.formControl}>
-								<RadioGroup
-									defaultValue={defaultValue}
-									name={name}
-									onChange={handleChange}
-								>
-									{options?.map((option) => (
-										<FormControlLabel
-											key={option?.id}
-											value={option?.id}
-											control={<Radio />}
-											checked={String(checkedValue) === String(option?.id)}
-											sx={styles.box}
-											label={
-												<Stack direction={'column'} gap={1}>
-													<Typography variant='body1'>
-														{option?.displayText}
+					<Stack spacing={1}>
+						<Stack direction={'row'} alignItems={'center'} gap={1}>
+							<Typography variant='subtitle1' textTransform={'uppercase'}>
+								{headerText}
+							</Typography>
+							<Typography variant='subtitle2'>
+								{required ? <i>(required)</i> : ''}
+							</Typography>
+						</Stack>
+						<FormControl sx={styles.formControl}>
+							<RadioGroup
+								defaultValue={defaultValue}
+								name={name}
+								onChange={handleChange}
+							>
+								{options?.map((option) => (
+									<FormControlLabel
+										key={option?.id}
+										value={option?.id}
+										control={<Radio />}
+										checked={String(checkedValue) === String(option?.id)}
+										sx={styles.box}
+										label={
+											<Stack direction={'column'} gap={1}>
+												<Typography variant='body1'>
+													{option?.displayText}
+												</Typography>
+												{option?.subtext && (
+													<Typography variant='body2'>
+														{option?.subtext}
 													</Typography>
-
-													{option?.subtext && (
-														<Typography variant='body2'>
-															{option?.subtext}
-														</Typography>
-													)}
-												</Stack>
-											}
-										/>
-									))}
-								</RadioGroup>
-							</FormControl>
-						</Grid>
-					</Grid>
+												)}
+											</Stack>
+										}
+									/>
+								))}
+							</RadioGroup>
+						</FormControl>
+					</Stack>
 				</Card>
-			</Grid>
+			</Stack>
 		);
 	},
 );
