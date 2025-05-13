@@ -157,7 +157,7 @@ const EditProperty = () => {
 	const transformedProperties = transform(
 		currentProperty?.units,
 		(result, unit) => {
-			const newUnit = omit(unit, 'leases', 'images', 'totalTenants', 'tenants');
+			const newUnit = omit(unit, 'leases', 'images', 'totalTenants', 'tenants', 'lease', 'totalLeases');
 			result.units.push(newUnit);
 		},
 		{ units: [] as any[] },
@@ -237,9 +237,9 @@ const EditProperty = () => {
 						severity: 'info',
 						isOpen: true,
 						duration: 2000,
-				}),
-			);
-
+					}),
+				);
+				consoleLog('Property edited successfully... navigating to property page');
 				navigate(-1);
 			}
 		} catch (e) {
@@ -259,16 +259,16 @@ const EditProperty = () => {
 		<>
 			<Stack spacing={4}>
 				<Stack
-					direction="row"
-					alignItems="center"
+					direction='row'
+					alignItems='center'
 					sx={{
 						...addPropertyStyles.addPropertiesContainer,
 						margin: '30px -10px 30px',
 					}}
 				>
 					<Stack
-						direction="row"
-						alignItems="center"
+						direction='row'
+						alignItems='center'
 						sx={addPropertyStyles.addPropertiesContent}
 						onClick={handleReturnToPropertyClick}
 					>
@@ -282,11 +282,7 @@ const EditProperty = () => {
 					</Stack>
 				</Stack>
 
-				<Stack
-					component='form'
-					onSubmit={formik.handleSubmit}
-					spacing={4}
-				>
+				<Stack component='form' onSubmit={formik.handleSubmit} spacing={4}>
 					<Stack spacing={1}>
 						<Card sx={GeneralFormStyle.card}>
 							<Stack spacing={2}>
@@ -371,8 +367,8 @@ const EditProperty = () => {
 				</Stack>
 
 				<Stack
-					direction="row"
-					justifyContent="flex-end"
+					direction='row'
+					justifyContent='flex-end'
 					sx={addPropertyStyles.buttonContainer}
 				>
 					<Button

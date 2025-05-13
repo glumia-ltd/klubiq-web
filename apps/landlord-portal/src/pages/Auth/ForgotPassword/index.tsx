@@ -1,5 +1,5 @@
 import { LoadingSubmitButton, SubmitButton } from '../../../styles/button';
-import { Box, Button, Grid, Modal, Typography } from '@mui/material';
+import { Box, Button, Grid, Modal, Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import LoginLayout from '../../../Layouts/LoginLayout';
 import { useFormik } from 'formik';
@@ -67,125 +67,54 @@ const ForgotPassword = () => {
 	});
 
 	return (
-		<LoginLayout handleSubmit={formik.handleSubmit}>
-			<Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: '33rem' }}>
-				<Grid
-					container
-					sx={{
-						height: '100vh',
-						justifyContent: 'center',
-					}}
-				>
-					<Grid
-						container
-						sx={{
-							width: '30rem',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
+		<Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} component="form" onSubmit={formik.handleSubmit}>
+			<Stack 
+				width="33rem" 
+				height="100vh" 
+				justifyContent="center" 
+				alignItems="center"
+			>
+				<Stack width="30rem" spacing={3}>
+					<Stack 
+						direction="row" 
+						alignItems="center" 
 					>
-						<Grid
-							item
-							xs={12}
-							sm={12}
-							md={12}
-							lg={12}
-							sx={{
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'flex-start',
-								cursor: 'pointer',
-								height: '2rem',
-							}}
-							onClick={routeToLogin}
-						>
-							<ArrowBackIosIcon />
-							<Typography>Back to login</Typography>
-						</Grid>
-						<Grid
-							container
-							mt={-30}
-							sx={{
-								height: '25rem',
-							}}
-						>
-							<Grid
-								item
-								xs={12}
-								sm={12}
-								md={12}
-								lg={12}
-								sx={{
-									textAlign: 'left',
-								}}
-							>
-								<Typography variant='h3' sx={{ fontWeight: '700' }}>
-									Forgot your password?
-								</Typography>
-							</Grid>
-							<Grid
-								item
-								xs={12}
-								sm={12}
-								md={12}
-								lg={12}
-								mb={5}
-								sx={{
-									textAlign: 'left',
-									marginTop: '-30px',
-									fontSize: '16px',
-									color: '#1B1B1B',
-									lineHeight: '22px',
-								}}
-							>
-								<Typography
-									sx={{
-										fontSize: '16px',
-										color: '#1B1B1B',
-										lineHeight: '22px',
-									}}
+						<Button variant='klubiqTextButton' startIcon={<ArrowBackIosIcon />}  onClick={routeToLogin}>Back to login</Button>
+					</Stack>
+
+					<Stack spacing={3}>
+						<Typography variant='h3' sx={{ fontWeight: '700', textAlign: 'left' }}>
+							Forgot your password?
+						</Typography>
+
+						<Typography variant='body2'>
+							Don't worry, happens to all of us. Enter your email below to
+							recover your password.
+						</Typography>
+
+						<ControlledTextField
+							name='email'
+							label='Enter your registered email'
+							type='email'
+							placeholder='enter your email'
+							formik={formik}
+						/>
+
+						<Box sx={{ textAlign: 'center' }}>
+							{loading ? (
+								<LoadingSubmitButton
+									loading
+									loadingPosition='center'
+									variant='klubiqOutlinedButton'
 								>
-									Don’t worry, happens to all of us. Enter your email below to
-									recover your password.
-								</Typography>
-							</Grid>
-
-							<Grid item sm={12} xs={12} lg={12}>
-								<ControlledTextField
-									name='email'
-									label='Enter your registered email'
-									type='email'
-									placeholder='enter your email'
-									formik={formik}
-								/>
-							</Grid>
-
-							<Grid
-								item
-								sm={12}
-								xs={12}
-								lg={12}
-								mt={-2}
-								sx={{
-									alignItems: 'center',
-									textAlign: 'center',
-								}}
-							>
-								{loading ? (
-									<LoadingSubmitButton
-										loading
-										loadingPosition='center'
-										variant='klubiqOutlinedButton'
-									>
-										Set Password
-									</LoadingSubmitButton>
-								) : (
-									<SubmitButton type='submit'> Set Password </SubmitButton>
-								)}
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
+									Set Password
+								</LoadingSubmitButton>
+							) : (
+								<SubmitButton type='submit'> Set Password </SubmitButton>
+							)}
+						</Box>
+					</Stack>
+				</Stack>
 
 				<Modal
 					open={openModal}
@@ -225,13 +154,7 @@ const ForgotPassword = () => {
 							}}
 						/>
 
-						<div
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-								width: '100%',
-							}}
-						>
+						<Stack direction="row" alignItems="center" width="100%">
 							<img
 								src={successImage}
 								alt='success'
@@ -245,7 +168,7 @@ const ForgotPassword = () => {
 							<Typography variant='h3' sx={{ fontWeight: '700' }}>
 								Password Reset Instructions Sent
 							</Typography>
-						</div>
+						</Stack>
 
 						<Typography
 							sx={{
@@ -277,8 +200,8 @@ const ForgotPassword = () => {
 						</Button>
 					</Box>
 				</Modal>
-			</Grid>
-		</LoginLayout>
+			</Stack>
+		</Box>
 	);
 };
 

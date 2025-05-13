@@ -18,7 +18,6 @@ import { resetStore } from '../store';
 import { MultiFactorUser } from 'firebase/auth';
 
 const useAuth = () => {
-	consoleDebug('useAuth hook initialized');
 	const configStoreName = 'client-config';
 	const { user, isSignedIn } = useSelector(getAuthState);
 	const navigate = useNavigate();
@@ -91,14 +90,14 @@ const useAuth = () => {
 			hasUserProfile: !isEmpty(userProfile),
 			currentPath: window.location.pathname
 		  });
-		if(isEmpty(userProfile)) {
-			consoleLog('Empty user profile, signing out');
-			dispatch(removeUser());
-			handleSignOutUser();
-			return;
-		}
-		consoleLog('Dispatching saveUser action');
-		dispatch(saveUser({ user: userProfile, isSignedIn: true }));
+		// if(isEmpty(userProfile)) {
+		// 	consoleLog('Empty user profile, signing out');
+		// 	dispatch(removeUser());
+		// 	handleSignOutUser();
+		// 	return;
+		// }
+
+		// dispatch(saveUser({ user: userProfile, isSignedIn: true }));
 		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(userProfile, 'preferences.security', {});
 		await updateConfigStoreIdb(userProfile?.orgSettings || {}, 'org-settings');
 		await updateConfigStoreIdb(userProfile?.orgSubscription || {}, 'org-subscription');
@@ -146,11 +145,6 @@ const useAuth = () => {
 				cancelButtonText: 'Skip',
 			});
 		}
-		 // Add navigation after successful auth
-		//  if (window.location.pathname === '/login') {
-		// 	consoleLog('On login page, navigating to dashboard');
-		// 	navigate('/dashboard', { replace: true });
-		//   }
 
 	}
 	const handleSignOutUser = async () => {
@@ -167,22 +161,23 @@ const useAuth = () => {
 			try{
 				if (!isEmpty(user) && isSignedIn) {
 					consoleLog('User is signed in');
-					//const userMfa = multiFactor(currentUser);
 					await handleAuthStateChange(user as UserProfile);
-				} else if(userData) {
-					 // If we have userData from the query, use it
-					 consoleLog('Using userData from query', userData);
-					 await handleAuthStateChange(userData);
-					 dispatch(saveUser({ user: userData, isSignedIn: true }));
-					//const userMfa = multiFactor(currentUser);
-				} else{
-					consoleLog('Fetching user data because user is not signed in and not in store');
-					const { data: userProfileData } = await triggerGetUserByFbid();
-					if (userProfileData) {
-					  await handleAuthStateChange(userProfileData);
-					  dispatch(saveUser({ user: userProfileData, isSignedIn: true }));
-					}
 				}
+				//  else if(userData) {
+				// 	 // If we have userData from the query, use it
+				// 	 consoleLog('Using userData from query', userData);
+				// 	 await handleAuthStateChange(userData);
+				// 	 dispatch(saveUser({ user: userData, isSignedIn: true }));
+				// 	//const userMfa = multiFactor(currentUser);
+				// } 
+				// else{
+				// 	consoleLog('Fetching user data because user is not signed in and not in store');
+				// 	const { data: userProfileData } = await triggerGetUserByFbid();
+				// 	if (userProfileData) {
+				// 	  await handleAuthStateChange(userProfileData);
+				// 	  dispatch(saveUser({ user: userProfileData, isSignedIn: true }));
+				// 	}
+				// }
 
 			} catch(error){
 				console.error('Error checking auth state', error);
@@ -191,7 +186,7 @@ const useAuth = () => {
 			}
 		};
 		checkAuthState();
-	}, [user, isSignedIn, userData]);
+	}, [user, isSignedIn]);
 	const requestNotificationPermission = async (orgUuid?: string) => {
 		try {
 			if ('Notification' in window) {

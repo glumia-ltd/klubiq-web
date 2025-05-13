@@ -274,7 +274,7 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 								</Box>
 							)}
 						</Stack>
-					</Stack>``
+					</Stack>
 				</Card>
 			</Stack>
 		</Stack>

@@ -34,7 +34,7 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
   user,
   onNavClick,
   onSignOut,
-  logoUrl = '/logo.svg',
+  logoUrl = '../assets/svg/klubiq-logo.svg',
   customBottomContent,
 }) => {
   const theme = useTheme();
