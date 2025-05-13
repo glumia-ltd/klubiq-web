@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuthState, removeUser, saveUser } from '../store/AuthStore/AuthSlice';
+import { getAuthState, removeUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
-	useLazyGetUserByFbidQuery,
+	// useLazyGetUserByFbidQuery,
 	useSignOutMutation,
 } from '../store/AuthStore/authApiSlice';
 import { subscribeUserToPush } from '../services/pushNotification';
-import { consoleDebug, consoleError, consoleLog } from '../helpers/debug-logger';
+import {  consoleError, consoleLog } from '../helpers/debug-logger';
 import { addData, getData } from '../services/indexedDb';
 import { UserProfile } from '../shared/auth-types';
 import { DialogProps } from '../components/Dialogs/AlertDialog';
@@ -24,7 +24,7 @@ const useAuth = () => {
 	const dispatch = useDispatch();
 	const [alertDialogs, setAlertDialogs] = useState<DialogProps[]>([]);
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
-	const [triggerGetUserByFbid, { data: userData }] = useLazyGetUserByFbidQuery();
+	// const [triggerGetUserByFbid, { data: userData }] = useLazyGetUserByFbidQuery();
 	const [updateUserPreferences] = useUpdateUserPreferencesMutation();
 	const [updateNotificationSubscription] =
 		useUpdateNotificationSubscriptionMutation();
@@ -163,21 +163,6 @@ const useAuth = () => {
 					consoleLog('User is signed in');
 					await handleAuthStateChange(user as UserProfile);
 				}
-				//  else if(userData) {
-				// 	 // If we have userData from the query, use it
-				// 	 consoleLog('Using userData from query', userData);
-				// 	 await handleAuthStateChange(userData);
-				// 	 dispatch(saveUser({ user: userData, isSignedIn: true }));
-				// 	//const userMfa = multiFactor(currentUser);
-				// } 
-				// else{
-				// 	consoleLog('Fetching user data because user is not signed in and not in store');
-				// 	const { data: userProfileData } = await triggerGetUserByFbid();
-				// 	if (userProfileData) {
-				// 	  await handleAuthStateChange(userProfileData);
-				// 	  dispatch(saveUser({ user: userProfileData, isSignedIn: true }));
-				// 	}
-				// }
 
 			} catch(error){
 				console.error('Error checking auth state', error);

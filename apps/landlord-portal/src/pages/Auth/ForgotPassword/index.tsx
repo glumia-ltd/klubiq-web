@@ -1,7 +1,6 @@
 import { LoadingSubmitButton, SubmitButton } from '../../../styles/button';
-import { Box, Button, Grid, Modal, Stack, Typography } from '@mui/material';
+import { Box, Button, Modal, Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import LoginLayout from '../../../Layouts/LoginLayout';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';

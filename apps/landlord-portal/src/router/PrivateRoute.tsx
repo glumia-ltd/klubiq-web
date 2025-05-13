@@ -1,13 +1,11 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAuthState, removeUser, saveUser } from '../store/AuthStore/AuthSlice';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '../store/AuthStore/AuthSlice';
 import useAuth from '../hooks/useAuth';
 import MFAPrompt from '../components/Dialogs/MfaPrompts';
 import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimeoutContext';
 import AlertDialog from '../components/Dialogs/AlertDialog';
-import { useLazyGetUserByFbidQuery } from '../store/AuthStore/authApiSlice';
-import { useEffect, useState } from 'react';
-import { consoleDebug, consoleError } from '../helpers/debug-logger';
+import { consoleDebug } from '../helpers/debug-logger';
 
 const PrivateRoute = () => {
 	const {isSignedIn } = useSelector(getAuthState);
