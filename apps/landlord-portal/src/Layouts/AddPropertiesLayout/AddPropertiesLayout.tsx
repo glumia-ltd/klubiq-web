@@ -373,9 +373,10 @@ export const AddPropertiesLayout = () => {
 
 	const handleAddProperty = async () => {
 		formik.handleSubmit();
+		consoleLog('Formik values', formik.values);
 
 		const errors = await formik.validateForm();
-
+		consoleLog(errors, 'errors');
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({

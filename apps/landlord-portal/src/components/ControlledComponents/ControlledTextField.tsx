@@ -81,11 +81,11 @@ const ControlledTextField: React.FC<ControlledTextFieldProps> = ({
 		>
 			{!inFieldLabel && (
 				<Stack direction={'row'} alignItems={'end'} gap={1}>
-					<Typography fontWeight={500} fontSize={'16px'} color={color}>
+					<Typography variant='subtitle1' color={color}>
 						{label}
 					</Typography>
 
-					<Typography fontWeight={100} fontSize={'12px'}>
+					<Typography variant='subtitle2'>
 						{required ? <i>(required)</i> : ''}
 					</Typography>
 				</Stack>

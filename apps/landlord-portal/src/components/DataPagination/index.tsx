@@ -53,6 +53,7 @@ export const DataPagination: FC<PaginationType> = ({
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
+						sx={{ pl: '16px' }}
 						defaultValue={
 							itemsPerPageOptions
 								? itemsPerPageOptions[0]

@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import RadioCard from '../RadioCard';
 import GeneralInfo from '../Forms/GeneralInfo';
 import { useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
@@ -28,8 +28,8 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 	});
 
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
+		<Stack spacing={2}>
+			<Box>
 				<RadioCard
 					required
 					headerText='UNIT TYPE'
@@ -38,8 +38,8 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 					checkedValue={formik.values.unitType}
 					onChange={formik.handleChange}
 				/>
-			</Grid>
-			<Grid item xs={12}>
+			</Box>
+			<Box>
 				<RadioCard
 					required
 					headerText='PROPERTY purpose'
@@ -48,11 +48,11 @@ const UnitType: FC<{ formik: any }> = ({ formik }) => {
 					checkedValue={formik.values.purposeId}
 					onChange={formik.handleChange}
 				/>
-			</Grid>
-			<Grid item xs={12}>
+			</Box>
+			<Box>	
 				<GeneralInfo formik={formik} amenities={amenities} />
-			</Grid>
-		</Grid>
+			</Box>
+		</Stack>
 	);
 };
 

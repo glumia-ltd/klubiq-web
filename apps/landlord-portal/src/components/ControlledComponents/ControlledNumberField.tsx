@@ -85,7 +85,7 @@ const ControlledNumberField: React.FC<ControlledTextFieldProps> = ({
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'} color={color}>
+				<Typography variant='subtitle1' color={color}>
 					{label}
 				</Typography>
 			)}

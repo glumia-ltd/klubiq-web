@@ -65,7 +65,7 @@ export const GeneralFormStyle = {
 		alignItems: 'center',
 		JustifyContent: 'center',
 		// minWidth: '360px',
-		marginTop: '20px',
+		//marginTop: '20px',
 	},
 
 	typo: {
@@ -116,6 +116,7 @@ export const GeneralFormStyle = {
 		border: '1px  solid',
 		marginBottom: '15px',
 		alignItems: 'left',
+		borderRadius: '15px',
 	},
 
 	cardContent: {

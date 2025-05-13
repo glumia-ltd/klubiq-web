@@ -58,7 +58,7 @@ const ControlledPhoneInput: React.FC<ControlledPhoneInputProps> = ({
 			spacing={1.2}
 		>
 			{!inFieldLabel && (
-				<Typography fontWeight={500} fontSize={'16px'}>
+				<Typography variant='subtitle1'>
 					{label}
 				</Typography>
 			)}
