@@ -18,7 +18,7 @@ import { GeneralFormStyle } from '../../../components/Forms/style';
 import addPropertyStyles from '../../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
 import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { omit, transform } from 'lodash';
+import { forEach, isEqual, omit, transform } from 'lodash';
 import { useEffect } from 'react';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
@@ -152,7 +152,9 @@ const EditProperty = () => {
 		},
 		validationSchema,
 		onSubmit,
+		
 	});
+
 
 	const handleReturnToPropertyClick = () => {
 		navigate(returnPath);
@@ -202,19 +204,28 @@ const EditProperty = () => {
 			isManualAddress: true,
 			unit: formik.values.address?.unit,
 		},
-		units: transformedProperties,
+		units: formik.values.units,
 	};
+	const getCategoryMetaData = (categoryId: number) => {
+		const categoryMetaData = propertyMetaData?.categories?.find(
+			(category: any) =>
+				Number(category.id) === Number(categoryId),
+		);
+
+		return categoryMetaData?.metaData;
+	};
+	const categoryFieldMap = [
+		{ from: 'offices', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasBedrooms },
+		{ from: 'offices', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasBedrooms },
+	  ];
 
 	useEffect(() => {
-		const getCategoryMetaData = () => {
-			const categoryMetaData = propertyMetaData?.categories?.find(
-				(property: any) =>
-					Number(property.id) === Number(initialData.categoryId),
-			);
-
-			return categoryMetaData?.metaData;
-		};
-		const categoryMetaData = getCategoryMetaData();
+		
+		const categoryMetaData = getCategoryMetaData(initialData.categoryId);
 
 		formik.setValues({
 			...formik.values,
@@ -259,21 +270,42 @@ const EditProperty = () => {
 		}
 	};
 
+	const getSpecValueByCategory = (oldMetadata: CategoryMetaDataType, newMetadata: CategoryMetaDataType) => {
+		forEach(formik.values.units, (unit) => {
+		  for (const { from, to, condition } of categoryFieldMap) {
+			if (condition(oldMetadata, newMetadata)) {
+				(unit as any)[to] = (unit as any)[from] || 0;
+			}
+		  }
+		});
+	  };
+	const transformPropertyCategoryType = (e: React.ChangeEvent<any>) => {
+		const oldCategoryMetadata = getCategoryMetaData(formik?.values?.categoryId || 0);
+		const categoryMetaData = getCategoryMetaData(e.target.value);
+		if (!isEqual(oldCategoryMetadata, categoryMetaData)) {
+			getSpecValueByCategory(oldCategoryMetadata, categoryMetaData);
+		}
+		formik.setValues({
+			...formik.values,
+			categoryMetaData,
+		});
+		formik.handleChange(e);
+	};
+
 	return (
 		<>
-			<Stack spacing={4}>
+			<Stack spacing={2}>
 				<Stack
 					direction='row'
 					alignItems='center'
-					sx={{
-						...addPropertyStyles.addPropertiesContainer,
-						margin: '30px -10px 30px',
-					}}
+					// sx={{
+					// 	...addPropertyStyles.addPropertiesContainer,
+					// 	margin: '30px -10px 30px',
+					// }}
 				>
 					<Stack
 						direction='row'
 						alignItems='center'
-						sx={addPropertyStyles.addPropertiesContent}
 						onClick={handleReturnToPropertyClick}
 					>
 						<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
@@ -286,7 +318,7 @@ const EditProperty = () => {
 					</Stack>
 				</Stack>
 
-				<Stack component='form' onSubmit={formik.handleSubmit} spacing={4}>
+				<Stack component='form' onSubmit={formik.handleSubmit} spacing={2}>
 					<Stack spacing={1}>
 						<Card sx={GeneralFormStyle.card}>
 							<Stack spacing={2}>
@@ -300,8 +332,10 @@ const EditProperty = () => {
 										placeholder='Property Category'
 										type='text'
 										formik={formik}
+										disableOnChange={true}
 										value={formik?.values?.categoryId}
 										options={propertyMetaData?.categories}
+										onChange={transformPropertyCategoryType}
 										inputprops={{
 											sx: {
 												height: '40px',
