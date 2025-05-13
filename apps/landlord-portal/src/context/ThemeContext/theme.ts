@@ -1,5 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-import { rgba } from 'framer-motion';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,

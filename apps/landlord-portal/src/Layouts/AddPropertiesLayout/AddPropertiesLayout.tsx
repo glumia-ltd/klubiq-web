@@ -216,7 +216,9 @@ export const AddPropertiesLayout = () => {
 	const navigateToStep = (step: number) => {
 		const routeKey = steps[step];
 
-		if (!routeKey) return;
+		if (!routeKey) {
+			return;
+		}
 
 		const route = `/properties/create/${routeObject[routeKey]?.label}`;
 
@@ -237,7 +239,9 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleForwardButton = () => {
-		if (activeStep > steps.length) return;
+		if (activeStep > steps.length) {
+    return;
+  }
 
 		saveFormikDataInStore();
 
@@ -247,7 +251,9 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleBackwardButton = () => {
-		if (activeStep === 0) return;
+		if (activeStep === 0) {
+    return;
+  }
 
 		saveFormikDataInStore();
 
@@ -567,10 +573,17 @@ export const AddPropertiesLayout = () => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button variant='klubiqTextButton' onClick={() => setInformationDialog(false)}>
+					<Button
+						variant='klubiqTextButton'
+						onClick={() => setInformationDialog(false)}
+					>
 						Cancel
 					</Button>
-					<Button variant='klubiqMainButton' onClick={handleDialogLeave} autoFocus>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleDialogLeave}
+						autoFocus
+					>
 						Leave Without Saving
 					</Button>
 				</DialogActions>

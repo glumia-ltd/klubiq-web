@@ -32,20 +32,20 @@ export const tenantApiSlice = createApi({
 		// 	}),
 		// 	providesTags: ['tenants/{id}'],
 		// }),
-		onboardTenant: builder.mutation({
-			query: (body) => ({
+		onboardTenant: builder.mutation<any, { propertyId: string; body: any }>({
+			query: ({ propertyId, body }) => ({
 				url: tenantEndpoints.onboardTenant(),
 				method: 'POST',
 				body,
 			}),
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+			async onQueryStarted({ propertyId }, { dispatch, queryFulfilled }) {
 				try {
 					await queryFulfilled;
 					invalidateMultipleTags(dispatch, [
 						API_TAGS.TENANT,
 						API_TAGS.LEASE,
-						API_TAGS.PROPERTY,
 						API_TAGS.TENANT_FILTER_METADATA,
+						{ type: API_TAGS.PROPERTY, id: propertyId }
 					]);
 				} catch (error) {
 					console.error(error);

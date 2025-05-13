@@ -11,7 +11,7 @@ import {
 	Select,
 	MenuItem,
 	Tooltip,
-	Collapse,
+	// Collapse,
 	Chip,
 	Stack,
 	Menu,
@@ -35,7 +35,7 @@ import { useDispatch } from 'react-redux';
 // import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
 import { AutoComplete } from '../AutoComplete/AutoComplete';
-import { without, some, toLower, capitalize, find, set } from 'lodash';
+import { without, some, toLower, capitalize, find } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import {
 	Bathroom,
@@ -63,12 +63,12 @@ const countries = countriesList?.map((item) => ({
 const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	const selectedUnitType = formik?.values?.unitType;
 	const [open, setOpen] = useState(false);
-	const [numberOfUnits, setNumberOfUnits] = useState(1);
+	const [, setNumberOfUnits] = useState(1);
 	const [openAddUnit, setOpenAddUnit] = useState(false);
 	const [currentUnitIndex, setCurrentUnitIndex] = useState<number>(0);
 	const [measurement, setMeasurement] = useState<string>(MEASUREMENTS[0].unit);
 	const [openCustomAmenities, setOpenCustomAmenities] = useState(false);
-	const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
+	// const [collapseUnit, setCollapseUnit] = useState<number[]>([]);
 	const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
 	const dispatch = useDispatch();
 	const openDropdown = Boolean(anchorElement);
@@ -192,7 +192,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 
 	const cloneUnit = (index: number) => {
 		const unitToClone = formik.values.units?.[index];
-		if (!unitToClone) return;
+		if (!unitToClone) {
+			return;
+		}
 		const clonedUnit = {
 			...unitToClone,
 			unitNumber: unitToClone.unitNumber
@@ -244,7 +246,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const getNameByPropertyCategory = () => {
-		const categoryMetaData = formik.values.categoryMetaData;
+		const {categoryMetaData} = formik.values;
 
 		if (categoryMetaData?.hasBedrooms) {
 			return 'bedrooms';
@@ -754,7 +756,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								{renderAmenities(allAmenities)}
 							</Stack>
 							<Button
-								sx={{width: { xs: '100%', sm: '40%' } }}
+								sx={{ width: { xs: '100%', sm: '40%' } }}
 								variant='klubiqTextButton'
 								startIcon={<Add />}
 								onClick={() => setOpenCustomAmenities(true)}

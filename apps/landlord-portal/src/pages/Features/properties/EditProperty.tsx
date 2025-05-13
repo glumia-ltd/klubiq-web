@@ -75,10 +75,14 @@ interface IunitType extends AddPropertyType {
 	propertyImages?: [];
 }
 
+type EditPropertyState = {
+	returnPath: string;
+}
+
 const EditProperty = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
-
+	const {returnPath} = location.state as EditPropertyState;
 	const currentUUId = location.pathname.split('/')[2]!;
 
 	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
@@ -151,7 +155,7 @@ const EditProperty = () => {
 	});
 
 	const handleReturnToPropertyClick = () => {
-		navigate(-1);
+		navigate(returnPath);
 	};
 
 	const transformedProperties = transform(
@@ -226,8 +230,8 @@ const EditProperty = () => {
 				uuid: currentUUId,
 				data: { ...editedData },
 			});
-
-			consoleLog(response.error, 'response');
+			consoleLog(response, 'Edit Property Response');
+			
 			if (response.error) {
 				throw new Error(screenMessages.property.edit.error);
 			} else {
@@ -240,7 +244,7 @@ const EditProperty = () => {
 					}),
 				);
 				consoleLog('Property edited successfully... navigating to property page');
-				navigate(-1);
+				navigate(returnPath);
 			}
 		} catch (e) {
 			dispatch(

@@ -29,6 +29,7 @@ interface InviteTenantFormProps {
 		propertyName: string;
 		unitNumber: string;
 		unitId: string;
+		propertyId: string;
 	};
 	returnPath: string;
 	formHeader?: string;
@@ -70,7 +71,7 @@ const InviteTenantForm = ({
 				}
 			}
 			let requestData = omit(values, ['tenantType', 'heading']);
-			const response = await onboardTenant(requestData).unwrap();
+			const response = await onboardTenant({propertyId: propertyDetails.propertyId, body: requestData}).unwrap();
 			consoleLog('response', response);
 			consoleLog('response was successful', response);
 			dispatch(

@@ -330,7 +330,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
 	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
-	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`);
+	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`, {state: {returnPath: `/properties/${currentUUId}`}});
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
@@ -345,6 +345,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					propertyName: currentProperty?.name,
 					unitId: currentProperty?.units?.[0]?.id,
 					unitNumber: currentProperty?.units?.[0]?.unitNumber,
+					propertyId: currentUUId,
 				},
 				returnPath: `/properties/${currentUUId}`,
 			},
