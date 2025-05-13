@@ -45,28 +45,29 @@ function App() {
 
 	return (
 		<ThemeContextProvider>
-			<AnimatePresence mode='wait'>
-				<PageTransition key={location.pathname}>
+			<AuthProvider>
+				<BreadcrumbProvider>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
-						<AuthProvider>
-							<BreadcrumbProvider>
+						<AnimatePresence mode='wait'>
+							<PageTransition key={location.pathname}>
 								<RouterProvider router={router} />
-							</BreadcrumbProvider>
-						</AuthProvider>
+
+								<ControlledSnackbar
+									anchorOrigin={{
+										vertical: 'top',
+										horizontal: 'right',
+									}}
+									autoHideDuration={duration || 2000}
+									key={message}
+									message={message}
+									severity={severity}
+									open={isOpen}
+								/>
+							</PageTransition>
+						</AnimatePresence>
 					</LocalizationProvider>
-					<ControlledSnackbar
-						anchorOrigin={{
-							vertical: 'top',
-							horizontal: 'right',
-						}}
-						autoHideDuration={duration || 2000}
-						key={message}
-						message={message}
-						severity={severity}
-						open={isOpen}
-					/>
-				</PageTransition>
-			</AnimatePresence>
+				</BreadcrumbProvider>
+			</AuthProvider>
 		</ThemeContextProvider>
 	);
 }

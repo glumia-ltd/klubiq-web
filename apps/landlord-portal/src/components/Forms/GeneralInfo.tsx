@@ -31,7 +31,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ControlledSelect from '../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../components/ControlledComponents/ControlledTextField';
 import { GeneralFormStyle } from './style';
-import { Grid } from '@mui/material';
 import { useDispatch } from 'react-redux';
 // import { getAddPropertyState } from '../../store/AddPropertyStore/AddPropertySlice';
 import countriesList from '../../helpers/countries-meta.json';
@@ -676,74 +675,74 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						spacing={1}
 						justifyContent={'space-between'}
 					>
-						<Stack direction={'row'} justifyContent={'space-between'}>
-							<ControlledTextField
-								name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
-								label={`${capitalize(getNameByPropertyCategory())}`}
-								type='number'
-								formik={formik}
-								sx={{
-									width: '50%',
-								}}
-							/>
-							<ControlledTextField
-								name={`units[${currentUnitIndex}].bathrooms`}
-								label='Bathrooms'
-								type='number'
-								formik={formik}
-								sx={{
-									width: '50%',
-								}}
-							/>
+						<Stack
+							direction={{ xs: 'column', sm: 'row', md: 'row' }}
+							justifyContent={'space-between'}
+						>
+							<Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
+									label={`${capitalize(getNameByPropertyCategory())}`}
+									type='number'
+									formik={formik}
+								/>
+							</Box>
+
+							<Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].bathrooms`}
+									label='Bathrooms'
+									type='number'
+									formik={formik}
+								/>
+							</Box>
 						</Stack>
 						<Stack
-							direction={'row'}
+							direction={{ xs: 'column', sm: 'row', md: 'row' }}
 							justifyContent={'space-between'}
-							alignItems={'center'}
 						>
-							<ControlledTextField
-								name={`units[${currentUnitIndex}].toilets`}
-								label='Toilets'
-								type='number'
-								formik={formik}
-								sx={{
-									width: '50%',
-								}}
-							/>
-							<ControlledTextField
-								name={`units[${currentUnitIndex}].area.value`}
-								label='Floor Plan'
-								formik={formik}
-								sx={{
-									width: '50%',
-								}}
-								InputProps={{
-									endAdornment: (
-										<InputAdornment position='end'>
-											<Select
-												name={`units[${currentUnitIndex}].area.unit`}
-												value={measurement}
-												onChange={handleMeasurementChange}
-												defaultValue={measurement}
-												sx={{
-													'.MuiOutlinedInput-notchedOutline': {
-														border: 'none',
-													},
-												}}
-											>
-												{MEASUREMENTS.map((measurement) => (
-													<MenuItem
-														value={measurement?.unit}
-														key={`multi-${measurement?.unit}`}
-													>
-														{measurement.symbol}
-													</MenuItem>
-												))}
-											</Select>
-										</InputAdornment>
-									),
-								}}
-							/>
+							<Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].toilets`}
+									label='Toilets'
+									type='number'
+									formik={formik}
+								/>
+							</Box>
+
+							<Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
+								<ControlledTextField
+									name={`units[${currentUnitIndex}].area.value`}
+									label='Floor Plan'
+									formik={formik}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<Select
+													name={`units[${currentUnitIndex}].area.unit`}
+													value={measurement}
+													onChange={handleMeasurementChange}
+													defaultValue={measurement}
+													sx={{
+														'.MuiOutlinedInput-notchedOutline': {
+															border: 'none',
+														},
+													}}
+												>
+													{MEASUREMENTS.map((measurement) => (
+														<MenuItem
+															value={measurement?.unit}
+															key={`multi-${measurement?.unit}`}
+														>
+															{measurement.symbol}
+														</MenuItem>
+													))}
+												</Select>
+											</InputAdornment>
+										),
+									}}
+								/>
+							</Box>
 						</Stack>
 						<Stack
 							direction={'column'}
@@ -755,7 +754,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								{renderAmenities(allAmenities)}
 							</Stack>
 							<Button
-								sx={{ width: '40%' }}
+								sx={{width: { xs: '100%', sm: '40%' } }}
 								variant='klubiqTextButton'
 								startIcon={<Add />}
 								onClick={() => setOpenCustomAmenities(true)}
@@ -787,7 +786,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						justifyContent={'space-between'}
 						alignItems={'center'}
 					>
-						<Typography variant='subtitle1'>How many units are you adding?</Typography>
+						<Typography variant='subtitle1'>
+							How many units are you adding?
+						</Typography>
 						<IconButton onClick={() => setOpenAddUnit(false)}>
 							<Close />
 						</IconButton>

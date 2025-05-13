@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
-import store from './store/index.ts';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './store/index.ts';
 import App from './App.tsx';
 import './index.css';
 
@@ -25,7 +26,9 @@ window.addEventListener('load', function () {
 	ReactDOM.createRoot(document.getElementById('root')!).render(
 		<React.StrictMode>
 			<Provider store={store}>
-				<App />
+				<PersistGate loading={null} persistor={persistor}>
+					<App />
+				</PersistGate>
 			</Provider>
 		</React.StrictMode>,
 	);
