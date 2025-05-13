@@ -50,7 +50,7 @@ const routes = [
 	},
 ];
 
-export default function TenantDashboardLayout({ children } : Props) {
+export default function LoggedInUserLayout() {
 	const { pathname } = useLocation();
 
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -214,7 +214,7 @@ export default function TenantDashboardLayout({ children } : Props) {
 				}}
 			>
 				<Toolbar />
-				{ children }
+				<Outlet />
 			</Box>
 		</Box>
 	);

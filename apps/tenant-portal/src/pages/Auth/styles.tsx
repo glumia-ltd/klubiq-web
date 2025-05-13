@@ -1,4 +1,20 @@
 export const styles = {
+	container: {
+		width: {
+			xs: '80vw',
+			sm: '35rem',
+			md: '711px',
+		},
+		minHeight: '50vh',
+		border: '0.4px solid #D0D0D0',
+		backgroundColor: 'white',
+		borderRadius: '24px',
+		p: {
+			xs: '15px 30px',
+			sm: '60px 100px!important',
+			md: '80px 120px!important',
+		},
+	},
 	title: {
 		textAlign: 'center',
 		fontWeight: 'semibold',
@@ -18,6 +34,6 @@ export const styles = {
 	text: {
 		color: '#717171',
 		fontSize: '14px',
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 };
