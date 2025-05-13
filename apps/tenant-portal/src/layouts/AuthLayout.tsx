@@ -1,11 +1,7 @@
 import { Grid } from '@mui/material';
-import { FC } from 'react';
+import { Outlet } from 'react-router-dom';
 
-type LoginLayoutType = {
-	children: JSX.Element
-};
-
-const LoginLayout: FC<LoginLayoutType> = ({ children }) => {
+const AuthLayout = () => {
 	return (
 		<Grid
 			container
@@ -23,11 +19,11 @@ const LoginLayout: FC<LoginLayoutType> = ({ children }) => {
 					backgroundColor: '#F8FBFF',
 				},
 			}}
-			columnSpacing={{ xss: 1, sm: 1, md: 1 }}
+			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
 		>
-			{children}
+			<Outlet />
 		</Grid>
 	);
 };
 
-export default LoginLayout;
+export default AuthLayout;

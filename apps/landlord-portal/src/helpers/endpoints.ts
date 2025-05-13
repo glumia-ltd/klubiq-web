@@ -51,9 +51,9 @@ export const leaseEndpoints = {
 	addNewTenantToLease: (leaseId: number | string) => `/leases/${leaseId}/addTenants`,
 };
 export const tenantEndpoints = {
-	// getTenantMetaData: () => '/public/tenant-metadata',
-	// getTenants: () => '/tenants',
-	// getTenant: (tenantId: string) => `/tenants/${tenantId}`,
+	getTenantMetaData: () => '/public/tenant-metadata',
+	getTenants: () => '/tenants/organization',
+	getSingleTenant: (tenantId: string) => `/tenants/${tenantId}`,
 	onboardTenant: () => '/auth/onboard-tenant',
 	createTenant: () => '/auth/create-tenant',
 	// 	editTenant: (tenantId: string) => `/tenants/${tenantId}`,
