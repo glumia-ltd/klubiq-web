@@ -34,14 +34,14 @@ export const TenantTable: FC<TenantTableProps> = ({
 			label: 'Name',
 			align: 'center',
 			render: (tenant) => (
-				<Box display='flex' alignItems={'center'} justifyContent={'center'}>
+				<Box display="flex" alignItems="center" justifyContent="center">
 					<DynamicAvatar
-						items={[tenant?.profile?.profilePicUrl || '']}
-						size='medium'
+						items={[tenant?.tenant?.__profile__?.profilePicUrl || '']}
+						size="medium"
 						showName={false}
 					/>
-					<Typography variant='body2' ml='0.5rem'>
-						{`${tenant?.profile?.firstName || 'Name'} ${tenant?.profile?.lastName || 'name'}`.trim()}
+					<Typography variant="body2" ml="0.5rem">
+						{`${tenant?.tenant?.__profile__?.firstName || 'Name'} ${tenant?.tenant?.__profile__?.lastName || 'name'}`.trim()}
 					</Typography>
 				</Box>
 			),
@@ -58,14 +58,10 @@ export const TenantTable: FC<TenantTableProps> = ({
 		},
 		{
 			key: 'propertyDetails.address.addressLine1',
-			label: 'Address Line 1',
+			label: 'Address',
 			align: 'center',
 		},
-		{
-			key: 'propertyDetails.address.addressLine2',
-			label: 'Address Line 2',
-			align: 'center',
-		},
+		
 		{
 			key: 'leaseDetails.status',
 			label: 'Status',
