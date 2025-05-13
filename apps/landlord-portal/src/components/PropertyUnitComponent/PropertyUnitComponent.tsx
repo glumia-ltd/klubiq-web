@@ -330,7 +330,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
 	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
-	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`, {state: {returnPath: `/properties/${currentUUId}`}});
+	const handleEditProperty = () => navigate(
+		`/properties/${currentUUId}/edit`, 
+		{state: {
+			returnPath: `/properties/${currentUUId}`,
+		}
+	});
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>

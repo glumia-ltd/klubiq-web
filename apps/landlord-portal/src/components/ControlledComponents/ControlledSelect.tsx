@@ -26,6 +26,7 @@ type ControlledSelectProps = {
 	placeholder?: string;
 	required?: boolean;
 	defaultValue?: string;
+	onChange?: (e: React.ChangeEvent<any>) => void;
 };
 
 const ControlledSelect: React.FC<ControlledSelectProps> = ({
@@ -39,6 +40,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 	color,
 	required,
 	defaultValue,
+	onChange,
 	...props
 }) => {
 	const fieldValue = getIn(formik.values, name);
@@ -81,7 +83,7 @@ const ControlledSelect: React.FC<ControlledSelectProps> = ({
 					id={name}
 					sx={{ pl: '8px', pr: '8px' }}
 					value={props.value || fieldValue}
-					onChange={!disableOnChange ? formik.handleChange : undefined}
+					onChange={!disableOnChange ? formik.handleChange : onChange}
 					onBlur={formik.handleBlur}
 					defaultValue={defaultValue}
 					MenuProps={{

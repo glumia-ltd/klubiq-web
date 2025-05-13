@@ -467,9 +467,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 										}
 										aria-controls={`unit-content-${unitIndex}`}
 										id={`unit-header-${unitIndex}`}
-										sx={GeneralFormStyle.titleDiv}
+										// sx={GeneralFormStyle.titleDiv}
 									>
-										<Typography variant='h6'>
+										<Typography variant='h6' mt={1}>
 											{getIn(formik.values, `units[${unitIndex}].unitNumber`)}
 										</Typography>
 										<Stack
@@ -520,7 +520,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									<AccordionDetails>
 										<Stack spacing={2} sx={GeneralFormStyle.cardContent}>
 											<Stack spacing={1}>
-												<Typography variant='h6' sx={GeneralFormStyle.subText}>
+												<Typography variant='subtitle1'>
 													Unit name
 												</Typography>
 												<ControlledTextField
@@ -529,7 +529,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 												/>
 											</Stack>
 
-											<Typography variant='h3' sx={GeneralFormStyle.subText}>
+											<Typography variant='subtitle1'>
 												Unit Details
 											</Typography>
 
@@ -599,9 +599,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														<Chip
 															key={`--${amenity}--${amenityIndex}`}
 															sx={{
-																border: '1px solid #757575',
+																border: '1px solid primary.main',
 																'& .MuiChip-deleteIcon': {
-																	color: '#757575',
+																	color: 'primary.main',
 																},
 															}}
 															label={amenity}
