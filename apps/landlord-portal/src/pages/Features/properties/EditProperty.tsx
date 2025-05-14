@@ -306,15 +306,11 @@ const EditProperty = () => {
 					<Stack
 						direction='row'
 						alignItems='center'
-						onClick={handleReturnToPropertyClick}
 					>
-						<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
-						<Typography
-							sx={addPropertyStyles.addPropertiesText}
-							fontWeight={600}
-						>
-							{currentProperty?.name}
-						</Typography>
+						<Button variant='text' onClick={handleReturnToPropertyClick} startIcon={<ArrowLeftIcon />}>
+						{currentProperty?.name}
+						</Button>
+						
 					</Stack>
 				</Stack>
 

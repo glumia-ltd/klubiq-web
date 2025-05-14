@@ -538,13 +538,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
 			feature: {
 				label: 'Properties',
-			icon: (
-				<ViewListOutlinedIcon
-					key={1}
-					aria-label='Properties'
-					onClick={() => navigate(`/properties`)}
-				/>
-			),
+				icon: (
+					<ViewListOutlinedIcon
+						key={1}
+						aria-label='Properties'
+						onClick={() => navigate(`/properties`)}
+					/>
+				),
 				showIcon: true,
 				isSectionRoot: true,
 				path: '/leases',
@@ -570,6 +570,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			};
 		}
 		updateBreadcrumb(newBreadcrumbs);
+
+		// Clear breadcrumbs on unmount
+		return () => {
+			multiUnitMode = false;
+			updateBreadcrumb({});
+		};
+		
 	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
 	return (
 		<Grid container spacing={2}>
@@ -577,14 +584,14 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				<Breadcrumb />
 			</Grid>
 
-			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+		{!multiUnitMode && <Grid item xs={12} sx={styles.actionButtonContainerStyle}>
 				<Button
 					ref={anchorRef}
 					variant='klubiqMainButton'
 					onClick={handleToggle}
+					endIcon={<MoreVertIcon />}
 				>
-					<Typography fontWeight={500}>Action</Typography>
-					<MoreVertIcon />
+					Action
 				</Button>
 				<Popper
 					open={open}
@@ -635,7 +642,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						</Grow>
 					)}
 				</Popper>
-			</Grid>
+			</Grid>}
 
 			<Grid item xs={12}>
 				{currentProperty?.purpose?.displayText && (
