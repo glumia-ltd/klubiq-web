@@ -465,12 +465,12 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 						width={'100%'}
 						mt={10}
 					>
-						<Button variant='text' sx={LeaseFormStyle.button}>
+						<Button variant='klubiqTextButton'>
 							Cancel
 						</Button>
 						<Button
-							variant='contained'
-							sx={LeaseFormStyle.button}
+							variant='klubiqMainButton'
+							//sx={LeaseFormStyle.button}
 							onClick={handleAddLease}
 							disabled={disabledButton}
 						>

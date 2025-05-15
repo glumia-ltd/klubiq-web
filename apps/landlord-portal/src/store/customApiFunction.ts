@@ -13,16 +13,16 @@ export const customApiFunction = async (args: any) => {
 
 		 // Check if result.data exists and has the expected structure
 		 if (result.data && result.data.data !== undefined) {
-			return { data: result.data.data };
+			return { data: result.data.data, status: result.status };
 		  }
 		  
 		  // If result.data exists but doesn't have the expected structure, return it as is
 		  if (result.data) {
-			return { data: result.data };
+			return { data: result.data, status: result.status };
 		  }
 	  
 		  // If no data, return empty object
-		  return { data: {} };
+		  return { data: {}, status: result.status };
 	} catch (error: any) {
 		return {
 			error: {

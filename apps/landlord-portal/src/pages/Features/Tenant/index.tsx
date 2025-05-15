@@ -1,27 +1,36 @@
 import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
 import { styles } from './styles';
-import Filter from '../../../components/Filter/Filter';
+// import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import { TenantType } from '../../../shared/type';
-
-const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
+import {
+	// useGetTenantFilterMetaDataQuery,
+	useGetTenantsQuery,
+} from '../../../store/TenantStore/tenantApiSlice';
+const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Tenant = () => {
-	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchText, setSearchText] = useState('');
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
-		sortBy: 'createdDate',
-		order: 'ASC',
+		// sortBy: 'createdDate',
+		// order: 'ASC',
 	});
 	const inputRef = useRef<HTMLElement>(null);
-	const filterObjectLength = Object.keys(filter).length;
+	// const filterObjectLength = Object.keys(filter).length;
+	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	const { data: tenantData } = useGetTenantsQuery({
+		...defaultParams,
+	});
+	const allTenants = tenantData?.pageData || [];
+	const pageCount = tenantData?.meta?.pageCount || 0;
+	// const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
 
@@ -50,11 +59,11 @@ const Tenant = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-	}, [filter, getCurrentPage]);
+	}, [getCurrentPage]);
 
 	const handleRowClick = useCallback(
 		(tenant: TenantType) => {
-			navigate(`/tenants/tenant-details/${tenant.id}`, {
+			navigate(`/tenants/tenant-details/${tenant.id || tenant.tenantId}`, {
 				state: {
 					selectedRow: tenant,
 				},
@@ -62,94 +71,6 @@ const Tenant = () => {
 		},
 		[navigate],
 	);
-	const allTenants: any[] = Array.from({ length: 105 }, (_, i) => ({
-		id: `${i + 1}`,
-		isPrimaryTenant: true,
-		profile: {
-			profilePicUrl: '',
-			firstName: `Tenant${i + 1}`,
-			lastName: 'Smith',
-			email: `tenant${i + 1}@example.com`,
-			phoneNumber: '123-456-7890',
-		},
-		propertyDetails: {
-			name: `Property ${i % 5}`,
-			unitNumber: `Unit ${i + 1}`,
-			address: {
-				addressLine1: `${100 + i} Main Street`,
-				addressLine2: `Suite ${i + 1}`,
-			},
-		},
-		leaseDetails: {
-			startDate: '2023-01-01',
-			endDate: '2024-01-01',
-			status: i % 2 === 0 ? 'Active' : 'Pending',
-			rentAmount: '1500',
-			paymentFrequency: 'Monthly',
-			id: i,
-			isArchived: false,
-			isDraft: false,
-			name: '',
-			rentDueDay: 0,
-			securityDeposit: '',
-			tenants: [],
-		},
-	}));
-	const filterOptions = [
-		{
-			id: 'status',
-			title: 'Tenant Status',
-			options: ['Active', 'Pending'].map((s) => ({ label: s, value: s })),
-		},
-		{
-			id: 'propertyName',
-			title: 'Property Name',
-			options: Array.from({ length: 5 }, (_, i) => `Property ${i}`).map(
-				(p) => ({ label: p, value: p }),
-			),
-		},
-		{
-			id: 'paymentFrequency',
-			title: 'Payment Frequency',
-			options: ['Monthly'].map((f) => ({ label: f, value: f })),
-		},
-
-		{
-			id: 'date',
-			title: 'Date',
-			options: [
-				{ label: 'Last 7 days', value: 'last7Days' },
-				{ label: 'Last 30 days', value: 'last30Days' },
-				{ label: 'Last 60 days', value: 'last60Days' },
-				{ label: 'Last 90 days', value: 'last90Days' },
-			],
-		},
-	];
-
-	const filteredTenants = allTenants.filter((tenant) => {
-		const fullName =
-			`${tenant.profile.firstName} ${tenant.profile.lastName}`.toLowerCase();
-		const matchesSearch = fullName.includes(searchText.toLowerCase());
-		const matchesStatus =
-			!filter.status || tenant.leaseDetails.status === filter.status;
-		const matchesProperty =
-			!filter.propertyName ||
-			tenant.propertyDetails.name === filter.propertyName;
-		const matchesFrequency =
-			!filter.paymentFrequency ||
-			tenant.leaseDetails.paymentFrequency === filter.paymentFrequency;
-		return (
-			matchesSearch && matchesStatus && matchesProperty && matchesFrequency
-		);
-	});
-
-	// Apply pagination
-	const startIndex = (currentPage - 1) * defaultParams.take;
-	const paginatedTenants = filteredTenants.slice(
-		startIndex,
-		startIndex + defaultParams.take,
-	);
-	const pageCount = Math.ceil(filteredTenants.length / defaultParams.take);
 
 	return (
 		<>
@@ -160,8 +81,7 @@ const Tenant = () => {
 					sx={styles.buttonContainer}
 				>
 					<Button
-						variant='contained'
-						sx={styles.addTenantButton}
+						variant='klubiqMainButton'
 						onClick={navigateToAddTenant}
 					>
 						{/* <LeftArrowIcon /> */}
@@ -183,7 +103,8 @@ const Tenant = () => {
 						/>
 					</Paper>
 				</Stack>
-				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
+				{/* Commented out for now as we don't have filter options */}
+				{/* <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
 					<Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
@@ -191,11 +112,11 @@ const Tenant = () => {
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
 					/>
-				</Stack>
+				</Stack> */}
 				<Stack>
 					<TenantTable
 						title='Tenant'
-						allTenant={paginatedTenants}
+						allTenant={allTenants}
 						onRowClick={(tenant) => {
 							console.log('here');
 							handleRowClick(tenant);

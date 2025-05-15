@@ -1,8 +1,4 @@
 export const SharedStyles = {
-	actionButton: {
-		backgroundColor: 'primary.main',
-		color: 'white',
-	},
 	iconStyle: {
 		width: '24px',
 		height: '24px',

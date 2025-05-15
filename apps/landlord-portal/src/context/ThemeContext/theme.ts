@@ -49,6 +49,21 @@ const filterResultCountStyle = {
 	fontWeight: 700,
 	lineHeight: '2.375rem',
 };
+const primaryColors = {
+	mainBlue: '#002147',
+	lightBlue: '#005CFF',
+	white: '#FFFFFF',
+	black: '#000000',
+}
+const secondaryColors = {
+	yellow: '#FFD700',
+	blue: '#6699CC',
+	lightBlue: '#E2EAF2',
+}
+const backgroundColors = {
+	light: '#F3F6F8',
+	dark: '#1B1B1B',
+}
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -59,39 +74,43 @@ export const LightTheme: Theme = createTheme({
 			xl: 1536,
 		},
 	},
-
+	spacing: 8,
 	palette: {
 		mode: 'light',
 		primary: {
-			main: '#002147',
-			light: '#0096FF',
-			dark: '#1F305E',
-			contrastText: '#FFFFFF',
+			main: primaryColors.mainBlue,
+			light: primaryColors.lightBlue,
+			dark: primaryColors.mainBlue,
+			contrastText: primaryColors.white, 
 		},
 		secondary: {
-			main: '#FFD700',
-			light: '#6699CC',
-			dark: '#1b1b1b',
-			contrastText: '#ffffff',
+			main: secondaryColors.yellow,
+			light: secondaryColors.blue,
+			dark: backgroundColors.dark,
+			contrastText: primaryColors.white,
 		},
 		background: {
-			default: '#F3F6F8',
-			paper: '#F3F6F8',
+			default: backgroundColors.light,
+			paper: backgroundColors.light,
 		},
 		notification: {
-			light: '#002147',
+			light: primaryColors.mainBlue,
 		},
 		buttonColors: {
 			common: {
 				// color:
 			},
 		},
+		// error:{},
+		// warning:{},
+		// info:{},
+		// success:{},
 	},
 	components: {
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					background: '#F3F6F8',
+					background: backgroundColors.light,
 					height: '100%',
 				},
 			},
@@ -103,52 +122,148 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-
 		MuiButton: {
 			styleOverrides: {
 				root: {
-					// color: '#002147',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
+					display: 'flex',
+					fontWeight: 'semi-bold',
+					padding: '0.5rem 1rem',
+					borderRadius: '10px',
+					gap: '0.5rem',
+					textTransform: 'capitalize',
 				},
 				outlined: {
-					borderColor: '#002147',
-					color: '#002147',
+					borderColor: primaryColors.mainBlue,
+					color: primaryColors.mainBlue,
 					opacity: '0.8',
 					'&:hover': {
 						opacity: '1',
-						color: '#002147',
+						color: primaryColors.mainBlue,
 						border: '1.6px solid #002147',
 					},
 				},
-
-				// contained: {
-				// 	color: '#ffffff',
-				// 	borderColor: '#002147',
-				// },
 			},
-
 			variants: [
 				{
-					props: { variant: 'propertyButton' },
+					props: { variant: 'klubiqMainButton' },
 					style: {
-						background: '#ffffff',
-						color: '#002147',
-						opacity: '0.8',
+						background: primaryColors.mainBlue,
+						color: primaryColors.white,
 						'&:hover': {
-							// opacity: '1',
-							color: '#002147',
-							// border: '1.6px solid #FFFFFF',
+							cursor: 'pointer',
+							color: backgroundColors.light,
+							background: secondaryColors.blue,
+						},
+						'&:disabled': {
+							opacity: '1',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
 						},
 					},
 				},
+				{
+					props: { variant: 'klubiqSecondaryButton' },
+					style: {
+						background:secondaryColors.blue, 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							background:primaryColors.mainBlue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTertiaryButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: secondaryColors.lightBlue,
+							background:backgroundColors.dark,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqAccentButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: '#0D0D0D',
+							background:backgroundColors.dark,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTextButton' },
+					style: {
+						color: backgroundColors.dark,
+						'&:hover': {
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqOutlinedButton' },
+					style: {
+						color: backgroundColors.dark,
+						border: '1px solid #1B1B1B',
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
 				{
 					props: { variant: 'filterButton' },
 					style: {
 						display: 'flex',
-						color: '#002147',
+						color: primaryColors.mainBlue,
 						gap: '8px',
 						padding: '8px',
 						borderRadius: '8px',
@@ -158,7 +273,7 @@ export const LightTheme: Theme = createTheme({
 				{
 					props: { variant: 'borderlessFilterButton' },
 					style: {
-						color: '#002147',
+						color: primaryColors.mainBlue,
 						padding: '0',
 						outline: 'none',
 						display: 'flex',
@@ -185,8 +300,8 @@ export const LightTheme: Theme = createTheme({
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
-					backgroundColor: '#FFFFFF',
-					color: '#1B1B1B',
+					backgroundColor: primaryColors.white,
+					color: backgroundColors.dark,
 				},
 			},
 		},
@@ -198,7 +313,7 @@ export const LightTheme: Theme = createTheme({
 				},
 				paper: {
 					display: 'flex',
-					background: '#002147',
+					background: primaryColors.mainBlue,
 					alignItems: 'center',
 					maxWidth: '250px',
 					minWidth: '100px',
@@ -210,7 +325,7 @@ export const LightTheme: Theme = createTheme({
 		MuiListItemIcon: {
 			styleOverrides: {
 				root: {
-					color: '#FFFFFF',
+					color: primaryColors.white,
 				},
 			},
 		},
@@ -218,7 +333,7 @@ export const LightTheme: Theme = createTheme({
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
-					color: '#FFFFFF',
+					color: primaryColors.white,
 					fontSize: '1.5rem',
 				},
 			},
@@ -245,7 +360,7 @@ export const LightTheme: Theme = createTheme({
 		MuiCard: {
 			styleOverrides: {
 				root: {
-					background: '#ffffff',
+					background: primaryColors.white,
 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
@@ -266,7 +381,7 @@ export const LightTheme: Theme = createTheme({
 				{
 					props: { variant: 'active' },
 					style: {
-						backgroundColor: '#FFFFFF',
+						backgroundColor: primaryColors.white,
 					},
 				},
 			],
@@ -295,15 +410,15 @@ export const LightTheme: Theme = createTheme({
 				{
 					props: { variant: 'rent' },
 					style: {
-						backgroundColor: '#0096FF',
-						color: '#FFFFFF',
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
 					},
 				},
 				{
 					props: { variant: 'sale' },
 					style: {
 						backgroundColor: '#FF0000',
-						color: '#FFFFFF',
+						color: primaryColors.white,
 					},
 				},
 				{
@@ -450,27 +565,30 @@ export const DarkTheme: Theme = createTheme({
 			xl: 1536,
 		},
 	},
-
+	spacing: 8,
 	palette: {
 		mode: 'dark',
 		primary: {
 			main: '#0088F0',
-			light: '#0096FF',
-			dark: '#1F305E',
+			light: primaryColors.lightBlue,
+			dark: primaryColors.mainBlue,
+			contrastText: primaryColors.white,
 		},
 		secondary: {
-			main: '#FFD700',
-			light: '#6699CC',
-			dark: '#1b1b1b',
-			contrastText: '#ffffff',
+			main: secondaryColors.yellow,
+			light: secondaryColors.blue,
+			dark: backgroundColors.dark,
+			contrastText: primaryColors.white,
 		},
 		notification: {
 			light: '#B8D9FF',
 		},
 
 		background: {
-			default: '#0D0D0D',
-			paper: '#0D0D0D',
+			// default: '#0D0D0D',
+			// paper: '#0D0D0D',
+			default: backgroundColors.dark,
+			paper: backgroundColors.dark,
 		},
 	},
 
@@ -512,7 +630,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				colorPrimary: {
 					background: '#0D0D0D',
-					color: '#FFFFFF',
+					color: primaryColors.white,
 					boxShadow: '0px 0px 0px 1px #6699CC',
 				},
 			},
@@ -543,14 +661,14 @@ export const DarkTheme: Theme = createTheme({
 					// '&.Mui-disabled': {
 					//     background: grey[100],
 					// }
-					color: '#FFFFFF',
+					color: primaryColors.white,
 				},
 			},
 		},
 		MuiListItemText: {
 			styleOverrides: {
 				root: {
-					color: '#FFFFFF',
+					color: primaryColors.white,
 					fontSize: '1.5rem',
 				},
 			},
@@ -568,7 +686,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiDialog: {
 			styleOverrides: {
 				paper: {
-					background: '#0DODOD',
+					background: '#161616',
 					backgroundImage: 'none',
 				},
 			},
@@ -576,40 +694,152 @@ export const DarkTheme: Theme = createTheme({
 		MuiButton: {
 			styleOverrides: {
 				root: {
-					color: '#FFFFFF',
+					color: primaryColors.white,
+					display: 'flex',
+					fontWeight: 'semi-bold',
+					padding: '0.5rem 1rem',
+					borderRadius: '10px',
+					gap: '0.5rem',
+					textTransform: 'capitalize',
 				},
 				outlined: {
-					borderColor: '#FFFFFF',
-					color: '#FFFFFF',
+					borderColor: primaryColors.white,
+					color: primaryColors.white,
 					opacity: '0.3',
 					'&:hover': {
 						opacity: '1',
-						color: '#FFFFFF',
+						color: primaryColors.white,
 						border: '1.6px solid #FFFFFF',
 					},
-				},
-				// contained: {
-				// 	backgroundColor: '#B8D9FF',
-				// 	borderColor: '#B8D9FF',
-				// 	color: '#1B1B1B',
-				// 	'&:hover': {
-				// 		color: '#FFFFFF',
-				// 	},
-				// },
+				}
 			},
 			variants: [
 				{
-					props: { variant: 'propertyButton' },
+					props: { variant: 'klubiqMainButton' },
 					style: {
-						background: '#ffffff',
-						color: '#0088F0',
-
+						background:'#0088F0', 
+						color: primaryColors.white,
 						'&:hover': {
-							color: '#0088F0',
+							opacity: '1',
+							cursor: 'pointer',
+							color: '#0D0D0D',
+							background:secondaryColors.blue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqSecondaryButton' },
+					style: {
+						background:secondaryColors.blue, 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:secondaryColors.lightBlue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTertiaryButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: '#0D0D0D',
+							background:secondaryColors.blue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
 						},
 					},
 				},
 
+				{
+					props: { variant: 'klubiqAccentButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						opacity: '1',
+						display: 'flex',
+						fontWeight: 'semi-bold',
+						padding: '0.5rem 1rem',
+						borderRadius: '10px',
+						gap: '8px',
+						textTransform: 'capitalize',
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: '#0D0D0D',
+							background:secondaryColors.blue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTextButton' },
+					style: {
+						color: secondaryColors.lightBlue,
+						'&:hover': {
+							//opacity: '0.5',
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqOutlinedButton' },
+					style: {
+						color: secondaryColors.lightBlue,
+						border: '1px solid #E2EAF2',
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
 				{
 					props: { variant: 'filterButton' },
 					style: {
@@ -661,6 +891,31 @@ export const DarkTheme: Theme = createTheme({
 					props: { variant: 'active' },
 					style: {
 						background: '#161616',
+					},
+				},
+			],
+		},
+		MuiChip: {
+			variants: [
+				{
+					props: { variant: 'rent' },
+					style: {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+				},
+				{
+					props: { variant: 'sale' },
+					style: {
+						backgroundColor: '#FF0000',
+						color: primaryColors.white,
+					},
+				},
+				{
+					props: { variant: 'propertyType' },
+					style: {
+						backgroundColor: primaryColors.white,
+						color: primaryColors.mainBlue,
 					},
 				},
 			],

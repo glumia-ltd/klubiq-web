@@ -287,17 +287,17 @@ const MFASetUp = () => {
 					</Box>
 				</DialogContent>
 				<DialogActions>
-					<Button variant='outlined' onClick={handleClose}>
+					<Button variant='klubiqOutlinedButton' onClick={handleClose}>
 						Cancel
 					</Button>
 					{loading ? (
 						<LoadingButton
 							loading
 							loadingPosition='center'
-							variant='outlined'
+							variant='klubiqOutlinedButton'
 						></LoadingButton>
 					) : (
-						<Button variant='contained' type='submit'>
+						<Button variant='klubiqMainButton' type='submit'>
 							{' '}
 							{modalContent.actionText}{' '}
 						</Button>
@@ -508,13 +508,12 @@ const MFASetUp = () => {
 										sx={styles.enrollActionContainerStyle}
 									>
 										<Button
-											sx={styles.cancelEnrollStyle}
-											variant='contained'
+											variant='klubiqOutlinedButton'
 											href={continueUrl ? continueUrl : '/login'}
 										>
 											Cancel
 										</Button>
-										<Button onClick={activateTOTP} variant='contained'>
+										<Button onClick={activateTOTP} variant='klubiqMainButton'>
 											Enroll
 										</Button>
 									</Stack>

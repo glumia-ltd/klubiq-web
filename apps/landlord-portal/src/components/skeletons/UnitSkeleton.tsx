@@ -17,7 +17,6 @@ import {
 	VacantHomeIcon,
 	HomeIcon,
 } from '../Icons/CustomIcons';
-import { MaintenanceTableComponent } from '../MaintenaceTableComponent/MaintenanceTableComponent';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
@@ -91,7 +90,7 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='propertyButton' sx={styles.actionButtonStyle}>
+					<Button variant='klubiqMainButton'>
 						<Skeleton variant='rectangular' width='30px' height='10px' />
 						<MoreVertIcon />
 					</Button>
@@ -175,7 +174,6 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 
 				{/* MAINTENANCE TAB */}
 
-				{tabValue === 2 && <MaintenanceTableComponent maintenanceData={[]} />}
 
 				{/* DOCUMENT TAB */}
 

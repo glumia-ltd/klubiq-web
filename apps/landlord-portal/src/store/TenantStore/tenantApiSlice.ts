@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { tenantEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
@@ -9,43 +8,43 @@ export const tenantApiSlice = createApi({
 	baseQuery: customApiFunction,
 	tagTypes: [API_TAGS.TENANT, API_TAGS.TENANT_FILTER_METADATA],
 	endpoints: (builder) => ({
-		// getTenantFilterMetaData: builder.query<any, void>({
-		// 	query: () => ({
-		// 		url: tenantEndpoints.getTenantMetaData(),
-		// 		method: 'GET',
-		// 	}),
-		// 	providesTags: ['tenant-filter-metadata'],
-		// }),
+		getTenantFilterMetaData: builder.query<any, void>({
+			query: () => ({
+				url: tenantEndpoints.getTenantMetaData(),
+				method: 'GET',
+			}),
+			providesTags: [API_TAGS.TENANT_FILTER_METADATA],
+		}),
 
-		// getTenants: builder.query<GetLeasesResponse, { [key: string]: any }>({
-		// 	query: (params) => ({
-		// 		url: tenantEndpoints.getTenants(),
-		// 		method: 'GET',
-		// 		params,
-		// 	}),
-		// 	providesTags: ['tenants'],
-		// }),
-		// getSingleTenantById: builder.query<any, { id: string | number }>({
-		// 	query: (params) => ({
-		// 		url: tenantEndpoints.getTenant(params?.id),
-		// 		method: 'GET',
-		// 	}),
-		// 	providesTags: ['tenants/{id}'],
-		// }),
-		onboardTenant: builder.mutation({
-			query: (body) => ({
+		getTenants: builder.query<GetTenantsResponse, { [key: string]: any }>({
+			query: (params) => ({
+				url: tenantEndpoints.getTenants(),
+				method: 'GET',
+				params,
+			}),
+			providesTags: [API_TAGS.TENANT],
+		}),
+		getSingleTenantById: builder.query<any, { id: string | number }>({
+			query: (params) => ({
+				url: tenantEndpoints.getSingleTenant(String(params?.id)),
+				method: 'GET',
+			}),
+			providesTags: [API_TAGS.TENANT],
+		}),
+		onboardTenant: builder.mutation<any, { propertyId: string; body: any }>({
+			query: ({ body }) => ({
 				url: tenantEndpoints.onboardTenant(),
 				method: 'POST',
 				body,
 			}),
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+			async onQueryStarted({ propertyId }, { dispatch, queryFulfilled }) {
 				try {
 					await queryFulfilled;
 					invalidateMultipleTags(dispatch, [
 						API_TAGS.TENANT,
 						API_TAGS.LEASE,
-						API_TAGS.PROPERTY,
 						API_TAGS.TENANT_FILTER_METADATA,
+						{ type: API_TAGS.PROPERTY, id: propertyId }
 					]);
 				} catch (error) {
 					console.error(error);
@@ -74,9 +73,10 @@ export const tenantApiSlice = createApi({
 	}),
 });
 
-// interface GetTenantsResponse {
-// 	pageData: any;
-// 	meta: any;
-// }
+interface GetTenantsResponse {
+	pageData: any;
+	meta: any;
+}
 
-export const { useOnboardTenantMutation, useAddNewTenantWithoutLeaseMutation } = tenantApiSlice;
+export const { useOnboardTenantMutation, useAddNewTenantWithoutLeaseMutation,useGetTenantFilterMetaDataQuery,
+	useGetTenantsQuery,useGetSingleTenantByIdQuery } = tenantApiSlice;

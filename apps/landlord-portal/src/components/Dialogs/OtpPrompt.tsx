@@ -75,14 +75,14 @@ const OTPPrompt = ({
 						justifyContent: 'flex-end',
 					}}
 				>
-					<Button variant='outlined' onClick={onCancel}>
+					<Button variant='klubiqOutlinedButton' onClick={onCancel}>
 						Cancel
 					</Button>
 					<LoadingButton
 						onClick={onVerifyOtpClick}
 						loading={verifying}
 						loadingIndicator='verifying...'
-						variant='contained'
+						variant='klubiqMainButton'
 					>
 						Verify
 					</LoadingButton>

@@ -524,7 +524,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			{enableReset && (
 				<Button
 					type='button'
-					variant='text'
+					variant='klubiqTextButton'
 					onClick={handleReset}
 					disabled={isSubmitting || !dirty}
 				>
@@ -538,7 +538,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 				<span>
 					<Button
 						type='submit'
-						variant='contained'
+						variant='klubiqMainButton'
 						disabled={isSubmitting || !isValid || !dirty}
 					>
 						{submitButtonText}

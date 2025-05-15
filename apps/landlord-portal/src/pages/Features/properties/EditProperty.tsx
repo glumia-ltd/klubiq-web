@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Card, Typography, Button } from '@mui/material';
+import { Stack, Card, Button } from '@mui/material';
 import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
 
@@ -18,11 +18,12 @@ import { GeneralFormStyle } from '../../../components/Forms/style';
 import addPropertyStyles from '../../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
 import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { omit, transform } from 'lodash';
+import { forEach, isEqual, omit, transform } from 'lodash';
 import { useEffect } from 'react';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 import { InputSkeleton } from '../../../components/skeletons/InputSkeleton';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 const validationSchema = yup.object({
 	name: yup.string().required('Please enter the property name'),
@@ -74,10 +75,14 @@ interface IunitType extends AddPropertyType {
 	propertyImages?: [];
 }
 
+type EditPropertyState = {
+	returnPath: string;
+}
+
 const EditProperty = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
-
+	const {returnPath} = location.state as EditPropertyState;
 	const currentUUId = location.pathname.split('/')[2]!;
 
 	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
@@ -147,17 +152,18 @@ const EditProperty = () => {
 		},
 		validationSchema,
 		onSubmit,
+		
 	});
 
+
 	const handleReturnToPropertyClick = () => {
-		navigate(-1);
+		navigate(returnPath);
 	};
 
 	const transformedProperties = transform(
 		currentProperty?.units,
 		(result, unit) => {
-			const newUnit = omit(unit, 'leases', 'images');
-
+			const newUnit = omit(unit, 'leases', 'images', 'totalTenants', 'tenants', 'lease', 'totalLeases');
 			result.units.push(newUnit);
 		},
 		{ units: [] as any[] },
@@ -198,19 +204,28 @@ const EditProperty = () => {
 			isManualAddress: true,
 			unit: formik.values.address?.unit,
 		},
-		units: transformedProperties,
+		units: formik.values.units,
 	};
+	const getCategoryMetaData = (categoryId: number) => {
+		const categoryMetaData = propertyMetaData?.categories?.find(
+			(category: any) =>
+				Number(category.id) === Number(categoryId),
+		);
+
+		return categoryMetaData?.metaData;
+	};
+	const categoryFieldMap = [
+		{ from: 'offices', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasBedrooms },
+		{ from: 'offices', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasBedrooms },
+	  ];
 
 	useEffect(() => {
-		const getCategoryMetaData = () => {
-			const categoryMetaData = propertyMetaData?.categories?.find(
-				(property: any) =>
-					Number(property.id) === Number(initialData.categoryId),
-			);
-
-			return categoryMetaData?.metaData;
-		};
-		const categoryMetaData = getCategoryMetaData();
+		
+		const categoryMetaData = getCategoryMetaData(initialData.categoryId);
 
 		formik.setValues({
 			...formik.values,
@@ -222,168 +237,183 @@ const EditProperty = () => {
 
 	const handleEditProperty = async () => {
 		try {
-			await editProperty({
+			const response = await editProperty({
 				uuid: currentUUId,
 				data: { ...editedData },
 			});
-
+			consoleLog(response, 'Edit Property Response');
+			
+			if (response.error) {
+				throw new Error(screenMessages.property.edit.error);
+			} else {
+				dispatch(
+					openSnackbar({
+						message: screenMessages.property.edit.success,
+						severity: 'info',
+						isOpen: true,
+						duration: 2000,
+					}),
+				);
+				consoleLog('Property edited successfully... navigating to property page');
+				navigate(returnPath);
+			}
+		} catch (e) {
 			dispatch(
 				openSnackbar({
-					message: `Changes made to your property have been updated`,
-					severity: 'info',
+					message: `There was an error editing the property. 
+					\n${screenMessages.property.edit.error}`,
+					severity: 'error',
 					isOpen: true,
-					duration: 2000,
+					duration: 7000,
 				}),
 			);
-
-			navigate(-1);
-		} catch (e) {
 		}
+	};
+
+	const getSpecValueByCategory = (oldMetadata: CategoryMetaDataType, newMetadata: CategoryMetaDataType) => {
+		forEach(formik.values.units, (unit) => {
+		  for (const { from, to, condition } of categoryFieldMap) {
+			if (condition(oldMetadata, newMetadata)) {
+				(unit as any)[to] = (unit as any)[from] || 0;
+			}
+		  }
+		});
+	  };
+	const transformPropertyCategoryType = (e: React.ChangeEvent<any>) => {
+		const oldCategoryMetadata = getCategoryMetaData(formik?.values?.categoryId || 0);
+		const categoryMetaData = getCategoryMetaData(e.target.value);
+		if (!isEqual(oldCategoryMetadata, categoryMetaData)) {
+			getSpecValueByCategory(oldCategoryMetadata, categoryMetaData);
+		}
+		formik.setValues({
+			...formik.values,
+			categoryMetaData,
+		});
+		formik.handleChange(e);
 	};
 
 	return (
 		<>
-			<Grid container spacing={0}>
-				<Grid
-					container
-					sx={{
-						...addPropertyStyles.addPropertiesContainer,
-						margin: '30px -10px 30px',
-					}}
+			<Stack spacing={2}>
+				<Stack
+					direction='row'
+					alignItems='center'
+					// sx={{
+					// 	...addPropertyStyles.addPropertiesContainer,
+					// 	margin: '30px -10px 30px',
+					// }}
 				>
-					<Grid
-						item
-						sx={addPropertyStyles.addPropertiesContent}
-						onClick={handleReturnToPropertyClick}
+					<Stack
+						direction='row'
+						alignItems='center'
 					>
-						<ArrowLeftIcon sx={addPropertyStyles.addPropertiesImage} />
-						<Typography
-							sx={addPropertyStyles.addPropertiesText}
-							fontWeight={600}
-						>
-							{currentProperty?.name}
-						</Typography>
-					</Grid>
-				</Grid>
-				<Grid
-					container
-					spacing={4}
-					component='form'
-					onSubmit={formik.handleSubmit}
-				>
-					<Grid item xs={12}>
-						<Grid container spacing={1}>
-							<Grid container>
-								<Card sx={GeneralFormStyle.card}>
-									<Grid container spacing={2}>
-										<Grid item xs={12}>
-											{isCurrentPropertyLoading ? (
-												<InputSkeleton />
-											) : (
-												<ControlledSelect
-													required
-													name='categoryId'
-													label='PROPERTY CATEGORY '
-													placeholder='Property Category'
-													type='text'
-													formik={formik}
-													value={formik?.values?.categoryId}
-													options={propertyMetaData?.categories}
-													inputprops={{
-														sx: {
-															height: '40px',
-														},
-													}}
-												/>
-											)}
-										</Grid>
-
-										<Grid item xs={12}>
-											{isCurrentPropertyLoading ? (
-												<InputSkeleton />
-											) : (
-												<ControlledSelect
-													required
-													name='typeId'
-													label='PROPERTY TYPE '
-													placeholder='Property Type'
-													type='text'
-													formik={formik}
-													value={formik?.values?.typeId}
-													options={propertyMetaData?.types}
-													inputprops={{
-														sx: {
-															height: '40px',
-														},
-													}}
-												/>
-											)}
-										</Grid>
-										<Grid item xs={12}>
-											{isCurrentPropertyLoading ? (
-												<InputSkeleton />
-											) : (
-												<ControlledTextField
-													required
-													name='name'
-													label='PROPERTY NAME'
-													value={formik?.values?.name}
-													formik={formik}
-													inputprops={{
-														sx: {
-															height: '40px',
-														},
-													}}
-												/>
-											)}
-										</Grid>
-									</Grid>
-								</Card>
-							</Grid>
-						</Grid>
-					</Grid>
-
-					<Grid item xs={12}>
-						{isCurrentPropertyLoading ? (
-							<Grid container spacing={1}>
-								<Grid container>
-									<Card sx={GeneralFormStyle.card}>
-										<InputSkeleton />
-										<InputSkeleton />
-										<InputSkeleton />
-										<InputSkeleton />
-										<InputSkeleton />
-									</Card>
-								</Grid>
-							</Grid>
-						) : (
-							<GeneralInfo
-								formik={formik}
-								amenities={propertyMetaData?.amenities}
-							/>
-						)}
-					</Grid>
-				</Grid>
-
-				<Grid
-					container
-					sx={{
-						display: 'flex',
-						justifyContent: 'flex-end',
-					}}
-				>
-					<Grid sx={addPropertyStyles.buttonContainer}>
-						<Button
-							variant='contained'
-							sx={addPropertyStyles.directionButton}
-							onClick={handleEditProperty}
-							disabled={isCurrentPropertyLoading}
-						>
-							<Typography>Save</Typography>
+						<Button variant='text' onClick={handleReturnToPropertyClick} startIcon={<ArrowLeftIcon />}>
+						{currentProperty?.name}
 						</Button>
-					</Grid>
-				</Grid>
-			</Grid>
+						
+					</Stack>
+				</Stack>
+
+				<Stack component='form' onSubmit={formik.handleSubmit} spacing={2}>
+					<Stack spacing={1}>
+						<Card sx={GeneralFormStyle.card}>
+							<Stack spacing={2}>
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledSelect
+										required
+										name='categoryId'
+										label='PROPERTY CATEGORY '
+										placeholder='Property Category'
+										type='text'
+										formik={formik}
+										disableOnChange={true}
+										value={formik?.values?.categoryId}
+										options={propertyMetaData?.categories}
+										onChange={transformPropertyCategoryType}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledSelect
+										required
+										name='typeId'
+										label='PROPERTY TYPE '
+										placeholder='Property Type'
+										type='text'
+										formik={formik}
+										value={formik?.values?.typeId}
+										options={propertyMetaData?.types}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledTextField
+										required
+										name='name'
+										label='PROPERTY NAME'
+										value={formik?.values?.name}
+										formik={formik}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+							</Stack>
+						</Card>
+					</Stack>
+
+					{isCurrentPropertyLoading ? (
+						<Stack spacing={1}>
+							<Card sx={GeneralFormStyle.card}>
+								<Stack spacing={2}>
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+								</Stack>
+							</Card>
+						</Stack>
+					) : (
+						<GeneralInfo
+							formik={formik}
+							amenities={propertyMetaData?.amenities}
+						/>
+					)}
+				</Stack>
+
+				<Stack
+					direction='row'
+					justifyContent='flex-end'
+					sx={addPropertyStyles.buttonContainer}
+				>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleEditProperty}
+						disabled={isCurrentPropertyLoading}
+					>
+						Save
+					</Button>
+				</Stack>
+			</Stack>
 		</>
 	);
 };
