@@ -32,7 +32,7 @@ export const tenantApiSlice = createApi({
 			providesTags: [API_TAGS.TENANT],
 		}),
 		onboardTenant: builder.mutation<any, { propertyId: string; body: any }>({
-			query: ({ propertyId, body }) => ({
+			query: ({ body }) => ({
 				url: tenantEndpoints.onboardTenant(),
 				method: 'POST',
 				body,

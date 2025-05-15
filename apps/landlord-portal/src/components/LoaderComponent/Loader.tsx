@@ -6,16 +6,16 @@ import { keyframes } from '@mui/system';
 // import { HomeIcon } from '../Icons/CustomIcons';
 
 // Define the keyframes
-const pulse = keyframes`
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-`;
+// const pulse = keyframes`
+//   0%, 100% {
+//     transform: scale(1);
+//     opacity: 1;
+//   }
+//   50% {
+//     transform: scale(1.1);
+//     opacity: 0.7;
+//   }
+// `;
 
 const Loader = () => {
 	return (

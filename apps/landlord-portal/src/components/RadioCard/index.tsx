@@ -1,4 +1,4 @@
-import { Card, Typography, Grid, Stack } from '@mui/material';
+import { Card, Typography, Stack } from '@mui/material';
 import {
 	FormControl,
 	FormControlLabel,

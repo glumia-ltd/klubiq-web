@@ -14,7 +14,6 @@ import {
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Tenant = () => {
-	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchText, setSearchText] = useState('');
 	const [defaultParams, setDefaultParams] = useState({
@@ -28,7 +27,6 @@ const Tenant = () => {
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	const { data: tenantData } = useGetTenantsQuery({
 		...defaultParams,
-		...filter,
 	});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
@@ -61,7 +59,7 @@ const Tenant = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-	}, [filter, getCurrentPage]);
+	}, [getCurrentPage]);
 
 	const handleRowClick = useCallback(
 		(tenant: TenantType) => {
