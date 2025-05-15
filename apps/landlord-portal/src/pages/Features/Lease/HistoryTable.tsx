@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import { DynamicTable } from '@klubiq/ui-components';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
-import { styles } from './style';
 
 type HistoryRow = {
 	no: string;
@@ -40,7 +39,7 @@ const HistoryTable = () => {
 			label: 'Action',
 			align: 'center' as 'center',
 			render: (row: HistoryRow) => (
-				<Button sx={styles.rowButton} onClick={() => handleActionClick(row)}>
+				<Button variant='klubiqTextButton' onClick={() => handleActionClick(row)}>
 					{row.action}
 				</Button>
 			),

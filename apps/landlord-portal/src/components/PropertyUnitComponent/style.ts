@@ -46,18 +46,6 @@ export const styles = {
 		justifyContent: 'flex-end',
 	},
 
-	actionButtonStyle: {
-		color: 'primary.main',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: '40px',
-		padding: '8px 12px',
-		gap: '8px',
-		borderRadius: '10px',
-		minWidth: '160px',
-	},
-
 	firstCardContainer: {
 		borderRadius: '8px',
 	},

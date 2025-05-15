@@ -105,7 +105,7 @@ import { useTheme } from "@mui/material";
 		borderRadius: 0,
 		borderWidth: 0,
 		paperElevation: 0,
-		buttonVariant: 'text',
+		buttonVariant: 'klubiqTextButton',
 		titleVariant: 'h4',
 		titleFontWeight: 700,
 		headerVariant: 'body1',

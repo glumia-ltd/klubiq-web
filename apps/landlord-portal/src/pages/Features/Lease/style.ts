@@ -162,19 +162,6 @@ export const styles = {
 		display: 'flex',
 		marginTop: '15px',
 	},
-	addLeaseButton: {
-		display: 'flex',
-		padding: '8px 16px',
-		borderRadius: '10px',
-		gap: '8px',
-	},
-	actionButton: {
-		display: 'flex',
-		padding: '8px 14px',
-		borderRadius: '10px',
-		gap: '8px',
-		width: '180px',
-	},
 	leaseTableContainer: {
 		textAlign: 'center',
 		alignItems: 'center',

@@ -1,6 +1,5 @@
-// src/theme.d.ts
+// packages/ui-components/src/theme.d.ts
 import { Theme } from '@mui/material/styles';
-
 declare module '@mui/material/styles' {
 	interface TypographyVariants {
 		dashboardTypography: React.CSSProperties;
@@ -10,15 +9,17 @@ declare module '@mui/material/styles' {
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
+		h7: React.CSSProperties;
 	}
 	interface TypographyVariantsOptions {
 		dashboardTypography?: React.CSSProperties;
-		link: React.CSSProperties;
-		cardHeader: React.CSSProperties;
-		cardContentText: React.CSSProperties;
-		cardTitle: React.CSSProperties;
-		filterResultText: React.CSSProperties;
-		filterResultNumber: React.CSSProperties;
+		link?: React.CSSProperties;
+		cardHeader?: React.CSSProperties;
+		cardContentText?: React.CSSProperties;
+		cardTitle?: React.CSSProperties;
+		filterResultText?: React.CSSProperties;
+		filterResultNumber?: React.CSSProperties;
+		h7?: React.CSSProperties;
 	}
 
 	interface ChipVariants {
@@ -28,17 +29,9 @@ declare module '@mui/material/styles' {
 	}
 
 	interface ChipVariantsOptions {
-		rent: React.CSSProperties;
-		sale: React.CSSProperties;
-		propertyType: React.CSSProperties;
-	}
-
-	interface TypographyVariants {
-		h7: React.CSSProperties;
-	}
-
-	interface TypographyVariantsOptions {
-		h7?: React.CSSProperties;
+		rent?: React.CSSProperties;
+		sale?: React.CSSProperties;
+		propertyType?: React.CSSProperties;
 	}
 
 	interface Palette {
@@ -72,9 +65,6 @@ declare module '@mui/material/Typography' {
 		cardTitle: true;
 		filterResultText: true;
 		filterResultNumber: true;
-	}
-
-	interface TypographyPropsVariantOverrides {
 		h7: true;
 	}
 }

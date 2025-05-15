@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuthState, removeUser, saveUser } from '../store/AuthStore/AuthSlice';
+import { getAuthState, removeUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
-	useLazyGetUserByFbidQuery,
+	// useLazyGetUserByFbidQuery,
 	useSignOutMutation,
 } from '../store/AuthStore/authApiSlice';
 import { subscribeUserToPush } from '../services/pushNotification';
-import { consoleDebug, consoleError, consoleLog } from '../helpers/debug-logger';
+import {  consoleError, consoleLog } from '../helpers/debug-logger';
 import { addData, getData } from '../services/indexedDb';
 import { UserProfile } from '../shared/auth-types';
 import { DialogProps } from '../components/Dialogs/AlertDialog';
@@ -18,14 +18,13 @@ import { resetStore } from '../store';
 import { MultiFactorUser } from 'firebase/auth';
 
 const useAuth = () => {
-	consoleDebug('useAuth hook initialized');
 	const configStoreName = 'client-config';
 	const { user, isSignedIn } = useSelector(getAuthState);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [alertDialogs, setAlertDialogs] = useState<DialogProps[]>([]);
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
-	const [triggerGetUserByFbid, { data: userData }] = useLazyGetUserByFbidQuery();
+	// const [triggerGetUserByFbid, { data: userData }] = useLazyGetUserByFbidQuery();
 	const [updateUserPreferences] = useUpdateUserPreferencesMutation();
 	const [updateNotificationSubscription] =
 		useUpdateNotificationSubscriptionMutation();
@@ -91,14 +90,14 @@ const useAuth = () => {
 			hasUserProfile: !isEmpty(userProfile),
 			currentPath: window.location.pathname
 		  });
-		if(isEmpty(userProfile)) {
-			consoleLog('Empty user profile, signing out');
-			dispatch(removeUser());
-			handleSignOutUser();
-			return;
-		}
-		consoleLog('Dispatching saveUser action');
-		dispatch(saveUser({ user: userProfile, isSignedIn: true }));
+		// if(isEmpty(userProfile)) {
+		// 	consoleLog('Empty user profile, signing out');
+		// 	dispatch(removeUser());
+		// 	handleSignOutUser();
+		// 	return;
+		// }
+
+		// dispatch(saveUser({ user: userProfile, isSignedIn: true }));
 		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(userProfile, 'preferences.security', {});
 		await updateConfigStoreIdb(userProfile?.orgSettings || {}, 'org-settings');
 		await updateConfigStoreIdb(userProfile?.orgSubscription || {}, 'org-subscription');
@@ -146,11 +145,6 @@ const useAuth = () => {
 				cancelButtonText: 'Skip',
 			});
 		}
-		 // Add navigation after successful auth
-		//  if (window.location.pathname === '/login') {
-		// 	consoleLog('On login page, navigating to dashboard');
-		// 	navigate('/dashboard', { replace: true });
-		//   }
 
 	}
 	const handleSignOutUser = async () => {
@@ -167,21 +161,7 @@ const useAuth = () => {
 			try{
 				if (!isEmpty(user) && isSignedIn) {
 					consoleLog('User is signed in');
-					//const userMfa = multiFactor(currentUser);
 					await handleAuthStateChange(user as UserProfile);
-				} else if(userData) {
-					 // If we have userData from the query, use it
-					 consoleLog('Using userData from query', userData);
-					 await handleAuthStateChange(userData);
-					 dispatch(saveUser({ user: userData, isSignedIn: true }));
-					//const userMfa = multiFactor(currentUser);
-				} else{
-					consoleLog('Fetching user data because user is not signed in and not in store');
-					const { data: userProfileData } = await triggerGetUserByFbid();
-					if (userProfileData) {
-					  await handleAuthStateChange(userProfileData);
-					  dispatch(saveUser({ user: userProfileData, isSignedIn: true }));
-					}
 				}
 
 			} catch(error){
@@ -191,7 +171,7 @@ const useAuth = () => {
 			}
 		};
 		checkAuthState();
-	}, [user, isSignedIn, userData]);
+	}, [user, isSignedIn]);
 	const requestNotificationPermission = async (orgUuid?: string) => {
 		try {
 			if ('Notification' in window) {

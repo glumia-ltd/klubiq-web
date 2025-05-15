@@ -216,7 +216,9 @@ export const AddPropertiesLayout = () => {
 	const navigateToStep = (step: number) => {
 		const routeKey = steps[step];
 
-		if (!routeKey) return;
+		if (!routeKey) {
+			return;
+		}
 
 		const route = `/properties/create/${routeObject[routeKey]?.label}`;
 
@@ -237,7 +239,9 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleForwardButton = () => {
-		if (activeStep > steps.length) return;
+		if (activeStep > steps.length) {
+    return;
+  }
 
 		saveFormikDataInStore();
 
@@ -247,7 +251,9 @@ export const AddPropertiesLayout = () => {
 	};
 
 	const handleBackwardButton = () => {
-		if (activeStep === 0) return;
+		if (activeStep === 0) {
+    return;
+  }
 
 		saveFormikDataInStore();
 
@@ -373,9 +379,10 @@ export const AddPropertiesLayout = () => {
 
 	const handleAddProperty = async () => {
 		formik.handleSubmit();
+		consoleLog('Formik values', formik.values);
 
 		const errors = await formik.validateForm();
-
+		consoleLog(errors, 'errors');
 		if (Object.keys(errors).length > 0) {
 			dispatch(
 				openSnackbar({
@@ -505,10 +512,6 @@ export const AddPropertiesLayout = () => {
 								All properties
 							</Typography>
 						</Grid>
-
-						{/* <Button variant='text' sx={styles.button}>
-							<Typography>Save draft</Typography>
-						</Button> */}
 					</Grid>
 
 					<Grid item xs={12} sx={styles.stepperContainer}>
@@ -520,8 +523,7 @@ export const AddPropertiesLayout = () => {
 
 				<Grid sx={styles.buttonContainer}>
 					<Button
-						variant='text'
-						sx={styles.directionButton}
+						variant='klubiqTextButton'
 						onClick={handleBackwardButton}
 						disabled={activeStep <= 0}
 					>
@@ -531,8 +533,7 @@ export const AddPropertiesLayout = () => {
 					{!(activeStep === steps.length - 1) && (
 						<>
 							<Button
-								variant='contained'
-								sx={styles.directionButton}
+								variant='klubiqMainButton'
 								onClick={handleForwardButton}
 								disabled={
 									isNextButtonDisabled || activeStep === steps.length - 1
@@ -546,8 +547,7 @@ export const AddPropertiesLayout = () => {
 
 					{activeStep === steps.length - 1 && (
 						<Button
-							variant='contained'
-							sx={styles.directionButton}
+							variant='klubiqMainButton'
 							onClick={handleAddProperty}
 							disabled={isNextButtonDisabled}
 						>
@@ -573,8 +573,17 @@ export const AddPropertiesLayout = () => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setInformationDialog(false)}>Cancel</Button>
-					<Button onClick={handleDialogLeave} autoFocus>
+					<Button
+						variant='klubiqTextButton'
+						onClick={() => setInformationDialog(false)}
+					>
+						Cancel
+					</Button>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleDialogLeave}
+						autoFocus
+					>
 						Leave Without Saving
 					</Button>
 				</DialogActions>

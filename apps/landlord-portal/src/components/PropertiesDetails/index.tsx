@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Card, IconButton, Box, Typography } from '@mui/material';
+import { Card, IconButton, Box, Typography, Stack } from '@mui/material';
 import ControlledSelect from '../ControlledComponents/ControlledSelect';
 import ControlledTextField from '../ControlledComponents/ControlledTextField';
 import PropertiesFormStyle from './PropertiesDetailsStyle';
@@ -131,161 +131,153 @@ const PropertiesDetails: FC<{ formik: any }> = ({ formik }) => {
 	};
 
 	return (
-		<Grid container spacing={0}>
-			<Grid
-				container
-				spacing={2}
+		<Stack spacing={2}>
+			<Stack
 				component='form'
 				onSubmit={formik.handleSubmit}
+				spacing={2}
 			>
-				<Grid item xs={12}>
-					<Card sx={PropertiesFormStyle.card}>
-						<Grid container spacing={1}>
-							<Grid item xs={12}>
-								<ControlledSelect
-									// color='#002147'
-									required
-									name='typeId'
-									label='PROPERTY TYPE '
-									placeholder='Property Type'
-									type='text'
-									formik={formik}
-									value={formik?.values?.typeId}
-									options={propertyMetaData?.types}
-									inputprops={{
-										sx: {
-											height: '40px',
-										},
-									}}
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<ControlledTextField
-									// color='#002147'
-									required
-									name='name'
-									label='PROPERTY NAME'
-									value={formik?.values?.name}
-									formik={formik}
-									inputprops={{
-										sx: {
-											height: '40px',
-										},
-									}}
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<ControlledTextField
-									// color='#002147'
-									name='description'
-									label='DESCRIPTION'
-									// placeholder='Describe your property'
-									value={formik?.values?.description}
-									formik={formik}
-									type='text'
-									multiline
-									minRows={5}
-									sxTwo={{
-										'& .MuiOutlinedInput-root': {
-											height: 'max-content',
-										},
-									}}
-								/>
-							</Grid>
-						</Grid>
-					</Card>
-				</Grid>
-				<Grid item xs={12}>
-					<Card sx={PropertiesFormStyle.cardTwo}>
-						<Grid container spacing={2} sx={PropertiesFormStyle.cardContent}>
-							<Grid item xs={12}>
-								<Typography variant='h1' fontSize={'20px'}>
-									COVER PHOTO
-								</Typography>
-							</Grid>
+				<Card sx={PropertiesFormStyle.card}>
+					<Stack spacing={2}>
+						<ControlledSelect
+							required
+							name='typeId'
+							label='PROPERTY TYPE '
+							placeholder='Property Type'
+							type='text'
+							formik={formik}
+							value={formik?.values?.typeId}
+							options={propertyMetaData?.types}
+							inputprops={{
+								sx: {
+									height: '40px',
+								},
+							}}
+						/>
+
+						<ControlledTextField
+							required
+							name='name'
+							label='PROPERTY NAME'
+							value={formik?.values?.name}
+							formik={formik}
+							inputprops={{
+								sx: {
+									height: '40px',
+								},
+							}}
+						/>
+
+						<ControlledTextField
+							name='description'
+							label='DESCRIPTION'
+							value={formik?.values?.description}
+							formik={formik}
+							type='text'
+							multiline
+							minRows={5}
+							sxTwo={{
+								'& .MuiOutlinedInput-root': {
+									height: 'max-content',
+								},
+							}}
+						/>
+					</Stack>
+				</Card>
+
+				<Card sx={PropertiesFormStyle.cardTwo}>
+					<Stack spacing={2} sx={PropertiesFormStyle.cardContent}>
+						<Typography variant='subtitle1'>
+							COVER PHOTO
+						</Typography>
+
+						<Stack
+							direction="row"
+							flexWrap="wrap"
+							gap={2}
+							justifyContent="center"
+						>
 							{(formik.values.propertyImages || formState.propertyImages)?.map(
 								(image: string, index: number) => (
-									<Grid
-										item
-										xs={12}
-										sm={6}
-										md={4}
-										lg={3}
+									<Box
 										key={index}
 										position='relative'
+										sx={{
+											width: { xs: '100%', sm: 'calc(50% - 8px)', md: 'calc(33.33% - 11px)', lg: 'calc(25% - 12px)' },
+											maxWidth: '250px'
+										}}
 									>
 										<img
 											src={image}
 											alt={`property-${index}`}
 											style={{
-												width: '250px',
+												width: '100%',
 												height: '170px',
 												objectFit: 'cover',
+												borderRadius: '5px'
 											}}
 										/>
 										<IconButton
 											size='small'
 											onClick={() => handleImageRemove(index)}
-											style={{
+											sx={{
 												position: 'absolute',
 												top: -10,
 												right: -10,
+												backgroundColor: 'white',
+												'&:hover': {
+													backgroundColor: 'white',
+												}
 											}}
 										>
 											<HighlightOffIcon />
 										</IconButton>
-									</Grid>
+									</Box>
 								),
 							)}
+
 							{formik.values?.propertyImages?.length === 0 && (
-								<Grid
-									item
-									xs={12}
-									sm={6}
-									md={4}
-									lg={3}
+								<Box
+									component='label'
+									htmlFor='upload-photo'
 									sx={{
 										display: 'flex',
 										alignItems: 'center',
 										justifyContent: 'center',
+										width: { xs: '100%', sm: 'calc(50% - 8px)', md: 'calc(33.33% - 11px)', lg: 'calc(25% - 12px)' },
+										maxWidth: '250px',
+										height: '170px',
+										border: '1px dashed #ccc',
+										borderRadius: '5px',
+										cursor: 'pointer'
 									}}
 								>
-									<Box
-										component='label'
-										htmlFor='upload-photo'
-										display='flex'
-										alignItems='center'
-										justifyContent='center'
-										//width='250px'
-										height='170px'
-										border='1px dashed #ccc'
-										borderRadius={'5px'}
-										style={{ cursor: 'pointer' }}
+									<Stack
+										alignItems="center"
+										spacing={1}
+										sx={PropertiesFormStyle.uploadBox}
 									>
-										<Box sx={PropertiesFormStyle.uploadBox}>
-											<CloudUploadOutlinedIcon sx={PropertiesFormStyle.icon} />
-
-											<Typography sx={PropertiesFormStyle.typo}>
-												Upload a cover photo for your property
-											</Typography>
-										</Box>
-										<input
-											ref={inputRef}
-											type='file'
-											id='upload-photo'
-											style={{ display: 'none' }}
-											accept='image/*'
-											onChange={handleFileChange}
-											readOnly={formik.values.propertyImages.length > 0}
-										/>
-									</Box>
-								</Grid>
+										<CloudUploadOutlinedIcon sx={PropertiesFormStyle.icon} />
+										<Typography variant='body1'>
+											Upload a cover photo for your property
+										</Typography>
+									</Stack>
+									<input
+										ref={inputRef}
+										type='file'
+										id='upload-photo'
+										style={{ display: 'none' }}
+										accept='image/*'
+										onChange={handleFileChange}
+										readOnly={formik.values.propertyImages.length > 0}
+									/>
+								</Box>
 							)}
-						</Grid>
-					</Card>
-				</Grid>
-			</Grid>
-		</Grid>
+						</Stack>
+					</Stack>
+				</Card>
+			</Stack>
+		</Stack>
 	);
 };
 

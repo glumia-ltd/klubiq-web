@@ -213,8 +213,8 @@ const ViewLeaseForm = () => {
 						</Typography>
 					</Grid>
 					<Grid item xs={12} sx={styles.buttonGrid}>
-						<Button sx={styles.plainButton}>Cancel </Button>
-						<Button type='submit' sx={styles.blueButton}>
+						<Button variant='klubiqTextButton'>Cancel </Button>
+						<Button type='submit' variant='klubiqMainButton'>
 							Renew{' '}
 						</Button>
 					</Grid>
