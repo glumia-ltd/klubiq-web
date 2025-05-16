@@ -1,6 +1,8 @@
 import { Button } from '@mui/material';
 import { DynamicTable } from '@klubiq/ui-components';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
+import { styles } from './style';
+import { ActiveLeaseDetail } from '../../../shared/type';
 
 type HistoryRow = {
 	no: string;
@@ -9,35 +11,36 @@ type HistoryRow = {
 	action: string;
 };
 
-const HistoryTable = () => {
+type HistoryTableProps = {
+	leases: ActiveLeaseDetail[];
+};
+
+const HistoryTable = ({ leases }: HistoryTableProps) => {
 	const { tableSx, tableStyles } = useTenantActions();
-	const rows: HistoryRow[] = [
-		{
-			no: '1234567',
-			dueDate: 'April 4, 2024',
-			amount: '₦2,000,000',
-			action: 'View Lease',
-		},
-		{
-			no: '1234567',
-			dueDate: 'April 4, 2024',
-			amount: '₦2,000,000',
-			action: 'View Lease',
-		},
-	];
+
+	const rows: HistoryRow[] = leases.map((lease, index) => ({
+		no: lease.id || `INV-${index + 1}`,
+		dueDate: lease.leaseStart
+			? new Date(lease.leaseStart).toDateString()
+			: 'N/A',
+		amount: lease.rentAmount
+			? `₦${Number(lease.rentAmount).toLocaleString()}`
+			: 'N/A',
+		action: 'View Lease',
+	}));
 
 	const handleActionClick = (row: HistoryRow) => {
 		console.log('Selected row:', row);
 	};
 
 	const columns = [
-		{ key: 'no', label: 'Invoice No', align: 'center' as 'center' },
-		{ key: 'dueDate', label: 'Due Date', align: 'center' as 'center' },
-		{ key: 'amount', label: 'Amount', align: 'center' as 'center' },
+		{ key: 'no', label: 'Invoice No', align: 'center' as const },
+		{ key: 'dueDate', label: 'Due Date', align: 'center' as const },
+		{ key: 'amount', label: 'Amount', align: 'center' as const },
 		{
 			key: 'action',
 			label: 'Action',
-			align: 'center' as 'center',
+			align: 'center' as const,
 			render: (row: HistoryRow) => (
 				<Button variant='klubiqTextButton' onClick={() => handleActionClick(row)}>
 					{row.action}
@@ -56,4 +59,5 @@ const HistoryTable = () => {
 		/>
 	);
 };
+
 export default HistoryTable;
