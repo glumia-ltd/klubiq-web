@@ -24,11 +24,11 @@ export const useTenantActions = () => {
         borderRadius: 0,
         borderWidth: 0,
         paperElevation: 0,
-        buttonVariant: 'klubiqMainButton',
-        titleVariant: 'h5',
-        titleFontWeight: 500,
+        buttonVariant: 'text',
+        titleVariant: 'h4',
+        titleFontWeight: 700,
         headerVariant: 'body1',
-        headerFontWeight: 700,
+        headerFontWeight: 400,
         cellAlign: 'left',
     };
 
