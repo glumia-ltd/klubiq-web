@@ -25,10 +25,10 @@ export const useTenantActions = () => {
         borderWidth: 0,
         paperElevation: 0,
         buttonVariant: 'text',
-        titleVariant: 'h5',
-        titleFontWeight: 500,
+        titleVariant: 'h4',
+        titleFontWeight: 700,
         headerVariant: 'body1',
-        headerFontWeight: 700,
+        headerFontWeight: 400,
         cellAlign: 'left',
     };
 

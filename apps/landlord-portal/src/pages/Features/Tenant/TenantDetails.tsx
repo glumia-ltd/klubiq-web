@@ -1,7 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Typography, Stack, Card, Box, IconButton } from '@mui/material';
+import { useEffect } from 'react';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import {
+	Typography,
+	Stack,
+	Card,
+	Box,
+	IconButton,
+	Button,
+} from '@mui/material';
+import { formatDate } from '../../../helpers/utils';
 import fileIcon from '../../../assets/images/Phone.svg';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { DynamicTable } from '@klubiq/ui-components';
 import bukky from '../../../assets/images/aisha.jpg';
@@ -9,41 +18,60 @@ import HistoryTable from '../Lease/HistoryTable';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import { styles } from './styles';
+import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
+import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
-
+import { Breadcrumb } from '../../../components/Breadcrumb';
 import { LeaseDetail, TenantInfo } from '../../../shared/type';
-import {
-	TenantType,
-	TenantDocumentRow,
-	TenantLocationState,
-} from '../../../shared/type'; // Adjust path
+import { TenantDocumentRow } from '../../../shared/type';
+import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 
 const TenantDetails = () => {
 	const { tableSx, tableStyles } = useTenantActions();
 	const location = useLocation();
-	const locationState = location.state as TenantLocationState;
-	const { tenantId: routeTenantId } = useParams<{ tenantId: string }>();
-	const [selectedRow, setSelectedRow] = useState<TenantType | null>(
-		locationState?.selectedRow || null,
-	);
-	const currentTenantId =
-		location.pathname.split('/')[2]! || selectedRow?.tenantId || routeTenantId;
+	const navigate = useNavigate();
+	const { id } = useParams<{ id: string }>();
+	const { updateBreadcrumb } = useDynamicBreadcrumbs();
+	const currentTenantId = location.pathname.split('/')[2]!;
 	const { data: tenantData } = useGetSingleTenantByIdQuery({
-		id: currentTenantId || '',
+		id: id || currentTenantId || '',
 	});
-
+	console.log('id', id, currentTenantId);
 	useEffect(() => {
-		if (locationState?.selectedRow) {
-			setSelectedRow(locationState.selectedRow);
+		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
+			feature: {
+				label: 'Tenants',
+				icon: (
+					<ViewListOutlinedIcon
+						key={1}
+						aria-label='Tenant'
+						onClick={() => navigate(`/tenants`)}
+					/>
+				),
+				showIcon: true,
+				isSectionRoot: true,
+				path: '/tenants',
+			},
+		};
+		if (currentTenantId) {
+			newBreadcrumbs['feature-details'] = {
+				label: `Tenant Details${tenantData?.profile?.firstName ? `: ${tenantData?.profile?.firstName}` : ''}`, // Prefer a human-readable name if available
+				path: `/tenant/${currentTenantId}`,
+				icon: null,
+				showIcon: false,
+			};
 		}
-	}, [locationState]);
-	console.log('Selected Row:', selectedRow);
-	console.log('Tenant Data:', tenantData);
+		newBreadcrumbs['feature-details-sub'] = {};
+		updateBreadcrumb(newBreadcrumbs);
+	}, [tenantData?.name, currentTenantId, location.pathname]);
+	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: `${tenantData?.profile?.firstName ?? ''} ${tenantData?.profile?.lastName ?? ''}`,
+		name: `${tenantData?.profile?.fullName ?? ''}`,
 		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
-		since: tenantData?.leaseDetails?.startDate ?? 'N/A',
+		since: tenantData?.profile?.updatedDate
+			? formatDate(tenantData.profile.updatedDate)
+			: 'N/A',
 		image: tenantData?.profile?.profilePicUrl || bukky,
 	};
 	// const rows: TenantDocumentRow[] = [
@@ -70,7 +98,7 @@ const TenantDetails = () => {
 	];
 
 	const leaseDetails: LeaseDetail[] =
-		tenantData?.leases?.map(
+		tenantData?.activeleases?.map(
 			(lease: { leaseStart: any; leaseEnd: any; rentAmount: any }) => ({
 				name: `Lease from ${lease.leaseStart} to ${lease.leaseEnd}`,
 				amount: lease.rentAmount || 'N/A',
@@ -85,7 +113,23 @@ const TenantDetails = () => {
 			}),
 		) || [];
 	return (
-		<Stack spacing={4}>
+		<Stack spacing={2}>
+			<Stack
+				direction={'row'}
+				sx={{
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					width: '100%',
+				}}
+			>
+				<Breadcrumb />
+				<Stack>
+					<Button variant='contained' sx={styles.actionButton}>
+						Action
+						<MoreVertIcon />
+					</Button>
+				</Stack>
+			</Stack>
 			<Stack direction='row' spacing={1} sx={styles.detailsCard}>
 				<Card sx={styles.detailsCard}>
 					<Stack
@@ -130,11 +174,12 @@ const TenantDetails = () => {
 							<Stack direction='row' spacing={2} sx={styles.firstBox}>
 								<Typography sx={styles.nameText2}>Current Lease</Typography>
 								<Typography sx={styles.cardTwoText}>
-									Orchid House | Unit O
+									{tenantData?.activeleases?.[0]?.propertyName || 'N/A'} | Unit{' '}
+									{tenantData?.activeleases?.[0]?.unit || 'N/A'}
 								</Typography>
 							</Stack>
 							<Typography sx={styles.typo3}>
-								4, Shaw Road (Onilegbale Road) Ikoyi
+								{tenantData?.activeleases?.[0]?.propertyAddress || 'N/A'}
 							</Typography>
 						</Stack>
 						<Box display='flex' justifyContent='space-between'>

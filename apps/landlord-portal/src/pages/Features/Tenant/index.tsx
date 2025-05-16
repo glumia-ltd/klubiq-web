@@ -1,20 +1,19 @@
 import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
 import { styles } from './styles';
-import Filter from '../../../components/Filter/Filter';
+// import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-import { TenantType } from '../../../shared/type';
 import {
-	useGetTenantFilterMetaDataQuery,
+	// useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
 const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
 
 const Tenant = () => {
-	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	// const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchText, setSearchText] = useState('');
 	const [defaultParams, setDefaultParams] = useState({
@@ -24,15 +23,15 @@ const Tenant = () => {
 		order: 'ASC',
 	});
 	const inputRef = useRef<HTMLElement>(null);
-	const filterObjectLength = Object.keys(filter).length;
-	const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	// const filterObjectLength = Object.keys(filter).length;
+	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	const { data: tenantData } = useGetTenantsQuery({
 		...defaultParams,
-		...filter,
+		// ...filter,
 	});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
-	const filterOptions = tenantMetaData?.filterOptions;
+	// const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
 
@@ -61,19 +60,11 @@ const Tenant = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-	}, [filter, getCurrentPage]);
+	}, [ getCurrentPage]);
 
-	const handleRowClick = useCallback(
-		(tenant: TenantType) => {
-			navigate(`/tenants/tenant-details/${tenant.tenantId}`, {
-				state: {
-					selectedRow: tenant,
-				},
-			});
-		},
-		[navigate],
-	);
-
+	const handleRowClick = (id: number) => {
+		navigate(`/tenant/${id}`);
+	};
 	return (
 		<>
 			<Stack spacing={2}>
@@ -106,7 +97,7 @@ const Tenant = () => {
 						/>
 					</Paper>
 				</Stack>
-				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
+				{/* <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
 					<Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
@@ -114,15 +105,12 @@ const Tenant = () => {
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
 					/>
-				</Stack>
+				</Stack> */}
 				<Stack>
 					<TenantTable
 						title='Tenant'
 						allTenant={allTenants}
-						onRowClick={(tenant) => {
-							console.log('here');
-							handleRowClick(tenant);
-						}}
+						onRowClick={(rowData: any) => handleRowClick(rowData.id)}
 					/>
 				</Stack>
 			</Stack>

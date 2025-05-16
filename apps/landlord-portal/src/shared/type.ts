@@ -114,6 +114,15 @@ export type PropertyMetaData = {
 };
 
 export type TenantType = {
+	Id: string;
+	profile: UserProfile;
+	leaseDetails: LeaseType;
+	propertyDetails: TenantTablePropertyDetailsType;
+	isPrimaryTenant: boolean;
+	profileUuid?: string;
+
+}
+export type TenantsType = {
 	tenantId: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
@@ -124,11 +133,7 @@ export type TenantType = {
 
 export type TenantTablePropertyDetailsType = {
 	name: string;
-	address: {
-		addressLine1: string;
-		addressLine2: string | null;
-
-	};
+	address: string;
 	unitNumber: string | number;
 
 
