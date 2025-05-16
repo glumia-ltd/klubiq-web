@@ -37,6 +37,8 @@ const TenantDetails = () => {
 		id: id || currentTenantId || '',
 	});
 	console.log('id', id, currentTenantId);
+	const activeLeases = tenantData?.activeleases ?? [];
+
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
 			feature: {
@@ -63,7 +65,7 @@ const TenantDetails = () => {
 		}
 		newBreadcrumbs['feature-details-sub'] = {};
 		updateBreadcrumb(newBreadcrumbs);
-	}, [tenantData?.name, currentTenantId, location.pathname]);
+	}, [tenantData?.firstName, currentTenantId, location.pathname]);
 	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
 		name: `${tenantData?.profile?.fullName ?? ''}`,
@@ -97,14 +99,6 @@ const TenantDetails = () => {
 		{ key: 'dueDate', label: 'Due Date' },
 	];
 
-	const leaseDetails: LeaseDetail[] =
-		tenantData?.activeleases?.map(
-			(lease: { leaseStart: any; leaseEnd: any; rentAmount: any }) => ({
-				name: `Lease from ${lease.leaseStart} to ${lease.leaseEnd}`,
-				amount: lease.rentAmount || 'N/A',
-			}),
-		) || [];
-
 	const rows: TenantDocumentRow[] =
 		tenantData?.activeLeases?.map(
 			(lease: { paymentFrequency: any; nextDueDate: any }) => ({
@@ -123,13 +117,13 @@ const TenantDetails = () => {
 		{
 			name: 'Start Date ',
 			amount: activeLeases?.[0]?.leaseStart
-				? dayjs(activeLeases?.[0]?.leaseStart).format('ll')
+				? formatDate(activeLeases?.[0]?.leaseStart)
 				: 'N/A',
 		},
 		{
 			name: 'End Date ',
 			amount: activeLeases?.[0]?.leaseEnd
-				? dayjs(activeLeases?.[0]?.leaseEnd).format('ll')
+				? formatDate(activeLeases?.[0]?.leaseEnd)
 				: 'N/A',
 		},
 		{
@@ -211,7 +205,7 @@ const TenantDetails = () => {
 						</Stack>
 						<Box display='flex' justifyContent='space-between'>
 							{Datas.map((item) => (
-								<Box key={item.name} textAlign={'center'} width='25%'>
+								<Box key={item.name}>
 									<Typography sx={styles.typo2}>{item.name}</Typography>
 									<Typography sx={styles.nameText}>{item.amount}</Typography>
 								</Box>
@@ -221,7 +215,7 @@ const TenantDetails = () => {
 				</Card>
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
-				<HistoryTable leases={activeLeases} />
+				<HistoryTable leases={activeLeases}/>
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
 				<DynamicTable
