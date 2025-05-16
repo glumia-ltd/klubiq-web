@@ -34,9 +34,9 @@ const HistoryTable = ({ leases }: HistoryTableProps) => {
 	};
 
 	const columns = [
-		{ key: 'no', label: 'Invoice No', align: 'center' as const },
-		{ key: 'dueDate', label: 'Due Date', align: 'center' as const },
-		{ key: 'amount', label: 'Amount', align: 'center' as const },
+		{ key: 'no', label: 'Invoice No', align: 'center' as 'center' },
+		{ key: 'dueDate', label: 'Due Date', align: 'center' as 'center' },
+		{ key: 'amount', label: 'Amount', align: 'center' as 'center' },
 		{
 			key: 'action',
 			label: 'Action',
