@@ -16,7 +16,23 @@ type HistoryTableProps = {
 };
 
 const HistoryTable = ({ leases }: HistoryTableProps) => {
+type HistoryTableProps = {
+	leases: ActiveLeaseDetail[];
+};
+
+const HistoryTable = ({ leases }: HistoryTableProps) => {
 	const { tableSx, tableStyles } = useTenantActions();
+
+	const rows: HistoryRow[] = leases.map((lease, index) => ({
+		no: lease.id || `INV-${index + 1}`,
+		dueDate: lease.leaseStart
+			? new Date(lease.leaseStart).toDateString()
+			: 'N/A',
+		amount: lease.rentAmount
+			? `₦${Number(lease.rentAmount).toLocaleString()}`
+			: 'N/A',
+		action: 'View Lease',
+	}));
 
 	const rows: HistoryRow[] = leases.map((lease, index) => ({
 		no: lease.id || `INV-${index + 1}`,
@@ -41,6 +57,7 @@ const HistoryTable = ({ leases }: HistoryTableProps) => {
 			key: 'action',
 			label: 'Action',
 			align: 'center' as const,
+			align: 'center' as const,
 			render: (row: HistoryRow) => (
 				<Button variant='klubiqTextButton' onClick={() => handleActionClick(row)}>
 					{row.action}
@@ -59,5 +76,6 @@ const HistoryTable = ({ leases }: HistoryTableProps) => {
 		/>
 	);
 };
+
 
 export default HistoryTable;
