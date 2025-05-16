@@ -8,8 +8,7 @@ import {
 	IconButton,
 	Button,
 } from '@mui/material';
-import dayjs from 'dayjs';
-import PhoneIcon from '@mui/icons-material/Phone';
+import { formatDate } from '../../../helpers/utils';
 import fileIcon from '../../../assets/images/Phone.svg';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
@@ -19,8 +18,6 @@ import HistoryTable from '../Lease/HistoryTable';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import { styles } from './styles';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
@@ -36,17 +33,10 @@ const TenantDetails = () => {
 	const { id } = useParams<{ id: string }>();
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const currentTenantId = location.pathname.split('/')[2]!;
-	const navigate = useNavigate();
-	const { id } = useParams<{ id: string }>();
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
-	const currentTenantId = location.pathname.split('/')[2]!;
 	const { data: tenantData } = useGetSingleTenantByIdQuery({
-		id: id || currentTenantId || '',
 		id: id || currentTenantId || '',
 	});
 	console.log('id', id, currentTenantId);
-	const activeLeases = tenantData?.activeleases ?? [];
-
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
 			feature: {
@@ -73,25 +63,14 @@ const TenantDetails = () => {
 		}
 		newBreadcrumbs['feature-details-sub'] = {};
 		updateBreadcrumb(newBreadcrumbs);
-	}, [tenantData?.firstName, currentTenantId, location.pathname]);
+	}, [tenantData?.name, currentTenantId, location.pathname]);
 	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: (() => {
-			const fullName = tenantData?.profile?.fullName?.trim();
-			const companyName = tenantData?.profile?.companyName?.trim();
-	const isInvalid = (val?: string) =>
-				!val ||
-				val.toLowerCase() === 'null' ||
-				val.toLowerCase() === 'null null';
-
-			if (!isInvalid(fullName)) return fullName!;
-			if (!isInvalid(companyName)) return companyName!;
-			return 'N/A';
-		})(),
-		phone: tenantData?.profile?.phoneNumber || 'N/A',
+		name: `${tenantData?.profile?.fullName ?? ''}`,
+		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
 		since: tenantData?.profile?.updatedDate
-			? dayjs(tenantData?.profile?.updatedDate).format('ll')
+			? formatDate(tenantData.profile.updatedDate)
 			: 'N/A',
 		image: tenantData?.profile?.profilePicUrl || bukky,
 	};
@@ -117,6 +96,14 @@ const TenantDetails = () => {
 		},
 		{ key: 'dueDate', label: 'Due Date' },
 	];
+
+	const leaseDetails: LeaseDetail[] =
+		tenantData?.activeleases?.map(
+			(lease: { leaseStart: any; leaseEnd: any; rentAmount: any }) => ({
+				name: `Lease from ${lease.leaseStart} to ${lease.leaseEnd}`,
+				amount: lease.rentAmount || 'N/A',
+			}),
+		) || [];
 
 	const rows: TenantDocumentRow[] =
 		tenantData?.activeLeases?.map(
@@ -217,12 +204,9 @@ const TenantDetails = () => {
 								<Typography sx={styles.cardTwoText}>
 									{tenantData?.activeleases?.[0]?.propertyName || 'N/A'} | Unit{' '}
 									{tenantData?.activeleases?.[0]?.unit || 'N/A'}
-									{tenantData?.activeleases?.[0]?.propertyName || 'N/A'} | Unit{' '}
-									{tenantData?.activeleases?.[0]?.unit || 'N/A'}
 								</Typography>
 							</Stack>
 							<Typography sx={styles.typo3}>
-								{tenantData?.activeleases?.[0]?.propertyAddress || 'N/A'}
 								{tenantData?.activeleases?.[0]?.propertyAddress || 'N/A'}
 							</Typography>
 						</Stack>

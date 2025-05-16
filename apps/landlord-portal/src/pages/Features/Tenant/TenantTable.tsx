@@ -35,74 +35,38 @@ export const TenantTable: FC<TenantTableProps> = ({
 			key: 'profile',
 			label: 'Name',
 			align: 'center',
-			render: (tenant) => {
-				const getDisplayName = (): string => {
-					const fullName = tenant?.fullName?.trim();
-					const companyName = tenant?.companyName;
-
-					if (fullName) return fullName;
-					if (companyName) return companyName;
-					return 'N/A';
-				};
-				return (
-					<Box display='flex' alignItems='center' justifyContent='center'>
-						<DynamicAvatar
-							items={[tenant?.profilePicUrl || '']}
-							size='medium'
-							showName={false}
-						/>
-						<Tooltip title={getDisplayName()} arrow>
-							<Typography
-								variant='body2'
-								ml='0.5rem'
-								whiteSpace='nowrap'
-								overflow='hidden'
-								textOverflow='ellipsis'
-								width="25%"
-							>
-								{getDisplayName()}{' '}
-							</Typography>
-						</Tooltip>
-					</Box>
-				);
-			},
+			render: (tenant) => (
+				<Box display='flex' alignItems='center' justifyContent='center'>
+					<DynamicAvatar
+						items={[tenant?.tenant?.__profile__?.profilePicUrl || '']}
+						size='medium'
+						showName={false}
+					/>
+					<Typography variant='body2' ml='0.5rem'>
+						{`${tenant?.fullName || 'Name'}`}
+					</Typography>
+				</Box>
+			),
 		},
 		{
-			key: 'mostRecentPropertyName',
-			label: 'Property Name',
 			key: 'mostRecentPropertyName',
 			label: 'Property Name',
 			align: 'center',
 		},
 		{
-			key: 'mostRecentUnitName',
 			key: 'mostRecentUnitName',
 			label: 'Unit',
 			align: 'center',
 		},
 		{
 			key: 'mostRecentUnitAddress',
-			key: 'mostRecentUnitAddress',
 			label: 'Address',
 			align: 'center',
 		},
 		{
 			key: 'mostRecentPaymentStatus',
-			key: 'mostRecentPaymentStatus',
 			label: 'Status',
 			align: 'center',
-			render: (tenant) => {
-				const status = tenant?.mostRecentPaymentStatus?.status;
-				if (!status) return null;
-				return (
-					<Chip
-						label={tenant?.leaseDetails?.status ?? ''}
-						color={statusColors[status]}
-						variant='outlined'
-						sx={styles.chip}
-					/>
-				);
-			},
 			render: (tenant) => {
 				const status = tenant?.mostRecentPaymentStatus?.status;
 				if (!status) return null;
@@ -129,4 +93,3 @@ export const TenantTable: FC<TenantTableProps> = ({
 		/>
 	);
 };
-
