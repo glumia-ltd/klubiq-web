@@ -248,7 +248,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 													}
 												}}
 											>
-												{options.map((option) => {
+												{options.map((option, index) => {
 													const { label, Icon } = option;
 
 													const LabelIcon = ICONS[Icon];
@@ -262,7 +262,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 
 													return (
 														<FormControlLabel
-															key={label}
+															key={`${label}-${index}`}
 															value={label}
 															control={<Radio />}
 															label={Icon ? labelWithIcon : label}
@@ -273,8 +273,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 										</FormControl>
 										<Divider sx={{ marginY: 2 }} />
 										<Button
-											variant='contained'
-											sx={styles.applyButtonStyle}
+											variant='klubiqMainButton'
 											onClick={handleCloseModal}
 										>
 											Apply

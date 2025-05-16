@@ -6,7 +6,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Paper,
 	Typography,
 	Button,
 	Box,
@@ -32,7 +31,7 @@ export interface TableColumn {
 }
 export interface DynamicTableStyles {
 	borderStyle?: 'none' | 'outlined' | 'bordered';
-	buttonVariant?: 'text' | 'contained' | 'outlined';
+	buttonVariant?: 'klubiqTextButton' | 'klubiqMainButton' | 'klubiqOutlinedButton' | 'klubiqSecondaryButton';
 	borderRadius?: number;
 	borderWidth?: number;
 	paperElevation: number;
@@ -266,7 +265,9 @@ export const DynamicTable: React.FC<DynamicTableProps> = ({
 					)}
 				</Box>
 				{buttonLabel && (
-					<Button variant={buttonVariant} onClick={onButtonClick}>
+					<Button 
+					variant={buttonVariant || 'klubiqTextButton'} 
+					onClick={onButtonClick}>
 						{buttonLabel}
 					</Button>
 				)}

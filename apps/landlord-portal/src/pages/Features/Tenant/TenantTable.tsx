@@ -26,6 +26,7 @@ export const TenantTable: FC<TenantTableProps> = ({
 	allTenant,
 	onRowClick,
 }) => {
+	console.log('allTenant', allTenant);
 	const { tableSx, tableStyles } = useTenantActions();
 
 	const columns: TableColumn[] = [

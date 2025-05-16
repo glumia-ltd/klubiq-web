@@ -94,7 +94,7 @@ const LeaseDetails = () => {
 				>
 					<Breadcrumb />
 					<Stack>
-						<Button variant='contained' sx={styles.actionButton}>
+						<Button variant='klubiqMainButton'>
 							Action
 							<MoreVertIcon />
 						</Button>

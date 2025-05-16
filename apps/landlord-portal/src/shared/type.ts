@@ -114,7 +114,8 @@ export type PropertyMetaData = {
 };
 
 export type TenantType = {
-	tenantId: string;
+	id: string;
+	tenantId: string; // Removed this field later after Backend was updated as it's not needed
 	profile: UserProfile;
 	leaseDetails: LeaseType;
 	propertyDetails: TenantTablePropertyDetailsType;
@@ -406,6 +407,7 @@ export type InviteTenantPropertyDetailsType = {
 	propertyName: string;
 	unitId: string;
 	unitNumber: string;
+	propertyId: string;
 };
 export type AddTenantToLeaseDetailsType = {
 	leaseId: string;

@@ -326,7 +326,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
 	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
-	const handleEditProperty = () => navigate(`/properties/${currentUUId}/edit`);
+	const handleEditProperty = () => navigate(
+		`/properties/${currentUUId}/edit`, 
+		{state: {
+			returnPath: `/properties/${currentUUId}`,
+		}
+	});
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
@@ -341,6 +346,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					propertyName: currentProperty?.name,
 					unitId: currentProperty?.units?.[0]?.id,
 					unitNumber: currentProperty?.units?.[0]?.unitNumber,
+					propertyId: currentUUId,
 				},
 				returnPath: `/properties/${currentUUId}`,
 			},
@@ -560,6 +566,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			};
 		}
 		updateBreadcrumb(newBreadcrumbs);
+
+		// Clear breadcrumbs on unmount
+		return () => {
+			multiUnitMode = false;
+			updateBreadcrumb({});
+		};
+		
 	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
 	return (
 		<Grid container spacing={2}>
@@ -567,17 +580,15 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				<Breadcrumb />
 			</Grid>
 
-			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+		{!multiUnitMode && <Grid item xs={12} sx={styles.actionButtonContainerStyle}>
 				<Button
 					ref={anchorRef}
-					variant='propertyButton'
-					sx={styles.actionButtonStyle}
+					variant='klubiqMainButton'
 					onClick={handleToggle}
+					endIcon={<MoreVertIcon />}
 				>
-					<Typography fontWeight={500}>Action</Typography>
-					<MoreVertIcon />
+					Action
 				</Button>
-
 				<Popper
 					open={open}
 					anchorEl={anchorRef.current}
@@ -627,17 +638,19 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						</Grow>
 					)}
 				</Popper>
-			</Grid>
+			</Grid>}
 
 			<Grid item xs={12}>
-				<Chip
-					label={currentProperty?.purpose?.displayText || 'For sale'}
+				{currentProperty?.purpose?.displayText && (
+					<Chip
+						label={currentProperty?.purpose?.displayText}
 					variant={
 						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
 							? 'rent'
 							: 'sale'
 					}
 				/>
+				)}
 			</Grid>
 
 			<Grid item xs={12} sx={styles.firstCardContainer}>
