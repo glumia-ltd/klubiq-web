@@ -77,7 +77,7 @@ const ResetPassword = () => {
 		setLoading(true)
 
 		const payload = {
-			obbCode: searchParams.get('oobCode'),
+			oobCode: searchParams.get('oobCode'),
 			email: searchParams.get('email')!.replace(' ', '+'),
 			password: values.password
 		};
