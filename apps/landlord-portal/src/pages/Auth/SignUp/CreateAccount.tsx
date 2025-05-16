@@ -31,7 +31,8 @@ const CreateAccount: React.FC = () => {
 	const { data } = useGetRolesQuery();
 	consoleLog(passwordMessage);
 
-	const isGloballyAvailable = import.meta.env.VITE_IS_GLOBALLY_AVAILABLE.toLowerCase() === 'true';
+	const isGloballyAvailable =
+		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
 
 	type CountryType = {
 		name: string;
@@ -178,77 +179,78 @@ const CreateAccount: React.FC = () => {
 
 	return (
 		<Grid
-				container
-				component='form'
-				sx={styles.container}
-				onSubmit={formik.handleSubmit}
-				columnSpacing={{ xs: 1, sm: 1, md: 1 }}
+			container
+			component='form'
+			sx={styles.container}
+			onSubmit={formik.handleSubmit}
+			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
+		>
+			<Grid
+				item
+				xs={12}
+				sm={12}
+				md={6}
+				lg={6}
+				xl={6}
+				// spacing={0}
+				sx={{
+					alignContent: 'center',
+				}}
 			>
-				<Grid
-					item
-					xs={12}
-					sm={12}
-					md={6}
-					lg={6}
-					xl={6}
-					// spacing={0}
-					sx={{
-						alignContent: 'center',
-					}}
-				>
-					<Grid container sx={styles.mainContainer} spacing={0.5}>
-						<Grid container sx={styles.formContainer}>
-							<Grid item xs={12} sm={12} md={12} lg={12} sx={styles.headerGrid}>
-								<Typography variant='h2' sx={styles.title}>
-									Create your Klubiq account
-								</Typography>
-								<Typography
-									mt='-3rem'
-									mb='2rem'
-									sx={{
-										fontWeight: 500,
-										lineHeight: '30px',
-										textAlign: 'center',
-										fontSize: '18px',
-										display: 'none',
-									}}
-								>
-									Sign up and get 30 days free trial.
-								</Typography>
-							</Grid>
-							<Grid item sm={12} xs={12} lg={12}>
-								<Stack direction={'row'} sx={styles.nameStack}>
-									<ControlledTextField
-										sx={styles.inputStyle}
-										name='firstName'
-										label='First Name'
-										type='text'
-										placeholder='Enter your first'
-										autoComplete='given-name'
-										formik={formik}
-									/>
-									<ControlledTextField
-										sx={styles.inputStyle}
-										name='lastName'
-										label='Last Name'
-										placeholder='Enter your last name'
-										formik={formik}
-										type='text'
-										autoComplete='family-name'
-									/>
-								</Stack>
-							</Grid>
-							<Grid item sm={12} xs={12} lg={12}>
+				<Grid container sx={styles.mainContainer} spacing={0.5}>
+					<Grid container sx={styles.formContainer}>
+						<Grid item xs={12} sm={12} md={12} lg={12} sx={styles.headerGrid}>
+							<Typography variant='h2' sx={styles.title}>
+								Create your Klubiq account
+							</Typography>
+							<Typography
+								mt='-3rem'
+								mb='2rem'
+								sx={{
+									fontWeight: 500,
+									lineHeight: '30px',
+									textAlign: 'center',
+									fontSize: '18px',
+									display: 'none',
+								}}
+							>
+								Sign up and get 30 days free trial.
+							</Typography>
+						</Grid>
+						<Grid item sm={12} xs={12} lg={12}>
+							<Stack direction={'row'} sx={styles.nameStack}>
 								<ControlledTextField
-									name='companyName'
-									label='Company Name'
-									placeholder='Enter your company name'
+									sx={styles.inputStyle}
+									name='firstName'
+									label='First Name'
 									type='text'
+									placeholder='Enter your first'
+									autoComplete='given-name'
 									formik={formik}
-									autoComplete='organization'
 								/>
-							</Grid>
-							{ isGloballyAvailable && <Grid item sm={12} xs={12} lg={12}>
+								<ControlledTextField
+									sx={styles.inputStyle}
+									name='lastName'
+									label='Last Name'
+									placeholder='Enter your last name'
+									formik={formik}
+									type='text'
+									autoComplete='family-name'
+								/>
+							</Stack>
+						</Grid>
+						<Grid item sm={12} xs={12} lg={12}>
+							<ControlledTextField
+								name='companyName'
+								label='Company Name'
+								placeholder='Enter your company name'
+								type='text'
+								formik={formik}
+								autoComplete='organization'
+							/>
+						</Grid>
+						{isGloballyAvailable && (
+							<Grid item sm={12} xs={12} lg={12}>
 								<ControlledSelect
 									name='country'
 									label='Select Country'
@@ -260,135 +262,133 @@ const CreateAccount: React.FC = () => {
 									}))}
 								/>
 							</Grid>
-							}
-							<Grid item sm={12} xs={12} lg={12}>
-								<ControlledTextField
-									name='email'
-									label='Email '
-									placeholder='Enter your email address'
-									formik={formik}
-									type='email'
-									autoComplete='email'
-								/>
-							</Grid>
+						)}
+						<Grid item sm={12} xs={12} lg={12}>
+							<ControlledTextField
+								name='email'
+								label='Email '
+								placeholder='Enter your email address'
+								formik={formik}
+								type='email'
+								autoComplete='email'
+							/>
+						</Grid>
 
-							<Grid item sm={12} xs={12} lg={12}>
-								<ControlledPasswordField
-									name='password'
-									label='Password'
-									type='password'
-									placeholder='Enter your password'
-									formik={formik}
-									autoComplete='new-password'
-								/>
-							</Grid>
+						<Grid item sm={12} xs={12} lg={12}>
+							<ControlledPasswordField
+								name='password'
+								label='Password'
+								type='password'
+								placeholder='Enter your password'
+								formik={formik}
+								autoComplete='new-password'
+							/>
+						</Grid>
 
-							<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
-								<PasswordStrengthBar
-									password={formik.values.password}
-									handlePasswordChange={setPasswordMessage}
-								/>
-							</Grid>
+						<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
+							<PasswordStrengthBar
+								password={formik.values.password}
+								handlePasswordChange={setPasswordMessage}
+							/>
+						</Grid>
 
-							<Typography
-								sx={{
-									fontWeight: 500,
-									textAlign: 'center',
-									width: '498px',
-									lineHeight: '22px',
-								}}
-							>
-								<span>By creating an account you are agreeing to our </span>
-								<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
-								<span> and </span>
-								<BoldTextLink href='/privacy-policy'>
-									Privacy Policy
-								</BoldTextLink>
-								<span>.</span>
+						<Typography
+							sx={{
+								fontWeight: 500,
+								textAlign: 'center',
+								width: '498px',
+								lineHeight: '22px',
+							}}
+						>
+							<span>By creating an account you are agreeing to our </span>
+							<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
+							<span> and </span>
+							<BoldTextLink href='/privacy-policy'>Privacy Policy</BoldTextLink>
+							<span>.</span>
+						</Typography>
+
+						<Grid
+							item
+							sm={12}
+							xs={12}
+							lg={12}
+							sx={{
+								alignItems: 'center',
+								textAlign: 'center',
+								marginTop: '1rem',
+							}}
+						>
+							{loading ? (
+								<LoadingSubmitButton
+									loading
+									loadingPosition='center'
+									variant='outlined'
+								>
+									Sign Up
+								</LoadingSubmitButton>
+							) : (
+								<SubmitButton type='submit' disableRipple>
+									Sign Up
+								</SubmitButton>
+							)}
+						</Grid>
+						<Grid
+							item
+							sm={12}
+							xs={12}
+							lg={12}
+							sx={{
+								alignItems: 'center',
+								textAlign: 'center',
+								cursor: 'pointer',
+								marginTop: '1.2rem',
+							}}
+						>
+							<Typography>
+								Already have an account?{' '}
+								<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
 							</Typography>
-
-							<Grid
-								item
-								sm={12}
-								xs={12}
-								lg={12}
-								sx={{
-									alignItems: 'center',
-									textAlign: 'center',
-									marginTop: '1rem',
-								}}
-							>
-								{loading ? (
-									<LoadingSubmitButton
-										loading
-										loadingPosition='center'
-										variant='outlined'
-									>
-										Sign Up
-									</LoadingSubmitButton>
-								) : (
-									<SubmitButton type='submit' disableRipple>
-										Sign Up
-									</SubmitButton>
-								)}
-							</Grid>
-							<Grid
-								item
-								sm={12}
-								xs={12}
-								lg={12}
-								sx={{
-									alignItems: 'center',
-									textAlign: 'center',
-									cursor: 'pointer',
-									marginTop: '1.2rem',
-								}}
-							>
-								<Typography>
-									Already have an account?{' '}
-									<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
-								</Typography>
-							</Grid>
 						</Grid>
 					</Grid>
 				</Grid>
+			</Grid>
 
-				<Grid
-					item
-					xs={0}
-					sm={0}
-					md={6}
-					lg={6}
-					xl={6}
+			<Grid
+				item
+				xs={0}
+				sm={0}
+				md={6}
+				lg={6}
+				xl={6}
+				sx={{
+					background: `linear-gradient(#6699CC, #1F305E), url(${bgillustration})`,
+					display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
+					borderTopRightRadius: '1.3rem',
+					borderBottomLeftRadius: '1.3rem',
+					alignContent: 'center',
+					backgroundBlendMode: 'overlay',
+					backgroundSize: 'fixed',
+					backgroundRepeat: 'no-repeat',
+					backgroundPosition: 'bottom',
+				}}
+			>
+				<Stack
+					direction={'column'}
 					sx={{
-						background: `linear-gradient(#6699CC, #1F305E), url(${bgillustration})`,
-						display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
-						borderTopRightRadius: '1.3rem',
-						borderBottomLeftRadius: '1.3rem',
+						justifyContent: 'center',
+						alignItems: 'center',
 						alignContent: 'center',
-						backgroundBlendMode: 'overlay',
-						backgroundSize: 'fixed',
-						backgroundRepeat: 'no-repeat',
-						backgroundPosition: 'bottom',
 					}}
 				>
-					<Stack
-						direction={'column'}
-						sx={{
-							justifyContent: 'center',
-							alignItems: 'center',
-							alignContent: 'center',
-						}}
-					>
-						<Typography color={'white'} textAlign={'center'} variant='h2'>
-							Ready to Transform Your Property Management?
-						</Typography>
-						<Typography color={'white'} variant='body1'>
-							Sign up and make managing properties effortless.
-						</Typography>
-					</Stack>
-				</Grid>
+					<Typography color={'white'} textAlign={'center'} variant='h2'>
+						Ready to Transform Your Property Management?
+					</Typography>
+					<Typography color={'white'} variant='body1'>
+						Sign up and make managing properties effortless.
+					</Typography>
+				</Stack>
 			</Grid>
+		</Grid>
 	);
 };
 
