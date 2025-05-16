@@ -20,8 +20,8 @@ export const dashboardApiSlice = createApi({
 			query: (userId) => {
 				consoleDebug('Executing getDashboardMetrics query for user:', userId);
 				return {
-					url: dashboardEndpoints.getDashboardMetrics(),
-					method: 'GET',
+				url: dashboardEndpoints.getDashboardMetrics(),
+				method: 'GET',
 					params: { userId }
 				};
 			},
@@ -33,9 +33,9 @@ export const dashboardApiSlice = createApi({
 			query: (params) => {
 				consoleDebug('Executing getRevenueReportData query with params:', params);
 				return {
-					url: dashboardEndpoints.getRevenueReport(),
-					method: 'GET',
-					params,
+				url: dashboardEndpoints.getRevenueReport(),
+				method: 'GET',
+				params,
 				};
 			},
 		}),

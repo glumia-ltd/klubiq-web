@@ -28,7 +28,7 @@ const CreateAccount: React.FC = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
-	const { data } = useGetRolesQuery();
+	const { data: rolesData } = useGetRolesQuery();
 	consoleLog(passwordMessage);
 
 	const isGloballyAvailable = import.meta.env.VITE_IS_GLOBALLY_AVAILABLE.toLowerCase() === 'true';
@@ -46,7 +46,6 @@ const CreateAccount: React.FC = () => {
 		'priority',
 		'asc',
 	) as CountryType[];
-	const role = find(data, ['name', 'Organization_Owner']);
 	const validationSchema = yup.object({
 		firstName: yup.string().required('This field is required'),
 		companyName: yup.string(),
@@ -65,6 +64,8 @@ const CreateAccount: React.FC = () => {
 		mailCheck: boolean;
 		country: string | undefined;
 	};
+	// Add error handling for role
+    const role = rolesData ? find(rolesData, ['name', 'Organization_Owner']) : null;
 
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password, firstName, lastName, companyName, country } =
@@ -72,7 +73,7 @@ const CreateAccount: React.FC = () => {
 		const selectedCountry = find(activeCountries, ['code', country]);
 
 		try {
-			if (!role) {
+			if (!rolesData || !role) {
 				consoleLog('Role not found');
 				dispatch(
 					openSnackbar({
@@ -163,15 +164,10 @@ const CreateAccount: React.FC = () => {
 			mailCheck: false,
 			country: activeCountries[0]?.code,
 		},
-		enableReinitialize: true,
+		enableReinitialize: false,
 		validateOnChange: true,
 		validateOnBlur: true,
 		validateOnMount: true,
-		// validationSchema: {
-		// 	validate: (values: IValuesType) => {
-		// 		return validationSchema.isValidSync(values);
-		// 	},
-		// },
 		validationSchema,
 		onSubmit,
 	});

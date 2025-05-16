@@ -27,9 +27,9 @@ import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
 import Logo from '@/assets/images/icons.svg';
 import { styles } from './styles';
 
-type Props = {
-	children: React.ReactNode
-}
+// type Props = {
+// 	children: React.ReactNode
+// }
 
 const drawerWidth = 240;
 const routes = [

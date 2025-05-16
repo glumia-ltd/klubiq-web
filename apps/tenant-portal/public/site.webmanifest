@@ -1,0 +1,64 @@
+{
+  "name": "Klubiq Tenant",
+  "short_name": "Klubiq Tenant",
+  "description": "Tenant Portal for Klubiq",
+  "icons": [
+    {
+      "src": "/icons/64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "/icons/ios-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "/icons/android-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ios-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#002147",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "scope": "https://dev-tenant.klubiq.com/",
+  "start_url": "https://dev.klubiq.com/",
+  "orientation": "portrait",
+  "id": "klubiq.tenant.portal",
+  "lang": "en",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "browser"
+  ],
+  "dir": "auto",
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "My Dashboard"
+    }
+  ],
+  "categories": [
+    "utilities"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
