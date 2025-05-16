@@ -8,9 +8,9 @@ import {
 	IconButton,
 	Button,
 } from '@mui/material';
-import dayjs from 'dayjs';
-import PhoneIcon from '@mui/icons-material/Phone';
+import { formatDate } from '../../../helpers/utils';
 import fileIcon from '../../../assets/images/Phone.svg';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { DynamicTable } from '@klubiq/ui-components';
 import bukky from '../../../assets/images/aisha.jpg';
@@ -22,7 +22,7 @@ import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
 import { Breadcrumb } from '../../../components/Breadcrumb';
-import { TenantInfo } from '../../../shared/type';
+import { LeaseDetail, TenantInfo } from '../../../shared/type';
 import { TenantDocumentRow } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 
@@ -37,8 +37,6 @@ const TenantDetails = () => {
 		id: id || currentTenantId || '',
 	});
 	console.log('id', id, currentTenantId);
-	const activeLeases = tenantData?.activeleases ?? [];
-
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
 			feature: {
@@ -65,25 +63,14 @@ const TenantDetails = () => {
 		}
 		newBreadcrumbs['feature-details-sub'] = {};
 		updateBreadcrumb(newBreadcrumbs);
-	}, [tenantData?.firstName, currentTenantId, location.pathname]);
+	}, [tenantData?.name, currentTenantId, location.pathname]);
 	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: (() => {
-			const fullName = tenantData?.profile?.fullName?.trim();
-			const companyName = tenantData?.profile?.companyName?.trim();
-	const isInvalid = (val?: string) =>
-				!val ||
-				val.toLowerCase() === 'null' ||
-				val.toLowerCase() === 'null null';
-
-			if (!isInvalid(fullName)) return fullName!;
-			if (!isInvalid(companyName)) return companyName!;
-			return 'N/A';
-		})(),
-		phone: tenantData?.profile?.phoneNumber || 'N/A',
+		name: `${tenantData?.profile?.fullName ?? ''}`,
+		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
 		since: tenantData?.profile?.updatedDate
-			? dayjs(tenantData?.profile?.updatedDate).format('ll')
+			? formatDate(tenantData.profile.updatedDate)
 			: 'N/A',
 		image: tenantData?.profile?.profilePicUrl || bukky,
 	};
@@ -109,6 +96,14 @@ const TenantDetails = () => {
 		},
 		{ key: 'dueDate', label: 'Due Date' },
 	];
+
+	const leaseDetails: LeaseDetail[] =
+		tenantData?.activeleases?.map(
+			(lease: { leaseStart: any; leaseEnd: any; rentAmount: any }) => ({
+				name: `Lease from ${lease.leaseStart} to ${lease.leaseEnd}`,
+				amount: lease.rentAmount || 'N/A',
+			}),
+		) || [];
 
 	const rows: TenantDocumentRow[] =
 		tenantData?.activeLeases?.map(
@@ -157,7 +152,8 @@ const TenantDetails = () => {
 				<Breadcrumb />
 				<Stack>
 					<Button variant='contained' sx={styles.actionButton}>
-						Message
+						Action
+						<MoreVertIcon />
 					</Button>
 				</Stack>
 			</Stack>
