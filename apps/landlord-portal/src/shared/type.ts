@@ -147,6 +147,7 @@ export type TenantsType = {
 export type TenantTablePropertyDetailsType = {
 	name: string;
 	address: string;
+	address: string;
 	unitNumber: string | number;
 
 

@@ -1,12 +1,16 @@
 import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
 import { styles } from './styles';
 // import Filter from '../../../components/Filter/Filter';
+// import Filter from '../../../components/Filter/Filter';
+// import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import {
+	// useGetTenantFilterMetaDataQuery,
+	// useGetTenantFilterMetaDataQuery,
 	// useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
@@ -15,6 +19,7 @@ import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
 
 const Tenant = () => {
+	// const [filter, setFilter] = useState<Record<string, string | number>>({});
 	// const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchText, setSearchText] = useState('');
@@ -27,12 +32,19 @@ const Tenant = () => {
 	const inputRef = useRef<HTMLElement>(null);
 	// const filterObjectLength = Object.keys(filter).length;
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	// const filterObjectLength = Object.keys(filter).length;
+	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	// const filterObjectLength = Object.keys(filter).length;
+	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	const { data: tenantData } = useGetTenantsQuery({
 		...defaultParams,
+		// ...filter,
 		// ...filter,
 	});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
+	// const filterOptions = tenantMetaData?.filterOptions;
+	// const filterOptions = tenantMetaData?.filterOptions;
 	// const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
@@ -62,7 +74,7 @@ const Tenant = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-	}, [getCurrentPage]);
+	}, [ getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
 		navigate(`/tenant/${id}`);
@@ -107,16 +119,13 @@ const Tenant = () => {
 						disable={filterObjectLength ? false : !allTenants.length}
 					/>
 				</Stack> */}
-				<Stack sx={{ width: '100%' }}>
-					{allTenants ? (
-						<TenantTable
-							title='Tenant'
-							allTenant={allTenants}
-							onRowClick={(rowData: any) => handleRowClick(rowData.id)}
-						/>
-					) : (
-						<TableSkeleton />
-					)}
+				</Stack> */}
+				<Stack>
+					<TenantTable
+						title='Tenant'
+						allTenant={allTenants}
+						onRowClick={(rowData: any) => handleRowClick(rowData.id)}
+					/>
 				</Stack>
 			</Stack>
 			<Stack mt={4}>
