@@ -2,7 +2,6 @@
 
 import { openSnackbar } from '../store/SnackbarStore/SnackbarSlice';
 import { invalidateMultipleTags } from '../store/tags-invalidator';
-import { API_TAGS } from '../store/types';
 
 interface ApiResponseConfig {
     successMessage: string;
