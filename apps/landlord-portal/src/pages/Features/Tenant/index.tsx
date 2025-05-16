@@ -62,7 +62,7 @@ const Tenant = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-	}, [getCurrentPage]);
+	}, [ getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
 		navigate(`/tenant/${id}`);
@@ -107,16 +107,12 @@ const Tenant = () => {
 						disable={filterObjectLength ? false : !allTenants.length}
 					/>
 				</Stack> */}
-				<Stack sx={{ width: '100%' }}>
-					{allTenants ? (
-						<TenantTable
-							title='Tenant'
-							allTenant={allTenants}
-							onRowClick={(rowData: any) => handleRowClick(rowData.id)}
-						/>
-					) : (
-						<TableSkeleton />
-					)}
+				<Stack>
+					<TenantTable
+						title='Tenant'
+						allTenant={allTenants}
+						onRowClick={(rowData: any) => handleRowClick(rowData.id)}
+					/>
 				</Stack>
 			</Stack>
 			<Stack mt={4}>

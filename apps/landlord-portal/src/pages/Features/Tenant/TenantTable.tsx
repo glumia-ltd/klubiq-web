@@ -33,37 +33,18 @@ export const TenantTable: FC<TenantTableProps> = ({
 			key: 'profile',
 			label: 'Name',
 			align: 'center',
-			render: (tenant) => {
-				const getDisplayName = (): string => {
-					const fullName = tenant?.fullName?.trim();
-					const companyName = tenant?.companyName;
-
-					if (fullName) return fullName;
-					if (companyName) return companyName;
-					return 'N/A';
-				};
-				return (
-					<Box display='flex' alignItems='center' justifyContent='center'>
-						<DynamicAvatar
-							items={[tenant?.profilePicUrl || '']}
-							size='medium'
-							showName={false}
-						/>
-						<Tooltip title={getDisplayName()} arrow>
-							<Typography
-								variant='body2'
-								ml='0.5rem'
-								whiteSpace='nowrap'
-								overflow='hidden'
-								textOverflow='ellipsis'
-								width="25%"
-							>
-								{getDisplayName()}{' '}
-							</Typography>
-						</Tooltip>
-					</Box>
-				);
-			},
+			render: (tenant) => (
+				<Box display='flex' alignItems='center' justifyContent='center'>
+					<DynamicAvatar
+						items={[tenant?.tenant?.__profile__?.profilePicUrl || '']}
+						size='medium'
+						showName={false}
+					/>
+					<Typography variant='body2' ml='0.5rem'>
+						{`${tenant?.fullName || 'Name'}`}
+					</Typography>
+				</Box>
+			),
 		},
 		{
 			key: 'mostRecentPropertyName',
