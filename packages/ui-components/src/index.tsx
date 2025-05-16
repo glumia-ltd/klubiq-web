@@ -46,3 +46,7 @@ export * from './components/Errors/ErrorBoundary';
 // Re-export everything from DynamicModal
 export * from './components/DynamicModal/DynamicModal';
 
+// Re-export everything from DynamicSideNav
+export * from './components/DynamicSideNav/KlubiqSideNav';
+export * from './components/DynamicSideNav/SideNavTypes';
+

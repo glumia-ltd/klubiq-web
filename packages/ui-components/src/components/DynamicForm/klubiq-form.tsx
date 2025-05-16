@@ -336,47 +336,6 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		return schema;
 	};
 
-	// const createDependentValidation = (field: FormField, isRequired: boolean) => {
-	// 	const getFieldValue = (fieldPath: string, parent: any) => {
-	// 		const parts = fieldPath.split('.');
-	// 		if (parts.length === 1) {
-	// 			return parent[fieldPath];
-	// 		}
-	// 		const [groupName, fieldName] = parts;
-	// 		if (groupName && fieldName) {
-	// 			return parent?.[groupName]?.[fieldName];
-	// 		}
-	// 		return undefined;
-	// 	};
-
-	// 	let schema = Yup.string();
-
-	// 	// Handle dependencies
-	// 	if (field.dependsOn?.length) {
-	// 		schema = schema.when('*', (_, schema) => {
-	// 			return field.dependsOn!.reduce((acc, { field: parentField, value: requiredValue }) => {
-	// 				const fieldName = parentField.split('.').pop()!;
-	// 				return acc.test(
-	// 					`depends-on-${fieldName}`,
-	// 					`Must be equal to ${requiredValue}`,
-	// 					function () {
-	// 						const dependentValue = getFieldValue(parentField, this.parent);
-	// 						if (
-	// 							dependentValue &&
-	// 							dependentValue === requiredValue
-	// 						) {
-	// 							schema = schema.required(`${field.label} is required`);
-	// 						}
-	// 					},
-	// 				);
-	// 			}, schema);
-	// 		});
-	// 	} else if (isRequired) {
-	// 		schema = schema.required(`${field.label} is required`);
-	// 	}
-	// 	return schema;
-	// };
-
 	const createDependentValidation = (field: FormField, isRequired: boolean) => {
 		// If there are dependencies
 		if (field.dependsOn?.length) {
@@ -552,9 +511,22 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		<Formik
 			initialValues={generateInitialValues()}
 			validationSchema={validationSchema}
-			onSubmit={onSubmit}
+			// onSubmit={onSubmit}
+			onSubmit={async (values, { setSubmitting, setErrors }) => {
+				try {
+					await onSubmit(values);
+				} catch (error) {
+					// Preserve form values on error
+					setSubmitting(false);
+					// Optionally set form-level errors
+					if (error instanceof Error) {
+						setErrors({ submit: error.message });
+					}
+				}
+			}}
 			validateOnMount={true}
 			validateOnChange={true}
+			enableReinitialize={false}
 		>
 			{({ handleReset, isSubmitting, isValid, dirty, errors, values }) => (
 				<Box sx={{ ...style.container, width: formWidth }}>

@@ -49,7 +49,7 @@ const ResetPassword = () => {
 				.test(
 					'is-same',
 					() => 'Confirm password is not the same as password',
-					function (code, context) {
+					function (_code, context) {
 						const { password, confirmPassword } = context.parent;
 
 						return password === confirmPassword;
