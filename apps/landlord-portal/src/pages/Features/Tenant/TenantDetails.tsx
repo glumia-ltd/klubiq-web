@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { formatDate } from '../../../helpers/utils';
 import fileIcon from '../../../assets/images/Phone.svg';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { DynamicTable } from '@klubiq/ui-components';
 import bukky from '../../../assets/images/aisha.jpg';
@@ -22,7 +21,7 @@ import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
 import { Breadcrumb } from '../../../components/Breadcrumb';
-import { LeaseDetail, TenantInfo } from '../../../shared/type';
+import {  TenantInfo } from '../../../shared/type';
 import { TenantDocumentRow } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 
@@ -146,8 +145,7 @@ const TenantDetails = () => {
 				<Breadcrumb />
 				<Stack>
 					<Button variant='contained' sx={styles.actionButton}>
-						Action
-						<MoreVertIcon />
+						Message
 					</Button>
 				</Stack>
 			</Stack>
