@@ -10,6 +10,19 @@ export type LeaseDetail = {
 	name: string;
 	amount: string;
 }
+export type ActiveLeaseDetail = {
+	name: string;
+	amount: string;
+	leaseStart: string;
+	leaseEnd: string;
+	latePaymentDate: string;
+	leaseId: string;
+	rentAmount: string;
+	id: string;
+
+
+
+}
 export type TenantCardProps = {
 	tenant: TenantInfo;
 }
