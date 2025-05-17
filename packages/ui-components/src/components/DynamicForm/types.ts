@@ -36,7 +36,7 @@ export interface FormField {
   label: string;
   type: FieldType;
   placeholder?: string;
-  options?: SelectOption[];
+  options?: SelectOption[] | ((values: Record<string, any>) => SelectOption[]);
   required?: boolean;
   disabled?: boolean;
   hidden?: boolean;
@@ -65,11 +65,14 @@ export interface FormField {
   dependsOn?: DependsOn[];
   width?: string | number;
   showIf?: (values: Record<string, any>) => boolean;
+  actionButton?: ActionButton;
+  infoMessage?: InfoMessage;
+  layout?: 'row' | 'column';
 }
 
 export interface DynamicFormProps {
   fields: FormField[];
-  onSubmit: (values: any) => void;
+  onSubmit: (values: any) => Promise<any>;
   initialValues?: Record<string, any>;
   submitButtonText?: string;
   enableReset?: boolean;
@@ -92,4 +95,16 @@ export interface FormGroup {
   label?: string;
   fields: FormField[];
   columns?: 1 | 2 | 3 | 4; // For grid layout
+}
+
+export interface ActionButton {
+  label: string;
+  onClick: (values: Record<string, any>) => void;
+  position?: 'start' | 'end';
+}
+
+export interface InfoMessage {
+  message: string | ((values: Record<string, any>) => string);
+  icon?: ReactNode;
+  showIf?: (values: Record<string, any>) => boolean;
 }

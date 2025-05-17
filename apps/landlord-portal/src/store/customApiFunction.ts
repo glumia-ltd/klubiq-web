@@ -25,10 +25,7 @@ export const customApiFunction = async (args: any) => {
 		  return { data: {}, status: result.status };
 	} catch (error: any) {
 		return {
-			error: {
-			  status: error.response?.status,
-			  data: (error as any).response?.data,
-			} as FetchBaseQueryError,
+			error:  (error as any).response?.data  as FetchBaseQueryError,
 		  };
 		// return { error: (error as any).response?.data } as any;
 	}
