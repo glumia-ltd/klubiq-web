@@ -8,6 +8,9 @@ import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
 
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
+import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
+import { api } from '@/api';
+import { authEndpoints } from '@/helpers/endpoints';
 
 type IValuesType = {
 	password: string;
@@ -43,8 +46,18 @@ const Login = () => {
 	];
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values);
-		navigate('/dashboard');
+		try {
+			const response = await api.post(authEndpoints.login(), values)
+
+			console.log(response)
+		} catch (error:any) {
+			openSnackbar({
+				message: error.response.data.message,
+				severity: 'error',
+				isOpen: true,
+			});
+		}
+		// navigate('/dashboard');
 	};
 
 	return (
