@@ -8,6 +8,7 @@ import {
 	IconButton,
 	Button,
 } from '@mui/material';
+import PhoneIcon from '@mui/icons-material/Phone';
 import { formatDate } from '../../../helpers/utils';
 import fileIcon from '../../../assets/images/Phone.svg';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
@@ -21,7 +22,7 @@ import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
 import { Breadcrumb } from '../../../components/Breadcrumb';
-import {  TenantInfo } from '../../../shared/type';
+import { TenantInfo } from '../../../shared/type';
 import { TenantDocumentRow } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 
@@ -67,8 +68,11 @@ const TenantDetails = () => {
 	}, [tenantData?.firstName, currentTenantId, location.pathname]);
 	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: `${tenantData?.profile?.fullName ?? ''}`,
-		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
+		name:
+			tenantData?.profile?.fullName ||
+			tenantData?.profile?.companyName ||
+			'N/A',
+		phone: tenantData?.profile?.phoneNumber || 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
 		since: tenantData?.profile?.updatedDate
 			? formatDate(tenantData.profile.updatedDate)
@@ -169,7 +173,7 @@ const TenantDetails = () => {
 								</Stack>
 								<Stack direction='row' spacing={2}>
 									<Box sx={styles.tenBox}>
-										<MailOutlinedIcon sx={styles.iconStyleTwo} />
+										<PhoneIcon sx={styles.iconStyleTwo} />
 										<Typography sx={styles.boxText}>{tenant.phone}</Typography>
 									</Box>
 									<Box sx={styles.tenBox}>
@@ -203,7 +207,7 @@ const TenantDetails = () => {
 						</Stack>
 						<Box display='flex' justifyContent='space-between'>
 							{Datas.map((item) => (
-								<Box key={item.name}>
+								<Box key={item.name} textAlign={'center'} width='25%'>
 									<Typography sx={styles.typo2}>{item.name}</Typography>
 									<Typography sx={styles.nameText}>{item.amount}</Typography>
 								</Box>
@@ -213,7 +217,7 @@ const TenantDetails = () => {
 				</Card>
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
-				<HistoryTable leases={activeLeases}/>
+				<HistoryTable leases={activeLeases} />
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
 				<DynamicTable
