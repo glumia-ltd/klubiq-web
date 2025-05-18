@@ -4,6 +4,8 @@ import { customApiFunction } from '../customApiFunction';
 import { UserProfile } from '../../shared/auth-types';
 import { ALL_TAGS, API_TAGS } from '../types';
 import { consoleError } from '../../helpers/debug-logger';
+import { handleApiResponse } from '../../helpers/apiResponseHandler';
+import { screenMessages } from '../../helpers/screen-messages';
 
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
@@ -55,10 +57,11 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signOut(),
 				method: 'POST',
 			}),
-			invalidatesTags: ALL_TAGS,
+			
 			async onQueryStarted(_, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
+					invalidatesTags: ALL_TAGS;
 					sessionStorage.clear();
 				} catch (error) {
 					consoleError('Error during sign out:', error);
@@ -70,7 +73,20 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signin(),
 				method: 'POST',
 				body,
+			})
+		}),
+		signUp: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.signup(),
+				method: 'POST',
+				body,
 			}),
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				await handleApiResponse(queryFulfilled, dispatch, {
+					successMessage: screenMessages.auth.signUp.success,
+					errorMessage: screenMessages.auth.signUp.error,
+				});
+			},
 		}),
 	}),
 });

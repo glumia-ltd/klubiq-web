@@ -87,7 +87,7 @@ export const PasswordStrengthBar: FC<{
 	const strengthBarStyle = {
 		width: `${(strength / 5) * 100}%`,
 		backgroundColor: strengthBarColor,
-		filter: strength > 0 ? `drop-shadow(0 0 5px ${strengthBarColor})` : 'none',
+		filter: strength > 0 ? `drop-shadow(0 0 1px ${strengthBarColor})` : 'none',
 	};
 
 	return <div style={{ ...styles.strengthBar, ...strengthBarStyle }}></div>;

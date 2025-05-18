@@ -1,9 +1,10 @@
 // packages/ui-components/src/components/SharedSideNav.tsx
+
+'use client';
 import React, { useState } from 'react';
 import {
 	Drawer,
 	List,
-	ListItem,
 	ListItemIcon,
 	ListItemText,
 	Avatar,
@@ -17,6 +18,7 @@ import {
 	useTheme,
 	useMediaQuery,
 	Tooltip,
+	ListItemButton,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -27,7 +29,7 @@ import { KlubiqSideNavProps } from './SideNavTypes';
 const drawerWidth = 260;
 const collapsedWidth = 72;
 
-const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
+export const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 	navLinks,
 	user,
 	onNavClick,
@@ -39,6 +41,20 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(() => {
+        // Get the initial selected index from localStorage or default to 0
+        const savedIndex = localStorage.getItem('selectedNavIndex');
+        return savedIndex ? parseInt(savedIndex) : 0;
+    });
+	const handleNavClick = (index: number, route: string) => {
+        setSelectedIndex(index);
+        localStorage.setItem('selectedNavIndex', index.toString());
+        onNavClick(route);
+        if (isMobile) {
+            setMobileOpen(false);
+        }
+    };
+
 
 	// Drawer content
 	const drawerContent = (
@@ -88,7 +104,6 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 				{!collapsed && (
 					<Box sx={{ px: 2, pb: 2 }}>
 						<Paper
-							component='form'
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
@@ -111,25 +126,18 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 				)}
 				{/* Nav Links */}
 				<List>
-					{navLinks.map((link) => (
+					{navLinks.map((link, index) => (
 						<Tooltip
 							key={link.label}
 							title={collapsed ? link.label : ''}
 							placement='right'
 							arrow
 						>
-							<ListItem
-								button
-								selected={link.active}
-								onClick={() => {
-									onNavClick(link.route);
-									if (isMobile) {
-										setMobileOpen(false);
-									}
-								}}
+							<ListItemButton
+								onClick={() => handleNavClick(index, link.route)}
 								sx={{
-									bgcolor: link.active ? '#fff' : 'transparent',
-									color: link.active ? '#0a2259' : '#fff',
+									bgcolor: index === selectedIndex ? '#fff' : 'transparent',
+									color: index === selectedIndex ? '#0a2259' : '#fff',
 									borderRadius: 2,
 									my: 0.5,
 									minHeight: 48,
@@ -151,7 +159,7 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 									{link.icon}
 								</ListItemIcon>
 								{!collapsed && <ListItemText primary={link.label} />}
-							</ListItem>
+							</ListItemButton>
 						</Tooltip>
 					))}
 				</List>
@@ -159,8 +167,7 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 				<Box sx={{ px: collapsed ? 0 : 3, pt: 2 }}>
 					<Stack spacing={1}>
 						<Tooltip title={collapsed ? 'Help' : ''} placement='right' arrow>
-							<ListItem
-								button
+							<ListItemButton
 								onClick={() => onNavClick('/help')}
 								sx={{
 									color: '#fff',
@@ -183,15 +190,14 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 									<span className='material-icons'>help_outline</span>
 								</ListItemIcon>
 								{!collapsed && <ListItemText primary='Help' />}
-							</ListItem>
+							</ListItemButton>
 						</Tooltip>
 						<Tooltip
 							title={collapsed ? 'Settings' : ''}
 							placement='right'
 							arrow
 						>
-							<ListItem
-								button
+							<ListItemButton
 								onClick={() => onNavClick('/settings')}
 								sx={{
 									color: '#fff',
@@ -214,7 +220,7 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 									<span className='material-icons'>settings</span>
 								</ListItemIcon>
 								{!collapsed && <ListItemText primary='Settings' />}
-							</ListItem>
+							</ListItemButton>
 						</Tooltip>
 					</Stack>
 				</Box>
@@ -306,5 +312,3 @@ const KlubiqSideNav: React.FC<KlubiqSideNavProps> = ({
 		</>
 	);
 };
-
-export default KlubiqSideNav;

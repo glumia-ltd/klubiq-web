@@ -1,8 +1,10 @@
+import { ReactNode } from "react";
+
 export type NavLink = {
 	label: string;
-	icon: React.ReactNode;
+	icon: ReactNode;
 	route: string;
-	active?: boolean;
+	index: number;
 };
 
 export type User = {
@@ -17,5 +19,5 @@ export type KlubiqSideNavProps = {
 	onNavClick: (route: string) => void;
 	onSignOut: () => void;
 	logoUrl?: string;
-	customBottomContent?: React.ReactNode;
+	customBottomContent?: ReactNode;
 };

@@ -52,9 +52,6 @@ const DashBoard = () => {
 		revenueReport 
 	} = useDashboardActions();
 
-	consoleDebug('Dashboard - User state:', user);
-	consoleDebug('Dashboard - Loading states:', { isDashboardMetricsLoading, isRevenueReportLoading });
-	consoleDebug('Dashboard - Data:', { dashboardMetrics, revenueReport });
 
 	const { mode } = useContext(ThemeContext);
 

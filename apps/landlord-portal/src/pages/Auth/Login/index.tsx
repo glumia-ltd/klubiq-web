@@ -135,16 +135,9 @@ const Login = () => {
 		const { email, password } = values;
 		try {
 			setLoading(true);
-			const signInResult = await signIn({ email, password });
-			if (!signInResult) {
-				throw new Error('Invalid credentials');
-			}
-			if(signInResult?.data?.message === 'MFA-required'){
-                throw new Error('MFA-required')
-			}
+			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
 		} catch (error: any) {
-			console.error(error);
 			if(error.message === 'MFA-required'){
 				consoleError('MFA Required to continue sign in');
 				set2FARequired(true);
@@ -154,13 +147,13 @@ const Login = () => {
 					openSnackbar({
 						message:
 							firebaseResponseObject[(error as Error).message] ||
-							'An error occurred',
+							(error as Error).message,
 						severity: 'error',
 						isOpen: true,
+						duration: 7000,
 					}),
 				);
 			}
-			consoleError('Sign in failed, setting loading to false');
 			setLoading(false);
 		}
 	};
