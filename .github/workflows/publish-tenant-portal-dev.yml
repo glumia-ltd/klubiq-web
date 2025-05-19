@@ -1,11 +1,11 @@
 name: Deploy Tenant Portal
 on:
   push:
-    branches:
-      - dev
-    paths:
-      - "apps/tenant-portal/**"
-      - "packages/**"
+    # branches:
+      # - dev
+    # paths:
+      # - "apps/tenant-portal/**"
+      # - "packages/**"
 env:
   VITE_BASE_URL_DEV: ${{ vars.VITE_BASE_URL_DEV }}
   VITE_APPLICATION_NAME: klubiq-tenant-portal
