@@ -5,11 +5,13 @@ import {
 	createRoutesFromElements,
 } from 'react-router-dom';
 
+
 import Login from '@/pages/Auth/Login';
 import TenantDashboard from '@/pages/Features/Dashboard';
 import LoggedInUserLayout from '@/layouts/LoggedInLayout';
 import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
+import AppContainer from '@/layouts/AppContainer';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -21,6 +23,9 @@ export const router = createBrowserRouter(
 
 			<Route element={<LoggedInUserLayout />}>
 				<Route path='/dashboard' element={<TenantDashboard />} />
+			</Route>
+			<Route element={<AppContainer />}>
+				<Route path='/tenant-portal' element={<TenantDashboard />} />
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
 		</Route>,

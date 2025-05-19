@@ -1,23 +1,71 @@
-import React, { useEffect } from 'react';
 import Box from '@mui/system/Box';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { AppContainerStyle } from '@/styles/shared-style';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleIcon from '@mui/icons-material/People';
+import ApartmentIcon from '@mui/icons-material/Apartment';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import { SideNav } from '@/components/SideNav/KlubiqSideNav';
+import { NavLink } from '@/components/SideNav/SideNavTypes';
 
-type AppContainerProp = {
-	children: React.ReactNode;
-	Container?: boolean;
-};
+const AppContainer = () => {
+	const navigate = useNavigate();
+	// Define navigation links
+	const navLinks: NavLink[] = [
+		{
+			label: 'Dashboard',
+			icon: <DashboardIcon />,
+			route: '/dashboard',
+			index: 0,
+		},
+		{
+			label: 'Properties',
+			icon: <ApartmentIcon />,
+			route: '/properties',
+			index: 1,
+		},
+		{
+			label: 'Tenants',
+			icon: <PeopleIcon />,
+			route: '/tenants',
+			index: 2,
+		},
+		{
+			label: 'Payments',
+			icon: <PaymentsIcon />,
+			route: '/payments',
+			index: 3,
+		},
+	];
 
-const AppContainer = ({ children }: AppContainerProp) => {
-	const { pathname } = useLocation();
+	// Mock user data (replace with your actual user data)
+	const user = {
+		name: 'John Doe',
+		role: 'Property Manager',
+		avatarUrl: 'path/to/avatar.jpg',
+	};
+	// Navigation handler
+	const handleNavClick = (route: string) => {
+		navigate(route);
+	};
 
-
-	useEffect(() => {
-		window.scrollTo(0, 0);
-	}, [pathname]);
+	// Sign out handler
+	const handleSignOut = () => {
+		// Implement your sign out logic here
+		console.log('Signing out...');
+	};
 
 	return (
-		<Box>
-			{children}
+		<Box sx={AppContainerStyle.box}>
+            <SideNav
+                navLinks={navLinks}
+                user={user}
+				onNavClick={handleNavClick}
+                onSignOut={handleSignOut}
+            />
+			<Box sx={AppContainerStyle.content}>
+				<Outlet />
+			</Box>
 		</Box>
 	);
 };

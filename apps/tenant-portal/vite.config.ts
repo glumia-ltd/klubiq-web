@@ -17,9 +17,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
-    commonjsOptions: {
-      include: [/@klubiq\/ui-components/, /node_modules/],
-    },
+    // commonjsOptions: {
+    //   include: [/@klubiq\/ui-components/, /node_modules/],
+    // },
   },
   optimizeDeps: {
     include: ['@klubiq/ui-components'],

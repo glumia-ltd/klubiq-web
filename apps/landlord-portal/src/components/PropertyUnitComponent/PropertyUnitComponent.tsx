@@ -209,7 +209,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			property?.units?.[0]?.tenants?.map((tenant) => ({
 				id: tenant.id,
 				tenant: {
-					name: `${tenant.profile.firstName} ${tenant.profile.lastName}`,
+					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName ||''} ${tenant.profile.lastName  || ''}`,
 					image: tenant.profile?.profilePicUrl ?? null,
 				},
 				phone: tenant.profile?.phoneNumber ?? null,
@@ -283,9 +283,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				id: lease.id,
 				tenants:
 					lease?.tenants?.map((tenant) => ({
-						name:
-							`${tenant.profile.firstName} ${tenant.profile.lastName}` ||
-							'Tenant',
+						name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''}`,
 						image: tenant.profile?.profilePicUrl ?? '',
 					})) || [],
 				rentAmount: `${getLocaleFormat(user?.orgSettings, +(lease?.rentAmount ?? 0), 'currency')}`,
