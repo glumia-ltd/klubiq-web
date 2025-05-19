@@ -82,12 +82,7 @@ const AppContainer = () => {
 			<SideNav
 				navLinks={navLinks}
 				user={user}
-			<SideNav
-				navLinks={navLinks}
-				user={user}
 				onNavClick={handleNavClick}
-				onSignOut={handleSignOut}
-			/>
 				onSignOut={handleSignOut}
 			/>
 			<Box sx={AppContainerStyle.content}>
@@ -104,4 +99,3 @@ const AppContainer = () => {
 };
 
 export default AppContainer;
-
