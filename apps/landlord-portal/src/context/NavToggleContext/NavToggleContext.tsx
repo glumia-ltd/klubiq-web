@@ -26,7 +26,7 @@ export const Context = createContext<ContextValue>({
 	drawerWidth: {
 		smallOpen: 200,
 		smallClosed: 0,
-		largeOpen: 230,
+		largeOpen: 178,
 		largeClosed: 70,
 	},
 });
@@ -55,7 +55,7 @@ export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
 	const drawerWidth = {
 		smallOpen: 200,
 		smallClosed: 0,
-		largeOpen: 230,
+		largeOpen: 178,
 		largeClosed: 70,
 	};
 
