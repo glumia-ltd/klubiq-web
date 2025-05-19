@@ -1,4 +1,4 @@
-import { Chip, Typography, Box } from '@mui/material';
+import { Chip, Typography, Box, Tooltip } from '@mui/material';
 import { FC } from 'react';
 import { styles } from './styles';
 import { TenantType } from '../../../shared/type';
@@ -26,7 +26,7 @@ export const TenantTable: FC<TenantTableProps> = ({
 	allTenant,
 	onRowClick,
 }) => {
-	const { tableSx, tableStyles } = useTenantActions();
+	const { tableSx, tableStyles  } = useTenantActions();
 
 	const columns: TableColumn[] = [
 		{
@@ -43,15 +43,24 @@ export const TenantTable: FC<TenantTableProps> = ({
 					return 'N/A';
 				};
 				return (
-					<Box display='flex' alignItems='center' justifyContent='left'>
+					<Box display='flex' alignItems='center' justifyContent='center'>
 						<DynamicAvatar
-							items={[tenant?.tenant?.__profile__?.profilePicUrl || '']}
+							items={[tenant?.profilePicUrl || '']}
 							size='medium'
 							showName={false}
 						/>
-						<Typography variant='body2' ml='0.5rem'>
-							{getDisplayName()}{' '}
-						</Typography>
+						<Tooltip title={getDisplayName()} arrow>
+							<Typography
+								variant='body2'
+								ml='0.5rem'
+								whiteSpace='nowrap'
+								overflow='hidden'
+								textOverflow='ellipsis'
+								width="25%"
+							>
+								{getDisplayName()}{' '}
+							</Typography>
+						</Tooltip>
 					</Box>
 				);
 			},

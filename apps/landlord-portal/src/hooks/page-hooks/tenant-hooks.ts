@@ -30,6 +30,7 @@ export const useTenantActions = () => {
         headerVariant: 'body1',
         headerFontWeight: 400,
         cellAlign: 'left',
+        
     };
 
 

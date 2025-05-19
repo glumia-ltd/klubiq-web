@@ -1,10 +1,10 @@
 import { Stack, Button, Chip, Typography } from '@mui/material';
 import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
-// import Filter from '../../../components/Filter/Filter';
+import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-	// useGetLeaseMetaDataQuery,
+	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../../components/DataPagination';
@@ -20,12 +20,13 @@ import {
 import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
+import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
-	// const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const [defaultParams, setDefaultParams] = useState({
@@ -34,14 +35,14 @@ const Lease = () => {
 		sortBy: 'createdDate',
 		order: 'ASC',
 	});
-	// const filterObjectLength = Object.keys(filter).length;
-	// const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
+	const filterObjectLength = Object.keys(filter).length;
+	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
 	const { data: leaseData } = useGetLeasesQuery({
 		...defaultParams,
-		// ...filter,
+		...filter,
 	});
 	const { tableSx, tableStyles } = useLeaseActions();
-	// const filterOptions = leaseMetaData?.filterOptions;
+	const filterOptions = leaseMetaData?.filterOptions;
 	const allLease = leaseData?.pageData;
 	const pageCount = leaseData?.meta?.pageCount;
 
@@ -151,7 +152,7 @@ const Lease = () => {
 	useEffect(() => {
 		getCurrentPage(1);
 		updateBreadcrumb({});
-	}, [getCurrentPage]);
+	}, [filter, getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
 		navigate(`/leases/${id}`);
@@ -166,15 +167,14 @@ const Lease = () => {
 					sx={styles.buttonContainer}
 				>
 					<Button
-						variant='contained'
-						sx={styles.addLeaseButton}
+						variant='klubiqMainButton'
 						onClick={navigateToAddLease}
 					>
-						{/* <LeftArrowIcon /> */}
+						<LeftArrowIcon />
 						Add New Lease
 					</Button>
 				</Stack>
-				{/* <Stack
+				<Stack
 					direction={'row'}
 					spacing={{ xs: 1, sm: 2, md: 4 }}
 					// sx={styles.buttonContainer}
@@ -186,7 +186,7 @@ const Lease = () => {
 						}}
 						disable={filterObjectLength ? false : !allLease}
 					/>
-				</Stack> */}
+				</Stack>
 				<Stack sx={{ width: '100%' }}>
 					{allLease ? <DynamicTable
 						colors={tableSx}
