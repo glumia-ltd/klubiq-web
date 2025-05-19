@@ -8,7 +8,8 @@ import {
 	IconButton,
 	Button,
 } from '@mui/material';
-import { formatDate } from '../../../helpers/utils';
+import dayjs from 'dayjs';
+import PhoneIcon from '@mui/icons-material/Phone';
 import fileIcon from '../../../assets/images/Phone.svg';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
@@ -66,11 +67,22 @@ const TenantDetails = () => {
 	}, [tenantData?.name, currentTenantId, location.pathname]);
 	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: `${tenantData?.profile?.fullName ?? ''}`,
-		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
+		name: (() => {
+			const fullName = tenantData?.profile?.fullName?.trim();
+			const companyName = tenantData?.profile?.companyName?.trim();
+	const isInvalid = (val?: string) =>
+				!val ||
+				val.toLowerCase() === 'null' ||
+				val.toLowerCase() === 'null null';
+
+			if (!isInvalid(fullName)) return fullName!;
+			if (!isInvalid(companyName)) return companyName!;
+			return 'N/A';
+		})(),
+		phone: tenantData?.profile?.phoneNumber || 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
 		since: tenantData?.profile?.updatedDate
-			? formatDate(tenantData.profile.updatedDate)
+			? dayjs(tenantData?.profile?.updatedDate).format('ll')
 			: 'N/A',
 		image: tenantData?.profile?.profilePicUrl || bukky,
 	};
