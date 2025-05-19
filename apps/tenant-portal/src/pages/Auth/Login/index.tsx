@@ -44,11 +44,16 @@ const Login = () => {
         },
     ];
 
+    const loadUserAfterSignIn = async () => {
+        const user = await api.post(authEndpoints.getUserData())
+
+        console.log(user)
+    }
+
 	const onSubmit = async (values: IValuesType) => {
 		try {
 			const response = await api.post(authEndpoints.login(), values)
-
-			console.log(response)
+            // await loadUserAfterSignIn()
 		} catch (error:any) {
 			openSnackbar({
 				message: error.response.data.message,
@@ -56,7 +61,7 @@ const Login = () => {
 				isOpen: true,
 			});
 		}
-		// navigate('/dashboard');
+		navigate('/dashboard');
 	};
 
     return (
