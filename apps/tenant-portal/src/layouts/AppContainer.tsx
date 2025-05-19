@@ -5,7 +5,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import PaymentsIcon from '@mui/icons-material/Payments';
-import { KlubiqSideNav, NavLink } from '@klubiq/ui-components';
+import { SideNav } from '@/components/SideNav/KlubiqSideNav';
+import { NavLink } from '@/components/SideNav/SideNavTypes';
 
 const AppContainer = () => {
 	const navigate = useNavigate();
@@ -56,7 +57,7 @@ const AppContainer = () => {
 
 	return (
 		<Box sx={AppContainerStyle.box}>
-            <KlubiqSideNav
+            <SideNav
                 navLinks={navLinks}
                 user={user}
 				onNavClick={handleNavClick}

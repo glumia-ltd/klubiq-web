@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
 import { Stack, Typography } from '@mui/material';
 import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
@@ -16,7 +16,8 @@ type IValuesType = {
 };
 
 const Login = () => {
-    const navigate = useNavigate();
+    // NOTE: Don't lkeve unuse variables as it will cause tbe build to fail
+	//const navigate = useNavigate();
 
     const defaultValues: IValuesType = {
         password: '',
