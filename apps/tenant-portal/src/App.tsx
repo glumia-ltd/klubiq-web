@@ -7,20 +7,11 @@ import { router } from './router/RouterPaths';
 
 const App = () => {
   return (
-    // <ThemeContextProvider>
+    <ThemeContextProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <RouterProvider router={router} />
       </LocalizationProvider>
-    // </ThemeContextProvider>
-    // <Box sx={{ display: 'flex' }}>
-    //   <Layout>
-    //     <Routes>
-    //       <Route path="/" element={<div>Tenant Portal Home</div>} />
-    //       <Route path="/example" element={<ExamplePage />} />
-    //       {/* Add more routes here */}
-    //     </Routes>
-    //   </Layout>
-    // </Box>
+    </ThemeContextProvider>
   )
 }
 

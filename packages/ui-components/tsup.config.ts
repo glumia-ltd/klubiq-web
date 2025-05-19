@@ -10,7 +10,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  treeshake: false,
+  treeshake: true,
   external: [
     'react',
     'react-dom',
@@ -31,7 +31,8 @@ export default defineConfig({
       'process.env.NODE_ENV': '"production"',
     }
     options.jsx = 'automatic'
-    options.jsxImportSource = 'react'
+    options.jsxImportSource = 'react',
+    options.platform = 'browser' 
   },
   minify: true,
   outDir: 'dist',

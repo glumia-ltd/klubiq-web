@@ -190,6 +190,7 @@ export const AddPropertiesLayout = () => {
 			],
 		},
 		validationSchema,
+		enableReinitialize: false,
 		onSubmit,
 	});
 

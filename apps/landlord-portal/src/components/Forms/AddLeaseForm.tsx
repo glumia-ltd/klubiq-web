@@ -54,7 +54,7 @@ interface AddLeaseFormProps {
 }
 
 const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
-	const { user, orgSettings } = useSelector(getAuthState);
+	const { user } = useSelector(getAuthState);
 
 	const dispatch = useDispatch();
 
@@ -391,7 +391,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 							formik={formik}
 							type='number'
 							showCurrency
-							currencySymbol={getCurrencySymbol(orgSettings) as string}
+							currencySymbol={getCurrencySymbol(user?.orgSettings) as string}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -401,7 +401,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 							type='number'
 							formik={formik}
 							showCurrency
-							currencySymbol={getCurrencySymbol(orgSettings) as string}
+							currencySymbol={getCurrencySymbol(user?.orgSettings) as string}
 						/>
 					</Grid>
 

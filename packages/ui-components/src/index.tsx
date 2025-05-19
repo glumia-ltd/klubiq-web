@@ -24,6 +24,10 @@ export { KlubiqForm } from './components/DynamicForm/klubiq-form';
 export { KlubiqFormFields } from './components/DynamicForm/klubiq-formfields';
 export type { FormField, FormGroup, InputAdornment } from './components/DynamicForm/types';
 
+// Re-export everything from DynamicSideNav
+export { KlubiqSideNav } from './components/DynamicSideNav/KlubiqSideNav';
+export type { NavLink, User, KlubiqSideNavProps } from './components/DynamicSideNav/SideNavTypes';
+
 
 // Re-export everything from DynamicForm
 export * from './components/DynamicForm/klubiq-form';
@@ -45,4 +49,5 @@ export * from './components/Errors/ErrorBoundary';
 
 // Re-export everything from DynamicModal
 export * from './components/DynamicModal/DynamicModal';
+
 
