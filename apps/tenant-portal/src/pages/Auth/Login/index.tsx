@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { ReactNode } from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
 import { Stack, Typography } from '@mui/material';
 import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
@@ -16,8 +16,7 @@ type IValuesType = {
 };
 
 const Login = () => {
-    // NOTE: Don't lkeve unuse variables as it will cause tbe build to fail
-	//const navigate = useNavigate();
+	const navigate = useNavigate();
 
     const defaultValues: IValuesType = {
         password: '',
@@ -45,15 +44,16 @@ const Login = () => {
     ];
 
     const loadUserAfterSignIn = async () => {
-        const user = await api.post(authEndpoints.getUserData())
-
+        const user = await api.get(authEndpoints.getUserData())
         console.log(user)
     }
 
 	const onSubmit = async (values: IValuesType) => {
 		try {
 			const response = await api.post(authEndpoints.login(), values)
-            // await loadUserAfterSignIn()
+            await loadUserAfterSignIn()
+            console.log(response)
+            navigate('/dashboard');
 		} catch (error:any) {
 			openSnackbar({
 				message: error.response.data.message,
@@ -61,7 +61,6 @@ const Login = () => {
 				isOpen: true,
 			});
 		}
-		navigate('/dashboard');
 	};
 
     return (
