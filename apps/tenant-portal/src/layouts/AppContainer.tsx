@@ -8,8 +8,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import { SideNav } from '@/components/SideNav/KlubiqSideNav';
 import { NavLink } from '@/components/SideNav/SideNavTypes';
 import { AppFooter } from '@klubiq/ui-components';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+
 // Example for tenant portal
 const tenantFooterConfig = {
 	appName: 'Tenant Portal',
