@@ -20,7 +20,7 @@ type ViewPortProp = {
 // Example for landlord portal
 const landlordFooterConfig = {
 	appName: "Landlord Portal",
-	version: pkg.version,
+	version: import.meta.env.REACT_LP_APP_VERSION || "0.0.1",
 	environment: import.meta.env.VITE_NODE_ENV as "development" | "staging" | "production",
 	// ... other props
   };
