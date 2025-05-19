@@ -7,7 +7,18 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { SideNav } from '@/components/SideNav/KlubiqSideNav';
 import { NavLink } from '@/components/SideNav/SideNavTypes';
-import { useSignOutMutation } from '@/store/AuthStore/authApi.slice';
+import { AppFooter } from '@klubiq/ui-components';
+
+// Example for tenant portal
+const tenantFooterConfig = {
+	appName: 'Tenant Portal',
+	version: import.meta.env.REACT_TP_APP_VERSION || '0.0.1',
+	environment: import.meta.env.VITE_NODE_ENV as
+		| 'development'
+		| 'staging'
+		| 'production',
+	// ... other props
+};
 
 const AppContainer = () => {
 	const navigate = useNavigate();
@@ -73,14 +84,23 @@ const AppContainer = () => {
 			<SideNav
 				navLinks={navLinks}
 				user={user}
+			<SideNav
+				navLinks={navLinks}
+				user={user}
 				onNavClick={handleNavClick}
+				onSignOut={handleSignOut}
+			/>
 				onSignOut={handleSignOut}
 			/>
 			<Box sx={AppContainerStyle.content}>
 				<Outlet />
+				<Box width={'100%'}>
+					<AppFooter {...tenantFooterConfig} />
+				</Box>
 			</Box>
 		</Box>
 	);
 };
 
 export default AppContainer;
+
