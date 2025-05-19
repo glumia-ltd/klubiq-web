@@ -1,3 +1,4 @@
+
 'use client';
 /// <reference path="theme.d.ts" />
 // Export all components
@@ -50,4 +51,4 @@ export * from './components/Errors/ErrorBoundary';
 // Re-export everything from DynamicModal
 export * from './components/DynamicModal/DynamicModal';
 
-
+export * from './components/AppFooter'; 
