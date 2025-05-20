@@ -12,23 +12,25 @@ import {
 	PERSIST,
 	PURGE,
 	REGISTER,
-  } from 'redux-persist';
+} from 'redux-persist';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import { authApiSlice } from './AuthStore/authApi.slice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
 const rootReducer = combineReducers({
-		auth: authReducer,
-		snack: snackbarReducer,
-		loader: loaderReducer,
+	auth: authReducer,
+	snack: snackbarReducer,
+	loader: loaderReducer,
+	[authApiSlice.reducerPath]: authApiSlice.reducer,
 });
 const persistConfig = {
 	key: 'root',
 	storage: storageSession,
 	whitelist: ['auth'], // only persist auth slice
-  };
-  
-  const persistedReducer = persistReducer(persistConfig, rootReducer);
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store: Store = configureStore({
 	reducer: persistedReducer,
@@ -37,9 +39,7 @@ const store: Store = configureStore({
 			serializableCheck: {
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
-		}).concat(
-
-		),
+		}).concat(authApiSlice.middleware),
 });
 
 const persistor = persistStore(store);
