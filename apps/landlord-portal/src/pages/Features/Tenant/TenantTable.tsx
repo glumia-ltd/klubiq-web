@@ -26,14 +26,13 @@ export const TenantTable: FC<TenantTableProps> = ({
 	allTenant,
 	onRowClick,
 }) => {
-	const { tableSx, tableStyles  } = useTenantActions();
+	const { tableSx, tableStyles } = useTenantActions();
 
 	const columns: TableColumn[] = [
 		{
 			key: 'profile',
 			label: 'Name',
-			align: 'center',
-			maxWidth: 25,
+			align: 'left',
 			render: (tenant) => {
 				const getDisplayName = (): string => {
 					const fullName = tenant?.fullName?.trim();
@@ -44,7 +43,12 @@ export const TenantTable: FC<TenantTableProps> = ({
 					return 'N/A';
 				};
 				return (
-					<Box display='flex' alignItems='center' justifyContent='center'>
+					<Box
+						display='flex'
+						alignItems='center'
+						justifyContent='left'
+						maxWidth={'300px'}
+					>
 						<DynamicAvatar
 							items={[tenant?.profilePicUrl || '']}
 							size='medium'
@@ -57,7 +61,6 @@ export const TenantTable: FC<TenantTableProps> = ({
 								whiteSpace='nowrap'
 								overflow='hidden'
 								textOverflow='ellipsis'
-								width="25%"
 							>
 								{getDisplayName()}{' '}
 							</Typography>
@@ -69,22 +72,22 @@ export const TenantTable: FC<TenantTableProps> = ({
 		{
 			key: 'mostRecentPropertyName',
 			label: 'Property Name',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentUnitName',
 			label: 'Unit',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentUnitAddress',
 			label: 'Address',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentPaymentStatus',
 			label: 'Status',
-			align: 'center',
+			align: 'left',
 			render: (tenant) => {
 				const status = tenant?.mostRecentPaymentStatus?.status;
 				if (!status) return null;
