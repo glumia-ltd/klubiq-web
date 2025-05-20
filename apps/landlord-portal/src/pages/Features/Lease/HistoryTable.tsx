@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import { DynamicTable } from '@klubiq/ui-components';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
-import { styles } from './style';
 import { ActiveLeaseDetail } from '../../../shared/type';
 
 type HistoryRow = {
