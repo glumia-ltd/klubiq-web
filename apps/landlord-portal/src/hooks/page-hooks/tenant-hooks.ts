@@ -1,5 +1,5 @@
 
-import { DynamicTableColors, DynamicTableStyles } from "@klubiq/ui-components";
+import { DynamicTableColors, DynamicTableStyles} from "@klubiq/ui-components";
 import { useTheme } from "@mui/material";
 
 
@@ -32,7 +32,7 @@ export const useTenantActions = () => {
         cellAlign: 'left',
         
     };
-
+    
 
     return {
        

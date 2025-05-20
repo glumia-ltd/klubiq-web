@@ -33,6 +33,7 @@ export const TenantTable: FC<TenantTableProps> = ({
 			key: 'profile',
 			label: 'Name',
 			align: 'center',
+			maxWidth: 25,
 			render: (tenant) => {
 				const getDisplayName = (): string => {
 					const fullName = tenant?.fullName?.trim();
