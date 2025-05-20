@@ -3,8 +3,6 @@ import { get } from 'lodash';
 import { consoleLog } from './debug-logger';
 import dayjs from 'dayjs';
 
-
- 
 export const MEASUREMENTS: any[] = [
 	{
 		unit: 'SqM',
@@ -23,7 +21,10 @@ export const MEASUREMENTS: any[] = [
 		symbol: <span>in&sup2;</span>,
 	},
 ];
-
+export const formatDate = (dateString: string, format = 'MMMM D, YYYY') => {
+	if (!dateString) return 'N/A';
+	return dayjs(dateString).format(format);
+};
 export const getCurrencySymbol = (orgSettings: Record<string, unknown>) => {
 	let currencySymbol = '';
 	if (orgSettings) {
@@ -66,18 +67,18 @@ export const getLocaleFormat = (
 	orgSettings: Record<string, unknown>,
 	numberVal: number,
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
-	decimals: number = 2
+	decimals: number = 2,
 ) => {
 	const { countryCode, currencyCode, lang } =
 		getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode && currencyCode) {
 		return new Intl.NumberFormat(`${lang}-${countryCode}`, {
-  			style: `${style}`,
-  			currency: `${currencyCode}`,
-  			currencyDisplay: 'symbol',
-  			minimumFractionDigits: style === 'percent' ? 0 : decimals,
-  			maximumFractionDigits: style === 'percent' ? 0 : decimals,
-  		}).format(numberVal);
+			style: `${style}`,
+			currency: `${currencyCode}`,
+			currencyDisplay: 'symbol',
+			minimumFractionDigits: style === 'percent' ? 0 : decimals,
+			maximumFractionDigits: style === 'percent' ? 0 : decimals,
+		}).format(numberVal);
 	}
 	return '';
 };
@@ -93,9 +94,9 @@ export const getLocaleDateFormat = (
 	orgSettings: Record<string, unknown>,
 	date: string,
 	options?: {
-		dateStyle?: 'full' | 'short' | 'long' | 'medium',
-		timeStyle?: 'full' | 'short' | 'long' | 'medium',
-		hour12?: boolean,
+		dateStyle?: 'full' | 'short' | 'long' | 'medium';
+		timeStyle?: 'full' | 'short' | 'long' | 'medium';
+		hour12?: boolean;
 	},
 ) => {
 	const { countryCode, lang } = getInfoFromUserSettings(orgSettings);
@@ -139,31 +140,31 @@ export const stringAvatar = (word1: string, word2: string) => {
 	};
 };
 
- // Parse formatted values back to numbers
- export const parseCurrency = (value: string): number => {
-    return Number(value.replace(/[^0-9.-]+/g, ''));
-  };
+// Parse formatted values back to numbers
+export const parseCurrency = (value: string): number => {
+	return Number(value.replace(/[^0-9.-]+/g, ''));
+};
 
-  export const parsePercentage = (value: string): number => {
-    return Number(value.replace(/[^0-9.-]+/g, ''));
-  };
-  export const getLocaleFormat1 = (
-    numberVal: number,
-    style:  'percent' | 'unit' | 'decimal',
-    decimals: number = 2,
-  ) => {
-    const locale = navigator.language;
-    if (locale) {
-      return new Intl.NumberFormat(locale, {
-          style: `${style}`,
-          minimumFractionDigits: style === 'percent' ? 0 : decimals,
-          maximumFractionDigits: style === 'percent' ? 0 : decimals,
-        }).format(style === 'percent' ? numberVal / 100 : numberVal);
-    }
-    return '';
-  };
+export const parsePercentage = (value: string): number => {
+	return Number(value.replace(/[^0-9.-]+/g, ''));
+};
+export const getLocaleFormat1 = (
+	numberVal: number,
+	style: 'percent' | 'unit' | 'decimal',
+	decimals: number = 2,
+) => {
+	const locale = navigator.language;
+	if (locale) {
+		return new Intl.NumberFormat(locale, {
+			style: `${style}`,
+			minimumFractionDigits: style === 'percent' ? 0 : decimals,
+			maximumFractionDigits: style === 'percent' ? 0 : decimals,
+		}).format(style === 'percent' ? numberVal / 100 : numberVal);
+	}
+	return '';
+};
 
-  /**
+/**
  * Returns the current line number by inspecting the Error stack trace.
  */
 // function getCurrentLine(): number | null {
@@ -175,4 +176,3 @@ export const stringAvatar = (word1: string, word2: string) => {
 // 	const match = callerLine.match(/:(\d+):\d+\)?$/);
 // 	return match?.[1] ? parseInt(match[1], 10) : null;
 //   }
-  
