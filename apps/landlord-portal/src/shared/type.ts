@@ -10,6 +10,19 @@ export type LeaseDetail = {
 	name: string;
 	amount: string;
 }
+export type ActiveLeaseDetail = {
+	name: string;
+	amount: string;
+	leaseStart: string;
+	leaseEnd: string;
+	latePaymentDate: string;
+	leaseId: string;
+	rentAmount: string;
+	id: string;
+
+
+
+}
 export type TenantCardProps = {
 	tenant: TenantInfo;
 }
@@ -115,7 +128,15 @@ export type PropertyMetaData = {
 
 export type TenantType = {
 	id: string;
-	tenantId: string; // Removed this field later after Backend was updated as it's not needed
+	profile: UserProfile;
+	leaseDetails: LeaseType;
+	propertyDetails: TenantTablePropertyDetailsType;
+	isPrimaryTenant: boolean;
+	profileUuid?: string;
+
+}
+export type TenantsType = {
+	tenantId: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
 	propertyDetails: TenantTablePropertyDetailsType;
@@ -125,11 +146,7 @@ export type TenantType = {
 
 export type TenantTablePropertyDetailsType = {
 	name: string;
-	address: {
-		addressLine1: string;
-		addressLine2: string | null;
-
-	};
+	address: string;
 	unitNumber: string | number;
 
 

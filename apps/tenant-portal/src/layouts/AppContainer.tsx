@@ -7,8 +7,10 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { SideNav } from '@/components/SideNav/KlubiqSideNav';
 import { NavLink } from '@/components/SideNav/SideNavTypes';
+import { useSignOutMutation } from '@/store/AuthStore/authApi.slice';
 import { AppFooter } from '@klubiq/ui-components';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 // Example for tenant portal
 const tenantFooterConfig = {
 	appName: 'Tenant Portal',
@@ -22,6 +24,9 @@ const tenantFooterConfig = {
 
 const AppContainer = () => {
 	const navigate = useNavigate();
+	const { user } = useSelector((state: RootState) => state.auth);
+	const [signOut] = useSignOutMutation()
+
 	// Define navigation links
 	const navLinks: NavLink[] = [
 		{
@@ -35,36 +40,43 @@ const AppContainer = () => {
 			icon: <ApartmentIcon />,
 			route: '/properties',
 			index: 1,
+			disabled: true,
 		},
 		{
 			label: 'Tenants',
 			icon: <PeopleIcon />,
 			route: '/tenants',
 			index: 2,
+			disabled: true,
 		},
 		{
 			label: 'Payments',
 			icon: <PaymentsIcon />,
 			route: '/payments',
 			index: 3,
+			disabled: true,
 		},
 	];
 
-	// Mock user data (replace with your actual user data)
-	const user = {
-		name: 'John Doe',
-		role: 'Property Manager',
-		avatarUrl: 'path/to/avatar.jpg',
-	};
+	// Mock user data (replace with your actual user data
 	// Navigation handler
 	const handleNavClick = (route: string) => {
 		navigate(route);
 	};
 
 	// Sign out handler
-	const handleSignOut = () => {
+	const handleSignOut = async () => {
 		// Implement your sign out logic here
-		console.log('Signing out...');
+		try {
+			const { error } = await signOut({})
+
+			if (error) {
+				throw error
+			}
+			navigate('/', { replace: true })
+		} catch (error) {
+			console.error(error)
+		}
 	};
 
 	return (

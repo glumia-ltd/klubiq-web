@@ -72,6 +72,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						p: 3,
 						display: 'flex',
 						alignItems: 'center',
+						flexDirection: collapsed ? 'column' : 'row',
 						gap: 2,
 						justifyContent: collapsed ? 'center' : 'flex-start',
 					}}
@@ -86,7 +87,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
 						onClick={() => setCollapsed((prev) => !prev)}
 						sx={{
-							ml: 'auto',
+							// ml: 'auto',
 							color: 'primary.contrastText',
 							display: { xs: 'none', md: 'inline-flex' },
 						}}
@@ -127,6 +128,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				<Box sx={{ px: collapsed ? 0 : 3, pt: 2 }}>
 					<Stack spacing={1}>
 						{navLinks.map((link, index) => (
+							link.disabled ? null : (
 							<Tooltip
 								key={link.label}
 								title={collapsed ? link.label : ''}
@@ -168,8 +170,9 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 										{link.icon}
 									</ListItemIcon>
 									{!collapsed && <ListItemText primary={link.label} />}
-								</ListItemButton>
-							</Tooltip>
+									</ListItemButton>
+								</Tooltip>
+							)
 						))}
 					</Stack>
 				</Box>
@@ -244,7 +247,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				</Box>
 			</Box>
 			{/* User Info Bottom */}
-			<Box sx={{ px: collapsed ? 0 : 3, pb: 2 }}>
+			<Box sx={{ px: collapsed ? 0 : 1, pb: 2 }}>
 				<Divider sx={{ bgcolor: 'primary.main', my: 2 }} />
 				{customBottomContent ? (
 					customBottomContent
@@ -252,14 +255,13 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 					<Stack
 						direction='row'
 						alignItems='center'
-						spacing={2}
+						spacing={1}
 						justifyContent={collapsed ? 'center' : 'flex-start'}
 					>
-						<Avatar src={user.avatarUrl} alt={user.name} />
+						<Avatar src={user.profilePicUrl || user.firstname || ''} alt={user.firstname || ''} />
 						{!collapsed && (
 							<Box>
-								<Typography variant='subtitle1'>{user.name}</Typography>
-								<Typography variant='caption'>{user.role}</Typography>
+								<Typography variant='subtitle1'>{user.firstname} {user.lastname}</Typography>
 							</Box>
 						)}
 						<IconButton
