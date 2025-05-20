@@ -7,9 +7,13 @@ import ApartmentIcon from '@mui/icons-material/Apartment';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { SideNav } from '@/components/SideNav/KlubiqSideNav';
 import { NavLink } from '@/components/SideNav/SideNavTypes';
+import { useSignOutMutation } from '@/store/AuthStore/authApi.slice';
 
 const AppContainer = () => {
 	const navigate = useNavigate();
+
+	const [signOut] = useSignOutMutation()
+
 	// Define navigation links
 	const navLinks: NavLink[] = [
 		{
@@ -50,19 +54,28 @@ const AppContainer = () => {
 	};
 
 	// Sign out handler
-	const handleSignOut = () => {
+	const handleSignOut = async () => {
 		// Implement your sign out logic here
-		console.log('Signing out...');
+		try {
+			const { error } = await signOut({})
+
+			if (error) {
+				throw error
+			}
+			navigate('/', { replace: true })
+		} catch (error) {
+			console.error(error)
+		}
 	};
 
 	return (
 		<Box sx={AppContainerStyle.box}>
-            <SideNav
-                navLinks={navLinks}
-                user={user}
+			<SideNav
+				navLinks={navLinks}
+				user={user}
 				onNavClick={handleNavClick}
-                onSignOut={handleSignOut}
-            />
+				onSignOut={handleSignOut}
+			/>
 			<Box sx={AppContainerStyle.content}>
 				<Outlet />
 			</Box>
