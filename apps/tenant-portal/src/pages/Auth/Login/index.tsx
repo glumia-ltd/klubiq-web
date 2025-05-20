@@ -1,93 +1,112 @@
 import * as Yup from 'yup';
 import { ReactNode } from 'react';
-//import { useNavigate } from 'react-router-dom';
-import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
+import { useNavigate } from 'react-router-dom';
 import { Stack, Typography } from '@mui/material';
+import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
 import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
+
+import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
+import {
+	useLazyGetUserByFbidQuery,
+	useSignInMutation,
+} from '@/store/AuthStore/authApi.slice';
+import { saveUser } from '@/store/AuthStore/auth.slice';
+import { useDispatch } from 'react-redux';
+
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
-import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
-import { api } from '@/api';
-import { authEndpoints } from '@/helpers/endpoints';
 
 type IValuesType = {
-    password: string;
-    email: string;
+	password: string;
+	email: string;
 };
 
 const Login = () => {
-    // NOTE: Don't lkeve unuse variables as it will cause tbe build to fail
-	//const navigate = useNavigate();
+	const navigate = useNavigate();
+	const [signIn] = useSignInMutation();
+	const [triggerGetUserByFbidQuery] = useLazyGetUserByFbidQuery();
+	const dispatch = useDispatch();
 
-    const defaultValues: IValuesType = {
-        password: '',
-        email: '',
-    };
+	const defaultValues: IValuesType = {
+		password: '',
+		email: '',
+	};
 
-    const loginFormFields: (FormField | FormGroup)[] = [
-        {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: 'Enter your email',
-            required: true,
-            validation: Yup.string().required(''),
-            adornment: { suffix: EmailOutlineIcon as unknown as ReactNode },
-        },
-        {
-            name: 'password',
-            label: 'Password',
-            type: 'password',
-            placeholder: 'Enter your password',
-            required: true,
-            validation: Yup.string(),
-        },
-    ];
+	const loginFormFields: (FormField | FormGroup)[] = [
+		{
+			name: 'email',
+			label: 'Email',
+			type: 'email',
+			placeholder: 'Enter your email',
+			required: true,
+			validation: Yup.string().required(''),
+			adornment: { suffix: EmailOutlineIcon as unknown as ReactNode },
+		},
+		{
+			name: 'password',
+			label: 'Password',
+			type: 'password',
+			placeholder: 'Enter your password',
+			required: true,
+			validation: Yup.string(),
+		},
+	];
+
+	const loadUserAfterSignIn = async () => {
+		const { isError, error, data } = await triggerGetUserByFbidQuery();
+
+		if (isError) {
+			console.error(error); // to reemove
+			openSnackbar({
+				message: 'Oops! an error occurred',
+				severity: 'error',
+				isOpen: true,
+			});
+			throw isError;
+		}
+
+		if (data) {
+			dispatch(saveUser({ user: data, isAuthenticated: true }));
+			navigate('/dashboard', { replace: true });
+		}
+	};
 
 	const onSubmit = async (values: IValuesType) => {
+		const { email, password } = values;
 		try {
-			const response = await api.post(authEndpoints.login(), values)
-
-			console.log(response)
-		} catch (error:any) {
+			await signIn({ email, password }).unwrap();
+			loadUserAfterSignIn();
+		} catch (error: any) {
 			openSnackbar({
 				message: error.response.data.message,
 				severity: 'error',
 				isOpen: true,
 			});
 		}
-		// navigate('/dashboard');
 	};
 
-    return (
-        <Stack
-            sx={styles.container}
-            spacing={2}
-        >
-            <Stack 
-                direction="row" 
-                justifyContent="center" 
-                alignItems="center"
-            >
-                <img src={Logo} alt="Klubiq Logo" />
-            </Stack>
-            
-            <Typography variant='h1' sx={styles.title}>
-                Welcome to Klubiq
-            </Typography>
+	return (
+		<Stack sx={styles.container} spacing={1}>
+			<Stack direction='row' justifyContent='center' alignItems='center'>
+				<img src={Logo} alt='Klubiq Logo' />
+			</Stack>
 
-            <KlubiqForm
-                fields={loginFormFields as FormField[]}
-                onSubmit={onSubmit}
-                initialValues={defaultValues}
-                submitButtonText='Login'
-            />
+			<Typography variant='h1' sx={styles.title}>
+				Welcome to Klubiq
+			</Typography>
 
-            <Typography sx={styles.text}>
-                Having trouble logging in? Contact your property manager.
-            </Typography>
-        </Stack>
-    );
+			<KlubiqForm
+				fields={loginFormFields as FormField[]}
+				onSubmit={onSubmit}
+				initialValues={defaultValues}
+				submitButtonText='Login'
+			/>
+
+			<Typography sx={styles.text}>
+				Having trouble logging in? Contact your property manager.
+			</Typography>
+		</Stack>
+	);
 };
 
 export default Login;

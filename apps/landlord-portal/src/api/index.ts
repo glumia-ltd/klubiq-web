@@ -77,6 +77,7 @@ function AxiosConfig(config: any) {
 			.split('; ')
 			.find((row) => row.startsWith('_kbq_csrf'))
 			?.split('=')[1] ?? '';
+
 	if (csrfToken && config.method !== 'GET') {
 		config.headers['x-csrf-token'] = csrfToken;
 	}

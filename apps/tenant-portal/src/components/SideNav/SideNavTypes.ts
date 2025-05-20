@@ -5,12 +5,16 @@ export type NavLink = {
 	icon: ReactNode;
 	route: string;
 	index: number;
+	subLinks?: NavLink[];
+	showSubLinks?: boolean;
+	disabled?: boolean;
 };
 
 export type User = {
-	name: string;
-	role: string;
-	avatarUrl: string;
+	email: string;
+	firstname?: string;
+	lastname?: string;
+	profilePicUrl?: string | null;
 };
 
 export type KlubiqSideNavProps = {
