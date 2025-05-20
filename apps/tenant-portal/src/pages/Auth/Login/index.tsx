@@ -10,6 +10,8 @@ import {
 	useLazyGetUserByFbidQuery,
 	useSignInMutation,
 } from '@/store/AuthStore/authApi.slice';
+import { saveUser } from '@/store/AuthStore/auth.slice';
+import { useDispatch } from 'react-redux';
 
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
@@ -23,6 +25,7 @@ const Login = () => {
 	const navigate = useNavigate();
 	const [signIn] = useSignInMutation();
 	const [triggerGetUserByFbidQuery] = useLazyGetUserByFbidQuery();
+	const dispatch = useDispatch();
 
 	const defaultValues: IValuesType = {
 		password: '',
@@ -63,6 +66,7 @@ const Login = () => {
 		}
 
 		if (data) {
+			dispatch(saveUser({ user: data, isAuthenticated: true }));
 			navigate('/dashboard', { replace: true });
 		}
 	};
@@ -82,7 +86,7 @@ const Login = () => {
 	};
 
 	return (
-		<Stack sx={styles.container} spacing={2}>
+		<Stack sx={styles.container} spacing={1}>
 			<Stack direction='row' justifyContent='center' alignItems='center'>
 				<img src={Logo} alt='Klubiq Logo' />
 			</Stack>
