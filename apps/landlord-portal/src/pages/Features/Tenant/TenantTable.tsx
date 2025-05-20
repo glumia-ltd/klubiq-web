@@ -43,12 +43,7 @@ export const TenantTable: FC<TenantTableProps> = ({
 					return 'N/A';
 				};
 				return (
-					<Box
-						display='flex'
-						alignItems='center'
-						justifyContent='left'
-						maxWidth={'300px'}
-					>
+					<Box display='flex' alignItems='center' justifyContent='left'>
 						<DynamicAvatar
 							items={[tenant?.profilePicUrl || '']}
 							size='medium'
