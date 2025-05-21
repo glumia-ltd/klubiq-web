@@ -19,12 +19,17 @@
     "lintLP": "turbo lint --filter=./apps/landlord-portal",
     "lintTP": "turbo lint --filter=./apps/tenant-portal",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "node .husky/install.mjs"
+    "prepare": "node .husky/install.mjs",
+    "version:tenant": "node scripts/generate-version.js tenant-portal",
+    "version:landlord": "node scripts/generate-version.js landlord-portal",
+    "version:admin": "node scripts/generate-version.js admin-portal",
+    "version:all": "node scripts/update-all-versions.js"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/redux-persist": "^4.0.0",
+    "dotenv": "^16.5.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",

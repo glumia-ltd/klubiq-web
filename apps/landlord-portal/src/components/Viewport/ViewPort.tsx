@@ -10,7 +10,8 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
-import { AppFooter } from '@klubiq/ui-components'
+import { AppFooter } from '@klubiq/ui-components';
+import pkg from '../../../package.json'
 
 type ViewPortProp = {
 	children: React.ReactNode;
@@ -19,7 +20,7 @@ type ViewPortProp = {
 // Example for landlord portal
 const landlordFooterConfig = {
 	appName: "Landlord Portal",
-	version: import.meta.env.REACT_LP_APP_VERSION || "0.0.1",
+	version: pkg.version,
 	environment: import.meta.env.VITE_NODE_ENV as "development" | "staging" | "production",
 	// ... other props
   };
