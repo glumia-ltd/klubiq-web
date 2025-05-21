@@ -34,7 +34,7 @@ env:
   VITE_MOBILE_INVITATION_ENABLED: ${{ vars.VITE_MOBILE_INVITATION_ENABLED }}
   REACT_LP_APP_VERSION: ${{ vars.REACT_LP_APP_VERSION }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
-
+  BUILD_NUMBER: ${{ github.run_number }}
   APP: klubiq-landlord-portal
 jobs:
   build:
@@ -44,6 +44,7 @@ jobs:
       - name: Build Project
         run: |
           npm install --include=optional
+          npm run version:landlord || exit 1
           npm run buildUIC || exit 1
           npm run buildLP || exit 1
       - name: Archive production artifacts
