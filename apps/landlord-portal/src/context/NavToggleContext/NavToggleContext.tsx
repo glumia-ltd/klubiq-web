@@ -24,7 +24,7 @@ export const Context = createContext<ContextValue>({
 	mobileSideBarOpen: false,
 	isClosing: false,
 	drawerWidth: {
-		smallOpen: 200,
+		smallOpen: 178,
 		smallClosed: 0,
 		largeOpen: 178,
 		largeClosed: 70,

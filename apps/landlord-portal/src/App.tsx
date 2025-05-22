@@ -12,7 +12,6 @@ import type { RootState } from './store';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { initDB } from './services/indexedDb';
-import { consoleLog } from './helpers/debug-logger';
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 import { BreadcrumbProvider } from './context/BreadcrumbContext/BreadcrumbContext';
@@ -21,20 +20,11 @@ function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
-
 	useEffect(() => {
 		if ('serviceWorker' in navigator) {
 			const executeOnLoad = () => {
-				navigator.serviceWorker
-					.register('/service-worker.js')
-					.then(() => {
-						initDB();
-					})
-					.catch((error) => {
-						consoleLog('ServiceWorker registration failed: ', error);
-					});
+				initDB();
 			};
-
 			if (document.readyState === 'loading') {
 				document.addEventListener('DOMContentLoaded', executeOnLoad);
 			} else {

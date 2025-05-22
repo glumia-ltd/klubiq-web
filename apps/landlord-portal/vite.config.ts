@@ -4,16 +4,12 @@ import react from '@vitejs/plugin-react';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 // import { visualizer } from 'rollup-plugin-visualizer';
 
-
 const manifestForPlugin: Partial<VitePWAOptions> = {
-	workbox: {
-		maximumFileSizeToCacheInBytes: 25 * 1024 * 1024, // 5MB
-		// globPatterns: [
-		// 	'**/*.{js,css,html,ico,png,svg,woff,woff2}',
-		// 	'!stats.html' // Exclude stats.html from PWA cache
-		//   ]
-	},
-	registerType: 'prompt',
+	strategies: 'injectManifest',
+	srcDir: 'src',
+	filename: 'service-worker.ts',
+	registerType: 'autoUpdate',
+	injectRegister: 'auto',
 	includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
 	manifest: {
 		name: 'Klubiq',
@@ -52,6 +48,78 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		start_url: '/',
 		orientation: 'portrait',
 	},
+	workbox: {
+		globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+		cleanupOutdatedCaches: true,
+		sourcemap: true,
+		maximumFileSizeToCacheInBytes: 25 * 1024 * 1024, // 5MB
+		runtimeCaching: [
+			{
+				urlPattern: /^https:\/\/api\.klubiq\.com\/.*/i,
+				handler: 'NetworkFirst',
+				options: {
+					cacheName: 'api-cache',
+					expiration: {
+						maxEntries: 100,
+						maxAgeSeconds: 72 * 60 * 60, // 72 hours
+					},
+					cacheableResponse: {
+						statuses: [0, 200],
+					},
+				},
+			},
+			{
+				urlPattern: /^https:\/\/localhost:3000\/api\/.*/i,
+				handler: 'NetworkFirst',
+				options: {
+					cacheName: 'local-api-cache',
+					expiration: {
+						maxEntries: 100,
+						maxAgeSeconds: 72 * 60 * 60,
+					},
+					cacheableResponse: {
+						statuses: [0, 200],
+					},
+				},
+			},
+			{
+				urlPattern: /^https:\/\/devapi\.klubiq\.com\/api\/.*/i,
+				handler: 'NetworkFirst',
+				options: {
+					cacheName: 'dev-api-cache',
+					expiration: {
+						maxEntries: 100,
+						maxAgeSeconds: 72 * 60 * 60,
+					},
+					cacheableResponse: {
+						statuses: [0, 200],
+					},
+				},
+			},
+			{
+				urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+				handler: 'CacheFirst',
+				options: {
+					cacheName: 'images',
+					expiration: {
+						maxEntries: 60,
+						maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+					},
+				},
+			},
+			{
+				urlPattern: /\.(?:js|css)$/,
+				handler: 'StaleWhileRevalidate',
+				options: {
+					cacheName: 'static-resources',
+				},
+			},
+		],
+	},
+	devOptions: {
+		enabled: true,
+		type: 'module',
+	},
 };
 
 export default ({ mode }: { mode: any }) => {
@@ -73,8 +141,16 @@ export default ({ mode }: { mode: any }) => {
 			],
 			exclude: ['node_modules/.cache'],
 		},
+		build: {
+			outDir: 'dist',
+			sourcemap: true,
+		},
 
 		server: {
+			port: 5173,
+			host: true,
+			strictPort: true,
+			open: true,
 			proxy: {
 				'/api': {
 					target: process.env.VITE_BASE_URL_DEV,

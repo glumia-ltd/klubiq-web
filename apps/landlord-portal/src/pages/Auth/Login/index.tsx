@@ -58,9 +58,9 @@ const Login = () => {
 			return;
 		}
 		try {
-			const verifyResult = await verifyMFAOtp({otp});
-			if(!verifyResult){
-				throw new Error('Invalid OTP')
+			const verifyResult = await verifyMFAOtp({ otp });
+			if (!verifyResult) {
+				throw new Error('Invalid OTP');
 			} else {
 				setOtpError('');
 				loadUserAfterSignIn();
@@ -99,37 +99,37 @@ const Login = () => {
 
 	const loadUserAfterSignIn = async () => {
 		const user = await triggerGetUserByFbid().unwrap();
-			if (user && user.profileUuid) {
-				const sessionStorageData = [
-					{
-						key: 'tenant_id',
-						value: user.tenantId || user.organizationUuid || '',
-					},
-					{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
-					{
-						key: 'org-subscription',
-						value: JSON.stringify(user.orgSubscription),
-					},
-				];
-				setSessionStorage(sessionStorageData);
-				const payload = {
-					user: user,
-					isSignedIn: true,
-				};
-				dispatch(saveUser(payload));
+		if (user && user.profileUuid) {
+			const sessionStorageData = [
+				{
+					key: 'tenant_id',
+					value: user.tenantId || user.organizationUuid || '',
+				},
+				{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
+				{
+					key: 'org-subscription',
+					value: JSON.stringify(user.orgSubscription),
+				},
+			];
+			setSessionStorage(sessionStorageData);
+			const payload = {
+				user: user,
+				isSignedIn: true,
+			};
+			dispatch(saveUser(payload));
 
-				openSnackbar({
-					message: 'That was easy',
-					severity: 'success',
-					isOpen: true,
-				});
-				if (setupMFA) {
-					navigate('/2fa-enroll', { replace: true });
-				} else {
-					navigate(continuePath || '/dashboard', { replace: true });
-				}
+			openSnackbar({
+				message: 'That was easy',
+				severity: 'success',
+				isOpen: true,
+			});
+			if (setupMFA) {
+				navigate('/2fa-enroll', { replace: true });
+			} else {
+				navigate(continuePath || '/dashboard', { replace: true });
 			}
-	}
+		}
+	};
 
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
@@ -138,7 +138,7 @@ const Login = () => {
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
 		} catch (error: any) {
-			if(error.message === 'MFA-required'){
+			if (error.message === 'MFA-required') {
 				consoleError('MFA Required to continue sign in');
 				set2FARequired(true);
 			} else {

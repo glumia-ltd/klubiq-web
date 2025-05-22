@@ -4,7 +4,7 @@ import { authEndpoints } from '../helpers/endpoints';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
 import { dashboardEndpoints } from '../helpers/endpoints';
-const baseURL =
+const baseURL = 
 	import.meta.env.VITE_NODE_ENV !== 'local'
 		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
 		: '/api';
