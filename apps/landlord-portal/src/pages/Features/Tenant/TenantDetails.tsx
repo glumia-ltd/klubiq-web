@@ -1,6 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Typography, Stack, Card, Box, IconButton } from '@mui/material';
+import { useEffect } from 'react';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import {
+	Typography,
+	Stack,
+	Card,
+	Box,
+	IconButton,
+	Button,
+} from '@mui/material';
+import dayjs from 'dayjs';
+import PhoneIcon from '@mui/icons-material/Phone';
 import fileIcon from '../../../assets/images/Phone.svg';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { DynamicTable } from '@klubiq/ui-components';
@@ -9,41 +18,73 @@ import HistoryTable from '../Lease/HistoryTable';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import { styles } from './styles';
+import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
+import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
-
-import { LeaseDetail, TenantInfo } from '../../../shared/type';
-import {
-	TenantType,
-	TenantDocumentRow,
-	TenantLocationState,
-} from '../../../shared/type'; // Adjust path
+import { Breadcrumb } from '../../../components/Breadcrumb';
+import { TenantInfo } from '../../../shared/type';
+import { TenantDocumentRow } from '../../../shared/type';
+import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 
 const TenantDetails = () => {
 	const { tableSx, tableStyles } = useTenantActions();
 	const location = useLocation();
-	const locationState = location.state as TenantLocationState;
-	const { tenantId: routeTenantId } = useParams<{ tenantId: string }>();
-	const [selectedRow, setSelectedRow] = useState<TenantType | null>(
-		locationState?.selectedRow || null,
-	);
-	const currentTenantId =
-		location.pathname.split('/')[2]! || selectedRow?.tenantId || routeTenantId;
+	const navigate = useNavigate();
+	const { id } = useParams<{ id: string }>();
+	const { updateBreadcrumb } = useDynamicBreadcrumbs();
+	const currentTenantId = location.pathname.split('/')[2]!;
 	const { data: tenantData } = useGetSingleTenantByIdQuery({
-		id: currentTenantId || '',
+		id: id || currentTenantId || '',
 	});
+	console.log('id', id, currentTenantId);
+	const activeLeases = tenantData?.activeleases ?? [];
 
 	useEffect(() => {
-		if (locationState?.selectedRow) {
-			setSelectedRow(locationState.selectedRow);
+		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
+			feature: {
+				label: 'Tenants',
+				icon: (
+					<ViewListOutlinedIcon
+						key={1}
+						aria-label='Tenant'
+						onClick={() => navigate(`/tenants`)}
+					/>
+				),
+				showIcon: true,
+				isSectionRoot: true,
+				path: '/tenants',
+			},
+		};
+		if (currentTenantId) {
+			newBreadcrumbs['feature-details'] = {
+				label: `Tenant Details${tenantData?.profile?.firstName ? `: ${tenantData?.profile?.firstName}` : ''}`, // Prefer a human-readable name if available
+				path: `/tenant/${currentTenantId}`,
+				icon: null,
+				showIcon: false,
+			};
 		}
-	}, [locationState]);
-	console.log('Selected Row:', selectedRow);
-	console.log('Tenant Data:', tenantData);
+		newBreadcrumbs['feature-details-sub'] = {};
+		updateBreadcrumb(newBreadcrumbs);
+	}, [tenantData?.firstName, currentTenantId, location.pathname]);
+	console.log('tenantData', tenantData);
 	const tenant: TenantInfo = {
-		name: `${tenantData?.profile?.firstName ?? ''} ${tenantData?.profile?.lastName ?? ''}`,
-		phone: tenantData?.profile?.phoneNumber ?? 'N/A',
+		name: (() => {
+			const fullName = tenantData?.profile?.fullName?.trim();
+			const companyName = tenantData?.profile?.companyName?.trim();
+	const isInvalid = (val?: string) =>
+				!val ||
+				val.toLowerCase() === 'null' ||
+				val.toLowerCase() === 'null null';
+
+			if (!isInvalid(fullName)) return fullName!;
+			if (!isInvalid(companyName)) return companyName!;
+			return 'N/A';
+		})(),
+		phone: tenantData?.profile?.phoneNumber || 'N/A',
 		email: tenantData?.profile?.email ?? 'N/A',
-		since: tenantData?.leaseDetails?.startDate ?? 'N/A',
+		since: tenantData?.profile?.updatedDate
+			? dayjs(tenantData?.profile?.updatedDate).format('ll')
+			: 'N/A',
 		image: tenantData?.profile?.profilePicUrl || bukky,
 	};
 	// const rows: TenantDocumentRow[] = [
@@ -69,23 +110,57 @@ const TenantDetails = () => {
 		{ key: 'dueDate', label: 'Due Date' },
 	];
 
-	const leaseDetails: LeaseDetail[] =
-		tenantData?.leases?.map(
-			(lease: { leaseStart: any; leaseEnd: any; rentAmount: any }) => ({
-				name: `Lease from ${lease.leaseStart} to ${lease.leaseEnd}`,
-				amount: lease.rentAmount || 'N/A',
-			}),
-		) || [];
-
 	const rows: TenantDocumentRow[] =
-		tenantData?.leases?.map(
+		tenantData?.activeLeases?.map(
 			(lease: { paymentFrequency: any; nextDueDate: any }) => ({
 				name: `Lease Payment (${lease.paymentFrequency})`,
 				dueDate: lease.nextDueDate || 'N/A',
 			}),
 		) || [];
+	const Datas = [
+		{
+			name: 'Monthly Rent',
+			amount: activeLeases?.[0]?.rentAmount
+				? activeLeases?.[0]?.rentAmount
+				: 'N/A',
+		},
+
+		{
+			name: 'Start Date ',
+			amount: activeLeases?.[0]?.leaseStart
+				? dayjs(activeLeases?.[0]?.leaseStart).format('ll')
+				: 'N/A',
+		},
+		{
+			name: 'End Date ',
+			amount: activeLeases?.[0]?.leaseEnd
+				? dayjs(activeLeases?.[0]?.leaseEnd).format('ll')
+				: 'N/A',
+		},
+		{
+			name: 'Late Payment',
+			amount: activeLeases?.[0]?.latePaymentDate
+				? activeLeases?.[0]?.latePaymentDate
+				: 'N/A',
+		},
+	];
 	return (
-		<Stack spacing={4}>
+		<Stack spacing={2}>
+			<Stack
+				direction={'row'}
+				sx={{
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					width: '100%',
+				}}
+			>
+				<Breadcrumb />
+				<Stack>
+					<Button variant='contained' sx={styles.actionButton}>
+						Message
+					</Button>
+				</Stack>
+			</Stack>
 			<Stack direction='row' spacing={1} sx={styles.detailsCard}>
 				<Card sx={styles.detailsCard}>
 					<Stack
@@ -106,7 +181,7 @@ const TenantDetails = () => {
 								</Stack>
 								<Stack direction='row' spacing={2}>
 									<Box sx={styles.tenBox}>
-										<MailOutlinedIcon sx={styles.iconStyleTwo} />
+										<PhoneIcon sx={styles.iconStyleTwo} />
 										<Typography sx={styles.boxText}>{tenant.phone}</Typography>
 									</Box>
 									<Box sx={styles.tenBox}>
@@ -130,16 +205,17 @@ const TenantDetails = () => {
 							<Stack direction='row' spacing={2} sx={styles.firstBox}>
 								<Typography sx={styles.nameText2}>Current Lease</Typography>
 								<Typography sx={styles.cardTwoText}>
-									Orchid House | Unit O
+									{tenantData?.activeleases?.[0]?.propertyName || 'N/A'} | Unit{' '}
+									{tenantData?.activeleases?.[0]?.unit || 'N/A'}
 								</Typography>
 							</Stack>
 							<Typography sx={styles.typo3}>
-								4, Shaw Road (Onilegbale Road) Ikoyi
+								{tenantData?.activeleases?.[0]?.propertyAddress || 'N/A'}
 							</Typography>
 						</Stack>
 						<Box display='flex' justifyContent='space-between'>
-							{leaseDetails.map((item, index) => (
-								<Box key={index}>
+							{Datas.map((item) => (
+								<Box key={item.name} textAlign={'center'} width='25%'>
 									<Typography sx={styles.typo2}>{item.name}</Typography>
 									<Typography sx={styles.nameText}>{item.amount}</Typography>
 								</Box>
@@ -149,7 +225,7 @@ const TenantDetails = () => {
 				</Card>
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
-				<HistoryTable />
+				<HistoryTable leases={activeLeases} />
 			</Stack>
 			<Stack spacing={1} sx={styles.detailsCard}>
 				<DynamicTable

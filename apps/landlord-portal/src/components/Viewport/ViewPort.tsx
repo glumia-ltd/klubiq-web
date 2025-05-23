@@ -10,11 +10,20 @@ import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
+import { AppFooter } from '@klubiq/ui-components';
+import pkg from '../../../package.json'
 
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
 };
+// Example for landlord portal
+const landlordFooterConfig = {
+	appName: "Landlord Portal",
+	version: pkg.version,
+	environment: import.meta.env.VITE_NODE_ENV as "development" | "staging" | "production",
+	// ... other props
+  };
 
 const ViewPort = ({ children }: ViewPortProp) => {
 	const theme = useTheme();
@@ -50,32 +59,31 @@ const ViewPort = ({ children }: ViewPortProp) => {
 				flexGrow={1}
 				flexDirection='column'
 				width={'100%'}
+				sx={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+				}}
 			>
 				<NavBar />
 
 				<Box
 					width={'100%'}
 					mt={'80px'}
-					mb={'20px'}
-					ml={'24px'}
-					pr={'32px'}
+					mb={'40px'}
 					sx={{
-						marginLeft: {
-							xs: '0px',
-							sm: '1rem',
-							md: '1.5rem',
-							lg: '1.5rem',
-						},
-						paddingRight: {
-							xs: '0px',
-							sm: '1.5rem',
-							md: '2rem',
-							lg: '2rem',
-						},
+						display: 'flex',	
+						flexDirection: 'column',
+						alignItems: 'center',
+						justifyContent: 'space-between',
 					}}
 				>
 					{' '}
 					{children}
+				</Box>
+				<Box width={'100%'}>
+					<AppFooter {...landlordFooterConfig} />
 				</Box>
 			</Box>
 		</Box>

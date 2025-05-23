@@ -29,7 +29,6 @@ const CreateAccount: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
 	const { data: rolesData } = useGetRolesQuery();
-	consoleLog(passwordMessage);
 
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
@@ -81,12 +80,12 @@ const CreateAccount: React.FC = () => {
 						message: 'Something went wrong. Please try again later.',
 						severity: 'error',
 						isOpen: true,
+						duration: 5000,
 					}),
 				);
 				return;
 			}
 			setLoading(true);
-
 			const userDetails = {
 				email,
 				password,
@@ -103,6 +102,7 @@ const CreateAccount: React.FC = () => {
 						message: passwordMessage,
 						severity: 'warning',
 						isOpen: true,
+						duration:5000
 					}),
 				);
 
@@ -121,6 +121,7 @@ const CreateAccount: React.FC = () => {
 					message: 'Please verify your email!',
 					severity: 'info',
 					isOpen: true,
+					duration: 5000,
 				}),
 			);
 
@@ -147,6 +148,7 @@ const CreateAccount: React.FC = () => {
 					message: errorMessage,
 					severity: 'error',
 					isOpen: true,
+					duration: 7000,
 				}),
 			);
 		}

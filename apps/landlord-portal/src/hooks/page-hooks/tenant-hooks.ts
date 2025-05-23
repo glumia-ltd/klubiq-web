@@ -28,8 +28,9 @@ export const useTenantActions = () => {
         titleVariant: 'h5',
         titleFontWeight: 500,
         headerVariant: 'body1',
-        headerFontWeight: 700,
+        headerFontWeight: 400,
         cellAlign: 'left',
+        
     };
 
 

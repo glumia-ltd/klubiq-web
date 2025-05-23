@@ -1,3 +1,19 @@
+export const AppContainerStyle = {
+	box: {
+		display: 'flex',
+		flexDirection: 'row',
+		minHeight: '100vh',
+		minWidth: '100vw',
+	},
+	content: {
+		display: 'flex',
+		flexDirection: 'column',
+		flex: 1,
+		padding: '20px',
+		overflowY: 'auto',
+		justifyContent: 'space-between',
+	},
+};
 export const SharedStyles = {
 	actionButton: {
 		backgroundColor: 'primary.main',
