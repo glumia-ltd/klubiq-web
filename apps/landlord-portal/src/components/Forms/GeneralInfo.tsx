@@ -99,7 +99,31 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 		setOpen(true);
 	};
 
-	const handleClose = () => setOpen(false);
+	const checkIfFormIsFilled = () => {
+		const { units } = formik.values;
+
+		if (units && units.length > 0) {
+			const unit = units[currentUnitIndex];
+			if (
+				unit &&
+				(unit.bedrooms || unit.offices || unit.rooms) &&
+				// unit.bathrooms &&
+				// unit.toilets &&
+				unit.area.value &&
+				unit.area.unit &&
+				unit.unitNumber
+			) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
 	const handleCustomAmenitiesClose = () => setOpenCustomAmenities(false);
 
 	const handleAddCustomAmenites = () => {
@@ -245,7 +269,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 	};
 
 	const getNameByPropertyCategory = () => {
-		const {categoryMetaData} = formik.values;
+		const { categoryMetaData } = formik.values;
 
 		if (categoryMetaData?.hasBedrooms) {
 			return 'bedrooms';
@@ -520,18 +544,14 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									<AccordionDetails>
 										<Stack spacing={2} sx={GeneralFormStyle.cardContent}>
 											<Stack spacing={1}>
-												<Typography variant='subtitle1'>
-													Unit name
-												</Typography>
+												<Typography variant='subtitle1'>Unit name</Typography>
 												<ControlledTextField
 													name={`units[${unitIndex}].unitNumber`}
 													formik={formik}
 												/>
 											</Stack>
 
-											<Typography variant='subtitle1'>
-												Unit Details
-											</Typography>
+											<Typography variant='subtitle1'>Unit Details</Typography>
 
 											<Stack
 												direction='row'
@@ -657,7 +677,12 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 				</DialogActions>
 			</Dialog>
 
-			<Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
+			<Dialog
+				open={open}
+				onClose={() => checkIfFormIsFilled() && handleClose()}
+				maxWidth='sm'
+				fullWidth
+			>
 				<DialogTitle>
 					<Stack
 						direction={'row'}
@@ -665,7 +690,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 						alignItems={'center'}
 					>
 						<Typography variant='h4'>Unit Details</Typography>
-						<IconButton onClick={handleClose}>
+						<IconButton onClick={() => checkIfFormIsFilled() && handleClose()}>
 							<Close />
 						</IconButton>
 					</Stack>
@@ -766,10 +791,17 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 					</Stack>
 				</DialogContent>
 				<DialogActions>
-					<Button variant='klubiqTextButton' onClick={handleClose}>
+					<Button
+						variant='klubiqTextButton'
+						onClick={() => checkIfFormIsFilled() && handleClose()}
+					>
 						Close
 					</Button>
-					<Button variant='klubiqMainButton' onClick={handleClose}>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleClose}
+						disabled={!checkIfFormIsFilled()}
+					>
 						Save unit details
 					</Button>
 				</DialogActions>
