@@ -161,7 +161,7 @@
 // 		// eslint-disable-next-line react-hooks/exhaustive-deps
 // 	}, [formik.values.propertyName]);
 
-// 	useEffect(() => {	
+// 	useEffect(() => {
 // 		const {startDate, endDate} = formik.values;
 // 		if (dayjs(startDate).isAfter(endDate)) {
 // 			formik.setFieldValue('endDate', '');
@@ -201,7 +201,6 @@
 // 			}
 // 		}
 // 	}, [propertyId, orgPropertiesViewList]);
-
 
 // 	const rentDueOn = (
 // 		endDate: string,
@@ -485,7 +484,6 @@
 
 // export default AddLeaseForm;
 
-
 import { KlubiqForm } from '@klubiq/ui-components';
 import {
 	useGetOrgPropertiesViewListQuery,
@@ -571,17 +569,29 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		rentDueDay: '0',
 	});
 
-	useEffect(() => {
-		if (orgPropertiesViewList?.properties) {
-			setFormInitialValues((prev) => ({
-				...prev,
-				propertyName:
-					propertyId || orgPropertiesViewList.properties[0]?.uuid || '',
-				unitId:
-					unitId || orgPropertiesViewList.properties[0]?.units?.[0]?.id || '',
-			}));
-		}
-	}, [orgPropertiesViewList, propertyId, unitId]);
+	console.log('initial values', formInitialValues);
+
+	// console.log('uniId', unitId);
+	// console.log('units', orgPropertiesViewList?.properties[0]?.units?.[0]?.id);
+
+	// useEffect(() => {
+	// 	if (orgPropertiesViewList?.properties) {
+	// 		setFormInitialValues((prev) => ({
+	// 			...prev,
+	// 			propertyName:
+	// 				propertyId || orgPropertiesViewList.properties[0]?.uuid || '',
+	// 			unitId:
+	// 				unitId || orgPropertiesViewList.properties[0]?.units?.[0]?.id || '',
+	// 		}));
+	// 	}
+	// }, [orgPropertiesViewList, propertyId, unitId]);
+	// const propertyData = useMemo(
+	// 	() => find(orgPropertiesViewList?.properties, { uuid: propertyId }),
+	// 	[orgPropertiesViewList, propertyId],
+	// );
+
+	// console.log('propertyData', propertyData);
+
 	const propertyData = useMemo(
 		() => find(orgPropertiesViewList?.properties, { uuid: propertyId }),
 		[orgPropertiesViewList, propertyId],
@@ -613,10 +623,12 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			type: 'select',
 			required: true,
 			options: propertyData?.units
-				? propertyData.units.map((unit: { id: string; unitNumber: string }) => ({
-						label: unit.unitNumber,
-						value: unit.id,
-				  }))
+				? propertyData.units.map(
+						(unit: { id: string; unitNumber: string }) => ({
+							label: unit.unitNumber,
+							value: unit.id,
+						}),
+					)
 				: [],
 			showIf: (values) => !!values.propertyName,
 			disabled: !propertyData?.units || propertyData.units.length <= 1,
