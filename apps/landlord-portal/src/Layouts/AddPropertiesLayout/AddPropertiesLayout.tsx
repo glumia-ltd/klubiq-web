@@ -241,8 +241,8 @@ export const AddPropertiesLayout = () => {
 
 	const handleForwardButton = () => {
 		if (activeStep > steps.length) {
-    return;
-  }
+			return;
+		}
 
 		saveFormikDataInStore();
 
@@ -253,8 +253,8 @@ export const AddPropertiesLayout = () => {
 
 	const handleBackwardButton = () => {
 		if (activeStep === 0) {
-    return;
-  }
+			return;
+		}
 
 		saveFormikDataInStore();
 
@@ -330,6 +330,7 @@ export const AddPropertiesLayout = () => {
 
 			if (
 				formik.values.unitType &&
+				formik.values.purposeId &&
 				formik.values.address.addressLine1 &&
 				formik.values.address.country &&
 				CHECKFLOORPLANS &&

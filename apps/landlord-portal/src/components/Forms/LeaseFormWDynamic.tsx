@@ -7,16 +7,17 @@ import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { find } from 'lodash';
+import { find} from 'lodash';
 import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../helpers/utils';
 import { FormField } from '@klubiq/ui-components';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import FormLayout from '../../Layouts/FormLayout';
 import FormSkeleton from '../skeletons/FormSkeleton';
 
-import { consoleLog } from '../../helpers/debug-logger';
+
+
 
 // Inside the component, before formFields:
 
@@ -44,7 +45,7 @@ interface LeaseFormValues {
 	name: string;
 	startDate: string;
 	endDate?: string;
-	newTenants: null;
+	// newTenants: null;
 	tenantsIds: string[];
 	unitId: string;
 	rentDueDay?: string;
@@ -52,7 +53,7 @@ interface LeaseFormValues {
 	depositAmount: string;
 	isDraft: boolean;
 	paymentFrequency: PaymentFrequency;
-	status: null;
+	// status: null;
 	propertyName?: string;
 	firstPaymentDate?: string;
 	unitNumber?: string;
@@ -68,8 +69,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			orgId: user?.organizationUuid,
 		});
 
-	consoleLog('properties', orgPropertiesViewList);
-
 	const [formInitialValues, setFormInitialValues] = useState({
 		name: '',
 		propertyName: '',
@@ -81,19 +80,11 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		endDate: '',
 		frequency: PaymentFrequency.ANNUALLY,
 		rentDueDay: '0',
+		unitsOptions: [],
 	});
 
-	useEffect(() => {
-		if (orgPropertiesViewList?.properties) {
-			setFormInitialValues((prev) => ({
-				...prev,
-				propertyName:
-					propertyId || orgPropertiesViewList.properties[0]?.uuid || '',
-				unitId:
-					unitId || orgPropertiesViewList.properties[0]?.units?.[0]?.id || '',
-			}));
-		}
-	}, [orgPropertiesViewList, propertyId, unitId]);
+	console.log('formInitialValues', formInitialValues);
+
 	const propertyData = useMemo(
 		() => find(orgPropertiesViewList?.properties, { uuid: propertyId }),
 		[orgPropertiesViewList, propertyId],
@@ -105,6 +96,12 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			label: 'Lease Name',
 			type: 'text',
 			required: true,
+			onChange: (e) => {
+				setFormInitialValues((prev) => ({
+					...prev,
+					name: e,
+				}));
+			},
 		},
 		{
 			name: 'propertyName',
@@ -112,11 +109,22 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			type: 'select',
 			required: true,
 			options: orgPropertiesViewList?.properties
-				? orgPropertiesViewList.properties.map((property: Property) => ({
-						label: property.name,
-						value: property.uuid,
+				? orgPropertiesViewList?.properties?.map((property: Property) => ({
+						label: property?.name,
+						value: property?.uuid,
 					}))
 				: [],
+			onChange: (e) => {
+				const units = find(orgPropertiesViewList?.properties, {
+					uuid: e,
+				});
+
+				setFormInitialValues((prev) => ({
+					...prev,
+					propertyName: e,
+					unitsOptions: units?.units,
+				}));
+			},
 		},
 		// Remove the UnitIdField component and update the unitId field in formFields
 		{
@@ -124,25 +132,47 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			label: 'Unit',
 			type: 'select',
 			required: true,
-			options: (values: Record<string, any>) => {
-				if (!values.propertyName || !orgPropertiesViewList?.properties) {
-					return [];
-				}
-				consoleLog('values', values);
-				const selectedProperty = find(orgPropertiesViewList.properties, {
-					uuid: values.propertyName,
-				});
-				return selectedProperty?.units
-					? selectedProperty.units.map(
-							(unit: { id: string; unitNumber: string }) => ({
-								label: unit.unitNumber,
-								value: unit.id,
-							}),
-						)
-					: [];
+			options: formInitialValues?.unitsOptions?.map(
+				(unit: { id: string; unitNumber: string }) => ({
+					label: unit.unitNumber,
+					value: unit.id,
+				}),
+			),
+			onChange: (e) => {
+				setFormInitialValues((prev) => ({
+					...prev,
+					unitId: e,
+				}));
 			},
-			showIf: (values) => !!values.propertyName,
-			disabled: !propertyData?.units || propertyData.units.length <= 1,
+
+			// options: propertyData?.units
+			// 	? propertyData.units.map(
+			// 			(unit: { id: string; unitNumber: string }) => ({
+			// 				label: unit.unitNumber,
+			// 				value: unit.id,
+			// 			}),
+			// 		)
+			// 	: [],
+
+			// options: () => {
+			// 	const values = formInitialValues;
+			// 	// if (!values?.propertyName || !orgPropertiesViewList?.properties) {
+			// 	// 	return [];
+			// 	// }
+			// 	const selectedProperty = find(orgPropertiesViewList.properties, {
+			// 		uuid: values?.propertyName,
+			// 	});
+			// 	return selectedProperty?.units
+			// 		? selectedProperty.units.map(
+			// 				(unit: { id: string; unitNumber: string }) => ({
+			// 					label: unit.unitNumber,
+			// 					value: unit.id,
+			// 				}),
+			// 			)
+			// 		: [];
+			// },
+			// showIf: (values) => !!values?.propertyName,
+			// disabled: !propertyData?.units || propertyData.units.length <= 1,
 		},
 		{
 			name: 'tenantsIds',
@@ -216,16 +246,16 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			width: '50%',
 			layout: 'row',
 			showIf: (values) =>
-				values.frequency === 'Monthly' || values.frequency === 'Bi-Monthly',
+				values?.frequency === 'Monthly' || values?.frequency === 'Bi-Monthly',
 		},
 	];
 
 	const calculateDueDate = (values: any) => {
-		if (!values.frequency || !values.startDate || !values.endDate) {
+		if (!values?.frequency || !values?.startDate || !values?.endDate) {
 			return '';
 		}
 
-		const startDayAndMonth = dayjs(values.startDate).format('MMMM DD');
+		const startDayAndMonth = dayjs(values?.startDate).format('MMMM DD');
 		const days = [
 			'Sunday',
 			'Monday',
@@ -237,32 +267,32 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		];
 
 		const dueDates = {
-			[PaymentFrequency.WEEKLY]: `${days[dayjs(values.startDate).add(1, 'week').get('day')]}, ${dayjs(values.startDate).add(1, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values.startDate).add(2, 'week').get('day')]}, ${dayjs(values.startDate).add(2, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.MONTHLY]: `${days[dayjs(values.startDate).add(1, 'month').get('day')]}, ${dayjs(values.startDate).add(1, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.WEEKLY]: `${days[dayjs(values?.startDate).add(1, 'week').get('day')]}, ${dayjs(values?.startDate).add(1, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values?.startDate).add(2, 'week').get('day')]}, ${dayjs(values?.startDate).add(2, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.MONTHLY]: `${days[dayjs(values?.startDate).add(1, 'month').get('day')]}, ${dayjs(values?.startDate).add(1, 'month').format('MMMM DD, YYYY')}`,
 			[PaymentFrequency.ANNUALLY]: startDayAndMonth,
 			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${days[dayjs(values.startDate).add(2, 'month').get('day')]}, ${dayjs(values.startDate).add(2, 'month').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values.startDate).add(3, 'month').get('day')]}, ${dayjs(values.startDate).add(3, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_MONTHLY]: `${days[dayjs(values?.startDate).add(2, 'month').get('day')]}, ${dayjs(values?.startDate).add(2, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values?.startDate).add(3, 'month').get('day')]}, ${dayjs(values?.startDate).add(3, 'month').format('MMMM DD, YYYY')}`,
 		};
 
-		return dueDates[values.frequency as PaymentFrequency] || '';
+		return dueDates[values?.frequency as PaymentFrequency] || '';
 	};
 
 	const handleSubmit = async (values: LeaseFormValues) => {
 		try {
 			const requestBody = {
-				name: values.name,
-				startDate: values.startDate,
-				endDate: values.endDate,
+				name: values?.name,
+				startDate: values?.startDate,
+				endDate: values?.endDate,
 				newTenants: null,
-				tenantsIds: values.tenantsIds,
-				unitId: values.unitId,
-				rentDueDay: values.rentDueDay ? Number(values.rentDueDay) : undefined,
-				rentAmount: Number(values.rentAmount),
-				securityDeposit: Number(values.depositAmount),
+				tenantsIds: values?.tenantsIds,
+				unitId: values?.unitId,
+				rentDueDay: values?.rentDueDay ? Number(values?.rentDueDay) : undefined,
+				rentAmount: Number(values?.rentAmount),
+				securityDeposit: Number(values?.depositAmount),
 				isDraft: false,
-				paymentFrequency: values.paymentFrequency,
+				paymentFrequency: values?.paymentFrequency,
 				status: null,
 				propertyName: propertyData?.name,
 				firstPaymentDate: calculateDueDate(values),
