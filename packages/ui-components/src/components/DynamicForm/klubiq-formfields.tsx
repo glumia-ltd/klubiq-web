@@ -1090,7 +1090,7 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
                       InputProps: {
                         readOnly: field.readonly,
                       },
-                      onBlur: (e) => {
+                      onBlur: (e: React.FocusEvent<any>) => {
                         if (formikField.value || meta.touched) {
                           formikField.onBlur(e);
                         }
