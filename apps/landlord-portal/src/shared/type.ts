@@ -9,9 +9,6 @@ export interface RouteObjectType {
 export type LeaseDetail = {
 	name: string;
 	amount: string;
-<<<<<<< HEAD
-};
-=======
 }
 export type ActiveLeaseDetail = {
 	name: string;
@@ -26,7 +23,6 @@ export type ActiveLeaseDetail = {
 
 
 }
->>>>>>> 78dd9517e5722b8ad1179dbc460754817e2f76e0
 export type TenantCardProps = {
 	tenant: TenantInfo;
 };
