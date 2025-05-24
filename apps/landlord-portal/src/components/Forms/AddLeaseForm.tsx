@@ -497,7 +497,7 @@ import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../helpers/utils';
 import { FormField } from '@klubiq/ui-components';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import FormLayout from '../../Layouts/FormLayout';
 import FormSkeleton from '../skeletons/FormSkeleton';
@@ -544,7 +544,7 @@ interface LeaseFormValues {
 	unitNumber?: string;
 }
 
-const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
+const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -556,7 +556,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 
 	consoleLog('properties', orgPropertiesViewList);
 
-	const [formInitialValues, setFormInitialValues] = useState({
+	const [formInitialValues] = useState({
 		name: '',
 		propertyName: '',
 		unitId: '',

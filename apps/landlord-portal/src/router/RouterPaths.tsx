@@ -9,7 +9,6 @@ import SignUpPage from '../pages/Auth/SignUp/CreateAccount';
 import Login from '../pages/Auth/Login';
 import SetPassword from '../pages/Auth/SetPassword';
 import ForgotPassword from '../pages/Auth/ForgotPassword';
-import UserProfileDetails from '../pages/Auth/UserProfileDetails';
 import EmailVerification from '../pages/Auth/EmailVerification';
 import DashBoard from '../pages/Features/Dashboard';
 import Setting from '../pages/Settings';
@@ -41,7 +40,6 @@ export const router = createBrowserRouter(
 			<Route path='/login' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
-			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />

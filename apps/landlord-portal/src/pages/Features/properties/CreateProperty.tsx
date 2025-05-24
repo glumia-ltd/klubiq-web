@@ -1,4 +1,4 @@
-import { FormStep, FormFieldV1, ArrayFormFieldV1 } from '@klubiq/ui-components';
+import { FormStep, ArrayFormFieldV1 } from '@klubiq/ui-components';
 import { CategoryMetaDataType } from '../../../shared/type';
 import { useGetPropertiesMetaDataQuery } from '../../../store/PropertyPageStore/propertyApiSlice';
 import { EmojiOneBuildingIcon, EmojiOneHomeIcon, HouseIcon } from '../../../components/Icons/CustomIcons';
@@ -11,10 +11,12 @@ type CategoryType = {
 	metaData?: CategoryMetaDataType;
 	Image: any;
 };
-const { purposes, amenities, types, categories } = useGetPropertiesMetaDataQuery(undefined, {
+const { purposes, 
+  // amenities, 
+  types, categories } = useGetPropertiesMetaDataQuery(undefined, {
     selectFromResult: ({ data }) => ({
         purposes: data?.purposes,
-        amenities: data?.amenities,
+        // amenities: data?.amenities,
         types: data?.types,
         categories: data?.categories,
     }),

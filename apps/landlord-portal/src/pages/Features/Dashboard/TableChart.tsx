@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { AxisScaleConfig } from '@mui/x-charts/internals';
 import { SeriesDataType } from '../../../shared/type';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { FC, useMemo } from 'react';
@@ -45,8 +44,10 @@ const TableChart: FC<{
 		`${currencySymbol ?? '₦'}${value / 1000}k`;
 
 	const bandAxis = {
-		scaleType: 'band',
+		scaleType: 'band' as const,
 		data: validXAxisData,
+		categoryGapRatio: 0.8,
+		barGapRatio: 0,
 	};
 	
 	const valueAxis = {
@@ -55,42 +56,6 @@ const TableChart: FC<{
 		valueFormatter,
 	};
 
-	const xAxisConfig: AxisScaleConfig = {
-		band: {
-			scaleType: 'band',
-			scale: Number,
-			categoryGapRatio: 0.8,
-			barGapRatio: 0,
-		},
-		point: {
-			scaleType: 'point',
-			scale: Number,
-		},
-		log: {
-			scaleType: 'log',
-			scale: Number,
-		},
-		pow: {
-			scaleType: 'pow',
-			scale: Number,
-		},
-		sqrt: {
-			scaleType: 'sqrt',
-			scale: Number,
-		},
-		time: {
-			scaleType: 'time',
-			scale: Date,
-		},
-		utc: {
-			scaleType: 'utc',
-			scale: String,
-		},
-		linear: {
-			scaleType: 'linear',
-			scale: Number,
-		},
-	};
 	const chartContent = (
 		<BarChart
 			layout={chartLayout}
@@ -110,7 +75,7 @@ const TableChart: FC<{
 			series={validSeriesData}
 			// xAxis={isSmallScreen ? [valueAxis] : [{...bandAxis, ...xAxisConfig.band}]}
 			// yAxis={isSmallScreen ? [{...bandAxis, ...xAxisConfig.band}] : [valueAxis]}
-			xAxis={[{...bandAxis, ...xAxisConfig.band}]}
+			xAxis={[bandAxis]}
 			yAxis={[valueAxis]}
 			height={400}
 			bottomAxis={null}

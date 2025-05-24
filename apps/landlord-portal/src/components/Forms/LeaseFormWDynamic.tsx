@@ -59,7 +59,7 @@ interface LeaseFormValues {
 	unitNumber?: string;
 }
 
-const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
+const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
