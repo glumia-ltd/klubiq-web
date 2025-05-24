@@ -46,7 +46,7 @@ import {
 	EmojiOneBuildingIcon,
 } from '../Icons/CustomIcons';
 import { getIn, useFormik } from 'formik';
-import { MEASUREMENTS } from '../../helpers/utils';
+import { restrictToNumbers, MEASUREMENTS } from '../../helpers/utils';
 import { Close, Add, MoreVert } from '@mui/icons-material';
 type CardProps = {
 	formik: any;
@@ -709,8 +709,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].${getNameByPropertyCategory()}`}
 									label={`${capitalize(getNameByPropertyCategory())}`}
-									type='number'
+									type='text'
 									formik={formik}
+									onKeyDown={restrictToNumbers}
 								/>
 							</Box>
 
@@ -718,8 +719,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].bathrooms`}
 									label='Bathrooms'
-									type='number'
+									type='text'
 									formik={formik}
+									onKeyDown={restrictToNumbers}
 								/>
 							</Box>
 						</Stack>
@@ -731,8 +733,9 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].toilets`}
 									label='Toilets'
-									type='number'
+									type='text'
 									formik={formik}
+									onKeyDown={restrictToNumbers}
 								/>
 							</Box>
 
@@ -741,6 +744,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 									name={`units[${currentUnitIndex}].area.value`}
 									label='Floor Plan'
 									formik={formik}
+									onKeyDown={restrictToNumbers}
 									InputProps={{
 										endAdornment: (
 											<InputAdornment position='end'>

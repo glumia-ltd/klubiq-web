@@ -164,6 +164,17 @@ export const getLocaleFormat1 = (
 	return '';
 };
 
+export const restrictToNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	if (
+		!['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(
+			e.key,
+		) &&
+		!/^\d$/.test(e.key)
+	) {
+		e.preventDefault();
+	}
+};
+
 /**
  * Returns the current line number by inspecting the Error stack trace.
  */
