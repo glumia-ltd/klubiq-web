@@ -9,7 +9,10 @@ export const AppContainerStyle = {
 		display: 'flex',
 		flexDirection: 'column',
 		flex: 1,
-		padding: '20px',
+		padding: {
+			xs: '30px 70px',
+			md: '50px 20px'
+		},
 		overflowY: 'auto',
 		justifyContent: 'space-between',
 	},
