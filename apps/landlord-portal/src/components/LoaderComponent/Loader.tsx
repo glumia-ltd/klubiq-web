@@ -2,20 +2,20 @@
 
 import { Box } from '@mui/material';
 // import Logo2 from '../../assets/images/icons.svg';
-import { keyframes } from '@mui/system';
+// import { keyframes } from '@mui/system';
 // import { HomeIcon } from '../Icons/CustomIcons';
 
 // Define the keyframes
-const pulse = keyframes`
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.7;
-  }
-`;
+// const pulse = keyframes`
+//   0%, 100% {
+//     transform: scale(1);
+//     opacity: 1;
+//   }
+//   50% {
+//     transform: scale(1.1);
+//     opacity: 0.7;
+//   }
+// `;
 
 const Loader = () => {
 	return (
@@ -26,23 +26,24 @@ const Loader = () => {
 				left: 0,
 				right: 0,
 				bottom: 0,
-				width: '100vw',
-				height: '100vh',
+				// width: '100vw',
+				// height: '100vh',
 				display: 'flex',
 				justifyContent: 'center',
 				alignItems: 'center',
 				zIndex: 9999,
+				overflow: 'hidden',
 			}}
 		>
 			<Box
-				sx={{
-					width: '100px',
-					height: '100px',
-					animation: `${pulse} 1.5s ease-in-out infinite`,
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-				}}
+				// sx={{
+				// 	width: '100px',
+				// 	height: '100px',
+				// 	animation: `${pulse} 1.5s ease-in-out infinite`,
+				// 	display: 'flex',
+				// 	justifyContent: 'center',
+				// 	alignItems: 'center',
+				// }}
 			>
 				{/* <Logo2 /> */}
 			</Box>

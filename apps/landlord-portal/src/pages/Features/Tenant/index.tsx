@@ -1,6 +1,7 @@
 import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
 import { styles } from './styles';
 // import Filter from '../../../components/Filter/Filter';
+// import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
 import { DataPagination } from '../../../components/DataPagination';
@@ -8,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import {
 	// useGetTenantFilterMetaDataQuery,
+	// useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
-import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
+// import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
+// import { Filter } from '@mui/icons-material';
 
 const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
 
@@ -21,10 +24,12 @@ const Tenant = () => {
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
-		sortBy: 'createdDate',
-		order: 'ASC',
+		// sortBy: 'createdDate',
+		// order: 'ASC',
 	});
 	const inputRef = useRef<HTMLElement>(null);
+	// const filterObjectLength = Object.keys(filter).length;
+	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	// const filterObjectLength = Object.keys(filter).length;
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	const { data: tenantData } = useGetTenantsQuery({
@@ -33,6 +38,7 @@ const Tenant = () => {
 	});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
+	// const filterOptions = tenantMetaData?.filterOptions;
 	// const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
@@ -63,7 +69,7 @@ const Tenant = () => {
 		getCurrentPage(1);
 	}, [getCurrentPage]);
 
-	const handleRowClick = (id: number) => {
+	const handleRowClick = (id: string) => {
 		navigate(`/tenant/${id}`);
 	};
 	return (
@@ -75,8 +81,7 @@ const Tenant = () => {
 					sx={styles.buttonContainer}
 				>
 					<Button
-						variant='contained'
-						sx={styles.addTenantButton}
+						variant='klubiqMainButton'
 						onClick={navigateToAddTenant}
 					>
 						{/* <LeftArrowIcon /> */}
@@ -98,25 +103,24 @@ const Tenant = () => {
 						/>
 					</Paper>
 				</Stack>
-				{/* <Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
-					<Filter
+				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
+					{/* <Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
 							setFilter(options);
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
+					/> */}
+				</Stack>
+				<Stack>
+					<TenantTable
+						title='Tenant'
+						allTenant={allTenants}
+						onRowClick={(tenant) => {
+							console.log('here');
+							handleRowClick(tenant.id);
+						}}
 					/>
-				</Stack> */}
-				<Stack sx={{ width: '100%' }}>
-					{allTenants ? (
-						<TenantTable
-							title='Tenant'
-							allTenant={allTenants}
-							onRowClick={(rowData: any) => handleRowClick(rowData.id)}
-						/>
-					) : (
-						<TableSkeleton />
-					)}
 				</Stack>
 			</Stack>
 			<Stack mt={4}>

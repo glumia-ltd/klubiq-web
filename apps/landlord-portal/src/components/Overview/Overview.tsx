@@ -113,9 +113,8 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 							{!showTextField ? (
 								needsTruncation && (
 									<Button
-										variant='propertyButton'
+										variant='klubiqMainButton'
 										onClick={toggleTextView}
-										sx={styles.showHideTextStyle}
 									>
 										{truncateText ? 'Read more' : 'Hide Text'}
 									</Button>
@@ -123,16 +122,14 @@ export const Overview: FC<OverviewType> = ({ initialText }) => {
 							) : (
 								<Stack direction='row' spacing={2} sx={styles.saveTextButtonStack}>
 								<Button
-									variant='outlined'
+									variant='klubiqOutlinedButton'
 									onClick={handleCancelText}
-									sx={styles.saveTextButton}
 								>
 									Cancel
 								</Button>
 									<Button
-									variant='contained'
+									variant='klubiqMainButton'
 									onClick={handleSaveText}
-									sx={styles.saveTextButton}
 								>
 									Save
 								</Button>

@@ -13,7 +13,7 @@ const AddLeasePage = () => {
 
 	return (
 		<AddPropertiesInformationLayout>
-			<AddLeaseForm propertyId={propertyId} unitId={unitId} />
+			<AddLeaseForm propertyId={propertyId || ''} unitId={unitId || ''} />
 		</AddPropertiesInformationLayout>
 	);
 };

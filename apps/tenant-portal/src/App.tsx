@@ -4,24 +4,17 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/L
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { router } from './router/RouterPaths';
-
+import { AuthProvider } from './context/AuthContext/AuthProvider';
 const App = () => {
   return (
-    // <ThemeContextProvider>
+    <ThemeContextProvider>
+      <AuthProvider>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <RouterProvider router={router} />
       </LocalizationProvider>
-    // </ThemeContextProvider>
-    // <Box sx={{ display: 'flex' }}>
-    //   <Layout>
-    //     <Routes>
-    //       <Route path="/" element={<div>Tenant Portal Home</div>} />
-    //       <Route path="/example" element={<ExamplePage />} />
-    //       {/* Add more routes here */}
-    //     </Routes>
-    //   </Layout>
-    // </Box>
+      </AuthProvider>
+    </ThemeContextProvider>
   )
 }
 
-export default App 
+export default App;

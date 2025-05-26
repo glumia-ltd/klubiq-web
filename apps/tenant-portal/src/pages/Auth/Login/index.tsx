@@ -1,10 +1,17 @@
 import * as Yup from 'yup';
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Stack, Typography } from '@mui/material';
 import { KlubiqForm, FormField, FormGroup } from '@klubiq/ui-components';
-
-import { Grid, Typography } from '@mui/material';
 import EmailOutlineIcon from '@mui/icons-material/EmailOutlined';
+
+import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
+import {
+	useLazyGetUserByFbidQuery,
+	useSignInMutation,
+} from '@/store/AuthStore/authApi.slice';
+import { saveUser } from '@/store/AuthStore/auth.slice';
+import { useDispatch } from 'react-redux';
 
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
@@ -16,6 +23,9 @@ type IValuesType = {
 
 const Login = () => {
 	const navigate = useNavigate();
+	const [signIn] = useSignInMutation();
+	const [triggerGetUserByFbidQuery] = useLazyGetUserByFbidQuery();
+	const dispatch = useDispatch();
 
 	const defaultValues: IValuesType = {
 		password: '',
@@ -42,38 +52,60 @@ const Login = () => {
 		},
 	];
 
+	const loadUserAfterSignIn = async () => {
+		const { isError, error, data } = await triggerGetUserByFbidQuery();
+
+		if (isError) {
+			console.error(error); // to reemove
+			openSnackbar({
+				message: 'Oops! an error occurred',
+				severity: 'error',
+				isOpen: true,
+			});
+			throw isError;
+		}
+
+		if (data) {
+			dispatch(saveUser({ user: data, isAuthenticated: true }));
+			navigate('/dashboard', { replace: true });
+		}
+	};
+
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values);
-		navigate('/dashboard');
+		const { email, password } = values;
+		try {
+			await signIn({ email, password }).unwrap();
+			loadUserAfterSignIn();
+		} catch (error: any) {
+			openSnackbar({
+				message: error.response.data.message,
+				severity: 'error',
+				isOpen: true,
+			});
+		}
 	};
 
 	return (
-		<Grid
-			item
-			sx={styles.container}
-		>
-			<Grid container>
-				<Grid container sx={{ justifyContent: 'center', alignItems: 'center' }}>
-					<img src={Logo} />
-				</Grid>
-				<Grid item sm={12}>
-					<Typography variant='h1' sx={styles.title}>
-						Welcome to Klubiq
-					</Typography>
-				</Grid>
-				<KlubiqForm
-					fields={loginFormFields as FormField[]}
-					onSubmit={onSubmit}
-					initialValues={defaultValues}
-					submitButtonText='Login'
-				/>
-				<Grid item sm={12}>
-					<Typography sx={styles.text}>
-						Having trouble logging in? Contact your property manager.
-					</Typography>
-				</Grid>
-			</Grid>
-		</Grid>
+		<Stack sx={styles.container} spacing={1}>
+			<Stack direction='row' justifyContent='center' alignItems='center'>
+				<img src={Logo} alt='Klubiq Logo' />
+			</Stack>
+
+			<Typography variant='h1' sx={styles.title}>
+				Welcome to Klubiq
+			</Typography>
+
+			<KlubiqForm
+				fields={loginFormFields as FormField[]}
+				onSubmit={onSubmit}
+				initialValues={defaultValues}
+				submitButtonText='Login'
+			/>
+
+			<Typography sx={styles.text}>
+				Having trouble logging in? Contact your property manager.
+			</Typography>
+		</Stack>
 	);
 };
 

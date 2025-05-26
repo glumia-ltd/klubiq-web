@@ -44,7 +44,7 @@ export const BasicForm: Story = {
         validation: Yup.string().email('Invalid email').required('Email is required'),
       },
     ],
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log('Form submitted:', values);
       alert(JSON.stringify(values, null, 2));
     },
@@ -114,7 +114,7 @@ export const AllFieldTypes: Story = {
         rows: 4,
       },
     ],
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log('Form submitted:', values);
       alert(JSON.stringify(values, null, 2));
     },
@@ -259,7 +259,7 @@ export const GroupedForm: Story = {
               phone: '',
             },
           },
-          onSubmit: (values) => {
+          onSubmit: async (values) => {
             console.log('Form submitted:', values);
             alert(JSON.stringify(values, null, 2));
           },
@@ -292,7 +292,7 @@ export const ComplexGroupedForm: Story = {
               zipCode: '',
             },
           },
-          onSubmit: (values) => {
+          onSubmit: async (values) => {
             console.log('Form submitted:', values);
             alert(JSON.stringify(values, null, 2));
           },
@@ -343,7 +343,7 @@ export const ValidationForm: Story = {
           .required('Password confirmation is required'),
       },
     ],
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log('Form submitted:', values);
       alert(JSON.stringify(values, null, 2));
     },
@@ -377,7 +377,7 @@ export const CurrencyPercentageForm: Story = {
         },
       },
     ],
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log('Form submitted:', values);
       alert(JSON.stringify(values, null, 2));
     },
@@ -419,7 +419,7 @@ export const PasswordForm: Story = {
             .oneOf([Yup.ref('password')], 'Passwords must match'),
         },
       ],
-      onSubmit: (values) => {
+      onSubmit: async (values) => {
         console.log('Form submitted:', values);
         alert(JSON.stringify(values, null, 2));
       },

@@ -183,21 +183,7 @@ const PropertyInformation: React.FC = () => {
 					marginTop: '.3rem',
 				}}
 			>
-				<Button
-					type='submit'
-					sx={{
-						border: '1px solid #002147',
-						color: 'white',
-						background: '#002147',
-						height: '3.1rem',
-						width: '100%',
-						'&:hover': {
-							color: 'white',
-							background: '#002147',
-							cursor: 'pointer',
-						},
-					}}
-				>
+				<Button type='submit' variant='klubiqMainButton'>
 					Save & Continue
 				</Button>
 			</Grid>
@@ -215,14 +201,7 @@ const PropertyInformation: React.FC = () => {
 				// onClick={goBackToLogin}
 			>
 				<span style={{ borderBottom: '1px solid #002147' }}>
-					<Button
-						sx={{
-							color: '#002147',
-							fontWeight: '600',
-						}}
-					>
-						Add later
-					</Button>
+					<Button variant='klubiqTextButton'>Add later</Button>
 				</span>
 			</Grid>
 		</Grid>

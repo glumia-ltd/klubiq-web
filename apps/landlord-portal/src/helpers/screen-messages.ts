@@ -59,4 +59,24 @@ export const screenMessages = {
 			confirm: 'Are you sure you want to create this lease?',
 		},
 	},
+	auth:{
+		signIn:{
+			success: 'Sign in successful',
+			error: 'Failed to sign in',
+			loading: 'Signing in...',
+			confirm: 'Are you sure you want to sign in?',
+		},
+		signUp:{
+			success: 'Sign up successful',
+			error: 'Failed to sign up',
+			loading: 'Signing up...',
+			confirm: 'Are you sure you want to sign up?',
+		},
+		otp:{
+			success: 'OTP verified successfully',
+			error: 'Failed to verify OTP',
+			loading: 'Verifying OTP...',
+			confirm: 'Are you sure you want to verify this OTP?',
+		},
+	},
 };

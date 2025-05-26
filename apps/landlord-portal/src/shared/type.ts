@@ -420,6 +420,7 @@ export type InviteTenantPropertyDetailsType = {
 	propertyName: string;
 	unitId: string;
 	unitNumber: string;
+	propertyId: string;
 };
 export type AddTenantToLeaseDetailsType = {
 	leaseId: string;

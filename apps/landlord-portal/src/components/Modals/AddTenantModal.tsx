@@ -49,7 +49,7 @@ const AddTenantModal = ({ open, onClose,message }: AddTenantModalProps) => {
 				</Box>
 				<Divider />
 				<Box sx={{ textAlign: 'center' }}>
-					<Button variant='text' size='small' sx={{ mt: 2 }} onClick={onClose}>
+					<Button variant='klubiqTextButton' size='small' sx={{ mt: 2 }} onClick={onClose}>
 						Continue
 					</Button>
 				</Box>

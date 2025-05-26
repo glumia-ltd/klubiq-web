@@ -170,8 +170,7 @@ const Properties = () => {
 									</div>
 								)}
 								<Button
-									variant='contained'
-									sx={styles.addPropertyButton}
+									variant='klubiqMainButton'
 									onClick={handleAddProperties}
 								>
 									<LeftArrowIcon />

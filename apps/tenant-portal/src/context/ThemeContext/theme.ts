@@ -1,30 +1,4 @@
 import { Theme, createTheme } from '@mui/material';
-const transitionsTheme = {
-	duration: {
-		shortest: 150,
-		shorter: 200,
-		short: 250,
-		// most basic recommended timing
-		standard: 300,
-		// this is to be used in complex animations
-		complex: 375,
-		// recommended when something is entering screen
-		enteringScreen: 400,
-		// recommended when something is leaving screen
-		leavingScreen: 300,
-	},
-	easing: {
-		// This is the most common easing curve.
-		easeInOut: 'ease-in-out',
-		// Objects enter the screen at full velocity from off-screen and
-		// slowly decelerate to a resting point.
-		easeOut: 'ease-out',
-		// Objects leave the screen at full velocity. They do not decelerate when off-screen.
-		easeIn: 'ease-in',
-		// The sharp curve is used by objects that may return to the screen at any time.
-		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
-	},
-};
 const cardHeaderStyle = {
 	fontWeight: 600,
 	fontSize: '0.875rem',
@@ -49,6 +23,21 @@ const filterResultCountStyle = {
 	fontWeight: 700,
 	lineHeight: '2.375rem',
 };
+const primaryColors = {
+	mainBlue: '#002147',
+	lightBlue: '#005CFF',
+	white: '#FFFFFF',
+	black: '#000000',
+}
+const secondaryColors = {
+	yellow: '#FFD700',
+	blue: '#6699CC',
+	lightBlue: '#E2EAF2',
+}
+const backgroundColors = {
+	light: '#F3F6F8',
+	dark: '#1B1B1B',
+}
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -63,35 +52,47 @@ export const LightTheme: Theme = createTheme({
 	palette: {
 		mode: 'light',
 		primary: {
-			main: '#002147',
-			light: '#0096FF',
-			dark: '#1F305E',
-			contrastText: '#FFFFFF',
+			main: primaryColors.mainBlue,
+			light: primaryColors.lightBlue,
+			dark: primaryColors.mainBlue,
+			contrastText: primaryColors.white, 
 		},
 		secondary: {
-			main: '#FFD700',
-			light: '#6699CC',
-			dark: '#1b1b1b',
-			contrastText: '#ffffff',
+			main: secondaryColors.yellow,
+			light: secondaryColors.blue,
+			dark: backgroundColors.dark,
+			contrastText: primaryColors.white,
 		},
 		background: {
-			default: '#F3F6F8',
-			paper: '#F3F6F8',
+			default: backgroundColors.light,
+			paper: backgroundColors.light,
 		},
-		notification: {
-			light: '#002147',
+		error:{
+			main: 'rgba(255, 0, 0, 0.5)',
+			light: 'rgba(233, 69, 69, 0.2)',
+			dark: 'rgba(255, 0, 0, 0.8)',
 		},
-		buttonColors: {
-			common: {
-				// color:
-			},
+		warning:{
+			main: 'rgba(255, 165, 0, 0.5)',
+			light: 'rgba(255, 165, 0, 0.2)',
+			dark: 'rgba(255, 165, 0, 0.8)',
+		},
+		info:{
+			main: 'rgba(0, 0, 255, 0.5)',
+			light: 'rgba(0, 0, 255, 0.2)',
+			dark: 'rgba(0, 0, 255, 0.8)',
+		},
+		success:{
+			main: 'rgba(0, 128, 0, 0.5)',
+			light: 'rgba(0, 128, 0, 0.2)',
+			dark: 'rgba(0, 128, 0, 0.8)',
 		},
 	},
 	components: {
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					background: '#F3F6F8',
+					background: backgroundColors.light,
 					height: '100%',
 				},
 			},
@@ -103,217 +104,180 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-
 		MuiButton: {
 			styleOverrides: {
 				root: {
-					// color: '#002147',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
+					display: 'flex',
+					fontWeight: 'semi-bold',
+					padding: '0.5rem 1rem',
+					borderRadius: '10px',
+					gap: '0.5rem',
+					textTransform: 'capitalize',
 				},
 				outlined: {
-					borderColor: '#002147',
-					color: '#002147',
+					borderColor: primaryColors.mainBlue,
+					color: primaryColors.mainBlue,
 					opacity: '0.8',
 					'&:hover': {
 						opacity: '1',
-						color: '#002147',
-						border: '1.6px solid #002147',
+						color: primaryColors.mainBlue,
+						border: `1.6px solid ${primaryColors.mainBlue}`,
 					},
 				},
-
-				// contained: {
-				// 	color: '#ffffff',
-				// 	borderColor: '#002147',
-				// },
 			},
-
 			variants: [
 				{
-					props: { variant: 'propertyButton' },
+					props: { variant: 'klubiqMainButton' },
 					style: {
-						background: '#ffffff',
-						color: '#002147',
-						opacity: '0.8',
+						background: primaryColors.mainBlue,
+						color: primaryColors.white,
 						'&:hover': {
-							// opacity: '1',
-							color: '#002147',
-							// border: '1.6px solid #FFFFFF',
+							cursor: 'pointer',
+							color: backgroundColors.light,
+							background: secondaryColors.blue,
 						},
-					},
-				},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-				{
-					props: { variant: 'filterButton' },
-					style: {
-						display: 'flex',
-						color: '#002147',
-						gap: '8px',
-						padding: '8px',
-						borderRadius: '8px',
-						outline: '1px dashed #002147',
-					},
-				},
-				{
-					props: { variant: 'borderlessFilterButton' },
-					style: {
-						color: '#002147',
-						padding: '0',
-						outline: 'none',
-						display: 'flex',
-						gap: '5px',
-						'&:hover': {
-							background: 'none',
 						},
 					},
 				},
+				{
+					props: { variant: 'klubiqSecondaryButton' },
+					style: {
+						background:secondaryColors.blue, 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							background:primaryColors.mainBlue,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTertiaryButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: secondaryColors.lightBlue,
+							background:backgroundColors.dark,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqAccentButton' },
+					style: {
+						background:'#0088F0', 
+						color: primaryColors.white,
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: '#0D0D0D',
+							background:backgroundColors.dark,
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqTextButton' },
+					style: {
+						color: backgroundColors.dark,
+						'&:hover': {
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+
+						},
+					},
+				},
+				{
+					props: { variant: 'klubiqOutlinedButton' },
+					style: {
+						color: backgroundColors.dark,
+						border: '1px solid #1B1B1B',
+						'&:hover': {
+							opacity: '1',
+							cursor: 'pointer',
+							color: backgroundColors.dark,
+							background:'rgba(226, 234, 242, 0.6)',
+						},
+						'&:disabled': {
+							opacity: '0.5',
+							cursor: 'not-allowed',
+							color: 'rgba(255, 255, 255, 0.3)',
+							boxShadow: 'none',
+							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+
+						},
+					},
+				}
 			],
 		},
 		MuiSelect: {
-			styleOverrides: {
-				root: {
-					maxHeight: 'calc(100% - 200px)',
-				},
-			},
 		},
 		MuiListItemButton: {
-			defaultProps: {
-				disableTouchRipple: true,
-			},
 		},
 		MuiAppBar: {
-			styleOverrides: {
-				colorPrimary: {
-					backgroundColor: '#FFFFFF',
-					color: '#1B1B1B',
-				},
-			},
 		},
 		MuiDrawer: {
-			styleOverrides: {
-				docked: {
-					maxWidth: '250px',
-					minWidth: '100px',
-				},
-				paper: {
-					display: 'flex',
-					background: '#002147',
-					alignItems: 'center',
-					maxWidth: '250px',
-					minWidth: '100px',
-					overflowX: 'hidden',
-					msOverflowY: 'auto',
-				},
-			},
 		},
 		MuiListItemIcon: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF',
-				},
-			},
 		},
 
 		MuiListItemText: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF',
-					fontSize: '1.5rem',
-				},
-			},
 		},
 
 		MuiOutlinedInput: {
-			styleOverrides: {
-				root: {
-					background: 'white',
-					height: '2.7rem',
-					borderRadius: '0.5rem',
-				},
-			},
 		},
 		MuiPaper: {
-			styleOverrides: {
-				root: {
-					//background: '#ffffff',
-					color: '#1B1B1B !important',
-				},
-			},
 		},
 
 		MuiCard: {
-			styleOverrides: {
-				root: {
-					background: '#ffffff',
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
-				},
-			},
-
-			variants: [
-				{
-					props: { variant: 'expired' },
-					style: {
-						backgroundColor: '#D9D9D9B2',
-					},
-				},
-				{
-					props: { variant: 'overdue' },
-					style: {
-						backgroundColor: '#FF00001A',
-					},
-				},
-				{
-					props: { variant: 'active' },
-					style: {
-						backgroundColor: '#FFFFFF',
-					},
-				},
-			],
 		},
 
 		MuiButtonBase: {
-			defaultProps: {
-				disableRipple: true,
-			},
 		},
 		MuiButtonGroup: {
-			defaultProps: {
-				disableRipple: true,
-			},
 		},
 		MuiStep: {
-			styleOverrides: {
-				root: {
-					padding: '0px',
-					fontWeight: '100',
-				},
-			},
 		},
 		MuiChip: {
-			variants: [
-				{
-					props: { variant: 'rent' },
-					style: {
-						backgroundColor: '#0096FF',
-						color: '#FFFFFF',
-					},
-				},
-				{
-					props: { variant: 'sale' },
-					style: {
-						backgroundColor: '#FF0000',
-						color: '#FFFFFF',
-					},
-				},
-				{
-					props: { variant: 'propertyType' },
-					style: {
-						backgroundColor: '#0C36A01A',
-						color: '#0C36A0',
-					},
-				},
-			],
 		},
 	},
 	typography: {
@@ -437,358 +401,503 @@ export const LightTheme: Theme = createTheme({
 			...filterResultCountStyle,
 		},
 	},
-	transitions: transitionsTheme,
 });
 
-export const DarkTheme: Theme = createTheme({
-	breakpoints: {
-		values: {
-			xs: 0,
-			sm: 600,
-			md: 900,
-			lg: 1200,
-			xl: 1536,
-		},
-	},
+// export const DarkTheme: Theme = createTheme({
+// 	breakpoints: {
+// 		values: {
+// 			xs: 0,
+// 			sm: 600,
+// 			md: 900,
+// 			lg: 1200,
+// 			xl: 1536,
+// 		},
+// 	},
 
-	palette: {
-		mode: 'dark',
-		primary: {
-			main: '#0088F0',
-			light: '#0096FF',
-			dark: '#1F305E',
-		},
-		secondary: {
-			main: '#FFD700',
-			light: '#6699CC',
-			dark: '#1b1b1b',
-			contrastText: '#ffffff',
-		},
-		notification: {
-			light: '#B8D9FF',
-		},
+// 	palette: {
+// 		mode: 'dark',
+// 		primary: {
+// 			main: '#0088F0',
+// 			light: primaryColors.lightBlue,
+// 			dark: primaryColors.mainBlue,
+// 			contrastText: primaryColors.white,
+// 		},
+// 		secondary: {
+// 			main: secondaryColors.yellow,
+// 			light: secondaryColors.blue,
+// 			dark: backgroundColors.dark,
+// 			contrastText: primaryColors.white,
+// 		},
+// 		notification: {
+// 			light: '#B8D9FF',
+// 		},
 
-		background: {
-			default: '#0D0D0D',
-			paper: '#0D0D0D',
-		},
-	},
+// 		background: {
+// 			// default: '#0D0D0D',
+// 			// paper: '#0D0D0D',
+// 			default: backgroundColors.dark,
+// 			paper: backgroundColors.dark,
+// 		},
+// 	},
 
-	components: {
-		MuiCssBaseline: {
-			styleOverrides: {
-				body: {
-					background:'#0D0D0D',
-					height: '100%',
-				},
-			},
-		},
-		MuiAlert: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF !important',
-				},
-			},
-		},
-		MuiListItemButton: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
+// 	components: {
+// 		MuiCssBaseline: {
+// 			styleOverrides: {
+// 				body: {
+// 					background:'#0D0D0D',
+// 					height: '100%',
+// 				},
+// 			},
+// 		},
+// 		MuiAlert: {
+// 			styleOverrides: {
+// 				root: {
+// 					color: '#FFFFFF !important',
+// 				},
+// 			},
+// 		},
+// 		MuiListItemButton: {
+// 			defaultProps: {
+// 				disableRipple: true,
+// 			},
+// 		},
 
-		MuiButtonBase: {
-			defaultProps: {
-				disableRipple: true,
-				disableTouchRipple: true,
-			},
-		},
-		MuiButtonGroup: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
+// 		MuiButtonBase: {
+// 			defaultProps: {
+// 				disableRipple: true,
+// 				disableTouchRipple: true,
+// 			},
+// 		},
+// 		MuiButtonGroup: {
+// 			defaultProps: {
+// 				disableRipple: true,
+// 			},
+// 		},
 
-		MuiAppBar: {
-			styleOverrides: {
-				colorPrimary: {
-					background: '#0D0D0D',
-					color: '#FFFFFF',
-					boxShadow: '0px 0px 0px 1px #6699CC',
-				},
-			},
-		},
-		MuiDrawer: {
-			styleOverrides: {
-				docked: {
-					maxWidth: '250px',
-					minWidth: '100px',
-				},
-				paper: {
-					display: 'flex',
-					background: '#OFOFOF',
-					alignItems: 'center',
-					maxWidth: '250px',
-					minWidth: '100px',
-					overflowX: 'hidden',
-					msOverflowY: 'auto',
-				},
-			},
-		},
-		MuiOutlinedInput: {
-			styleOverrides: {
-				root: {
-					background: '#0F0F0F',
-					height: '2.7rem',
-					borderRadius: '0.5rem',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
-					color: '#FFFFFF',
-				},
-			},
-		},
-		MuiListItemText: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF',
-					fontSize: '1.5rem',
-				},
-			},
-		},
-		MuiPaper: {
-			styleOverrides: {
-				root: {
-					//background: '#0DODOD',
-					// '&.Mui-disabled': {
-					//     background: grey[100],
-					// }
-				},
-			},
-		},
-		MuiDialog: {
-			styleOverrides: {
-				paper: {
-					background: '#0DODOD',
-					backgroundImage: 'none',
-				},
-			},
-		},
-		MuiButton: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF',
-				},
-				outlined: {
-					borderColor: '#FFFFFF',
-					color: '#FFFFFF',
-					opacity: '0.3',
-					'&:hover': {
-						opacity: '1',
-						color: '#FFFFFF',
-						border: '1.6px solid #FFFFFF',
-					},
-				},
-				// contained: {
-				// 	backgroundColor: '#B8D9FF',
-				// 	borderColor: '#B8D9FF',
-				// 	color: '#1B1B1B',
-				// 	'&:hover': {
-				// 		color: '#FFFFFF',
-				// 	},
-				// },
-			},
-			variants: [
-				{
-					props: { variant: 'propertyButton' },
-					style: {
-						background: '#ffffff',
-						color: '#0088F0',
+// 		MuiAppBar: {
+// 			styleOverrides: {
+// 				colorPrimary: {
+// 					background: '#0D0D0D',
+// 					color: primaryColors.white,
+// 					boxShadow: '0px 0px 0px 1px #6699CC',
+// 				},
+// 			},
+// 		},
+// 		MuiDrawer: {
+// 			styleOverrides: {
+// 				docked: {
+// 					maxWidth: '250px',
+// 					minWidth: '100px',
+// 				},
+// 				paper: {
+// 					display: 'flex',
+// 					background: '#OFOFOF',
+// 					alignItems: 'center',
+// 					maxWidth: '250px',
+// 					minWidth: '100px',
+// 					overflowX: 'hidden',
+// 					msOverflowY: 'auto',
+// 				},
+// 			},
+// 		},
+// 		MuiOutlinedInput: {
+// 			styleOverrides: {
+// 				root: {
+// 					background: '#0F0F0F',
+// 					height: '2.7rem',
+// 					borderRadius: '0.5rem',
+// 					// '&.Mui-disabled': {
+// 					//     background: grey[100],
+// 					// }
+// 					color: primaryColors.white,
+// 				},
+// 			},
+// 		},
+// 		MuiListItemText: {
+// 			styleOverrides: {
+// 				root: {
+// 					color: primaryColors.white,
+// 					fontSize: '1.5rem',
+// 				},
+// 			},
+// 		},
+// 		MuiPaper: {
+// 			styleOverrides: {
+// 				root: {
+// 					//background: '#0DODOD',
+// 					// '&.Mui-disabled': {
+// 					//     background: grey[100],
+// 					// }
+// 				},
+// 			},
+// 		},
+// 		MuiDialog: {
+// 			styleOverrides: {
+// 				paper: {
+// 					background: '#161616',
+// 					backgroundImage: 'none',
+// 				},
+// 			},
+// 		},
+// 		MuiButton: {
+// 			styleOverrides: {
+// 				root: {
+// 					color: primaryColors.white,
+// 					display: 'flex',
+// 					fontWeight: 'semi-bold',
+// 					padding: '0.5rem 1rem',
+// 					borderRadius: '10px',
+// 					gap: '0.5rem',
+// 					textTransform: 'capitalize',
+// 				},
+// 				outlined: {
+// 					borderColor: primaryColors.white,
+// 					color: primaryColors.white,
+// 					opacity: '0.3',
+// 					'&:hover': {
+// 						opacity: '1',
+// 						color: primaryColors.white,
+// 						border: '1.6px solid #FFFFFF',
+// 					},
+// 				}
+// 			},
+// 			variants: [
+// 				{
+// 					props: { variant: 'klubiqMainButton' },
+// 					style: {
+// 						background:'#0088F0', 
+// 						color: primaryColors.white,
+// 						'&:hover': {
+// 							opacity: '1',
+// 							cursor: 'pointer',
+// 							color: '#0D0D0D',
+// 							background:secondaryColors.blue,
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
+// 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-						'&:hover': {
-							color: '#0088F0',
-						},
-					},
-				},
+// 						},
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'klubiqSecondaryButton' },
+// 					style: {
+// 						background:secondaryColors.blue, 
+// 						color: primaryColors.white,
+// 						'&:hover': {
+// 							opacity: '1',
+// 							cursor: 'pointer',
+// 							color: backgroundColors.dark,
+// 							background:secondaryColors.lightBlue,
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
+// 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-				{
-					props: { variant: 'filterButton' },
-					style: {
-						display: 'flex',
-						gap: '8px',
-						padding: '8px',
-						borderRadius: '8px',
-						outline: '1px dashed #E4E4E4',
-					},
-				},
-				{
-					props: { variant: 'borderlessFilterButton' },
-					style: {
-						color: '#E4E4E4',
-						padding: '0',
-						outline: 'none',
-						display: 'flex',
-						gap: '5px',
-						'&:hover': {
-							background: 'none',
-						},
-					},
-				},
-			],
-		},
+// 						},
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'klubiqTertiaryButton' },
+// 					style: {
+// 						background:'#0088F0', 
+// 						color: primaryColors.white,
+// 						'&:hover': {
+// 							opacity: '1',
+// 							cursor: 'pointer',
+// 							color: '#0D0D0D',
+// 							background:secondaryColors.blue,
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
+// 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-		MuiCard: {
-			styleOverrides: {
-				root: {
-					background: '#161616',
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
-					border: '1px solid rgba(211, 217, 223, 0.25)',
-				},
-			},
-			variants: [
-				{
-					props: { variant: 'expired' },
-					style: {
-						backgroundColor: '#D9D9D9B2',
-					},
-				},
-				{
-					props: { variant: 'overdue' },
-					style: {
-						backgroundColor: '#FF00001A',
-					},
-				},
-				{
-					props: { variant: 'active' },
-					style: {
-						background: '#161616',
-					},
-				},
-			],
-		},
-	},
+// 						},
+// 					},
+// 				},
 
-	typography: {
-		fontFamily: 'Maven Pro, sans-serif',
-		h1: {
-			fontWeight: 600,
-			fontSize: '3rem',
-			lineHeight: 1.5,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h2: {
-			fontWeight: 600,
-			fontSize: '2.25rem',
-			lineHeight: 1.5,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
+// 				{
+// 					props: { variant: 'klubiqAccentButton' },
+// 					style: {
+// 						background:'#0088F0', 
+// 						color: primaryColors.white,
+// 						opacity: '1',
+// 						display: 'flex',
+// 						fontWeight: 'semi-bold',
+// 						padding: '0.5rem 1rem',
+// 						borderRadius: '10px',
+// 						gap: '8px',
+// 						textTransform: 'capitalize',
+// 						'&:hover': {
+// 							opacity: '1',
+// 							cursor: 'pointer',
+// 							color: '#0D0D0D',
+// 							background:secondaryColors.blue,
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
+// 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-		h3: {
-			fontWeight: 600,
-			fontSize: '2rem',
-			lineHeight: 1.5,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h4: {
-			fontWeight: 600,
-			fontSize: '1.5rem',
-			lineHeight: 1.5,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h5: {
-			fontWeight: 500,
-			fontSize: '2rem',
-			lineHeight: 1.5,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h6: {
-			fontWeight: 800,
-			fontSize: '1rem',
-			lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h7: {
-			fontWeight: 500,
-			fontSize: '1.1rem',
-			lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
+// 						},
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'klubiqTextButton' },
+// 					style: {
+// 						color: secondaryColors.lightBlue,
+// 						'&:hover': {
+// 							//opacity: '0.5',
+// 							cursor: 'pointer',
+// 							color: backgroundColors.dark,
+// 							background:'rgba(226, 234, 242, 0.6)',
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
 
-		body1: {
-			fontWeight: 400,
-			fontSize: '1rem',
-			lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		body2: {
-			fontWeight: 600,
-			fontSize: '14px',
-			lineHeight: '20px',
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		subtitle1: {
-			fontWeight: 500,
-			fontSize: '1rem',
-			lineHeight: 1.75,
-			fontFamily: 'Maven Pro, sans-serif',
-			letterSpacing: 0,
-		},
-		subtitle2: {
-			fontWeight: 500,
-			fontSize: '0.875rem',
-			lineHeight: 1.75,
-			fontFamily: 'Maven Pro, sans-serif',
-			letterSpacing: 0,
-		},
+// 						},
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'klubiqOutlinedButton' },
+// 					style: {
+// 						color: secondaryColors.lightBlue,
+// 						border: '1px solid #E2EAF2',
+// 						'&:hover': {
+// 							opacity: '1',
+// 							cursor: 'pointer',
+// 							color: backgroundColors.dark,
+// 							background:'rgba(226, 234, 242, 0.6)',
+// 						},
+// 						'&:disabled': {
+// 							opacity: '0.5',
+// 							cursor: 'not-allowed',
+// 							color: 'rgba(255, 255, 255, 0.3)',
+// 							boxShadow: 'none',
+// 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
-		caption: {
-			fontWeight: 400,
-			fontSize: '0.75rem',
-			lineHeight: 1.6,
-			fontFamily: 'Maven Pro, sans-serif',
-			letterSpacing: 0,
-		},
-		overline: {
-			fontWeight: 600,
-			fontSize: '0.75rem',
-			lineHeight: 2.46,
-			fontFamily: 'Maven Pro, sans-serif',
-			letterSpacing: '1px',
-			textTransform: 'uppercase',
-		},
-		dashboardTypography: {
-			fontWeight: 800,
-			// fontSize: '1rem',
-			// lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
-			color: '#BBD9FF',
-		},
-		button: {
-			textTransform: 'none',
-			disableRipple: true,
-		},
-		link: {
-			textTransform: 'none',
-			fontWeight: 600,
-			fontSize: '1rem',
-			textDecoration: 'underline',
-			cursor: 'pointer',
-			pointerEvents: 'auto',
-		},
-		cardHeader: {
-			...cardHeaderStyle,
-		},
-		cardContentText: {
-			...cardContentTextStyle,
-		},
-		cardTitle: {
-			...cardTitleStyle,
-		},
-		filterResultText: {
-			...filterResultTextStyle,
-		},
-		filterResultNumber: {
-			...filterResultCountStyle,
-		},
-	},
-	transitions: transitionsTheme,
-});
+// 						},
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'filterButton' },
+// 					style: {
+// 						display: 'flex',
+// 						gap: '8px',
+// 						padding: '8px',
+// 						borderRadius: '8px',
+// 						outline: '1px dashed #E4E4E4',
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'borderlessFilterButton' },
+// 					style: {
+// 						color: '#E4E4E4',
+// 						padding: '0',
+// 						outline: 'none',
+// 						display: 'flex',
+// 						gap: '5px',
+// 						'&:hover': {
+// 							background: 'none',
+// 						},
+// 					},
+// 				},
+// 			],
+// 		},
+
+// 		MuiCard: {
+// 			styleOverrides: {
+// 				root: {
+// 					background: '#161616',
+// 					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+// 					border: '1px solid rgba(211, 217, 223, 0.25)',
+// 				},
+// 			},
+// 			variants: [
+// 				{
+// 					props: { variant: 'expired' },
+// 					style: {
+// 						backgroundColor: '#D9D9D9B2',
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'overdue' },
+// 					style: {
+// 						backgroundColor: '#FF00001A',
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'active' },
+// 					style: {
+// 						background: '#161616',
+// 					},
+// 				},
+// 			],
+// 		},
+// 		MuiChip: {
+// 			variants: [
+// 				{
+// 					props: { variant: 'rent' },
+// 					style: {
+// 						backgroundColor: primaryColors.lightBlue,
+// 						color: primaryColors.white,
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'sale' },
+// 					style: {
+// 						backgroundColor: '#FF0000',
+// 						color: primaryColors.white,
+// 					},
+// 				},
+// 				{
+// 					props: { variant: 'propertyType' },
+// 					style: {
+// 						backgroundColor: primaryColors.white,
+// 						color: primaryColors.mainBlue,
+// 					},
+// 				},
+// 			],
+// 		},
+// 	},
+
+// 	typography: {
+// 		fontFamily: 'Maven Pro, sans-serif',
+// 		h1: {
+// 			fontWeight: 600,
+// 			fontSize: '3rem',
+// 			lineHeight: 1.5,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		h2: {
+// 			fontWeight: 600,
+// 			fontSize: '2.25rem',
+// 			lineHeight: 1.5,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+
+// 		h3: {
+// 			fontWeight: 600,
+// 			fontSize: '2rem',
+// 			lineHeight: 1.5,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		h4: {
+// 			fontWeight: 600,
+// 			fontSize: '1.5rem',
+// 			lineHeight: 1.5,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		h5: {
+// 			fontWeight: 500,
+// 			fontSize: '2rem',
+// 			lineHeight: 1.5,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		h6: {
+// 			fontWeight: 800,
+// 			fontSize: '1rem',
+// 			lineHeight: 1,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		h7: {
+// 			fontWeight: 500,
+// 			fontSize: '1.1rem',
+// 			lineHeight: 1,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+
+// 		body1: {
+// 			fontWeight: 400,
+// 			fontSize: '1rem',
+// 			lineHeight: 1,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		body2: {
+// 			fontWeight: 600,
+// 			fontSize: '14px',
+// 			lineHeight: '20px',
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 		},
+// 		subtitle1: {
+// 			fontWeight: 500,
+// 			fontSize: '1rem',
+// 			lineHeight: 1.75,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 			letterSpacing: 0,
+// 		},
+// 		subtitle2: {
+// 			fontWeight: 500,
+// 			fontSize: '0.875rem',
+// 			lineHeight: 1.75,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 			letterSpacing: 0,
+// 		},
+
+// 		caption: {
+// 			fontWeight: 400,
+// 			fontSize: '0.75rem',
+// 			lineHeight: 1.6,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 			letterSpacing: 0,
+// 		},
+// 		overline: {
+// 			fontWeight: 600,
+// 			fontSize: '0.75rem',
+// 			lineHeight: 2.46,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 			letterSpacing: '1px',
+// 			textTransform: 'uppercase',
+// 		},
+// 		dashboardTypography: {
+// 			fontWeight: 800,
+// 			// fontSize: '1rem',
+// 			// lineHeight: 1,
+// 			fontFamily: 'Maven Pro, sans-serif',
+// 			color: '#BBD9FF',
+// 		},
+// 		button: {
+// 			textTransform: 'none',
+// 			disableRipple: true,
+// 		},
+// 		link: {
+// 			textTransform: 'none',
+// 			fontWeight: 600,
+// 			fontSize: '1rem',
+// 			textDecoration: 'underline',
+// 			cursor: 'pointer',
+// 			pointerEvents: 'auto',
+// 		},
+// 		cardHeader: {
+// 			...cardHeaderStyle,
+// 		},
+// 		cardContentText: {
+// 			...cardContentTextStyle,
+// 		},
+// 		cardTitle: {
+// 			...cardTitleStyle,
+// 		},
+// 		filterResultText: {
+// 			...filterResultTextStyle,
+// 		},
+// 		filterResultNumber: {
+// 			...filterResultCountStyle,
+// 		},
+// 	},
+// 	transitions: transitionsTheme,
+// });

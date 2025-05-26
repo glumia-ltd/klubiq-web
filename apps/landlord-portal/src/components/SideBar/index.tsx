@@ -103,9 +103,21 @@ const SideBar = () => {
 		},
 	};
 
-	const drawerStyles = {
+	const openDrawerStyles = {
 		'& .MuiDrawer-paper': {
-			width: 'auto',
+			width: '178px',
+			transition: 'none',
+			overflowX: 'hidden',
+			willChange: 'transform', // Optimize performance
+			backfaceVisibility: 'hidden', // Prevent flickering
+			WebkitBackfaceVisibility: 'hidden',
+			transform: 'translateZ(0)', // Force GPU acceleration
+			WebkitTransform: 'translateZ(0)',
+		},
+	};
+	const closedDrawerStyles = {
+		'& .MuiDrawer-paper': {
+			width: '70px',
 			transition: 'none',
 			overflowX: 'hidden',
 			willChange: 'transform', // Optimize performance
@@ -136,10 +148,10 @@ const SideBar = () => {
 			variants={drawerVariants}
 			open={sidebarOpen}
 			onMouseEnter={() => setSidebarOpen(true)}
-			onMouseLeave={() => setSidebarOpen(false)}
+			onMouseLeave={() => setSidebarOpen(true)}
 			onTransitionEnd={handleDrawerTransitionEnd}
 			onClose={handleDrawerClose}
-			sx={drawerStyles}
+			sx={sidebarOpen ? openDrawerStyles : closedDrawerStyles}
 			anchor='left'
 		>
 			<DrawerChildren>

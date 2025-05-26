@@ -1,11 +1,11 @@
 import { Button } from '@mui/material';
 import { DynamicTable } from '@klubiq/ui-components';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
-import { styles } from './style';
 import { ActiveLeaseDetail } from '../../../shared/type';
+import { useNavigate } from 'react-router-dom';
 
 type HistoryRow = {
-	no: string;
+	id: string ;
 	dueDate: string;
 	amount: string;
 	action: string;
@@ -16,6 +16,7 @@ type HistoryTableProps = {
 };
 
 const HistoryTable = ({ leases }: HistoryTableProps) => {
+		const navigate = useNavigate();
 	const { tableSx, tableStyles } = useTenantActions();
 	console.log(leases, "active lease")
 
@@ -41,8 +42,8 @@ const list =[{
 	rentAmount:"500000",
 	dueDate:"20"
 }]
-	const rows: HistoryRow[] = leases.map((lease, index) => ({
-		no: lease.id || `INV-${index + 1}`,
+	const rows: HistoryRow[] = list.map((lease, index) => ({
+		id: lease.id || `INV-${index + 1}`,
 		dueDate: lease.leaseStart
 			? new Date(lease.leaseStart).toDateString()
 			: 'N/A',
@@ -54,7 +55,8 @@ const list =[{
 
 	const handleActionClick = (row: HistoryRow) => {
 		console.log('Selected row:', row,row.id);
-		navigate(`/leases/${id}`)
+		// const id ={row.id}
+		navigate(`/leases/${row.id}`)
 	};
 
 	const columns = [
@@ -66,7 +68,7 @@ const list =[{
 			label: 'Action',
 			align: 'center' as const,
 			render: (row: HistoryRow) => (
-				<Button sx={styles.rowButton} onClick={() => handleActionClick(row.id)}>
+				<Button variant='klubiqTextButton' onClick={() => handleActionClick(row)}>
 					{row.action}
 				</Button>
 			),
