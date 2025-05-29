@@ -59,8 +59,8 @@ type CategoryType = {
 	Image: any;
 };
 const unit = {
-	bathrooms: 0,
-	toilets: 0,
+	bathrooms: null,
+	toilets: null,
 	area: {
 		value: null,
 		unit: 'SqM',
@@ -97,15 +97,9 @@ export const CreateProperty = () => {
 			unitType: '',
 			totalUnits: '0',
 		},
-		singleUnitHospitality: {
-			rooms: 0,
-			...unit,
-		},
-		singleUnitCommercial: {
-			offices: 0,
-			...unit,
-		},
-		singleUnitResidential: {
+		singleUnit: {
+			rooms: null,
+			offices: null,
 			bedrooms: null,
 			...unit,
 		},
@@ -295,6 +289,7 @@ export const CreateProperty = () => {
 			type: 'number',
 			label: 'Bedrooms',
 			required: true,
+			width: '48%',
 		},
 		...generalUnitFields,
 	];
@@ -304,6 +299,7 @@ export const CreateProperty = () => {
 			type: 'number',
 			label: 'Offices',
 			required: true,
+			width: '48%',
 		},
 		...generalUnitFields,
 	];
@@ -313,9 +309,24 @@ export const CreateProperty = () => {
 			type: 'number',
 			label: 'Rooms',
 			required: true,
+			width: '48%',
 		},
 		...generalUnitFields,
-	];
+	] ;
+
+	const getUnitFields = (values: Record<string, any>) => {
+		const selectedCategory = categories?.find(
+			(cat: CategoryType) => cat.id.toString() === values?.category?.id?.toString(),
+		);
+		if(selectedCategory?.metaData?.hasBedrooms){
+			return residentialUnitFields as FormFieldV1[];
+		} else if(selectedCategory?.metaData?.hasRooms){
+			return hospitalityUnitFields as FormFieldV1[];
+		} else if(selectedCategory?.metaData?.hasOffices){
+			return commercialUnitFields as FormFieldV1[];
+		}
+		return generalUnitFields as FormFieldV1[];
+	};
 
 	const propertyForm: FormStep[] = [
 		// Property Category & Purpose
@@ -674,86 +685,7 @@ export const CreateProperty = () => {
 						},
 					],
 					showIf: (values) => values.unitDetails.unitType === 'single',
-					groupFields: 
-					 [
-						{
-							name: 'bedrooms',
-							type: 'number',
-							label: 'Bedrooms',
-							width: '48%',
-							required: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								const hasBedrooms = Boolean(selectedCategory?.metaData?.hasBedrooms);
-								const hasRooms = Boolean(selectedCategory?.metaData?.hasRooms);
-								const hasOffices = Boolean(selectedCategory?.metaData?.hasOffices);
-								return hasBedrooms && !hasRooms && !hasOffices;
-							},
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								const hasBedrooms = Boolean(selectedCategory?.metaData?.hasBedrooms);
-								const hasRooms = Boolean(selectedCategory?.metaData?.hasRooms);
-								const hasOffices = Boolean(selectedCategory?.metaData?.hasOffices);
-								console.log('hasBedrooms', hasBedrooms);
-								console.log('hasRooms', hasRooms);
-								console.log('hasOffices', hasOffices);
-								return hasBedrooms;
-							},
-						},
-						{
-							name: 'rooms',
-							type: 'number',
-							label: 'Rooms',
-							width: '48%',
-							required: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								console.log('selectedCategory', selectedCategory);
-								const hasBedrooms = Boolean(selectedCategory?.metaData?.hasBedrooms);
-								const hasRooms = Boolean(selectedCategory?.metaData?.hasRooms);
-								const hasOffices = Boolean(selectedCategory?.metaData?.hasOffices);
-								return hasRooms && !hasBedrooms && !hasOffices;
-							},
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								return Boolean(selectedCategory?.metaData?.hasRooms);
-							},
-						},
-						{
-							name: 'offices',
-							type: 'number',
-							label: 'Offices',
-							width: '48%',
-							required: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								const hasBedrooms = Boolean(selectedCategory?.metaData?.hasBedrooms);
-								const hasRooms = Boolean(selectedCategory?.metaData?.hasRooms);
-								const hasOffices = Boolean(selectedCategory?.metaData?.hasOffices);
-								return hasOffices && !hasBedrooms && !hasRooms;
-							},
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								return Boolean(selectedCategory?.metaData?.hasOffices);
-							},
-						},
-
-					],
+					groupFields: (values) => getUnitFields(values),
 				},
 				{
 					name: 'multiUnits',

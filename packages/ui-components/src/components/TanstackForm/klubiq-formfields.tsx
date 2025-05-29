@@ -401,6 +401,9 @@ export const KlubiqTSFormFields: React.FC<{
 
 		case 'group': {
 			const groupConfig = fieldConfig as GroupFormFieldV1;
+			const subFields = typeof groupConfig.groupFields === 'function'
+				? groupConfig.groupFields(form.state.values)
+				: groupConfig.groupFields || [];
 			return (
 				<Stack spacing={groupConfig.spacing || 2}>
 					{renderLabel()}
@@ -412,7 +415,7 @@ export const KlubiqTSFormFields: React.FC<{
 							groupConfig.layout === 'row' ? 'space-between' : undefined
 						}
 					>
-						{groupConfig.groupFields?.map(
+						{subFields.map(
 							(subField: FormFieldV1, index: number) => {
 								// Check showIf condition for subfield
 								if (subField.showIf) {

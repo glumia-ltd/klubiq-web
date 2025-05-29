@@ -36,7 +36,7 @@ export interface SelectOptionV1 {
 
 export interface GroupFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   type: 'group';
-  groupFields: FormFieldV1[];
+  groupFields: FormFieldV1[] | ((values: Record<string, any>) => FormFieldV1[]);
   layout?: 'row' | 'column';
   spacing?: number;
 }

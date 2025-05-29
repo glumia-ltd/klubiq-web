@@ -163,19 +163,19 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 			
 			if (field.type === 'group' && field.groupFields) {
+				const subFields = typeof field.groupFields === 'function'
+					? field.groupFields(form.state.values)
+					: field.groupFields || [];
 				const groupSchema: Record<string, z.ZodType<any>> = {};
-				
 				// Process each subfield
-				field.groupFields.forEach((subField) => {
+				subFields.forEach((subField: FormFieldV1) => {
 					const subFieldName = `${fieldName}.${subField.name}`;
-					
 					// Add to group schema with full path
 					const schema = getFieldSchema(subField, form.state.values, subFieldName);
 					if (schema) {
 						groupSchema[subField.name] = schema;
 					}
 				});
-
 				// Add the group schema
 				if (Object.keys(groupSchema).length > 0) {
 					schemaObject[fieldName] = z.object(groupSchema);
@@ -324,14 +324,16 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		steps.forEach(step => {
 			step.fields.forEach(field => {
 				if (field.type === 'group' && field.groupFields) {
+					const subFields = typeof field.groupFields === 'function'
+						? field.groupFields(values)
+						: field.groupFields || [];
 					// Ensure the group object exists
 					if (!values[field.name]) {
 						values[field.name] = {};
 						hasChanges = true;
 					}
-
 					// Ensure each subfield exists in the group
-					field.groupFields.forEach(subField => {
+					subFields.forEach((subField: FormFieldV1) => {
 						const subFieldPath = `${field.name}.${subField.name}`;
 						if (values[subFieldPath] !== undefined && values[field.name][subField.name] === undefined) {
 							values[field.name][subField.name] = values[subFieldPath];
@@ -364,10 +366,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			const { values } = form.state;
 			stepFields.forEach(field => {
 				if (field.type === 'group' && field.groupFields) {
+					const subFields = typeof field.groupFields === 'function'
+						? field.groupFields(values)
+						: field.groupFields || [];
 					if (!values[field.name]) {
 						values[field.name] = {};
 					}
-					field.groupFields.forEach(subField => {
+					// Ensure each subfield exists in the group
+					subFields.forEach((subField: FormFieldV1) => {
 						const subFieldName = `${field.name}.${subField.name}`;
 						if (values[subFieldName] !== undefined) {
 							values[field.name][subField.name] = values[subFieldName];
@@ -547,14 +553,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 			// Group field support
 			if (field.type === 'group') {
-				// Ensure the group object exists in state
-				if (
-					typeof form.state.values[field.name] !== 'object' ||
-					form.state.values[field.name] == null
-				) {
-					form.setFieldValue(field.name, {});
-				}
 				const groupConfig = field as GroupFormFieldV1;
+				const subFields = typeof groupConfig.groupFields === 'function'
+					? groupConfig.groupFields(form.state.values)
+					: groupConfig.groupFields || [];
 				return (
 					<Card
 						key={field.name}
@@ -582,13 +584,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									flexWrap: 'wrap',
 									gap: groupConfig.spacing || 2,
 									'& > *': {
-										flex: groupConfig.groupFields?.some((f) => f.width)
+										flex: subFields.some((f: FormFieldV1) => f.width)
 											? '0 0 auto'
 											: '1 1 100%',
 									},
 								}}
 							>
-								{groupConfig.groupFields?.map((subField, index) => {
+								{subFields.map((subField: FormFieldV1, index: number) => {
 									// Check showIf condition for subfield
 									if (subField.showIf) {
 										const { values } = form.state;
