@@ -34,14 +34,29 @@ export interface SelectOptionV1 {
   value: string | number;
 }
 
+export interface GroupFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
+  type: 'group';
+  groupFields: FormFieldV1[];
+  layout?: 'row' | 'column';
+  spacing?: number;
+}
 
-export interface FormFieldV1 {
+export interface ArrayFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
+  type: 'array';
+  fields: FormFieldV1[];
+  getArrayLength?: (values: any) => number;
+  showIf?: (values: any) => boolean;
+}
+
+export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1;
+
+export interface BaseFormFieldV1 {
   name: string;
   label: string;
-  type: FieldTypeV1;
+  type: Exclude<FieldTypeV1, 'group' | 'array'>;
   placeholder?: string;
   options?: SelectOptionV1[] | ((values: Record<string, any>) => SelectOptionV1[]);
-  required?: boolean;
+  required?: boolean | ((values: Record<string, any>) => boolean);
   disabled?: boolean;
   hidden?: boolean;
   readonly?: boolean;
@@ -49,13 +64,20 @@ export interface FormFieldV1 {
   helperText?: string;
   isInFieldLabel?: boolean;
   defaultValue?: any;
+  predefinedValue?: any;
   min?: number;
   max?: number;
   rows?: number;
-  customComponent?: ReactNode | ((field: FormFieldApi) => ReactNode);
+  decimals?: number;
+  formatType?: 'currency' | 'percent' | 'number' | 'decimal';
+  currencyCode?: string;
+  adornment?: {
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
+  };
+  customComponent?: ReactNode | ((field: FormFieldApi, fieldConfig: FormFieldV1, form: any) => ReactNode);
   group?: string;
   isGroup?: boolean;
-  groupFields?: FormFieldV1[];
   dependsOn?: {
     field: string;
     value: any;
@@ -70,11 +92,20 @@ export interface FormFieldV1 {
     multiple?: boolean;
     subtitle?: string;
     caption?: string;
+    tooltipMessages?: {
+      favorite?: string;
+      unfavorite?: string;
+      delete?: string;
+      sizeLimit?: string;
+      upload?: string;
+    };
   };
   addressConfig?: {
+    label?: string;
     apiKey: string;
     country?: string;
     types?: string[];
+    required?:boolean | ((values: Record<string, any>) => boolean);
   };
   validation?: {
     schema: z.ZodType<any>;
@@ -87,7 +118,6 @@ export interface FormFieldV1 {
   radioGroupDirection?: 'row' | 'column';
   checkboxGroupDirection?: 'row' | 'column';
 }
-
 
 export interface StepIcon {
     icon: ReactNode;
@@ -114,10 +144,3 @@ export interface DynamicTanstackFormProps {
   onStepChange?: (currentStep: number) => void;
   formWidth?: string | number;
 }
-
-export interface ArrayFormFieldV1 extends FormFieldV1 {
-    type: 'array';
-    fields: FormFieldV1[];
-    getArrayLength?: (values: any) => number;
-    showIf?: (values: any) => boolean;
-  }

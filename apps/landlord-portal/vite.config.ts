@@ -11,6 +11,9 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 	registerType: 'autoUpdate',
 	injectRegister: 'auto',
 	includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+	injectManifest:{
+		maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 5MB
+	},
 	manifest: {
 		name: 'Klubiq',
 		short_name: 'Klubiq',
@@ -52,7 +55,7 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
 		cleanupOutdatedCaches: true,
 		sourcemap: true,
-		maximumFileSizeToCacheInBytes: 25 * 1024 * 1024, // 5MB
+		maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 5MB
 		runtimeCaching: [
 			{
 				urlPattern: /^https:\/\/api\.klubiq\.com\/.*/i,
@@ -150,6 +153,7 @@ export default ({ mode }: { mode: any }) => {
 			port: 5173,
 			host: true,
 			strictPort: true,
+			allowedHosts: ['localhost', '127.0.0.1', '0.0.0.0' ],
 			open: true,
 			proxy: {
 				'/api': {

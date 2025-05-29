@@ -81,13 +81,13 @@ export const LightTheme: Theme = createTheme({
 			main: primaryColors.mainBlue,
 			light: primaryColors.lightBlue,
 			dark: primaryColors.mainBlue,
-			contrastText: primaryColors.white, 
+			contrastText: primaryColors.black, 
 		},
 		secondary: {
 			main: secondaryColors.yellow,
 			light: secondaryColors.blue,
 			dark: backgroundColors.dark,
-			contrastText: primaryColors.white,
+			contrastText: primaryColors.black,
 		},
 		background: {
 			default: backgroundColors.light,
@@ -361,7 +361,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: primaryColors.white,
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
 
@@ -870,7 +870,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: '#161616',
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},

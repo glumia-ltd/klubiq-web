@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Stack, Typography, Card } from '@mui/material';
 
 export type CardRadioOption = {
   value: string;
@@ -15,38 +15,37 @@ interface CardRadioGroupProps {
 }
 
 export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({ value, options, onChange }) => (
-  <Box display="flex" justifyContent="space-between">
+  <Stack direction={{ sm: 'column', md: 'row' }} spacing={3} justifyContent="space-between">
     {options.map((option) => (
-      <Paper
+      <Card
         key={option.value}
-        elevation={value === option.value ? 8 : 2}
         onClick={() => onChange(option.value)}
         tabIndex={0}
         onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onChange(option.value)}
         sx={{
           cursor: 'pointer',
-          border: value === option.value ? '2px solid primary.light' : '1px solid primary.contrastText',
-          borderRadius: 3,
+          border: '1px solid',
+          borderColor: value === option.value ? 'primary.light' : 'primary.contrastText',
+          borderRadius: 2,
+          boxShadow: 'none',
           p: 4,
           minWidth: 260,
           textAlign: 'center',
-          //background: value === option.value ? 'rgba(33,150,243,0.08)' : 'inherit',
-          transition: 'border-color 0.2s, box-shadow 0.2s',
           outline: value === option.value ? '2px solid primary.light' : '1px solid primary.contrastText',
         }}
         aria-checked={value === option.value}
         role="radio"
       >
-        <Box mb={2} fontSize={48} display="flex" justifyContent="center">
+        <Stack mb={2} fontSize={48} direction="row" justifyContent="center" alignItems="center">
           {option.icon}
-        </Box>
+        </Stack>
         <Typography variant="h6">
           {option.label}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="caption" color="text.secondary">
           {option.description}
         </Typography>
-      </Paper>
+      </Card>
     ))}
-  </Box>
+  </Stack>
 );

@@ -31,17 +31,15 @@ const landlordFooterConfig = {
 const ViewPort = ({ children }: ViewPortProp) => {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-
 	const { mode } = useContext(ThemeContext);
-
 	const { pathname } = useLocation();
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [pathname]);
 
-	return (
-		<NavToggleProvider>
+	const content = (
+		<>
 			<CssBaseline />
 			{isMediumScreen && <MobileSideBar />}
 			<Box
@@ -81,16 +79,24 @@ const ViewPort = ({ children }: ViewPortProp) => {
 							justifyContent: 'space-between',
 						}}
 					>
-						{' '}
 						{children}
 					</Box>
-					<Box width={'100%'}>
+					<Box 
+						width={'100%'} 
+						sx={{
+							position: 'sticky',
+							bottom: 0,
+							zIndex: 1
+						}}
+					>
 						<AppFooter {...landlordFooterConfig} />
 					</Box>
 				</Box>
 			</Box>
-		</NavToggleProvider>
+		</>
 	);
+
+	return <NavToggleProvider>{content}</NavToggleProvider>;
 };
 
 export default ViewPort;

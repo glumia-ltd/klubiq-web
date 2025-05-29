@@ -32,13 +32,13 @@ export const LightTheme: Theme = createTheme({
 			main: primaryColors.mainBlue,
 			light: primaryColors.lightBlue,
 			dark: primaryColors.mainBlue,
-			contrastText: primaryColors.white, 
+			contrastText: primaryColors.black, 
 		},
 		secondary: {
 			main: secondaryColors.yellow,
 			light: secondaryColors.blue,
 			dark: backgroundColors.dark,
-			contrastText: primaryColors.white,
+			contrastText: primaryColors.black,
 		},
 		background: {
 			default: backgroundColors.light,

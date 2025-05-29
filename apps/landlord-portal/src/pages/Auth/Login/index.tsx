@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../../Layouts/LoginLayout';
-import { SubmitButton, LoadingSubmitButton } from '../../../styles/button';
+import { LoadingSubmitButton } from '../../../styles/button';
 import { BoldTextLink } from '../../../styles/links';
 import {
-	// Checkbox,
-	// FormControlLabel,
-	// FormGroup,
+	Button,
 	Grid,
+	Stack,
 	Typography,
 } from '@mui/material';
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
@@ -201,50 +200,25 @@ const Login = () => {
 						}}
 					>
 						<Grid container sx={styles.container}>
-							<Grid container sx={styles.formContainer}>
-								<Grid
-									item
-									xs={12}
-									sm={12}
-									md={12}
-									lg={12}
-									mt={4}
+						<Stack
+									justifyContent='center'
+									direction='column'
+									width='50%'
+									gap={2}
 									sx={{
-										textAlign: 'right',
+										height: '100vh',
+										// width: {
+										// 	xs: '70%',
+										// 	md: '50%'
+										// }
 									}}
 								>
-									{/* <Typography>
-                Are you a tenant?{' '}
-                <span
-                  style={{
-                    color: '#002147',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Sign in here
-                </span>
-              </Typography> */}
-								</Grid>
-								<Grid
-									container
-									sx={{
-										height: '25rem',
-									}}
-									mt={-15}
-								>
-									<Grid item xs={12} sm={12} md={12} lg={12}>
-										<Typography variant='h1' sx={styles.title}>
+									<Typography variant='h1' textAlign='center'>
 											Sign in
 										</Typography>
-									</Grid>
-									<Grid item xs={12} sm={12} md={12} lg={12}>
-										<Typography sx={styles.subTitle}>
+										<Typography variant='subtitle1' textAlign='center'>
 											Welcome back! Please enter your details.
 										</Typography>
-									</Grid>
-
-									<Grid item sm={12} xs={12} lg={12}>
 										<ControlledTextField
 											name='email'
 											label='Email'
@@ -258,9 +232,6 @@ const Login = () => {
 												},
 											}}
 										/>
-									</Grid>
-
-									<Grid item sm={12} xs={12} lg={12}>
 										<ControlledPasswordField
 											name='password'
 											label='Password'
@@ -274,34 +245,9 @@ const Login = () => {
 												},
 											}}
 										/>
-									</Grid>
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										mt={-1}
-										m={0.5}
-										sx={styles.forgotPassword}
-									>
-										{/* <FormGroup>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Remember this computer"
-                  />
-                </FormGroup> */}
 										<Typography onClick={routeToForgotPassword}>
 											<BoldTextLink>Forgot password</BoldTextLink>
 										</Typography>
-									</Grid>
-
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										sx={styles.buttonGroupStyle}
-									>
 										{loading ? (
 											<LoadingSubmitButton
 												loading
@@ -311,29 +257,17 @@ const Login = () => {
 												Sign In
 											</LoadingSubmitButton>
 										) : (
-											<SubmitButton type='submit'> Sign In </SubmitButton>
+											<Button fullWidth variant='klubiqMainButton' type='submit'>
+												Sign In
+											</Button>
 										)}
-									</Grid>
-
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										mt={2}
-										sx={styles.lastGridStyle}
-										onClick={routeToSignUp}
-									>
-										<Typography>
+										<Typography textAlign='center'>
 											Don't have an account?{' '}
-											<BoldTextLink>Sign up</BoldTextLink>
+											<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
 										</Typography>
-									</Grid>
-								</Grid>
-							</Grid>
+								</Stack>
 						</Grid>
 					</Grid>
-					{/* <ControlledSnackbar/> */}
 				</LoginLayout>
 			)}
 		</>

@@ -1,5 +1,4 @@
-import { Grid, Typography } from '@mui/material';
-import { SubmitButton } from '../../../styles/button';
+import { Button, Grid, Typography } from '@mui/material';
 import LoginLayout from '../../../Layouts/LoginLayout';
 import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -166,7 +165,9 @@ const SetPassword = () => {
 									marginTop: '1rem',
 								}}
 							>
-								<SubmitButton type='submit'>Set Password</SubmitButton>
+								<Button fullWidth variant='klubiqMainButton' type='submit'>
+									Set Password
+								</Button>
 							</Grid>
 						</Grid>
 					</Grid>

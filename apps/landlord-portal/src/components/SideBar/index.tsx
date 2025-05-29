@@ -25,7 +25,6 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { resetStore } from '../../store';
 import { motion } from 'framer-motion';
 
-const klubiqLogo = import.meta.env.VITE_KLUBIQ_LOGO_URL || 'https://klubiqbranding.s3.us-east-2.amazonaws.com/2.png';
 const SideBar = () => {
 	const theme = useTheme();
 	const { getPathList } = useContext(SectionContext);
@@ -169,7 +168,7 @@ const SideBar = () => {
 				>
 					<DrawerHeader>
 						<IconButton>
-							<img src={klubiqLogo} height={'40px'} alt='logo' />
+							<img src={Logo2} height={'40px'} alt='logo' />
 						</IconButton>
 						<Typography variant='h4' color={'#ffffff'}>
 							{sidebarOpen ? 'KLUBIQ' : ''}

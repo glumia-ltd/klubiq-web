@@ -33,6 +33,7 @@ import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
 import TenantProfile from '../pages/Features/Tenant/TenantProfile';
+import { CreateProperty } from '../pages/Features/properties/CreateProperty';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -59,6 +60,12 @@ export const router = createBrowserRouter(
 						element={<Properties />}
 						errorElement={<ErrorComponent />}
 					/>
+					<Route
+						path='/properties/new'
+						element={<CreateProperty />}
+						errorElement={<ErrorComponent />}
+					/>
+
 
 					<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 						<Route index element={<PropertyPage />} />
