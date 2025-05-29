@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import AddIcon from '@mui/icons-material/Add';
-import { FormFieldApi, ArrayFormFieldV1, KlubiqTSFormFields } from '@klubiq/ui-components';
+import { FormFieldApi, ArrayFormFieldV1, KlubiqTSFormFields, FormFieldV1 } from '@klubiq/ui-components';
 import { AmenitiesDialog } from './AmenitiesDialog';
 
 interface Unit {
@@ -97,11 +97,11 @@ export const UnitsAccordionArray = ({
         for (let i = currentUnits; i < numUnits; i++) {
           newUnits.push({
             unitNumber: `Unit ${i + 1}`,
-            bedrooms: 0,
-            bathrooms: 0,
-            toilets: 0,
-            rooms: 0,
-            offices: 0,
+            bedrooms: null,
+            bathrooms: null,
+            toilets: null,
+            rooms: null,
+            offices: null,
             area: {
               value: null,
               unit: 'SqM'
@@ -110,10 +110,12 @@ export const UnitsAccordionArray = ({
           });
         }
         fieldApi.handleChange(newUnits);
+        form.validateField(fieldConfig.name);
       } else if (currentUnits > numUnits) {
         // Remove excess units
         const newUnits = units.slice(0, numUnits);
         fieldApi.handleChange(newUnits);
+        form.validateField(fieldConfig.name);
         setExpanded(false);
       }
     }
@@ -124,6 +126,7 @@ export const UnitsAccordionArray = ({
     if (units.length > 1) {
       const newUnits = units.filter((_: any, i: number) => i !== idx);
       fieldApi.handleChange(newUnits);
+      form.validateField(fieldConfig.name);
       setExpanded(false);
     }
   };
@@ -137,9 +140,14 @@ export const UnitsAccordionArray = ({
         ...units.slice(idx + 1)
       ];
       fieldApi.handleChange(newUnits);
+      form.validateField(fieldConfig.name);
       setExpanded(idx + 1);
     }
   };
+
+  const subFields = (typeof fieldConfig.fields === 'function'
+    ? (fieldConfig.fields as (values: Record<string, any>) => FormFieldV1[])(form.state.values)
+    : fieldConfig.fields || []) as FormFieldV1[];
 
   return (
     <Stack spacing={2}>
@@ -185,8 +193,9 @@ export const UnitsAccordionArray = ({
               direction={isMobile ? 'column' : 'row'}
               justifyContent="space-between"
               flexWrap="wrap"
+              gap={1}
             >
-              {(fieldConfig.fields || []).map((subField, subIdx) => {
+              {subFields.map((subField: FormFieldV1, subIdx: number) => {
                 // Check showIf condition for subfield
                 if (subField.showIf) {
                   const { values } = form.state;
@@ -231,9 +240,9 @@ export const UnitsAccordionArray = ({
                                   fieldConfig: {
                                     ...subField,
                                     options: Array.isArray(subField.options)
-                                      ? subField.options.map(opt => ({ ...opt, value: String(opt.value) }))
+                                      ? subField.options.map((opt: any) => ({ ...opt, value: String(opt.value) }))
                                       : typeof subField.options === 'function'
-                                        ? subField.options(form.state.values).map(opt => ({ ...opt, value: String(opt.value) }))
+                                        ? subField.options(form.state.values).map((opt: any) => ({ ...opt, value: String(opt.value) }))
                                         : [],
                                   }, 
                                   state: f.state, 

@@ -43,7 +43,7 @@ export interface GroupFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
 
 export interface ArrayFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   type: 'array';
-  fields: FormFieldV1[];
+  fields: FormFieldV1[] | ((values: Record<string, any>) => FormFieldV1[]);
   getArrayLength?: (values: any) => number;
   showIf?: (values: any) => boolean;
 }

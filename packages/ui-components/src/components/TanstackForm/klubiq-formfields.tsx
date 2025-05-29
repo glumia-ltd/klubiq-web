@@ -1,4 +1,4 @@
-import { FormFieldV1, FormFieldApi, GroupFormFieldV1 } from './types';
+import { FormFieldV1, FormFieldApi, GroupFormFieldV1, ArrayFormFieldV1 } from './types';
 import {
 	TextField,
 	FormControl,
@@ -445,7 +445,9 @@ export const KlubiqTSFormFields: React.FC<{
 													: '1 1 100%',
 										}}
 									>
-										<form.Field name={`${fieldConfig.name}.${subField.name}`}>
+										<form.Field 
+										key={`ff-${fieldConfig.name}.${subField.name}-${index}`}
+										name={`${fieldConfig.name}.${subField.name}`}>
 											{(subFieldApi: FormFieldApi) => {
 												// Ensure value is never undefined
 												if (subFieldApi.state.value === undefined) {
@@ -642,6 +644,11 @@ export const KlubiqTSFormFields: React.FC<{
 				]);
 			};
 
+			const { fields } = fieldConfig as ArrayFormFieldV1;
+			const subFields = typeof fields === 'function'
+				? fields(form.state.values)
+				: fields || [];
+
 			return (
 				<Stack spacing={2}>
 					{arrayValue.map((_: any, idx: number) => (
@@ -682,10 +689,10 @@ export const KlubiqTSFormFields: React.FC<{
 									Remove
 								</Button>
 							</Stack>
-							{(fieldConfig as any).fields.map(
+							{subFields.map(
 								(subField: any, index: number) => (
 									<form.Field
-										key={`${fieldConfig.name}[${idx}].${subField.name}`}
+										key={`${fieldConfig.name}[${idx}].${subField.name}-${index}`}
 										name={`${fieldConfig.name}[${idx}].${subField.name}`}
 									>
 										{(subFieldApi: FormFieldApi) => {

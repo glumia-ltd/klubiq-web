@@ -23,6 +23,7 @@ import {
 	FormFieldV1,
 	FormStep,
 	GroupFormFieldV1,
+	type ArrayFormFieldV1,
 } from './types';
 import { KlubiqTSFormFields } from './klubiq-formfields';
 import { style } from './style';
@@ -181,8 +182,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					schemaObject[fieldName] = z.object(groupSchema);
 				}
 			} else if (field.type === 'array' && (field as any).fields) {
+				const { fields } = field as ArrayFormFieldV1;
+				const subFields = typeof fields === 'function'
+					? fields(form.state.values)
+					: fields || [];
 				const arraySchema = z.array(z.object(
-					(field as any).fields.reduce((acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
+					subFields.reduce((acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
 						const schema = getFieldSchema(subField, form.state.values, `${fieldName}[${fieldName}]`);
 						if (schema) {
 							acc[subField.name] = schema;
@@ -609,6 +614,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											}}
 										>
 											<form.Field
+												key={`ff-${fieldPath}-${index}`}
 												name={fieldPath}
 												validators={{
 													onChange: ({ value }) => {

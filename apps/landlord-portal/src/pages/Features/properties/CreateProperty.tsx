@@ -105,7 +105,21 @@ export const CreateProperty = () => {
 		},
 		propertyImages: {},
 		customAmenities: [],
-		multiUnits: [],
+		multiUnits: [
+			{
+				unitNumber: '',
+				bedrooms: null,
+				bathrooms: null,
+				toilets: null,
+				rooms: null,
+				offices: null,
+				area: {
+					value: null,
+					unit: 'SqM',
+				},
+				amenities: [],
+			},
+		],
 	};
 	const { user } = useSelector(getAuthState);
 	const { purposes, amenities, types, categories } =
@@ -144,6 +158,45 @@ export const CreateProperty = () => {
 			label: amenity.name,
 		};
 	});
+	const singleUnitAmenitiesField = {
+		name: 'amenities',
+		type: 'checkbox-group',
+		label: 'Amenities',
+		options: amenitiesOptions,
+		customComponent: (fieldApi: any, fieldConfig: any, form: any) => (
+			<AmenitiesDialog
+				field={{
+					fieldConfig: {
+						...fieldConfig,
+						options: Array.isArray(fieldConfig.options)
+							? fieldConfig.options.map(
+									(opt: { value: string | number }) => ({
+										...opt,
+										value: String(opt.value),
+									}),
+								)
+							: typeof fieldConfig.options === 'function'
+								? fieldConfig
+										.options(form.getValues())
+										.map((opt: { value: string | number }) => ({
+											...opt,
+											value: String(opt.value),
+										}))
+								: [],
+					},
+					state: fieldApi.state,
+					handleChange: fieldApi.handleChange,
+				}}
+				form={form}
+			/>
+		),
+	};
+	const multiUnitAmenitiesField = {
+		name: 'amenities',
+		type: 'checkbox-group',
+		label: 'Amenities',
+		options: amenitiesOptions,
+	};
 	const generalUnitFields = [
 		{
 			name: 'bathrooms',
@@ -247,42 +300,9 @@ export const CreateProperty = () => {
 				</Box>
 			),
 		},
-		{
-			name: 'amenities',
-			type: 'checkbox-group',
-			label: 'Amenities',
-			options: amenitiesOptions,
-			customComponent: (fieldApi: any, fieldConfig: any, form: any) => (
-				<AmenitiesDialog
-					field={{
-						fieldConfig: {
-							...fieldConfig,
-							options: Array.isArray(fieldConfig.options)
-								? fieldConfig.options.map(
-										(opt: { value: string | number }) => ({
-											...opt,
-											value: String(opt.value),
-										}),
-									)
-								: typeof fieldConfig.options === 'function'
-									? fieldConfig
-											.options(form.getValues())
-											.map((opt: { value: string | number }) => ({
-												...opt,
-												value: String(opt.value),
-											}))
-									: [],
-						},
-						state: fieldApi.state,
-						handleChange: fieldApi.handleChange,
-					}}
-					form={form}
-				/>
-			),
-		},
+		
 		
 	] as FormFieldV1[];
-	console.log(generalUnitFields);
 	const residentialUnitFields = [
 		{
 			name: 'bedrooms',
@@ -314,18 +334,46 @@ export const CreateProperty = () => {
 		...generalUnitFields,
 	] ;
 
-	const getUnitFields = (values: Record<string, any>) => {
+	const getSingleUnitFields = (values: Record<string, any>) => {
 		const selectedCategory = categories?.find(
 			(cat: CategoryType) => cat.id.toString() === values?.category?.id?.toString(),
 		);
+		const unitFields = [
+			singleUnitAmenitiesField,
+		]
 		if(selectedCategory?.metaData?.hasBedrooms){
-			return residentialUnitFields as FormFieldV1[];
+			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
 		} else if(selectedCategory?.metaData?.hasRooms){
-			return hospitalityUnitFields as FormFieldV1[];
+			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
 		} else if(selectedCategory?.metaData?.hasOffices){
-			return commercialUnitFields as FormFieldV1[];
+			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
 		}
-		return generalUnitFields as FormFieldV1[];
+		return unitFields as FormFieldV1[];
+	};
+
+	const getMultiUnitFields = (values: Record<string, any>) => {
+		const selectedCategory = categories?.find(
+			(cat: CategoryType) => cat.id.toString() === values?.category?.id?.toString(),
+		);
+		const unitFields = [
+			{
+				name: 'unitNumber',
+				type: 'text',
+				label: 'Unit Number/Name',
+				defaultValue: '',
+				required: true,
+				width: '48%',
+			},
+			multiUnitAmenitiesField,
+		]
+		if(selectedCategory?.metaData?.hasBedrooms){
+			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
+		} else if(selectedCategory?.metaData?.hasRooms){
+			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
+		} else if(selectedCategory?.metaData?.hasOffices){
+			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
+		}
+		return unitFields as FormFieldV1[];
 	};
 
 	const propertyForm: FormStep[] = [
@@ -677,28 +725,16 @@ export const CreateProperty = () => {
 					label: 'UNIT DETAILS',
 					layout: 'row',
 					spacing: 2,
-					dependsOn: [
-						{
-							field: 'unitDetails.unitType',
-							value: 'single',
-							operator: 'equals',
-						},
-					],
+					required: (values) => values.unitDetails.unitType === 'single',
 					showIf: (values) => values.unitDetails.unitType === 'single',
-					groupFields: (values) => getUnitFields(values),
+					groupFields: (values) => getSingleUnitFields(values),
 				},
 				{
 					name: 'multiUnits',
 					type: 'array',
 					label: 'Enter details for each unit',
+					required: (values) => values.unitDetails.unitType === 'multi',
 					showIf: (values) => values.unitDetails.unitType === 'multi',
-					dependsOn: [
-						{
-							field: 'unitDetails.unitType',
-							value: 'multi',
-							operator: 'equals',
-						},
-					],
 					customComponent: (fieldApi: any, fieldConfig: any, form: any) => (
 						<UnitsAccordionArray
 							fieldApi={fieldApi}
@@ -706,170 +742,171 @@ export const CreateProperty = () => {
 							form={form}
 							maxSubUnits={20}
 						/>
-					),
-					fields: [
-						{
-							name: 'unitNumber',
-							type: 'text',
-							label: 'Unit Number/Name',
-							defaultValue: '',
-							required: true,
-							validation: {
-								schema: z
-									.string({ message: 'Unit number is required' })
-									.min(1, 'Unit number is required'),
-							},
-							dependsOn: [
-								{
-									field: 'unitDetails.totalUnits',
-									value: 1,
-									operator: 'greaterThan',
-								},
-							],
-							width: '48%',
-						},
-						{
-							name: 'rooms',
-							type: 'number',
-							label: 'Rooms',
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								return Boolean(selectedCategory?.metaData?.hasRooms);
-							},
-						},
-						{
-							name: 'offices',
-							type: 'number',
-							label: 'Offices',
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								return Boolean(selectedCategory?.metaData?.hasOffices);
-							},
-						},
-						{
-							name: 'bedrooms',
-							type: 'number',
-							label: 'Bedrooms',
-							showIf: (values) => {
-								const selectedCategory = categories?.find(
-									(cat: CategoryType) =>
-										cat.id.toString() === values?.category?.id?.toString(),
-								);
-								return Boolean(selectedCategory?.metaData?.hasBedrooms);
-							},
-						},
-						{
-							name: 'bathrooms',
-							type: 'number',
-							label: 'Bathrooms',
-						},
-						{
-							name: 'toilets',
-							type: 'number',
-							label: 'Toilets',
-						},
-						{
-							name: 'area',
-							type: 'number',
-							label: 'Floor Plan',
-							required: true,
-							validation: {
-								schema: z
-									.any({ message: 'Floor plan is required' })
-									.refine((data) => {
-										if (data.value === null) {
-											return false;
-										}
-										return true;
-									}),
-							},
-							customComponent: (fieldApi: any, fieldConfig: any) => (
-								<Box sx={{ width: '100%' }}>
-									<TextField
-										fullWidth
-										type='text'
-										label={
-											fieldConfig.isInFieldLabel ? fieldConfig.label : undefined
-										}
-										value={fieldApi.state.value?.value || ''}
-										onChange={(e) => {
-											const { value } = e.target;
-											if (/^\d*\.?\d*$/.test(value)) {
-												const numValue =
-													value === '' ? null : parseFloat(value);
-												// Update the entire area object
-												fieldApi.handleChange({
-													...fieldApi.state.value,
-													value: numValue,
-													unit: fieldApi.state.value?.unit || 'SqM',
-												});
-											}
-										}}
-										onBlur={fieldApi.handleBlur}
-										error={!!fieldApi.state.meta.errors[0]}
-										helperText={fieldApi.state.meta.errors[0]}
-										InputProps={{
-											inputProps: {
-												inputMode: 'decimal',
-												pattern: '[0-9]*',
-												onKeyPress: (e) => {
-													if (!/[\d.]/.test(e.key)) {
-														e.preventDefault();
-													}
-													if (
-														e.key === '.' &&
-														(e.target as HTMLInputElement).value.includes('.')
-													) {
-														e.preventDefault();
-													}
-												},
-											},
-											endAdornment: (
-												<InputAdornment position='end'>
-													<Select
-														value={fieldApi.state.value?.unit || 'SqM'}
-														onChange={(e) => {
-															// Update the entire area object
-															fieldApi.handleChange({
-																...fieldApi.state.value,
-																unit: e.target.value,
-															});
-														}}
-														sx={{
-															'.MuiOutlinedInput-notchedOutline': {
-																border: 'none',
-															},
-														}}
-													>
-														{MEASUREMENTS.map((entry: any, index: number) => (
-															<MenuItem
-																value={entry.unit}
-																key={`${entry.unit}-${index}`}
-															>
-																{entry.symbol}
-															</MenuItem>
-														))}
-													</Select>
-												</InputAdornment>
-											),
-										}}
-									/>
-								</Box>
-							),
-						},
-						{
-							name: 'amenities',
-							type: 'checkbox-group',
-							label: 'Amenities',
-							options: amenitiesOptions,
-						},
-					],
+					), 
+					fields: (values) => getMultiUnitFields(values),
+					// fields: [
+					// 	{
+					// 		name: 'unitNumber',
+					// 		type: 'text',
+					// 		label: 'Unit Number/Name',
+					// 		defaultValue: '',
+					// 		required: true,
+					// 		validation: {
+					// 			schema: z
+					// 				.string({ message: 'Unit number is required' })
+					// 				.min(1, 'Unit number is required'),
+					// 		},
+					// 		dependsOn: [
+					// 			{
+					// 				field: 'unitDetails.totalUnits',
+					// 				value: 1,
+					// 				operator: 'greaterThan',
+					// 			},
+					// 		],
+					// 		width: '48%',
+					// 	},
+					// 	{
+					// 		name: 'rooms',
+					// 		type: 'number',
+					// 		label: 'Rooms',
+					// 		showIf: (values) => {
+					// 			const selectedCategory = categories?.find(
+					// 				(cat: CategoryType) =>
+					// 					cat.id.toString() === values?.category?.id?.toString(),
+					// 			);
+					// 			return Boolean(selectedCategory?.metaData?.hasRooms);
+					// 		},
+					// 	},
+					// 	{
+					// 		name: 'offices',
+					// 		type: 'number',
+					// 		label: 'Offices',
+					// 		showIf: (values) => {
+					// 			const selectedCategory = categories?.find(
+					// 				(cat: CategoryType) =>
+					// 					cat.id.toString() === values?.category?.id?.toString(),
+					// 			);
+					// 			return Boolean(selectedCategory?.metaData?.hasOffices);
+					// 		},
+					// 	},
+					// 	{
+					// 		name: 'bedrooms',
+					// 		type: 'number',
+					// 		label: 'Bedrooms',
+					// 		showIf: (values) => {
+					// 			const selectedCategory = categories?.find(
+					// 				(cat: CategoryType) =>
+					// 					cat.id.toString() === values?.category?.id?.toString(),
+					// 			);
+					// 			return Boolean(selectedCategory?.metaData?.hasBedrooms);
+					// 		},
+					// 	},
+					// 	{
+					// 		name: 'bathrooms',
+					// 		type: 'number',
+					// 		label: 'Bathrooms',
+					// 	},
+					// 	{
+					// 		name: 'toilets',
+					// 		type: 'number',
+					// 		label: 'Toilets',
+					// 	},
+					// 	{
+					// 		name: 'area',
+					// 		type: 'number',
+					// 		label: 'Floor Plan',
+					// 		required: true,
+					// 		validation: {
+					// 			schema: z
+					// 				.any({ message: 'Floor plan is required' })
+					// 				.refine((data) => {
+					// 					if (data.value === null) {
+					// 						return false;
+					// 					}
+					// 					return true;
+					// 				}),
+					// 		},
+					// 		customComponent: (fieldApi: any, fieldConfig: any) => (
+					// 			<Box sx={{ width: '100%' }}>
+					// 				<TextField
+					// 					fullWidth
+					// 					type='text'
+					// 					label={
+					// 						fieldConfig.isInFieldLabel ? fieldConfig.label : undefined
+					// 					}
+					// 					value={fieldApi.state.value?.value || ''}
+					// 					onChange={(e) => {
+					// 						const { value } = e.target;
+					// 						if (/^\d*\.?\d*$/.test(value)) {
+					// 							const numValue =
+					// 								value === '' ? null : parseFloat(value);
+					// 							// Update the entire area object
+					// 							fieldApi.handleChange({
+					// 								...fieldApi.state.value,
+					// 								value: numValue,
+					// 								unit: fieldApi.state.value?.unit || 'SqM',
+					// 							});
+					// 						}
+					// 					}}
+					// 					onBlur={fieldApi.handleBlur}
+					// 					error={!!fieldApi.state.meta.errors[0]}
+					// 					helperText={fieldApi.state.meta.errors[0]}
+					// 					InputProps={{
+					// 						inputProps: {
+					// 							inputMode: 'decimal',
+					// 							pattern: '[0-9]*',
+					// 							onKeyPress: (e) => {
+					// 								if (!/[\d.]/.test(e.key)) {
+					// 									e.preventDefault();
+					// 								}
+					// 								if (
+					// 									e.key === '.' &&
+					// 									(e.target as HTMLInputElement).value.includes('.')
+					// 								) {
+					// 									e.preventDefault();
+					// 								}
+					// 							},
+					// 						},
+					// 						endAdornment: (
+					// 							<InputAdornment position='end'>
+					// 								<Select
+					// 									value={fieldApi.state.value?.unit || 'SqM'}
+					// 									onChange={(e) => {
+					// 										// Update the entire area object
+					// 										fieldApi.handleChange({
+					// 											...fieldApi.state.value,
+					// 											unit: e.target.value,
+					// 										});
+					// 									}}
+					// 									sx={{
+					// 										'.MuiOutlinedInput-notchedOutline': {
+					// 											border: 'none',
+					// 										},
+					// 									}}
+					// 								>
+					// 									{MEASUREMENTS.map((entry: any, index: number) => (
+					// 										<MenuItem
+					// 											value={entry.unit}
+					// 											key={`${entry.unit}-${index}`}
+					// 										>
+					// 											{entry.symbol}
+					// 										</MenuItem>
+					// 									))}
+					// 								</Select>
+					// 							</InputAdornment>
+					// 						),
+					// 					}}
+					// 				/>
+					// 			</Box>
+					// 		),
+					// 	},
+					// 	{
+					// 		name: 'amenities',
+					// 		type: 'checkbox-group',
+					// 		label: 'Amenities',
+					// 		options: amenitiesOptions,
+					// 	},
+					// ],
 				},
 			],
 			icon: { icon: <UnitTypeIcon /> },
