@@ -138,6 +138,25 @@ const CustomStepIcon = (props: StepIconProps & { step?: any }) => {
 	);
 };
 
+// Utility to check if a field should be included in validation
+function isFieldVisible(field: FormFieldV1, values: Record<string, any>): boolean {
+	if (field.showIf && !field.showIf(values)) return false;
+	if (field.dependsOn && Array.isArray(field.dependsOn)) {
+		return field.dependsOn.every(dep => {
+			const actual = values[dep.field];
+			switch (dep.operator) {
+				case 'equals': return actual === dep.value;
+				case 'notEquals': return actual !== dep.value;
+				case 'contains': return Array.isArray(actual) && actual.includes(dep.value);
+				case 'greaterThan': return actual > dep.value;
+				case 'lessThan': return actual < dep.value;
+				default: return actual === dep.value;
+			}
+		});
+	}
+	return true;
+}
+
 export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	fields,
 	onSubmit,
@@ -159,6 +178,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const createStepSchema = (stepFields: FormFieldV1[]) => {
 		const schemaObject: Record<string, z.ZodType<any>> = {};
 
+		const visibleStepFields = stepFields.filter(field => isFieldVisible(field, form.state.values));
 		const processField = (field: FormFieldV1, prefix = '') => {
 			const fieldName = prefix ? `${prefix}.${field.name}` : field.name;
 
@@ -167,17 +187,16 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				const subFields = typeof field.groupFields === 'function'
 					? field.groupFields(form.state.values)
 					: field.groupFields || [];
+				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
 				const groupSchema: Record<string, z.ZodType<any>> = {};
-				// Process each subfield
-				subFields.forEach((subField: FormFieldV1) => {
+				// Process each visible subfield
+				visibleSubFields.forEach((subField: FormFieldV1) => {
 					const subFieldName = `${fieldName}.${subField.name}`;
-					// Add to group schema with full path
 					const schema = getFieldSchema(subField, form.state.values, subFieldName);
 					if (schema) {
 						groupSchema[subField.name] = schema;
 					}
 				});
-				// Add the group schema
 				if (Object.keys(groupSchema).length > 0) {
 					schemaObject[fieldName] = z.object(groupSchema);
 				}
@@ -186,9 +205,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				const subFields = typeof fields === 'function'
 					? fields(form.state.values)
 					: fields || [];
+				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
 				const arraySchema = z.array(z.object(
-					subFields.reduce((acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
+					visibleSubFields.reduce((acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
 						const schema = getFieldSchema(subField, form.state.values, `${fieldName}[${fieldName}]`);
+						console.log('Schema Here is: ', schema);
 						if (schema) {
 							acc[subField.name] = schema;
 						}
@@ -204,7 +225,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			}
 		};
 
-		stepFields.forEach((field) => processField(field));
+		visibleStepFields.forEach((field) => processField(field));
 		return z.object(schemaObject);
 	};
 
@@ -562,6 +583,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				const subFields = typeof groupConfig.groupFields === 'function'
 					? groupConfig.groupFields(form.state.values)
 					: groupConfig.groupFields || [];
+				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
 				return (
 					<Card
 						key={field.name}
@@ -589,20 +611,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									flexWrap: 'wrap',
 									gap: groupConfig.spacing || 2,
 									'& > *': {
-										flex: subFields.some((f: FormFieldV1) => f.width)
+										flex: visibleSubFields.some((f: FormFieldV1) => f.width)
 											? '0 0 auto'
 											: '1 1 100%',
 									},
 								}}
 							>
-								{subFields.map((subField: FormFieldV1, index: number) => {
-									// Check showIf condition for subfield
-									if (subField.showIf) {
-										const { values } = form.state;
-										if (!subField.showIf(values)) {
-											return null;
-										}
-									}
+								{visibleSubFields.map((subField: FormFieldV1, index: number) => {
 									// Ensure the field path is a string
 									const fieldPath = `${field.name}.${subField.name}`;
 									return (

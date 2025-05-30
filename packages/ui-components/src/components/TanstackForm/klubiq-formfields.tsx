@@ -692,7 +692,7 @@ export const KlubiqTSFormFields: React.FC<{
 							{subFields.map(
 								(subField: any, index: number) => (
 									<form.Field
-										key={`${fieldConfig.name}[${idx}].${subField.name}-${index}`}
+										key={`ff-${fieldConfig.name}[${idx}].${subField.name}-${index}`}
 										name={`${fieldConfig.name}[${idx}].${subField.name}`}
 									>
 										{(subFieldApi: FormFieldApi) => {
