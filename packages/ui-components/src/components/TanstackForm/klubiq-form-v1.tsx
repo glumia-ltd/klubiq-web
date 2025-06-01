@@ -10,7 +10,6 @@ import {
 	Stepper,
 	StepIconProps,
 	styled,
-	Typography,
 	Card,
 	CardContent,
 	CardHeader,
@@ -27,38 +26,44 @@ import {
 } from './types';
 import { KlubiqTSFormFields } from './klubiq-formfields';
 import { style } from './style';
-import { ArrowBack, Error, ArrowForward, CheckCircle, RadioButtonUnchecked } from '@mui/icons-material';
+import {
+	ArrowBack,
+	Error,
+	ArrowForward,
+	CheckCircle,
+	RadioButtonUnchecked,
+} from '@mui/icons-material';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { active?: boolean; completed?: boolean; error?: boolean };
-}>(
-	({ theme, ownerState }) => ({
-		backgroundColor:
-			theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[400],
-		zIndex: 1,
-		color: '#fff',
-		width: 40,
-		height: 40,
-		display: 'flex',
-		borderRadius: '50%',
-		justifyContent: 'center',
-		alignItems: 'center',
-		fontSize: 24,
-		boxSizing: 'border-box',
-		verticalAlign: 'middle',
-		margin: '0 auto',
-		position: 'relative',
-		...(ownerState.active && {
-			backgroundColor: theme.palette.primary.main,
-		}),
-		...(ownerState.completed && {
-			backgroundColor: theme.palette.success.main,
-		}),
-		...(ownerState.error && {
-			backgroundColor: theme.palette.error.main,
-		}),
+}>(({ theme, ownerState }) => ({
+	backgroundColor:
+		theme.palette.mode === 'dark'
+			? theme.palette.grey[700]
+			: theme.palette.grey[400],
+	zIndex: 1,
+	color: '#fff',
+	width: 40,
+	height: 40,
+	display: 'flex',
+	borderRadius: '50%',
+	justifyContent: 'center',
+	alignItems: 'center',
+	fontSize: 24,
+	boxSizing: 'border-box',
+	verticalAlign: 'middle',
+	margin: '0 auto',
+	position: 'relative',
+	...(ownerState.active && {
+		backgroundColor: theme.palette.primary.main,
 	}),
-);
+	...(ownerState.completed && {
+		backgroundColor: theme.palette.success.main,
+	}),
+	...(ownerState.error && {
+		backgroundColor: theme.palette.error.main,
+	}),
+}));
 
 function StepIcon(props: StepIconProps) {
 	const { active, completed, error, icon } = props;
@@ -77,25 +82,27 @@ function StepIcon(props: StepIconProps) {
 		</StepIconRoot>
 	);
 }
-const LineConnector = styled(StepConnector)(() => ({
+const LineConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
 		top: 18,
 	},
 	[`&.${stepConnectorClasses.active}`]: {
 		[`& .${stepConnectorClasses.line}`]: {
-			backgroundColor: '#002147',
+			backgroundColor: theme.palette.primary.main,
 		},
 	},
 	[`&.${stepConnectorClasses.completed}`]: {
 		[`& .${stepConnectorClasses.line}`]: {
-			backgroundColor: '#002147',
-			color: '#fff',
+			backgroundColor: theme.palette.success.main,
 		},
 	},
 	[`& .${stepConnectorClasses.line}`]: {
 		height: 3,
 		border: 0,
-		backgroundColor: '#D1D5DB',
+		backgroundColor:
+		theme.palette.mode === 'dark'
+			? theme.palette.grey[700]
+			: theme.palette.grey[400],
 		borderRadius: 1,
 	},
 }));
@@ -107,50 +114,74 @@ const CustomStepIcon = (props: StepIconProps & { step?: any }) => {
 	if (step && 'icon' in step) {
 		if (completed && step.icon?.completedIcon)
 			return (
-				<StepIconRoot className="MuiStepIcon-root" ownerState={{ active, completed, error }}>
+				<StepIconRoot
+					className='MuiStepIcon-root'
+					ownerState={{ active, completed, error }}
+				>
 					{step.icon.completedIcon}
 				</StepIconRoot>
 			);
 		if (error && step.icon?.errorIcon)
 			return (
-				<StepIconRoot className="MuiStepIcon-root" ownerState={{ active, completed, error }}>
+				<StepIconRoot
+					className='MuiStepIcon-root'
+					ownerState={{ active, completed, error }}
+				>
 					{step.icon.errorIcon}
 				</StepIconRoot>
 			);
 		if (active && step.icon?.icon)
 			return (
-				<StepIconRoot className="MuiStepIcon-root" ownerState={{ active, completed, error }}>
+				<StepIconRoot
+					className='MuiStepIcon-root'
+					ownerState={{ active, completed, error }}
+				>
 					{step.icon.icon}
 				</StepIconRoot>
 			);
 		// fallback to step number if no icon
 		return (
-			<StepIconRoot className="MuiStepIcon-root" ownerState={{ active, completed, error }}>
+			<StepIconRoot
+				className='MuiStepIcon-root'
+				ownerState={{ active, completed, error }}
+			>
 				{step.icon?.icon || icon}
 			</StepIconRoot>
 		);
 	}
 	// Fallback to default
 	return (
-		<StepIconRoot className="MuiStepIcon-root" ownerState={{ active, completed, error }}>
+		<StepIconRoot
+			className='MuiStepIcon-root'
+			ownerState={{ active, completed, error }}
+		>
 			{icon}
 		</StepIconRoot>
 	);
 };
 
 // Utility to check if a field should be included in validation
-function isFieldVisible(field: FormFieldV1, values: Record<string, any>): boolean {
+function isFieldVisible(
+	field: FormFieldV1,
+	values: Record<string, any>,
+): boolean {
 	if (field.showIf && !field.showIf(values)) return false;
 	if (field.dependsOn && Array.isArray(field.dependsOn)) {
-		return field.dependsOn.every(dep => {
+		return field.dependsOn.every((dep) => {
 			const actual = values[dep.field];
 			switch (dep.operator) {
-				case 'equals': return actual === dep.value;
-				case 'notEquals': return actual !== dep.value;
-				case 'contains': return Array.isArray(actual) && actual.includes(dep.value);
-				case 'greaterThan': return actual > dep.value;
-				case 'lessThan': return actual < dep.value;
-				default: return actual === dep.value;
+				case 'equals':
+					return actual === dep.value;
+				case 'notEquals':
+					return actual !== dep.value;
+				case 'contains':
+					return Array.isArray(actual) && actual.includes(dep.value);
+				case 'greaterThan':
+					return actual > dep.value;
+				case 'lessThan':
+					return actual < dep.value;
+				default:
+					return actual === dep.value;
 			}
 		});
 	}
@@ -178,21 +209,29 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const createStepSchema = (stepFields: FormFieldV1[]) => {
 		const schemaObject: Record<string, z.ZodType<any>> = {};
 
-		const visibleStepFields = stepFields.filter(field => isFieldVisible(field, form.state.values));
+		const visibleStepFields = stepFields.filter((field) =>
+			isFieldVisible(field, form.state.values),
+		);
 		const processField = (field: FormFieldV1, prefix = '') => {
 			const fieldName = prefix ? `${prefix}.${field.name}` : field.name;
 
-			
 			if (field.type === 'group' && field.groupFields) {
-				const subFields = typeof field.groupFields === 'function'
-					? field.groupFields(form.state.values)
-					: field.groupFields || [];
-				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
+				const subFields =
+					typeof field.groupFields === 'function'
+						? field.groupFields(form.state.values)
+						: field.groupFields || [];
+				const visibleSubFields = subFields.filter((subField) =>
+					isFieldVisible(subField, form.state.values),
+				);
 				const groupSchema: Record<string, z.ZodType<any>> = {};
 				// Process each visible subfield
 				visibleSubFields.forEach((subField: FormFieldV1) => {
 					const subFieldName = `${fieldName}.${subField.name}`;
-					const schema = getFieldSchema(subField, form.state.values, subFieldName);
+					const schema = getFieldSchema(
+						subField,
+						form.state.values,
+						subFieldName,
+					);
 					if (schema) {
 						groupSchema[subField.name] = schema;
 					}
@@ -202,20 +241,36 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				}
 			} else if (field.type === 'array' && (field as any).fields) {
 				const { fields } = field as ArrayFormFieldV1;
-				const subFields = typeof fields === 'function'
-					? fields(form.state.values)
-					: fields || [];
-				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
-				const arraySchema = z.array(z.object(
-					visibleSubFields.reduce((acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
-						const schema = getFieldSchema(subField, form.state.values, `${fieldName}[${fieldName}]`);
-						console.log('Schema Here is: ', schema);
-						if (schema) {
-							acc[subField.name] = schema;
-						}
-						return acc;
-					}, {})
-				));
+				const subFields =
+					typeof fields === 'function'
+						? fields(form.state.values)
+						: fields || [];
+				const visibleSubFields = subFields.filter((subField) =>
+					isFieldVisible(subField, form.state.values),
+				);
+				const arraySchema = z.array(
+					z.object(
+						visibleSubFields.reduce(
+							(acc: Record<string, z.ZodType<any>>, subField: FormFieldV1) => {
+								const schema = getFieldSchema(
+									subField,
+									form.state.values,
+									`${fieldName}[${fieldName}]`,
+								);
+								if (schema) {
+									acc[subField.name] = schema;
+								} else if (subField.required) {
+									acc[subField.name] = getRequiredSchema(
+										subField,
+										`${fieldName}[${fieldName}].${subField.name}`,
+									);
+								}
+								return acc;
+							},
+							{},
+						),
+					),
+				);
 				schemaObject[fieldName] = arraySchema;
 			} else {
 				const schema = getFieldSchema(field, form.state.values, fieldName);
@@ -229,31 +284,59 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		return z.object(schemaObject);
 	};
 
-	const getRequiredSchema = (field: FormFieldV1, fullPath: string): z.ZodType<any> => {
+	const getRequiredSchema = (
+		field: FormFieldV1,
+		fullPath: string,
+	): z.ZodType<any> => {
 		if (field.customComponent) {
 			return z.any().refine((val) => {
 				// For custom components, we need to check if the value is a valid selection
-				return val !== undefined && val !== null && val !== '' && val !== '0' && val !== 0;
+				return (
+					val !== undefined &&
+					val !== null &&
+					val !== '' &&
+					val !== '0' &&
+					val !== 0
+				);
 			}, 'Required');
 		} else if (field.type === 'array') {
 			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
 		} else if (field.type === 'checkbox') {
-			return z.boolean().refine(field.required ? (val) => val === true : () => true, 'Required');
+			return z
+				.boolean()
+				.refine(
+					field.required ? (val) => val === true : () => true,
+					'Required',
+				);
 		} else if (field.type === 'select' && (field as any).multiple) {
 			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
 		} else if (field.type === 'radio') {
 			return z.string().min(field.required ? 1 : 0, 'Required');
 		} else if (field.type === 'file') {
 			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
-		} else if(field.type === 'number' || field.type === 'percent' || field.type === 'decimal') {
-			return z.number().refine(field.required ? (val: number) => val > 0 : () => true, 'Required');
+		} else if (
+			field.type === 'number' ||
+			field.type === 'percent' ||
+			field.type === 'decimal'
+		) {
+			return z
+				.number()
+				.refine(
+					field.required ? (val: number) => val > 0 : () => true,
+					'Required',
+				);
 		} else {
 			return z.string().min(field.required ? 1 : 0, 'Required');
 		}
 	};
 
-	const getFieldSchema = (field: FormFieldV1, formValues: any, fullPath: string): z.ZodType<any> | undefined => {		
-		if (field.validation?.schema) {			let {schema} = field.validation;
+	const getFieldSchema = (
+		field: FormFieldV1,
+		formValues: any,
+		fullPath: string,
+	): z.ZodType<any> | undefined => {
+		if (field.validation?.schema) {
+			let { schema } = field.validation;
 			if (field.validation.dependencies) {
 				schema = addDependenciesToSchema(schema, field, formValues);
 			}
@@ -264,25 +347,41 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		return undefined;
 	};
 
-	const addDependenciesToSchema = (schema: z.ZodType<any>, field: FormFieldV1, formValues: any) => {
-		return field.validation?.dependencies?.reduce((currentSchema, dep) => {
-			return currentSchema.refine(
-				(value: any) => {
-					const dependentValue = formValues[dep.field];
-					switch (dep.type) {
-						case 'min': return value > dependentValue;
-						case 'max': return value < dependentValue;
-						case 'equals': return value === dependentValue;
-						case 'notEquals': return value !== dependentValue;
-						default: return true;
-					}
-				},
-				{ message: dep.message }
-			);
-		}, schema) || schema;
+	const addDependenciesToSchema = (
+		schema: z.ZodType<any>,
+		field: FormFieldV1,
+		formValues: any,
+	) => {
+		return (
+			field.validation?.dependencies?.reduce((currentSchema, dep) => {
+				return currentSchema.refine(
+					(value: any) => {
+						const dependentValue = formValues[dep.field];
+						switch (dep.type) {
+							case 'min':
+								return value > dependentValue;
+							case 'max':
+								return value < dependentValue;
+							case 'equals':
+								return value === dependentValue;
+							case 'notEquals':
+								return value !== dependentValue;
+							default:
+								return true;
+						}
+					},
+					{ message: dep.message },
+				);
+			}, schema) || schema
+		);
 	};
 
-	const validateField = (value: any, field: FormFieldV1, formValues: any, fullPath: string) => {
+	const validateField = (
+		value: any,
+		field: FormFieldV1,
+		formValues: any,
+		fullPath: string,
+	) => {
 		try {
 			const schema = getFieldSchema(field, formValues, fullPath);
 			if (schema) {
@@ -303,12 +402,18 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	};
 
-	const validateDependencies = async (value: any, field: FormFieldV1, formValues: any) => {
+	const validateDependencies = async (
+		value: any,
+		field: FormFieldV1,
+		formValues: any,
+	) => {
 		if (field.validation?.dependencies) {
 			for (const dep of field.validation.dependencies) {
 				const dependentValue = formValues[dep.field];
 				if (dep.type === 'min' && value <= dependentValue) {
-					return dep.message || `${field.label} must be greater than ${dep.field}`;
+					return (
+						dep.message || `${field.label} must be greater than ${dep.field}`
+					);
 				}
 			}
 		}
@@ -320,8 +425,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		onSubmit: async ({ value }) => {
 			try {
 				await onSubmit(value);
-			} catch (error) {
-			}
+			} catch (error) {}
 		},
 		validators: {
 			onSubmit: ({ value }) => {
@@ -337,8 +441,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					}
 					return 'Form is invalid';
 				}
-			}
-		}
+			},
+		},
 	});
 
 	// Add effect to ensure group values are properly structured
@@ -347,12 +451,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		let hasChanges = false;
 
 		// Process each step's fields
-		steps.forEach(step => {
-			step.fields.forEach(field => {
+		steps.forEach((step) => {
+			step.fields.forEach((field) => {
 				if (field.type === 'group' && field.groupFields) {
-					const subFields = typeof field.groupFields === 'function'
-						? field.groupFields(values)
-						: field.groupFields || [];
+					const subFields =
+						typeof field.groupFields === 'function'
+							? field.groupFields(values)
+							: field.groupFields || [];
 					// Ensure the group object exists
 					if (!values[field.name]) {
 						values[field.name] = {};
@@ -361,7 +466,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					// Ensure each subfield exists in the group
 					subFields.forEach((subField: FormFieldV1) => {
 						const subFieldPath = `${field.name}.${subField.name}`;
-						if (values[subFieldPath] !== undefined && values[field.name][subField.name] === undefined) {
+						if (
+							values[subFieldPath] !== undefined &&
+							values[field.name][subField.name] === undefined
+						) {
 							values[field.name][subField.name] = values[subFieldPath];
 							hasChanges = true;
 						}
@@ -390,11 +498,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		try {
 			// Ensure group values are properly structured
 			const { values } = form.state;
-			stepFields.forEach(field => {
+			stepFields.forEach((field) => {
 				if (field.type === 'group' && field.groupFields) {
-					const subFields = typeof field.groupFields === 'function'
-						? field.groupFields(values)
-						: field.groupFields || [];
+					const subFields =
+						typeof field.groupFields === 'function'
+							? field.groupFields(values)
+							: field.groupFields || [];
 					if (!values[field.name]) {
 						values[field.name] = {};
 					}
@@ -410,14 +519,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 			// Parse the values with the schema
 			stepSchema.parse(values);
-			
+
 			// If we get here, validation passed
-			setStepValidations(prev => {
+			setStepValidations((prev) => {
 				const newValidations = [...prev];
 				newValidations[currentStep] = true;
 				return newValidations;
 			});
-			setStepErrors(prev => {
+			setStepErrors((prev) => {
 				const newErrors = [...prev];
 				newErrors[currentStep] = false;
 				return newErrors;
@@ -425,7 +534,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			return true;
 		} catch (error) {
 			if (error instanceof z.ZodError) {
-				error.errors.forEach(err => {
+				error.errors.forEach((err) => {
 					console.log('Zod validation errors:', error.errors);
 					const fieldName = String(err.path[0]);
 					const field = form.getFieldMeta(fieldName);
@@ -434,7 +543,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					}
 				});
 			}
-			setStepValidations(prev => {
+			setStepValidations((prev) => {
 				const newValidations = [...prev];
 				newValidations[currentStep] = false;
 				return newValidations;
@@ -442,13 +551,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			return false;
 		}
 	};
-
+	const [_, forceUpdate] = useState(0);
 	// Add validation effect
 	useEffect(() => {
 		const isValid = validateCurrentStep();
 		// Force form validation after step validation
 		form.validate('change');
-	}, [form.state.values, currentStep]);
+		forceUpdate((prev) => prev + 1);
+	}, [form.state.values, form.state.errors, form.state.fieldMeta, currentStep]);
 
 	const validateStep = (stepIndex: number) => {
 		const stepFields = steps[stepIndex].fields;
@@ -494,11 +604,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			onStepChange?.(currentStep - 1);
 		}
 	};
-	const renderErrors = (form: any) => {
-		return form.state.errors.map((error: any) => {
-			return <Typography key={error.path[0]} color='error'>{error.message}</Typography>;
-		});
-	};
 
 	const renderFields = (fields: FormFieldV1[]) => {
 		return fields.map((field) => {
@@ -535,41 +640,53 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									titleTypographyProps={{ variant: 'h6' }}
 								/>
 								<CardContent>
-									{field.customComponent
-										? (typeof field.customComponent === 'function'
-											? field.customComponent(fieldApi, field, form)
-											: field.customComponent)
-										: (
-											<Box>
-												{Array.from({ length: arrayLength }).map((_, idx) => (
-													<Box
-														key={idx}
-														sx={{ mb: 2, p: 2, border: '1px solid #333', borderRadius: 2 }}
-													>
-														<Typography variant='subtitle2' sx={{ mb: 1 }}>
-															{field.label} {arrayLength > 1 ? idx + 1 : ''}
-														</Typography>
-														{(field as any).fields.map(
-															(subField: any, subFieldIndex: number) => (
-																<form.Field
-																	key={`${field.name}[${idx}].${subField.name}.${subFieldIndex}`}
-																	name={`${field.name}[${idx}].${subField.name}`}
-																>
-																	{(subFieldApi) => (
-																		<KlubiqTSFormFields
-																			field={subFieldApi}
-																			form={form}
-																			fieldConfig={subField}
-																		/>
-																	)}
-																</form.Field>
-															),
-														)}
-													</Box>
-												))}
-											</Box>
+									{field.customComponent ? (
+										typeof field.customComponent === 'function' ? (
+											field.customComponent(fieldApi, field, form)
+										) : (
+											field.customComponent
 										)
-									}
+									) : (
+										// <Box>
+										// 	{Array.from({ length: arrayLength }).map((_, idx) => (
+										// 		<Box
+										// 			key={idx}
+										// 			sx={{
+										// 				mb: 2,
+										// 				p: 2,
+										// 				border: '1px solid #333',
+										// 				borderRadius: 2,
+										// 			}}
+										// 		>
+										// 			<Typography variant='subtitle2' sx={{ mb: 1 }}>
+										// 				{field.label} {arrayLength > 1 ? idx + 1 : ''}
+										// 			</Typography>
+										// 			{Array.isArray((field as any).fields) &&
+										// 				(field as any).fields.map(
+										// 					(subField: any, subFieldIndex: number) => (
+										// 						<form.Field
+										// 							key={`${field.name}[${idx}].${subField.name}.${subFieldIndex}`}
+										// 							name={`${field.name}[${idx}].${subField.name}`}
+										// 						>
+										// 							{(subFieldApi) => (
+										// 								<KlubiqTSFormFields
+										// 									field={subFieldApi}
+										// 									form={form}
+										// 									fieldConfig={subField}
+										// 								/>
+										// 							)}
+										// 						</form.Field>
+										// 					),
+										// 				)}
+										// 		</Box>
+										// 	))}
+										// </Box>
+										<KlubiqTSFormFields
+											field={fieldApi}
+											form={form}
+											fieldConfig={field}
+										/>
+									)}
 								</CardContent>
 							</Card>
 						)}
@@ -580,10 +697,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			// Group field support
 			if (field.type === 'group') {
 				const groupConfig = field as GroupFormFieldV1;
-				const subFields = typeof groupConfig.groupFields === 'function'
-					? groupConfig.groupFields(form.state.values)
-					: groupConfig.groupFields || [];
-				const visibleSubFields = subFields.filter(subField => isFieldVisible(subField, form.state.values));
+				const subFields =
+					typeof groupConfig.groupFields === 'function'
+						? groupConfig.groupFields(form.state.values)
+						: groupConfig.groupFields || [];
+				const visibleSubFields = subFields.filter((subField) =>
+					isFieldVisible(subField, form.state.values),
+				);
 				return (
 					<Card
 						key={field.name}
@@ -605,7 +725,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							<Box
 								sx={{
 									display: 'flex',
-									justifyContent:groupConfig.layout === 'row' ? 'space-between' : undefined,
+									justifyContent:
+										groupConfig.layout === 'row' ? 'space-between' : undefined,
 									flexDirection:
 										groupConfig.layout === 'column' ? 'column' : 'row',
 									flexWrap: 'wrap',
@@ -617,77 +738,80 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									},
 								}}
 							>
-								{visibleSubFields.map((subField: FormFieldV1, index: number) => {
-									// Ensure the field path is a string
-									const fieldPath = `${field.name}.${subField.name}`;
-									return (
-										<Box
-											key={`${fieldPath}-${index}`}
-											sx={{
-												width: subField.width || '100%',
-												flex: subField.width ? '0 0 auto' : '1 1 100%',
-											}}
-										>
-											<form.Field
-												key={`ff-${fieldPath}-${index}`}
-												name={fieldPath}
-												validators={{
-													onChange: ({ value }) => {
-														try {
-															if (subField.validation?.schema) {
-																subField.validation.schema.parse(value);
-															}
-															// Update the parent group object
-															const parentValue = form.state.values[field.name] || {};
-															const newParentValue = {
-																...parentValue,
-																[subField.name]: value
-															};
-															form.setFieldValue(field.name, newParentValue);
-															// Force validation after state update
-															setTimeout(() => {
-																validateCurrentStep();
-															}, 0);
-															return undefined;
-														} catch (error) {
-															if (error instanceof z.ZodError) {
-																return error.errors[0].message;
-															}
-															return 'Invalid value';
-														}
-													},
-													onChangeAsync: async ({ value }) => {
-														if (subField.validation?.dependencies) {
-															for (const dep of subField.validation
-																.dependencies) {
-																const dependentValue =
-																	form.state.values[dep.field];
-																if (
-																	dep.type === 'min' &&
-																	value <= dependentValue
-																) {
-																	return (
-																		dep.message ||
-																		`${subField.label} must be greater than ${dep.field}`
-																	);
-																}
-															}
-														}
-														return undefined;
-													},
+								{visibleSubFields.map(
+									(subField: FormFieldV1, index: number) => {
+										// Ensure the field path is a string
+										const fieldPath = `${field.name}.${subField.name}`;
+										return (
+											<Box
+												key={`${fieldPath}-${index}`}
+												sx={{
+													width: subField.width || '100%',
+													flex: subField.width ? '0 0 auto' : '1 1 100%',
 												}}
 											>
-												{(subFieldApi) => (
-													<KlubiqTSFormFields
-														field={subFieldApi}
-														form={form}
-														fieldConfig={subField}
-													/>
-												)}
-											</form.Field>
-										</Box>
-									);
-								})}
+												<form.Field
+													key={`ff-${fieldPath}-${index}`}
+													name={fieldPath}
+													validators={{
+														onChange: ({ value }) => {
+															try {
+																if (subField.validation?.schema) {
+																	subField.validation.schema.parse(value);
+																}
+																// Update the parent group object
+																const parentValue =
+																	form.state.values[field.name] || {};
+																const newParentValue = {
+																	...parentValue,
+																	[subField.name]: value,
+																};
+																form.setFieldValue(field.name, newParentValue);
+																// Force validation after state update
+																setTimeout(() => {
+																	validateCurrentStep();
+																}, 0);
+																return undefined;
+															} catch (error) {
+																if (error instanceof z.ZodError) {
+																	return error.errors[0].message;
+																}
+																return 'Invalid value';
+															}
+														},
+														onChangeAsync: async ({ value }) => {
+															if (subField.validation?.dependencies) {
+																for (const dep of subField.validation
+																	.dependencies) {
+																	const dependentValue =
+																		form.state.values[dep.field];
+																	if (
+																		dep.type === 'min' &&
+																		value <= dependentValue
+																	) {
+																		return (
+																			dep.message ||
+																			`${subField.label} must be greater than ${dep.field}`
+																		);
+																	}
+																}
+															}
+															return undefined;
+														},
+													}}
+												>
+													{(subFieldApi) => (
+														<KlubiqTSFormFields
+															field={subFieldApi}
+															form={form}
+															fieldConfig={subField}
+														/>
+													)}
+												</form.Field>
+											</Box>
+										);
+									},
+								)}
 							</Box>
 						</CardContent>
 					</Card>
@@ -700,8 +824,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					key={field.name}
 					name={field.name}
 					validators={{
-						onChange: ({ value }) => validateField(value, field, form.state.values, field.name),
-						onChangeAsync: async ({ value }) => validateDependencies(value, field, form.state.values)
+						onChange: ({ value }) =>
+							validateField(value, field, form.state.values, field.name),
+						onChangeAsync: async ({ value }) =>
+							validateDependencies(value, field, form.state.values),
 					}}
 				>
 					{(fieldApi) => (
@@ -724,7 +850,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		>
 			{isMultiStep && (
 				<Box width={'100%'}>
-					<Stepper activeStep={currentStep} connector={<LineConnector />} alternativeLabel sx={{ mb: 4 }}>
+					<Stepper
+						activeStep={currentStep}
+						connector={<LineConnector />}
+						alternativeLabel
+						sx={{ mb: 4 }}
+					>
 						{steps.map((step, index) => (
 							<Step
 								key={index}
@@ -733,8 +864,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							>
 								<StepLabel
 									StepIconComponent={(iconProps) => (
-										<CustomStepIcon 
-											{...iconProps} 
+										<CustomStepIcon
+											{...iconProps}
 											step={step}
 											completed={stepValidations[index]}
 											error={stepErrors[index]}
@@ -760,10 +891,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					form.handleSubmit();
 				}}
 			>
-				<Stack spacing={3}>
-					{renderFields(steps[currentStep].fields)}
-					{renderErrors(form)}
-				</Stack>
+				<Stack spacing={3}>{renderFields(steps[currentStep].fields)}</Stack>
 
 				<Stack
 					direction='row'
@@ -774,9 +902,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				>
 					<Stack direction='row' spacing={2}>
 						{isMultiStep && currentStep > 0 && (
-							<Button 
-								onClick={handleBack} 
-								startIcon={<ArrowBack />} 
+							<Button
+								onClick={handleBack}
+								startIcon={<ArrowBack />}
 								variant='klubiqOutlinedButton'
 							>
 								Back
@@ -787,23 +915,37 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					<Stack direction='row' spacing={2}>
 						{(() => {
 							const { isSubmitting } = form.state;
-							const isStepValid = stepValidations[currentStep];
+							//const isStepValid = stepValidations[currentStep];
+							const isStepValid = (() => {
+								try {
+									const stepFields = steps[currentStep].fields;
+									const stepSchema = createStepSchema(stepFields);
+									stepSchema.parse(form.state.values);
+									return true;
+								} catch (e) {
+									if (e instanceof z.ZodError) {
+										console.log('Zod validation errors:', e.errors);
+									}
+									return false;
+								}
+							})();
 							const isLastStep = currentStep === steps.length - 1;
-							console.log('Button state:', { 
-								isStepValid, 
+							console.log('Button state:', {
+								isStepValid,
 								isSubmitting,
 								isLastStep,
 								currentStep,
+								stepValidations,
 								totalSteps: steps.length,
 								formValues: form.state.values,
-								formErrors: form.state.errors
+								formErrors: form.state.errors,
 							});
 							return (
 								<>
 									{isMultiStep && !isLastStep ? (
-										<Button 
-											onClick={handleNext} 
-											endIcon={<ArrowForward />} 
+										<Button
+											onClick={handleNext}
+											endIcon={<ArrowForward />}
 											variant='klubiqMainButton'
 											disabled={!isStepValid}
 										>

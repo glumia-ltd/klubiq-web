@@ -1,7 +1,7 @@
 import {
 	FormStep,
 	KlubiqFormV1,
-	ArrayFormFieldV1,
+	//	ArrayFormFieldV1,
 	InputAdornment as InputAdornmentType,
 	FormFieldV1,
 } from '@klubiq/ui-components';
@@ -10,6 +10,7 @@ import { useGetPropertiesMetaDataQuery } from '../../../store/PropertyPageStore/
 import {
 	EmojiOneBuildingIcon,
 	EmojiOneHomeIcon,
+	FloorPlan,
 	HouseIcon,
 } from '../../../components/Icons/CustomIcons';
 import { CardRadioGroup, RadioCardGroup } from '@klubiq/ui-components';
@@ -21,7 +22,7 @@ import {
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { AmenitiesDialog } from '../../../components/CustomFormComponents/AmenitiesDialog';
-import { UnitsAccordionArray } from '../../../components/CustomFormComponents/UnitsAccordionArray';
+//import { UnitsAccordionArray } from '../../../components/CustomFormComponents/UnitsAccordionArray';
 import {
 	TextField,
 	Select,
@@ -33,6 +34,7 @@ import { getCurrencySymbol, MEASUREMENTS } from '../../../helpers/utils';
 import { z } from 'zod';
 import countriesList from '../../../helpers/countries-meta.json';
 import { GooglePlacesAutocomplete } from '@klubiq/ui-components';
+import { Bathroom, BedroomParent, Business, Wc } from '@mui/icons-material';
 
 interface AddressValue {
 	addressLine1: string;
@@ -107,12 +109,9 @@ export const CreateProperty = () => {
 		customAmenities: [],
 		multiUnits: [
 			{
-				unitNumber: '',
-				bedrooms: null,
+				unitNumber: 'Unit 1',
 				bathrooms: null,
 				toilets: null,
-				rooms: null,
-				offices: null,
 				area: {
 					value: null,
 					unit: 'SqM',
@@ -158,7 +157,7 @@ export const CreateProperty = () => {
 			label: amenity.name,
 		};
 	});
-	const singleUnitAmenitiesField = {
+	const customAmenitiesField: FormFieldV1 = {
 		name: 'amenities',
 		type: 'checkbox-group',
 		label: 'Amenities',
@@ -169,12 +168,10 @@ export const CreateProperty = () => {
 					fieldConfig: {
 						...fieldConfig,
 						options: Array.isArray(fieldConfig.options)
-							? fieldConfig.options.map(
-									(opt: { value: string | number }) => ({
-										...opt,
-										value: String(opt.value),
-									}),
-								)
+							? fieldConfig.options.map((opt: { value: string | number }) => ({
+									...opt,
+									value: String(opt.value),
+								}))
 							: typeof fieldConfig.options === 'function'
 								? fieldConfig
 										.options(form.getValues())
@@ -190,25 +187,27 @@ export const CreateProperty = () => {
 				form={form}
 			/>
 		),
-	};
-	const multiUnitAmenitiesField = {
-		name: 'amenities',
-		type: 'checkbox-group',
-		label: 'Amenities',
-		options: amenitiesOptions,
-	};
+	}
 	const generalUnitFields = [
 		{
 			name: 'bathrooms',
 			type: 'number',
 			label: 'Bathrooms',
+			required: false,
 			width: '48%',
+			validation: {
+				schema: z.number({message: 'Bathrooms must be a number'}).nullable().optional(),
+			},
 		},
 		{
 			name: 'toilets',
 			type: 'number',
 			label: 'Toilets',
+			required: false,
 			width: '48%',
+			validation: {
+				schema: z.number({message: 'Toilets must be a number'}).nullable().optional(),
+			},
 		},
 		{
 			name: 'area',
@@ -232,15 +231,12 @@ export const CreateProperty = () => {
 					<TextField
 						fullWidth
 						type='text'
-						label={
-							fieldConfig.isInFieldLabel ? fieldConfig.label : undefined
-						}
+						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
 						value={fieldApi.state.value?.value || ''}
 						onChange={(e) => {
 							const { value } = e.target;
 							if (/^\d*\.?\d*$/.test(value)) {
-								const numValue =
-									value === '' ? null : parseFloat(value);
+								const numValue = value === '' ? null : parseFloat(value);
 								// Update the entire area object
 								fieldApi.handleChange({
 									...fieldApi.state.value,
@@ -300,52 +296,58 @@ export const CreateProperty = () => {
 				</Box>
 			),
 		},
-		
-		
 	] as FormFieldV1[];
-	const residentialUnitFields = [
+	const residentialUnitFields: FormFieldV1[] = [
 		{
 			name: 'bedrooms',
 			type: 'number',
 			label: 'Bedrooms',
 			required: true,
 			width: '48%',
+			// validation: {
+			// 	schema: z.number({message: 'Bedrooms must be a number'}).min(1, { message: 'Bedrooms must be greater than 0' }).nullable(),
+			// },
 		},
 		...generalUnitFields,
 	];
-	const commercialUnitFields = [
+	const commercialUnitFields: FormFieldV1[] = [
 		{
 			name: 'offices',
 			type: 'number',
 			label: 'Offices',
 			required: true,
 			width: '48%',
+			validation: {
+				schema: z.number({message: 'Offices must be a number'}).min(1, { message: 'Offices must be greater than 0' }).nullable(),
+			},
 		},
 		...generalUnitFields,
 	];
-	const hospitalityUnitFields = [
+	const hospitalityUnitFields: FormFieldV1[] = [
 		{
 			name: 'rooms',
 			type: 'number',
 			label: 'Rooms',
 			required: true,
 			width: '48%',
+			validation: {
+				schema: z.number({message: 'Rooms must be a number'}).min(1, { message: 'Rooms must be greater than 0' }).nullable(),
+			},
 		},
 		...generalUnitFields,
-	] ;
+	];
 
 	const getSingleUnitFields = (values: Record<string, any>) => {
 		const selectedCategory = categories?.find(
-			(cat: CategoryType) => cat.id.toString() === values?.category?.id?.toString(),
+			(cat: CategoryType) =>
+				cat.id.toString() === values?.category?.id?.toString(),
 		);
-		const unitFields = [
-			singleUnitAmenitiesField,
-		]
-		if(selectedCategory?.metaData?.hasBedrooms){
+		const unitFields = [customAmenitiesField];
+		if (selectedCategory?.metaData?.hasBedrooms) {
 			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
-		} else if(selectedCategory?.metaData?.hasRooms){
+		} else if (selectedCategory?.metaData?.hasRooms) {
 			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
-		} else if(selectedCategory?.metaData?.hasOffices){
+		} else if (selectedCategory?.metaData?.hasOffices) {
 			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
 		}
 		return unitFields as FormFieldV1[];
@@ -353,24 +355,30 @@ export const CreateProperty = () => {
 
 	const getMultiUnitFields = (values: Record<string, any>) => {
 		const selectedCategory = categories?.find(
-			(cat: CategoryType) => cat.id.toString() === values?.category?.id?.toString(),
+			(cat: CategoryType) =>
+				cat.id.toString() === values?.category?.id?.toString(),
 		);
-		const unitFields = [
+		const unitFields: FormFieldV1[] = [
 			{
 				name: 'unitNumber',
 				type: 'text',
 				label: 'Unit Number/Name',
 				defaultValue: '',
-				required: true,
 				width: '48%',
+				required: true,
+				validation: {
+					schema: z.string({message: 'Unit number is required'})
+					.min(1, { message: 'Unit number is required' })
+					.max(10, { message: 'Unit number must be less than 10 characters' }),
+				},
 			},
-			multiUnitAmenitiesField,
-		]
-		if(selectedCategory?.metaData?.hasBedrooms){
+			customAmenitiesField,
+		];
+		if (selectedCategory?.metaData?.hasBedrooms) {
 			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
-		} else if(selectedCategory?.metaData?.hasRooms){
+		} else if (selectedCategory?.metaData?.hasRooms) {
 			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
-		} else if(selectedCategory?.metaData?.hasOffices){
+		} else if (selectedCategory?.metaData?.hasOffices) {
 			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
 		}
 		return unitFields as FormFieldV1[];
@@ -716,21 +724,69 @@ export const CreateProperty = () => {
 					showIf: (values) => values.unitDetails.unitType === 'single',
 					groupFields: (values) => getSingleUnitFields(values),
 				},
+
 				{
 					name: 'multiUnits',
 					type: 'array',
-					label: 'Enter details for each unit',
+					label: 'MULTI UNITS',
 					showIf: (values) => values.unitDetails.unitType === 'multi',
-					customComponent: (fieldApi: any, fieldConfig: any, form: any) => (
-						<UnitsAccordionArray
-							fieldApi={fieldApi}
-							fieldConfig={fieldConfig as ArrayFormFieldV1}
-							form={form}
-							maxSubUnits={MAX_UNITS}
-						/>
-					), 
-					fields: (values) => getMultiUnitFields(values),
+					fields: (values) => getMultiUnitFields(values), // or your array of subfields
+					useAccordion: true,
+					summaryFields: [
+						{
+							field: 'unitNumber',
+						},
+						{
+							field: 'bedrooms',
+							icon: <BedroomParent fontSize='small' />,
+							label: 'Beds',
+						},
+						{
+							field: 'rooms',
+							icon: <BedroomParent fontSize='small' />,
+							label: 'Rooms',
+						},
+						{
+							field: 'offices',
+							icon: <Business fontSize='small' />,
+							label: 'Offices',
+						},
+						{
+							field: 'bathrooms',
+							icon: <Bathroom fontSize='small' />,
+							label: 'Bathrooms',
+						},
+						{
+							field: 'toilets',
+							icon: <Wc fontSize='small' />,
+							label: 'Toilets',
+						},
+						{
+							field: 'area.value',
+							icon: <FloorPlan fontSize='small' />,
+							label: 'Area',
+						},
+					],
+					getArrayLength: (values) =>
+						parseInt(values.unitDetails.totalUnits, 10),
+					arrayLengthMin: 2,
+					arrayLengthMax: MAX_UNITS,
+					showAddButton: true,
+					addButtonText: 'Add Unit',
+					arrayLengthSelectorField: 'unitDetails.totalUnits',
 				},
+				// {
+				// 	name: 'multiUnits',
+				// 	type: 'array',
+				// 	label: 'MULTI UNITS',
+				// 	showIf: (values) => values.unitDetails.unitType === 'multi',
+				// 	fields: (values) => {
+				// 		const fields = getMultiUnitFields(values);
+				// 		return fields;
+				// 	},
+				// 	useAccordion: true,
+				// 	getArrayLength: (values) => parseInt(values.unitDetails.totalUnits, 10),
+				// },
 			],
 			icon: { icon: <UnitTypeIcon /> },
 		},

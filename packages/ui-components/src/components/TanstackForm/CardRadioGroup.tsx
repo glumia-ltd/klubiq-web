@@ -24,7 +24,7 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({ value, options, 
         onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onChange(option.value)}
         sx={{
           cursor: 'pointer',
-          border: '1px solid',
+          border: value === option.value ? '2.5px solid' : '1px solid',
           borderColor: value === option.value ? 'primary.light' : 'primary.contrastText',
           borderRadius: 2,
           boxShadow: 'none',

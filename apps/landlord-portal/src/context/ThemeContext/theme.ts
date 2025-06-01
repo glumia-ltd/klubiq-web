@@ -107,6 +107,17 @@ export const LightTheme: Theme = createTheme({
 		// success:{},
 	},
 	components: {
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.mainBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
@@ -593,6 +604,17 @@ export const DarkTheme: Theme = createTheme({
 	},
 
 	components: {
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.lightBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {

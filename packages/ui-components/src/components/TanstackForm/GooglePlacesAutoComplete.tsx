@@ -1,4 +1,10 @@
-import { TextField, Autocomplete, FormLabel, Typography, Stack } from '@mui/material';
+import {
+	TextField,
+	Autocomplete,
+	FormLabel,
+	Typography,
+	Stack,
+} from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 
@@ -16,7 +22,9 @@ interface GooglePlacesAutocompleteProps {
 	required?: boolean;
 }
 
-export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> = ({
+export const GooglePlacesAutocomplete: React.FC<
+	GooglePlacesAutocompleteProps
+> = ({
 	apiKey,
 	value,
 	onChange,
@@ -30,9 +38,12 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
 	required = false,
 	...props
 }) => {
-	const [predictions, setPredictions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+	const [predictions, setPredictions] = useState<
+		google.maps.places.AutocompletePrediction[]
+	>([]);
 	const [inputValue, setInputValue] = useState('');
-	const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null);
+	const autocompleteService =
+		useRef<google.maps.places.AutocompleteService | null>(null);
 	const placesService = useRef<google.maps.places.PlacesService | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,12 +67,24 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
 		});
 
 		loader.importLibrary('places').then(() => {
-			autocompleteService.current = new google.maps.places.AutocompleteService();
+			autocompleteService.current =
+				new google.maps.places.AutocompleteService();
 			if (inputRef.current) {
-				placesService.current = new google.maps.places.PlacesService(inputRef.current);
+				placesService.current = new google.maps.places.PlacesService(
+					inputRef.current,
+				);
 			}
 		});
 	}, [apiKey]);
+
+	useEffect(() => {
+		// If value is a string, use it directly; if it's an object, use a field like addressLine1
+		if (typeof value === 'string') {
+			setInputValue(value);
+		} else if (value && value.addressLine1) {
+			setInputValue(value.addressLine1);
+		}
+	}, [value]);
 
 	const handleInputChange = async (newValue: string) => {
 		setInputValue(newValue);
@@ -77,7 +100,8 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
 				componentRestrictions: country ? { country } : undefined,
 			};
 
-			const response = await autocompleteService.current.getPlacePredictions(request);
+			const response =
+				await autocompleteService.current.getPlacePredictions(request);
 			setPredictions(response.predictions);
 		} catch (error) {
 			console.error('Error fetching predictions:', error);
@@ -86,38 +110,58 @@ export const GooglePlacesAutocomplete: React.FC<GooglePlacesAutocompleteProps> =
 	};
 
 	const handlePlaceSelect = async (placeId: string) => {
-		if (!placesService.current) return;
+		if (!placesService.current) {
+			return;
+		}
 
 		try {
-			const place = await new Promise<google.maps.places.PlaceResult>((resolve, reject) => {
-				placesService.current?.getDetails(
-					{ 
-						placeId, 
-						fields: ['formatted_address', 'geometry', 'address_components'] 
-					},
-					(result, status) => {
-						if (status === google.maps.places.PlacesServiceStatus.OK && result) {
-							resolve(result);
-						} else {
-							reject(new Error('Place details not found'));
-						}
-					}
-				);
-			});
+			const place = await new Promise<google.maps.places.PlaceResult>(
+				(resolve, reject) => {
+					placesService.current?.getDetails(
+						{
+							placeId,
+							fields: ['formatted_address', 'geometry', 'address_components'],
+						},
+						(result, status) => {
+							if (
+								status === google.maps.places.PlacesServiceStatus.OK &&
+								result
+							) {
+								resolve(result);
+							} else {
+								reject(new Error('Place details not found'));
+							}
+						},
+					);
+				},
+			);
 
 			const addressComponents = place.address_components || [];
-			const streetNumber = addressComponents.find(comp => comp.types.includes('street_number'))?.long_name || '';
-			const route = addressComponents.find(comp => comp.types.includes('route'))?.long_name || '';
+			const streetNumber =
+				addressComponents.find((comp) => comp.types.includes('street_number'))
+					?.long_name || '';
+			const route =
+				addressComponents.find((comp) => comp.types.includes('route'))
+					?.long_name || '';
 			const address = {
 				addressLine1: `${streetNumber} ${route}`,
 				addressLine2: '',
-				city: addressComponents.find(comp => comp.types.includes('locality'))?.long_name || '',
-				state: addressComponents.find(comp => comp.types.includes('administrative_area_level_1'))?.long_name || '',
-				postalCode: addressComponents.find(comp => comp.types.includes('postal_code'))?.long_name || '',
-				country: addressComponents.find(comp => comp.types.includes('country'))?.long_name || '',
+				city:
+					addressComponents.find((comp) => comp.types.includes('locality'))
+						?.long_name || '',
+				state:
+					addressComponents.find((comp) =>
+						comp.types.includes('administrative_area_level_1'),
+					)?.long_name || '',
+				postalCode:
+					addressComponents.find((comp) => comp.types.includes('postal_code'))
+						?.long_name || '',
+				country:
+					addressComponents.find((comp) => comp.types.includes('country'))
+						?.long_name || '',
 				latitude: place.geometry?.location?.lat() || 0,
 				longitude: place.geometry?.location?.lng() || 0,
-				isManualAddress: false
+				isManualAddress: false,
 			};
 
 			onChange(address);

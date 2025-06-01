@@ -46,6 +46,13 @@ export interface ArrayFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   fields: FormFieldV1[] | ((values: Record<string, any>) => FormFieldV1[]);
   getArrayLength?: (values: any) => number;
   showIf?: (values: any) => boolean;
+  useAccordion?: boolean;
+  summaryFields?: { field: string; icon?: React.ReactNode; label?: string }[];
+  arrayLengthSelectorField?: string;
+  arrayLengthMax: number;
+  arrayLengthMin: number;
+  showAddButton?: boolean;
+  addButtonText?: string;
 }
 
 export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1;

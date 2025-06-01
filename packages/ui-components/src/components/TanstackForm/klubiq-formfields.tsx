@@ -1,4 +1,9 @@
-import { FormFieldV1, FormFieldApi, GroupFormFieldV1, ArrayFormFieldV1 } from './types';
+import {
+	FormFieldV1,
+	FormFieldApi,
+	GroupFormFieldV1,
+	ArrayFormFieldV1,
+} from './types';
 import {
 	TextField,
 	FormControl,
@@ -17,6 +22,13 @@ import {
 	InputAdornment,
 	IconButton,
 	TextareaAutosize,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	Box,
+	Tooltip,
+	useMediaQuery,
+	useTheme,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { GooglePlacesAutocomplete } from './GooglePlacesAutoComplete';
@@ -24,6 +36,9 @@ import { FileUpload } from './FileUpload';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import { getLocaleFormat } from '../../utils';
+import { ExpandMore, Delete, ContentCopy } from '@mui/icons-material';
+
+type ArrayFormFieldWithAccordion = ArrayFormFieldV1;
 
 export const KlubiqTSFormFields: React.FC<{
 	field: FormFieldApi;
@@ -73,7 +88,8 @@ export const KlubiqTSFormFields: React.FC<{
 		}
 		return value;
 	};
-
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const parseValue = (value: string) => {
 		if (!value) {
 			return '';
@@ -150,8 +166,15 @@ export const KlubiqTSFormFields: React.FC<{
 						minRows={fieldConfig.rows || 4}
 						style={{
 							width: '100%',
-							borderRadius: '4px',
+							borderRadius: '0.5rem',
+							cursor: 'text',
 							padding: '16.5px 14px',
+							font: 'inherit',
+							fontSize: 'inherit',
+							fontWeight: 'inherit',
+							lineHeight: 'inherit',
+							background: 'none',
+							letterSpacing: 'inherit',
 						}}
 					/>
 					{(error || fieldConfig.helperText) && (
@@ -378,7 +401,11 @@ export const KlubiqTSFormFields: React.FC<{
 					helperText={error || fieldConfig.helperText}
 					country={fieldConfig.addressConfig?.country}
 					types={fieldConfig.addressConfig?.types}
-					required={typeof fieldConfig.required === 'function' ? fieldConfig.required(form.state.values) : fieldConfig.required}
+					required={
+						typeof fieldConfig.required === 'function'
+							? fieldConfig.required(form.state.values)
+							: fieldConfig.required
+					}
 				/>
 			);
 
@@ -401,9 +428,10 @@ export const KlubiqTSFormFields: React.FC<{
 
 		case 'group': {
 			const groupConfig = fieldConfig as GroupFormFieldV1;
-			const subFields = typeof groupConfig.groupFields === 'function'
-				? groupConfig.groupFields(form.state.values)
-				: groupConfig.groupFields || [];
+			const subFields =
+				typeof groupConfig.groupFields === 'function'
+					? groupConfig.groupFields(form.state.values)
+					: groupConfig.groupFields || [];
 			return (
 				<Stack spacing={groupConfig.spacing || 2}>
 					{renderLabel()}
@@ -415,57 +443,56 @@ export const KlubiqTSFormFields: React.FC<{
 							groupConfig.layout === 'row' ? 'space-between' : undefined
 						}
 					>
-						{subFields.map(
-							(subField: FormFieldV1, index: number) => {
-								// Check showIf condition for subfield
-								if (subField.showIf) {
-									// Get the full form values
-									const { values: formValues } = form.state;
-									if (!subField.showIf(formValues)) {
-										return null;
-									}
+						{subFields.map((subField: FormFieldV1, index: number) => {
+							// Check showIf condition for subfield
+							if (subField.showIf) {
+								// Get the full form values
+								const { values: formValues } = form.state;
+								if (!subField.showIf(formValues)) {
+									return null;
 								}
-								return (
-									<Stack
-										key={`${subField.name}-${index}`}
-										direction={groupConfig.layout === 'row' ? 'row' : 'column'}
-										spacing={1}
-										sx={{
-											justifyContent:
-												groupConfig.layout === 'row'
-													? 'space-between'
-													: undefined,
-											width:
-												subField.width ||
-												(groupConfig.layout === 'row' ? '50%' : '100%'),
-											flex: subField.width
-												? `0 0 ${subField.width}`
-												: groupConfig.layout === 'row'
-													? '0 0 50%'
-													: '1 1 100%',
-										}}
-									>
-										<form.Field 
+							}
+							return (
+								<Stack
+									key={`${subField.name}-${index}`}
+									direction={groupConfig.layout === 'row' ? 'row' : 'column'}
+									spacing={1}
+									sx={{
+										justifyContent:
+											groupConfig.layout === 'row'
+												? 'space-between'
+												: undefined,
+										width:
+											subField.width ||
+											(groupConfig.layout === 'row' ? '50%' : '100%'),
+										flex: subField.width
+											? `0 0 ${subField.width}`
+											: groupConfig.layout === 'row'
+												? '0 0 50%'
+												: '1 1 100%',
+									}}
+								>
+									<form.Field
 										key={`ff-${fieldConfig.name}.${subField.name}-${index}`}
-										name={`${fieldConfig.name}.${subField.name}`}>
-											{(subFieldApi: FormFieldApi) => {
-												// Ensure value is never undefined
-												if (subFieldApi.state.value === undefined) {
-													subFieldApi.handleChange('');
-												}
-												return (
-													<KlubiqTSFormFields
-														field={subFieldApi}
-														form={form}
-														fieldConfig={subField}
-													/>
-												);
-											}}
-										</form.Field>
-									</Stack>
-								);
-							},
-						)}
+										name={`${fieldConfig.name}.${subField.name}`}
+									>
+										{(subFieldApi: FormFieldApi) => {
+											// Ensure value is never undefined
+											if (subFieldApi.state.value === undefined) {
+												subFieldApi.handleChange('');
+											}
+											return (
+												<KlubiqTSFormFields
+													field={subFieldApi}
+													form={form}
+													fieldConfig={subField}
+												/>
+											);
+										}}
+									</form.Field>
+								</Stack>
+							);
+						})}
 					</Stack>
 					{(error || fieldConfig.helperText) && (
 						<FormHelperText error={!!error}>
@@ -580,10 +607,11 @@ export const KlubiqTSFormFields: React.FC<{
 			);
 
 		case 'array': {
+			const arrayFieldConfig = fieldConfig as ArrayFormFieldWithAccordion;
 			// If there's a custom component, use it
-			if (fieldConfig.customComponent) {
-				if (typeof fieldConfig.customComponent === 'function') {
-					const CustomComponent = fieldConfig.customComponent as (
+			if (arrayFieldConfig.customComponent) {
+				if (typeof arrayFieldConfig.customComponent === 'function') {
+					const CustomComponent = arrayFieldConfig.customComponent as (
 						field: FormFieldApi,
 						fieldConfig: FormFieldV1,
 						form: any,
@@ -595,10 +623,10 @@ export const KlubiqTSFormFields: React.FC<{
 					return (
 						<Stack spacing={1}>
 							{renderLabel()}
-							{CustomComponent(field, fieldConfig, form)}
-							{(error || fieldConfig.helperText) && (
+							{CustomComponent(field, arrayFieldConfig, form)}
+							{(error || arrayFieldConfig.helperText) && (
 								<FormHelperText error={!!error}>
-									{error || fieldConfig.helperText}
+									{error || arrayFieldConfig.helperText}
 								</FormHelperText>
 							)}
 						</Stack>
@@ -607,48 +635,238 @@ export const KlubiqTSFormFields: React.FC<{
 				return (
 					<Stack spacing={1}>
 						{renderLabel()}
-						{fieldConfig.customComponent}
-						{(error || fieldConfig.helperText) && (
+						{arrayFieldConfig.customComponent}
+						{(error || arrayFieldConfig.helperText) && (
 							<FormHelperText error={!!error}>
-								{error || fieldConfig.helperText}
+								{error || arrayFieldConfig.helperText}
 							</FormHelperText>
 						)}
 					</Stack>
 				);
 			}
 
-			// Default array rendering if no custom component
-			const arrayValue = form.state.values[fieldConfig.name] ?? [{}];
-			const arrayLength = arrayValue.length;
+			const arrayValue = form.state.values[arrayFieldConfig.name] ?? [{}];
 
 			// Handlers
 			const handleAdd = () => {
-				form.setFieldValue(fieldConfig.name, [...arrayValue, {}]);
+				form.setFieldValue(arrayFieldConfig.name, [...arrayValue, {}]);
+				if (arrayFieldConfig.arrayLengthSelectorField) {
+					form.setFieldValue(
+						arrayFieldConfig.arrayLengthSelectorField,
+						(arrayValue.length + 1).toString(),
+					);
+				}
+				setExpanded(arrayValue.length);
 			};
 
 			const handleRemove = (idx: number) => {
-				if (arrayValue.length > 1) {
+				if (arrayValue.length > arrayFieldConfig.arrayLengthMin) {
 					form.setFieldValue(
-						fieldConfig.name,
+						arrayFieldConfig.name,
 						arrayValue.filter((_: any, i: number) => i !== idx),
 					);
+					if (arrayFieldConfig.arrayLengthSelectorField) {
+						form.setFieldValue(
+							arrayFieldConfig.arrayLengthSelectorField,
+							(arrayValue.length - 1).toString(),
+						);
+					}
+					setExpanded(false);
 				}
 			};
 
 			const handleClone = (idx: number) => {
-				const clone = { ...arrayValue[idx] };
-				form.setFieldValue(fieldConfig.name, [
-					...arrayValue.slice(0, idx + 1),
-					clone,
-					...arrayValue.slice(idx + 1),
-				]);
+				if (arrayValue.length < arrayFieldConfig.arrayLengthMax) {
+					const clone = {
+						unitNumber: `${arrayValue[idx].unitNumber}_clone`,
+						...arrayValue[idx],
+					};
+					form.setFieldValue(arrayFieldConfig.name, [
+						...arrayValue.slice(0, idx + 1),
+						clone,
+						...arrayValue.slice(idx + 1),
+					]);
+					if (arrayFieldConfig.arrayLengthSelectorField) {
+						form.setFieldValue(
+							arrayFieldConfig.arrayLengthSelectorField,
+							(arrayValue.length + 1).toString(),
+						);
+					}
+					setExpanded(idx + 1);
+				}
 			};
 
-			const { fields } = fieldConfig as ArrayFormFieldV1;
-			const subFields = typeof fields === 'function'
-				? fields(form.state.values)
-				: fields || [];
+			const { fields } = arrayFieldConfig as ArrayFormFieldV1;
+			const subFields =
+				typeof fields === 'function' ? fields(form.state.values) : fields || [];
+			const visibleSubFields = subFields.filter(
+				(subField: any) =>
+					!subField.showIf || subField.showIf(form.state.values),
+			);
 
+			// Accordion state
+			const [expanded, setExpanded] = useState<number | false>(0);
+
+			// Utility to get nested value from object by path (e.g., 'area.value')
+			function getNestedValue(obj: any, path: string): any {
+				if (path.includes('area.value')) {
+					const areaValue = obj?.area?.value ?? '';
+					const areaUnit = obj?.area?.unit ?? '';
+					return `${areaValue} ${areaUnit}`;
+				}
+				return path
+					.split('.')
+					.reduce(
+						(acc, part) =>
+							acc && acc[part] !== undefined ? acc[part] : undefined,
+						obj,
+					);
+			}
+
+			if (arrayFieldConfig.useAccordion) {
+				return (
+					<Stack spacing={2}>
+						{arrayValue.map((_: any, idx: number) => {
+							const unit = arrayValue[idx];
+							return (
+								<Accordion
+									key={idx}
+									expanded={expanded === idx}
+									onChange={(_, isExpanded) =>
+										setExpanded(isExpanded ? idx : false)
+									}
+								>
+									<AccordionSummary expandIcon={<ExpandMore />}>
+										<Stack
+											direction='row'
+											alignItems='center'
+											justifyContent='space-between'
+											spacing={2}
+											width='100%'
+										>
+											{/* Dynamically render summary fields */}
+											<Stack
+												direction='row'
+												alignItems='center'
+												justifyContent='start'
+												spacing={1}
+											>
+												{arrayFieldConfig.summaryFields?.map((summary, i) => {
+													const value = getNestedValue(unit, summary.field);
+													if (
+														value === undefined ||
+														value === '' ||
+														value === null
+													) {
+														return null;
+													}
+													return (
+														<Stack
+															key={i}
+															direction='row'
+															alignItems='center'
+															justifyContent='start'
+															spacing={0.5}
+														>
+															{summary.icon && (
+																<Tooltip title={summary.label} arrow>
+																	<div>{summary.icon}</div>
+																</Tooltip>
+															)}
+															<Typography variant='body2' fontWeight={600}>
+																{value}
+															</Typography>
+														</Stack>
+													);
+												})}
+											</Stack>
+											<Box
+												ml='auto'
+												display='flex'
+												justifyContent='end'
+												alignItems='center'
+												gap={1}
+											>
+												<Tooltip title={'Clone'} arrow>
+													<IconButton
+														onClick={(e) => {
+															e.stopPropagation();
+															handleClone(idx);
+														}}
+														size='small'
+														aria-label='Clone'
+													>
+														<ContentCopy fontSize='small' />
+													</IconButton>
+												</Tooltip>
+
+												<Tooltip title={'Remove'} arrow>
+													<IconButton
+														onClick={(e) => {
+															e.stopPropagation();
+															handleRemove(idx);
+														}}
+														size='small'
+														aria-label='Remove'
+														disabled={arrayValue.length === 1}
+													>
+														<Delete fontSize='small' />
+													</IconButton>
+												</Tooltip>
+											</Box>
+										</Stack>
+									</AccordionSummary>
+									<AccordionDetails>
+										<Stack
+											direction={isMobile ? 'column' : 'row'}
+											justifyContent='space-between'
+											flexWrap='wrap'
+											gap={1}
+										>
+											{visibleSubFields.map((subField: any, index: number) => (
+												<form.Field
+													key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
+													name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
+												>
+													{(subFieldApi: FormFieldApi) => (
+														<Box
+															sx={{
+																width: isMobile ? '100%' : '48%',
+																flex: isMobile ? '1 1 100%' : '0 0 48%',
+															}}
+														>
+															<KlubiqTSFormFields
+																field={subFieldApi}
+																form={form}
+																fieldConfig={subField}
+															/>
+														</Box>
+													)}
+												</form.Field>
+											))}
+										</Stack>
+									</AccordionDetails>
+								</Accordion>
+							);
+						})}
+						{arrayFieldConfig.showAddButton && (
+							<Stack direction='row' justifyContent='end'>
+								<Button
+									variant='klubiqMainButton'
+									color='primary'
+									onClick={handleAdd}
+									sx={{ mt: 2 }}
+								>
+									{arrayFieldConfig.addButtonText ||
+										`Add ${arrayFieldConfig.label}`}
+								</Button>
+							</Stack>
+						)}
+					</Stack>
+				);
+			}
+
+			// Default stack rendering
 			return (
 				<Stack spacing={2}>
 					{arrayValue.map((_: any, idx: number) => (
@@ -664,7 +882,7 @@ export const KlubiqTSFormFields: React.FC<{
 							}}
 						>
 							<Typography variant='subtitle2' sx={{ mb: 1 }}>
-								{fieldConfig.label} {arrayValue.length > 1 ? idx + 1 : ''}
+								{arrayFieldConfig.label} {arrayValue.length > 1 ? idx + 1 : ''}
 							</Typography>
 							<Stack
 								direction='row'
@@ -689,28 +907,25 @@ export const KlubiqTSFormFields: React.FC<{
 									Remove
 								</Button>
 							</Stack>
-							{subFields.map(
-								(subField: any, index: number) => (
-									<form.Field
-										key={`ff-${fieldConfig.name}[${idx}].${subField.name}-${index}`}
-										name={`${fieldConfig.name}[${idx}].${subField.name}`}
-									>
-										{(subFieldApi: FormFieldApi) => {
-											// Ensure value is never undefined
-											if (subFieldApi.state.value === undefined) {
-												subFieldApi.handleChange('');
-											}
-											return (
-												<KlubiqTSFormFields
-													field={subFieldApi}
-													form={form}
-													fieldConfig={subField}
-												/>
-											);
-										}}
-									</form.Field>
-								),
-							)}
+							{visibleSubFields.map((subField: any, index: number) => (
+								<form.Field
+									key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
+									name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
+								>
+									{(subFieldApi: FormFieldApi) => {
+										if (subFieldApi.state.value === undefined) {
+											subFieldApi.handleChange('');
+										}
+										return (
+											<KlubiqTSFormFields
+												field={subFieldApi}
+												form={form}
+												fieldConfig={subField}
+											/>
+										);
+									}}
+								</form.Field>
+							))}
 						</Stack>
 					))}
 					<Button
@@ -719,7 +934,7 @@ export const KlubiqTSFormFields: React.FC<{
 						onClick={handleAdd}
 						sx={{ mt: 2 }}
 					>
-						Add {fieldConfig.label}
+						Add {arrayFieldConfig.label}
 					</Button>
 				</Stack>
 			);

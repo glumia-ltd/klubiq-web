@@ -204,7 +204,7 @@ const Login = () => {
 									justifyContent='center'
 									direction='column'
 									width='50%'
-									gap={2}
+									gap={1}
 									sx={{
 										height: '100vh',
 										// width: {

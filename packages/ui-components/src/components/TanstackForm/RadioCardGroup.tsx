@@ -29,7 +29,7 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 				}
 				sx={{
 					cursor: 'pointer',
-					border: '1px solid',
+					border: value === option.value ? '2.5px solid' : '1px solid',
 					boxShadow: 'none',
 					borderColor:
 						value === option.value ? 'primary.light' : 'primary.contrastText',
