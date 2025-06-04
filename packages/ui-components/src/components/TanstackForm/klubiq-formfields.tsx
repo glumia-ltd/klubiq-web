@@ -3,6 +3,7 @@ import {
 	FormFieldApi,
 	GroupFormFieldV1,
 	ArrayFormFieldV1,
+	FormFieldV1WithArrayFlag,
 } from './types';
 import {
 	TextField,
@@ -34,74 +35,167 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { GooglePlacesAutocomplete } from './GooglePlacesAutoComplete';
 import { FileUpload } from './FileUpload';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getLocaleFormat } from '../../utils';
 import { ExpandMore, Delete, ContentCopy } from '@mui/icons-material';
 
 type ArrayFormFieldWithAccordion = ArrayFormFieldV1;
 
+// Add useDebounce hook
+const useDebounce = (callback: Function, delay: number) => {
+	const timeoutRef = useRef<NodeJS.Timeout>();
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+			}
+		};
+	}, []);
+	return (...args: any[]) => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+		timeoutRef.current = setTimeout(() => {
+			callback(...args);
+		}, delay);
+	};
+};
+
+// Helper functions for common operations
+const renderHelperText = (
+	error: string | undefined,
+	helperText: string | undefined,
+) =>
+	(error || helperText) && (
+		<FormHelperText error={!!error}>{error || helperText}</FormHelperText>
+	);
+
+const renderLabel = (
+	label: string | undefined,
+	required: boolean | undefined,
+	hasInlineLabel: boolean,
+) =>
+	!hasInlineLabel && label ? (
+		<Typography variant='subtitle1' component='label' gutterBottom>
+			{label}
+			{required && (
+				<Typography variant='subtitle2' component='span' sx={{ ml: 0.5 }}>
+					<i>(required)</i>
+				</Typography>
+			)}
+		</Typography>
+	) : null;
+
+const formatValue = (
+	value: any,
+	formatType?: string,
+	decimals?: number,
+	currencyCode?: string,
+) => {
+	if (!value && value !== 0) {
+		return '';
+	}
+	const num = parseFloat(value);
+	if (isNaN(num)) {
+		return '';
+	}
+
+	if (formatType) {
+		const formattedValue = getLocaleFormat(
+			value,
+			formatType as 'percent' | 'unit' | 'decimal' | 'currency',
+			decimals,
+			currencyCode,
+		);
+		return formattedValue.toLocaleString();
+	}
+	return value;
+};
+
+const parseValue = (value: string) => {
+	if (!value) return '';
+	const cleaned = value.replace(/[^\d.]/g, '');
+	const parts = cleaned.split('.');
+	if (parts.length > 2) {
+		return parts[0] + '.' + parts.slice(1).join('');
+	}
+	return cleaned;
+};
+
+// Add this above KlubiqTSFormFields
+const FieldWithDefaultValue: React.FC<{
+	subFieldApi: FormFieldApi;
+	subField: FormFieldV1;
+	form: any;
+	arrayFieldName?: string;
+	arrayIndex?: number;
+}> = ({ subFieldApi, subField, form, arrayFieldName, arrayIndex }) => {
+	// Only set default value on mount
+	useEffect(() => {
+		if (subFieldApi.state.value === undefined) {
+			subFieldApi.handleChange('');
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []); // Only run on mount
+	return (
+		<KlubiqTSFormFields
+			field={subFieldApi}
+			form={form}
+			fieldConfig={{
+				...subField,
+				_isArraySubField: true,
+				...(arrayFieldName !== undefined
+					? { _arrayFieldName: arrayFieldName }
+					: {}),
+				...(arrayIndex !== undefined ? { _arrayIndex: arrayIndex } : {}),
+			}}
+		/>
+	);
+};
+
 export const KlubiqTSFormFields: React.FC<{
 	field: FormFieldApi;
 	form: any;
-	fieldConfig: FormFieldV1;
+	fieldConfig: FormFieldV1WithArrayFlag;
 }> = ({ field, form, fieldConfig }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [perDecimalDisplayValue, setPerDecimalDisplayValue] = useState('');
 
-	const error = field.state.meta.isTouched && field.state.meta.errors[0];
+	const { value, meta } = field.state;
+	const { values, isDirty } = form.state;
+	const { label, required, disabled, helperText, type } = fieldConfig;
 
-	const hasInlineLabel =
-		'isInFieldLabel' in fieldConfig && fieldConfig.isInFieldLabel;
-	const hasRadioGroupDirection = Boolean(
-		'radioGroupDirection' in fieldConfig && fieldConfig.radioGroupDirection,
+	const isRequired =
+		typeof required === 'function' ? required(values) : required;
+	const hasInlineLabel = Boolean(
+		'isInFieldLabel' in fieldConfig && fieldConfig.isInFieldLabel,
 	);
+	const error = meta.isTouched && meta.errors[0];
 
-	const renderLabel = () =>
-		!hasInlineLabel && fieldConfig.label ? (
-			<Typography variant='subtitle1' component='label' gutterBottom>
-				{fieldConfig.label}
-				{fieldConfig.required && (
-					<Typography variant='subtitle2' component='span' sx={{ ml: 0.5 }}>
-						<i>(required)</i>
-					</Typography>
-				)}
-			</Typography>
-		) : null;
+	const isArraySubField = fieldConfig && fieldConfig._isArraySubField;
+	const arrayFieldName = fieldConfig._arrayFieldName;
+	const arrayIndex = fieldConfig._arrayIndex;
 
-	const formatValue = (value: any, formatType?: string) => {
-		if (!value && value !== 0) {
-			return '';
-		}
-		const num = parseFloat(value);
-		if (isNaN(num)) {
-			return '';
-		}
-
-		if (formatType) {
-			const formattedValue = getLocaleFormat(
-				value,
-				formatType as 'percent' | 'unit' | 'decimal' | 'currency',
-				fieldConfig.decimals,
-				fieldConfig.currencyCode,
-			);
-			return formattedValue.toLocaleString();
-		}
-		return value;
-	};
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const parseValue = (value: string) => {
-		if (!value) {
-			return '';
+
+	const debouncedValidate = useDebounce((fieldName: string) => {
+		form.validateField(fieldName);
+	}, 500);
+
+	// Common change handler
+	const handleChange = (newValue: any) => {
+		field.handleChange(newValue);
+		if (
+			isArraySubField &&
+			arrayFieldName !== undefined &&
+			arrayIndex !== undefined
+		) {
+			debouncedValidate(arrayFieldName);
 		}
-		const cleaned = value.replace(/[^\d.]/g, '');
-		const parts = cleaned.split('.');
-		if (parts.length > 2) {
-			return parts[0] + '.' + parts.slice(1).join('');
-		}
-		return cleaned;
 	};
 
+	// Early return for custom components
 	if (fieldConfig.customComponent) {
 		if (typeof fieldConfig.customComponent === 'function') {
 			const CustomComponent = fieldConfig.customComponent as (
@@ -111,58 +205,55 @@ export const KlubiqTSFormFields: React.FC<{
 			) => JSX.Element;
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					{CustomComponent(field, fieldConfig, form)}
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText error={!!error}>
-							{error || fieldConfig.helperText}
-						</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</Stack>
 			);
 		}
 		return (
 			<Stack spacing={1}>
-				{renderLabel()}
+				{renderLabel(label, isRequired, hasInlineLabel)}
 				{fieldConfig.customComponent}
-				{(error || fieldConfig.helperText) && (
-					<FormHelperText error={!!error}>
-						{error || fieldConfig.helperText}
-					</FormHelperText>
-				)}
+				{renderHelperText(error, helperText)}
 			</Stack>
 		);
 	}
 
-	switch (fieldConfig.type) {
+	// Common field props
+	const commonFieldProps = {
+		error: error ? true : undefined,
+		disabled,
+		onBlur: () => field.handleBlur(),
+	};
+
+	switch (type) {
 		case 'text':
 		case 'email':
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextField
 						fullWidth
-						type={'text'}
-						label={hasInlineLabel ? fieldConfig.label : undefined}
-						value={field.state.value ?? ''}
-						onChange={(e) => field.handleChange(e.target.value)}
-						onBlur={field.handleBlur}
-						error={!!error}
-						helperText={error || fieldConfig.helperText}
-						disabled={fieldConfig.disabled}
+						type='text'
+						label={hasInlineLabel ? label : undefined}
+						value={value ?? ''}
+						onChange={(e) => handleChange(e.target.value)}
+						{...commonFieldProps}
+						helperText={error || helperText}
 					/>
 				</Stack>
 			);
 		case 'textarea':
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextareaAutosize
-						aria-label={hasInlineLabel ? fieldConfig.label : undefined}
-						value={field.state.value ?? ''}
-						onChange={(e) => field.handleChange(e.target.value)}
-						onBlur={field.handleBlur}
-						disabled={fieldConfig.disabled}
+						aria-label={hasInlineLabel ? label : undefined}
+						value={value ?? ''}
+						onChange={(e) => handleChange(e.target.value)}
+						onBlur={() => field.handleBlur()}
+						disabled={disabled}
 						minRows={fieldConfig.rows || 4}
 						style={{
 							width: '100%',
@@ -175,35 +266,31 @@ export const KlubiqTSFormFields: React.FC<{
 							lineHeight: 'inherit',
 							background: 'none',
 							letterSpacing: 'inherit',
+							color: 'inherit',
+							border: error ? '1px solid #d32f2f' : '1px solid inherit',
 						}}
 					/>
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText error={!!error}>
-							{error || fieldConfig.helperText}
-						</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</Stack>
 			);
 		case 'number':
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextField
 						fullWidth
 						type='text'
-						label={hasInlineLabel ? fieldConfig.label : undefined}
-						value={field.state.value ?? ''}
+						label={hasInlineLabel ? label : undefined}
+						value={value ?? ''}
 						onChange={(e) => {
 							const { value } = e.target;
 							if (/^\d*$/.test(value)) {
 								const numValue = value === '' ? null : parseInt(value, 10);
-								field.handleChange(numValue);
+								handleChange(numValue);
 							}
 						}}
-						onBlur={field.handleBlur}
-						error={!!error}
-						helperText={error || fieldConfig.helperText}
-						disabled={fieldConfig.disabled}
+						{...commonFieldProps}
+						helperText={error || helperText}
 						InputProps={{
 							inputProps: {
 								inputMode: 'numeric',
@@ -218,32 +305,39 @@ export const KlubiqTSFormFields: React.FC<{
 					/>
 				</Stack>
 			);
-
 		case 'checkbox':
 			return (
 				<FormControl error={!!error}>
 					<FormControlLabel
 						control={
 							<Checkbox
-								checked={!!field.state.value}
-								onChange={(e) => field.handleChange(e.target.checked)}
-								onBlur={field.handleBlur}
-								disabled={fieldConfig.disabled}
+								checked={!!value}
+								onChange={(e) => {
+									handleChange(e.target.checked);
+									if (
+										isArraySubField &&
+										arrayFieldName !== undefined &&
+										arrayIndex !== undefined
+									) {
+										debouncedValidate(arrayFieldName);
+									}
+								}}
+								onBlur={() => {
+									field.handleBlur();
+								}}
+								disabled={disabled}
 							/>
 						}
-						label={hasInlineLabel ? fieldConfig.label : ''}
+						label={hasInlineLabel ? label : ''}
 					/>
-					{!hasInlineLabel && renderLabel()}
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText>{error || fieldConfig.helperText}</FormHelperText>
-					)}
+					{!hasInlineLabel && renderLabel(label, isRequired, hasInlineLabel)}
+					{renderHelperText(error, helperText)}
 				</FormControl>
 			);
-
 		case 'checkbox-group':
 			return (
 				<FormControl error={!!error} component='fieldset'>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<Stack
 						display='flex'
 						flexDirection={
@@ -259,85 +353,106 @@ export const KlubiqTSFormFields: React.FC<{
 									control={
 										<Checkbox
 											checked={
-												Array.isArray(field.state.value)
-													? field.state.value.includes(option.value)
+												Array.isArray(value)
+													? value.includes(option.value)
 													: false
 											}
 											onChange={(e) => {
 												const checked = e.target.checked;
-												let newValue = Array.isArray(field.state.value)
-													? [...field.state.value]
-													: [];
+												let newValue = Array.isArray(value) ? [...value] : [];
 												if (checked) {
 													newValue.push(option.value);
 												} else {
 													newValue = newValue.filter((v) => v !== option.value);
 												}
-												field.handleChange(newValue);
+												handleChange(newValue);
+												if (
+													isArraySubField &&
+													arrayFieldName !== undefined &&
+													arrayIndex !== undefined
+												) {
+													debouncedValidate(arrayFieldName);
+												}
 											}}
-											onBlur={field.handleBlur}
-											disabled={fieldConfig.disabled}
+											onBlur={() => {
+												field.handleBlur();
+											}}
+											disabled={disabled}
 										/>
 									}
 									label={option.label}
 								/>
 							))}
 					</Stack>
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText>{error || fieldConfig.helperText}</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</FormControl>
 			);
-
 		case 'radio':
 			return (
 				<FormControl error={!!error}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<RadioGroup
 						row={!!((fieldConfig as any)?.radioGroupDirection === 'row')}
-						value={field.state.value}
+						value={value}
 						onChange={(e) => {
-							field.handleChange(e.target.value);
+							handleChange(e.target.value);
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
+							}
 						}}
-						onBlur={field.handleBlur}
+						onBlur={() => {
+							field.handleBlur();
+						}}
 					>
 						{Array.isArray(fieldConfig.options)
 							? fieldConfig.options.map((option: any) => (
 									<FormControlLabel
 										key={option.value}
 										value={option.value}
-										control={<Radio disabled={fieldConfig.disabled} />}
+										control={<Radio disabled={disabled} />}
 										label={option.label}
 									/>
 								))
 							: null}
 					</RadioGroup>
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText>{error || fieldConfig.helperText}</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</FormControl>
 			);
-
 		case 'select':
 			const options = Array.isArray(fieldConfig.options)
 				? fieldConfig.options
 				: typeof fieldConfig.options === 'function'
-					? fieldConfig.options(form.state.values)
+					? fieldConfig.options(values)
 					: [];
 			return (
 				<FormControl fullWidth error={!!error}>
 					{hasInlineLabel ? (
-						<InputLabel>{fieldConfig.label}</InputLabel>
+						<InputLabel>{label}</InputLabel>
 					) : (
-						renderLabel()
+						renderLabel(label, isRequired, hasInlineLabel)
 					)}
 					<Select
-						value={field.state.value}
-						onChange={(e) => field.handleChange(e.target.value)}
-						onBlur={field.handleBlur}
-						label={hasInlineLabel ? fieldConfig.label : undefined}
+						value={value}
+						onChange={(e) => {
+							handleChange(e.target.value);
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
+							}
+						}}
+						onBlur={() => {
+							field.handleBlur();
+						}}
+						label={hasInlineLabel ? label : undefined}
 						multiple={!!fieldConfig.multiple}
-						disabled={fieldConfig.disabled}
+						disabled={disabled}
 					>
 						{options.map((option: any) => (
 							<MenuItem key={option.value} value={option.value}>
@@ -345,96 +460,130 @@ export const KlubiqTSFormFields: React.FC<{
 							</MenuItem>
 						))}
 					</Select>
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText>{error || fieldConfig.helperText}</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</FormControl>
 			);
-
 		case 'range':
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<Slider
-						value={field.state.value ?? fieldConfig.min ?? 0}
-						onChange={(_, value) => field.handleChange(value)}
-						onBlur={field.handleBlur}
+						value={value ?? fieldConfig.min ?? 0}
+						onChange={(_, newValue) => {
+							handleChange(newValue);
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
+							}
+						}}
+						onBlur={() => {
+							field.handleBlur();
+						}}
 						min={fieldConfig.min}
 						max={fieldConfig.max}
 						step={fieldConfig.step}
-						disabled={fieldConfig.disabled}
+						disabled={disabled}
 						valueLabelDisplay='auto'
-						aria-labelledby={fieldConfig.label}
+						aria-labelledby={label}
 					/>
-					{(error || fieldConfig.helperText) && (
-						<Typography variant='caption' color='error'>
-							{error || fieldConfig.helperText}
-						</Typography>
-					)}
+					{renderHelperText(error, helperText)}
 				</Stack>
 			);
-
 		case 'date':
 			return (
 				<DatePicker
-					label={fieldConfig.label}
-					value={field.state.value}
-					onChange={(newValue) => field.handleChange(newValue)}
+					label={label}
+					value={value}
+					onChange={(newValue) => {
+						handleChange(newValue);
+						if (
+							isArraySubField &&
+							arrayFieldName !== undefined &&
+							arrayIndex !== undefined
+						) {
+							debouncedValidate(arrayFieldName);
+						}
+					}}
 					slotProps={{
 						textField: {
 							fullWidth: true,
 							error: !!error,
-							helperText: error || fieldConfig.helperText,
+							helperText: error || helperText,
 						},
 					}}
 				/>
 			);
-
 		case 'address':
 			return (
 				<GooglePlacesAutocomplete
 					apiKey={fieldConfig.addressConfig?.apiKey ?? ''}
-					value={field.state.value}
-					onChange={field.handleChange}
-					onBlur={field.handleBlur}
+					value={value}
+					onChange={(newValue) => {
+						handleChange(newValue);
+						if (
+							isArraySubField &&
+							arrayFieldName !== undefined &&
+							arrayIndex !== undefined
+						) {
+							debouncedValidate(arrayFieldName);
+						}
+					}}
+					onBlur={() => {
+						field.handleBlur();
+					}}
 					error={!!error}
-					helperText={error || fieldConfig.helperText}
+					helperText={error || helperText}
 					country={fieldConfig.addressConfig?.country}
 					types={fieldConfig.addressConfig?.types}
 					required={
 						typeof fieldConfig.required === 'function'
-							? fieldConfig.required(form.state.values)
+							? fieldConfig.required(values)
 							: fieldConfig.required
 					}
 				/>
 			);
-
 		case 'file':
 			return (
 				<FileUpload
 					accept={fieldConfig.fileConfig?.accept}
 					maxSize={fieldConfig.fileConfig?.maxSize}
 					multiple={fieldConfig.fileConfig?.multiple}
-					value={field.state.value}
-					onChange={field.handleChange}
-					onBlur={field.handleBlur}
+					value={value}
+					onChange={(newValue) => {
+						handleChange(newValue);
+						if (
+							isArraySubField &&
+							arrayFieldName !== undefined &&
+							arrayIndex !== undefined
+						) {
+							debouncedValidate(arrayFieldName);
+						}
+					}}
+					onBlur={() => {
+						field.handleBlur();
+					}}
 					error={!!error}
-					helperText={error || fieldConfig.helperText}
+					helperText={error || helperText}
 					subtitle={fieldConfig.fileConfig?.subtitle}
 					caption={fieldConfig.fileConfig?.caption}
 					tooltipMessages={fieldConfig.fileConfig?.tooltipMessages}
+					onUpload={fieldConfig.fileConfig?.onUpload}
+					onDelete={fieldConfig.fileConfig?.onDelete}
+					uploadButtonText={fieldConfig.fileConfig?.uploadButtonText}
 				/>
 			);
-
 		case 'group': {
 			const groupConfig = fieldConfig as GroupFormFieldV1;
 			const subFields =
 				typeof groupConfig.groupFields === 'function'
-					? groupConfig.groupFields(form.state.values)
+					? groupConfig.groupFields(values)
 					: groupConfig.groupFields || [];
 			return (
 				<Stack spacing={groupConfig.spacing || 2}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<Stack
 						direction={groupConfig.layout === 'column' ? 'column' : 'row'}
 						flexWrap='wrap'
@@ -447,8 +596,7 @@ export const KlubiqTSFormFields: React.FC<{
 							// Check showIf condition for subfield
 							if (subField.showIf) {
 								// Get the full form values
-								const { values: formValues } = form.state;
-								if (!subField.showIf(formValues)) {
+								if (!subField.showIf(values)) {
 									return null;
 								}
 							}
@@ -462,61 +610,65 @@ export const KlubiqTSFormFields: React.FC<{
 											groupConfig.layout === 'row'
 												? 'space-between'
 												: undefined,
-										width:
-											subField.width ||
-											(groupConfig.layout === 'row' ? '50%' : '100%'),
-										flex: subField.width
-											? `0 0 ${subField.width}`
-											: groupConfig.layout === 'row'
-												? '0 0 50%'
-												: '1 1 100%',
+
+										width: isMobile
+											? '100%'
+											: subField.width ||
+												(groupConfig.layout === 'row' ? '50%' : '100%'),
+										flex: isMobile
+											? '1 1 100%'
+											: subField.width
+												? `0 0 ${subField.width}`
+												: groupConfig.layout === 'row'
+													? '0 0 50%'
+													: '1 1 100%',
 									}}
 								>
 									<form.Field
 										key={`ff-${fieldConfig.name}.${subField.name}-${index}`}
 										name={`${fieldConfig.name}.${subField.name}`}
 									>
-										{(subFieldApi: FormFieldApi) => {
-											// Ensure value is never undefined
-											if (subFieldApi.state.value === undefined) {
-												subFieldApi.handleChange('');
-											}
-											return (
-												<KlubiqTSFormFields
-													field={subFieldApi}
-													form={form}
-													fieldConfig={subField}
-												/>
-											);
-										}}
+										{(subFieldApi: FormFieldApi) => (
+											<FieldWithDefaultValue
+												subFieldApi={subFieldApi}
+												subField={subField}
+												form={form}
+											/>
+										)}
 									</form.Field>
 								</Stack>
 							);
 						})}
 					</Stack>
-					{(error || fieldConfig.helperText) && (
-						<FormHelperText error={!!error}>
-							{error || fieldConfig.helperText}
-						</FormHelperText>
-					)}
+					{renderHelperText(error, helperText)}
 				</Stack>
 			);
 		}
-
 		case 'password':
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextField
 						fullWidth
 						type={showPassword ? 'text' : 'password'}
-						label={hasInlineLabel ? fieldConfig.label : undefined}
-						value={field.state.value}
-						onChange={(e) => field.handleChange(e.target.value)}
-						onBlur={field.handleBlur}
+						label={hasInlineLabel ? label : undefined}
+						value={value}
+						onChange={(e) => {
+							handleChange(e.target.value);
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
+							}
+						}}
+						onBlur={() => {
+							field.handleBlur();
+						}}
 						error={!!error}
-						helperText={error || fieldConfig.helperText}
-						disabled={fieldConfig.disabled}
+						helperText={error || helperText}
+						disabled={disabled}
 						InputProps={{
 							endAdornment: (
 								<InputAdornment position='end'>
@@ -533,21 +685,20 @@ export const KlubiqTSFormFields: React.FC<{
 					/>
 				</Stack>
 			);
-
 		case 'decimal':
 		case 'percent':
 			useEffect(() => {
-				if (!field.state.value && !form.state.isDirty) {
+				if (!value && !isDirty) {
 					setPerDecimalDisplayValue('');
 				}
-			}, [form.state.isDirty, field.state.value]);
+			}, [isDirty, value]);
 
 			return (
 				<Stack spacing={1}>
-					{renderLabel()}
+					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextField
 						fullWidth
-						label={hasInlineLabel ? fieldConfig.label : undefined}
+						label={hasInlineLabel ? label : undefined}
 						value={
 							fieldConfig.readonly
 								? (formatValue(
@@ -555,7 +706,12 @@ export const KlubiqTSFormFields: React.FC<{
 										fieldConfig.formatType,
 									) ?? '')
 								: perDecimalDisplayValue ||
-									formatValue(field.state.value, fieldConfig.formatType) ||
+									formatValue(
+										value,
+										fieldConfig.formatType,
+										fieldConfig.decimals,
+										fieldConfig.currencyCode,
+									) ||
 									''
 						}
 						onChange={(e) => {
@@ -563,31 +719,44 @@ export const KlubiqTSFormFields: React.FC<{
 							const unformatted = parseValue(inputValue);
 							if (inputValue === '' || /^-?\d*\.?\d*$/.test(unformatted)) {
 								setPerDecimalDisplayValue(unformatted);
-								field.handleChange(unformatted);
+								handleChange(unformatted);
+							}
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
 							}
 						}}
 						onFocus={() => {
-							if (field.state.value) {
-								const unformatted = parseValue(field.state.value);
+							if (value) {
+								const unformatted = parseValue(value);
 								setPerDecimalDisplayValue(unformatted);
 							}
 						}}
 						onBlur={(e) => {
 							field.handleBlur();
+
 							const value = parseValue(e.target.value);
 							if (value && value !== '') {
 								setPerDecimalDisplayValue(
-									formatValue(value, fieldConfig.formatType),
+									formatValue(
+										value,
+										fieldConfig.formatType,
+										fieldConfig.decimals,
+										fieldConfig.currencyCode,
+									),
 								);
-								field.handleChange(value);
+								handleChange(value);
 							} else {
 								setPerDecimalDisplayValue('');
-								field.handleChange('');
+								handleChange('');
 							}
 						}}
 						error={!!error}
-						helperText={error || fieldConfig.helperText}
-						disabled={fieldConfig.disabled}
+						helperText={error || helperText}
+						disabled={disabled}
 						InputProps={{
 							...(fieldConfig.adornment && {
 								startAdornment: fieldConfig.adornment.prefix && (
@@ -605,51 +774,65 @@ export const KlubiqTSFormFields: React.FC<{
 					/>
 				</Stack>
 			);
-
 		case 'array': {
 			const arrayFieldConfig = fieldConfig as ArrayFormFieldWithAccordion;
-			// If there's a custom component, use it
-			if (arrayFieldConfig.customComponent) {
-				if (typeof arrayFieldConfig.customComponent === 'function') {
-					const CustomComponent = arrayFieldConfig.customComponent as (
-						field: FormFieldApi,
-						fieldConfig: FormFieldV1,
-						form: any,
-					) => JSX.Element;
-					// Ensure value is never undefined
-					if (field.state.value === undefined) {
-						field.handleChange([]);
-					}
-					return (
-						<Stack spacing={1}>
-							{renderLabel()}
-							{CustomComponent(field, arrayFieldConfig, form)}
-							{(error || arrayFieldConfig.helperText) && (
-								<FormHelperText error={!!error}>
-									{error || arrayFieldConfig.helperText}
-								</FormHelperText>
-							)}
-						</Stack>
-					);
+			const arrayValue = values[arrayFieldConfig.name] ?? [];
+			const arrayLength =
+				typeof arrayFieldConfig.getArrayLength === 'function'
+					? arrayFieldConfig.getArrayLength(values)
+					: 1;
+			useEffect(() => {
+				if (!Array.isArray(arrayValue)) {
+					return;
 				}
-				return (
-					<Stack spacing={1}>
-						{renderLabel()}
-						{arrayFieldConfig.customComponent}
-						{(error || arrayFieldConfig.helperText) && (
-							<FormHelperText error={!!error}>
-								{error || arrayFieldConfig.helperText}
-							</FormHelperText>
-						)}
-					</Stack>
-				);
-			}
 
-			const arrayValue = form.state.values[arrayFieldConfig.name] ?? [{}];
+				let newArray = [...arrayValue];
+				const currentLength = arrayValue.length;
+				const targetLength = Number(arrayLength) || 1;
+
+				if (currentLength < targetLength) {
+					// Add new items
+					const defaultItem =
+						typeof arrayFieldConfig.getDefaultItem === 'function'
+							? arrayFieldConfig.getDefaultItem(arrayValue)
+							: arrayFieldConfig.defaultItem || {};
+					for (let i = currentLength; i < targetLength; i++) {
+						let item = { ...defaultItem };
+						if ('unitNumber' in item) {
+							item.unitNumber = `Unit ${i + 1}`;
+						}
+						newArray.push(item);
+					}
+					form.setFieldValue(arrayFieldConfig.name, newArray);
+				} else if (currentLength > targetLength) {
+					// Remove items from the end
+					newArray = newArray.slice(0, targetLength);
+					form.setFieldValue(arrayFieldConfig.name, newArray);
+				}
+				// eslint-disable-next-line react-hooks/exhaustive-deps
+			}, [arrayLength]);
+
+			// Accordion state
+			const [expanded, setExpanded] = useState<number | false>(0);
 
 			// Handlers
 			const handleAdd = () => {
-				form.setFieldValue(arrayFieldConfig.name, [...arrayValue, {}]);
+				let newItem = {};
+				if (typeof arrayFieldConfig.getDefaultItem === 'function') {
+					newItem = arrayFieldConfig.getDefaultItem(arrayValue);
+				} else if (arrayFieldConfig.defaultItem) {
+					// fallback to static defaultItem if provided
+					newItem = { ...arrayFieldConfig.defaultItem };
+					// Optionally set a unique unitNumber
+					if ('unitNumber' in newItem) {
+						newItem.unitNumber = `Unit ${arrayValue.length + 1}`;
+					}
+				} else {
+					// fallback to empty object
+					newItem = {};
+				}
+
+				form.setFieldValue(arrayFieldConfig.name, [...arrayValue, newItem]);
 				if (arrayFieldConfig.arrayLengthSelectorField) {
 					form.setFieldValue(
 						arrayFieldConfig.arrayLengthSelectorField,
@@ -698,21 +881,17 @@ export const KlubiqTSFormFields: React.FC<{
 
 			const { fields } = arrayFieldConfig as ArrayFormFieldV1;
 			const subFields =
-				typeof fields === 'function' ? fields(form.state.values) : fields || [];
+				typeof fields === 'function' ? fields(values) : fields || [];
 			const visibleSubFields = subFields.filter(
-				(subField: any) =>
-					!subField.showIf || subField.showIf(form.state.values),
+				(subField: any) => !subField.showIf || subField.showIf(values),
 			);
-
-			// Accordion state
-			const [expanded, setExpanded] = useState<number | false>(0);
 
 			// Utility to get nested value from object by path (e.g., 'area.value')
 			function getNestedValue(obj: any, path: string): any {
 				if (path.includes('area.value')) {
-					const areaValue = obj?.area?.value ?? '';
-					const areaUnit = obj?.area?.unit ?? '';
-					return `${areaValue} ${areaUnit}`;
+					const areaValue = obj?.area?.value ?? undefined;
+					const areaUnit = obj?.area?.unit ?? undefined;
+					return areaValue ? `${areaValue} ${areaUnit}` : undefined;
 				}
 				return path
 					.split('.')
@@ -743,6 +922,8 @@ export const KlubiqTSFormFields: React.FC<{
 											justifyContent='space-between'
 											spacing={2}
 											width='100%'
+											flexWrap='wrap'
+											gap={1}
 										>
 											{/* Dynamically render summary fields */}
 											<Stack
@@ -750,6 +931,9 @@ export const KlubiqTSFormFields: React.FC<{
 												alignItems='center'
 												justifyContent='start'
 												spacing={1}
+												flexWrap='wrap'
+												flex={1}
+												minWidth={0} // Allows text truncation
 											>
 												{arrayFieldConfig.summaryFields?.map((summary, i) => {
 													const value = getNestedValue(unit, summary.field);
@@ -767,51 +951,72 @@ export const KlubiqTSFormFields: React.FC<{
 															alignItems='center'
 															justifyContent='start'
 															spacing={0.5}
+															sx={{
+																maxWidth: '100%',
+																'& .MuiTypography-root': {
+																	overflow: 'hidden',
+																	textOverflow: 'ellipsis',
+																	whiteSpace: 'nowrap',
+																},
+															}}
 														>
 															{summary.icon && (
 																<Tooltip title={summary.label} arrow>
 																	<div>{summary.icon}</div>
 																</Tooltip>
 															)}
-															<Typography variant='body2' fontWeight={600}>
-																{value}
-															</Typography>
+															<Tooltip title={value} arrow>
+																<Typography variant='body2' fontWeight={600}>
+																	{value}
+																</Typography>
+															</Tooltip>
 														</Stack>
 													);
 												})}
 											</Stack>
 											<Box
-												ml='auto'
 												display='flex'
 												justifyContent='end'
 												alignItems='center'
 												gap={1}
+												flexShrink={0} // Prevents buttons from shrinking
 											>
 												<Tooltip title={'Clone'} arrow>
-													<IconButton
-														onClick={(e) => {
-															e.stopPropagation();
-															handleClone(idx);
-														}}
-														size='small'
-														aria-label='Clone'
-													>
-														<ContentCopy fontSize='small' />
-													</IconButton>
+													<span>
+														<IconButton
+															onClick={(e) => {
+																e.stopPropagation();
+																handleClone(idx);
+															}}
+															size='small'
+															aria-label='Clone'
+															disabled={
+																arrayValue.length ===
+																arrayFieldConfig.arrayLengthMax
+															}
+														>
+															<ContentCopy fontSize='small' />
+														</IconButton>
+													</span>
 												</Tooltip>
 
 												<Tooltip title={'Remove'} arrow>
-													<IconButton
-														onClick={(e) => {
-															e.stopPropagation();
-															handleRemove(idx);
-														}}
-														size='small'
-														aria-label='Remove'
-														disabled={arrayValue.length === 1}
-													>
-														<Delete fontSize='small' />
-													</IconButton>
+													<span>
+														<IconButton
+															onClick={(e) => {
+																e.stopPropagation();
+																handleRemove(idx);
+															}}
+															size='small'
+															aria-label='Remove'
+															disabled={
+																arrayValue.length ===
+																arrayFieldConfig.arrayLengthMin
+															}
+														>
+															<Delete fontSize='small' />
+														</IconButton>
+													</span>
 												</Tooltip>
 											</Box>
 										</Stack>
@@ -825,8 +1030,31 @@ export const KlubiqTSFormFields: React.FC<{
 										>
 											{visibleSubFields.map((subField: any, index: number) => (
 												<form.Field
-													key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
+													key={index}
 													name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
+													validators={{
+														onChange: ({ value }: { value: any }) => {
+															if (
+																subField.required &&
+																(value === undefined ||
+																	value === null ||
+																	value === '')
+															) {
+																return `${subField.label} is required`;
+															}
+															if (subField.validation?.schema) {
+																try {
+																	subField.validation.schema.parse(value);
+																} catch (e: any) {
+																	return (
+																		e.errors?.[0]?.message ||
+																		`${subField.label} is invalid`
+																	);
+																}
+															}
+															return undefined;
+														},
+													}}
 												>
 													{(subFieldApi: FormFieldApi) => (
 														<Box
@@ -835,10 +1063,12 @@ export const KlubiqTSFormFields: React.FC<{
 																flex: isMobile ? '1 1 100%' : '0 0 48%',
 															}}
 														>
-															<KlubiqTSFormFields
-																field={subFieldApi}
+															<FieldWithDefaultValue
+																subFieldApi={subFieldApi}
+																subField={subField}
 																form={form}
-																fieldConfig={subField}
+																arrayFieldName={arrayFieldConfig.name}
+																arrayIndex={idx}
 															/>
 														</Box>
 													)}
@@ -857,8 +1087,7 @@ export const KlubiqTSFormFields: React.FC<{
 									onClick={handleAdd}
 									sx={{ mt: 2 }}
 								>
-									{arrayFieldConfig.addButtonText ||
-										`Add ${arrayFieldConfig.label}`}
+									{arrayFieldConfig.addButtonText || `Add ${label}`}
 								</Button>
 							</Stack>
 						)}
@@ -882,7 +1111,7 @@ export const KlubiqTSFormFields: React.FC<{
 							}}
 						>
 							<Typography variant='subtitle2' sx={{ mb: 1 }}>
-								{arrayFieldConfig.label} {arrayValue.length > 1 ? idx + 1 : ''}
+								{label} {arrayValue.length > 1 ? idx + 1 : ''}
 							</Typography>
 							<Stack
 								direction='row'
@@ -911,19 +1140,37 @@ export const KlubiqTSFormFields: React.FC<{
 								<form.Field
 									key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
 									name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
-								>
-									{(subFieldApi: FormFieldApi) => {
-										if (subFieldApi.state.value === undefined) {
-											subFieldApi.handleChange('');
-										}
-										return (
-											<KlubiqTSFormFields
-												field={subFieldApi}
-												form={form}
-												fieldConfig={subField}
-											/>
-										);
+									validators={{
+										onChange: ({ value }: { value: any }) => {
+											if (
+												subField.required &&
+												(value === undefined || value === null || value === '')
+											) {
+												return `${subField.label} is required`;
+											}
+											if (subField.validation?.schema) {
+												try {
+													subField.validation.schema.parse(value);
+												} catch (e: any) {
+													return (
+														e.errors?.[0]?.message ||
+														`${subField.label} is invalid`
+													);
+												}
+											}
+											return undefined;
+										},
 									}}
+								>
+									{(subFieldApi: FormFieldApi) => (
+										<FieldWithDefaultValue
+											subFieldApi={subFieldApi}
+											subField={subField}
+											form={form}
+											arrayFieldName={arrayFieldConfig.name}
+											arrayIndex={idx}
+										/>
+									)}
 								</form.Field>
 							))}
 						</Stack>
@@ -934,7 +1181,7 @@ export const KlubiqTSFormFields: React.FC<{
 						onClick={handleAdd}
 						sx={{ mt: 2 }}
 					>
-						Add {arrayFieldConfig.label}
+						Add {label}
 					</Button>
 				</Stack>
 			);

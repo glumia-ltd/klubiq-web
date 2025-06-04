@@ -53,10 +53,24 @@ export interface ArrayFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   arrayLengthMin: number;
   showAddButton?: boolean;
   addButtonText?: string;
+  getDefaultItem?: (currentArray: any[]) => any;
+  defaultItem?: Record<string, any>;
 }
 
 export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1;
-
+export interface StorageUploadResult {
+  url: string;
+  public_id?: string;
+  original_filename?: string;
+  secure_url?: string;
+  format?: string;
+  resource_type?: string;
+  created_at?: string;
+  bytes?: number;
+  secure?: boolean;
+  version?: number;
+  signature?: string;
+}
 export interface BaseFormFieldV1 {
   name: string;
   label: string;
@@ -106,6 +120,9 @@ export interface BaseFormFieldV1 {
       sizeLimit?: string;
       upload?: string;
     };
+    onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
+    onDelete?: (publicId: string) => Promise<void>;
+    uploadButtonText?: string;
   };
   addressConfig?: {
     label?: string;
@@ -150,4 +167,18 @@ export interface DynamicTanstackFormProps {
   isMultiStep?: boolean;
   onStepChange?: (currentStep: number) => void;
   formWidth?: string | number;
+  showTopBackButton?: boolean;
+  topBackButton?: {
+    text?: string;
+    onClick?: () => void;
+    variant?: 'text' | 'contained';
+    startIcon?: ReactNode;
+    showDialog?: boolean;
+    dialogTitle?: string;
+    dialogDescription?: string;
+    dialogConfirmButtonText?: string;
+    dialogCancelButtonText?: string;
+  };
 }
+// For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
+export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };

@@ -130,7 +130,28 @@ export default ({ mode }: { mode: any }) => {
 
 	// https://vitejs.dev/config/
 	return defineConfig({
-		plugins: [react(), VitePWA(manifestForPlugin)],
+		plugins: [
+			react(),
+			VitePWA({
+				...manifestForPlugin,
+				devOptions: {
+					enabled: true,
+					type: 'module',
+					navigateFallback: 'index.html',
+				},
+				includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+				manifest: {
+					...manifestForPlugin.manifest,
+					start_url: '/',
+					scope: '/',
+					display: 'standalone',
+					orientation: 'portrait',
+					theme_color: '#002147',
+					background_color: '#FFFFFF',
+					icons: (manifestForPlugin.manifest as any)?.icons || [],
+				},
+			}),
+		],
 		optimizeDeps: {
 			include: [
 				'@klubiq/ui-components',
@@ -153,14 +174,25 @@ export default ({ mode }: { mode: any }) => {
 			port: 5173,
 			host: true,
 			strictPort: true,
-			allowedHosts: ['localhost', '127.0.0.1', '0.0.0.0' ],
+			allowedHosts: ['localhost', '127.0.0.1', '0.0.0.0'],
 			open: true,
+			hmr: {
+				protocol: 'ws',
+				host: 'localhost',
+				port: 5173,
+				clientPort: 5173,
+				timeout: 5000,
+			},
 			proxy: {
 				'/api': {
 					target: process.env.VITE_BASE_URL_DEV,
 					changeOrigin: true,
 					secure: false,
+					ws: true,
 				},
+			},
+			warmup: {
+				clientFiles: ['./src/helpers/*.ts', './src/helpers/countries-meta.json', './src/helpers/utils.tsx'],
 			},
 		},
 	});

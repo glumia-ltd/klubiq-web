@@ -3,7 +3,7 @@ import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
-import { dashboardEndpoints } from '../helpers/endpoints';
+import { dashboardEndpoints, fileEndpoints } from '../helpers/endpoints';
 const baseURL = 
 	import.meta.env.VITE_NODE_ENV !== 'local'
 		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
@@ -12,6 +12,9 @@ const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_lp_app-web';
 const DOWNLOAD_ENDPOINTS =[
 	dashboardEndpoints.downloadReport(),
+]
+const UPLOAD_ENDPOINTS = [
+	fileEndpoints.uploadImages(),
 ]
 // const skippedEndpoints = [
 // 	authEndpoints.login(),
@@ -46,7 +49,9 @@ const DOWNLOAD_ENDPOINTS =[
 function AxiosConfig(config: any) {
 	// const token = getSessionToken()?.stsTokenManager?.accessToken;
 	config.headers = {};
-	config.headers['content-type'] = 'application/json';
+	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
+		config.headers['content-type'] = 'application/json';
+	}
 	config.headers['x-correlation-id'] = crypto.randomUUID();
 	config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 	config.headers['x-client-tz-name'] =

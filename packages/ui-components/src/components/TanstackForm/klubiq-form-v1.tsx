@@ -16,6 +16,11 @@ import {
 	Stack,
 	stepConnectorClasses,
 	StepConnector,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
 } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
@@ -165,7 +170,9 @@ function isFieldVisible(
 	field: FormFieldV1,
 	values: Record<string, any>,
 ): boolean {
-	if (field.showIf && !field.showIf(values)) return false;
+	if (field.showIf && !field.showIf(values)) {
+   return false;
+ }
 	if (field.dependsOn && Array.isArray(field.dependsOn)) {
 		return field.dependsOn.every((dep) => {
 			const actual = values[dep.field];
@@ -198,10 +205,23 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	isMultiStep = false,
 	onStepChange,
 	formWidth = '100%',
+	showTopBackButton = false,
+	topBackButton = {
+		text: 'Back',
+		onClick: () => {},
+		variant: 'contained',
+		startIcon: <ArrowBack />,
+		showDialog: false,
+		dialogTitle: 'Are you sure you want to leave?',
+		dialogDescription: 'You have unsaved changes. If you leave, your changes will be lost.',
+		dialogConfirmButtonText: 'Leave Without Saving',
+		dialogCancelButtonText: 'Cancel',
+	},
 }) => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
 	const [stepValidations, setStepValidations] = useState<boolean[]>([]);
+	const [returnDialogOpen, setReturnDialogOpen] = useState(false);
 	const normalizedFields = Array.isArray(fields) ? fields : [fields];
 	const steps = isMultiStep
 		? (normalizedFields as FormStep[])
@@ -245,9 +265,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					typeof fields === 'function'
 						? fields(form.state.values)
 						: fields || [];
-				const visibleSubFields = subFields.filter((subField) =>
-					isFieldVisible(subField, form.state.values),
-				);
+				const visibleSubFields = subFields.filter((subField) => {
+					return isFieldVisible(subField, form.state.values);
+				});
 				const arraySchema = z.array(
 					z.object(
 						visibleSubFields.reduce(
@@ -423,19 +443,27 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const form = useForm({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
+			console.log('Form submission started with values:', value);
 			try {
 				await onSubmit(value);
-			} catch (error) {}
+				console.log('Form submission completed successfully');
+			} catch (error) {
+				console.error('Form submission error:', error);
+				throw error;
+			}
 		},
 		validators: {
 			onSubmit: ({ value }) => {
+				console.log('Validating form submission...');
 				// Only validate the current step for submission
 				const stepFields = steps[currentStep].fields;
 				const stepSchema = createStepSchema(stepFields);
 				try {
 					stepSchema.parse(value);
+					console.log('Form validation passed');
 					return undefined;
 				} catch (error) {
+					console.error('Form validation failed:', error);
 					if (error instanceof z.ZodError) {
 						return error.errors[0].message;
 					}
@@ -535,7 +563,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		} catch (error) {
 			if (error instanceof z.ZodError) {
 				error.errors.forEach((err) => {
-					console.log('Zod validation errors:', error.errors);
 					const fieldName = String(err.path[0]);
 					const field = form.getFieldMeta(fieldName);
 					if (field) {
@@ -551,14 +578,25 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			return false;
 		}
 	};
-	const [_, forceUpdate] = useState(0);
-	// Add validation effect
+
+	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+		event.preventDefault();
+		event.returnValue = true;
+	};
+
 	useEffect(() => {
-		const isValid = validateCurrentStep();
-		// Force form validation after step validation
-		form.validate('change');
-		forceUpdate((prev) => prev + 1);
-	}, [form.state.values, form.state.errors, form.state.fieldMeta, currentStep]);
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
+		// Remove the event listener when the component unmounts
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		};
+	}, []);
+
+	// Only depend on form.state.values and currentStep
+	useEffect(() => {
+		validateCurrentStep();
+	}, [form.state.values, currentStep]);
 
 	const validateStep = (stepIndex: number) => {
 		const stepFields = steps[stepIndex].fields;
@@ -606,7 +644,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	};
 
 	const renderFields = (fields: FormFieldV1[]) => {
-		return fields.map((field) => {
+		return fields.map((field, idx) => {
 			if (field.showIf && !field.showIf(form.state.values)) {
 				return null;
 			}
@@ -618,21 +656,46 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					form.setFieldValue(field.name, []);
 				}
 				const arrayValue = form.state.values[field.name] || [];
-				const arrayLength =
-					typeof (field as any).getArrayLength === 'function'
-						? (field as any).getArrayLength(form.state.values)
-						: arrayValue.length || 1;
-
-				// Ensure the array is the correct length
-				if (arrayValue.length !== arrayLength) {
-					form.setFieldValue(
-						field.name,
-						Array.from({ length: arrayLength }, (_, i) => arrayValue[i] || {}),
-					);
-				}
-
 				return (
-					<form.Field name={field.name}>
+					<form.Field 
+					key={`${field.name}-${idx}`}
+					name={field.name}
+					mode='array'
+					validators={{
+						onChange: () => {
+							try {
+								setTimeout(() => {
+									validateCurrentStep();
+								}, 0);
+								return undefined;
+							} catch (error) {
+								if (error instanceof z.ZodError) {
+									return error.errors[0].message;
+								}
+								return `${field.label} is invalid`;
+							}
+						},
+						onChangeAsync: async ({ value }) => {
+							if (field.validation?.dependencies) {
+								for (const dep of field.validation
+									.dependencies) {
+									const dependentValue =
+										form.state.values[dep.field];
+									if (
+										dep.type === 'min' &&
+										value <= dependentValue
+									) {
+										return (
+											dep.message ||
+											`${field.label} must be greater than ${dep.field}`
+										);
+									}
+								}
+							}
+							return undefined;
+						},
+					}}
+					>
 						{(fieldApi) => (
 							<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
 								<CardHeader
@@ -647,40 +710,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											field.customComponent
 										)
 									) : (
-										// <Box>
-										// 	{Array.from({ length: arrayLength }).map((_, idx) => (
-										// 		<Box
-										// 			key={idx}
-										// 			sx={{
-										// 				mb: 2,
-										// 				p: 2,
-										// 				border: '1px solid #333',
-										// 				borderRadius: 2,
-										// 			}}
-										// 		>
-										// 			<Typography variant='subtitle2' sx={{ mb: 1 }}>
-										// 				{field.label} {arrayLength > 1 ? idx + 1 : ''}
-										// 			</Typography>
-										// 			{Array.isArray((field as any).fields) &&
-										// 				(field as any).fields.map(
-										// 					(subField: any, subFieldIndex: number) => (
-										// 						<form.Field
-										// 							key={`${field.name}[${idx}].${subField.name}.${subFieldIndex}`}
-										// 							name={`${field.name}[${idx}].${subField.name}`}
-										// 						>
-										// 							{(subFieldApi) => (
-										// 								<KlubiqTSFormFields
-										// 									field={subFieldApi}
-										// 									form={form}
-										// 									fieldConfig={subField}
-										// 								/>
-										// 							)}
-										// 						</form.Field>
-										// 					),
-										// 				)}
-										// 		</Box>
-										// 	))}
-										// </Box>
 										<KlubiqTSFormFields
 											field={fieldApi}
 											form={form}
@@ -841,6 +870,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			);
 		});
 	};
+	const handleLeaveWithoutSaving = () => {
+		setReturnDialogOpen(false);
+		form.reset();
+		topBackButton?.onClick?.();
+	}
 
 	return (
 		<Stack
@@ -848,13 +882,26 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			sx={{ ...style.container, width: formWidth }}
 			spacing={4}
 		>
+			{showTopBackButton && (
+				<Stack direction='row' justifyContent='start' alignItems='center'>
+					<Button
+						onClick={topBackButton.showDialog ?() => setReturnDialogOpen(true) : handleLeaveWithoutSaving}
+						variant={topBackButton.variant === 'contained' ? 'klubiqMainButton' : 'klubiqTextButton'}
+						startIcon={topBackButton.startIcon}
+					>
+						{topBackButton.text}
+					</Button>
+				</Stack>
+			)}
+
+
 			{isMultiStep && (
 				<Box width={'100%'}>
 					<Stepper
 						activeStep={currentStep}
 						connector={<LineConnector />}
 						alternativeLabel
-						sx={{ mb: 4 }}
+						sx={{ mb: 3 }}
 					>
 						{steps.map((step, index) => (
 							<Step
@@ -885,10 +932,16 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			)}
 
 			<form
-				onSubmit={(e) => {
+				onSubmit={async (e) => {
+					console.log('Form submit event triggered');
 					e.preventDefault();
 					e.stopPropagation();
-					form.handleSubmit();
+					try {
+						await form.handleSubmit();
+						console.log('Form handleSubmit completed');
+					} catch (error) {
+						console.error('Form handleSubmit error:', error);
+					}
 				}}
 			>
 				<Stack spacing={3}>{renderFields(steps[currentStep].fields)}</Stack>
@@ -915,31 +968,20 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					<Stack direction='row' spacing={2}>
 						{(() => {
 							const { isSubmitting } = form.state;
-							//const isStepValid = stepValidations[currentStep];
 							const isStepValid = (() => {
 								try {
 									const stepFields = steps[currentStep].fields;
 									const stepSchema = createStepSchema(stepFields);
 									stepSchema.parse(form.state.values);
+									console.log('Step validation passed');
 									return true;
 								} catch (e) {
-									if (e instanceof z.ZodError) {
-										console.log('Zod validation errors:', e.errors);
-									}
+									console.log('Step validation failed:', e);
 									return false;
 								}
 							})();
 							const isLastStep = currentStep === steps.length - 1;
-							console.log('Button state:', {
-								isStepValid,
-								isSubmitting,
-								isLastStep,
-								currentStep,
-								stepValidations,
-								totalSteps: steps.length,
-								formValues: form.state.values,
-								formErrors: form.state.errors,
-							});
+							console.log('Form state:', { isSubmitting, isStepValid, isLastStep });
 							return (
 								<>
 									{isMultiStep && !isLastStep ? (
@@ -956,6 +998,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											type='submit'
 											variant='klubiqMainButton'
 											disabled={!isStepValid || isSubmitting}
+											onClick={() => console.log('Submit button clicked')}
 										>
 											{isSubmitting ? 'Submitting...' : submitButtonText}
 										</Button>
@@ -975,6 +1018,36 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					</Stack>
 				</Stack>
 			</form>
+			<Dialog
+				open={returnDialogOpen}
+				onClose={() => setReturnDialogOpen(false)}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+			>
+				<DialogTitle id='alert-dialog-title'>
+					{topBackButton.dialogTitle}
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText id='alert-dialog-description'>
+						{topBackButton.dialogDescription}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						variant='klubiqTextButton'
+						onClick={() => setReturnDialogOpen(false)}
+					>
+						{topBackButton.dialogCancelButtonText}
+					</Button>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleLeaveWithoutSaving}
+						autoFocus
+					>
+						{topBackButton.dialogConfirmButtonText}
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Stack>
 	);
 };

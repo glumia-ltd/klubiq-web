@@ -7,7 +7,6 @@ import NavBar from '../NavBar/NavBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
 import { AppFooter } from '@klubiq/ui-components';	
@@ -16,6 +15,7 @@ import pkg from '../../../package.json';
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
+	pathname?: string;
 };
 // Example for landlord portal
 const landlordFooterConfig = {
@@ -28,11 +28,10 @@ const landlordFooterConfig = {
 	// ... other props
 };
 
-const ViewPort = ({ children }: ViewPortProp) => {
+const ViewPort = ({ children, pathname }: ViewPortProp) => {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const { mode } = useContext(ThemeContext);
-	const { pathname } = useLocation();
 
 	useEffect(() => {
 		window.scrollTo(0, 0);

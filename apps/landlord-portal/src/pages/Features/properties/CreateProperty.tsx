@@ -6,7 +6,7 @@ import {
 	FormFieldV1,
 } from '@klubiq/ui-components';
 import { CategoryMetaDataType } from '../../../shared/type';
-import { useGetPropertiesMetaDataQuery } from '../../../store/PropertyPageStore/propertyApiSlice';
+import { useAddPropertyMutation, useGetPropertiesMetaDataQuery } from '../../../store/PropertyPageStore/propertyApiSlice';
 import {
 	EmojiOneBuildingIcon,
 	EmojiOneHomeIcon,
@@ -29,12 +29,24 @@ import {
 	MenuItem,
 	Box,
 	InputAdornment,
+	useMediaQuery,
+	useTheme,
+	// Typography,
+	// Stack,
+	// Button,
 } from '@mui/material';
 import { getCurrencySymbol, MEASUREMENTS } from '../../../helpers/utils';
 import { z } from 'zod';
 import countriesList from '../../../helpers/countries-meta.json';
 import { GooglePlacesAutocomplete } from '@klubiq/ui-components';
 import { Bathroom, BedroomParent, Business, Wc } from '@mui/icons-material';
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
+import { useUploadImagesMutation } from '../../../store/GlobalStore/globalApiSlice';
+import { useDeleteFileMutation } from '../../../store/GlobalStore/globalApiSlice';
+import { consoleInfo, consoleLog } from '../../../helpers/debug-logger';
+
 
 interface AddressValue {
 	addressLine1: string;
@@ -67,16 +79,353 @@ const unit = {
 		value: null,
 		unit: 'SqM',
 	},
+	rooms: null,
+	offices: null,
+	bedrooms: null,
 	amenities: [],
 };
+const getInitialUnits = (): Record<string, any>[] => {
+	return Array.from({ length: MAX_UNITS }, (_, index) => ({
+		...unit,
+		unitNumber: `Unit ${index + 1}`,
+	}));
+};
+
+const useDebounce = (callback: Function, delay: number) => {
+	const timeoutRef = useRef<NodeJS.Timeout>();
+
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+			}
+		};
+	}, []);
+
+	return (...args: any[]) => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+
+		timeoutRef.current = setTimeout(() => {
+			callback(...args);
+		}, delay);
+	};
+};
+
+const mapOptions = (arr: any[] = [], labelKey = 'name', valueKey = 'name') =>
+	arr.map((item) => ({
+		value: item[valueKey],
+		label: item[labelKey],
+	}));
+
+const getGeneralUnitFields = (z: any, isMobile: boolean = false): FormFieldV1[] => [
+	{
+		name: 'bathrooms',
+		type: 'number',
+		label: 'Bathrooms',
+		required: false,
+		width: isMobile ? '100%' : '48%',
+		validation: {
+			schema: z
+				.number({ message: 'Bathrooms must be a number' })
+				.nullable()
+				.optional(),
+		},
+	},
+	{
+		name: 'toilets',
+		type: 'number',
+		label: 'Toilets',
+		required: false,
+		width: isMobile ? '100%' : '48%',
+		validation: {
+			schema: z
+				.number({ message: 'Toilets must be a number' })
+				.nullable()
+				.optional(),
+		},
+	},
+	{
+		name: 'area',
+		type: 'number',
+		label: 'Floor Plan',
+		required: true,
+		width: isMobile ? '100%' : 	'48%',
+		validation: {
+			schema: z
+				.any({ message: 'Floor plan is required' })
+				.refine((data: any) => data.value !== null && data.value !== 0, {
+					message: 'Floor plan is required',
+				}),
+		},
+		customComponent: renderAreaField,
+	},
+];
+
+function renderAreaField(fieldApi: any, fieldConfig: any, form: any) {
+	const debouncedValidate = useDebounce(() => {
+		const isArraySubField = fieldConfig && fieldConfig._isArraySubField;
+		const arrayFieldName = fieldConfig._arrayFieldName;
+		if (isArraySubField && arrayFieldName !== undefined) {
+			form.validateField(arrayFieldName);
+		}
+	}, 500);
+	return (
+		<Box sx={{ width: '100%' }}>
+			<TextField
+				fullWidth
+				type='text'
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				value={fieldApi.state.value?.value || ''}
+				onChange={(e) => {
+					const { value } = e.target;
+					if (/^\d*\.?\d*$/.test(value)) {
+						const numValue = value === '' ? null : parseFloat(value);
+						const newValue = {
+							...fieldApi.state.value,
+							value: numValue,
+							unit: fieldApi.state.value?.unit || 'SqM',
+						};
+						fieldApi.handleChange(newValue);
+						debouncedValidate();
+					}
+				}}
+				onBlur={fieldApi.handleBlur}
+				error={!!fieldApi.state.meta.errors[0]}
+				InputProps={{
+					inputProps: {
+						inputMode: 'decimal',
+						pattern: '[0-9]*',
+						onKeyPress: (e: any) => {
+							if (!/[\d.]/.test(e.key)) {
+								e.preventDefault();
+							}
+							if (
+								e.key === '.' &&
+								(e.target as HTMLInputElement).value.includes('.')
+							) {
+								e.preventDefault();
+							}
+						},
+					},
+					endAdornment: (
+						<InputAdornment position='end'>
+							<Select
+								value={fieldApi.state.value?.unit || 'SqM'}
+								onChange={(e) => {
+									const newValue = {
+										...fieldApi.state.value,
+										unit: e.target.value,
+									};
+									fieldApi.handleChange(newValue);
+									debouncedValidate();
+								}}
+								sx={{ '.MuiOutlinedInput-notchedOutline': { border: 'none' } }}
+							>
+								{MEASUREMENTS.map((entry: any, index: number) => (
+									<MenuItem value={entry.unit} key={`${entry.unit}-${index}`}>
+										{entry.symbol}
+									</MenuItem>
+								))}
+							</Select>
+						</InputAdornment>
+					),
+				}}
+			/>
+		</Box>
+	);
+}
+
+function renderAmenitiesDialog(fieldApi: any, fieldConfig: any, form: any) {
+	return (
+		<AmenitiesDialog
+			field={{
+				fieldConfig: {
+					...fieldConfig,
+					options: Array.isArray(fieldConfig.options)
+						? fieldConfig.options.map((opt: { value: string | number }) => ({
+								...opt,
+								value: String(opt.value),
+							}))
+						: typeof fieldConfig.options === 'function'
+							? fieldConfig
+									.options(form.getValues())
+									.map((opt: { value: string | number }) => ({
+										...opt,
+										value: String(opt.value),
+									}))
+							: [],
+				},
+				state: fieldApi.state,
+				handleChange: fieldApi.handleChange,
+			}}
+			form={form}
+		/>
+	);
+}
+
+const getResidentialUnitFields = (
+	z: any,
+	customAmenitiesField: FormFieldV1,
+	isMobile: boolean = false
+): FormFieldV1[] => [
+	{
+		name: 'bedrooms',
+		type: 'number',
+		label: 'Bedrooms',
+		required: true,
+		width: isMobile ? '100%' : '48%',
+	},
+	...getGeneralUnitFields(z, isMobile),
+	customAmenitiesField,
+];
+
+const getCommercialUnitFields = (
+	z: any,
+	customAmenitiesField: FormFieldV1,
+	isMobile: boolean = false
+): FormFieldV1[] => [
+	{
+		name: 'offices',
+		type: 'number',
+		label: 'Offices',
+		required: true,
+		width: isMobile ? '100%' : '48%',
+		validation: {
+			schema: z
+				.number({ message: 'Offices must be a number' })
+				.min(1, { message: 'Offices must be greater than 0' })
+				.nullable(),
+		},
+	},
+	...getGeneralUnitFields(z, isMobile),
+	customAmenitiesField,
+];
+
+const getHospitalityUnitFields = (
+	z: any,
+	customAmenitiesField: FormFieldV1,
+	isMobile: boolean = false
+): FormFieldV1[] => [
+	{
+		name: 'rooms',
+		type: 'number',
+		label: 'Rooms',
+		required: true,
+		width: isMobile ? '100%' : '48%',
+		validation: {
+			schema: z
+				.number({ message: 'Rooms must be a number' })
+				.min(1, { message: 'Rooms must be greater than 0' })
+				.nullable(),
+		},
+	},
+	...getGeneralUnitFields(z, isMobile),
+	customAmenitiesField,
+];
+
+const getUnitFieldsByCategory = (
+	category: any,
+	z: any,
+	customAmenitiesField: FormFieldV1,
+	isMobile: boolean = false
+) => {
+	if (category?.metaData?.hasBedrooms) {
+		return getResidentialUnitFields(z, customAmenitiesField, isMobile);
+	}
+	if (category?.metaData?.hasRooms) {
+		return getHospitalityUnitFields(z, customAmenitiesField, isMobile);
+	}
+	if (category?.metaData?.hasOffices) {
+		return getCommercialUnitFields(z, customAmenitiesField, isMobile);
+	}
+	return [customAmenitiesField];
+};
+
 export const CreateProperty = () => {
+	const theme = useTheme();
+	const navigate = useNavigate();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const { user } = useSelector(getAuthState);
+	const sortByName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
+	const queryResult = useGetPropertiesMetaDataQuery(undefined, {
+		selectFromResult: ({ data, isLoading: loading }) => ({
+			purposes: data?.purposes ? [...data.purposes].sort(sortByName) : [],
+			amenities: data?.amenities ? [...data.amenities].sort(sortByName) : [],
+			types: data?.types ? [...data.types].sort(sortByName) : [],
+			categories: data?.categories ? [...data.categories].sort(sortByName) : [],
+			isLoading: loading,
+		}),
+	});
+	const { purposes, amenities, types, categories, isLoading } = queryResult;
+	const [addProperty] = useAddPropertyMutation();
+	const [uploadImages] = useUploadImagesMutation();
+	const [deleteFile] = useDeleteFileMutation();
+
+	const icons: Record<string, any> = {
+		HouseIcon,
+		EmojiOneHomeIcon,
+		EmojiOneBuildingIcon,
+	};
+
+	const cardData = categories?.map((category: CategoryType) => ({
+		...category,
+		id: category?.id,
+		Image: icons[category.metaData?.icon || ''],
+	}));
+
+	const amenitiesOptions = mapOptions(amenities);
+
+	const customAmenitiesField: FormFieldV1 = {
+		name: 'amenities',
+		type: 'checkbox-group',
+		label: 'Amenities',
+		options: amenitiesOptions,
+		customComponent: renderAmenitiesDialog,
+	};
+
+	const getSingleUnitFields = (values: Record<string, any>) => {
+		const selectedCategory = categories?.find(
+			(cat: CategoryType) =>
+				cat.id.toString() === values?.category?.id?.toString(),
+		);
+		return getUnitFieldsByCategory(selectedCategory, z, customAmenitiesField, isMobile);
+	};
+
+	const getMultiUnitFields = (values: Record<string, any>) => {
+		const selectedCategory = categories?.find(
+			(cat: CategoryType) =>
+				cat.id.toString() === values?.category?.id?.toString(),
+		);
+		const unitFields: FormFieldV1[] = [
+			{
+				name: 'unitNumber',
+				type: 'text',
+				label: 'Unit Number/Name',
+				defaultValue: '',
+				width: isMobile ? '100%' : '48%',
+				required: true,
+				validation: {
+					schema: z
+						.string({ message: 'Unit number is required' })
+						.min(1, { message: 'Unit number is required' })
+						.max(10, {
+							message: 'Unit number must be less than 10 characters',
+						}),
+				},
+			},
+		];
+		return [
+			...unitFields,
+			...getUnitFieldsByCategory(selectedCategory, z, customAmenitiesField),
+			
+		];
+	};
+
 	const initialValues = {
-		category: {
-			id: '',
-		},
-		purpose: {
-			id: '',
-		},
+		category: { id: '' },
+		purpose: { id: '' },
 		propertyDetails: {
 			typeId: '',
 			name: '',
@@ -95,294 +444,25 @@ export const CreateProperty = () => {
 			country: '',
 			isManualAddress: true,
 		},
-		unitDetails: {
-			unitType: '',
-			totalUnits: '2',
-		},
-		singleUnit: {
-			rooms: null,
-			offices: null,
-			bedrooms: null,
-			...unit,
-		},
+		unitDetails: { unitType: '', totalUnits: '2' },
+		singleUnit: { ...unit },
 		propertyImages: {},
 		customAmenities: [],
-		multiUnits: [
-			{
-				unitNumber: 'Unit 1',
-				bathrooms: null,
-				toilets: null,
-				area: {
-					value: null,
-					unit: 'SqM',
-				},
-				amenities: [],
-			},
-		],
-	};
-	const { user } = useSelector(getAuthState);
-	const { purposes, amenities, types, categories } =
-		useGetPropertiesMetaDataQuery(undefined, {
-			selectFromResult: ({ data }) => {
-				const sortByName = (a: { name: string }, b: { name: string }) =>
-					a.name.localeCompare(b.name);
-				return {
-					purposes: data?.purposes ? [...data.purposes].sort(sortByName) : [],
-					amenities: data?.amenities
-						? [...data.amenities].sort(sortByName)
-						: [],
-					types: data?.types ? [...data.types].sort(sortByName) : [],
-					categories: data?.categories
-						? [...data.categories].sort(sortByName)
-						: [],
-				};
-			},
-		});
-	const icons: Record<string, any> = {
-		HouseIcon,
-		EmojiOneHomeIcon,
-		EmojiOneBuildingIcon,
+		multiUnits: getInitialUnits(),
 	};
 
-	const cardData: CategoryType[] = categories?.map((category: CategoryType) => {
-		return {
-			...category,
-			id: category?.id,
-			Image: icons[category.metaData?.icon || ''],
-		};
-	});
-	const amenitiesOptions = amenities?.map((amenity: CategoryType) => {
-		return {
-			value: amenity.name,
-			label: amenity.name,
-		};
-	});
-	const customAmenitiesField: FormFieldV1 = {
-		name: 'amenities',
-		type: 'checkbox-group',
-		label: 'Amenities',
-		options: amenitiesOptions,
-		customComponent: (fieldApi: any, fieldConfig: any, form: any) => (
-			<AmenitiesDialog
-				field={{
-					fieldConfig: {
-						...fieldConfig,
-						options: Array.isArray(fieldConfig.options)
-							? fieldConfig.options.map((opt: { value: string | number }) => ({
-									...opt,
-									value: String(opt.value),
-								}))
-							: typeof fieldConfig.options === 'function'
-								? fieldConfig
-										.options(form.getValues())
-										.map((opt: { value: string | number }) => ({
-											...opt,
-											value: String(opt.value),
-										}))
-								: [],
-					},
-					state: fieldApi.state,
-					handleChange: fieldApi.handleChange,
-				}}
-				form={form}
-			/>
-		),
+	const uploadPropertyImages = async (files: File[]) => {
+		const organizationUuid = user?.organizationUuid;
+		const organizationName = user?.organization || user?.firstName + user?.lastName || 'glumia';
+		const rootFolder = 'properties';
+		consoleLog('Uploading property images', files, organizationUuid, organizationName, rootFolder);
+		const response = await uploadImages({ files, organizationUuid, organizationName, rootFolder }).unwrap();
+		consoleInfo('Uploading property images response', response);
+		return response;
 	}
-	const generalUnitFields = [
-		{
-			name: 'bathrooms',
-			type: 'number',
-			label: 'Bathrooms',
-			required: false,
-			width: '48%',
-			validation: {
-				schema: z.number({message: 'Bathrooms must be a number'}).nullable().optional(),
-			},
-		},
-		{
-			name: 'toilets',
-			type: 'number',
-			label: 'Toilets',
-			required: false,
-			width: '48%',
-			validation: {
-				schema: z.number({message: 'Toilets must be a number'}).nullable().optional(),
-			},
-		},
-		{
-			name: 'area',
-			type: 'number',
-			label: 'Floor Plan',
-			required: true,
-			width: '48%',
-			validation: {
-				schema: z.any({ message: 'Floor plan is required' }).refine(
-					(data) => {
-						if (data.value === null || data.value === 0) {
-							return false;
-						}
-						return true;
-					},
-					{ message: 'Floor plan is required' },
-				),
-			},
-			customComponent: (fieldApi: any, fieldConfig: any) => (
-				<Box sx={{ width: '100%' }}>
-					<TextField
-						fullWidth
-						type='text'
-						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
-						value={fieldApi.state.value?.value || ''}
-						onChange={(e) => {
-							const { value } = e.target;
-							if (/^\d*\.?\d*$/.test(value)) {
-								const numValue = value === '' ? null : parseFloat(value);
-								// Update the entire area object
-								fieldApi.handleChange({
-									...fieldApi.state.value,
-									value: numValue,
-									unit: fieldApi.state.value?.unit || 'SqM',
-								});
-							}
-						}}
-						onBlur={fieldApi.handleBlur}
-						error={!!fieldApi.state.meta.errors[0]}
-						InputProps={{
-							inputProps: {
-								inputMode: 'decimal',
-								pattern: '[0-9]*',
-								onKeyPress: (e) => {
-									if (!/[\d.]/.test(e.key)) {
-										e.preventDefault();
-									}
-									if (
-										e.key === '.' &&
-										(e.target as HTMLInputElement).value.includes('.')
-									) {
-										e.preventDefault();
-									}
-								},
-							},
-							endAdornment: (
-								<InputAdornment position='end'>
-									<Select
-										value={fieldApi.state.value?.unit || 'SqM'}
-										onChange={(e) => {
-											// Update the entire area object
-											fieldApi.handleChange({
-												...fieldApi.state.value,
-												unit: e.target.value,
-											});
-										}}
-										sx={{
-											'.MuiOutlinedInput-notchedOutline': {
-												border: 'none',
-											},
-										}}
-									>
-										{MEASUREMENTS.map((entry: any, index: number) => (
-											<MenuItem
-												value={entry.unit}
-												key={`${entry.unit}-${index}`}
-											>
-												{entry.symbol}
-											</MenuItem>
-										))}
-									</Select>
-								</InputAdornment>
-							),
-						}}
-					/>
-				</Box>
-			),
-		},
-	] as FormFieldV1[];
-	const residentialUnitFields: FormFieldV1[] = [
-		{
-			name: 'bedrooms',
-			type: 'number',
-			label: 'Bedrooms',
-			required: true,
-			width: '48%',
-			// validation: {
-			// 	schema: z.number({message: 'Bedrooms must be a number'}).min(1, { message: 'Bedrooms must be greater than 0' }).nullable(),
-			// },
-		},
-		...generalUnitFields,
-	];
-	const commercialUnitFields: FormFieldV1[] = [
-		{
-			name: 'offices',
-			type: 'number',
-			label: 'Offices',
-			required: true,
-			width: '48%',
-			validation: {
-				schema: z.number({message: 'Offices must be a number'}).min(1, { message: 'Offices must be greater than 0' }).nullable(),
-			},
-		},
-		...generalUnitFields,
-	];
-	const hospitalityUnitFields: FormFieldV1[] = [
-		{
-			name: 'rooms',
-			type: 'number',
-			label: 'Rooms',
-			required: true,
-			width: '48%',
-			validation: {
-				schema: z.number({message: 'Rooms must be a number'}).min(1, { message: 'Rooms must be greater than 0' }).nullable(),
-			},
-		},
-		...generalUnitFields,
-	];
-
-	const getSingleUnitFields = (values: Record<string, any>) => {
-		const selectedCategory = categories?.find(
-			(cat: CategoryType) =>
-				cat.id.toString() === values?.category?.id?.toString(),
-		);
-		const unitFields = [customAmenitiesField];
-		if (selectedCategory?.metaData?.hasBedrooms) {
-			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
-		} else if (selectedCategory?.metaData?.hasRooms) {
-			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
-		} else if (selectedCategory?.metaData?.hasOffices) {
-			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
-		}
-		return unitFields as FormFieldV1[];
-	};
-
-	const getMultiUnitFields = (values: Record<string, any>) => {
-		const selectedCategory = categories?.find(
-			(cat: CategoryType) =>
-				cat.id.toString() === values?.category?.id?.toString(),
-		);
-		const unitFields: FormFieldV1[] = [
-			{
-				name: 'unitNumber',
-				type: 'text',
-				label: 'Unit Number/Name',
-				defaultValue: '',
-				width: '48%',
-				required: true,
-				validation: {
-					schema: z.string({message: 'Unit number is required'})
-					.min(1, { message: 'Unit number is required' })
-					.max(10, { message: 'Unit number must be less than 10 characters' }),
-				},
-			},
-			customAmenitiesField,
-		];
-		if (selectedCategory?.metaData?.hasBedrooms) {
-			return [...residentialUnitFields, ...unitFields] as FormFieldV1[];
-		} else if (selectedCategory?.metaData?.hasRooms) {
-			return [...hospitalityUnitFields, ...unitFields] as FormFieldV1[];
-		} else if (selectedCategory?.metaData?.hasOffices) {
-			return [...commercialUnitFields, ...unitFields] as FormFieldV1[];
-		}
-		return unitFields as FormFieldV1[];
-	};
+	const deletePropertyImage = async (fileId: string) => {
+		await deleteFile(fileId);
+	}
 
 	const propertyForm: FormStep[] = [
 		// Property Category & Purpose
@@ -407,6 +487,8 @@ export const CreateProperty = () => {
 									<Component
 										value={field.state.value}
 										onChange={field.handleChange}
+										isLoading={isLoading}
+										skeletonCount={3}
 										options={
 											cardData
 												? cardData.map((category) => ({
@@ -442,6 +524,8 @@ export const CreateProperty = () => {
 								return (
 									<Component
 										value={field.state.value}
+										isLoading={isLoading}
+										skeletonCount={2}
 										onChange={field.handleChange}
 										options={
 											purposes
@@ -545,16 +629,22 @@ export const CreateProperty = () => {
 				{
 					name: 'propertyImages',
 					type: 'file',
-
-					label: 'Cover Photo',
+					label: 'Property Images',
 					validation: {
 						schema: z.any().optional(),
 					},
 					fileConfig: {
-						subtitle: 'COVER PHOTO',
-						caption: 'Upload a cover photo for your property',
+						subtitle: 'PROPERTY IMAGES',
+						caption: 'Upload images of your property and mark the cover photo as favorite',
 						accept: 'image/*',
 						multiple: true,
+						onUpload: uploadPropertyImages,
+						onDelete: deletePropertyImage,
+						uploadButtonText: 'Upload Images',
+						tooltipMessages: {
+							upload: 'Upload property images',
+							sizeLimit: 'Maximum file size is 10MB',
+						},
 					},
 				},
 			],
@@ -562,7 +652,7 @@ export const CreateProperty = () => {
 		},
 		// Unit(s) Details
 		{
-			title: 'Unit(s) Details',
+			title: 'Unit Details',
 			fields: [
 				{
 					name: 'unitDetails',
@@ -618,7 +708,7 @@ export const CreateProperty = () => {
 					name: 'address',
 					type: 'group',
 					label: 'ADDRESS',
-					layout: 'row',
+					layout: isMobile ? 'column' : 'row',
 					spacing: 2,
 					groupFields: [
 						{
@@ -626,55 +716,64 @@ export const CreateProperty = () => {
 							type: 'text',
 							label: '',
 							required: true,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 							addressConfig: {
 								apiKey: import.meta.env.VITE_GOOGLE_PLACES_API_KEY,
 								country: user?.orgSettings?.countryCode || 'NG',
 								label: 'Street Address',
 							},
-							customComponent: (fieldApi, fieldConfig, form) => (
-								<Box sx={{ width: '100%' }}>
-									<GooglePlacesAutocomplete
-										apiKey={fieldConfig.addressConfig?.apiKey ?? ''}
-										//value={fieldApi.state.value}
-										value={form.state.values.address.addressLine1}
-										label={'Street Address'}
-										onChange={(value: AddressValue) => {
-											// Update the entire address group
-											form.setFieldValue('address', {
-												...form.state.values.address,
-												...value,
-											});
+							customComponent: (fieldApi, fieldConfig, form) => {
+								const debouncedValidate = useDebounce(() => {
+									form.validateField('address');
+								}, 500); // 500ms delay
 
-											// Update the individual field
-											//fieldApi.handleChange(value.addressLine1);
-										}}
-										onBlur={fieldApi.handleBlur}
-										error={!!fieldApi.state.meta.errors[0]}
-										helperText={fieldApi.state.meta.errors[0]}
-										country={fieldConfig.addressConfig?.country}
-										required={
-											typeof fieldConfig.addressConfig?.required === 'function'
-												? fieldConfig.addressConfig?.required(form.state.values)
-												: fieldConfig.addressConfig?.required
-										}
-									/>
-								</Box>
-							),
+								return (
+									<Box sx={{ width: '100%' }}>
+										<GooglePlacesAutocomplete
+											apiKey={fieldConfig.addressConfig?.apiKey ?? ''}
+											//value={fieldApi.state.value}
+											value={form.state.values.address.addressLine1}
+											label={'Street Address'}
+											onChange={(value: AddressValue) => {
+												// Update the entire address group
+												form.setFieldValue('address', {
+													...form.state.values.address,
+													...value,
+												});
+												debouncedValidate();
+												// Update the individual field
+												//fieldApi.handleChange(value.addressLine1);
+											}}
+											onBlur={fieldApi.handleBlur}
+											error={!!fieldApi.state.meta.errors[0]}
+											helperText={fieldApi.state.meta.errors[0]}
+											country={fieldConfig.addressConfig?.country}
+											required={
+												typeof fieldConfig.addressConfig?.required ===
+												'function'
+													? fieldConfig.addressConfig?.required(
+															form.state.values,
+														)
+													: fieldConfig.addressConfig?.required
+											}
+										/>
+									</Box>
+								);
+							},
 						},
 						{
 							name: 'addressLine2',
 							type: 'text',
 							label: 'Apartment, suite, or unit',
 							required: false,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 						},
 						{
 							name: 'country',
 							type: 'select',
 							label: 'Country',
 							required: true,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 							options: countries,
 						},
 						{
@@ -682,21 +781,21 @@ export const CreateProperty = () => {
 							type: 'text',
 							label: 'State (Province or Region)',
 							required: false,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 						},
 						{
 							name: 'city',
 							type: 'text',
 							label: 'City',
 							required: false,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 						},
 						{
 							name: 'postalCode',
 							type: 'text',
 							label: 'Postal Code',
 							required: false,
-							width: '48%',
+							width: isMobile ? '100%' : '48%',
 						},
 						{
 							name: 'latitude',
@@ -719,12 +818,11 @@ export const CreateProperty = () => {
 					name: 'singleUnit',
 					type: 'group',
 					label: 'UNIT DETAILS',
-					layout: 'row',
+					layout: isMobile ? 'column' : 'row',
 					spacing: 2,
 					showIf: (values) => values.unitDetails.unitType === 'single',
 					groupFields: (values) => getSingleUnitFields(values),
 				},
-
 				{
 					name: 'multiUnits',
 					type: 'array',
@@ -771,40 +869,47 @@ export const CreateProperty = () => {
 						parseInt(values.unitDetails.totalUnits, 10),
 					arrayLengthMin: 2,
 					arrayLengthMax: MAX_UNITS,
-					showAddButton: true,
-					addButtonText: 'Add Unit',
+					showAddButton: false,
 					arrayLengthSelectorField: 'unitDetails.totalUnits',
 				},
-				// {
-				// 	name: 'multiUnits',
-				// 	type: 'array',
-				// 	label: 'MULTI UNITS',
-				// 	showIf: (values) => values.unitDetails.unitType === 'multi',
-				// 	fields: (values) => {
-				// 		const fields = getMultiUnitFields(values);
-				// 		return fields;
-				// 	},
-				// 	useAccordion: true,
-				// 	getArrayLength: (values) => parseInt(values.unitDetails.totalUnits, 10),
-				// },
 			],
 			icon: { icon: <UnitTypeIcon /> },
 		},
 	];
 
-	const onSubmit = (values: any) => {
-		console.log('submitted', values);
+	const onSubmit = async (values: any) => {
+
+		consoleLog('submitted', values);
+		const response = await addProperty(values);
+		consoleInfo('addProperty response', response);
 		return Promise.resolve(values);
 	};
 
+		const handleAllPropertiesClick = () => {
+			navigate('/properties');
+		};
+
 	return (
-		<Box sx={{ width: '100%' }}>
+		<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
 			<KlubiqFormV1
 				fields={propertyForm}
 				initialValues={initialValues}
 				onSubmit={onSubmit}
 				submitButtonText='Create Property'
 				isMultiStep={true}
+				showTopBackButton={true}
+				topBackButton={{
+					showDialog: true,
+					dialogTitle: 'Are you sure you want to leave?',
+					dialogDescription: 'You have unsaved changes. If you leave now, your changes will be lost.',
+					dialogConfirmButtonText: 'Leave',
+					dialogCancelButtonText: 'Continue',
+					onClick: handleAllPropertiesClick,
+					text: 'All Properties',
+					variant: 'text',
+					startIcon: <LeftArrowIcon />,
+
+				}}
 			/>
 		</Box>
 	);

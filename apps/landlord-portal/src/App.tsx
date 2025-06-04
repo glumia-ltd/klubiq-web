@@ -16,10 +16,12 @@ import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 import { BreadcrumbProvider } from './context/BreadcrumbContext/BreadcrumbContext';
 import { AuthProvider } from './context/AuthContext/AuthProvider';
+
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
+
 	useEffect(() => {
 		if ('serviceWorker' in navigator) {
 			const executeOnLoad = () => {
@@ -39,9 +41,8 @@ function App() {
 				<BreadcrumbProvider>
 					<LocalizationProvider dateAdapter={AdapterDayjs}>
 						<AnimatePresence mode='wait'>
-							<PageTransition key={location.pathname}>
+							<PageTransition key={window.location.pathname}>
 								<RouterProvider router={router} />
-
 								<ControlledSnackbar
 									anchorOrigin={{
 										vertical: 'top',

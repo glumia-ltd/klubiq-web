@@ -1,7 +1,8 @@
 // packages/ui-components/src/components/TanstackForm/FileUpload.tsx
-import { Card, CardContent, Box, Typography, IconButton, styled, Grid, Tooltip, Stack } from '@mui/material';
-import { CloudUpload, Favorite, FavoriteBorder, Delete, Image } from '@mui/icons-material';
+import { Card, CardContent, Box, Typography, IconButton, styled, Grid, Tooltip, Stack, Button, LinearProgress, Snackbar, Alert } from '@mui/material';
+import { CloudUpload, Favorite, FavoriteBorder, Delete, Image, Upload } from '@mui/icons-material';
 import { useRef, useState, useEffect } from 'react';
+import { StorageUploadResult } from './types';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -31,9 +32,12 @@ const ThumbnailContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
+
+// Extend FileWithPreview to include storage result
 interface FileWithPreview extends File {
   preview?: string;
   isFavorite?: boolean;
+  storageResult?: StorageUploadResult;
 }
 
 interface FileUploadProps {
@@ -54,6 +58,10 @@ interface FileUploadProps {
     sizeLimit?: string;
     upload?: string;
   };
+  onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
+  onDelete?: (publicId: string) => Promise<void>;
+  uploadButtonText?: string;
+  onUploadComplete?: (results: (StorageUploadResult & { isFavorite: boolean })[]) => void;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -73,11 +81,26 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     delete: 'Click to delete',
     sizeLimit: 'Maximum file size: {size}MB',
     upload: 'Click or drag files here to upload'
-  }
-}) => {
+  },
+  onUpload,
+  onDelete,
+  onUploadComplete,
+  uploadButtonText = 'Upload Files'
+}): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [localFiles, setLocalFiles] = useState<FileWithPreview[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error' | 'info';
+  }>({
+    open: false,
+    message: '',
+    severity: 'info'
+  });
 
   // Initialize and sync localFiles with form value
   useEffect(() => {
@@ -116,7 +139,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+    if (!e.target.files) {
+      return;
+    }
 
     const newFiles = Array.from(e.target.files);
     const validFiles = newFiles.filter(validateFile);
@@ -157,17 +182,39 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     onChange(dataTransfer.files);
   };
 
-  const handleDelete = (index: number) => {
-    const dataTransfer = new DataTransfer();
-    const newFiles = [...localFiles];
-    URL.revokeObjectURL(newFiles[index].preview || '');
-    newFiles.splice(index, 1);
+  const handleDelete = async (index: number) => {
+    const fileToDelete = localFiles[index];
     
-    newFiles.forEach(file => {
-      dataTransfer.items.add(file);
-    });
-    
-    onChange(dataTransfer.files);
+    try {
+      // If the file has been uploaded to storage, delete it from there
+      if (fileToDelete.storageResult?.public_id && onDelete) {
+        await onDelete(fileToDelete.storageResult.public_id);
+      }
+
+      // Remove the file from local state
+      const dataTransfer = new DataTransfer();
+      const newFiles = [...localFiles];
+      URL.revokeObjectURL(newFiles[index].preview || '');
+      newFiles.splice(index, 1);
+      
+      newFiles.forEach(file => {
+        dataTransfer.items.add(file);
+      });
+      
+      onChange(dataTransfer.files);
+
+      setSnackbar({
+        open: true,
+        message: 'File deleted successfully',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to delete file. Please try again.',
+        severity: 'error'
+      });
+    }
   };
 
   const getTooltipMessage = (file: FileWithPreview, index: number) => {
@@ -191,6 +238,77 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       });
     };
   }, [localFiles]);
+
+  const handleUpload = async () => {
+    if (!onUpload || localFiles.length === 0) {
+      return;
+    }
+
+    try {
+      console.log('Uploading files...');
+      setIsUploading(true);
+      setUploadProgress(0);
+      
+      // Simulate progress updates
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 500);
+
+      // Upload files and get storage results
+      const storageResults = await onUpload(localFiles);
+      
+      // Update local files with storage results
+      const updatedFiles = localFiles.map((file, index) => ({
+        ...file,
+        storageResult: storageResults[index],
+      }));
+      
+      // Create a new FileList with updated files
+      const dataTransfer = new DataTransfer();
+      updatedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+      });
+      
+      // Update form value
+      onChange(dataTransfer.files);
+      
+      // Call onUploadComplete with results including favorite status
+      if (onUploadComplete) {
+        const resultsWithFavorite = storageResults.map((result, index) => ({
+          ...result,
+          isFavorite: updatedFiles[index].isFavorite || false,
+        }));
+        onUploadComplete(resultsWithFavorite);
+      }
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      setSnackbar({
+        open: true,
+        message: 'Files uploaded successfully!',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to upload files. Please try again.',
+        severity: 'error'
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   return (
     <Card variant="outlined">
@@ -240,64 +358,99 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           </Typography>
         )}
         {localFiles.length > 0 && (
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            {localFiles.map((file, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Tooltip title={getTooltipMessage(file, index)} arrow>
-                  <ThumbnailContainer>
-                    {file.preview ? (
-                      <img src={file.preview} alt={file.name} />
-                    ) : (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        height="100%"
-                        bgcolor="grey.100"
-                      >
-                        <Image />
-                      </Box>
-                    )}
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        bgcolor: 'rgba(0, 0, 0, 0.5)',
-                        borderRadius: 1,
-                        p: 0.5,
-                      }}
-                    >
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFavorite(index);
+          <>
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+              {localFiles.map((file, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Tooltip title={getTooltipMessage(file, index)} arrow>
+                    <ThumbnailContainer>
+                      {file.preview ? (
+                        <img 
+                          src={file.storageResult?.secure_url || file.storageResult?.url || file.preview} 
+                          alt={file.name} 
+                        />
+                      ) : (
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          height="100%"
+                          bgcolor="grey.100"
+                        >
+                          <Image />
+                        </Box>
+                      )}
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{
+                          position: 'absolute',
+                          top: 8,
+                          right: 8,
+                          bgcolor: 'rgba(0, 0, 0, 0.5)',
+                          borderRadius: 1,
+                          p: 0.5,
                         }}
-                        sx={{ color: 'white' }}
                       >
-                        {file.isFavorite ? <Favorite /> : <FavoriteBorder />}
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(index);
-                        }}
-                        sx={{ color: 'white' }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </Stack>
-                  </ThumbnailContainer>
-                </Tooltip>
-              </Grid>
-            ))}
-          </Grid>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFavorite(index);
+                          }}
+                          sx={{ color: 'white' }}
+                        >
+                          {file.isFavorite ? <Favorite /> : <FavoriteBorder />}
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(index);
+                          }}
+                          sx={{ color: 'white' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Stack>
+                    </ThumbnailContainer>
+                  </Tooltip>
+                </Grid>
+              ))}
+            </Grid>
+            <Box sx={{ mt: 2, width: '100%' }}>
+                <Stack direction="row" spacing={2} justifyContent="flex-end" alignItems="center">
+                <Button
+                  variant="klubiqMainButton"
+                  onClick={handleUpload}
+                  disabled={isUploading}
+                  startIcon={<Upload />}
+                >
+                  {isUploading ? 'Uploading...' : uploadButtonText}
+                </Button>
+                </Stack>
+                {isUploading && (
+                  <Box sx={{ width: '100%', mt: 1 }}>
+                    <LinearProgress variant="determinate" value={uploadProgress} />
+                    <Typography variant="caption" color="textSecondary" align="center" display="block">
+                      {uploadProgress}% Complete
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+          </>
         )}
       </CardContent>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 };
