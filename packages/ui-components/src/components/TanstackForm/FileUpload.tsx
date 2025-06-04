@@ -51,17 +51,20 @@ interface FileUploadProps {
   multiple?: boolean;
   subtitle?: string;
   caption?: string;
+  maxFavorites?: number;
   tooltipMessages?: {
     favorite?: string;
     unfavorite?: string;
     delete?: string;
     sizeLimit?: string;
     upload?: string;
+    maxFavoritesReached?: string;
   };
   onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
   onDelete?: (publicId: string) => Promise<void>;
   uploadButtonText?: string;
   onUploadComplete?: (results: (StorageUploadResult & { isFavorite: boolean })[]) => void;
+  onValidationError?: (message: string) => void;
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -75,16 +78,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   multiple = false,
   subtitle = 'COVER PHOTO',
   caption = 'Upload a cover photo for your property',
+  maxFavorites = 1,
   tooltipMessages = {
     favorite: 'Click to mark as favorite',
     unfavorite: 'Click to remove from favorites',
     delete: 'Click to delete',
     sizeLimit: 'Maximum file size: {size}MB',
-    upload: 'Click or drag files here to upload'
+    upload: 'Click or drag files here to upload',
+    maxFavoritesReached: 'Maximum number of favorites reached'
   },
   onUpload,
   onDelete,
   onUploadComplete,
+  onValidationError,
   uploadButtonText = 'Upload Files'
 }): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,15 +98,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [localFiles, setLocalFiles] = useState<FileWithPreview[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
-    severity: 'success' | 'error' | 'info';
+    severity: 'success' | 'error' | 'info' | 'warning';
   }>({
     open: false,
     message: '',
     severity: 'info'
   });
+  const [hasUploadedFiles, setHasUploadedFiles] = useState<boolean>(false);
 
   // Initialize and sync localFiles with form value
   useEffect(() => {
@@ -113,6 +121,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         if (existingFile) {
           fileWithPreview.preview = existingFile.preview;
           fileWithPreview.isFavorite = existingFile.isFavorite;
+          fileWithPreview.storageResult = existingFile.storageResult;
         } else {
           fileWithPreview.preview = URL.createObjectURL(file);
           fileWithPreview.isFavorite = false;
@@ -121,8 +130,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         return fileWithPreview;
       });
       setLocalFiles(filesWithPreview);
+      // Check if any files have been uploaded
+      setHasUploadedFiles(filesWithPreview.some(file => file.storageResult));
     } else {
       setLocalFiles([]);
+      setHasUploadedFiles(false);
     }
   }, [value]);
 
@@ -157,7 +169,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     // Add existing files
     if (value) {
       Array.from(value).forEach(file => {
-        dataTransfer.items.add(file);
+        if (file instanceof File) {
+          dataTransfer.items.add(file);
+        }
       });
     }
     
@@ -171,12 +185,27 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   const handleFavorite = (index: number) => {
+    const currentFavorites = localFiles.filter(file => file.isFavorite).length;
+    const fileToUpdate = localFiles[index];
+    
+    // Check if we're trying to add a favorite when max is reached
+    if (!fileToUpdate.isFavorite && currentFavorites >= maxFavorites) {
+      setSnackbar({
+        open: true,
+        message: tooltipMessages.maxFavoritesReached || 'Maximum number of favorites reached',
+        severity: 'info'
+      });
+      return;
+    }
+
     const dataTransfer = new DataTransfer();
     const newFiles = [...localFiles];
     newFiles[index].isFavorite = !newFiles[index].isFavorite;
     
     newFiles.forEach(file => {
-      dataTransfer.items.add(file);
+      if (file instanceof File) {
+        dataTransfer.items.add(file);
+      }
     });
     
     onChange(dataTransfer.files);
@@ -198,7 +227,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       newFiles.splice(index, 1);
       
       newFiles.forEach(file => {
-        dataTransfer.items.add(file);
+        if (file instanceof File) {
+          dataTransfer.items.add(file);
+        }
       });
       
       onChange(dataTransfer.files);
@@ -239,6 +270,30 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     };
   }, [localFiles]);
 
+  // Add validation function
+  const validateUploads = (): boolean => {
+    if (localFiles.length > 0 && !hasUploadedFiles) {
+      const message = 'Please upload your images before proceeding';
+      setSnackbar({
+        open: true,
+        message,
+        severity: 'warning'
+      });
+      if (onValidationError) {
+        onValidationError(message);
+      }
+      return false;
+    }
+    return true;
+  };
+
+  // Expose validation function to parent
+  useEffect(() => {
+    if (onValidationError) {
+      onValidationError(validateUploads() ? '' : 'Please upload your images before proceeding');
+    }
+  }, [hasUploadedFiles, localFiles.length]);
+
   const handleUpload = async () => {
     if (!onUpload || localFiles.length === 0) {
       return;
@@ -272,11 +327,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       // Create a new FileList with updated files
       const dataTransfer = new DataTransfer();
       updatedFiles.forEach(file => {
-        dataTransfer.items.add(file);
+        if (file instanceof File) {
+          dataTransfer.items.add(file);
+        }
       });
       
       // Update form value
       onChange(dataTransfer.files);
+      setHasUploadedFiles(true);
       
       // Call onUploadComplete with results including favorite status
       if (onUploadComplete) {
@@ -296,6 +354,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         severity: 'success'
       });
     } catch (error) {
+      console.error('Error uploading files:', error);
       setSnackbar({
         open: true,
         message: 'Failed to upload files. Please try again.',
@@ -308,6 +367,54 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    const validFiles = droppedFiles.filter(validateFile);
+
+    if (validFiles.length !== droppedFiles.length) {
+      return;
+    }
+
+    // Create a new FileList with both existing and new files
+    const dataTransfer = new DataTransfer();
+    
+    // Add existing files
+    if (value) {
+      Array.from(value).forEach(file => {
+        dataTransfer.items.add(file);
+      });
+    }
+    
+    // Add new files
+    validFiles.forEach(file => {
+      dataTransfer.items.add(file);
+    });
+
+    onChange(dataTransfer.files);
+    onBlur();
   };
 
   return (
@@ -323,11 +430,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             alignItems="center"
             justifyContent="center"
             border="1px dashed"
-            borderColor="grey.400"
+            borderColor={isDragging ? 'primary.main' : 'grey.400'}
             borderRadius={2}
             p={4}
-            sx={{ cursor: 'pointer', transition: 'border-color 0.2s' }}
+            sx={{
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              backgroundColor: isDragging ? 'action.hover' : 'transparent',
+              '&:hover': {
+                borderColor: 'primary.main',
+                backgroundColor: 'action.hover',
+              },
+            }}
             onClick={handleClick}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
             tabIndex={0}
             aria-label={caption}
           >
@@ -335,7 +454,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
               <CloudUpload fontSize="large" />
             </IconButton>
             <Typography variant="body2" color="textSecondary" align="center">
-              {caption}
+              {isDragging ? 'Drop files here' : caption}
             </Typography>
             <Typography variant="caption" color="textSecondary" align="center">
               {tooltipMessages?.sizeLimit?.replace('{size}', (maxSize / (1024 * 1024)).toString()) || `Maximum file size: ${maxSize / (1024 * 1024)}MB`}

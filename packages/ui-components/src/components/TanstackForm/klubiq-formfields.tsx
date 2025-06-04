@@ -573,6 +573,35 @@ export const KlubiqTSFormFields: React.FC<{
 					onUpload={fieldConfig.fileConfig?.onUpload}
 					onDelete={fieldConfig.fileConfig?.onDelete}
 					uploadButtonText={fieldConfig.fileConfig?.uploadButtonText}
+					maxFavorites={fieldConfig.fileConfig?.maxFavorites}
+					onValidationError={(message) => {
+						// Trigger validation on the field
+						form.validateField(field.name);
+						// If this is part of an array field, validate the parent
+						if (
+							isArraySubField &&
+							arrayFieldName !== undefined &&
+							arrayIndex !== undefined
+						) {
+							debouncedValidate(arrayFieldName);
+						}
+					}}
+					onUploadComplete={(results) => {
+						// Clear validation by triggering a change
+						field.handleChange(value);
+						// If this is part of an array field, validate the parent
+						if (
+							isArraySubField &&
+							arrayFieldName !== undefined &&
+							arrayIndex !== undefined
+						) {
+							debouncedValidate(arrayFieldName);
+						}
+						// Call the parent's onUploadComplete if provided
+						if (fieldConfig.fileConfig?.onUploadComplete) {
+							fieldConfig.fileConfig.onUploadComplete(results);
+						}
+					}}
 				/>
 			);
 		case 'group': {

@@ -45,7 +45,8 @@ import { useNavigate } from 'react-router-dom';
 import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 import { useUploadImagesMutation } from '../../../store/GlobalStore/globalApiSlice';
 import { useDeleteFileMutation } from '../../../store/GlobalStore/globalApiSlice';
-import { consoleInfo, consoleLog } from '../../../helpers/debug-logger';
+import { consoleError, consoleInfo, consoleLog } from '../../../helpers/debug-logger';
+import { Property } from '../../../page-tytpes/properties/request.types';
 
 
 interface AddressValue {
@@ -635,12 +636,13 @@ export const CreateProperty = () => {
 					},
 					fileConfig: {
 						subtitle: 'PROPERTY IMAGES',
-						caption: 'Upload images of your property and mark the cover photo as favorite',
+						caption: 'Drag and drop or click to upload images of your property and mark the cover photo as favorite',
 						accept: 'image/*',
 						multiple: true,
 						onUpload: uploadPropertyImages,
 						onDelete: deletePropertyImage,
 						uploadButtonText: 'Upload Images',
+						maxFavorites: 1,
 						tooltipMessages: {
 							upload: 'Upload property images',
 							sizeLimit: 'Maximum file size is 10MB',
@@ -880,6 +882,24 @@ export const CreateProperty = () => {
 	const onSubmit = async (values: any) => {
 
 		consoleLog('submitted', values);
+		if(!values.category?.id || !values.purpose?.id || !values.typeId) {
+			consoleError('Please select a category, purpose, and type');
+			return;
+		}
+		const newPropertyData: Property = {
+			categoryId: values.category.id,
+			purposeId: values.purpose.id,
+			typeId: values.typeId,
+			name: values.name,
+			marketValue: values.marketValue,
+			sellingPrice: values.sellingPrice,
+			description: values.description,
+			address: values.address,
+			images: values.propertyImages,
+			isMultiUnit: values.unitDetails.unitType === 'multi',
+			units: values.unitDetails.unitType === 'single' ? [values.singleUnit] : values.multiUnits,
+
+		}
 		const response = await addProperty(values);
 		consoleInfo('addProperty response', response);
 		return Promise.resolve(values);

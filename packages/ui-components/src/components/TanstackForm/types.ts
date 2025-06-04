@@ -107,23 +107,7 @@ export interface BaseFormFieldV1 {
   width?: string | number;
   showIf?: (values: Record<string, any>) => boolean;
   step?: number;
-  fileConfig?: {
-    accept?: string;
-    maxSize?: number;
-    multiple?: boolean;
-    subtitle?: string;
-    caption?: string;
-    tooltipMessages?: {
-      favorite?: string;
-      unfavorite?: string;
-      delete?: string;
-      sizeLimit?: string;
-      upload?: string;
-    };
-    onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
-    onDelete?: (publicId: string) => Promise<void>;
-    uploadButtonText?: string;
-  };
+  fileConfig?: FileConfig;
   addressConfig?: {
     label?: string;
     apiKey: string;
@@ -141,6 +125,27 @@ export interface BaseFormFieldV1 {
   };
   radioGroupDirection?: 'row' | 'column';
   checkboxGroupDirection?: 'row' | 'column';
+}
+
+export interface FileConfig {
+  accept?: string;
+  maxSize?: number;
+  multiple?: boolean;
+  subtitle?: string;
+  caption?: string;
+  tooltipMessages?: {
+    favorite?: string;
+    unfavorite?: string;
+    delete?: string;
+    sizeLimit?: string;
+    upload?: string;
+    maxFavoritesReached?: string;
+  };
+  onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
+  onDelete?: (publicId: string) => Promise<void>;
+  uploadButtonText?: string;
+  maxFavorites?: number;
+  onUploadComplete?: (results: (StorageUploadResult & { isFavorite: boolean })[]) => void;
 }
 
 export interface StepIcon {

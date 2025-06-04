@@ -14,13 +14,13 @@ export interface PropertyAddress {
   }
   
   export interface PropertyImage {
-    isMain: boolean;
+    isMain: boolean; // mapped to favorited image. If none is favorited, the first image is the main image
     fileSize: number;
     url: string;
-    unitNumber: string;
-    id: number;
+    unitNumber?: string;
+    id?: number;
     externalId: string;
-    fileName: string;
+    fileName: string; // use a uuid for the file name
   }
   
   export interface UnitArea {
@@ -45,22 +45,22 @@ export interface PropertyAddress {
   }
   
   export interface Property {
-    customAmenities: string[];
+    customAmenities?: string[];
     address: PropertyAddress;
     categoryId: number;
     description: string;
     images: PropertyImage[];
     isMultiUnit: boolean;
-    managerUid: string;
+    managerUid?: string;
     name: string;
-    note: string;
-    ownerUid: string;
+    note?: string;
+    ownerUid?: string;
     purposeId: number;
-    statusId: number;
-    tags: string[];
+    statusId?: number;
+    tags?: string[];
     typeId: number;
     units: PropertyUnit[];
-    orgUuid: string;
-    sellingPrice: number;
-    marketValue: number;
+    orgUuid?: string;
+    sellingPrice?: number;
+    marketValue?: number;
   }
