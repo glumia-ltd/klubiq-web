@@ -32,6 +32,7 @@ import {
 	FormStep,
 	GroupFormFieldV1,
 	type ArrayFormFieldV1,
+	CustomFormFieldV1,
 } from './types';
 import { KlubiqTSFormFields } from './klubiq-formfields';
 import { style } from './style';
@@ -225,6 +226,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		dialogConfirmButtonText: 'Leave Without Saving',
 		dialogCancelButtonText: 'Cancel',
 	},
+	// New props with defaults
+	header,
+	subHeader,
+	underSubmitButtonNode,
+	horizontalAlignment = 'left',
+	verticalAlignment = 'top',
+	fullWidthButtons = false,
 }) => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
@@ -717,6 +725,23 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				return null;
 			}
 
+			// Custom field support
+			if (field.type === 'custom') {
+				const customField = field as CustomFormFieldV1;
+				const fieldMeta = form.getFieldMeta(field.name);
+				return (
+					<Box key={`${field.name}-${idx}`}>
+						{typeof customField.component === 'function'
+							? customField.component(
+									fieldMeta as any,
+									field,
+									form,
+							  )
+							: customField.component}
+					</Box>
+				);
+			}
+
 			// Array field support
 			if (field.type === 'array') {
 				// Ensure the array exists in state
@@ -942,7 +967,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	return (
 		<Stack
 			key={'form-container'}
-			sx={{ ...style.container, width: formWidth }}
+			sx={{ 
+				...style.container, 
+				width: formWidth,
+				justifyContent: verticalAlignment === 'center' ? 'center' : 
+					verticalAlignment === 'bottom' ? 'flex-end' : 'flex-start',
+				minHeight: verticalAlignment === 'center' ? '100vh' : 'auto',
+			}}
 			spacing={4}
 		>
 			{showBackdrop && (
@@ -994,6 +1025,18 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						{topBackButton.text}
 					</Button>
 				</Stack>
+			)}
+
+			{header && (
+				<Box sx={{ width: '100%' }}>
+					{header}
+				</Box>
+			)}
+
+			{subHeader && (
+				<Box sx={{ width: '100%' }}>
+					{subHeader}
+				</Box>
 			)}
 
 			{isMultiStep && (
@@ -1076,7 +1119,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 				<Stack
 					direction='row'
-					justifyContent='end'
+					justifyContent={horizontalAlignment}
 					alignItems='center'
 					spacing={2}
 					mt={3}
@@ -1087,13 +1130,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 								onClick={handleBack}
 								startIcon={<ArrowBack />}
 								variant='klubiqOutlinedButton'
+								fullWidth={fullWidthButtons}
 							>
 								Back
 							</Button>
 						)}
 					</Stack>
 
-					<Stack direction='row' spacing={2}>
+					<Stack direction='row' spacing={2} sx={{ width: fullWidthButtons ? '100%' : 'auto' }}>
 						{(() => {
 							const { isSubmitting } = form.state;
 							const isStepValid = (() => {
@@ -1115,6 +1159,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											endIcon={<ArrowForward />}
 											variant='klubiqMainButton'
 											disabled={!isStepValid}
+											fullWidth={fullWidthButtons}
 										>
 											Next
 										</Button>
@@ -1124,6 +1169,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 												type='submit'
 												variant='klubiqMainButton'
 												disabled={!isStepValid || isSubmitting}
+												fullWidth={fullWidthButtons}
 											>
 												{isSubmitting ? 'Submitting...' : submitButtonText}
 											</Button>
@@ -1134,6 +1180,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															onClick={handleNextAction}
 															variant={nextAction.variant}
 															startIcon={nextAction.startIcon}
+															fullWidth={fullWidthButtons}
 														>
 															{nextAction.text}
 														</Button>
@@ -1190,6 +1237,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 																		endIcon={button.endIcon}
 																		color={button.color}
 																		autoFocus={button.autoFocus}
+																		fullWidth={fullWidthButtons}
 																	>
 																		{button.text}
 																	</Button>
@@ -1206,6 +1254,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										<Button
 											onClick={() => form.reset()}
 											disabled={isSubmitting}
+											fullWidth={fullWidthButtons}
 										>
 											{resetButtonText}
 										</Button>
@@ -1216,6 +1265,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					</Stack>
 				</Stack>
 			</form>
+
+			{underSubmitButtonNode && (
+				<Box sx={{ width: '100%' }}>
+					{underSubmitButtonNode}
+				</Box>
+			)}
+
 			<Dialog
 				open={returnDialogOpen}
 				onClose={() => setReturnDialogOpen(false)}

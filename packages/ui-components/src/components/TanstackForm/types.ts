@@ -27,7 +27,8 @@ export type FieldTypeV1 =
   | 'checkbox-group'
   | 'address'
   | 'group'
-  | 'array';
+  | 'array'
+  | 'custom';
 
 export interface SelectOptionV1 {
   label: string;
@@ -57,7 +58,13 @@ export interface ArrayFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   defaultItem?: Record<string, any>;
 }
 
-export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1;
+export interface CustomFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
+  type: 'custom';
+  component: React.ReactNode | ((field: FormFieldApi, fieldConfig: FormFieldV1, form: any) => React.ReactNode);
+  skipValidation?: boolean;
+}
+
+export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1 | CustomFormFieldV1;
 export interface StorageUploadResult {
   url: string;
   public_id?: string;
@@ -217,6 +224,12 @@ export interface DynamicTanstackFormProps {
     dialogConfirmButtonText?: string;
     dialogCancelButtonText?: string;
   };
+  header?: React.ReactNode;
+  subHeader?: React.ReactNode;
+  underSubmitButtonNode?: React.ReactNode;
+  horizontalAlignment?: 'left' | 'center' | 'right';
+  verticalAlignment?: 'top' | 'center' | 'bottom';
+  fullWidthButtons?: boolean;
 }
 // For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
 export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };

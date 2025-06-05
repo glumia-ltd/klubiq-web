@@ -237,6 +237,7 @@ export const KlubiqTSFormFields: React.FC<{
 						fullWidth
 						type='text'
 						label={hasInlineLabel ? label : undefined}
+						placeholder={fieldConfig.placeholder}
 						value={value ?? ''}
 						onChange={(e) => handleChange(e.target.value)}
 						{...commonFieldProps}
@@ -250,6 +251,7 @@ export const KlubiqTSFormFields: React.FC<{
 					{renderLabel(label, isRequired, hasInlineLabel)}
 					<TextareaAutosize
 						aria-label={hasInlineLabel ? label : undefined}
+						placeholder={fieldConfig.placeholder}
 						value={value ?? ''}
 						onChange={(e) => handleChange(e.target.value)}
 						onBlur={() => field.handleBlur()}
@@ -281,6 +283,7 @@ export const KlubiqTSFormFields: React.FC<{
 						fullWidth
 						type='text'
 						label={hasInlineLabel ? label : undefined}
+						placeholder={fieldConfig.placeholder}
 						value={value ?? ''}
 						onChange={(e) => {
 							const { value } = e.target;
@@ -437,6 +440,7 @@ export const KlubiqTSFormFields: React.FC<{
 					)}
 					<Select
 						value={value}
+						placeholder={fieldConfig.placeholder}
 						onChange={(e) => {
 							handleChange(e.target.value);
 							if (
@@ -681,20 +685,10 @@ export const KlubiqTSFormFields: React.FC<{
 						fullWidth
 						type={showPassword ? 'text' : 'password'}
 						label={hasInlineLabel ? label : undefined}
+						placeholder={fieldConfig.placeholder}
 						value={value}
-						onChange={(e) => {
-							handleChange(e.target.value);
-							if (
-								isArraySubField &&
-								arrayFieldName !== undefined &&
-								arrayIndex !== undefined
-							) {
-								debouncedValidate(arrayFieldName);
-							}
-						}}
-						onBlur={() => {
-							field.handleBlur();
-						}}
+						onChange={(e) => handleChange(e.target.value)}
+						onBlur={() => field.handleBlur()}
 						error={!!error}
 						helperText={error || helperText}
 						disabled={disabled}
@@ -728,6 +722,7 @@ export const KlubiqTSFormFields: React.FC<{
 					<TextField
 						fullWidth
 						label={hasInlineLabel ? label : undefined}
+						placeholder={fieldConfig.placeholder}
 						value={
 							fieldConfig.readonly
 								? (formatValue(
