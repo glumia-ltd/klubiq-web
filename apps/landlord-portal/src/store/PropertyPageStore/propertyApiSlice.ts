@@ -3,6 +3,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
+import { screenMessages } from '../../helpers/screen-messages';
+import { handleApiResponse } from '../../helpers/apiResponseHandler';
 // import { invalidateMultipleTags } from '../tags-invalidator';
 
 export const propertyApiSlice = createApi({
@@ -41,7 +43,18 @@ export const propertyApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.PROPERTY],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				await handleApiResponse(queryFulfilled, dispatch, {
+					successMessage: screenMessages.property.create.success,
+					errorMessage: screenMessages.property.create.error,
+					tagsToInvalidate: [
+						API_TAGS.PROPERTY,
+						API_TAGS.DASHBOARD_METRICS,
+						API_TAGS.DASHBOARD_REVENUE_REPORT,
+					]
+				});
+			},
+			//invalidatesTags: [API_TAGS.PROPERTY],
 		}),
 
 		getSignedUrl: builder.mutation({

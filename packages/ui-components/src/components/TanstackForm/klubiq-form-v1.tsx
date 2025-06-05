@@ -105,9 +105,9 @@ const LineConnector = styled(StepConnector)(({ theme }) => ({
 		height: 3,
 		border: 0,
 		backgroundColor:
-		theme.palette.mode === 'dark'
-			? theme.palette.grey[700]
-			: theme.palette.grey[400],
+			theme.palette.mode === 'dark'
+				? theme.palette.grey[700]
+				: theme.palette.grey[400],
 		borderRadius: 1,
 	},
 }));
@@ -171,8 +171,8 @@ function isFieldVisible(
 	values: Record<string, any>,
 ): boolean {
 	if (field.showIf && !field.showIf(values)) {
-   return false;
- }
+		return false;
+	}
 	if (field.dependsOn && Array.isArray(field.dependsOn)) {
 		return field.dependsOn.every((dep) => {
 			const actual = values[dep.field];
@@ -213,7 +213,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		startIcon: <ArrowBack />,
 		showDialog: false,
 		dialogTitle: 'Are you sure you want to leave?',
-		dialogDescription: 'You have unsaved changes. If you leave, your changes will be lost.',
+		dialogDescription:
+			'You have unsaved changes. If you leave, your changes will be lost.',
 		dialogConfirmButtonText: 'Leave Without Saving',
 		dialogCancelButtonText: 'Cancel',
 	},
@@ -657,44 +658,39 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				}
 				const arrayValue = form.state.values[field.name] || [];
 				return (
-					<form.Field 
-					key={`${field.name}-${idx}`}
-					name={field.name}
-					mode='array'
-					validators={{
-						onChange: () => {
-							try {
-								setTimeout(() => {
-									validateCurrentStep();
-								}, 0);
-								return undefined;
-							} catch (error) {
-								if (error instanceof z.ZodError) {
-									return error.errors[0].message;
+					<form.Field
+						key={`${field.name}-${idx}`}
+						name={field.name}
+						mode='array'
+						validators={{
+							onChange: () => {
+								try {
+									setTimeout(() => {
+										validateCurrentStep();
+									}, 0);
+									return undefined;
+								} catch (error) {
+									if (error instanceof z.ZodError) {
+										return error.errors[0].message;
+									}
+									return `${field.label} is invalid`;
 								}
-								return `${field.label} is invalid`;
-							}
-						},
-						onChangeAsync: async ({ value }) => {
-							if (field.validation?.dependencies) {
-								for (const dep of field.validation
-									.dependencies) {
-									const dependentValue =
-										form.state.values[dep.field];
-									if (
-										dep.type === 'min' &&
-										value <= dependentValue
-									) {
-										return (
-											dep.message ||
-											`${field.label} must be greater than ${dep.field}`
-										);
+							},
+							onChangeAsync: async ({ value }) => {
+								if (field.validation?.dependencies) {
+									for (const dep of field.validation.dependencies) {
+										const dependentValue = form.state.values[dep.field];
+										if (dep.type === 'min' && value <= dependentValue) {
+											return (
+												dep.message ||
+												`${field.label} must be greater than ${dep.field}`
+											);
+										}
 									}
 								}
-							}
-							return undefined;
-						},
-					}}
+								return undefined;
+							},
+						}}
 					>
 						{(fieldApi) => (
 							<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
@@ -874,7 +870,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		setReturnDialogOpen(false);
 		form.reset();
 		topBackButton?.onClick?.();
-	}
+	};
 
 	return (
 		<Stack
@@ -885,15 +881,22 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			{showTopBackButton && (
 				<Stack direction='row' justifyContent='start' alignItems='center'>
 					<Button
-						onClick={topBackButton.showDialog ?() => setReturnDialogOpen(true) : handleLeaveWithoutSaving}
-						variant={topBackButton.variant === 'contained' ? 'klubiqMainButton' : 'klubiqTextButton'}
+						onClick={
+							topBackButton.showDialog
+								? () => setReturnDialogOpen(true)
+								: handleLeaveWithoutSaving
+						}
+						variant={
+							topBackButton.variant === 'contained'
+								? 'klubiqMainButton'
+								: 'klubiqTextButton'
+						}
 						startIcon={topBackButton.startIcon}
 					>
 						{topBackButton.text}
 					</Button>
 				</Stack>
 			)}
-
 
 			{isMultiStep && (
 				<Box width={'100%'}>
@@ -936,7 +939,29 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					console.log('Form submit event triggered');
 					e.preventDefault();
 					e.stopPropagation();
+
 					try {
+						// Get the current form values
+						const values = form.state.values;
+						console.log('Form values before submit:', values);
+
+						// Ensure array fields are properly formatted
+						const processedValues = Object.entries(values).reduce((acc, [key, value]) => {
+							// Handle array fields
+							if (Array.isArray(value)) {
+								acc[key] = value.filter(item => item !== null && item !== undefined);
+							} else {
+								acc[key] = value;
+							}
+							return acc;
+						}, {} as Record<string, any>);
+
+						// Update form values with processed data
+						Object.entries(processedValues).forEach(([key, value]) => {
+							form.setFieldValue(key, value);
+						});
+
+						// Execute form submission
 						await form.handleSubmit();
 						console.log('Form handleSubmit completed');
 					} catch (error) {
@@ -973,15 +998,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									const stepFields = steps[currentStep].fields;
 									const stepSchema = createStepSchema(stepFields);
 									stepSchema.parse(form.state.values);
-									console.log('Step validation passed');
 									return true;
 								} catch (e) {
-									console.log('Step validation failed:', e);
 									return false;
 								}
 							})();
 							const isLastStep = currentStep === steps.length - 1;
-							console.log('Form state:', { isSubmitting, isStepValid, isLastStep });
 							return (
 								<>
 									{isMultiStep && !isLastStep ? (
@@ -998,7 +1020,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											type='submit'
 											variant='klubiqMainButton'
 											disabled={!isStepValid || isSubmitting}
-											onClick={() => console.log('Submit button clicked')}
 										>
 											{isSubmitting ? 'Submitting...' : submitButtonText}
 										</Button>

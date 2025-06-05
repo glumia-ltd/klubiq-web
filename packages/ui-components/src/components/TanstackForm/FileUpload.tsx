@@ -65,6 +65,8 @@ interface FileUploadProps {
   uploadButtonText?: string;
   onUploadComplete?: (results: (StorageUploadResult & { isFavorite: boolean })[]) => void;
   onValidationError?: (message: string) => void;
+  form?: any; // Add form prop for TanStack Form
+  fieldName?: string; // Add fieldName prop for the form field to update
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -76,8 +78,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   accept,
   maxSize = 5 * 1024 * 1024, // default 5MB
   multiple = false,
-  subtitle = 'COVER PHOTO',
-  caption = 'Upload a cover photo for your property',
+  subtitle = 'UPLOAD FILES',
+  caption = 'Upload your files here',
   maxFavorites = 1,
   tooltipMessages = {
     favorite: 'Click to mark as favorite',
@@ -91,7 +93,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   onDelete,
   onUploadComplete,
   onValidationError,
-  uploadButtonText = 'Upload Files'
+  uploadButtonText = 'Upload Files',
+  form,
+  fieldName = 'uploadedFiles'
 }): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -123,7 +127,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           fileWithPreview.isFavorite = existingFile.isFavorite;
           fileWithPreview.storageResult = existingFile.storageResult;
         } else {
-          fileWithPreview.preview = URL.createObjectURL(file);
+          // Create new preview URL only if it doesn't exist and there's no storage URL
+          if (!fileWithPreview.preview && !fileWithPreview.storageResult?.url) {
+            fileWithPreview.preview = URL.createObjectURL(file);
+          }
           fileWithPreview.isFavorite = false;
         }
         
@@ -232,7 +239,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         }
       });
       
+      // Update form value
       onChange(dataTransfer.files);
+      setLocalFiles(newFiles);
+
+      // Update the uploadedFiles field in the form
+      if (form && fieldName) {
+        const updatedPropertyImages = newFiles
+          .filter(file => file.storageResult) // Only include files that have been uploaded
+          .map((file, index) => ({
+            isMain: file.isFavorite || (index === 0 && !newFiles.some(f => f.isFavorite)),
+            fileSize: file.storageResult?.bytes,
+            url: file.storageResult?.secure_url || file.storageResult?.url || '',
+            externalId: file.storageResult?.public_id || '',
+            fileName: file.name,
+          }));
+        form.setFieldValue(fieldName, updatedPropertyImages);
+      }
 
       setSnackbar({
         open: true,
@@ -263,7 +286,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   useEffect(() => {
     return () => {
       localFiles.forEach(file => {
-        if (file.preview) {
+        if (file.preview && !file.storageResult?.url) {
           URL.revokeObjectURL(file.preview);
         }
       });
@@ -318,11 +341,20 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       // Upload files and get storage results
       const storageResults = await onUpload(localFiles);
       
-      // Update local files with storage results
-      const updatedFiles = localFiles.map((file, index) => ({
-        ...file,
-        storageResult: storageResults[index],
-      }));
+      // Update local files with storage results while preserving existing state
+      const updatedFiles = localFiles.map((file, index) => {
+        const existingFile = localFiles.find(f => f.name === file.name);
+        const updatedFile = {
+          ...file,
+          preview: existingFile?.preview || file.preview,
+          isFavorite: existingFile?.isFavorite || file.isFavorite,
+          storageResult: storageResults[index],
+        };
+        return updatedFile;
+      });
+
+      // Update local state first
+      setLocalFiles(updatedFiles);
       
       // Create a new FileList with updated files
       const dataTransfer = new DataTransfer();
@@ -336,13 +368,27 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       onChange(dataTransfer.files);
       setHasUploadedFiles(true);
       
-      // Call onUploadComplete with results including favorite status
+      // Transform the data into PropertyImage format
+      const propertyImages = updatedFiles.map((file, index) => ({
+        isMain: file.isFavorite || (index === 0 && !updatedFiles.some(f => f.isFavorite)), // If no favorites, first image is main
+        fileSize: file.storageResult?.bytes,
+        url: file.storageResult?.secure_url || file.storageResult?.url || '',
+        externalId: file.storageResult?.public_id || '',
+        fileName: file.name,
+      }));
+      
+      // Call onUploadComplete with both the storage results and property images
       if (onUploadComplete) {
         const resultsWithFavorite = storageResults.map((result, index) => ({
           ...result,
           isFavorite: updatedFiles[index].isFavorite || false,
         }));
         onUploadComplete(resultsWithFavorite);
+      }
+
+      // Update the uploadedImages field in the form using TanStack Form API
+      if (form && fieldName) {
+        form.setFieldValue(fieldName, propertyImages);
       }
 
       clearInterval(progressInterval);
@@ -417,6 +463,66 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     onBlur();
   };
 
+  // Update the useEffect to better handle file state
+  useEffect(() => {
+    if (value) {
+      const filesWithPreview = Array.from(value).map(file => {
+        const existingFile = localFiles.find(f => f.name === file.name);
+        const fileWithPreview = file as FileWithPreview;
+        
+        // Keep existing preview URL and favorite status if file exists
+        if (existingFile) {
+          fileWithPreview.preview = existingFile.preview;
+          fileWithPreview.isFavorite = existingFile.isFavorite;
+          fileWithPreview.storageResult = existingFile.storageResult;
+        } else {
+          // Create new preview URL only if it doesn't exist and there's no storage URL
+          if (!fileWithPreview.preview && !fileWithPreview.storageResult?.url) {
+            fileWithPreview.preview = URL.createObjectURL(file);
+          }
+          fileWithPreview.isFavorite = false;
+        }
+        
+        return fileWithPreview;
+      });
+      setLocalFiles(filesWithPreview);
+      // Check if any files have been uploaded
+      setHasUploadedFiles(filesWithPreview.some(file => file.storageResult));
+    } else {
+      setLocalFiles([]);
+      setHasUploadedFiles(false);
+    }
+  }, [value]);
+
+  // Update the cleanup effect to handle preview URLs
+  useEffect(() => {
+    return () => {
+      localFiles.forEach(file => {
+        if (file.preview && !file.storageResult?.url) {
+          URL.revokeObjectURL(file.preview);
+        }
+      });
+    };
+  }, [localFiles]);
+
+  // Add a new effect to handle file previews
+  useEffect(() => {
+    // Create preview URLs for files that don't have them
+    const newFiles = localFiles.map(file => {
+      if (!file.preview && !file.storageResult?.url) {
+        return {
+          ...file,
+          preview: URL.createObjectURL(file)
+        };
+      }
+      return file;
+    });
+
+    if (JSON.stringify(newFiles) !== JSON.stringify(localFiles)) {
+      setLocalFiles(newFiles);
+    }
+  }, [localFiles]);
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -483,10 +589,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Tooltip title={getTooltipMessage(file, index)} arrow>
                     <ThumbnailContainer>
-                      {file.preview ? (
+                      {file.storageResult?.secure_url || file.storageResult?.url || file.preview ? (
                         <img 
                           src={file.storageResult?.secure_url || file.storageResult?.url || file.preview} 
-                          alt={file.name} 
+                          alt={file.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       ) : (
                         <Box

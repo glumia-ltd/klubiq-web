@@ -47,6 +47,7 @@ import { useUploadImagesMutation } from '../../../store/GlobalStore/globalApiSli
 import { useDeleteFileMutation } from '../../../store/GlobalStore/globalApiSlice';
 import { consoleError, consoleInfo, consoleLog } from '../../../helpers/debug-logger';
 import { Property } from '../../../page-tytpes/properties/request.types';
+import { FileUpload } from '@klubiq/ui-components';
 
 
 interface AddressValue {
@@ -448,6 +449,7 @@ export const CreateProperty = () => {
 		unitDetails: { unitType: '', totalUnits: '2' },
 		singleUnit: { ...unit },
 		propertyImages: {},
+		uploadedImages: [],
 		customAmenities: [],
 		multiUnits: getInitialUnits(),
 	};
@@ -639,6 +641,7 @@ export const CreateProperty = () => {
 						caption: 'Drag and drop or click to upload images of your property and mark the cover photo as favorite',
 						accept: 'image/*',
 						multiple: true,
+						maxSize: 20 * 1024 * 1024,
 						onUpload: uploadPropertyImages,
 						onDelete: deletePropertyImage,
 						uploadButtonText: 'Upload Images',
@@ -646,8 +649,25 @@ export const CreateProperty = () => {
 						tooltipMessages: {
 							upload: 'Upload property images',
 							sizeLimit: 'Maximum file size is 10MB',
+							favorite: 'Mark as cover photo',
+							unfavorite: 'Unmark as cover photo',
+							delete: 'Delete image',
+							maxFavoritesReached: 'You can only have one cover photo',
+
 						},
 					},
+					customComponent: (fieldApi, fieldConfig, form) => (
+						<FileUpload
+							value={fieldApi.state.value}
+							onChange={fieldApi.handleChange}
+							onBlur={fieldApi.handleBlur}
+							error={!!fieldApi.state.meta.errors[0]}
+							helperText={fieldApi.state.meta.errors[0]}
+							form={form}
+							fieldName="uploadedImages"
+							{...fieldConfig.fileConfig}
+						/>
+					),
 				},
 			],
 			icon: { icon: <PropertyDetailsIcon /> },
@@ -880,34 +900,36 @@ export const CreateProperty = () => {
 	];
 
 	const onSubmit = async (values: any) => {
-
 		consoleLog('submitted', values);
-		if(!values.category?.id || !values.purpose?.id || !values.typeId) {
+		if(!values.category?.id || !values.purpose?.id || !values.propertyDetails?.typeId) {
 			consoleError('Please select a category, purpose, and type');
 			return;
 		}
 		const newPropertyData: Property = {
 			categoryId: values.category.id,
 			purposeId: values.purpose.id,
-			typeId: values.typeId,
-			name: values.name,
-			marketValue: values.marketValue,
-			sellingPrice: values.sellingPrice,
-			description: values.description,
+			typeId: values.propertyDetails.typeId,
+			name: values.propertyDetails.name,
+			marketValue: values.propertyDetails.marketValue || 0,
+			sellingPrice: values.propertyDetails.sellingPrice || 0,
+			description: values.propertyDetails.description || null,
 			address: values.address,
-			images: values.propertyImages,
+			images: values.uploadedImages || [],
 			isMultiUnit: values.unitDetails.unitType === 'multi',
 			units: values.unitDetails.unitType === 'single' ? [values.singleUnit] : values.multiUnits,
-
 		}
-		const response = await addProperty(values);
+		if(newPropertyData.units.length === 0) {
+			consoleError('Please add at least one unit');
+			return;
+		}
+		const response = await addProperty(newPropertyData);
 		consoleInfo('addProperty response', response);
-		return Promise.resolve(values);
+		//handleAllPropertiesClick
 	};
 
-		const handleAllPropertiesClick = () => {
-			navigate('/properties');
-		};
+	const handleAllPropertiesClick = () => {
+		navigate('/properties');
+	};
 
 	return (
 		<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -928,7 +950,6 @@ export const CreateProperty = () => {
 					text: 'All Properties',
 					variant: 'text',
 					startIcon: <LeftArrowIcon />,
-
 				}}
 			/>
 		</Box>
