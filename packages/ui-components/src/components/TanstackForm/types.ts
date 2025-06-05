@@ -170,14 +170,16 @@ export interface DynamicTanstackFormProps {
   enableReset?: boolean;
   resetButtonText?: string;
   isMultiStep?: boolean;
-  onStepChange?: (currentStep: number) => void;
-  formWidth?: string | number;
+  onStepChange?: (step: number) => void;
+  formWidth?: string;
   showTopBackButton?: boolean;
+  showBackdrop?: boolean;
+  backdropText?: string;
   topBackButton?: {
-    text?: string;
-    onClick?: () => void;
-    variant?: 'text' | 'contained';
-    startIcon?: ReactNode;
+    text: string;
+    onClick: () => void;
+    variant?: 'contained' | 'outlined' | 'text';
+    startIcon?: React.ReactNode;
     showDialog?: boolean;
     dialogTitle?: string;
     dialogDescription?: string;
