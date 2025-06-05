@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Grid, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { FormField, FormGroup, KlubiqForm } from '@klubiq/ui-components';
 
 import Logo from '@/assets/images/icons.svg';
@@ -95,16 +95,16 @@ const ResetPassword = () => {
 	};
 
 	return (
-		<Grid item sx={styles.container}>
-			<Grid container>
-				<Grid container sx={{ justifyContent: 'center', alignItems: 'center' }}>
+		<Stack item sx={styles.container}>
+			<Stack>
+				<Stack sx={{ justifyContent: 'center', alignItems: 'center' }}>
 					<img src={Logo} />
-				</Grid>
-				<Grid item sm={12}>
+				</Stack>
+				<Stack>
 					<Typography variant='h1' sx={styles.title}>
 						Reset Your Password
 					</Typography>
-				</Grid>
+				</Stack>
 
 				<KlubiqForm
 					fields={resetPasswordFormFields as FormField[]}
@@ -112,8 +112,8 @@ const ResetPassword = () => {
 					initialValues={defaultValues}
 					submitButtonText='Reset Password'
 				></KlubiqForm>
-			</Grid>
-		</Grid>
+			</Stack>
+		</Stack>
 	);
 };
 
