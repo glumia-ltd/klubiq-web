@@ -957,12 +957,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						justifyContent: 'center',
 						alignItems: 'center',
 						gap: 2,
+						backgroundColor: 'rgba(0, 0, 0, 0.7)',
 					}}
 					open={form.state.isSubmitting}
 				>
 					<CircularProgress color='inherit' />
-					<Typography variant='h6' color='inherit'>
-						{backdropText}
+					<Typography variant='h6' color='inherit' sx={{ textAlign: 'center' }}>
+						{backdropText || 'Submitting form...'}
 					</Typography>
 				</Backdrop>
 			)}

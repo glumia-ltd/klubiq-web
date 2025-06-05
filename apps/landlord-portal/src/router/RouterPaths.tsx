@@ -14,7 +14,6 @@ import DashBoard from '../pages/Features/Dashboard';
 import Setting from '../pages/Settings';
 import Lease from '../pages/Features/Lease';
 import MFASetUp from '../pages/Auth/MFAPage';
-import AddProperties from '../pages/Features/properties/AppProperties';
 import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 import TenantDetails from '../pages/Features/Tenant/TenantDetails';
@@ -72,20 +71,6 @@ export const router = createBrowserRouter(
 						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 					</Route>
-
-					{/* <Route
-						path='properties/create/property-category'
-						element={<AddProperties />}
-					/>
-					<Route
-						path='properties/create/property-details'
-						element={<AddProperties />}
-					/>
-					<Route
-						path='properties/create/unit-type'
-						element={<AddProperties />}
-					/> */}
-
 					<Route path='/lease' element={<Navigate to='/leases' replace />} />
 					<Route path='/leases/*' element={<Navigate to='/leases' replace />} />
 					<Route path='/leases' element={<NestedRoutesLayout />}>

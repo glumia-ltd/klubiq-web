@@ -180,6 +180,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		};
 	}, [localFiles]);
 
+	// Add a new effect to handle file previews
+	useEffect(() => {
+		// Create preview URLs for files that don't have them
+		const newFiles = localFiles.map((file) => {
+			if (!file.preview && !file.storageResult?.url) {
+				return {
+					...file,
+					preview: URL.createObjectURL(file),
+				};
+			}
+			return file;
+		});
+
+		if (JSON.stringify(newFiles) !== JSON.stringify(localFiles)) {
+			setLocalFiles(newFiles);
+		}
+	}, [localFiles]);
+
 	const handleClick = () => {
 		inputRef.current?.click();
 	};
@@ -499,24 +517,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		onChange(dataTransfer.files);
 		onBlur();
 	};
-
-	// Add a new effect to handle file previews
-	useEffect(() => {
-		// Create preview URLs for files that don't have them
-		const newFiles = localFiles.map((file) => {
-			if (!file.preview && !file.storageResult?.url) {
-				return {
-					...file,
-					preview: URL.createObjectURL(file),
-				};
-			}
-			return file;
-		});
-
-		if (JSON.stringify(newFiles) !== JSON.stringify(localFiles)) {
-			setLocalFiles(newFiles);
-		}
-	}, [localFiles]);
 
 	return (
 		<Card variant='outlined'>
