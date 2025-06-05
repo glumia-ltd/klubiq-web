@@ -162,6 +162,36 @@ export interface StepIcon {
     icon?: StepIcon;
   }
 
+export interface DialogButton {
+  text: string;
+  onClick: (formData: any, result: any) => void;
+  variant?: 'klubiqMainButton' | 'klubiqOutlinedButton' | 'klubiqTextButton';
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  autoFocus?: boolean;
+}
+
+export interface NextActionDialog {
+  title: string | ((result: any) => string);
+  description: string | ((result: any) => string);
+  buttons: DialogButton[];
+  onClose?: (formData: any, result: any) => void;
+  closeIcon?: React.ReactNode;
+  renderContent?: (result: any) => React.ReactNode;
+  showAfterSubmit?: boolean;
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  fullWidth?: boolean;
+}
+
+export interface NextActionButton {
+  text: string;
+  onClick: (formData: any, result: any) => void;
+  variant?: 'klubiqMainButton' | 'klubiqOutlinedButton' | 'klubiqTextButton';
+  startIcon?: React.ReactNode;
+  showAfterSubmit?: boolean;
+}
+
 export interface DynamicTanstackFormProps {
   fields: FormFieldV1[] | FormStep[];
   onSubmit: (values: any) => Promise<any>;
@@ -175,10 +205,11 @@ export interface DynamicTanstackFormProps {
   showTopBackButton?: boolean;
   showBackdrop?: boolean;
   backdropText?: string;
+  nextAction?: NextActionButton | NextActionDialog;
   topBackButton?: {
     text: string;
     onClick: () => void;
-    variant?: 'contained' | 'outlined' | 'text';
+    variant?: 'klubiqMainButton' | 'klubiqOutlinedButton' | 'klubiqTextButton';
     startIcon?: React.ReactNode;
     showDialog?: boolean;
     dialogTitle?: string;

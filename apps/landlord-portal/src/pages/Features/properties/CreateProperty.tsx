@@ -1,9 +1,9 @@
 import {
 	FormStep,
 	KlubiqFormV1,
-	//	ArrayFormFieldV1,
 	InputAdornment as InputAdornmentType,
 	FormFieldV1,
+	DynamicTanstackFormProps,
 } from '@klubiq/ui-components';
 import { CategoryMetaDataType } from '../../../shared/type';
 import { useAddPropertyMutation, useGetPropertiesMetaDataQuery } from '../../../store/PropertyPageStore/propertyApiSlice';
@@ -22,7 +22,6 @@ import {
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { AmenitiesDialog } from '../../../components/CustomFormComponents/AmenitiesDialog';
-//import { UnitsAccordionArray } from '../../../components/CustomFormComponents/UnitsAccordionArray';
 import {
 	TextField,
 	Select,
@@ -31,15 +30,12 @@ import {
 	InputAdornment,
 	useMediaQuery,
 	useTheme,
-	// Typography,
-	// Stack,
-	// Button,
 } from '@mui/material';
 import { getCurrencySymbol, MEASUREMENTS } from '../../../helpers/utils';
 import { z } from 'zod';
 import countriesList from '../../../helpers/countries-meta.json';
 import { GooglePlacesAutocomplete } from '@klubiq/ui-components';
-import { Bathroom, BedroomParent, Business, Wc } from '@mui/icons-material';
+import { Bathroom, BedroomParent, Business, Close, Wc } from '@mui/icons-material';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
@@ -63,6 +59,7 @@ interface AddressValue {
 }
 
 const MAX_UNITS = 10;
+const IMAGE_SIZE_LIMIT = 1024 * 1024 * 25; // 25MB
 
 const countries = countriesList
 	.filter((item) => item.active)
@@ -641,14 +638,14 @@ export const CreateProperty = () => {
 						caption: 'Drag and drop or click to upload images of your property and mark the cover photo as favorite',
 						accept: 'image/*',
 						multiple: true,
-						maxSize: 20 * 1024 * 1024,
+						maxSize: IMAGE_SIZE_LIMIT,
 						onUpload: uploadPropertyImages,
 						onDelete: deletePropertyImage,
 						uploadButtonText: 'Upload Images',
 						maxFavorites: 1,
 						tooltipMessages: {
 							upload: 'Upload property images',
-							sizeLimit: 'Maximum file size is 10MB',
+							sizeLimit: `Maximum file size is ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB`,
 							favorite: 'Mark as cover photo',
 							unfavorite: 'Unmark as cover photo',
 							delete: 'Delete image',
@@ -924,34 +921,82 @@ export const CreateProperty = () => {
 		}
 		const response = await addProperty(newPropertyData);
 		consoleInfo('addProperty response', response);
-		//handleAllPropertiesClick
 	};
-
+	const handleAddTenantClick = (formData: any, result: any) => {
+		consoleLog('addTenant', formData, result);
+		navigate(`/tenants/invite-tenant`, {
+			state: {
+				mode: 'onboarding',
+				propertyDetails: {
+					propertyName: result?.name,
+					unitId: result?.units?.[0]?.id,
+					unitNumber: result?.units?.[0]?.unitNumber,
+					propertyId: result?.uuid,
+				},
+				returnPath: `/properties/${result?.uuid}`,
+			},
+		});
+	}
+	const handleCreateLeaseClick = (formData: any, result: any) => {
+		consoleLog('createLease', formData, result);
+		navigate(`/leases/add-lease?property=${result?.uuid}`);
+	}
 	const handleAllPropertiesClick = () => {
 		navigate('/properties');
 	};
-
+	const getNextActionDescription = (result: any) => {
+		if(result?.isMultiUnit) {
+			return `Congratulations! Your property has been created successfully. Would you like to add a tenant to ${result?.units?.[0]?.unitNumber}? Or create a new lease?`;
+		}
+		return `Congratulations! Your property has been created successfully. Would you like to add a tenant to this property? Or create a lease for this property?`;
+	}
+	const createPropertyFormConfig: DynamicTanstackFormProps = {
+		fields: propertyForm,
+		initialValues: initialValues,
+		onSubmit: onSubmit,
+		submitButtonText: 'Create Property',
+		isMultiStep: true,
+		showTopBackButton: true,
+		showBackdrop: true,
+		backdropText:'Please wait while we create your property...',
+		topBackButton: {
+			showDialog: true,
+			dialogTitle: 'Are you sure you want to leave?',
+			dialogDescription: 'You have unsaved changes. If you leave now, your changes will be lost.',
+			dialogConfirmButtonText: 'Leave',
+			dialogCancelButtonText: 'Continue',
+			onClick: handleAllPropertiesClick,
+			text: 'All Properties',
+			variant: 'klubiqTextButton',
+			startIcon: <LeftArrowIcon />,
+		},
+		nextAction: {
+			title: 'Add Tenant / Create Lease',
+			description: getNextActionDescription,
+			closeIcon:  <Close />,
+			onClose: handleAllPropertiesClick,
+			buttons: [
+				{
+					text: 'Invite Tenant',
+					onClick: handleAddTenantClick,
+					variant: 'klubiqMainButton',
+					autoFocus: true,
+				},
+				{
+					text: 'Create Lease',
+					onClick: handleCreateLeaseClick,
+					variant: 'klubiqOutlinedButton',
+					autoFocus: false,
+				},
+			],
+			maxWidth: 'md',
+			fullWidth: true,
+			showAfterSubmit: true,
+		}
+	}
 	return (
 		<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-			<KlubiqFormV1
-				fields={propertyForm}
-				initialValues={initialValues}
-				onSubmit={onSubmit}
-				submitButtonText='Create Property'
-				isMultiStep={true}
-				showTopBackButton={true}
-				topBackButton={{
-					showDialog: true,
-					dialogTitle: 'Are you sure you want to leave?',
-					dialogDescription: 'You have unsaved changes. If you leave now, your changes will be lost.',
-					dialogConfirmButtonText: 'Leave',
-					dialogCancelButtonText: 'Continue',
-					onClick: handleAllPropertiesClick,
-					text: 'All Properties',
-					variant: 'text',
-					startIcon: <LeftArrowIcon />,
-				}}
-			/>
+			<KlubiqFormV1 {...createPropertyFormConfig} />
 		</Box>
 	);
 };

@@ -24,6 +24,7 @@ import {
 	Backdrop,
 	CircularProgress,
 	Typography,
+	IconButton,
 } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
@@ -211,10 +212,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	showTopBackButton = false,
 	showBackdrop = false,
 	backdropText = 'Submitting form...',
+	nextAction,
 	topBackButton = {
 		text: 'Back',
 		onClick: () => {},
-		variant: 'contained',
+		variant: 'klubiqMainButton',
 		startIcon: <ArrowBack />,
 		showDialog: false,
 		dialogTitle: 'Are you sure you want to leave?',
@@ -228,6 +230,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
 	const [stepValidations, setStepValidations] = useState<boolean[]>([]);
 	const [returnDialogOpen, setReturnDialogOpen] = useState(false);
+	const [showNextAction, setShowNextAction] = useState(false);
+	const [submittedData, setSubmittedData] = useState<any>(null);
+	const [submissionResult, setSubmissionResult] = useState<any>(null);
+	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
 	const normalizedFields = Array.isArray(fields) ? fields : [fields];
 	const steps = isMultiStep
 		? (normalizedFields as FormStep[])
@@ -451,8 +457,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		onSubmit: async ({ value }) => {
 			console.log('Form submission started with values:', value);
 			try {
-				await onSubmit(value);
+				const result = await onSubmit(value);
 				console.log('Form submission completed successfully');
+				setSubmittedData(value);
+				setSubmissionResult(result);
+				if (nextAction?.showAfterSubmit) {
+					setShowNextAction(true);
+				}
+				return result;
 			} catch (error) {
 				console.error('Form submission error:', error);
 				throw error;
@@ -647,6 +659,53 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			setCurrentStep((prev) => prev - 1);
 			onStepChange?.(currentStep - 1);
 		}
+	};
+
+	const handleNextAction = () => {
+		if (!nextAction) {
+			return;
+		}
+		if ('onClick' in nextAction) {
+			nextAction.onClick(submittedData, submissionResult);
+		} else {
+			setNextActionDialogOpen(true);
+		}
+	};
+
+	const handleDialogClose = () => {
+		if (!nextAction || !('onClose' in nextAction)) {
+			return;
+		}
+		nextAction.onClose?.(submittedData, submissionResult);
+		setNextActionDialogOpen(false);
+	};
+
+	const getDialogTitle = () => {
+		if (!nextAction || !('title' in nextAction)) {
+			return '';
+		}
+		const { title } = nextAction;
+		return typeof title === 'function' ? title(submissionResult) : title;
+	};
+
+	const getDialogDescription = () => {
+		if (!nextAction || !('description' in nextAction)) {
+			return '';
+		}
+		const { description } = nextAction;
+		return typeof description === 'function'
+			? description(submissionResult)
+			: description;
+	};
+
+	const shouldShowNextAction = () => {
+		if (!nextAction) {
+			return false;
+		}
+		if ('showAfterSubmit' in nextAction) {
+			return nextAction.showAfterSubmit;
+		}
+		return true;
 	};
 
 	const renderFields = (fields: FormFieldV1[]) => {
@@ -895,12 +954,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						bottom: 0,
 						display: 'flex',
 						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
 						gap: 2,
 					}}
 					open={form.state.isSubmitting}
 				>
-					<CircularProgress color="inherit" />
-					<Typography variant="h6" color="inherit">
+					<CircularProgress color='inherit' />
+					<Typography variant='h6' color='inherit'>
 						{backdropText}
 					</Typography>
 				</Backdrop>
@@ -914,11 +975,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 								? () => setReturnDialogOpen(true)
 								: handleLeaveWithoutSaving
 						}
-						variant={
-							topBackButton.variant === 'contained'
-								? 'klubiqMainButton'
-								: 'klubiqTextButton'
-						}
+						variant={topBackButton.variant}
 						startIcon={topBackButton.startIcon}
 					>
 						{topBackButton.text}
@@ -974,15 +1031,20 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						console.log('Form values before submit:', values);
 
 						// Ensure array fields are properly formatted
-						const processedValues = Object.entries(values).reduce((acc, [key, value]) => {
-							// Handle array fields
-							if (Array.isArray(value)) {
-								acc[key] = value.filter(item => item !== null && item !== undefined);
-							} else {
-								acc[key] = value;
-							}
-							return acc;
-						}, {} as Record<string, any>);
+						const processedValues = Object.entries(values).reduce(
+							(acc, [key, value]) => {
+								// Handle array fields
+								if (Array.isArray(value)) {
+									acc[key] = value.filter(
+										(item) => item !== null && item !== undefined,
+									);
+								} else {
+									acc[key] = value;
+								}
+								return acc;
+							},
+							{} as Record<string, any>,
+						);
 
 						// Update form values with processed data
 						Object.entries(processedValues).forEach(([key, value]) => {
@@ -1044,13 +1106,87 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											Next
 										</Button>
 									) : (
-										<Button
-											type='submit'
-											variant='klubiqMainButton'
-											disabled={!isStepValid || isSubmitting}
-										>
-											{isSubmitting ? 'Submitting...' : submitButtonText}
-										</Button>
+										<>
+											<Button
+												type='submit'
+												variant='klubiqMainButton'
+												disabled={!isStepValid || isSubmitting}
+											>
+												{isSubmitting ? 'Submitting...' : submitButtonText}
+											</Button>
+											{shouldShowNextAction() && nextAction && (
+												<>
+													{'onClick' in nextAction ? (
+														<Button
+															onClick={handleNextAction}
+															variant={nextAction.variant}
+															startIcon={nextAction.startIcon}
+														>
+															{nextAction.text}
+														</Button>
+													) : (
+														<Dialog
+															open={nextActionDialogOpen}
+															onClose={handleDialogClose}
+															aria-labelledby='next-action-dialog-title'
+															aria-describedby='next-action-dialog-description'
+															maxWidth={nextAction.maxWidth}
+															fullWidth={nextAction.fullWidth}
+														>
+															<DialogTitle id='next-action-dialog-title'>
+																{getDialogTitle()}
+																{nextAction.closeIcon && (
+																	<IconButton
+																		aria-label='close'
+																		onClick={handleDialogClose}
+																		sx={{
+																			position: 'absolute',
+																			right: 8,
+																			top: 8,
+																		}}
+																	>
+																		{nextAction.closeIcon}
+																	</IconButton>
+																)}
+															</DialogTitle>
+															<DialogContent>
+																<DialogContentText id='next-action-dialog-description'>
+																	{getDialogDescription()}
+																</DialogContentText>
+																{'renderContent' in nextAction &&
+																	nextAction.renderContent && (
+																		<Box mt={2}>
+																			{nextAction.renderContent(
+																				submissionResult,
+																			)}
+																		</Box>
+																	)}
+															</DialogContent>
+															<DialogActions>
+																{nextAction.buttons.map((button, index) => (
+																	<Button
+																		key={index}
+																		onClick={() =>
+																			button.onClick(
+																				submittedData,
+																				submissionResult,
+																			)
+																		}
+																		variant={button.variant}
+																		startIcon={button.startIcon}
+																		endIcon={button.endIcon}
+																		color={button.color}
+																		autoFocus={button.autoFocus}
+																	>
+																		{button.text}
+																	</Button>
+																))}
+															</DialogActions>
+														</Dialog>
+													)}
+												</>
+											)}
+										</>
 									)}
 
 									{enableReset && (
