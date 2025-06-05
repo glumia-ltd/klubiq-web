@@ -147,7 +147,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 				// Keep existing preview URL and favorite status if file exists
 				if (existingFile) {
-					fileWithPreview.preview = existingFile.preview;
+					fileWithPreview.preview = existingFile.storageResult?.secure_url || 
+						existingFile.storageResult?.url || 
+						existingFile.preview;
 					fileWithPreview.isFavorite = existingFile.isFavorite;
 					fileWithPreview.storageResult = existingFile.storageResult;
 				} else {
@@ -399,7 +401,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				const existingFile = localFiles.find((f) => f.name === file.name);
 				const updatedFile = {
 					...file,
-					preview: existingFile?.preview || file.preview,
+					preview: storageResults[index]?.secure_url || storageResults[index]?.url || existingFile?.preview || file.preview,
 					isFavorite: existingFile?.isFavorite || file.isFavorite,
 					storageResult: storageResults[index],
 				};

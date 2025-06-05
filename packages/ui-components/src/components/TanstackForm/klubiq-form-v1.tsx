@@ -463,6 +463,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				setSubmissionResult(result);
 				if (nextAction?.showAfterSubmit) {
 					setShowNextAction(true);
+					if ('buttons' in nextAction) {
+						setNextActionDialogOpen(true);
+					}
 				}
 				return result;
 			} catch (error) {
@@ -947,7 +950,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					sx={{
 						color: '#fff',
 						zIndex: (theme) => theme.zIndex.drawer + 1,
-						position: 'absolute',
+						position: 'fixed',
 						top: 0,
 						left: 0,
 						right: 0,
@@ -962,7 +965,16 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					open={form.state.isSubmitting}
 				>
 					<CircularProgress color='inherit' />
-					<Typography variant='h6' color='inherit' sx={{ textAlign: 'center' }}>
+					<Typography 
+						variant='h6' 
+						color='inherit' 
+						sx={{ 
+							textAlign: 'center',
+							px: 2,
+							maxWidth: '90%',
+							wordBreak: 'break-word'
+						}}
+					>
 						{backdropText || 'Submitting form...'}
 					</Typography>
 				</Backdrop>

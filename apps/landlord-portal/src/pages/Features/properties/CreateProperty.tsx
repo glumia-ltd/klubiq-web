@@ -59,7 +59,7 @@ interface AddressValue {
 }
 
 const MAX_UNITS = 10;
-const IMAGE_SIZE_LIMIT = 1024 * 1024 * 25; // 25MB
+const IMAGE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB
 
 const countries = countriesList
 	.filter((item) => item.active)
@@ -964,7 +964,7 @@ export const CreateProperty = () => {
 			dialogTitle: 'Are you sure you want to leave?',
 			dialogDescription: 'You have unsaved changes. If you leave now, your changes will be lost.',
 			dialogConfirmButtonText: 'Leave',
-			dialogCancelButtonText: 'Continue',
+			dialogCancelButtonText: 'Continue Creating Property',
 			onClick: handleAllPropertiesClick,
 			text: 'All Properties',
 			variant: 'klubiqTextButton',
