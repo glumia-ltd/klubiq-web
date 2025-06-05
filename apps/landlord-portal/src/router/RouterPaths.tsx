@@ -61,7 +61,7 @@ export const router = createBrowserRouter(
 						errorElement={<ErrorComponent />}
 					/>
 					<Route
-						path='/properties/new'
+						path='/properties/create'
 						element={<CreateProperty />}
 						errorElement={<ErrorComponent />}
 					/>
@@ -73,7 +73,7 @@ export const router = createBrowserRouter(
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 					</Route>
 
-					<Route
+					{/* <Route
 						path='properties/create/property-category'
 						element={<AddProperties />}
 					/>
@@ -84,7 +84,7 @@ export const router = createBrowserRouter(
 					<Route
 						path='properties/create/unit-type'
 						element={<AddProperties />}
-					/>
+					/> */}
 
 					<Route path='/lease' element={<Navigate to='/leases' replace />} />
 					<Route path='/leases/*' element={<Navigate to='/leases' replace />} />
