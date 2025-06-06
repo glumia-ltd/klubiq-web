@@ -1137,14 +1137,23 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						)}
 					</Stack>
 
-					<Stack direction='row' spacing={2} sx={{ width: fullWidthButtons ? '100%' : 'auto' }}>
+					<Stack direction='row' spacing={2} justifyContent={fullWidthButtons ? 'space-between' : 'flex-end'} sx={{ width: fullWidthButtons ? '100%' : 'auto' }}>
 						{(() => {
 							const { isSubmitting } = form.state;
-							const isStepValid = (() => {
+							const isFormValid = (() => {
 								try {
-									const stepFields = steps[currentStep].fields;
-									const stepSchema = createStepSchema(stepFields);
-									stepSchema.parse(form.state.values);
+									if (isMultiStep) {
+										const stepFields = steps[currentStep].fields;
+										const stepSchema = createStepSchema(stepFields);
+										stepSchema.parse(form.state.values);
+									} else {
+										// For single-step forms, validate all fields
+										const formFields = Array.isArray(fields) 
+											? fields 
+											: (fields as FormStep[])[0].fields;
+										const formSchema = createStepSchema(formFields as FormFieldV1[]);
+										formSchema.parse(form.state.values);
+									}
 									return true;
 								} catch (e) {
 									return false;
@@ -1158,7 +1167,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											onClick={handleNext}
 											endIcon={<ArrowForward />}
 											variant='klubiqMainButton'
-											disabled={!isStepValid}
+											disabled={!isFormValid}
 											fullWidth={fullWidthButtons}
 										>
 											Next
@@ -1168,7 +1177,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											<Button
 												type='submit'
 												variant='klubiqMainButton'
-												disabled={!isStepValid || isSubmitting}
+												disabled={!isFormValid || isSubmitting}
 												fullWidth={fullWidthButtons}
 											>
 												{isSubmitting ? 'Submitting...' : submitButtonText}

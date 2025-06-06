@@ -26,6 +26,8 @@ import {
 } from '../../../store/AuthStore/authApiSlice';
 import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
+import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
+import { z } from 'zod';
 const validationSchema = yup.object({
 	password: yup.string().required('Please enter your password'),
 	email: yup.string().email().required('Please enter your email'),
@@ -172,7 +174,50 @@ const Login = () => {
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
 	};
+	const loginFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		header: <Typography variant='h1' textAlign='center'>Sign in</Typography>,
+		subHeader: <Typography variant='subtitle1' textAlign='center'>Welcome back! Please enter your details.</Typography>,
+		submitButtonText: 'Sign in',
+		underSubmitButtonNode: <Typography textAlign='center'>
+			Don't have an account?{' '}
+			<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
+		</Typography>,
+		fullWidthButtons: true,
+		verticalAlignment: 'center',
+		fields: [	
+			{
+				name: 'email',
+				type: 'email',
+				label: 'Email',
+				placeholder: 'Enter your email address',
+				validation: {
+					schema: z.string({message: 'Email is required'}).email({message: 'Invalid email address'}),
+				}
+			},
+			{
+				name: 'password',
+				type: 'password',
+				label: 'Password',
+				placeholder: 'Enter your password',
+				validation: {
+					schema: z.string({message: 'Password is required'}),
+				}
+			},
+			{
+				name: 'forgotPassword',
+				type: 'custom',
+				label: '',
+				component: <Typography textAlign='left' onClick={routeToForgotPassword}><BoldTextLink>Forgot password</BoldTextLink></Typography>
+			},
 
+		],
+		onSubmit: onSubmit,
+		initialValues: {
+			email: '',
+			password: '',
+		},
+	};
 	return (
 		<>
 			{is2faRequired ? (
@@ -187,7 +232,7 @@ const Login = () => {
 					verifyOtp={verifyOTP}
 				/>
 			) : (
-				<LoginLayout handleSubmit={formik.handleSubmit}>
+				<LoginLayout>
 					<Grid
 						item
 						xs={12}
@@ -213,7 +258,8 @@ const Login = () => {
 										// }
 									}}
 								>
-									<Typography variant='h1' textAlign='center'>
+									<KlubiqFormV1 {...loginFormConfig} />
+									{/* <Typography variant='h1' textAlign='center'>
 											Sign in
 										</Typography>
 										<Typography variant='subtitle1' textAlign='center'>
@@ -264,10 +310,12 @@ const Login = () => {
 										<Typography textAlign='center'>
 											Don't have an account?{' '}
 											<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
-										</Typography>
+										</Typography> */}
 								</Stack>
+								
 						</Grid>
 					</Grid>
+					
 				</LoginLayout>
 			)}
 		</>
