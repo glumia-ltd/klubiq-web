@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../../Layouts/LoginLayout';
-import { LoadingSubmitButton } from '../../../styles/button';
 import { BoldTextLink } from '../../../styles/links';
-import {
-	Button,
-	Grid,
-	Stack,
-	Typography,
-} from '@mui/material';
-import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
+import { Grid, Stack, Typography } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -28,10 +18,7 @@ import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 import { z } from 'zod';
-const validationSchema = yup.object({
-	password: yup.string().required('Please enter your password'),
-	email: yup.string().email().required('Please enter your email'),
-});
+
 type IValuesType = {
 	password: string;
 	email: string;
@@ -39,7 +26,7 @@ type IValuesType = {
 const Login = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const [loading, setLoading] = useState<boolean>(false);
+	// const [loading, setLoading] = useState<boolean>(false);
 	const [verifying, setIsVerifying] = useState<boolean>(false);
 	const [verifyMFAOtp] = useVerifyMFAOtpMutation();
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
@@ -131,13 +118,13 @@ const Login = () => {
 			}
 		}
 	};
-
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
 		try {
-			setLoading(true);
+			// setLoading(true);
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
+			return;
 		} catch (error: any) {
 			if (error.message === 'MFA-required') {
 				consoleError('MFA Required to continue sign in');
@@ -155,18 +142,9 @@ const Login = () => {
 					}),
 				);
 			}
-			setLoading(false);
+			// setLoading(false);
 		}
 	};
-
-	const formik = useFormik({
-		initialValues: {
-			email: '',
-			password: '',
-		},
-		validationSchema,
-		onSubmit,
-	});
 
 	const routeToSignUp = () => {
 		navigate('/signup/createaccount', { replace: true });
@@ -176,24 +154,37 @@ const Login = () => {
 	};
 	const loginFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
-		header: <Typography variant='h1' textAlign='center'>Sign in</Typography>,
-		subHeader: <Typography variant='subtitle1' textAlign='center'>Welcome back! Please enter your details.</Typography>,
+		header: (
+			<Typography variant='h1' textAlign='center'>
+				Sign in
+			</Typography>
+		),
+		subHeader: (
+			<Typography variant='h4' textAlign='center'>
+				Welcome back! Please enter your details.
+			</Typography>
+		),
 		submitButtonText: 'Sign in',
-		underSubmitButtonNode: <Typography textAlign='center'>
-			Don't have an account?{' '}
-			<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
-		</Typography>,
+		underSubmitButtonNode: (
+			<Typography textAlign='center'>
+				Don't have an account?{' '}
+				<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
+			</Typography>
+		),
 		fullWidthButtons: true,
 		verticalAlignment: 'center',
-		fields: [	
+		horizontalAlignment: 'center',
+		fields: [
 			{
 				name: 'email',
 				type: 'email',
 				label: 'Email',
 				placeholder: 'Enter your email address',
 				validation: {
-					schema: z.string({message: 'Email is required'}).email({message: 'Invalid email address'}),
-				}
+					schema: z
+						.string({required_error: 'Email is required'})
+						.email({ message: 'Enter a valid email address' }),
+				},
 			},
 			{
 				name: 'password',
@@ -201,22 +192,31 @@ const Login = () => {
 				label: 'Password',
 				placeholder: 'Enter your password',
 				validation: {
-					schema: z.string({message: 'Password is required'}),
-				}
+					schema: z
+						.string({required_error: 'Password is required'})
+						.min(8, { message: 'Password must be at least 8 characters long' }),
+				},
 			},
 			{
 				name: 'forgotPassword',
 				type: 'custom',
 				label: '',
-				component: <Typography textAlign='left' onClick={routeToForgotPassword}><BoldTextLink>Forgot password</BoldTextLink></Typography>
+				component: (
+					<Typography textAlign='left' onClick={routeToForgotPassword}>
+						<BoldTextLink>Forgot password</BoldTextLink>
+					</Typography>
+				),
 			},
-
 		],
 		onSubmit: onSubmit,
 		initialValues: {
 			email: '',
 			password: '',
 		},
+		buttonLoadingText: 'Signing in...',
+		enableErrorAlert: true,
+		errorAlertTitle: 'Invalid credentials',
+		errorAlertMessage: 'Please check your email and password and try again.',
 	};
 	return (
 		<>
@@ -245,77 +245,19 @@ const Login = () => {
 						}}
 					>
 						<Grid container sx={styles.container}>
-						<Stack
-									justifyContent='center'
-									direction='column'
-									width='50%'
-									gap={1}
-									sx={{
-										height: '100vh',
-										// width: {
-										// 	xs: '70%',
-										// 	md: '50%'
-										// }
-									}}
-								>
-									<KlubiqFormV1 {...loginFormConfig} />
-									{/* <Typography variant='h1' textAlign='center'>
-											Sign in
-										</Typography>
-										<Typography variant='subtitle1' textAlign='center'>
-											Welcome back! Please enter your details.
-										</Typography>
-										<ControlledTextField
-											name='email'
-											label='Email'
-											type='email'
-											autoComplete='username'
-											placeholder='Enter your email address'
-											formik={formik}
-											inputProps={{
-												sx: {
-													height: '40px',
-												},
-											}}
-										/>
-										<ControlledPasswordField
-											name='password'
-											label='Password'
-											type='password'
-											autoComplete='current-password'
-											placeholder='Enter your password'
-											formik={formik}
-											inputProps={{
-												sx: {
-													height: '40px',
-												},
-											}}
-										/>
-										<Typography onClick={routeToForgotPassword}>
-											<BoldTextLink>Forgot password</BoldTextLink>
-										</Typography>
-										{loading ? (
-											<LoadingSubmitButton
-												loading
-												loadingPosition='center'
-												variant='outlined'
-											>
-												Sign In
-											</LoadingSubmitButton>
-										) : (
-											<Button fullWidth variant='klubiqMainButton' type='submit'>
-												Sign In
-											</Button>
-										)}
-										<Typography textAlign='center'>
-											Don't have an account?{' '}
-											<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
-										</Typography> */}
-								</Stack>
-								
+							<Stack
+								justifyContent='center'
+								direction='column'
+								width='50%'
+								gap={1}
+								sx={{
+									height: '100vh',
+								}}
+							>
+								<KlubiqFormV1 {...loginFormConfig} />
+							</Stack>
 						</Grid>
 					</Grid>
-					
 				</LoginLayout>
 			)}
 		</>

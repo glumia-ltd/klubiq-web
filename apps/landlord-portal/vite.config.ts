@@ -56,6 +56,12 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		cleanupOutdatedCaches: true,
 		sourcemap: true,
 		maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 5MB
+		clientsClaim: true,
+		skipWaiting: true,
+		disableDevLogs: true,
+		navigateFallback: '/index.html',
+		navigateFallbackAllowlist: [/^(?!\/__).*/],
+		navigateFallbackDenylist: [/\.(?:png|jpg|jpeg|svg|gif)$/],
 		runtimeCaching: [
 			{
 				urlPattern: /^https:\/\/api\.klubiq\.com\/.*/i,
@@ -68,6 +74,9 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 					},
 					cacheableResponse: {
 						statuses: [0, 200],
+					},
+					matchOptions: {
+						ignoreVary: true,
 					},
 				},
 			},
@@ -83,6 +92,9 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 					cacheableResponse: {
 						statuses: [0, 200],
 					},
+					matchOptions: {
+						ignoreVary: true,
+					},
 				},
 			},
 			{
@@ -97,6 +109,9 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 					cacheableResponse: {
 						statuses: [0, 200],
 					},
+					matchOptions: {
+						ignoreVary: true,
+					},
 				},
 			},
 			{
@@ -108,6 +123,9 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 						maxEntries: 60,
 						maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
 					},
+					matchOptions: {
+						ignoreVary: true,
+					},
 				},
 			},
 			{
@@ -115,6 +133,37 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 				handler: 'StaleWhileRevalidate',
 				options: {
 					cacheName: 'static-resources',
+					matchOptions: {
+						ignoreVary: true,
+					},
+				},
+			},
+			{
+				urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+				handler: 'StaleWhileRevalidate',
+				options: {
+					cacheName: 'google-fonts',
+					expiration: {
+						maxEntries: 20,
+						maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+					},
+					matchOptions: {
+						ignoreVary: true,
+					},
+				},
+			},
+			{
+				urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+				handler: 'CacheFirst',
+				options: {
+					cacheName: 'google-fonts',
+					expiration: {
+						maxEntries: 20,
+						maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+					},
+					matchOptions: {
+						ignoreVary: true,
+					},
 				},
 			},
 		],

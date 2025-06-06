@@ -2,6 +2,7 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { useState, useEffect } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
 import {
 	Box,
 	Button,
@@ -25,6 +26,8 @@ import {
 	CircularProgress,
 	Typography,
 	IconButton,
+	Alert,
+	AlertTitle,
 } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
@@ -233,6 +236,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	horizontalAlignment = 'left',
 	verticalAlignment = 'top',
 	fullWidthButtons = false,
+	buttonLoadingText = 'Submitting...',
+	enableErrorAlert = true,
+	errorAlertTitle = 'Form Validation Error',
+	errorAlertMessage = 'Please check the form for errors. All required fields must be filled correctly.',
 }) => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
@@ -242,6 +249,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [submittedData, setSubmittedData] = useState<any>(null);
 	const [submissionResult, setSubmissionResult] = useState<any>(null);
 	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [showErrorAlert, setShowErrorAlert] = useState(false);
 	const normalizedFields = Array.isArray(fields) ? fields : [fields];
 	const steps = isMultiStep
 		? (normalizedFields as FormStep[])
@@ -469,6 +478,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				console.log('Form submission completed successfully');
 				setSubmittedData(value);
 				setSubmissionResult(result);
+				setIsSubmitted(true);
+				setShowErrorAlert(false);
 				if (nextAction?.showAfterSubmit) {
 					setShowNextAction(true);
 					if ('buttons' in nextAction) {
@@ -478,6 +489,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				return result;
 			} catch (error) {
 				console.error('Form submission error:', error);
+				setIsSubmitted(false);
+				setShowErrorAlert(true);
 				throw error;
 			}
 		},
@@ -490,9 +503,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				try {
 					stepSchema.parse(value);
 					console.log('Form validation passed');
+					setShowErrorAlert(false);
 					return undefined;
 				} catch (error) {
 					console.error('Form validation failed:', error);
+					setShowErrorAlert(true);
 					if (error instanceof z.ZodError) {
 						return error.errors[0].message;
 					}
@@ -608,19 +623,19 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	};
 
-	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-		event.preventDefault();
-		event.returnValue = true;
-	};
+	// const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+	// 	event.preventDefault();
+	// 	event.returnValue = true;
+	// };
 
-	useEffect(() => {
-		window.addEventListener('beforeunload', handleBeforeUnload);
+	// useEffect(() => {
+	// 	window.addEventListener('beforeunload', handleBeforeUnload);
 
-		// Remove the event listener when the component unmounts
-		return () => {
-			window.removeEventListener('beforeunload', handleBeforeUnload);
-		};
-	}, []);
+	// 	// Remove the event listener when the component unmounts
+	// 	return () => {
+	// 		window.removeEventListener('beforeunload', handleBeforeUnload);
+	// 	};
+	// }, []);
 
 	// Only depend on form.state.values and currentStep
 	useEffect(() => {
@@ -732,11 +747,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				return (
 					<Box key={`${field.name}-${idx}`}>
 						{typeof customField.component === 'function'
-							? customField.component(
-									fieldMeta as any,
-									field,
-									form,
-							  )
+							? customField.component(fieldMeta as any, field, form)
 							: customField.component}
 					</Box>
 				);
@@ -963,15 +974,33 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		form.reset();
 		topBackButton?.onClick?.();
 	};
+	const handleNonMultiStepSubmit = async (
+		e: React.MouseEvent<HTMLButtonElement>,
+	) => {
+		if (!isMultiStep) {
+			e.preventDefault();
+			e.stopPropagation();
+			try {
+				await form.handleSubmit();
+			} catch (error) {
+				setShowErrorAlert(true);
+				setIsSubmitted(false);
+			}
+		}
+	};
 
 	return (
 		<Stack
 			key={'form-container'}
-			sx={{ 
-				...style.container, 
+			sx={{
+				...style.container,
 				width: formWidth,
-				justifyContent: verticalAlignment === 'center' ? 'center' : 
-					verticalAlignment === 'bottom' ? 'flex-end' : 'flex-start',
+				justifyContent:
+					verticalAlignment === 'center'
+						? 'center'
+						: verticalAlignment === 'bottom'
+							? 'flex-end'
+							: 'flex-start',
 				minHeight: verticalAlignment === 'center' ? '100vh' : 'auto',
 			}}
 			spacing={4}
@@ -996,14 +1025,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					open={form.state.isSubmitting}
 				>
 					<CircularProgress color='inherit' />
-					<Typography 
-						variant='h6' 
-						color='inherit' 
-						sx={{ 
+					<Typography
+						variant='h6'
+						color='inherit'
+						sx={{
 							textAlign: 'center',
 							px: 2,
 							maxWidth: '90%',
-							wordBreak: 'break-word'
+							wordBreak: 'break-word',
 						}}
 					>
 						{backdropText || 'Submitting form...'}
@@ -1027,17 +1056,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</Stack>
 			)}
 
-			{header && (
-				<Box sx={{ width: '100%' }}>
-					{header}
-				</Box>
-			)}
+			{header && <Box sx={{ width: '100%' }}>{header}</Box>}
 
-			{subHeader && (
-				<Box sx={{ width: '100%' }}>
-					{subHeader}
-				</Box>
-			)}
+			{subHeader && <Box sx={{ width: '100%' }}>{subHeader}</Box>}
 
 			{isMultiStep && (
 				<Box width={'100%'}>
@@ -1077,15 +1098,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 			<form
 				onSubmit={async (e) => {
-					console.log('Form submit event triggered');
 					e.preventDefault();
 					e.stopPropagation();
-
 					try {
 						// Get the current form values
 						const values = form.state.values;
-						console.log('Form values before submit:', values);
-
 						// Ensure array fields are properly formatted
 						const processedValues = Object.entries(values).reduce(
 							(acc, [key, value]) => {
@@ -1112,16 +1129,28 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						console.log('Form handleSubmit completed');
 					} catch (error) {
 						console.error('Form handleSubmit error:', error);
+						setShowErrorAlert(true);
 					}
 				}}
 			>
+				{enableErrorAlert && showErrorAlert && (
+					<Alert
+						severity='error'
+						sx={{ mb: 3 }}
+						onClose={() => setShowErrorAlert(false)}
+					>
+						<AlertTitle>{errorAlertTitle}</AlertTitle>
+						{errorAlertMessage}
+					</Alert>
+				)}
+
 				<Stack spacing={3}>{renderFields(steps[currentStep].fields)}</Stack>
 
 				<Stack
-					direction='row'
+					direction={'row'}
 					justifyContent={horizontalAlignment}
 					alignItems='center'
-					spacing={2}
+					spacing={isMultiStep ? 2 : 0}
 					mt={3}
 				>
 					<Stack direction='row' spacing={2}>
@@ -1137,7 +1166,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						)}
 					</Stack>
 
-					<Stack direction='row' spacing={2} justifyContent={fullWidthButtons ? 'space-between' : 'flex-end'} sx={{ width: fullWidthButtons ? '100%' : 'auto' }}>
+					<Stack
+						direction={fullWidthButtons && !isMultiStep ? 'column' : 'row'}
+						spacing={2}
+						sx={{ width: fullWidthButtons && !isMultiStep ? '100%' : 'auto' }}
+					>
 						{(() => {
 							const { isSubmitting } = form.state;
 							const isFormValid = (() => {
@@ -1148,10 +1181,33 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										stepSchema.parse(form.state.values);
 									} else {
 										// For single-step forms, validate all fields
-										const formFields = Array.isArray(fields) 
-											? fields 
+										const formFields = Array.isArray(fields)
+											? fields
 											: (fields as FormStep[])[0].fields;
-										const formSchema = createStepSchema(formFields as FormFieldV1[]);
+
+										// Create a schema that only validates required fields
+										const formSchema = z.object(
+											(formFields as FormFieldV1[]).reduce(
+												(acc, field) => {
+													const isRequired =
+														typeof field.required === 'function'
+															? field.required(form.state.values)
+															: field.required;
+
+													if (isRequired) {
+														acc[field.name] =
+															getFieldSchema(
+																field,
+																form.state.values,
+																field.name,
+															) || z.any();
+													}
+													return acc;
+												},
+												{} as Record<string, z.ZodType<any>>,
+											),
+										);
+
 										formSchema.parse(form.state.values);
 									}
 									return true;
@@ -1174,14 +1230,24 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										</Button>
 									) : (
 										<>
-											<Button
-												type='submit'
-												variant='klubiqMainButton'
-												disabled={!isFormValid || isSubmitting}
-												fullWidth={fullWidthButtons}
-											>
-												{isSubmitting ? 'Submitting...' : submitButtonText}
-											</Button>
+											{isSubmitting ? (
+												<LoadingButton
+													variant='klubiqMainButton'
+													loadingPosition='start'
+													loadingIndicator={buttonLoadingText}
+													loading={isSubmitting}
+												></LoadingButton>
+											) : (
+												<Button
+													type='submit'
+													variant='klubiqMainButton'
+													disabled={!isFormValid || isSubmitting || isSubmitted}
+													fullWidth={fullWidthButtons}
+													onClick={handleNonMultiStepSubmit}
+												>
+													{submitButtonText}
+												</Button>
+											)}
 											{shouldShowNextAction() && nextAction && (
 												<>
 													{'onClick' in nextAction ? (
@@ -1275,10 +1341,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</Stack>
 			</form>
 
-			{underSubmitButtonNode && (
-				<Box sx={{ width: '100%' }}>
-					{underSubmitButtonNode}
-				</Box>
+			{underSubmitButtonNode && !isSubmitted && (
+				<Box sx={{ width: '100%' }}>{underSubmitButtonNode}</Box>
 			)}
 
 			<Dialog

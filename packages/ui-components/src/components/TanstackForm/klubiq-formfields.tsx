@@ -242,6 +242,9 @@ export const KlubiqTSFormFields: React.FC<{
 						onChange={(e) => handleChange(e.target.value)}
 						{...commonFieldProps}
 						helperText={error || helperText}
+						inputProps={{
+							autoComplete: type === 'email' ? 'email' : 'off',
+						}}
 					/>
 				</Stack>
 			);
@@ -294,15 +297,14 @@ export const KlubiqTSFormFields: React.FC<{
 						}}
 						{...commonFieldProps}
 						helperText={error || helperText}
-						InputProps={{
-							inputProps: {
-								inputMode: 'numeric',
-								pattern: '[0-9]*',
-								onKeyPress: (e) => {
-									if (!/[\d]/.test(e.key)) {
-										e.preventDefault();
-									}
-								},
+						inputProps={{
+							autoComplete: 'off',
+							inputMode: 'numeric',
+							pattern: '[0-9]*',
+							onKeyPress: (e) => {
+								if (!/[\d]/.test(e.key)) {
+									e.preventDefault();
+								}
 							},
 						}}
 					/>
@@ -692,6 +694,9 @@ export const KlubiqTSFormFields: React.FC<{
 						error={!!error}
 						helperText={error || helperText}
 						disabled={disabled}
+						inputProps={{
+							autoComplete: 'current-password',
+						}}
 						InputProps={{
 							endAdornment: (
 								<InputAdornment position='end'>

@@ -629,7 +629,7 @@ export const CreateProperty = () => {
 				{
 					name: 'propertyImages',
 					type: 'file',
-					label: 'Property Images',
+					label: '',
 					validation: {
 						schema: z.any().optional(),
 					},
@@ -992,7 +992,9 @@ export const CreateProperty = () => {
 			maxWidth: 'md',
 			fullWidth: true,
 			showAfterSubmit: true,
-		}
+		},
+		fullWidthButtons: !!isMobile,
+		horizontalAlignment: 'right',
 	}
 	return (
 		<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>

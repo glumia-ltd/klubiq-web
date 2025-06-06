@@ -75,19 +75,33 @@ export const authApiSlice = createApi({
 				body,
 			})
 		}),
-		signUp: builder.mutation({
-			query: (body) => ({
-				url: authEndpoints.signup(),
-				method: 'POST',
-				body,
+			signUp: builder.mutation({
+				query: (body) => ({
+					url: authEndpoints.signup(),
+					method: 'POST',
+					body,
+				}),
+				async onQueryStarted(_, { dispatch, queryFulfilled }) {
+					await handleApiResponse(queryFulfilled, dispatch, {
+						successMessage: screenMessages.auth.signUp.success,
+						errorMessage: screenMessages.auth.signUp.error,
+					});
+				},
 			}),
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				await handleApiResponse(queryFulfilled, dispatch, {
-					successMessage: screenMessages.auth.signUp.success,
-					errorMessage: screenMessages.auth.signUp.error,
-				});
-			},
-		}),
+			resetPassword: builder.mutation({
+				query: (body) => ({
+					url: authEndpoints.resetPassword(),
+					method: 'POST',
+					body,
+				}),
+				
+				async onQueryStarted(_, { dispatch, queryFulfilled }) {
+					await handleApiResponse(queryFulfilled, dispatch, {
+						successMessage: screenMessages.auth.resetPassword.success,
+						errorMessage: screenMessages.auth.resetPassword.error,
+					});
+				},
+			}),
 	}),
 });
 
@@ -103,4 +117,6 @@ export const {
 	useSignOutMutation,
 	useSignInMutation,
 	useVerifyMFAOtpMutation,
+	useResetPasswordMutation,
+	useSignUpMutation,
 } = authApiSlice;
