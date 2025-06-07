@@ -472,21 +472,24 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const form = useForm({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
-			console.log('Form submission started with values:', value);
 			try {
 				const result = await onSubmit(value);
-				console.log('Form submission completed successfully');
 				setSubmittedData(value);
 				setSubmissionResult(result);
 				setIsSubmitted(true);
 				setShowErrorAlert(false);
+				form.reset();
+				// Only show next action if configured
 				if (nextAction?.showAfterSubmit) {
 					setShowNextAction(true);
 					if ('buttons' in nextAction) {
 						setNextActionDialogOpen(true);
 					}
+				} else {	
+					// Only reset form if there's no next action
+					return result;
 				}
-				return result;
+				
 			} catch (error) {
 				console.error('Form submission error:', error);
 				setIsSubmitted(false);
@@ -496,17 +499,14 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		},
 		validators: {
 			onSubmit: ({ value }) => {
-				console.log('Validating form submission...');
 				// Only validate the current step for submission
 				const stepFields = steps[currentStep].fields;
 				const stepSchema = createStepSchema(stepFields);
 				try {
 					stepSchema.parse(value);
-					console.log('Form validation passed');
 					setShowErrorAlert(false);
 					return undefined;
 				} catch (error) {
-					console.error('Form validation failed:', error);
 					setShowErrorAlert(true);
 					if (error instanceof z.ZodError) {
 						return error.errors[0].message;
@@ -1002,9 +1002,30 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							? 'flex-end'
 							: 'flex-start',
 				minHeight: verticalAlignment === 'center' ? '100vh' : 'auto',
+				position: 'relative',
 			}}
 			spacing={4}
 		>
+			{/* Add submission overlay */}
+			{isSubmitted && !nextAction && (
+				<Box
+					sx={{
+						position: 'fixed',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						backgroundColor: 'rgba(255, 255, 255, 0.7)',
+						zIndex: (theme) => theme.zIndex.drawer + 2,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<CircularProgress />
+				</Box>
+			)}
+
 			{showBackdrop && (
 				<Backdrop
 					sx={{
@@ -1103,6 +1124,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					try {
 						// Get the current form values
 						const values = form.state.values;
+
 						// Ensure array fields are properly formatted
 						const processedValues = Object.entries(values).reduce(
 							(acc, [key, value]) => {
@@ -1126,10 +1148,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 						// Execute form submission
 						await form.handleSubmit();
-						console.log('Form handleSubmit completed');
 					} catch (error) {
 						console.error('Form handleSubmit error:', error);
 						setShowErrorAlert(true);
+						setIsSubmitted(false);
 					}
 				}}
 			>

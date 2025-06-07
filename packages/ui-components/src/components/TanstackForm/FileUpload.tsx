@@ -81,7 +81,7 @@ interface FileUploadProps {
 		upload?: string;
 		maxFavoritesReached?: string;
 	};
-	onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
+	onUpload?: (formData: FormData) => Promise<StorageUploadResult[]>;
 	onDelete?: (publicId: string) => Promise<void>;
 	uploadButtonText?: string;
 	onUploadComplete?: (
@@ -291,7 +291,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// Remove the file from local state
 			const dataTransfer = new DataTransfer();
 			const newFiles = [...localFiles];
-			URL.revokeObjectURL(newFiles[index].preview || '');
+			
+			// Clean up the blob URL before removing the file
+			if (newFiles[index].preview && !newFiles[index].storageResult?.url) {
+				URL.revokeObjectURL(newFiles[index].preview);
+			}
+			
 			newFiles.splice(index, 1);
 
 			newFiles.forEach((file) => {
@@ -393,8 +398,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				});
 			}, 500);
 
+			// Create FormData with original filenames
+			const formData = new FormData();
+			localFiles.forEach((file, index) => {
+				// Create a new File object with the original filename
+				const fileWithName = new File([file], file.name, {
+					type: file.type,
+					lastModified: file.lastModified,
+				});
+				formData.append('files', fileWithName);
+			});
+
 			// Upload files and get storage results
-			const storageResults = await onUpload(localFiles);
+			const storageResults = await onUpload(formData);
 
 			// Update local files with storage results while preserving existing state
 			const updatedFiles = localFiles.map((file, index) => {
@@ -405,6 +421,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 					isFavorite: existingFile?.isFavorite || file.isFavorite,
 					storageResult: storageResults[index],
 				};
+
+				// Clean up blob URL if we now have a storage URL
+				if (file.preview && (storageResults[index]?.secure_url || storageResults[index]?.url)) {
+					URL.revokeObjectURL(file.preview);
+				}
+
 				return updatedFile;
 			});
 
@@ -537,32 +559,35 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 						borderRadius={2}
 						p={4}
 						sx={{
-							cursor: 'pointer',
+							cursor: isUploading ? 'not-allowed' : 'pointer',
 							transition: 'all 0.2s',
 							backgroundColor: isDragging ? 'action.hover' : 'transparent',
+							opacity: isUploading ? 0.7 : 1,
 							'&:hover': {
-								borderColor: 'primary.main',
-								backgroundColor: 'action.hover',
+								borderColor: isUploading ? 'grey.400' : 'primary.main',
+								backgroundColor: isUploading ? 'transparent' : 'action.hover',
 							},
 						}}
-						onClick={handleClick}
-						onDragEnter={handleDragEnter}
-						onDragLeave={handleDragLeave}
-						onDragOver={handleDragOver}
-						onDrop={handleDrop}
-						tabIndex={0}
+						onClick={isUploading ? undefined : handleClick}
+						onDragEnter={isUploading ? undefined : handleDragEnter}
+						onDragLeave={isUploading ? undefined : handleDragLeave}
+						onDragOver={isUploading ? undefined : handleDragOver}
+						onDrop={isUploading ? undefined : handleDrop}
+						tabIndex={isUploading ? -1 : 0}
 						aria-label={caption}
+						aria-disabled={isUploading}
 					>
 						<IconButton
 							color='primary'
 							component='span'
 							tabIndex={-1}
 							disableRipple
+							disabled={isUploading}
 						>
 							<CloudUpload fontSize='large' />
 						</IconButton>
 						<Typography variant='body2' color='textSecondary' align='center'>
-							{isDragging ? 'Drop files here' : caption}
+							{isUploading ? 'Uploading files...' : isDragging ? 'Drop files here' : caption}
 						</Typography>
 						<Typography variant='caption' color='textSecondary' align='center'>
 							{tooltipMessages?.sizeLimit?.replace(
@@ -705,6 +730,35 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
 				anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+				sx={{
+					'& .MuiAlert-root': {
+						width: '100%',
+						backgroundColor: (theme) => {
+							switch (snackbar.severity) {
+								case 'error':
+									return theme.palette.error.dark;
+								case 'success':
+									return theme.palette.success.dark;
+								case 'warning':
+									return theme.palette.warning.dark;
+								default:
+									return theme.palette.info.dark;
+							}
+						},
+						color: 'white',
+						'& .MuiAlert-icon': {
+							color: 'white',
+						},
+						'& .MuiAlert-message': {
+							color: 'white',
+						},
+						'& .MuiAlert-action': {
+							'& .MuiIconButton-root': {
+								color: 'white',
+							},
+						},
+					},
+				}}
 			>
 				<Alert
 					onClose={handleCloseSnackbar}

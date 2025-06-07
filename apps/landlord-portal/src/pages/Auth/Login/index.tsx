@@ -155,12 +155,12 @@ const Login = () => {
 	const loginFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
-			<Typography variant='h1' textAlign='center'>
+			<Typography variant='h1' sx={styles.title} textAlign='center'>
 				Sign in
 			</Typography>
 		),
 		subHeader: (
-			<Typography variant='h4' textAlign='center'>
+			<Typography variant='h2' sx={styles.subTitle} textAlign='center'>
 				Welcome back! Please enter your details.
 			</Typography>
 		),

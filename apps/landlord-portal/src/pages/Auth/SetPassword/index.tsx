@@ -39,12 +39,12 @@ const SetPassword = () => {
 	const resetPasswordFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
-			<Typography variant='h2' textAlign='left'>
+			<Typography variant='h1' textAlign='left'>
 				Time for a Fresh Start!
 			</Typography>
 		),
 		subHeader: (
-			<Typography variant='body1' textAlign='left'>
+			<Typography variant='h2' textAlign='left'>
 				Let's Secure Your Klubiq Account with a New Password.
 			</Typography>
 		),

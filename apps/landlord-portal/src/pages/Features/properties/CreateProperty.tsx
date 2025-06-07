@@ -19,7 +19,7 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../../components/Icons/CustomIcons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { AmenitiesDialog } from '../../../components/CustomFormComponents/AmenitiesDialog';
 import {
@@ -44,6 +44,7 @@ import { useDeleteFileMutation } from '../../../store/GlobalStore/globalApiSlice
 import { consoleError, consoleInfo, consoleLog } from '../../../helpers/debug-logger';
 import { Property } from '../../../page-tytpes/properties/request.types';
 import { FileUpload } from '@klubiq/ui-components';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 
 
 interface AddressValue {
@@ -361,7 +362,7 @@ export const CreateProperty = () => {
 	const [addProperty] = useAddPropertyMutation();
 	const [uploadImages] = useUploadImagesMutation();
 	const [deleteFile] = useDeleteFileMutation();
-
+	const dispatch = useDispatch();
 	const icons: Record<string, any> = {
 		HouseIcon,
 		EmojiOneHomeIcon,
@@ -451,12 +452,16 @@ export const CreateProperty = () => {
 		multiUnits: getInitialUnits(),
 	};
 
-	const uploadPropertyImages = async (files: File[]) => {
-		const organizationUuid = user?.organizationUuid;
-		const organizationName = user?.organization || user?.firstName + user?.lastName || 'glumia';
-		const rootFolder = 'properties';
-		consoleLog('Uploading property images', files, organizationUuid, organizationName, rootFolder);
-		const response = await uploadImages({ files, organizationUuid, organizationName, rootFolder }).unwrap();
+	const uploadPropertyImages = async (formData: FormData) => {
+		if(user?.organizationUuid){
+			formData.append('organizationUuid', user?.organizationUuid);
+		}
+		if(user?.organization){
+			formData.append('organization', user?.organization);
+		}
+		formData.append('rootFolder', 'properties');
+		consoleLog('Uploading property images', formData);
+		const response = await uploadImages(formData).unwrap();
 		consoleInfo('Uploading property images response', response);
 		return response;
 	}
@@ -919,8 +924,20 @@ export const CreateProperty = () => {
 			consoleError('Please add at least one unit');
 			return;
 		}
-		const response = await addProperty(newPropertyData);
-		consoleInfo('addProperty response', response);
+		try {	
+			const response = await addProperty(newPropertyData).unwrap();
+			consoleInfo('addProperty response', response);
+			return response;
+		} catch (error) {
+			const errorMessage = (error as any).error?.message;
+			dispatch(openSnackbar({
+				message: errorMessage,
+				severity: 'error',
+				isOpen: true,
+				duration: 7000
+			}));
+			throw error;
+		}
 	};
 	const handleAddTenantClick = (formData: any, result: any) => {
 		consoleLog('addTenant', formData, result);

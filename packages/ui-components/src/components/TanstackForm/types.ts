@@ -148,7 +148,7 @@ export interface FileConfig {
     upload?: string;
     maxFavoritesReached?: string;
   };
-  onUpload?: (files: File[]) => Promise<StorageUploadResult[]>;
+  onUpload?: (formData: FormData) => Promise<StorageUploadResult[]>;
   onDelete?: (publicId: string) => Promise<void>;
   uploadButtonText?: string;
   maxFavorites?: number;

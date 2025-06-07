@@ -12,7 +12,6 @@ const LoginLayout: FC<LoginLayoutType> = ({ children }) => {
 		<Grid
 			container
 			spacing={0}
-			component='form'
 			sx={{
 				justifyContent: 'center',
 				height: '100vh',
