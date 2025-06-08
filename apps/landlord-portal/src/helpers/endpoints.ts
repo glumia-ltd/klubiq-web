@@ -77,5 +77,5 @@ export const publicEndpoints = {
 export const fileEndpoints = {
 	uploadImages: () => '/uploads/images',
 	uploadFiles: () => '/uploads/files',
-	deleteFile: (fileId: string) => `/uploads/files/${fileId}`,
+	deleteFile: () => `/uploads/delete-file`,
 };

@@ -26,10 +26,13 @@ export const globalApiSlice = createApi({
 				};
 			},
 		}),
-		deleteFile: builder.mutation<void, string>({
-			query: (fileId) => ({
-				url: fileEndpoints.deleteFile(fileId),
+		deleteFile: builder.mutation<void, { publicId: string }>({
+			query: (file) => ({
+				url: fileEndpoints.deleteFile(),
 				method: 'DELETE',
+				body: {
+					publicId: file.publicId,
+				},
 			}),
 		}),
 	}),

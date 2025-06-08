@@ -466,7 +466,14 @@ export const CreateProperty = () => {
 		return response;
 	}
 	const deletePropertyImage = async (fileId: string) => {
-		await deleteFile(fileId);
+		try {
+			const response = await deleteFile({ publicId: fileId }).unwrap();
+			consoleInfo('Delete property image response', response);
+			return true;
+		} catch (error) {
+			consoleError('Error deleting property image', error);
+			throw error;
+		}
 	}
 
 	const propertyForm: FormStep[] = [

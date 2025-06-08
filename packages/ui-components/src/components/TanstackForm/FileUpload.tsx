@@ -23,7 +23,7 @@ import {
 	Upload,
 } from '@mui/icons-material';
 import { useRef, useState, useEffect } from 'react';
-import { StorageUploadResult } from './types'
+import { StorageUploadResult } from './types';
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
@@ -53,7 +53,6 @@ const ThumbnailContainer = styled(Box)(({ theme }) => ({
 	},
 }));
 
-
 // Extend FileWithPreview to include storage result
 interface FileWithPreview extends File {
 	preview?: string;
@@ -82,7 +81,7 @@ interface FileUploadProps {
 		maxFavoritesReached?: string;
 	};
 	onUpload?: (formData: FormData) => Promise<StorageUploadResult[]>;
-	onDelete?: (publicId: string) => Promise<void>;
+	onDelete?: (publicId: string) => Promise<boolean>;
 	uploadButtonText?: string;
 	onUploadComplete?: (
 		results: (StorageUploadResult & { isFavorite: boolean })[],
@@ -124,7 +123,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	const [errorMessage, setErrorMessage] = useState<string>('');
 	const [localFiles, setLocalFiles] = useState<FileWithPreview[]>([]);
 	const [uploadProgress, setUploadProgress] = useState<number>(0);
+	const [deleteProgress, setDeleteProgress] = useState<number>(0);
 	const [isUploading, setIsUploading] = useState<boolean>(false);
+	const [isDeleting, setIsDeleting] = useState<boolean>(false);
 	const [isDragging, setIsDragging] = useState<boolean>(false);
 	const [snackbar, setSnackbar] = useState<{
 		open: boolean;
@@ -140,15 +141,59 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 	// Initialize and sync localFiles with form value
 	useEffect(() => {
+		// If we have files with storage results, preserve them even if value is empty
+		const hasStorageResults = localFiles.some((file) => file.storageResult);
+		// If we have storage results, always preserve the files
+		const filesWaitingForUpload = (localFiles?.length || 0 - form?.getFieldValue(fieldName)?.length || 0);
+		form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
+
+		if (hasStorageResults) {
+			setHasUploadedFiles(true);
+			return;
+		}
+
+		// Handle new files from value prop
 		if (value) {
+			// Get uploaded files from form if available
+			const formUploadedFiles = form?.getFieldValue(fieldName) || [];
+
 			const filesWithPreview = Array.from(value).map((file) => {
-				const existingFile = localFiles.find((f) => f.name === file.name);
+				// First try to find a matching file in form values
+				const formFile = formUploadedFiles.find((f: any) =>
+					f.externalId.includes(file.name),
+				);
+
+				if (formFile) {
+					// Restore storage result from form value
+					const fileWithPreview = file as FileWithPreview;
+					fileWithPreview.preview = formFile.url;
+					fileWithPreview.isFavorite = formFile.isMain;
+					fileWithPreview.storageResult = {
+						secure_url: formFile.url,
+						url: formFile.url,
+						public_id: formFile.externalId,
+						bytes: formFile.fileSize,
+						original_filename: formFile.fileName,
+					};
+					return fileWithPreview;
+				}
+
+				// If no form file found, check local files
+				const existingFileWithStorage = localFiles.find(
+					(f) => f.name === file.name && f.storageResult,
+				);
+
+				const existingFile =
+					existingFileWithStorage ||
+					localFiles.find((f) => f.name === file.name);
+
 				const fileWithPreview = file as FileWithPreview;
 
-				// Keep existing preview URL and favorite status if file exists
 				if (existingFile) {
-					fileWithPreview.preview = existingFile.storageResult?.secure_url || 
-						existingFile.storageResult?.url || 
+					// Keep existing preview URL and favorite status if file exists
+					fileWithPreview.preview =
+						// existingFile.storageResult?.secure_url ||
+						// existingFile.storageResult?.url ||
 						existingFile.preview;
 					fileWithPreview.isFavorite = existingFile.isFavorite;
 					fileWithPreview.storageResult = existingFile.storageResult;
@@ -162,43 +207,92 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 				return fileWithPreview;
 			});
-			setLocalFiles(filesWithPreview);
-			// Check if any files have been uploaded
-			setHasUploadedFiles(filesWithPreview.some((file) => file.storageResult));
-		} else {
-			setLocalFiles([]);
-			setHasUploadedFiles(false);
+
+			// Only update if the files have actually changed and we're not in the middle of an upload
+			if (
+				JSON.stringify(filesWithPreview) !== JSON.stringify(localFiles) &&
+				!isUploading
+			) {
+				setLocalFiles(filesWithPreview);
+			}
+
+			// Update hasUploadedFiles based on whether any files have storage results
+			const hasUploads = filesWithPreview.some((file) => file.storageResult);
+			if (hasUploads !== hasUploadedFiles) {
+				setHasUploadedFiles(hasUploads);
+			}
 		}
-	}, [value]);
+	}, [value, isUploading, hasUploadedFiles, localFiles, form, fieldName]);
 
 	// Clean up preview URLs when component unmounts or files change
 	useEffect(() => {
+		// Store current blob URLs to clean up
+		const currentBlobUrls = new Set<string>();
+
+		// Create new blob URLs for files that need them
+		const newFiles = localFiles.map((file) => {
+			// If we have a storage URL, use that instead of blob URL
+			if (file.storageResult?.secure_url || file.storageResult?.url) {
+				return {
+					...file,
+					preview: file.storageResult.secure_url || file.storageResult.url,
+				};
+			}
+
+			// If we don't have a preview URL, create one
+			if (!file.preview) {
+				const blobUrl = URL.createObjectURL(file);
+				currentBlobUrls.add(blobUrl);
+				return {
+					...file,
+					preview: blobUrl,
+				};
+			}
+
+			// Keep existing preview URL
+			currentBlobUrls.add(file.preview);
+			return file;
+		});
+
+		// Update local files if needed and we're not uploading
+		if (
+			JSON.stringify(newFiles) !== JSON.stringify(localFiles) &&
+			!isUploading
+		) {
+			setLocalFiles(newFiles);
+		}
+
+		// Cleanup function
 		return () => {
+			// Revoke all blob URLs that are no longer needed
 			localFiles.forEach((file) => {
-				if (file.preview && !file.storageResult?.url) {
+				if (
+					file.preview &&
+					!file.storageResult?.url &&
+					!file.storageResult?.secure_url &&
+					!currentBlobUrls.has(file.preview)
+				) {
 					URL.revokeObjectURL(file.preview);
 				}
 			});
 		};
-	}, [localFiles]);
+	}, [localFiles, isUploading, hasUploadedFiles]);
 
-	// Add a new effect to handle file previews
+	// Add a cleanup effect for component unmount
 	useEffect(() => {
-		// Create preview URLs for files that don't have them
-		const newFiles = localFiles.map((file) => {
-			if (!file.preview && !file.storageResult?.url) {
-				return {
-					...file,
-					preview: URL.createObjectURL(file),
-				};
-			}
-			return file;
-		});
-
-		if (JSON.stringify(newFiles) !== JSON.stringify(localFiles)) {
-			setLocalFiles(newFiles);
-		}
-	}, [localFiles]);
+		return () => {
+			// Clean up all blob URLs when component unmounts
+			localFiles.forEach((file) => {
+				if (
+					file.preview &&
+					!file.storageResult?.url &&
+					!file.storageResult?.secure_url
+				) {
+					URL.revokeObjectURL(file.preview);
+				}
+			});
+		};
+	}, []);
 
 	const handleClick = () => {
 		inputRef.current?.click();
@@ -248,11 +342,51 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		onBlur();
 	};
 
-	const handleFavorite = (index: number) => {
+	const handleServerFavorite = async (index: number) => {
+		if (!form || !fieldName) {
+			return;
+		}
+		const serverFiles = form?.getFieldValue(fieldName) || [];
+
+		const currentFavorites = serverFiles.filter(
+			(file: any) => file.isMain,
+		).length;
+		const fileToUpdate = serverFiles[index];
+
+		// Check if we're trying to add a favorite when max is reached
+		if (!fileToUpdate.isFavorite && currentFavorites >= maxFavorites) {
+			// setSnackbar({
+			// 	open: true,
+			// 	message:
+			// 		tooltipMessages.maxFavoritesReached ||
+			// 		'Maximum number of favorites reached',
+			// 	severity: 'info',
+			// });
+			return;
+		}
+		const updatedServerFiles = serverFiles.map((file: any, i: number) => {
+			if (i === index) {
+				return {
+					...file,
+					isMain: !file.isMain,
+				};
+			}
+			return file;
+		});
+		form.setFieldValue(fieldName, updatedServerFiles);
+	};
+
+	const handleFavorite = async (index: number) => {
 		const currentFavorites = localFiles.filter(
 			(file) => file.isFavorite,
 		).length;
 		const fileToUpdate = localFiles[index];
+		const uploadedVersionIndex = form
+			?.getFieldValue(fieldName)
+			?.findIndex((file: any) => file.externalId.includes(fileToUpdate.name));
+		if (uploadedVersionIndex !== -1) {
+			await handleServerFavorite(uploadedVersionIndex);
+		}
 
 		// Check if we're trying to add a favorite when max is reached
 		if (!fileToUpdate.isFavorite && currentFavorites >= maxFavorites) {
@@ -279,24 +413,58 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		onChange(dataTransfer.files);
 	};
 
+	const handleServerFilesDelete = async (index: number, publicId: string) => {
+		try {
+			if (!onDelete || !form || !fieldName || !publicId) {
+				throw new Error('Missing required parameters for server file deletion');
+			}
+			setDeleteProgress(20);
+			const deletedFile = await onDelete(publicId);
+			if (deletedFile) {
+				const serverFiles = form?.getFieldValue(fieldName) || [];
+				const updatedServerFiles = serverFiles.filter(
+					(file: any, i: number) => i !== index,
+				);
+				form?.setFieldValue(fieldName, updatedServerFiles);
+				setDeleteProgress(40);
+			} else {
+				throw new Error('Failed to delete file from server');
+			}
+		} catch (error) {
+			throw error;
+		}
+	};
 	const handleDelete = async (index: number) => {
 		const fileToDelete = localFiles[index];
 
 		try {
-			// If the file has been uploaded to storage, delete it from there
-			if (fileToDelete.storageResult?.public_id && onDelete) {
-				await onDelete(fileToDelete.storageResult.public_id);
+			setIsDeleting(true);
+			setDeleteProgress(0);
+			const uploadedVersion = form
+				?.getFieldValue(fieldName)
+				?.find((file: any) => file.externalId.includes(fileToDelete.name));
+			if (uploadedVersion) {
+				setDeleteProgress(10);
+				await handleServerFilesDelete(index, uploadedVersion.externalId);
 			}
-
+			const deleteProgressInterval = setInterval(() => {
+				setDeleteProgress((prev) => {
+					if (prev >= 90) {
+						clearInterval(deleteProgressInterval);
+						return prev;
+					}
+					return prev + 10;
+				});
+			}, 500);
 			// Remove the file from local state
 			const dataTransfer = new DataTransfer();
 			const newFiles = [...localFiles];
-			
+
 			// Clean up the blob URL before removing the file
-			if (newFiles[index].preview && !newFiles[index].storageResult?.url) {
+			if (newFiles[index].preview) {
 				URL.revokeObjectURL(newFiles[index].preview);
 			}
-			
+
 			newFiles.splice(index, 1);
 
 			newFiles.forEach((file) => {
@@ -309,23 +477,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			onChange(dataTransfer.files);
 			setLocalFiles(newFiles);
 
-			// Update the uploadedFiles field in the form
-			if (form && fieldName) {
-				const updatedPropertyImages = newFiles
-					.filter((file) => file.storageResult) // Only include files that have been uploaded
-					.map((file, index) => ({
-						isMain:
-							file.isFavorite ||
-							(index === 0 && !newFiles.some((f) => f.isFavorite)),
-						fileSize: file.storageResult?.bytes,
-						url:
-							file.storageResult?.secure_url || file.storageResult?.url || '',
-						externalId: file.storageResult?.public_id || '',
-						fileName: file.name,
-					}));
-				form.setFieldValue(fieldName, updatedPropertyImages);
-			}
-
+			clearInterval(deleteProgressInterval);
+			setDeleteProgress(100);
 			setSnackbar({
 				open: true,
 				message: 'File deleted successfully',
@@ -337,6 +490,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				message: 'Failed to delete file. Please try again.',
 				severity: 'error',
 			});
+		} finally {
+			setIsDeleting(false);
 		}
 	};
 
@@ -383,11 +538,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		}
 
 		try {
-			console.log('Uploading files...');
 			setIsUploading(true);
 			setUploadProgress(0);
 
-			// Simulate progress updates
 			const progressInterval = setInterval(() => {
 				setUploadProgress((prev) => {
 					if (prev >= 90) {
@@ -398,65 +551,48 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				});
 			}, 500);
 
-			// Create FormData with original filenames
 			const formData = new FormData();
-			localFiles.forEach((file, index) => {
-				// Create a new File object with the original filename
-				const fileWithName = new File([file], file.name, {
-					type: file.type,
-					lastModified: file.lastModified,
-				});
-				formData.append('files', fileWithName);
+			localFiles.forEach((file) => {
+				formData.append('files', file);
 			});
 
-			// Upload files and get storage results
 			const storageResults = await onUpload(formData);
 
 			// Update local files with storage results while preserving existing state
 			const updatedFiles = localFiles.map((file, index) => {
-				const existingFile = localFiles.find((f) => f.name === file.name);
+				const storageResult = storageResults[index];
 				const updatedFile = {
 					...file,
-					preview: storageResults[index]?.secure_url || storageResults[index]?.url || existingFile?.preview || file.preview,
-					isFavorite: existingFile?.isFavorite || file.isFavorite,
-					storageResult: storageResults[index],
+					preview:
+						storageResult?.secure_url || storageResult?.url || file.preview,
+					isFavorite: file.isFavorite,
+					storageResult: storageResult,
 				};
 
 				// Clean up blob URL if we now have a storage URL
-				if (file.preview && (storageResults[index]?.secure_url || storageResults[index]?.url)) {
+				if (file.preview && (storageResult?.secure_url || storageResult?.url)) {
 					URL.revokeObjectURL(file.preview);
 				}
 
 				return updatedFile;
 			});
 
+
 			// Update local state first
 			setLocalFiles(updatedFiles);
-
-			// Create a new FileList with updated files
-			const dataTransfer = new DataTransfer();
-			updatedFiles.forEach((file) => {
-				if (file instanceof File) {
-					dataTransfer.items.add(file);
-				}
-			});
-
-			// Update form value
-			onChange(dataTransfer.files);
-			setHasUploadedFiles(true);
+			setHasUploadedFiles(true); // Set this before updating form value
 
 			// Transform the data into PropertyImage format
-			const propertyImages = updatedFiles.map((file, index) => ({
+			const serverFiles = updatedFiles.map((file, index) => ({
 				isMain:
 					file.isFavorite ||
-					(index === 0 && !updatedFiles.some((f) => f.isFavorite)), // If no favorites, first image is main
+					(index === 0 && !updatedFiles.some((f) => f.isFavorite)),
 				fileSize: file.storageResult?.bytes,
 				url: file.storageResult?.secure_url || file.storageResult?.url || '',
 				externalId: file.storageResult?.public_id || '',
-				fileName: file.name,
+				fileName: file.storageResult?.original_filename || file.name,
 			}));
 
-			// Call onUploadComplete with both the storage results and property images
 			if (onUploadComplete) {
 				const resultsWithFavorite = storageResults.map((result, index) => ({
 					...result,
@@ -465,10 +601,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				onUploadComplete(resultsWithFavorite);
 			}
 
-			// Update the uploadedImages field in the form using TanStack Form API
 			if (form && fieldName) {
-				form.setFieldValue(fieldName, propertyImages);
+				form.setFieldValue(fieldName, serverFiles);
 			}
+
+			// Don't update the form value with an empty FileList
+			// This was causing localFiles to be cleared
+			// onChange(dataTransfer.files);
 
 			clearInterval(progressInterval);
 			setUploadProgress(100);
@@ -479,7 +618,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				severity: 'success',
 			});
 		} catch (error) {
-			console.error('Error uploading files:', error);
 			setSnackbar({
 				open: true,
 				message: 'Failed to upload files. Please try again.',
@@ -545,77 +683,95 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<Card variant='outlined'>
 			<CardContent>
-				<Typography variant='subtitle1' gutterBottom>
-					{subtitle}
-				</Typography>
-				<Tooltip title={tooltipMessages.upload} arrow>
-					<Box
-						display='flex'
-						flexDirection='column'
-						alignItems='center'
-						justifyContent='center'
-						border='1px dashed'
-						borderColor={isDragging ? 'primary.main' : 'grey.400'}
-						borderRadius={2}
-						p={4}
-						sx={{
-							cursor: isUploading ? 'not-allowed' : 'pointer',
-							transition: 'all 0.2s',
-							backgroundColor: isDragging ? 'action.hover' : 'transparent',
-							opacity: isUploading ? 0.7 : 1,
-							'&:hover': {
-								borderColor: isUploading ? 'grey.400' : 'primary.main',
-								backgroundColor: isUploading ? 'transparent' : 'action.hover',
-							},
-						}}
-						onClick={isUploading ? undefined : handleClick}
-						onDragEnter={isUploading ? undefined : handleDragEnter}
-						onDragLeave={isUploading ? undefined : handleDragLeave}
-						onDragOver={isUploading ? undefined : handleDragOver}
-						onDrop={isUploading ? undefined : handleDrop}
-						tabIndex={isUploading ? -1 : 0}
-						aria-label={caption}
-						aria-disabled={isUploading}
-					>
-						<IconButton
-							color='primary'
-							component='span'
-							tabIndex={-1}
-							disableRipple
-							disabled={isUploading}
-						>
-							<CloudUpload fontSize='large' />
-						</IconButton>
-						<Typography variant='body2' color='textSecondary' align='center'>
-							{isUploading ? 'Uploading files...' : isDragging ? 'Drop files here' : caption}
+				{form?.getFieldValue(fieldName)?.length === 0 && (
+					<>
+						<Typography variant='subtitle1' gutterBottom>
+							{subtitle}
 						</Typography>
-						<Typography variant='caption' color='textSecondary' align='center'>
-							{tooltipMessages?.sizeLimit?.replace(
-								'{size}',
-								(maxSize / (1024 * 1024)).toString(),
-							) || `Maximum file size: ${maxSize / (1024 * 1024)}MB`}
-						</Typography>
-						<VisuallyHiddenInput
-							ref={inputRef}
-							type='file'
-							accept={accept}
-							multiple={multiple}
-							style={{ display: 'none' }}
-							onChange={handleFileChange}
-							onBlur={onBlur}
-							aria-label='File input'
-						/>
-					</Box>
-				</Tooltip>
-				{(helperText || errorMessage) && (
-					<Typography
-						variant='caption'
-						color={isError ? 'error' : 'textSecondary'}
-						display='block'
-						mt={1}
-					>
-						{errorMessage || helperText}
-					</Typography>
+						<Tooltip title={tooltipMessages.upload} arrow>
+							<Box
+								display='flex'
+								flexDirection='column'
+								alignItems='center'
+								justifyContent='center'
+								border='1px dashed'
+								borderColor={isDragging ? 'primary.main' : 'grey.400'}
+								borderRadius={2}
+								p={4}
+								sx={{
+									cursor: isUploading ? 'not-allowed' : 'pointer',
+									transition: 'all 0.2s',
+									backgroundColor: isDragging ? 'action.hover' : 'transparent',
+									opacity: isUploading ? 0.7 : 1,
+									'&:hover': {
+										borderColor: isUploading ? 'grey.400' : 'primary.main',
+										backgroundColor: isUploading
+											? 'transparent'
+											: 'action.hover',
+									},
+								}}
+								onClick={isUploading ? undefined : handleClick}
+								onDragEnter={isUploading ? undefined : handleDragEnter}
+								onDragLeave={isUploading ? undefined : handleDragLeave}
+								onDragOver={isUploading ? undefined : handleDragOver}
+								onDrop={isUploading ? undefined : handleDrop}
+								tabIndex={isUploading ? -1 : 0}
+								aria-label={caption}
+								aria-disabled={isUploading}
+							>
+								<IconButton
+									color='primary'
+									component='span'
+									tabIndex={-1}
+									disableRipple
+									disabled={isUploading}
+								>
+									<CloudUpload fontSize='large' />
+								</IconButton>
+								<Typography
+									variant='body2'
+									color='textSecondary'
+									align='center'
+								>
+									{isUploading
+										? 'Uploading files...'
+										: isDragging
+											? 'Drop files here'
+											: caption}
+								</Typography>
+								<Typography
+									variant='caption'
+									color='textSecondary'
+									align='center'
+								>
+									{tooltipMessages?.sizeLimit?.replace(
+										'{size}',
+										(maxSize / (1024 * 1024)).toString(),
+									) || `Maximum file size: ${maxSize / (1024 * 1024)}MB`}
+								</Typography>
+								<VisuallyHiddenInput
+									ref={inputRef}
+									type='file'
+									accept={accept}
+									multiple={multiple}
+									style={{ display: 'none' }}
+									onChange={handleFileChange}
+									onBlur={onBlur}
+									aria-label='File input'
+								/>
+							</Box>
+						</Tooltip>
+						{(helperText || errorMessage) && (
+							<Typography
+								variant='caption'
+								color={isError ? 'error' : 'textSecondary'}
+								display='block'
+								mt={1}
+							>
+								{errorMessage || helperText}
+							</Typography>
+						)}
+					</>
 				)}
 				{localFiles.length > 0 && (
 					<>
@@ -624,15 +780,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 								<Grid item xs={12} sm={6} md={4} key={index}>
 									<Tooltip title={getTooltipMessage(file, index)} arrow>
 										<ThumbnailContainer>
-											{file.storageResult?.secure_url ||
-											file.storageResult?.url ||
-											file.preview ? (
+											{file.preview ? (
 												<img
-													src={
-														file.storageResult?.secure_url ||
-														file.storageResult?.url ||
-														file.preview
-													}
+													src={file.preview}
 													alt={file.name}
 													style={{
 														width: '100%',
@@ -696,14 +846,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 								justifyContent='flex-end'
 								alignItems='center'
 							>
-								<Button
+								{!hasUploadedFiles && (<Button
 									variant='klubiqMainButton'
 									onClick={handleUpload}
-									disabled={isUploading}
+									disabled={isUploading || hasUploadedFiles}
 									startIcon={<Upload />}
 								>
-									{isUploading ? 'Uploading...' : uploadButtonText}
-								</Button>
+									{isUploading ? 'Uploading...': uploadButtonText}
+								</Button>)}
 							</Stack>
 							{isUploading && (
 								<Box sx={{ width: '100%', mt: 1 }}>
@@ -718,6 +868,22 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 										display='block'
 									>
 										{uploadProgress}% Complete
+									</Typography>
+								</Box>
+							)}
+							{isDeleting && (
+								<Box sx={{ width: '100%', mt: 1 }}>
+									<LinearProgress
+										variant='determinate'
+										value={deleteProgress}
+									/>
+									<Typography
+										variant='caption'
+										color='error'
+										align='center'
+										display='block'
+									>
+										{deleteProgress}% Complete
 									</Typography>
 								</Box>
 							)}

@@ -246,6 +246,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [stepValidations, setStepValidations] = useState<boolean[]>([]);
 	const [returnDialogOpen, setReturnDialogOpen] = useState(false);
 	const [showNextAction, setShowNextAction] = useState(false);
+	const [showPreSubmitDialog, setShowPreSubmitDialog] = useState(false);
+	const [preSubmitDialogMessage, setPreSubmitDialogMessage] = useState('');
+	const [preSubmitDialogTitle, setPreSubmitDialogTitle] = useState('');
 	const [submittedData, setSubmittedData] = useState<any>(null);
 	const [submissionResult, setSubmissionResult] = useState<any>(null);
 	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
@@ -468,11 +471,27 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 		return undefined;
 	};
+	const confirmSubmission = async () => {
+		form.setFieldValue('filesWaitingForUpload', 0);
+		setShowPreSubmitDialog(false);
+		await form.handleSubmit();
+	};
 
 	const form = useForm({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
 			try {
+				const filesWaitingForUpload = form.getFieldValue(
+					'filesWaitingForUpload',
+				);
+				if (filesWaitingForUpload > 0) {
+					setShowPreSubmitDialog(true);
+					setPreSubmitDialogMessage(
+						'Please upload all files before submitting',
+					);
+					setPreSubmitDialogTitle('Files not uploaded');
+					return 'Please wait for all files to upload';
+				}
 				const result = await onSubmit(value);
 				setSubmittedData(value);
 				setSubmissionResult(result);
@@ -485,11 +504,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					if ('buttons' in nextAction) {
 						setNextActionDialogOpen(true);
 					}
-				} else {	
+				} else {
 					// Only reset form if there's no next action
 					return result;
 				}
-				
 			} catch (error) {
 				console.error('Form submission error:', error);
 				setIsSubmitted(false);
@@ -516,6 +534,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			},
 		},
 	});
+
+	// Add effect to handle form submission state
+	useEffect(() => {
+		if (form.state.isSubmitting) {
+			setIsSubmitted(false);
+		}
+	}, [form.state.isSubmitting]);
 
 	// Add effect to ensure group values are properly structured
 	useEffect(() => {
@@ -623,21 +648,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	};
 
-	// const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-	// 	event.preventDefault();
-	// 	event.returnValue = true;
-	// };
-
-	// useEffect(() => {
-	// 	window.addEventListener('beforeunload', handleBeforeUnload);
-
-	// 	// Remove the event listener when the component unmounts
-	// 	return () => {
-	// 		window.removeEventListener('beforeunload', handleBeforeUnload);
-	// 	};
-	// }, []);
-
-	// Only depend on form.state.values and currentStep
 	useEffect(() => {
 		validateCurrentStep();
 	}, [form.state.values, currentStep]);
@@ -981,6 +991,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			e.preventDefault();
 			e.stopPropagation();
 			try {
+				setIsSubmitted(false);
 				await form.handleSubmit();
 			} catch (error) {
 				setShowErrorAlert(true);
@@ -1007,7 +1018,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			spacing={4}
 		>
 			{/* Add submission overlay */}
-			{isSubmitted && !nextAction && (
+			{isSubmitted && !nextAction && !form.state.isSubmitting && (
 				<Box
 					sx={{
 						position: 'fixed',
@@ -1158,7 +1169,17 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				{enableErrorAlert && showErrorAlert && (
 					<Alert
 						severity='error'
-						sx={{ mb: 3 }}
+						sx={{
+							mb: 3,
+							backgroundColor: 'error.main',
+							color: 'error.contrastText',
+							'& .MuiAlert-icon': {
+								color: 'error.contrastText',
+							},
+							'& .MuiAlert-message': {
+								color: 'error.contrastText',
+							},
+						}}
 						onClose={() => setShowErrorAlert(false)}
 					>
 						<AlertTitle>{errorAlertTitle}</AlertTitle>
@@ -1254,10 +1275,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										<>
 											{isSubmitting ? (
 												<LoadingButton
-													variant='klubiqMainButton'
+													variant='contained'
 													loadingPosition='start'
 													loadingIndicator={buttonLoadingText}
 													loading={isSubmitting}
+													sx={style.loadingButton}
 												></LoadingButton>
 											) : (
 												<Button
@@ -1383,7 +1405,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</DialogContent>
 				<DialogActions>
 					<Button
-						variant='klubiqTextButton'
+						variant='klubiqOutlinedButton'
 						onClick={() => setReturnDialogOpen(false)}
 					>
 						{topBackButton.dialogCancelButtonText}
@@ -1394,6 +1416,30 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						autoFocus
 					>
 						{topBackButton.dialogConfirmButtonText}
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Dialog
+				open={showPreSubmitDialog}
+				onClose={() => setShowPreSubmitDialog(false)}
+				aria-labelledby='pre-submit-dialog-title'
+				aria-describedby='pre-submit-dialog-description'
+				maxWidth='sm'
+				fullWidth
+			>
+				<DialogTitle id='pre-submit-dialog-title'>{preSubmitDialogTitle}</DialogTitle>
+				<DialogContent>
+					<DialogContentText id='pre-submit-dialog-description'>{preSubmitDialogMessage}</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						variant='klubiqMainButton'
+						onClick={() => setShowPreSubmitDialog(false)}
+					>
+						Cancel Submission
+					</Button>
+					<Button variant='klubiqMainButton' onClick={confirmSubmission}>
+						Continue Submission
 					</Button>
 				</DialogActions>
 			</Dialog>

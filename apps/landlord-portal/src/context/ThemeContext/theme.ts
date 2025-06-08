@@ -101,7 +101,11 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		// error:{},
+		error:{
+			main: '#FF0000',
+			light: '#FF0000',
+			dark: '#FF0000',
+		},
 		// warning:{},
 		// info:{},
 		// success:{},

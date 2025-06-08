@@ -5,7 +5,6 @@ import { Grid, Stack, Typography } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { firebaseResponseObject } from '../../../helpers/FirebaseResponse';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
@@ -131,18 +130,8 @@ const Login = () => {
 				set2FARequired(true);
 			} else {
 				set2FARequired(false);
-				dispatch(
-					openSnackbar({
-						message:
-							firebaseResponseObject[(error as Error).message] ||
-							(error as Error).message,
-						severity: 'error',
-						isOpen: true,
-						duration: 7000,
-					}),
-				);
+				throw error;
 			}
-			// setLoading(false);
 		}
 	};
 

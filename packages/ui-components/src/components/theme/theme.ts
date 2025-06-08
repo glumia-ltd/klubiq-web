@@ -52,7 +52,7 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		// error:{},
+	
 		// warning:{},
 		// info:{},
 		// success:{},

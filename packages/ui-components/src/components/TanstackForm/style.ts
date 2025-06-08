@@ -25,7 +25,14 @@ export const style = {
         flexDirection: 'column',
         spacing: 1.2,
     },  
-    
+    loadingButton: {
+        color: 'primary.contrastText',
+		height: '2.5rem',
+		width: '100%',
+		borderRadius: '0.5rem',
+		padding: '0.5rem 1rem',
+		border: `0.063rem solid ${'primary.main'}`,
+    },
 };
 
 
