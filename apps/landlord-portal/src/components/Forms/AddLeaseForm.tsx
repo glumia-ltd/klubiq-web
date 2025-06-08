@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { useAddLeaseMutation } from '../../store/LeaseStore/leaseApiSlice';
 import { useNavigate } from 'react-router-dom';
 import FormSkeleton from '../skeletons/FormSkeleton';
+import { useGetTenantsQuery } from '../../store/TenantStore/tenantApiSlice';
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -65,13 +66,32 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	const [addLease] = useAddLeaseMutation();
 	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
 		useGetOrgPropertiesViewListQuery({ orgId: user?.organizationUuid });
+	const {
+		data: tenantData,
+		isLoading,
+		error,
+	} = useGetTenantsQuery({
+		// ...filter,
+	});
 
+	console.log('tenantData:', tenantData);
+	console.log('isLoading:', isLoading);
+	console.log('error:', error);
 	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
 		(property: { uuid: string; name: string }) => ({
 			id: property?.uuid,
 			name: property?.name,
 		}),
 	);
+	const tenantOptions =
+		tenantData?.pageData?.map((tenant: any) => ({
+			id: tenant.id,
+			name: tenant.companyName?.trim()
+				? tenant.companyName
+				: tenant.fullName?.trim()
+					? tenant.fullName
+					: 'N/A',
+		})) || [];
 
 	// const tenantOptions = orgPropertiesViewList?.tenants?.map(
 	// 	(tenant: { id: string; firstName: string; lastName: string }) => ({
@@ -128,7 +148,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		validationSchema,
 		onSubmit,
 	});
-
+console.log("tenant" , formik.values.tenantsIds)
 	const propertyData = useMemo(
 		() =>
 			find(orgPropertiesViewList?.properties, {
@@ -161,8 +181,8 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.propertyName]);
 
-	useEffect(() => {	
-		const {startDate, endDate} = formik.values;
+	useEffect(() => {
+		const { startDate, endDate } = formik.values;
 		if (dayjs(startDate).isAfter(endDate)) {
 			formik.setFieldValue('endDate', '');
 			dispatch(
@@ -188,7 +208,9 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	useEffect(() => {
 		if (propertyId && orgPropertiesViewList) {
 			consoleLog('propertyId', propertyId);
-			const property = find(orgPropertiesViewList.properties, { uuid: propertyId });
+			const property = find(orgPropertiesViewList.properties, {
+				uuid: propertyId,
+			});
 			if (property) {
 				formik.setFieldValue('propertyName', property.uuid);
 				if (unitId) {
@@ -201,7 +223,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			}
 		}
 	}, [propertyId, orgPropertiesViewList]);
-
 
 	const rentDueOn = (
 		endDate: string,
@@ -291,6 +312,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			)[formik.values?.frequency],
 			unitNumber: getUnitNumber?.name,
 		};
+		consoleLog(requestBody)
 
 		if (formik.values.endDate) {
 			requestBody['endDate'] = formik.values.endDate;
@@ -321,13 +343,16 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				}),
 			);
 		}
-
 	};
 
 	return (
 		<FormLayout Header='LEASE INFORMATION' sx={LeaseFormStyle.card}>
 			{isLoadingOrgPropertiesView ? (
-				<FormSkeleton rows={8} columns={[1, 1, 1, 1, 1, 1, 1, 1]} sx={LeaseFormStyle.content} />
+				<FormSkeleton
+					rows={8}
+					columns={[1, 1, 1, 1, 1, 1, 1, 1]}
+					sx={LeaseFormStyle.content}
+				/>
 			) : (
 				<Grid container spacing={0} sx={LeaseFormStyle.content}>
 					<Grid item xs={12}>
@@ -381,7 +406,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 							label='Tenant'
 							type='text'
 							formik={formik}
-							options={[]}
+							options={tenantOptions}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -465,9 +490,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 						width={'100%'}
 						mt={10}
 					>
-						<Button variant='klubiqTextButton'>
-							Cancel
-						</Button>
+						<Button variant='klubiqTextButton'>Cancel</Button>
 						<Button
 							variant='klubiqMainButton'
 							//sx={LeaseFormStyle.button}

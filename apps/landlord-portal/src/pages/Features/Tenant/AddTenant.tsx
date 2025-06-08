@@ -21,6 +21,9 @@ const AddTenant = () => {
 	const location = useLocation();
 	const { mode, propertyDetails, returnPath } = location.state as InviteTenantState;
 	const { leaseAndUnitDetails } = location.state as AddTenantState;
+ if (!location.state) {
+        return <div>Invalid navigation: missing tenant state.</div>;
+    }
 
 	return (
 		<AddPropertiesInformationLayout>

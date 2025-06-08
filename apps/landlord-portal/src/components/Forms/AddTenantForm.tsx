@@ -293,7 +293,7 @@ const AddTenantForm = ({
     returnPath,
 }: AddTenantFormProps) => {
     // State Management
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [initialValues, setInitialValues] = useState<AddTenantFormValues>(defaultValues);
     // Hooks
     const navigate = useNavigate();			
