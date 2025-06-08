@@ -1,10 +1,9 @@
-import { Grid } from '@mui/material';
+import { Stack } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 
 const AuthLayout = () => {
 	return (
-		<Grid
-			container
+		<Stack
 			spacing={0}
 			sx={{
         justifyContent: 'center',
@@ -19,10 +18,9 @@ const AuthLayout = () => {
 					backgroundColor: '#F8FBFF',
 				},
 			}}
-			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
 		>
 			<Outlet />
-		</Grid>
+		</Stack>
 	);
 };
 

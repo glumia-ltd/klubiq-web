@@ -135,6 +135,7 @@ export type TenantType = {
 	profileUuid?: string;
 
 }
+
 export type TenantsType = {
 	tenantId: string;
 	profile: UserProfile;
