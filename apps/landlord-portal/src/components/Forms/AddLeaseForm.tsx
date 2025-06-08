@@ -484,7 +484,9 @@
 
 // export default AddLeaseForm;
 
-import { KlubiqForm } from '@klubiq/ui-components';
+import { DynamicTanstackFormProps, KlubiqForm, InputAdornment as InputAdornmentType,
+	FormFieldV1,
+	KlubiqFormV1, } from '@klubiq/ui-components';
 import {
 	useGetOrgPropertiesViewListQuery,
 	useAddLeaseMutation,
@@ -503,8 +505,111 @@ import FormLayout from '../../Layouts/FormLayout';
 import FormSkeleton from '../skeletons/FormSkeleton';
 
 import { consoleLog } from '../../helpers/debug-logger';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/system/useMediaQuery';
+import { z } from 'zod';
+import { Box, MenuItem, Select, Typography } from '@mui/material';
+import { TenantDialog } from '../CustomFormComponents/TenantDialog';
+import { Info } from '@mui/icons-material';
+import { LeftArrowIcon } from '../Icons/LeftArrowIcon';
 
-// Inside the component, before formFields:
+
+function renderPropertySelectField(fieldApi: any, fieldConfig: any, form: any) {
+	const options = Array.isArray(fieldConfig.options)
+				? fieldConfig.options
+				: typeof fieldConfig.options === 'function'
+					? fieldConfig.options(form.state.values)
+					: [];
+	return (
+		<Box sx={{ width: '100%' }}>
+			<Select
+						value={fieldApi.state.value?.value || ''}
+						placeholder={fieldConfig.placeholder}
+						onChange={(e) => {
+							const selectedProperty = find(options, { value: e.target.value });
+							form.setFieldValue('selectedProperty', selectedProperty);
+							form.setFieldValue('unitId', selectedProperty.units[0].id);
+						}}
+						onBlur={fieldApi.handleBlur}
+						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+						multiple={!!fieldConfig.multiple}
+						disabled={fieldConfig.disabled}
+					>
+						{options.map((option: any) => (
+							<MenuItem key={option.value} value={option.value}>
+								{option.label}
+							</MenuItem>
+						))}
+					</Select>
+		</Box>
+	);
+}
+
+function renderUnitSelectField(fieldApi: any, fieldConfig: any, form: any) {
+	const options = Array.isArray(fieldConfig.options)
+				? fieldConfig.options
+				: typeof fieldConfig.options === 'function'
+					? fieldConfig.options(form.state.values)
+					: [];
+	return (
+		<Box sx={{ width: '100%' }}>
+			<Select
+						value={fieldApi.state.value?.value || ''}
+						placeholder={fieldConfig.placeholder}
+						onChange={(e) => {
+							const selectedUnit = find(options, { value: e.target.value });
+							form.setFieldValue('selectedUnit', selectedUnit);
+						}}
+						onBlur={fieldApi.handleBlur}
+						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+						multiple={!!fieldConfig.multiple}
+						disabled={fieldConfig.disabled}
+					>
+						{options.map((option: any) => (
+							<MenuItem key={option.value} value={option.value}>
+								{option.label}
+							</MenuItem>
+						))}
+					</Select>
+		</Box>
+	);
+}
+
+function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
+	return (
+		<TenantDialog
+			field={{
+				fieldConfig: {
+					...fieldConfig,
+					options: Array.isArray(fieldConfig.options)
+						? fieldConfig.options.map((opt: { value: string | number, label: string, email: string }) => ({
+								...opt,
+								value: String(opt.value),
+								label: `${opt.label} - (${opt.email})`,
+							}))
+							: typeof fieldConfig.options === 'function'
+							? fieldConfig
+									.options(form.getValues())
+										.map((opt: { value: string | number, label: string, email: string }) => ({
+											...opt,
+											value: String(opt.value),
+											label: `${opt.label} - (${opt.email})`,
+									}))
+							: [],
+				},
+				state: fieldApi.state,
+				handleChange: fieldApi.handleChange,
+			}}
+			form={form}
+		/>
+	)
+}
+
+
+
+
+
+
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -525,30 +630,45 @@ interface Property {
 	name: string;
 	units?: Array<{ id: string; unitNumber: string }>;
 }
-
+interface NewTenant {
+	firstName: string;
+	lastName: string;
+	email: string;
+	phone: string;
+	
+}
 interface LeaseFormValues {
 	name: string;
 	startDate: string;
 	endDate?: string;
-	newTenants: null;
+	newTenants?: NewTenant[];
 	tenantsIds: string[];
 	unitId: string;
-	rentDueDay?: string;
-	rentAmount: string;
-	depositAmount: string;
-	isDraft: boolean;
+	rentDueDay: number;
+	rentAmount: number;
+	securityDeposit?: number;
 	paymentFrequency: PaymentFrequency;
-	status: null;
-	propertyName?: string;
+	propertyName: string;
 	firstPaymentDate?: string;
-	unitNumber?: string;
+	unitNumber: string;
 }
 
 const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const sortByName = (a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name);
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [addLease] = useAddLeaseMutation();
+	const queryResult = useGetOrgPropertiesViewListQuery({orgId: user?.organizationUuid}, {
+		selectFromResult: ({ data, isLoading: loading }) => ({
+			properties: data?.properties ? [...data.properties].sort(sortByName) : [],
+			tenants: data?.tenants ? [...data.tenants].sort(sortByName) : [],
+			isLoading: loading,
+		}),
+	});
+	const { properties, tenants, isLoading } = queryResult;
 	const { data: orgPropertiesViewList, isLoading: loading } =
 		useGetOrgPropertiesViewListQuery({
 			orgId: user?.organizationUuid,
@@ -568,153 +688,36 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		frequency: PaymentFrequency.ANNUALLY,
 		rentDueDay: '0',
 	});
+	const initialValues = {
+		name: '',
+		propertyName: '',
+		unitId: '',
+		tenantsIds: [],
+		newTenants: [],
+		rentAmount: 0,
+		securityDeposit: 0,
+		startDate: '',
+		endDate: '',
+		paymentFrequency: PaymentFrequency.ANNUALLY,
+		rentDueDay: 0,
+		unitNumber: '',
+		firstPaymentDate: '',
+		selectedProperty: null,
+		selectedUnit: null,
+	}
 
 	console.log('initial values', formInitialValues);
 
-	// console.log('uniId', unitId);
-	// console.log('units', orgPropertiesViewList?.properties[0]?.units?.[0]?.id);
-
-	// useEffect(() => {
-	// 	if (orgPropertiesViewList?.properties) {
-	// 		setFormInitialValues((prev) => ({
-	// 			...prev,
-	// 			propertyName:
-	// 				propertyId || orgPropertiesViewList.properties[0]?.uuid || '',
-	// 			unitId:
-	// 				unitId || orgPropertiesViewList.properties[0]?.units?.[0]?.id || '',
-	// 		}));
-	// 	}
-	// }, [orgPropertiesViewList, propertyId, unitId]);
-	// const propertyData = useMemo(
-	// 	() => find(orgPropertiesViewList?.properties, { uuid: propertyId }),
-	// 	[orgPropertiesViewList, propertyId],
-	// );
-
-	// console.log('propertyData', propertyData);
-
 	const propertyData = useMemo(
-		() => find(orgPropertiesViewList?.properties, { uuid: propertyId }),
-		[orgPropertiesViewList, propertyId],
+		() => find(properties, { uuid: propertyId }),
+		[properties, propertyId],
 	);
-
-	const formFields: FormField[] = [
-		{
-			name: 'name',
-			label: 'Lease Name',
-			type: 'text',
-			required: true,
-		},
-		{
-			name: 'propertyName',
-			label: 'Property Name',
-			type: 'select',
-			required: true,
-			options: orgPropertiesViewList?.properties
-				? orgPropertiesViewList.properties.map((property: Property) => ({
-						label: property.name,
-						value: property.uuid,
-					}))
-				: [],
-		},
-		// Remove the UnitIdField component and update the unitId field in formFields
-		{
-			name: 'unitId',
-			label: 'Unit',
-			type: 'select',
-			required: true,
-			options: propertyData?.units
-				? propertyData.units.map(
-						(unit: { id: string; unitNumber: string }) => ({
-							label: unit.unitNumber,
-							value: unit.id,
-						}),
-					)
-				: [],
-			showIf: (values) => !!values.propertyName,
-			disabled: !propertyData?.units || propertyData.units.length <= 1,
-		},
-		{
-			name: 'tenantsIds',
-			label: 'Tenant',
-			type: 'select',
-			multiple: true,
-			options: [], // Initialize with empty array
-			actionButton: {
-				label: 'Add tenant',
-				position: 'end',
-				onClick: () => {
-					navigate(`/tenants/add-tenant?property=${propertyData?.uuid}`, {
-						state: { currentProperty: propertyData },
-					});
-				},
-			},
-		},
-		{
-			name: 'rentAmount',
-			label: 'Rent Amount',
-			type: 'decimal',
-			required: true,
-			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings) as string,
-			},
-		},
-		{
-			name: 'depositAmount',
-			label: 'Deposit Amount',
-			type: 'decimal',
-			required: true,
-			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings) as string,
-			},
-		},
-		{
-			name: 'startDate',
-			label: 'Lease Start Date',
-			type: 'date',
-			required: true,
-			width: '50%',
-			layout: 'row',
-		},
-		{
-			name: 'endDate',
-			label: 'Lease End Date',
-			type: 'date',
-			width: '50%',
-			layout: 'row',
-		},
-		{
-			name: 'frequency',
-			label: 'Payment Frequency',
-			type: 'select',
-			required: true,
-			options: Object.values(PaymentFrequency).map((freq) => ({
-				label: freq,
-				value: freq,
-			})),
-			width: '50%',
-			layout: 'row',
-		},
-		{
-			name: 'rentDueDay',
-			label: 'Payment Day',
-			type: 'select',
-			options: Array.from({ length: 31 }, (_, i) => ({
-				label: i === 0 ? 'select due day' : `${i}`,
-				value: `${i}`,
-			})),
-			width: '50%',
-			layout: 'row',
-			showIf: (values) =>
-				values.frequency === 'Monthly' || values.frequency === 'Bi-Monthly',
-		},
-	];
-
 	const calculateDueDate = (values: any) => {
-		if (!values.frequency || !values.startDate || !values.endDate) {
+		if (!values?.paymentFrequency || !values?.startDate || !values?.endDate) {
 			return '';
 		}
 
-		const startDayAndMonth = dayjs(values.startDate).format('MMMM DD');
+		const startDayAndMonth = dayjs(values?.startDate).format('MMMM DD');
 		const days = [
 			'Sunday',
 			'Monday',
@@ -726,18 +729,169 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		];
 
 		const dueDates = {
-			[PaymentFrequency.WEEKLY]: `${days[dayjs(values.startDate).add(1, 'week').get('day')]}, ${dayjs(values.startDate).add(1, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values.startDate).add(2, 'week').get('day')]}, ${dayjs(values.startDate).add(2, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.MONTHLY]: `${days[dayjs(values.startDate).add(1, 'month').get('day')]}, ${dayjs(values.startDate).add(1, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.WEEKLY]: `${days[dayjs(values?.startDate).add(1, 'week').get('day')]}, ${dayjs(values?.startDate).add(1, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values?.startDate).add(2, 'week').get('day')]}, ${dayjs(values?.startDate).add(2, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.MONTHLY]: `${days[dayjs(values?.startDate).add(1, 'month').get('day')]}, ${dayjs(values?.startDate).add(1, 'month').format('MMMM DD, YYYY')}`,
 			[PaymentFrequency.ANNUALLY]: startDayAndMonth,
 			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${days[dayjs(values.startDate).add(2, 'month').get('day')]}, ${dayjs(values.startDate).add(2, 'month').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values.startDate).add(3, 'month').get('day')]}, ${dayjs(values.startDate).add(3, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_MONTHLY]: `${days[dayjs(values?.startDate).add(2, 'month').get('day')]}, ${dayjs(values?.startDate).add(2, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values?.startDate).add(3, 'month').get('day')]}, ${dayjs(values?.startDate).add(3, 'month').format('MMMM DD, YYYY')}`,
 		};
 
-		return dueDates[values.frequency as PaymentFrequency] || '';
+		return dueDates[values?.paymentFrequency as PaymentFrequency] || '';
 	};
 
+
+
+	const leaseFormFields: FormFieldV1[] = [
+		{
+			name: 'name',
+			label: 'Lease Name',
+			type: 'text',
+			required: true,
+			validation: {
+				schema: z.string({required_error: 'Lease name is required'}),
+			},
+		},
+		{
+			name: 'propertyName',
+			label: 'Property Name',
+			type: 'select',
+			required: true,
+			options: properties.map((property: Property) => ({
+						label: property.name,
+						value: property.uuid,
+					})),
+			validation: {
+				schema: z.string({required_error: 'Property name is required'}),
+			},
+			customComponent: renderPropertySelectField,
+		},
+		{
+			name: 'unitId',
+			label: 'Unit',
+			type: 'select',
+			required: true,
+			options: (values) => values.selectedProperty?.units.map((unit: { id: string; unitNumber: string }) => ({
+				label: unit.unitNumber,
+				value: unit.id,
+			})),
+			showIf: (values) => !!values.propertyName,
+			customComponent: renderUnitSelectField,
+		},
+		{
+			name: 'tenantsIds',
+			label: 'Tenants',
+			type: 'checkbox-group',
+			options: tenants.map((tenant: { firstName: string; lastName: string; email: string, id: string }) => ({
+				label: `${tenant.firstName} ${tenant.lastName}`,
+				value: tenant.id,
+				email: tenant.email,
+			})),
+			customComponent: renderTenantSelectField,
+		},
+		{
+			name: 'rentAmount',
+			type: 'decimal',
+			label: 'Rent Amount',
+			width: '100%',
+			formatType: 'decimal',
+			required: true,
+			decimals: 2,
+			validation: {
+				schema: z.number({required_error: 'Rent amount is required'}).min(1, {message: 'Rent amount must be greater than 0'}),
+			},
+			adornment: {
+				prefix: getCurrencySymbol(user?.orgSettings),
+			} as InputAdornmentType,
+		},
+		{
+			name: 'securityDeposit',
+			type: 'decimal',
+			label: 'Security Deposit',
+			width: '100%',
+			formatType: 'decimal',
+			decimals: 2,
+			validation: {
+				schema: z.number().nullable().optional(),
+			},
+			adornment: {
+				prefix: getCurrencySymbol(user?.orgSettings),
+			} as InputAdornmentType,
+		},
+		{
+			name: 'startDate',
+			label: 'Lease Start Date',
+			type: 'date',
+			required: true,
+			width: '50%',
+			validation: {
+				schema: z.date({required_error: 'Lease start date is required'}),
+				dependencies: [
+					{
+						field: 'endDate',
+						type: 'min',
+						message: 'Lease start date must be before end date',
+					},
+				],
+			},
+		},
+		{
+			name: 'endDate',
+			label: 'Lease End Date',
+			type: 'date',
+			width: '50%',
+			validation: {
+				schema: z.date().nullable().optional(),
+				dependencies: [
+					{
+						field: 'startDate',
+						type: 'min',
+						message: 'Lease end date must be after start date',	
+					},
+				],
+			},
+		},
+		{
+			name: 'paymentFrequency',
+			label: 'Payment Frequency',
+			type: 'select',
+			required: true,
+			options: Object.values(PaymentFrequency).map((freq) => ({
+				label: freq,
+				value: freq,
+			})),
+			width: '50%',
+			validation: {
+				schema: z.string({required_error: 'Payment frequency is required'}),
+			},
+		},
+		{
+			name: 'rentDueDay',
+			label: 'Payment Day',
+			type: 'select',
+			options: Array.from({ length: 31 }, (_, i) => ({
+				label: i === 0 ? 'select due day' : `${i}`,
+				value: `${i}`,
+			})),
+			width: '50%',
+			showIf: (values) =>
+				values.frequency === 'Monthly' || values.frequency === 'Bi-Monthly',
+		},
+		{
+			name: 'firstPaymentDate',
+			type: 'custom',
+			label: '',
+			component: (_, __, form: any) => {
+				return (
+					<Typography variant='body2' textAlign='left' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+						<Info sx={{ fontSize: 16, color: theme.palette.primary.main }} />
+						<span>{calculateDueDate(form.state.values)}</span>
+					</Typography>
+				)
+			}
+		},
+	];
 	const handleSubmit = async (values: LeaseFormValues) => {
 		try {
 			const requestBody = {
@@ -749,7 +903,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 				unitId: values.unitId,
 				rentDueDay: values.rentDueDay ? Number(values.rentDueDay) : undefined,
 				rentAmount: Number(values.rentAmount),
-				securityDeposit: Number(values.depositAmount),
+				securityDeposit: Number(values.securityDeposit),
 				isDraft: false,
 				paymentFrequency: values.paymentFrequency,
 				status: null,
@@ -783,19 +937,59 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		}
 	};
 
+	const handleAllLeasesClick = () => {
+		navigate('/leases');
+	}
+
+	const handleAddLease = async (values: any) => {
+		try {
+			console.log('values', values);
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: 'Error saving lease. Please try again',
+					severity: 'error',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+		}
+	}
+
+	const leaseFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		submitButtonText: 'Add Lease',
+		enableReset: true,
+		resetButtonText: 'Cancel',
+		fields: leaseFormFields,
+		initialValues,
+		onSubmit: handleAddLease,
+		showTopBackButton: true,
+		showBackdrop: true,
+		backdropText: 'Please wait while we add your lease...',
+		topBackButton: {
+			showDialog: true,
+			dialogTitle: 'Are you sure you want to leave?',
+			dialogDescription: 'You have unsaved changes. If you leave now, your changes will be lost.',
+			dialogConfirmButtonText: 'Leave',
+			dialogCancelButtonText: 'Continue Creating Lease',
+			onClick: handleAllLeasesClick,
+			text: 'All Leases',
+			variant: 'klubiqTextButton',
+			startIcon: <LeftArrowIcon />,
+		},
+		fullWidthButtons: !!isMobile,
+		horizontalAlignment: 'right',
+		verticalAlignment: 'top',
+	}
+
+
 	return (
 		<FormLayout Header={'Add Lease'}>
 			{loading ? (
-				<FormSkeleton rows={formFields.length} columns={[1, 1, 1]} />
+				<FormSkeleton rows={leaseFormFields.length} columns={[1, 1, 1]} />
 			) : (
-				<KlubiqForm
-					fields={formFields}
-					onSubmit={handleSubmit}
-					initialValues={formInitialValues}
-					submitButtonText='Add Lease'
-					enableReset={true}
-					resetButtonText='Cancel'
-				/>
+				<KlubiqFormV1 {...leaseFormConfig} />
 			)}
 		</FormLayout>
 	);
