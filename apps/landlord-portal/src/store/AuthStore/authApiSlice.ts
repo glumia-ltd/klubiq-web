@@ -57,7 +57,7 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signOut(),
 				method: 'POST',
 			}),
-			
+
 			async onQueryStarted(_, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
@@ -73,35 +73,35 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signin(),
 				method: 'POST',
 				body,
-			})
+			}),
 		}),
-			signUp: builder.mutation({
-				query: (body) => ({
-					url: authEndpoints.signup(),
-					method: 'POST',
-					body,
-				}),
-				async onQueryStarted(_, { dispatch, queryFulfilled }) {
-					await handleApiResponse(queryFulfilled, dispatch, {
-						successMessage: screenMessages.auth.signUp.success,
-						errorMessage: screenMessages.auth.signUp.error,
-					});
-				},
+		signUp: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.signup(),
+				method: 'POST',
+				body,
 			}),
-			resetPassword: builder.mutation({
-				query: (body) => ({
-					url: authEndpoints.resetPassword(),
-					method: 'POST',
-					body,
-				}),
-				
-				async onQueryStarted(_, { dispatch, queryFulfilled }) {
-					await handleApiResponse(queryFulfilled, dispatch, {
-						successMessage: screenMessages.auth.resetPassword.success,
-						errorMessage: screenMessages.auth.resetPassword.error,
-					});
-				},
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				await handleApiResponse(queryFulfilled, dispatch, {
+					successMessage: screenMessages.auth.signUp.success,
+					errorMessage: screenMessages.auth.signUp.error,
+				});
+			},
+		}),
+		resetPassword: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.resetPassword(),
+				method: 'POST',
+				body,
 			}),
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				await handleApiResponse(queryFulfilled, dispatch, {
+					successMessage: screenMessages.auth.resetPassword.success,
+					errorMessage: screenMessages.auth.resetPassword.error,
+				});
+			},
+		}),
 	}),
 });
 
