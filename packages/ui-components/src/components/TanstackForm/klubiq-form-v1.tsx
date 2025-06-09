@@ -357,24 +357,24 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					val !== '0' &&
 					val !== 0
 				);
-			}, 'Required');
+			}, `${field.label} is required`);
 		} else if (field.type === 'array') {
-			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
+			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
 		} else if (field.type === 'checkbox') {
 			return z
 				.boolean()
 				.refine(
 					field.required ? (val) => val === true : () => true,
-					'Required',
+					`${field.label} is required`,
 				);
 		} else if (field.type === 'select' && (field as any).multiple) {
-			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
+			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
 		} else if (field.type === 'radio') {
-			return z.string().min(field.required ? 1 : 0, 'Required');
+			return z.string().min(field.required ? 1 : 0, `${field.label} is required`);
 		} else if (field.type === 'file') {
-			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
+			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
 		} else {
-			return z.string().min(field.required ? 1 : 0, 'Required');
+			return z.string().min(field.required ? 1 : 0, `${field.label} is required`);
 		}
 	};
 
@@ -461,6 +461,18 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				if (dep.type === 'min' && value <= dependentValue) {
 					return (
 						dep.message || `${field.label} must be greater than ${dep.field}`
+					);
+				} else if (dep.type === 'max' && value >= dependentValue) {
+					return (
+						dep.message || `${field.label} must be less than ${dep.field}`
+					);
+				} else if (dep.type === 'equals' && value !== dependentValue) {
+					return (
+						dep.message || `${field.label} must be equal to ${dep.field}`
+					);
+				} else if (dep.type === 'notEquals' && value === dependentValue) {
+					return (
+						dep.message || `${field.label} must be not equal to ${dep.field}`
 					);
 				}
 			}
@@ -804,11 +816,29 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 								onChangeAsync: async ({ value }) => {
 									if (field.validation?.dependencies) {
 										for (const dep of field.validation.dependencies) {
-											const dependentValue = form.state.values[dep.field];
+											const fieldPath = dep.field.split('.');
+											const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
+											const dependentValue =
+												dependentFieldValue;
 											if (dep.type === 'min' && value <= dependentValue) {
 												return (
 													dep.message ||
 													`${field.label} must be greater than ${dep.field}`
+												);
+											} else if (dep.type === 'max' && value >= dependentValue) {
+												return (
+													dep.message ||
+													`${field.label} must be less than ${dep.field}`
+												);
+											} else if (dep.type === 'equals' && value !== dependentValue) {
+												return (
+													dep.message ||
+													`${field.label} must be equal to ${dep.field}`
+												);
+											} else if (dep.type === 'notEquals' && value === dependentValue) {
+												return (
+													dep.message ||
+													`${field.label} must be not equal to ${dep.field}`
 												);
 											}
 										}
@@ -936,12 +966,15 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 																if (subField.validation?.dependencies) {
 																	for (const dep of subField.validation
 																		.dependencies) {
+																		const fieldPath = dep.field.split('.');
+																		const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
 																		const dependentValue =
-																			form.state.values[dep.field];
+																			dependentFieldValue;
 																		if (
 																			dep.type === 'min' &&
 																			value <= dependentValue
 																		) {
+																			console.log('dep.message is less than value', dep.message);
 																			return (
 																				dep.message ||
 																				`${subField.label} must be greater than ${dep.field}`
@@ -1044,7 +1077,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										onChangeAsync: async ({ value }) => {
 											if (field.validation?.dependencies) {
 												for (const dep of field.validation.dependencies) {
-													const dependentValue = form.state.values[dep.field];
+													const fieldPath = dep.field.split('.');
+													const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
+													const dependentValue =
+														dependentFieldValue;
 													if (dep.type === 'min' && value <= dependentValue) {
 														return (
 															dep.message ||
@@ -1129,49 +1165,50 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															name={fieldPath}
 															validators={{
 																onChange: ({ value }) => {
-																	validateField(value, field, values, fieldPath);
-																	// try {
-																	// 	if (subField.validation?.schema) {
-																	// 		subField.validation.schema.parse(value);
-																	// 	}
-																	// 	// Update the parent group object
-																	// 	const parentValue =
-																	// 		form.state.values[field.name] || {};
-																	// 	const newParentValue = {
-																	// 		...parentValue,
-																	// 		[subField.name]: value,
-																	// 	};
-																	// 	form.setFieldValue(
-																	// 		field.name,
-																	// 		newParentValue,
-																	// 	);
-																	// 	return undefined;
-																	// } catch (error) {
-																	// 	if (error instanceof z.ZodError) {
-																	// 		return error.errors[0].message;
-																	// 	}
-																	// 	return 'Invalid value';
-																	// }
+																	try {
+																		if (subField.validation?.schema) {
+																			subField.validation.schema.parse(value);
+																		}
+																		// Update the parent group object
+																		const parentValue =
+																			form.state.values[field.name] || {};
+																		const newParentValue = {
+																			...parentValue,
+																			[subField.name]: value,
+																		};
+																		form.setFieldValue(
+																			field.name,
+																			newParentValue,
+																		);
+																		return undefined;
+																	} catch (error) {
+																		if (error instanceof z.ZodError) {
+																			return error.errors[0].message;
+																		}
+																		return 'Invalid value';
+																	}
 																},
 																onChangeAsync: async ({ value }) => {
-																	validateDependencies(value, subField, values);
-																	// if (subField.validation?.dependencies) {
-																	// 	for (const dep of subField.validation
-																	// 		.dependencies) {
-																	// 		const dependentValue =
-																	// 			form.state.values[dep.field];
-																	// 		if (
-																	// 			dep.type === 'min' &&
-																	// 			value <= dependentValue
-																	// 		) {
-																	// 			return (
-																	// 				dep.message ||
-																	// 				`${subField.label} must be greater than ${dep.field}`
-																	// 			);
-																	// 		}
-																	// 	}
-																	// }
-																	// return undefined;
+																	if (subField.validation?.dependencies) {
+																		for (const dep of subField.validation
+																			.dependencies) {
+																			const fieldPath = dep.field.split('.');
+																			const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
+																			const dependentValue =
+																				dependentFieldValue;
+																			if (
+																				dep.type === 'min' &&
+																				value <= dependentValue
+																			) {
+																				console.log('dep.message is less than value', dep.message);
+																				return (
+																					dep.message ||
+																					`${subField.label} must be greater than ${dep.field}`
+																				);
+																			}
+																		}
+																	}
+																	return undefined;
 																},
 																onChangeAsyncDebounceMs: 500,
 															}}

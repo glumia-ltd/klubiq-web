@@ -417,7 +417,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 							}
 							const date = dayjs(val);
 							return date.isValid();
-						}, 'Lease start date is required'),
+						}, 'Lease start date is required')
 					},
 				},
 				{
