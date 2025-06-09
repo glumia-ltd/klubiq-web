@@ -932,9 +932,7 @@ export const CreateProperty = () => {
 			return;
 		}
 		try {	
-			const response = await addProperty(newPropertyData).unwrap();
-			consoleInfo('addProperty response', response);
-			return response;
+			return await addProperty(newPropertyData).unwrap();
 		} catch (error) {
 			const errorMessage = (error as any).error?.message;
 			dispatch(openSnackbar({

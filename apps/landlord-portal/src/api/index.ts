@@ -83,7 +83,23 @@ function AxiosConfig(config: any) {
 api.interceptors.request.use(AxiosConfig, (error) => Promise.reject(error));
 
 api.interceptors.response.use(
-	(response) => response,
+	async (response) => {
+		try {
+			const requestFn = response.config;
+			// Check if we need to retry the request
+			if (response?.data?.action === 'RETRY_REQUEST') {
+				// Update the CSRF token in your headers
+				// const {newCsrfToken} = response.data;
+				// api.defaults.headers.common['x-csrf-token'] = newCsrfToken;
+				// Retry the original request
+				return api(requestFn);
+			}
+			return response;
+		} catch (error) {
+			console.log('error', error);
+			return Promise.reject(error);
+		}
+	},
 	async (error) => {
 		
 		const originalRequest = error.config;

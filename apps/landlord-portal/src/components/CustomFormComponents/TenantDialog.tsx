@@ -127,7 +127,7 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
           ))}
         </Select>
       </Stack>
-      <Stack direction='row' justifyContent='end'>
+      {/* <Stack direction='row' justifyContent='end'>
         <Button
           variant='klubiqTextButton'
           startIcon={<Add />}
@@ -135,7 +135,7 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
         >
           Add tenant
         </Button>
-      </Stack>
+      </Stack> */}
       <Dialog fullWidth maxWidth='xs' open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add Tenant</DialogTitle>
         <DialogContent>

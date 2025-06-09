@@ -721,6 +721,7 @@ export const KlubiqTSFormFields: React.FC<{
 									<form.Field
 										key={`ff-${fieldConfig.name}.${subField.name}-${index}`}
 										name={`${fieldConfig.name}.${subField.name}`}
+										asyncAlways={true}
 									>
 										{(subFieldApi: FormFieldApi) => (
 											<FieldWithDefaultValue
@@ -1127,6 +1128,7 @@ export const KlubiqTSFormFields: React.FC<{
 												<form.Field
 													key={index}
 													name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
+													asyncAlways={true}
 													validators={{
 														onChange: ({ value }: { value: any }) => {
 															if (
@@ -1235,6 +1237,7 @@ export const KlubiqTSFormFields: React.FC<{
 								<form.Field
 									key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
 									name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
+									asyncAlways={true}
 									validators={{
 										onChange: ({ value }: { value: any }) => {
 											if (
