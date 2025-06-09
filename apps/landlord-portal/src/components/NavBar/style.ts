@@ -133,12 +133,12 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 			height: '30px',
 		},
 		seeMoreLink: {
-			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'secondary.main' : 'secondary.light' },
 
 		},
 		listItem: {
 			alignItems: 'start',
-			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'secondary.main' : 'secondary.light' },
 		},
 	};
 };

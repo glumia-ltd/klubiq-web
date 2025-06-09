@@ -92,7 +92,7 @@ const Properties = () => {
 	};
 
 	const handleAddProperties = () => {
-		navigate('/properties/create/property-category');
+		navigate('/properties/create');
 	};
 
 	const handlePropertiesSearch = (e: any) => {
@@ -120,15 +120,6 @@ const Properties = () => {
 		setCurrentPage(1);
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
-
-	// useEffect(() => {
-	// 	const currentFilter = {
-	// 		...filter,
-	// 		...defaultParams,
-	// 	};
-
-	// 	dispatch(setCurrentFilter({ currentFilter }));
-	// }, [defaultParams, dispatch, filter]);
 
 	useEffect(() => {
 		getCurrentPage(1);
@@ -207,7 +198,7 @@ const Properties = () => {
 									/>
 								}
 							</Grid>
-							<Grid xs={12} mb={3}>
+							<Grid xs={12}>
 								{showFilterResultOnlyWhenFiltered || searchText ? (
 									isPropertyFetching ? (
 										<Typography variant='filterResultText'>
@@ -232,7 +223,7 @@ const Properties = () => {
 								) : null}
 							</Grid>
 
-							<Grid xs={12} container spacing={3}>
+							<Grid xs={12} container spacing={2}>
 								{allProperties?.map(
 									(
 										property: PropertyDataType,

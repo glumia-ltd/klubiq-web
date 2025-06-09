@@ -52,3 +52,7 @@ export * from './components/Errors/ErrorBoundary';
 export * from './components/DynamicModal/DynamicModal';
 
 export * from './components/AppFooter'; 
+
+// Re-export everything from TanstackForm
+export * from './components/TanstackForm';
+

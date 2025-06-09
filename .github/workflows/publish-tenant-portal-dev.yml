@@ -18,6 +18,7 @@ env:
   REACT_APP_CACHE_EXPIRATION_TIME: ${{ vars.REACT_APP_CACHE_EXPIRATION_TIME }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
+  BUILD_NUMBER: ${{ github.run_number }}
 
   APP: klubiq-tenat-portal
 jobs:

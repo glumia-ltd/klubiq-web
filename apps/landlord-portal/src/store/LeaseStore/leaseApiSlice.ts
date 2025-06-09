@@ -8,7 +8,7 @@ import { LeaseDetailsType, LeaseType } from '../../shared/type';
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA],
+	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
 	endpoints: (builder) => ({
 		getLeaseMetaData: builder.query<any, void>({
 			query: () => ({
@@ -50,7 +50,7 @@ export const leaseApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.LEASE],
+			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
 		}),
 		addNewTenantToLease: builder.mutation({
 			query: (body) => ({

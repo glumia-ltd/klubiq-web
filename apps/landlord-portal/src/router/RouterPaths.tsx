@@ -9,13 +9,11 @@ import SignUpPage from '../pages/Auth/SignUp/CreateAccount';
 import Login from '../pages/Auth/Login';
 import SetPassword from '../pages/Auth/SetPassword';
 import ForgotPassword from '../pages/Auth/ForgotPassword';
-import UserProfileDetails from '../pages/Auth/UserProfileDetails';
 import EmailVerification from '../pages/Auth/EmailVerification';
 import DashBoard from '../pages/Features/Dashboard';
 import Setting from '../pages/Settings';
 import Lease from '../pages/Features/Lease';
 import MFASetUp from '../pages/Auth/MFAPage';
-import AddProperties from '../pages/Features/properties/AppProperties';
 import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 import TenantDetails from '../pages/Features/Tenant/TenantDetails';
@@ -34,6 +32,7 @@ import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
 import TenantProfile from '../pages/Features/Tenant/TenantProfile';
+import { CreateProperty } from '../pages/Features/properties/CreateProperty';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -41,7 +40,6 @@ export const router = createBrowserRouter(
 			<Route path='/login' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
 			<Route path='signup/createaccount' element={<SignUpPage />} />
-			<Route path='/signup/profileupdate' element={<UserProfileDetails />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
@@ -61,26 +59,18 @@ export const router = createBrowserRouter(
 						element={<Properties />}
 						errorElement={<ErrorComponent />}
 					/>
+					<Route
+						path='/properties/create'
+						element={<CreateProperty />}
+						errorElement={<ErrorComponent />}
+					/>
+
 
 					<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 						<Route index element={<PropertyPage />} />
 						<Route path='edit' element={<EditPropertyPage />} />
 						<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 					</Route>
-
-					<Route
-						path='properties/create/property-category'
-						element={<AddProperties />}
-					/>
-					<Route
-						path='properties/create/property-details'
-						element={<AddProperties />}
-					/>
-					<Route
-						path='properties/create/unit-type'
-						element={<AddProperties />}
-					/>
-
 					<Route path='/lease' element={<Navigate to='/leases' replace />} />
 					<Route path='/leases/*' element={<Navigate to='/leases' replace />} />
 					<Route path='/leases' element={<NestedRoutesLayout />}>

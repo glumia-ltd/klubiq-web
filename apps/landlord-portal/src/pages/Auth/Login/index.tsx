@@ -1,22 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../../Layouts/LoginLayout';
-import { SubmitButton, LoadingSubmitButton } from '../../../styles/button';
 import { BoldTextLink } from '../../../styles/links';
-import {
-	// Checkbox,
-	// FormControlLabel,
-	// FormGroup,
-	Grid,
-	Typography,
-} from '@mui/material';
-import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
+import { Grid, Stack, Typography } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { firebaseResponseObject } from '../../../helpers/FirebaseResponse';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
@@ -27,10 +15,9 @@ import {
 } from '../../../store/AuthStore/authApiSlice';
 import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
-const validationSchema = yup.object({
-	password: yup.string().required('Please enter your password'),
-	email: yup.string().email().required('Please enter your email'),
-});
+import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
+import { z } from 'zod';
+
 type IValuesType = {
 	password: string;
 	email: string;
@@ -38,7 +25,7 @@ type IValuesType = {
 const Login = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const [loading, setLoading] = useState<boolean>(false);
+	// const [loading, setLoading] = useState<boolean>(false);
 	const [verifying, setIsVerifying] = useState<boolean>(false);
 	const [verifyMFAOtp] = useVerifyMFAOtpMutation();
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
@@ -58,9 +45,9 @@ const Login = () => {
 			return;
 		}
 		try {
-			const verifyResult = await verifyMFAOtp({otp});
-			if(!verifyResult){
-				throw new Error('Invalid OTP')
+			const verifyResult = await verifyMFAOtp({ otp });
+			if (!verifyResult) {
+				throw new Error('Invalid OTP');
 			} else {
 				setOtpError('');
 				loadUserAfterSignIn();
@@ -99,73 +86,54 @@ const Login = () => {
 
 	const loadUserAfterSignIn = async () => {
 		const user = await triggerGetUserByFbid().unwrap();
-			if (user && user.profileUuid) {
-				const sessionStorageData = [
-					{
-						key: 'tenant_id',
-						value: user.tenantId || user.organizationUuid || '',
-					},
-					{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
-					{
-						key: 'org-subscription',
-						value: JSON.stringify(user.orgSubscription),
-					},
-				];
-				setSessionStorage(sessionStorageData);
-				const payload = {
-					user: user,
-					isSignedIn: true,
-				};
-				dispatch(saveUser(payload));
+		if (user && user.profileUuid) {
+			const sessionStorageData = [
+				{
+					key: 'tenant_id',
+					value: user.tenantId || user.organizationUuid || '',
+				},
+				{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
+				{
+					key: 'org-subscription',
+					value: JSON.stringify(user.orgSubscription),
+				},
+			];
+			setSessionStorage(sessionStorageData);
+			const payload = {
+				user: user,
+				isSignedIn: true,
+			};
+			dispatch(saveUser(payload));
 
-				openSnackbar({
-					message: 'That was easy',
-					severity: 'success',
-					isOpen: true,
-				});
-				if (setupMFA) {
-					navigate('/2fa-enroll', { replace: true });
-				} else {
-					navigate(continuePath || '/dashboard', { replace: true });
-				}
+			openSnackbar({
+				message: 'That was easy',
+				severity: 'success',
+				isOpen: true,
+			});
+			if (setupMFA) {
+				navigate('/2fa-enroll', { replace: true });
+			} else {
+				navigate(continuePath || '/dashboard', { replace: true });
 			}
-	}
-
+		}
+	};
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
 		try {
-			setLoading(true);
+			// setLoading(true);
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
+			return;
 		} catch (error: any) {
-			if(error.message === 'MFA-required'){
+			if (error.message === 'MFA-required') {
 				consoleError('MFA Required to continue sign in');
 				set2FARequired(true);
 			} else {
 				set2FARequired(false);
-				dispatch(
-					openSnackbar({
-						message:
-							firebaseResponseObject[(error as Error).message] ||
-							(error as Error).message,
-						severity: 'error',
-						isOpen: true,
-						duration: 7000,
-					}),
-				);
+				throw error;
 			}
-			setLoading(false);
 		}
 	};
-
-	const formik = useFormik({
-		initialValues: {
-			email: '',
-			password: '',
-		},
-		validationSchema,
-		onSubmit,
-	});
 
 	const routeToSignUp = () => {
 		navigate('/signup/createaccount', { replace: true });
@@ -173,7 +141,72 @@ const Login = () => {
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
 	};
-
+	const loginFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		header: (
+			<Typography variant='h1' sx={styles.title} textAlign='center'>
+				Sign in
+			</Typography>
+		),
+		subHeader: (
+			<Typography variant='h2' sx={styles.subTitle} textAlign='center'>
+				Welcome back! Please enter your details.
+			</Typography>
+		),
+		submitButtonText: 'Sign in',
+		underSubmitButtonNode: (
+			<Typography textAlign='center'>
+				Don't have an account?{' '}
+				<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
+			</Typography>
+		),
+		fullWidthButtons: true,
+		verticalAlignment: 'center',
+		horizontalAlignment: 'center',
+		fields: [
+			{
+				name: 'email',
+				type: 'email',
+				label: 'Email',
+				placeholder: 'Enter your email address',
+				validation: {
+					schema: z
+						.string({required_error: 'Email is required'})
+						.email({ message: 'Enter a valid email address' }),
+				},
+			},
+			{
+				name: 'password',
+				type: 'password',
+				label: 'Password',
+				placeholder: 'Enter your password',
+				validation: {
+					schema: z
+						.string({required_error: 'Password is required'})
+						.min(8, { message: 'Password must be at least 8 characters long' }),
+				},
+			},
+			{
+				name: 'forgotPassword',
+				type: 'custom',
+				label: '',
+				component: (
+					<Typography textAlign='left' onClick={routeToForgotPassword}>
+						<BoldTextLink>Forgot password</BoldTextLink>
+					</Typography>
+				),
+			},
+		],
+		onSubmit: onSubmit,
+		initialValues: {
+			email: '',
+			password: '',
+		},
+		buttonLoadingText: 'Signing in...',
+		enableErrorAlert: true,
+		errorAlertTitle: 'Invalid credentials',
+		errorAlertMessage: 'Please check your email and password and try again.',
+	};
 	return (
 		<>
 			{is2faRequired ? (
@@ -188,7 +221,7 @@ const Login = () => {
 					verifyOtp={verifyOTP}
 				/>
 			) : (
-				<LoginLayout handleSubmit={formik.handleSubmit}>
+				<LoginLayout>
 					<Grid
 						item
 						xs={12}
@@ -201,139 +234,19 @@ const Login = () => {
 						}}
 					>
 						<Grid container sx={styles.container}>
-							<Grid container sx={styles.formContainer}>
-								<Grid
-									item
-									xs={12}
-									sm={12}
-									md={12}
-									lg={12}
-									mt={4}
-									sx={{
-										textAlign: 'right',
-									}}
-								>
-									{/* <Typography>
-                Are you a tenant?{' '}
-                <span
-                  style={{
-                    color: '#002147',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Sign in here
-                </span>
-              </Typography> */}
-								</Grid>
-								<Grid
-									container
-									sx={{
-										height: '25rem',
-									}}
-									mt={-15}
-								>
-									<Grid item xs={12} sm={12} md={12} lg={12}>
-										<Typography variant='h1' sx={styles.title}>
-											Sign in
-										</Typography>
-									</Grid>
-									<Grid item xs={12} sm={12} md={12} lg={12}>
-										<Typography sx={styles.subTitle}>
-											Welcome back! Please enter your details.
-										</Typography>
-									</Grid>
-
-									<Grid item sm={12} xs={12} lg={12}>
-										<ControlledTextField
-											name='email'
-											label='Email'
-											type='email'
-											autoComplete='username'
-											placeholder='Enter your email address'
-											formik={formik}
-											inputProps={{
-												sx: {
-													height: '40px',
-												},
-											}}
-										/>
-									</Grid>
-
-									<Grid item sm={12} xs={12} lg={12}>
-										<ControlledPasswordField
-											name='password'
-											label='Password'
-											type='password'
-											autoComplete='current-password'
-											placeholder='Enter your password'
-											formik={formik}
-											inputProps={{
-												sx: {
-													height: '40px',
-												},
-											}}
-										/>
-									</Grid>
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										mt={-1}
-										m={0.5}
-										sx={styles.forgotPassword}
-									>
-										{/* <FormGroup>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Remember this computer"
-                  />
-                </FormGroup> */}
-										<Typography onClick={routeToForgotPassword}>
-											<BoldTextLink>Forgot password</BoldTextLink>
-										</Typography>
-									</Grid>
-
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										sx={styles.buttonGroupStyle}
-									>
-										{loading ? (
-											<LoadingSubmitButton
-												loading
-												loadingPosition='center'
-												variant='outlined'
-											>
-												Sign In
-											</LoadingSubmitButton>
-										) : (
-											<SubmitButton type='submit'> Sign In </SubmitButton>
-										)}
-									</Grid>
-
-									<Grid
-										item
-										sm={12}
-										xs={12}
-										lg={12}
-										mt={2}
-										sx={styles.lastGridStyle}
-										onClick={routeToSignUp}
-									>
-										<Typography>
-											Don't have an account?{' '}
-											<BoldTextLink>Sign up</BoldTextLink>
-										</Typography>
-									</Grid>
-								</Grid>
-							</Grid>
+							<Stack
+								justifyContent='center'
+								direction='column'
+								width='50%'
+								gap={1}
+								sx={{
+									height: '100vh',
+								}}
+							>
+								<KlubiqFormV1 {...loginFormConfig} />
+							</Stack>
 						</Grid>
 					</Grid>
-					{/* <ControlledSnackbar/> */}
 				</LoginLayout>
 			)}
 		</>

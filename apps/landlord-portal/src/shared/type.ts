@@ -1,4 +1,4 @@
-import { UserProfile } from "./auth-types";
+import { UserProfile } from './auth-types';
 
 export interface RouteObjectType {
 	'Property Category': { label: string; icon: React.ReactNode };
@@ -25,11 +25,11 @@ export type ActiveLeaseDetail = {
 }
 export type TenantCardProps = {
 	tenant: TenantInfo;
-}
+};
 export type TenantDocumentRow = {
 	name: string;
 	dueDate: string;
-}
+};
 export type TenantLocationState = {
 	selectedRow?: TenantType;
 	tenantId?: string;
@@ -102,7 +102,7 @@ export type LeaseDetailsCardProps = {
 	unit: string;
 	address: string;
 	details: LeaseDetail[];
-}
+};
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -135,22 +135,21 @@ export type TenantType = {
 	profileUuid?: string;
 
 }
+
 export type TenantsType = {
 	tenantId: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
 	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
-
-}
+	id: string | number;
+};
 
 export type TenantTablePropertyDetailsType = {
 	name: string;
 	address: string;
 	unitNumber: string | number;
-
-
-}
+};
 export type LeaseType = {
 	endDate: string;
 	id: number;
@@ -435,7 +434,7 @@ export type AddTenantToLeaseDetailsType = {
 	unitNumber: string;
 	propertyId: string;
 	propertyName: string;
-}
+};
 
 export type AddTenantFormValues = {
 	title?: string;
@@ -449,8 +448,7 @@ export type AddTenantFormValues = {
 	leaseId?: string;
 	unitId?: string;
 	tenantType?: string;
-}
-
+};
 
 export type InviteTenantFormValues = {
 	firstName: string;

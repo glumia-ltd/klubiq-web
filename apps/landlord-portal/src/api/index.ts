@@ -3,8 +3,8 @@ import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
-import { dashboardEndpoints } from '../helpers/endpoints';
-const baseURL =
+import { dashboardEndpoints, fileEndpoints } from '../helpers/endpoints';
+const baseURL = 
 	import.meta.env.VITE_NODE_ENV !== 'local'
 		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
 		: '/api';
@@ -12,6 +12,9 @@ const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_lp_app-web';
 const DOWNLOAD_ENDPOINTS =[
 	dashboardEndpoints.downloadReport(),
+]
+const UPLOAD_ENDPOINTS = [
+	fileEndpoints.uploadImages(),
 ]
 // const skippedEndpoints = [
 // 	authEndpoints.login(),
@@ -46,7 +49,9 @@ const DOWNLOAD_ENDPOINTS =[
 function AxiosConfig(config: any) {
 	// const token = getSessionToken()?.stsTokenManager?.accessToken;
 	config.headers = {};
-	config.headers['content-type'] = 'application/json';
+	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
+		config.headers['content-type'] = 'application/json';
+	}
 	config.headers['x-correlation-id'] = crypto.randomUUID();
 	config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 	config.headers['x-client-tz-name'] =
@@ -70,17 +75,6 @@ function AxiosConfig(config: any) {
 		config.responseType = 'arraybuffer';
 		config.headers['content-type'] = 'blob';
 	}
-
-
-	const csrfToken =
-		document.cookie
-			.split('; ')
-			.find((row) => row.startsWith('_kbq_csrf'))
-			?.split('=')[1] ?? '';
-
-	if (csrfToken && config.method !== 'GET') {
-		config.headers['x-csrf-token'] = csrfToken;
-	}
 	config.withCredentials = true;
 
 	return config;
@@ -88,60 +82,24 @@ function AxiosConfig(config: any) {
 
 api.interceptors.request.use(AxiosConfig, (error) => Promise.reject(error));
 
-// response config
-
-// api.interceptors.response.use(
-// 	(response) => response,
-// 	async (error) => {
-// 		const originalRequest = error.config;
-// 		const {
-// 			status,
-// 			data: { message },
-// 		} = error.response;
-
-// 		if (
-// 			status &&
-// 			status > 400 &&
-// 			message?.includes('expired token') &&
-// 			!originalRequest._retry
-// 		) {
-// 			originalRequest._retry = true;
-
-// 			try {
-// 				const {refreshToken} = getSessionToken()?.stsTokenManager;
-// 				const {
-// 					data: {
-// 						data: {
-// 							access_token,
-// 							// refresh_token
-// 						},
-// 					},
-// 				} = await axios.post(
-// 					`${baseURL}${authEndpoints.refreshToken()}`,
-// 					{
-// 						refreshToken,
-// 					},
-// 				);
-
-// 				// if (access_token && refresh_token) {
-// 				//  localStorage.setItem('token', access_token);
-// 				//  localStorage.setItem('refreshToken', refresh_token);
-// 				// }
-
-// 				// Retry the original request with the new token
-
-// 				originalRequest.headers.Authorization = `Bearer ${access_token}`;
-
-// 				return axios(originalRequest);
-// 			} catch (error) {
-// 				return error;
-// 			}
-// 		}
-// 		return Promise.reject(error);
-// 	},
-// );
 api.interceptors.response.use(
-	(response) => response,
+	async (response) => {
+		try {
+			const requestFn = response.config;
+			// Check if we need to retry the request
+			if (response?.data?.action === 'RETRY_REQUEST') {
+				// Update the CSRF token in your headers
+				// const {newCsrfToken} = response.data;
+				// api.defaults.headers.common['x-csrf-token'] = newCsrfToken;
+				// Retry the original request
+				return api(requestFn);
+			}
+			return response;
+		} catch (error) {
+			console.log('error', error);
+			return Promise.reject(error);
+		}
+	},
 	async (error) => {
 		
 		const originalRequest = error.config;

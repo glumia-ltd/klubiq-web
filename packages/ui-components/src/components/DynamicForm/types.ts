@@ -32,42 +32,43 @@ export interface InputAdornment {
 }
 
 export interface FormField {
-  name: string;
-  label: string;
-  type: FieldType;
-  placeholder?: string;
-  options?: SelectOption[] | ((values: Record<string, any>) => SelectOption[]);
-  required?: boolean;
-  disabled?: boolean;
-  hidden?: boolean;
-  readonly?: boolean;
-  multiple?: boolean;
-  validation?: Yup.AnySchema;
-  helperText?: string;
-  defaultValue?: any;
-  predefinedValue?: any;
-  min?: number;
-  max?: number;
-  rows?: number;
-  customComponent?: ReactNode;
-  adornment?: InputAdornment;
-  formatType?: FormatType;
-  formatFunction?: (value: any) => any; // Custom format function
-  parseFunction?: (value: any) => any;  // Custom parse function for converting formatted value back
-  decimals?: number; // For currency and percentage
-  group?: string; // Reference to parent group
-  isGroup?: boolean;
-  groupFields?: FormField[];
-  isInFieldLabel?: boolean;
-  radioGroupDirection?: 'row' | 'column';
-  minDate?: string;
-  maxDate?: string;
-  dependsOn?: DependsOn[];
-  width?: string | number;
-  showIf?: (values: Record<string, any>) => boolean;
-  actionButton?: ActionButton;
-  infoMessage?: InfoMessage;
-  layout?: 'row' | 'column';
+	name: string;
+	label: string;
+	type: FieldType;
+	placeholder?: string;
+	options?: SelectOption[] | ((values: Record<string, any>) => SelectOption[]);
+	required?: boolean;
+	disabled?: boolean;
+	hidden?: boolean;
+	readonly?: boolean;
+	multiple?: boolean;
+	validation?: Yup.AnySchema;
+	helperText?: string;
+	defaultValue?: any;
+	predefinedValue?: any;
+	min?: number;
+	max?: number;
+	rows?: number;
+	customComponent?: ReactNode;
+	adornment?: InputAdornment;
+	formatType?: FormatType;
+	formatFunction?: (value: any) => any; // Custom format function
+	parseFunction?: (value: any) => any; // Custom parse function for converting formatted value back
+	decimals?: number; // For currency and percentage
+	group?: string; // Reference to parent group
+	isGroup?: boolean;
+	groupFields?: FormField[];
+	isInFieldLabel?: boolean;
+	radioGroupDirection?: 'row' | 'column';
+	minDate?: string;
+	maxDate?: string;
+	dependsOn?: DependsOn[];
+	width?: string | number;
+	showIf?: (values: Record<string, any>) => boolean;
+	actionButton?: ActionButton;
+	infoMessage?: InfoMessage;
+	layout?: 'row' | 'column';
+	onChange?: (value: any) => void;
 }
 
 export interface DynamicFormProps {

@@ -25,7 +25,7 @@ export const styles = {
 		borderRadius: '10px',
 		backgroundColor: 'transparent',
 		boxShadow: 'none',
-		marginTop: '32px',
+		//marginTop: '32px',
 	},
 	inputStyle2: {
 		p: '2px 4px',

@@ -22,11 +22,7 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import {
-	HouseIcon,
-	TenantIcon,
-	VacantHomeIcon,
-} from '../Icons/CustomIcons';
+import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
@@ -143,7 +139,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const getTenantTableData = (property: PropertyDataType): TenantsTableData => {
 		const tableColumns: TableColumn[] = [
 			{
-				key: 'tenant',  
+				key: 'tenant',
 				label: 'Tenant',
 				align: 'left',
 				render: (rowData) => (
@@ -207,7 +203,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 		const rows =
 			property?.units?.[0]?.tenants?.map((tenant) => ({
-				id: tenant.id,
+				id: String(tenant.id),
 				tenant: {
 					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName ||''} ${tenant.profile.lastName  || ''}`,
 					image: tenant.profile?.profilePicUrl ?? null,

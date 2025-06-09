@@ -73,3 +73,9 @@ export const publicEndpoints = {
 	getFeatures: () => '/public/features',
 	getPermissions: () => '/public/permissions',
 };
+
+export const fileEndpoints = {
+	uploadImages: () => '/uploads/images',
+	uploadFiles: () => '/uploads/files',
+	deleteFile: () => `/uploads/delete-file`,
+};
