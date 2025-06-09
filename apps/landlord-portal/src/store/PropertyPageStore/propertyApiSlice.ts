@@ -3,12 +3,18 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
+// import { screenMessages } from '../../helpers/screen-messages';
+// import { handleApiResponse } from '../../helpers/apiResponseHandler';
 // import { invalidateMultipleTags } from '../tags-invalidator';
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.PROPERTY],
+	tagTypes: [
+		API_TAGS.PROPERTY,
+		API_TAGS.DASHBOARD_METRICS,
+		API_TAGS.DASHBOARD_REVENUE_REPORT,
+	],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
 			{
@@ -32,7 +38,9 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getSingleProperty(params.uuid),
 				method: 'GET',
 			}),
-			providesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
+			providesTags: (_result, _error, { uuid }) => [
+				{ type: API_TAGS.PROPERTY, id: uuid },
+			],
 		}),
 
 		addProperty: builder.mutation({
@@ -41,15 +49,11 @@ export const propertyApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.PROPERTY],
-		}),
-
-		getSignedUrl: builder.mutation({
-			query: (body) => ({
-				url: propertiesEndpoints.getSignedUrl(),
-				method: 'POST',
-				body,
-			}),
+			invalidatesTags: [
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+			],
 		}),
 
 		archiveProperty: builder.mutation<any, { uuid: string }>({
@@ -57,7 +61,12 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.archiveProperty(params.uuid),
 				method: 'PUT',
 			}),
-			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
+			invalidatesTags: (_result, _error, { uuid }) => [
+				{ type: API_TAGS.PROPERTY, id: uuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+			],
 		}),
 		deleteProperty: builder.mutation<
 			any,
@@ -73,7 +82,12 @@ export const propertyApiSlice = createApi({
 					unitCount: params.unitCount,
 				},
 			}),
-			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
+			invalidatesTags: (_result, _error, { uuid }) => [
+				{ type: API_TAGS.PROPERTY, id: uuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+			],
 		}),
 
 		editProperty: builder.mutation<any, { uuid: string; data: any }>({
@@ -82,7 +96,9 @@ export const propertyApiSlice = createApi({
 				method: 'PUT',
 				body: data,
 			}),
-			invalidatesTags: (_result, _error, { uuid }) => [{ type: API_TAGS.PROPERTY, id: uuid }],
+			invalidatesTags: (_result, _error, { uuid }) => [
+				{ type: API_TAGS.PROPERTY, id: uuid },
+			],
 		}),
 	}),
 });
@@ -101,7 +117,6 @@ export const {
 	useGetPropertiesMetaDataQuery,
 	useGetSinglePropertyByUUIDQuery,
 	useAddPropertyMutation,
-	useGetSignedUrlMutation,
 	useArchivePropertyMutation,
 	useDeletePropertyMutation,
 	useEditPropertyMutation,

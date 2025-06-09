@@ -78,5 +78,11 @@ export const screenMessages = {
 			loading: 'Verifying OTP...',
 			confirm: 'Are you sure you want to verify this OTP?',
 		},
+		resetPassword:{
+			success: 'Password reset successful',
+			error: 'Failed to reset password',
+			loading: 'Resetting password...',
+			confirm: 'Are you sure you want to reset your password?',
+		},
 	},
 };

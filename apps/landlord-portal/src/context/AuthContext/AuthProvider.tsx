@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	useGetUserByFbidQuery,
@@ -8,7 +8,7 @@ import { saveUser, removeUser } from '../../store/AuthStore/AuthSlice';
 import { RootState } from '../../store';
 // import Loader from '../../components/LoaderComponent/Loader';
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const dispatch = useDispatch();
 	const { isSignedIn } = useSelector((state: RootState) => state.auth);
 	const tenantId = sessionStorage.getItem('tenant_id');
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			}
 		};
 		handleAuth();
-	}, [user, error]);
+	}, [user, error, dispatch, isSignedIn, tenantId, signOut]);
 
 	// if (isLoading) {
 	//   return <Loader />; // Your loading component

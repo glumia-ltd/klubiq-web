@@ -76,7 +76,6 @@ export const PropertiesGuage = ({
 				height={size}
 				value={convertToPercentage(occupied)}
 				cornerRadius='50%'
-				size={size}
 				sx={{
 					position: 'absolute',
 					left: `calc(50% - ${size / 2 - 10}px)`,
@@ -106,7 +105,6 @@ export const PropertiesGuage = ({
 				height={midSize}
 				value={convertToPercentage(vacant)}
 				cornerRadius='50%'
-				size={midSize}
 				sx={{
 					position: 'absolute',
 					left: `calc(50% - ${midSize / 2 - 10}px)`,
@@ -136,7 +134,6 @@ export const PropertiesGuage = ({
 				height={smallSize}
 				value={convertToPercentage(maintenance)}
 				cornerRadius='50%'
-				size={smallSize}
 				sx={{
 					visibility: 'hidden',
 					position: 'absolute',

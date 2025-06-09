@@ -1,4 +1,5 @@
 import AddLeaseForm from '../../../components/Forms/AddLeaseForm';
+//import AddLeaseForm from '../../../components/Forms/LeaseFormWDynamic';
 import AddPropertiesInformationLayout from '../../../Layouts/AddPropertiesInformationLayout';
 import { useLocation } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ const AddLeasePage = () => {
 	const unitId = query.get('unit');
 
 	return (
-		<AddPropertiesInformationLayout>
+		<AddPropertiesInformationLayout backButtonText='Leases'>
 			<AddLeaseForm propertyId={propertyId || ''} unitId={unitId || ''} />
 		</AddPropertiesInformationLayout>
 	);
