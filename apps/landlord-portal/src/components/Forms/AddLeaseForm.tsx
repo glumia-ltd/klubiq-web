@@ -572,14 +572,18 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				firstPaymentDate: calculateDueDate(values),
 				unitNumber: values.property.unitNumber,
 			};
-
+			dispatch(
+				openSnackbar({
+					message: 'Lease created successfully',
+					severity: 'success',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
 			return await addLease(requestBody).unwrap();
-
 			
 		} catch (error) {
-			console.log('error', error);
 			const errorMessage = (error as any)?.message;
-			console.log('errorMessage', errorMessage);
 			dispatch(
 				openSnackbar({
 					message: errorMessage,
@@ -617,7 +621,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
 		nextAction: {
-			title: '',
+			title: 'Lease Created',
 			description: 'Your new lease was created successfully and ready for use',
 			closeIcon:  <Close />,
 			onClose: handleAllLeasesClick,
@@ -625,7 +629,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				{
 					text: 'View Lease Details',
 					onClick: handleViewLeaseClick,
-					variant: 'klubiqMainButton',
+					variant: 'klubiqOutlinedButton',
 					autoFocus: true,
 				},
 				{
@@ -639,9 +643,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			fullWidth: true,
 			showAfterSubmit: true,
 		},
-		enableErrorAlert: true,
-		errorAlertTitle: 'Error saving lease',
-		errorAlertMessage: 'Check your inputs and try again',
 	};
 
 	return (
