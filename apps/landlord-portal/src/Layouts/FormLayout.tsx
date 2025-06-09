@@ -12,7 +12,7 @@ const FormLayout = ({ children, Header, sx }: Props) => {
 	return (
 		<Box sx={{...FormLayoutStyle.container, ...sx}}>
 			<Grid container spacing={1} alignItems='center' justifyContent={'center'}>
-				<Card sx={sx}>
+				<Card sx={{...sx, width: '100%'}}>
 					<Grid container spacing={1}>
 						<Grid item xs={12} sx={FormLayoutStyle.headerContainer}>
 							<Typography sx={FormLayoutStyle.header}>{Header}</Typography>

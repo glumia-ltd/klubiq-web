@@ -1,8 +1,12 @@
-import { DynamicTanstackFormProps, InputAdornment as InputAdornmentType,
-	FormFieldV1,
-	KlubiqFormV1, } from '@klubiq/ui-components';
 import {
-	useGetOrgPropertiesViewListQuery, useAddLeaseMutation,
+	DynamicTanstackFormProps,
+	InputAdornment as InputAdornmentType,
+	FormFieldV1,
+	KlubiqFormV1,
+} from '@klubiq/ui-components';
+import {
+	useGetOrgPropertiesViewListQuery,
+	useAddLeaseMutation,
 } from '../../store/LeaseStore/leaseApiSlice';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,9 +15,7 @@ import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../helpers/utils';
-import { FC,
-	useMemo, 
-	 useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import FormLayout from '../../Layouts/FormLayout';
 import FormSkeleton from '../skeletons/FormSkeleton';
@@ -26,72 +28,71 @@ import { Box, MenuItem, Select, Typography } from '@mui/material';
 import { TenantDialog } from '../CustomFormComponents/TenantDialog';
 import { Info } from '@mui/icons-material';
 
-
 function renderPropertySelectField(fieldApi: any, fieldConfig: any, form: any) {
 	const options = Array.isArray(fieldConfig.options)
-				? fieldConfig.options
-				: typeof fieldConfig.options === 'function'
-					? fieldConfig.options(form.state.values)
-					: [];
+		? fieldConfig.options
+		: typeof fieldConfig.options === 'function'
+			? fieldConfig.options(form.state.values)
+			: [];
 	return (
-		<Box sx={{ width: '100%' }}>
+		<Box>
 			<Select
-						value={fieldApi.state.value || ''}
-						placeholder={fieldConfig.placeholder}
-						fullWidth
-						onChange={(e) => {
-							const selectedProperty = find(options, { value: e.target.value });
-							console.log('selectedProperty', selectedProperty);
-							form.setFieldValue('propertyName', selectedProperty.label);
-							form.setFieldValue('unitId', selectedProperty?.units?.[0]?.id);
-							fieldApi.handleChange(e.target.value);
-						}}
-						onBlur={fieldApi.handleBlur}
-						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
-						multiple={!!fieldConfig.multiple}
-						disabled={fieldConfig.disabled}
-					>
-						{options.map((option: any) => (
-							<MenuItem key={option.value} value={option.value}>
-								{option.label}
-							</MenuItem>
-						))}
-					</Select>
+				value={fieldApi.state.value || ''}
+				placeholder={fieldConfig.placeholder}
+				fullWidth
+				onChange={(e) => {
+					const selectedProperty = find(options, { value: e.target.value });
+					form.setFieldValue('selectedProperty', selectedProperty);
+					form.setFieldValue('property.name', selectedProperty.label);
+					form.setFieldValue('property.unitId', selectedProperty?.units?.[0]?.id);
+					form.setFieldValue('property.unitNumber', selectedProperty?.units?.[0]?.unitNumber);
+					fieldApi.handleChange(e.target.value);
+				}}
+				onBlur={fieldApi.handleBlur}
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				multiple={!!fieldConfig.multiple}
+				disabled={fieldConfig.disabled}
+			>
+				{options.map((option: any) => (
+					<MenuItem key={option.value} value={option.value}>
+						{option.label}
+					</MenuItem>
+				))}
+			</Select>
 		</Box>
 	);
 }
 
 function renderUnitSelectField(fieldApi: any, fieldConfig: any, form: any) {
 	const options = Array.isArray(fieldConfig.options)
-				? fieldConfig.options
-				: typeof fieldConfig.options === 'function'
-					? fieldConfig.options(form.state.values)
-					: [];
+		? fieldConfig.options
+		: typeof fieldConfig.options === 'function'
+			? fieldConfig.options(form.state.values)
+			: [];
 	return (
-		<Box sx={{ width: '100%' }}>
+		<Box>
 			<Select
-						value={fieldApi.state.value || ''}
-						placeholder={fieldConfig.placeholder}
-						fullWidth
-						onChange={(e) => {
-							const selectedUnit = find(options, { value: e.target.value });
-							console.log('selectedUnit', selectedUnit);
-							form.setFieldValue('unitNumber', selectedUnit.label);
-							fieldApi.handleChange(e.target.value);
-							
-
-						}}
-						onBlur={fieldApi.handleBlur}
-						label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
-						multiple={!!fieldConfig.multiple}
-						disabled={fieldConfig.disabled}
-					>
-						{options.map((option: any) => (
-							<MenuItem key={option.value} value={option.value}>
-								{option.label}
-							</MenuItem>
-						))}
-					</Select>
+				value={fieldApi.state.value || ''}
+				placeholder={fieldConfig.placeholder}
+				fullWidth
+				onChange={(e) => {
+					const selectedUnit = find(options, { value: e.target.value });
+					console.log('selectedUnit', selectedUnit);
+					form.setFieldValue('property.unitNumber', selectedUnit.label);
+					form.setFieldValue('selectedUnit', selectedUnit);
+					fieldApi.handleChange(e.target.value);
+				}}
+				onBlur={fieldApi.handleBlur}
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				multiple={!!fieldConfig.multiple}
+				disabled={fieldConfig.disabled}
+			>
+				{options.map((option: any) => (
+					<MenuItem key={option.value} value={option.value}>
+						{option.label}
+					</MenuItem>
+				))}
+			</Select>
 		</Box>
 	);
 }
@@ -103,19 +104,31 @@ function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 				fieldConfig: {
 					...fieldConfig,
 					options: Array.isArray(fieldConfig.options)
-						? fieldConfig.options.map((opt: { value: string | number, label: string, email: string }) => ({
-								...opt,
-								value: String(opt.value),
-								label: `${opt.label} - (${opt.email})`,
-							}))
-							: typeof fieldConfig.options === 'function'
+						? fieldConfig.options.map(
+								(opt: {
+									value: string | number;
+									label: string;
+									email: string;
+								}) => ({
+									...opt,
+									value: String(opt.value),
+									label: `${opt.label}`,
+								}),
+							)
+						: typeof fieldConfig.options === 'function'
 							? fieldConfig
 									.options(form.getValues())
-										.map((opt: { value: string | number, label: string, email: string }) => ({
+									.map(
+										(opt: {
+											value: string | number;
+											label: string;
+											email: string;
+										}) => ({
 											...opt,
 											value: String(opt.value),
-											label: `${opt.label} - (${opt.email})`,
-									}))
+											label: `${opt.label}`,
+										}),
+									)
 							: [],
 				},
 				state: fieldApi.state,
@@ -123,14 +136,8 @@ function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 			}}
 			form={form}
 		/>
-	)
+	);
 }
-
-
-
-
-
-
 
 enum PaymentFrequency {
 	ANNUALLY = 'Annually',
@@ -174,35 +181,46 @@ interface Property {
 // 	unitNumber: string;
 // }
 
-const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
+const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [addLease] = useAddLeaseMutation();
-	const queryResult = useGetOrgPropertiesViewListQuery({orgId: user?.organizationUuid}, {
-		selectFromResult: ({ data, isLoading: loading }) => ({
-			properties: data?.properties ? [...data.properties] : [],
-			tenants: data?.tenants ? [...data.tenants] : [],
-			isLoading: loading,
-		}),
-	});
-	
+	const queryResult = useGetOrgPropertiesViewListQuery(
+		{ orgId: user?.organizationUuid },
+		{
+			selectFromResult: ({ data, isLoading: loading }) => ({
+				properties: data?.properties ? [...data.properties] : [],
+				tenants: data?.tenants ? [...data.tenants] : [],
+				isLoading: loading,
+			}),
+		},
+	);
+
 	const propertyData = useMemo(
 		() => find(queryResult.properties, { uuid: propertyId }),
 		[queryResult.properties, propertyId],
 	);
-	consoleLog(propertyData)
+	const unitData = useMemo(
+		() => find(propertyData?.units, { id: unitId }),
+		[propertyData?.units, unitId],
+	);
+	consoleLog(propertyData);
 	const { properties, tenants, isLoading } = queryResult;
 
 	const getPropertyUnits = (values: Record<string, any>) => {
-		const selectedProperty = find(queryResult.properties, { uuid: values.propertyId });
-		return selectedProperty?.units.map((unit: { id: string; unitNumber: string }) => ({
-			label: unit.unitNumber,
-			value: unit.id,
-		}));
-	}
+		const selectedProperty = find(queryResult.properties, {
+			uuid: values.property.uuid,
+		});
+		return selectedProperty?.units.map(
+			(unit: { id: string; unitNumber: string }) => ({
+				label: unit.unitNumber,
+				value: unit.id,
+			}),
+		) || [];
+	};
 
 	const [formInitialValues] = useState({
 		name: '',
@@ -217,23 +235,30 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		rentDueDay: '0',
 	});
 	const initialValues = {
+		property: {
+			uuid: propertyData?.uuid || '',
+			name: propertyData?.name || '',
+			unitId: unitData?.id || '',
+			unitNumber: unitData?.unitNumber || '',
+		},
 		name: '',
-		propertyName: '',
-		propertyId: propertyData?.uuid || '',
-		unitId: '',
 		tenantsIds: [],
 		newTenants: [],
-		rentAmount: 0,
-		securityDeposit: 0,
-		startDate: '',
-		endDate: '',
+		fees: {
+			rent: null,
+			securityDeposit: null,
+		},
+		leaseDates: {
+			start: '',
+			end: '',
+		},
 		paymentFrequency: PaymentFrequency.ANNUALLY,
 		rentDueDay: 0,
 		unitNumber: '',
 		firstPaymentDate: '',
-		selectedProperty: null,
-		selectedUnit: null,
-	}
+		selectedProperty: propertyData || null,
+		selectedUnit: unitData || null,
+	};
 
 	console.log('initial values', formInitialValues);
 
@@ -242,11 +267,17 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 	// 	[properties, propertyId],
 	// );
 	const calculateDueDate = (values: any) => {
-		if (!values?.paymentFrequency || !values?.startDate) {
+		if (!values?.paymentFrequency || !values?.leaseDates?.start) {
 			return '';
 		}
 
-		const startDayAndMonth = dayjs(values?.startDate).format('MMMM DD');
+		const startDayAndMonth = dayjs(values?.leaseDates?.start).format('MMMM DD');
+		const monthDueDate = dayjs(values?.leaseDates?.start)
+			.add(1, 'month')
+			.set('date', values?.rentDueDay || 1);
+		const biMonthlyDueDate = dayjs(values?.leaseDates?.start)
+			.add(2, 'month')
+			.set('date', values?.rentDueDay || 1);
 		const days = [
 			'Sunday',
 			'Monday',
@@ -258,19 +289,17 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		];
 
 		const dueDates = {
-			[PaymentFrequency.WEEKLY]: `${days[dayjs(values?.startDate).add(1, 'week').get('day')]}, ${dayjs(values?.startDate).add(1, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values?.startDate).add(2, 'week').get('day')]}, ${dayjs(values?.startDate).add(2, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.MONTHLY]: `${days[dayjs(values?.startDate).add(1, 'month').get('day')]}, ${dayjs(values?.startDate).add(1, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.WEEKLY]: `${days[dayjs(values?.leaseDates?.start).add(1, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(1, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values?.leaseDates?.start).add(2, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(2, 'week').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.MONTHLY]: `${days[monthDueDate.get('day')]}, ${monthDueDate.format('MMMM DD, YYYY')}`,
 			[PaymentFrequency.ANNUALLY]: startDayAndMonth,
 			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${days[dayjs(values?.startDate).add(2, 'month').get('day')]}, ${dayjs(values?.startDate).add(2, 'month').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values?.startDate).add(3, 'month').get('day')]}, ${dayjs(values?.startDate).add(3, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.BI_MONTHLY]: `${days[biMonthlyDueDate.get('day')]}, ${biMonthlyDueDate.format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values?.leaseDates?.start).add(3, 'month').get('day')]}, ${dayjs(values?.leaseDates?.start).add(3, 'month').format('MMMM DD, YYYY')}`,
 		};
 
 		return dueDates[values?.paymentFrequency as PaymentFrequency] || '';
 	};
-
-
 
 	const leaseFormFields: FormFieldV1[] = [
 		{
@@ -279,106 +308,143 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 			type: 'text',
 			required: true,
 			validation: {
-				schema: z.string().min(1, {message: 'Lease name is required'}),
+				schema: z.string().min(1, { message: 'Lease name is required' }),
 			},
 		},
 		{
-			name: 'propertyName',
-			label: '',
-			type: 'hidden',
-		},
-		{
-			name: 'propertyId',
-			label: 'Property Name',
-			type: 'select',
-			required: true,
-			options: properties.map((property: Property) => ({
+			name: 'property',
+			label: 'Property Details',
+			type: 'group',
+			width: '100%',
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'uuid',
+					label: 'Property Name',
+					type: 'select',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					options: properties.map((property: Property) => ({
 						label: property.name,
 						value: property.uuid,
 						units: property.units,
 					})),
-			validation: {
-				schema: z.string().min(1, {message: 'Property name is required'}),
-			},
-			customComponent: renderPropertySelectField,
-		},
-		{
-			name: 'unitId',
-			label: 'Unit',
-			type: 'select',
-			options: getPropertyUnits,
-			showIf: (values) => !!values.propertyId,
-			customComponent: renderUnitSelectField,
+					validation: {
+						schema: z.string().min(1, { message: 'Property name is required' }),
+					},
+					customComponent: renderPropertySelectField,
+				},
+				{
+					name: 'unitId',
+					label: 'Unit',
+					type: 'select',
+					width: isMobile ? '100%' : '48%',
+					options: getPropertyUnits,
+					customComponent: renderUnitSelectField,
+				},
+			],
 		},
 		{
 			name: 'tenantsIds',
 			label: 'Tenants',
 			type: 'checkbox-group',
-			options: tenants.map((tenant: { firstName: string; lastName: string; email: string, id: string }) => ({
-				label: `${tenant.firstName} ${tenant.lastName}`,
-				value: tenant.id,
-				email: tenant.email,
-			})),
+			options: tenants.map(
+				(tenant: {
+					firstName: string;
+					lastName: string;
+					email: string;
+					id: string;
+				}) => ({
+					label: `${tenant.firstName} ${tenant.lastName}`,
+					value: tenant.id,
+					email: tenant.email,
+				}),
+			),
 			customComponent: renderTenantSelectField,
 		},
 		{
-			name: 'rentAmount',
-			type: 'decimal',
-			label: 'Rent Amount',
+			name: 'fees',
+			label: 'Fees',
+			type: 'group',
 			width: '100%',
-			formatType: 'decimal',
-			required: true,
-			decimals: 2,
-			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings),
-			} as InputAdornmentType,
-		},
-		{
-			name: 'securityDeposit',
-			type: 'decimal',
-			label: 'Security Deposit',
-			width: '100%',
-			formatType: 'decimal',
-			decimals: 2,
-			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings),
-			} as InputAdornmentType,
-		},
-		{
-			name: 'startDate',
-			label: 'Lease Start Date',
-			type: 'date',
-			required: true,
-			width: '50%',
-			validation: {
-				schema: z.any().refine((val) => {
-					if (!val) return false;
-					const date = dayjs(val);
-					return date.isValid();
-				}, 'Lease start date is required'),
-
-			},
-		},
-		{
-			name: 'endDate',
-			label: 'Lease End Date',
-			type: 'date',
-			width: '50%',
-			validation: {
-				schema: z.any().refine((val) => {
-					if (!val) return true; // Optional field
-					const date = dayjs(val);
-					return date.isValid();
-				}, 'Invalid date format'),
-				dependencies: [
-					{
-						field: 'startDate',
-						type: 'min',
-						message: 'Lease end date must be after start date',    
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'rent',
+					type: 'decimal',
+					label: 'Rent',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					required: true,
+					decimals: 2,
+					adornment: {
+						prefix: getCurrencySymbol(user?.orgSettings),
+					} as InputAdornmentType,
+					validation: {
+						schema: z.string().min(1, { message: 'Rent is required' }),
 					},
-				],
-			},
+				},
+				{
+					name: 'securityDeposit',
+					type: 'decimal',
+					label: 'Security Deposit',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					adornment: {
+						prefix: getCurrencySymbol(user?.orgSettings),
+					} as InputAdornmentType,
+				},
+			],
 		},
+		{
+			name: 'leaseDates',
+			label: 'Lease Dates',
+			type: 'group',
+			width: '100%',
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'start',
+					label: 'Start Date',
+					type: 'date',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					validation: {
+						schema: z.any().refine((val) => {
+							if (!val) {
+								return false;
+							}
+							const date = dayjs(val);
+							return date.isValid();
+						}, 'Lease start date is required'),
+					},
+				},
+				{
+					name: 'end',
+					label: 'End Date',
+					type: 'date',
+					width: isMobile ? '100%' : '48%',
+					validation: {
+						schema: z.any().refine((val) => {
+							if (!val) {
+								return true;
+							} // Optional field
+							const date = dayjs(val);
+							return date.isValid();
+						}, 'Invalid date format'),
+						dependencies: [
+							{
+								field: 'leaseDates.start',
+								type: 'min',
+								message: 'Lease end date must be after start date',
+							},
+						],
+					},
+				},
+			],
+		},
+
 		{
 			name: 'paymentFrequency',
 			label: 'Payment Frequency',
@@ -388,9 +454,9 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 				label: freq,
 				value: freq,
 			})),
-			width: '50%',
+			width: isMobile ? '100%' : '48%',
 			validation: {
-				schema: z.string({required_error: 'Payment frequency is required'}),
+				schema: z.string({ required_error: 'Payment frequency is required' }),
 			},
 		},
 		{
@@ -403,23 +469,24 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 			})),
 			width: '50%',
 			showIf: (values) =>
-				values.paymentFrequency === 'Monthly' || values.paymentFrequency === 'Bi-Monthly',
+				values.paymentFrequency === 'Monthly' ||
+				values.paymentFrequency === 'Bi-Monthly',
 		},
 		{
 			name: 'firstPaymentDate',
-			showIf: (values) => !!values.startDate,
+			showIf: (values) => !!values.leaseDates?.start,
 			type: 'custom',
 			label: '',
 			component: (_, __, form: any) => {
 				return (
-					<Typography variant='body2' textAlign='left' sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<Info sx={{ fontSize: 16, color: theme.palette.primary.main }} />
 						<Typography variant='body2' textAlign='left'>
 							First payment due on {calculateDueDate(form.state.values)}
 						</Typography>
-					</Typography>
-				)
-			}
+					</Box>
+				);
+			},
 		},
 	];
 	// const handleSubmit = async (values: LeaseFormValues) => {
@@ -484,7 +551,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 				}),
 			);
 		}
-	}
+	};
 
 	const leaseFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
@@ -497,18 +564,21 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId }) => {
 		onSubmit: handleAddLease,
 		showBackdrop: true,
 		backdropText: 'Please wait while we add your lease...',
-		fullWidthButtons: !!isMobile,
+		fullWidthButtons: false,
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
-	}
-
+	};
 
 	return (
 		<FormLayout Header={'Add Lease'}>
 			{isLoading ? (
-				<FormSkeleton rows={leaseFormFields.length} columns={[1, 1, 1]} sx={{ width: '100%', p: 2 }} />
+				<FormSkeleton
+					rows={leaseFormFields.length}
+					columns={[1, 1, 1]}
+					sx={{ width: '100%', p: 2 }}
+				/>
 			) : (
-				<Box sx={{ width: '100%', p:2 }}>
+				<Box sx={{ width: '100%', p: 2 }}>
 					<KlubiqFormV1 {...leaseFormConfig} />
 				</Box>
 			)}

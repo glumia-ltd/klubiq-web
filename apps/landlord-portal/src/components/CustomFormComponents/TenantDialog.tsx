@@ -104,7 +104,7 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
           value={value}
           onChange={(e) => field.handleChange(e.target.value as string[])}
           displayEmpty
-          renderValue={() => `${value.length > 0 ? value.length : 'Select'} tenants`}
+          renderValue={() => `${value.length > 0 ? value.length : 'Select'} tenant${value.length > 1 ? 's' : ''}`}
           sx={{
             '& .MuiSelect-select': {
               p: 1,
@@ -129,7 +129,7 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
       </Stack>
       <Stack direction='row' justifyContent='end'>
         <Button
-          variant='klubiqOutlinedButton'
+          variant='klubiqTextButton'
           startIcon={<Add />}
           onClick={() => setOpen(true)}
         >

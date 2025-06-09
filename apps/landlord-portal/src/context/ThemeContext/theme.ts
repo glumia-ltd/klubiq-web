@@ -353,7 +353,7 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-
+	
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {

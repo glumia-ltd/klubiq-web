@@ -535,8 +535,7 @@ export const KlubiqTSFormFields: React.FC<{
 			);
 		case 'date':
 			return (
-				<FormControl>
-					<Stack spacing={1}>
+				<Stack spacing={1}>
 						{renderLabel(label, isRequired, hasInlineLabel)}
 						<DatePicker
 							label={hasInlineLabel ? label : undefined}
@@ -561,11 +560,14 @@ export const KlubiqTSFormFields: React.FC<{
 									debouncedValidate(arrayFieldName);
 								}
 							}}
-							sx={{
-								borderRadius: '0.5rem',
-							}}
 							slotProps={{
 								textField: {
+									sx: {
+										borderRadius: '0.5rem',
+										height: '2.7rem',
+										color: 'inherit',
+									},
+									size: 'small',
 									fullWidth: true,
 									error: !!error,
 									helperText: error || helperText,
@@ -578,7 +580,6 @@ export const KlubiqTSFormFields: React.FC<{
 							disabled={disabled || fieldConfig.readonly}
 						/>
 					</Stack>
-				</FormControl>
 			);
 		case 'address':
 			return (

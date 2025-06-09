@@ -328,7 +328,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				);
 				schemaObject[fieldName] = arraySchema;
 			} else {
-				const visibleField = isFieldVisible(field, form.state.values) && field.type !== 'hidden';
+				const visibleField =
+					isFieldVisible(field, form.state.values) && field.type !== 'hidden';
 				if (visibleField) {
 					const schema = getFieldSchema(field, form.state.values, fieldName);
 					if (schema) {
@@ -372,17 +373,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			return z.string().min(field.required ? 1 : 0, 'Required');
 		} else if (field.type === 'file') {
 			return z.array(z.any()).min(field.required ? 1 : 0, 'Required');
-		} else if (
-			field.type === 'number' ||
-			field.type === 'percent' ||
-			field.type === 'decimal'
-		) {
-			return z
-				.number()
-				.refine(
-					field.required ? (val: number) => val > 0 : () => true,
-					'Required',
-				);
 		} else {
 			return z.string().min(field.required ? 1 : 0, 'Required');
 		}
@@ -523,7 +513,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		},
 		validators: {
 			onChange: ({ value }) => {
-					
 				// Only validate the current step for submission
 				const stepFields = steps[currentStep].fields;
 				const stepSchema = createStepSchema(stepFields);
@@ -531,7 +520,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					stepSchema.parse(value);
 					return undefined;
 				} catch (error) {
-
 					if (error instanceof z.ZodError) {
 						return error.errors[0].message;
 					}
@@ -605,39 +593,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	}, [form.state.values]);
 
-	// Add effect to handle field visibility changes
 	useEffect(() => {
-		const { values } = form.state;
-		const normalizedFields = Array.isArray(fields) ? fields : [fields];
-		
-		// Get all fields that need to be checked for visibility
-		const allFields = isMultiStep 
-			? (normalizedFields as FormStep[]).flatMap(step => step.fields)
-			: normalizedFields as FormFieldV1[];
-		// Process all fields for visibility changes
-		allFields.forEach((field) => {
-			if (field.showIf) {
-				const shouldShow = field.showIf(values);
-				const currentValue = form.getFieldValue(field.name);
-
-				// If field should be hidden, clear its value
-				if (!shouldShow && currentValue !== undefined) {
-					form.setFieldValue(field.name, undefined);
-				}
-			}
-		});
-
-		// Force form validation after visibility changes
-		validateCurrentStep();
-	}, [form.state.values, currentStep, isMultiStep]);
-
-	// Add effect to handle form value changes
-	useEffect(() => {
-		// Only validate if we're in a multi-step form
-		if (isMultiStep) {
-			validateCurrentStep();
-		}
-	}, [form.state.values, currentStep, isMultiStep]);
+		// This will trigger a re-render of the form fields
+		form.state.values;
+	}, [form.state.values]);
 
 	const validateCurrentStep = () => {
 		const stepFields = steps[currentStep].fields;
@@ -794,258 +753,473 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		return true;
 	};
 
-	const renderFields = useCallback(
-		(fields: FormFieldV1[]) => {
-			return fields.map((field) => {
-				// Skip fields that don't belong to the current step in multi-step forms
-				if (isMultiStep && field.step !== currentStep) {
+	const renderFields = (fields: FormFieldV1[]) => {
+		return fields.map((field, idx) => {
+			// For multi-step forms, render fields directly without form.Subscribe
+			if (isMultiStep) {
+				// Custom field support
+				if (field.showIf && !field.showIf(form.state.values)) {
 					return null;
 				}
 
-				// Use form.Subscribe to handle showIf conditions
-				return (
-					<form.Subscribe
-						key={field.name}
-						selector={(state) => state.values}
-						children={(values) => {
-							const shouldShow = field.showIf ? field.showIf(values) : true;
-							if (!shouldShow) return null;
+				// Custom field support
+				if (field.type === 'custom') {
+					const customField = field as CustomFormFieldV1;
+					const fieldMeta = form.getFieldMeta(field.name);
+					return (
+						<Box key={`${field.name}-${idx}`}>
+							{typeof customField.component === 'function'
+								? customField.component(fieldMeta as any, field, form)
+								: customField.component}
+						</Box>
+					);
+				}
 
-							// Custom field support
-							if (field.type === 'custom') {
-								const customField = field as CustomFormFieldV1;
-								const fieldMeta = form.getFieldMeta(field.name);
-								return (
-									<Box key={field.name}>
-										{typeof customField.component === 'function'
-											? customField.component(fieldMeta as any, field, form)
-											: customField.component}
-									</Box>
-								);
-							}
-
-							// Array field support
-							if (field.type === 'array') {
-								// Ensure the array exists in state
-								if (!Array.isArray(form.state.values[field.name])) {
-									form.setFieldValue(field.name, []);
-								}
-								const arrayValue = form.state.values[field.name] || [];
-								return (
-									<form.Field
-										key={field.name}
-										name={field.name}
-										mode='array'
-										validators={{
-											onChange: () => {
-												try {
-													setTimeout(() => {
-														validateCurrentStep();
-													}, 0);
-													return undefined;
-												} catch (error) {
-													if (error instanceof z.ZodError) {
-														return error.errors[0].message;
-													}
-													return `${field.label} is invalid`;
-												}
-											},
-											onChangeAsync: async ({ value }) => {
-												if (field.validation?.dependencies) {
-													for (const dep of field.validation.dependencies) {
-														const dependentValue = form.state.values[dep.field];
-														if (dep.type === 'min' && value <= dependentValue) {
-															return (
-																dep.message ||
-																`${field.label} must be greater than ${dep.field}`
-															);
-														}
-													}
-												}
-												return undefined;
-											},
-										}}
-									>
-										{(fieldApi) => (
-											<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
-												<CardHeader
-													title={field.label}
-													titleTypographyProps={{ variant: 'h6' }}
-												/>
-												<CardContent>
-													{field.customComponent ? (
-														typeof field.customComponent === 'function' ? (
-															field.customComponent(fieldApi, field, form)
-														) : (
-															field.customComponent
-														)
-													) : (
-														<KlubiqTSFormFields
-															field={fieldApi}
-															form={form}
-															fieldConfig={field}
-														/>
-													)}
-												</CardContent>
-											</Card>
+				// Array field support
+				if (field.type === 'array') {
+					// Ensure the array exists in state
+					if (!Array.isArray(form.state.values[field.name])) {
+						form.setFieldValue(field.name, []);
+					}
+					const arrayValue = form.state.values[field.name] || [];
+					return (
+						<form.Field
+							key={`${field.name}-${idx}`}
+							name={field.name}
+							mode='array'
+							validators={{
+								onChange: () => {
+									try {
+										setTimeout(() => {
+											validateCurrentStep();
+										}, 0);
+										return undefined;
+									} catch (error) {
+										if (error instanceof z.ZodError) {
+											return error.errors[0].message;
+										}
+										return `${field.label} is invalid`;
+									}
+								},
+								onChangeAsync: async ({ value }) => {
+									if (field.validation?.dependencies) {
+										for (const dep of field.validation.dependencies) {
+											const dependentValue = form.state.values[dep.field];
+											if (dep.type === 'min' && value <= dependentValue) {
+												return (
+													dep.message ||
+													`${field.label} must be greater than ${dep.field}`
+												);
+											}
+										}
+									}
+									return undefined;
+								},
+							}}
+						>
+							{(fieldApi) => (
+								<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
+									<CardHeader
+										title={field.label}
+										titleTypographyProps={{ variant: 'h6' }}
+									/>
+									<CardContent>
+										{field.customComponent ? (
+											typeof field.customComponent === 'function' ? (
+												field.customComponent(fieldApi, field, form)
+											) : (
+												field.customComponent
+											)
+										) : (
+											<KlubiqTSFormFields
+												field={fieldApi}
+												form={form}
+												fieldConfig={field}
+											/>
 										)}
-									</form.Field>
-								);
-							}
+									</CardContent>
+								</Card>
+							)}
+						</form.Field>
+					);
+				}
 
-							// Group field support
-							if (field.type === 'group') {
-								const groupConfig = field as GroupFormFieldV1;
-								const subFields =
-									typeof groupConfig.groupFields === 'function'
-										? groupConfig.groupFields(form.state.values)
-										: groupConfig.groupFields || [];
-								const visibleSubFields = subFields.filter((subField) =>
-									isFieldVisible(subField, form.state.values),
-								);
-								return (
-									<Card
-										key={field.name}
-										sx={{
-											mb: 3,
-											boxShadow: 1,
-											'& .MuiCardHeader-root': {
-												pb: 0,
-											},
-										}}
-									>
-										<CardHeader
-											title={field.label}
-											titleTypographyProps={{
-												variant: 'h6',
-											}}
-										/>
-										<CardContent>
-											<Box
-												sx={{
-													display: 'flex',
-													justifyContent:
-														groupConfig.layout === 'row' ? 'space-between' : undefined,
-													flexDirection:
-														groupConfig.layout === 'column' ? 'column' : 'row',
-													flexWrap: 'wrap',
-													gap: groupConfig.spacing || 2,
-													'& > *': {
-														flex: visibleSubFields.some((f: FormFieldV1) => f.width)
-															? '0 0 auto'
-															: '1 1 100%',
-													},
-												}}
-											>
-												{visibleSubFields.map(
-													(subField: FormFieldV1, index: number) => {
-														// Ensure the field path is a string
-														const fieldPath = `${field.name}.${subField.name}`;
-														return (
-															<Box
-																key={`${fieldPath}-${index}`}
-																sx={{
-																	width: subField.width || '100%',
-																	flex: subField.width ? '0 0 auto' : '1 1 100%',
-																}}
-															>
-																<form.Field
-																	key={`ff-${fieldPath}-${index}`}
-																	name={fieldPath}
-																	validators={{
-																		onChange: ({ value }) => {
-																			try {
-																				if (subField.validation?.schema) {
-																					subField.validation.schema.parse(value);
-																				}
-																				// Update the parent group object
-																				const parentValue =
-																					form.state.values[field.name] || {};
-																				const newParentValue = {
-																					...parentValue,
-																					[subField.name]: value,
-																				};
-																				form.setFieldValue(field.name, newParentValue);
-																				// Force validation after state update
-																				setTimeout(() => {
-																					validateCurrentStep();
-																				}, 0);
-																				return undefined;
-																			} catch (error) {
-																				if (error instanceof z.ZodError) {
-																					return error.errors[0].message;
-																				}
-																				return 'Invalid value';
-																			}
-																		},
-																		onChangeAsync: async ({ value }) => {
-																			if (subField.validation?.dependencies) {
-																				for (const dep of subField.validation
-																					.dependencies) {
-																					const dependentValue =
-																						form.state.values[dep.field];
-																					if (
-																						dep.type === 'min' &&
-																						value <= dependentValue
-																					) {
-																						return (
-																							dep.message ||
-																							`${subField.label} must be greater than ${dep.field}`
-																						);
-																					}
-																				}
-																			}
-																			return undefined;
-																		},
-																	}}
-																>
-																	{(subFieldApi) => (
-																		<KlubiqTSFormFields
-																			field={subFieldApi}
-																			form={form}
-																			fieldConfig={subField}
-																		/>
-																	)}
-																</form.Field>
-															</Box>
-														);
-													},
-												)}
-											</Box>
-										</CardContent>
-									</Card>
-								);
-							}
+				// Group field support
+				if (field.type === 'group') {
+					const groupConfig = field as GroupFormFieldV1;
+					const subFields =
+						typeof groupConfig.groupFields === 'function'
+							? groupConfig.groupFields(form.state.values)
+							: groupConfig.groupFields || [];
+					const visibleSubFields = subFields.filter((subField) =>
+						isFieldVisible(subField, form.state.values),
+					);
+					return (
+						<Card
+							key={field.name}
+							sx={{
+								mb: 3,
+								boxShadow: 1,
+								'& .MuiCardHeader-root': {
+									pb: 0,
+								},
+							}}
+						>
+							<CardHeader
+								title={field.label}
+								titleTypographyProps={{
+									variant: 'h6',
+								}}
+							/>
+							<CardContent>
+								<Box
+									sx={{
+										display: 'flex',
+										justifyContent:
+											groupConfig.layout === 'row' ? 'space-between' : undefined,
+										flexDirection:
+											groupConfig.layout === 'column' ? 'column' : 'row',
+										flexWrap: 'wrap',
+										gap: groupConfig.spacing || 2,
+										'& > *': {
+											flex: visibleSubFields.some((f: FormFieldV1) => f.width)
+												? '0 0 auto'
+												: '1 1 100%',
+										},
+									}}
+								>
+									{visibleSubFields.map(
+										(subField: FormFieldV1, index: number) => {
+											// Ensure the field path is a string
+											const fieldPath = `${field.name}.${subField.name}`;
+											return (
+												<Box
+													key={`${fieldPath}-${index}`}
+													sx={{
+														width: subField.width || '100%',
+														flex: subField.width ? '0 0 auto' : '1 1 100%',
+													}}
+												>
+													<form.Field
+														key={`ff-${fieldPath}-${index}`}
+														name={fieldPath}
+														validators={{
+															onChange: ({ value }) => {
+																try {
+																	if (subField.validation?.schema) {
+																		subField.validation.schema.parse(value);
+																	}
+																	// Update the parent group object
+																	const parentValue =
+																		form.state.values[field.name] || {};
+																	const newParentValue = {
+																		...parentValue,
+																		[subField.name]: value,
+																	};
+																	form.setFieldValue(
+																		field.name,
+																		newParentValue,
+																	);
+																	// Force validation after state update
+																	setTimeout(() => {
+																		validateCurrentStep();
+																	}, 0);
+																	return undefined;
+																} catch (error) {
+																	if (error instanceof z.ZodError) {
+																		return error.errors[0].message;
+																	}
+																	return 'Invalid value';
+																}
+															},
+															onChangeAsync: async ({ value }) => {
+																if (subField.validation?.dependencies) {
+																	for (const dep of subField.validation
+																		.dependencies) {
+																		const dependentValue =
+																			form.state.values[dep.field];
+																		if (
+																			dep.type === 'min' &&
+																			value <= dependentValue
+																		) {
+																			return (
+																				dep.message ||
+																				`${subField.label} must be greater than ${dep.field}`
+																			);
+																		}
+																	}
+																}
+																return undefined;
+															},
+														}}
+													>
+														{(subFieldApi) => (
+															<KlubiqTSFormFields
+																field={subFieldApi}
+																form={form}
+																fieldConfig={subField}
+															/>
+														)}
+													</form.Field>
+												</Box>
+											);
+										},
+									)}
+								</Box>
+							</CardContent>
+						</Card>
+					);
+				}
 
-							// Default: single field
+				// Default: single field
+				return (
+					<form.Field
+						key={field.name}
+						name={field.name}
+						validators={{
+							onChange: ({ value }) =>
+								validateField(value, field, form.state.values, field.name),
+							onChangeAsync: async ({ value }) =>
+								validateDependencies(value, field, form.state.values),
+						}}
+					>
+						{(fieldApi) => (
+							<KlubiqTSFormFields
+								field={fieldApi}
+								form={form}
+								fieldConfig={fields.find((f) => f.name === field.name)!}
+							/>
+						)}
+					</form.Field>
+				);
+			}
+
+			// For non-multi-step forms, use form.Subscribe for reactive rendering
+			return (
+				<form.Subscribe
+					key={field.name}
+					selector={(state) => state.values}
+					children={(values) => {
+						const shouldShow = field.showIf ? field.showIf(values) : true;
+						if (!shouldShow) return null;
+
+						// Custom field support
+						if (field.type === 'custom') {
+							const customField = field as CustomFormFieldV1;
+							const fieldMeta = form.getFieldMeta(field.name);
+							return (
+								<Box key={field.name}>
+									{typeof customField.component === 'function'
+										? customField.component(fieldMeta as any, field, form)
+										: customField.component}
+								</Box>
+							);
+						}
+
+						// Array field support
+						if (field.type === 'array') {
+							// Ensure the array exists in state
+							if (!Array.isArray(form.state.values[field.name])) {
+								form.setFieldValue(field.name, []);
+							}
 							return (
 								<form.Field
 									key={field.name}
 									name={field.name}
+									mode='array'
 									validators={{
-										onChange: ({ value }) =>
-											validateField(value, field, form.state.values, field.name),
-										onChangeAsync: async ({ value }) =>
-											validateDependencies(value, field, form.state.values),
-										onChangeAsyncDebounceMs: 500,
+										onChange: ({ value }) => {
+											try {
+												if (field.validation?.schema) {
+													field.validation.schema.parse(value);
+												}
+												return undefined;
+											} catch (error) {
+												if (error instanceof z.ZodError) {
+													return error.errors[0].message;
+												}
+												return `${field.label} is invalid`;
+											}
+										},
+										onChangeAsync: async ({ value }) => {
+											if (field.validation?.dependencies) {
+												for (const dep of field.validation.dependencies) {
+													const dependentValue = form.state.values[dep.field];
+													if (dep.type === 'min' && value <= dependentValue) {
+														return (
+															dep.message ||
+															`${field.label} must be greater than ${dep.field}`
+														);
+													}
+												}
+											}
+											return undefined;
+										},
 									}}
 								>
 									{(fieldApi) => (
-										<KlubiqTSFormFields
-											field={fieldApi}
-											form={form}
-											fieldConfig={field}
-										/>
+										<Stack key={field.name} direction='column' gap={1}>
+											<Typography variant='h6'>{field.label}</Typography>
+											<Box>
+												{field.customComponent ? (
+													typeof field.customComponent === 'function' ? (
+														field.customComponent(fieldApi, field, form)
+													) : (
+														field.customComponent
+													)
+												) : (
+													<KlubiqTSFormFields
+														field={fieldApi}
+														form={form}
+														fieldConfig={field}
+													/>
+												)}
+											</Box>
+										</Stack>
 									)}
 								</form.Field>
 							);
-						}}
-					/>
-				);
-			});
-		},
-		[form, currentStep, isMultiStep]
-	);
+						}
+
+						// Group field support
+						if (field.type === 'group') {
+							const groupConfig = field as GroupFormFieldV1;
+							const subFields =
+								typeof groupConfig.groupFields === 'function'
+									? groupConfig.groupFields(values)
+									: groupConfig.groupFields || [];
+							const visibleSubFields = subFields.filter((subField) =>
+								isFieldVisible(subField, values),
+							);
+							return (
+								<Stack key={field.name} direction='column' gap={1}>
+									<Typography variant='h6'>{field.label}</Typography>
+									<Box
+										sx={{
+											display: 'flex',
+											justifyContent:
+												groupConfig.layout === 'row'
+													? 'space-between'
+													: undefined,
+											flexDirection:
+												groupConfig.layout === 'column' ? 'column' : 'row',
+											flexWrap: 'wrap',
+											gap: groupConfig.spacing || 2,
+											'& > *': {
+												flex: visibleSubFields.some((f: FormFieldV1) => f.width)
+													? '0 0 auto'
+													: '1 1 100%',
+											},
+										}}
+									>
+										{visibleSubFields.map(
+											(subField: FormFieldV1, index: number) => {
+												// Ensure the field path is a string
+												const fieldPath = `${field.name}.${subField.name}`;
+												return (
+													<Box
+														key={`${fieldPath}-${index}`}
+														sx={{
+															width: subField.width || '100%',
+															flex: subField.width ? '0 0 auto' : '1 1 100%',
+														}}
+													>
+														<form.Field
+															key={`ff-${fieldPath}-${index}`}
+															name={fieldPath}
+															validators={{
+																onChange: ({ value }) => {
+																	validateField(value, field, values, fieldPath);
+																	// try {
+																	// 	if (subField.validation?.schema) {
+																	// 		subField.validation.schema.parse(value);
+																	// 	}
+																	// 	// Update the parent group object
+																	// 	const parentValue =
+																	// 		form.state.values[field.name] || {};
+																	// 	const newParentValue = {
+																	// 		...parentValue,
+																	// 		[subField.name]: value,
+																	// 	};
+																	// 	form.setFieldValue(
+																	// 		field.name,
+																	// 		newParentValue,
+																	// 	);
+																	// 	return undefined;
+																	// } catch (error) {
+																	// 	if (error instanceof z.ZodError) {
+																	// 		return error.errors[0].message;
+																	// 	}
+																	// 	return 'Invalid value';
+																	// }
+																},
+																onChangeAsync: async ({ value }) => {
+																	validateDependencies(value, subField, values);
+																	// if (subField.validation?.dependencies) {
+																	// 	for (const dep of subField.validation
+																	// 		.dependencies) {
+																	// 		const dependentValue =
+																	// 			form.state.values[dep.field];
+																	// 		if (
+																	// 			dep.type === 'min' &&
+																	// 			value <= dependentValue
+																	// 		) {
+																	// 			return (
+																	// 				dep.message ||
+																	// 				`${subField.label} must be greater than ${dep.field}`
+																	// 			);
+																	// 		}
+																	// 	}
+																	// }
+																	// return undefined;
+																},
+																onChangeAsyncDebounceMs: 500,
+															}}
+														>
+															{(subFieldApi) => (
+																<KlubiqTSFormFields
+																	field={subFieldApi}
+																	form={form}
+																	fieldConfig={subField}
+																/>
+															)}
+														</form.Field>
+													</Box>
+												);
+											},
+										)}
+									</Box>
+								</Stack>
+							);
+						}
+
+						// Default: single field
+						return (
+							<form.Field
+								key={field.name}
+								name={field.name}
+								validators={{
+									onChange: ({ value }) =>
+										validateField(value, field, values, field.name),
+									onChangeAsync: async ({ value }) =>
+										validateDependencies(value, field, values),
+									onChangeAsyncDebounceMs: 500,
+								}}
+							>
+								{(fieldApi) => (
+									<KlubiqTSFormFields
+										field={fieldApi}
+										form={form}
+										fieldConfig={field}
+									/>
+								)}
+							</form.Field>
+						);
+					}}
+				/>
+			);
+		});
+	};
 
 	const handleLeaveWithoutSaving = () => {
 		setReturnDialogOpen(false);
@@ -1333,8 +1507,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							const isLastStep = currentStep === steps.length - 1;
 							return (
 								<>
-								
-								{enableReset && (
+									{enableReset && (
 										<Button
 											onClick={() => form.reset()}
 											disabled={isSubmitting}
@@ -1450,7 +1623,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											)}
 										</>
 									)}
-
 								</>
 							);
 						})()}
@@ -1500,9 +1672,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				maxWidth='sm'
 				fullWidth
 			>
-				<DialogTitle id='pre-submit-dialog-title'>{preSubmitDialogTitle}</DialogTitle>
+				<DialogTitle id='pre-submit-dialog-title'>
+					{preSubmitDialogTitle}
+				</DialogTitle>
 				<DialogContent>
-					<DialogContentText id='pre-submit-dialog-description'>{preSubmitDialogMessage}</DialogContentText>
+					<DialogContentText id='pre-submit-dialog-description'>
+						{preSubmitDialogMessage}
+					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button
