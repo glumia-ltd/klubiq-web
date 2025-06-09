@@ -5,20 +5,20 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store/index.ts';
 import App from './App.tsx';
 import './index.css';
-import { registerSW } from 'virtual:pwa-register';
+// import { registerSW } from 'virtual:pwa-register';
 
 // Register service worker
-const updateSW = registerSW({
-	onNeedRefresh() {
-		// Show a prompt to the user
-		if (confirm('New content available. Reload?')) {
-			updateSW();
-		}
-	},
-	onOfflineReady() {
-		console.log('App ready to work offline');
-	},
-});
+// const updateSW = registerSW({
+// 	onNeedRefresh() {
+// 		// Show a prompt to the user
+// 		if (confirm('New content available. Reload?')) {
+// 			updateSW();
+// 		}
+// 	},
+// 	onOfflineReady() {
+// 		console.log('App ready to work offline');
+// 	},
+// });
 
 // Mount React app immediately
 ReactDOM.createRoot(document.getElementById('root')!).render(

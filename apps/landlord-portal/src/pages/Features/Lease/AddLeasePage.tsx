@@ -1,5 +1,5 @@
-// import AddLeaseForm from '../../../components/Forms/AddLeaseForm';
-import AddLeaseForm from '../../../components/Forms/LeaseFormWDynamic';
+import AddLeaseForm from '../../../components/Forms/AddLeaseForm';
+//import AddLeaseForm from '../../../components/Forms/LeaseFormWDynamic';
 import AddPropertiesInformationLayout from '../../../Layouts/AddPropertiesInformationLayout';
 import { useLocation } from 'react-router-dom';
 

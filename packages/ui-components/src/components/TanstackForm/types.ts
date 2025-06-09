@@ -62,6 +62,7 @@ export interface CustomFormFieldV1 extends Omit<BaseFormFieldV1, 'type'> {
   type: 'custom';
   component: React.ReactNode | ((field: FormFieldApi, fieldConfig: FormFieldV1, form: any) => React.ReactNode);
   skipValidation?: boolean;
+  showIf?: (values: Record<string, any>) => boolean;
 }
 
 export type FormFieldV1 = BaseFormFieldV1 | GroupFormFieldV1 | ArrayFormFieldV1 | CustomFormFieldV1;

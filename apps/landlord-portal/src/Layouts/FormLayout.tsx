@@ -10,7 +10,7 @@ type Props = {
 
 const FormLayout = ({ children, Header, sx }: Props) => {
 	return (
-		<Box sx={FormLayoutStyle.container}>
+		<Box sx={{...FormLayoutStyle.container, ...sx}}>
 			<Grid container spacing={1} alignItems='center' justifyContent={'center'}>
 				<Card sx={sx}>
 					<Grid container spacing={1}>

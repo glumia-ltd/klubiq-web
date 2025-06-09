@@ -176,6 +176,13 @@ const Login = () => {
 				},
 			},
 			{
+				name: 'emailConfirm',
+				type: 'email',
+				label: 'Confirm Email',
+				placeholder: 'Confirm your email address',
+				showIf: (values) => values.email !== '',
+			},
+			{
 				name: 'password',
 				type: 'password',
 				label: 'Password',

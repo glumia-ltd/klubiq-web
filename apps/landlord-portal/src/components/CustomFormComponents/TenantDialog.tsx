@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Add } from '@mui/icons-material';
 import {
@@ -9,8 +8,6 @@ import {
   DialogActions,
   Stack,
   Checkbox,
-  Box,
-  Chip,
   Select,
   MenuItem,
   ListItemText,
@@ -22,14 +19,14 @@ interface TenantDialogProps {
   form: any;
 }
 
-type TenantOption = { value: string; label: string, email: string };
+type TenantOption = { value: string; label: string; email: string };
 
 interface NewTenant {
-	firstName: string;
-	lastName: string;
-	email: string;
-	phone?: string;
-	companyName?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  companyName?: string;
 }
 
 export const TenantDialog: React.FC<TenantDialogProps> = ({
@@ -43,7 +40,6 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
     email: '',
     phone: '',
     companyName: '',
-  
   });
 
   // Use a local copy of options to allow adding custom amenities
@@ -64,9 +60,40 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
       newTenant.email.trim() &&
       !options.some((a: TenantOption) => a.email === newTenant.email.trim())
     ) {
-      form.setFieldValue('newTenant', [newTenant]);
+      // Create a new tenant option
+      const newTenantOption: TenantOption = {
+        value: newTenant.email, // Using email as the value
+        label: `${newTenant.firstName} ${newTenant.lastName}`,
+        email: newTenant.email,
+      };
+
+      // Add the new tenant to the options
+      const updatedOptions = [...options, newTenantOption];
+      
+      // Update the field's options
+      field.fieldConfig.options = updatedOptions;
+
+      // Add the new tenant to the selected values
+      const updatedValue = [...value, newTenantOption.value];
+      field.handleChange(updatedValue);
+
+      // Reset the form and close dialog
+      setNewTenant({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        companyName: '',
+      });
       setOpen(false);
     }
+  };
+
+  const handleNewTenantChange = (fieldName: keyof NewTenant, value: string) => {
+    setNewTenant(prev => ({
+      ...prev,
+      [fieldName]: value
+    }));
   };
 
   return (
@@ -84,13 +111,14 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
             },
           }}
         >
-          {(field.fieldConfig.options || []).map((option: any) => (
+          {(field.fieldConfig.options || []).map((option: TenantOption) => (
             <MenuItem key={option.value} value={option.value}>
               <Checkbox
                 checked={value.indexOf(option.value) > -1}
               />
               <ListItemText
                 primary={option.label}
+                secondary={option.email}
                 primaryTypographyProps={{
                   color: 'primary.contrastText',
                 }}
@@ -98,38 +126,10 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
             </MenuItem>
           ))}
         </Select>
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-            minHeight: 32,
-          }}
-        >
-          {/* {value.map((amenity: string) => (
-            <Chip
-              key={amenity}
-              label={amenity}
-              size='small'
-              onDelete={() => {
-                const newValue = value.filter(
-                  (v: string) => v !== amenity,
-                );
-                field.handleChange(newValue);
-              }}
-              sx={{
-                height: 24,
-                '& .MuiChip-label': {
-                  px: 1,
-                },
-              }}
-            />
-          ))} */}
-        </Box>
       </Stack>
       <Stack direction='row' justifyContent='end'>
         <Button
-          variant='klubiqTextButton'
+          variant='klubiqOutlinedButton'
           startIcon={<Add />}
           onClick={() => setOpen(true)}
         >
@@ -139,105 +139,106 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
       <Dialog fullWidth maxWidth='xs' open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add Tenant</DialogTitle>
         <DialogContent>
-          <KlubiqTSFormFields
-            field={{
-              ...field,
-              state: {
-                ...field.state,
-                value: newTenant.firstName,
-                meta: { ...field.state.meta, errors: [] },
-              },
-              handleChange: setNewTenant,
-              handleBlur: () => {},
-            }}
-            form={form}
-            fieldConfig={{
-              name: 'newTenant.firstName',
-              type: 'text',
-              label: 'First Name',
-              required: true,
-            }}
-          />
-           <KlubiqTSFormFields
-            field={{
-              ...field,
-              state: {
-                ...field.state,
-                value: newTenant.lastName,
-                meta: { ...field.state.meta, errors: [] },
-              },
-              handleChange: setNewTenant,
-              handleBlur: () => {},
-            }}
-            form={form}
-            fieldConfig={{
-              name: 'newTenant.lastName',
-              type: 'text',
-              label: 'Last Name',
-              required: true,
-            }}
-          />
-           <KlubiqTSFormFields
-            field={{
-              ...field,
-              state: {
-                ...field.state,
-                value: newTenant.email,
-                meta: { ...field.state.meta, errors: [] },
-              },
-              handleChange: setNewTenant,
-              handleBlur: () => {},
-            }}  
-            form={form}
-            fieldConfig={{
-              name: 'newTenant.email',
-              type: 'text',
-              label: 'Email',
-              required: true,
-            }}  
-          />
-           <KlubiqTSFormFields
-            field={{
-              ...field,
-              state: {
-                ...field.state,
-                value: newTenant.phone,
-                meta: { ...field.state.meta, errors: [] },
-              },
-              handleChange: setNewTenant,
-              handleBlur: () => {},
-            }}  
-            form={form}
-            fieldConfig={{
-              name: 'newTenant.phone',
-              type: 'text',
-              label: 'Phone',
-              required: false,
-            }}  
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <KlubiqTSFormFields
+              field={{
+                ...field,
+                state: {
+                  value: newTenant.firstName,
+                  meta: field.state.meta,
+                },
+                handleChange: (value: string) => handleNewTenantChange('firstName', value),
+                handleBlur: () => {},
+              }}
+              form={form}
+              fieldConfig={{
+                name: 'newTenant.firstName',
+                type: 'text',
+                label: 'First Name',
+                required: true,
+              }}
             />
-           <KlubiqTSFormFields
-            field={{
-              ...field,
-              state: {
-                ...field.state,
-                value: newTenant.companyName,
-                meta: { ...field.state.meta, errors: [] },
-              },
-              handleChange: setNewTenant,
-              handleBlur: () => {},
-            }}    
-            form={form}
-            fieldConfig={{
-              name: 'newTenant.companyName',
-              type: 'text',
-              label: 'Company Name',
-              required: false,
-            }}  
-          />
+            <KlubiqTSFormFields
+              field={{
+                ...field,
+                state: {
+                  value: newTenant.lastName,
+                  meta: field.state.meta,
+                },
+                handleChange: (value: string) => handleNewTenantChange('lastName', value),
+                handleBlur: () => {},
+              }}
+              form={form}
+              fieldConfig={{
+                name: 'newTenant.lastName',
+                type: 'text',
+                label: 'Last Name',
+                required: true,
+              }}
+            />
+            <KlubiqTSFormFields
+              field={{
+                ...field,
+                state: {
+                  value: newTenant.email,
+                  meta: field.state.meta,
+                },
+                handleChange: (value: string) => handleNewTenantChange('email', value),
+                handleBlur: () => {},
+              }}
+              form={form}
+              fieldConfig={{
+                name: 'newTenant.email',
+                type: 'text',
+                label: 'Email',
+                required: true,
+              }}
+            />
+            <KlubiqTSFormFields
+              field={{
+                ...field,
+                state: {
+                  value: newTenant.phone,
+                  meta: field.state.meta,
+                },
+                handleChange: (value: string) => handleNewTenantChange('phone', value),
+                handleBlur: () => {},
+              }}
+              form={form}
+              fieldConfig={{
+                name: 'newTenant.phone',
+                type: 'text',
+                label: 'Phone',
+                required: false,
+              }}
+            />
+            <KlubiqTSFormFields
+              field={{
+                ...field,
+                state: {
+                  value: newTenant.companyName,
+                  meta: field.state.meta,
+                },
+                handleChange: (value: string) => handleNewTenantChange('companyName', value),
+                handleBlur: () => {},
+              }}
+              form={form}
+              fieldConfig={{
+                name: 'newTenant.companyName',
+                type: 'text',
+                label: 'Company Name',
+                required: false,
+              }}
+            />
+          </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddTenant} variant='klubiqMainButton'>
+          <Button 
+            onClick={handleAddTenant} 
+            variant='klubiqMainButton'
+            disabled={!newTenant.firstName || !newTenant.lastName || !newTenant.email}
+          >
             Add
           </Button>
         </DialogActions>

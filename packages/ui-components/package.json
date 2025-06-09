@@ -52,7 +52,7 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@hookform/resolvers": "^5.0.1",
-    "@mui/x-date-pickers": "^8.4.0",
+    "@mui/x-date-pickers": "^7.29.1",
     "@tanstack/react-form": "^1.11.3",
     "@zxcvbn-ts/core": "^3.0.4",
     "dayjs": "^1.11.13",

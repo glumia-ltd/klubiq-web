@@ -32,6 +32,7 @@ import {
 	useTheme,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 import { GooglePlacesAutocomplete } from './GooglePlacesAutoComplete';
 import { FileUpload } from './FileUpload';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -185,6 +186,12 @@ export const KlubiqTSFormFields: React.FC<{
 
 	// Common change handler
 	const handleChange = (newValue: any) => {
+		console.log('Field change:', {
+			fieldName: field.name,
+			oldValue: field.state.value,
+			newValue,
+			formValues: form.state.values
+		});
 		field.handleChange(newValue);
 		if (
 			isArraySubField &&
@@ -238,13 +245,19 @@ export const KlubiqTSFormFields: React.FC<{
 						type='text'
 						label={hasInlineLabel ? label : undefined}
 						placeholder={fieldConfig.placeholder}
-						value={value ?? ''}
+						value={
+							fieldConfig.readonly
+								? (fieldConfig.predefinedValue ?? '')
+								: (value ?? '')
+						}
 						onChange={(e) => handleChange(e.target.value)}
 						{...commonFieldProps}
 						helperText={error || helperText}
 						inputProps={{
 							autoComplete: type === 'email' ? 'email' : 'off',
+							readOnly: fieldConfig.readonly,
 						}}
+						disabled={disabled || fieldConfig.readonly}
 					/>
 				</Stack>
 			);
@@ -255,15 +268,19 @@ export const KlubiqTSFormFields: React.FC<{
 					<TextareaAutosize
 						aria-label={hasInlineLabel ? label : undefined}
 						placeholder={fieldConfig.placeholder}
-						value={value ?? ''}
+						value={
+							fieldConfig.readonly
+								? (fieldConfig.predefinedValue ?? '')
+								: (value ?? '')
+						}
 						onChange={(e) => handleChange(e.target.value)}
 						onBlur={() => field.handleBlur()}
-						disabled={disabled}
+						disabled={disabled || fieldConfig.readonly}
 						minRows={fieldConfig.rows || 4}
 						style={{
 							width: '100%',
 							borderRadius: '0.5rem',
-							cursor: 'text',
+							cursor: fieldConfig.readonly ? 'default' : 'text',
 							padding: '16.5px 14px',
 							font: 'inherit',
 							fontSize: 'inherit',
@@ -273,7 +290,9 @@ export const KlubiqTSFormFields: React.FC<{
 							letterSpacing: 'inherit',
 							color: 'inherit',
 							border: error ? '1px solid #d32f2f' : '1px solid inherit',
+							opacity: fieldConfig.readonly ? 0.7 : 1,
 						}}
+						readOnly={fieldConfig.readonly}
 					/>
 					{renderHelperText(error, helperText)}
 				</Stack>
@@ -287,7 +306,11 @@ export const KlubiqTSFormFields: React.FC<{
 						type='text'
 						label={hasInlineLabel ? label : undefined}
 						placeholder={fieldConfig.placeholder}
-						value={value ?? ''}
+						value={
+							fieldConfig.readonly
+								? (fieldConfig.predefinedValue ?? '')
+								: (value ?? '')
+						}
 						onChange={(e) => {
 							const { value } = e.target;
 							if (/^\d*$/.test(value)) {
@@ -301,12 +324,14 @@ export const KlubiqTSFormFields: React.FC<{
 							autoComplete: 'off',
 							inputMode: 'numeric',
 							pattern: '[0-9]*',
+							readOnly: fieldConfig.readonly,
 							onKeyPress: (e) => {
 								if (!/[\d]/.test(e.key)) {
 									e.preventDefault();
 								}
 							},
 						}}
+						disabled={disabled || fieldConfig.readonly}
 					/>
 				</Stack>
 			);
@@ -316,7 +341,9 @@ export const KlubiqTSFormFields: React.FC<{
 					<FormControlLabel
 						control={
 							<Checkbox
-								checked={!!value}
+								checked={
+									fieldConfig.readonly ? fieldConfig.predefinedValue : !!value
+								}
 								onChange={(e) => {
 									handleChange(e.target.checked);
 									if (
@@ -330,7 +357,7 @@ export const KlubiqTSFormFields: React.FC<{
 								onBlur={() => {
 									field.handleBlur();
 								}}
-								disabled={disabled}
+								disabled={disabled || fieldConfig.readonly}
 							/>
 						}
 						label={hasInlineLabel ? label : ''}
@@ -358,9 +385,11 @@ export const KlubiqTSFormFields: React.FC<{
 									control={
 										<Checkbox
 											checked={
-												Array.isArray(value)
-													? value.includes(option.value)
-													: false
+												fieldConfig.readonly
+													? fieldConfig.predefinedValue?.includes(option.value)
+													: Array.isArray(value)
+														? value.includes(option.value)
+														: false
 											}
 											onChange={(e) => {
 												const checked = e.target.checked;
@@ -382,7 +411,7 @@ export const KlubiqTSFormFields: React.FC<{
 											onBlur={() => {
 												field.handleBlur();
 											}}
-											disabled={disabled}
+											disabled={disabled || fieldConfig.readonly}
 										/>
 									}
 									label={option.label}
@@ -398,7 +427,7 @@ export const KlubiqTSFormFields: React.FC<{
 					{renderLabel(label, isRequired, hasInlineLabel)}
 					<RadioGroup
 						row={!!((fieldConfig as any)?.radioGroupDirection === 'row')}
-						value={value}
+						value={fieldConfig.readonly ? fieldConfig.predefinedValue : value}
 						onChange={(e) => {
 							handleChange(e.target.value);
 							if (
@@ -418,7 +447,9 @@ export const KlubiqTSFormFields: React.FC<{
 									<FormControlLabel
 										key={option.value}
 										value={option.value}
-										control={<Radio disabled={disabled} />}
+										control={
+											<Radio disabled={disabled || fieldConfig.readonly} />
+										}
 										label={option.label}
 									/>
 								))
@@ -441,7 +472,7 @@ export const KlubiqTSFormFields: React.FC<{
 						renderLabel(label, isRequired, hasInlineLabel)
 					)}
 					<Select
-						value={value}
+						value={fieldConfig.readonly ? fieldConfig.predefinedValue : value}
 						placeholder={fieldConfig.placeholder}
 						onChange={(e) => {
 							handleChange(e.target.value);
@@ -458,7 +489,7 @@ export const KlubiqTSFormFields: React.FC<{
 						}}
 						label={hasInlineLabel ? label : undefined}
 						multiple={!!fieldConfig.multiple}
-						disabled={disabled}
+						disabled={disabled || fieldConfig.readonly}
 					>
 						{options.map((option: any) => (
 							<MenuItem key={option.value} value={option.value}>
@@ -474,7 +505,11 @@ export const KlubiqTSFormFields: React.FC<{
 				<Stack spacing={1}>
 					{renderLabel(label, isRequired, hasInlineLabel)}
 					<Slider
-						value={value ?? fieldConfig.min ?? 0}
+						value={
+							fieldConfig.readonly
+								? (fieldConfig.predefinedValue ?? fieldConfig.min ?? 0)
+								: (value ?? fieldConfig.min ?? 0)
+						}
 						onChange={(_, newValue) => {
 							handleChange(newValue);
 							if (
@@ -491,7 +526,7 @@ export const KlubiqTSFormFields: React.FC<{
 						min={fieldConfig.min}
 						max={fieldConfig.max}
 						step={fieldConfig.step}
-						disabled={disabled}
+						disabled={disabled || fieldConfig.readonly}
 						valueLabelDisplay='auto'
 						aria-labelledby={label}
 					/>
@@ -500,27 +535,50 @@ export const KlubiqTSFormFields: React.FC<{
 			);
 		case 'date':
 			return (
-				<DatePicker
-					label={label}
-					value={value}
-					onChange={(newValue) => {
-						handleChange(newValue);
-						if (
-							isArraySubField &&
-							arrayFieldName !== undefined &&
-							arrayIndex !== undefined
-						) {
-							debouncedValidate(arrayFieldName);
-						}
-					}}
-					slotProps={{
-						textField: {
-							fullWidth: true,
-							error: !!error,
-							helperText: error || helperText,
-						},
-					}}
-				/>
+				<FormControl>
+					<Stack spacing={1}>
+						{renderLabel(label, isRequired, hasInlineLabel)}
+						<DatePicker
+							label={hasInlineLabel ? label : undefined}
+							value={
+								fieldConfig.readonly
+									? fieldConfig.predefinedValue
+									: value
+										? dayjs(value)
+										: null
+							}
+							onChange={(newValue) => {
+								if (newValue && dayjs.isDayjs(newValue)) {
+									handleChange(newValue.toDate());
+								} else {
+									handleChange(null);
+								}
+								if (
+									isArraySubField &&
+									arrayFieldName !== undefined &&
+									arrayIndex !== undefined
+								) {
+									debouncedValidate(arrayFieldName);
+								}
+							}}
+							sx={{
+								borderRadius: '0.5rem',
+							}}
+							slotProps={{
+								textField: {
+									fullWidth: true,
+									error: !!error,
+									helperText: error || helperText,
+									disabled: disabled || fieldConfig.readonly,
+									inputProps: {
+										readOnly: fieldConfig.readonly,
+									},
+								},
+							}}
+							disabled={disabled || fieldConfig.readonly}
+						/>
+					</Stack>
+				</FormControl>
 			);
 		case 'address':
 			return (
@@ -688,14 +746,17 @@ export const KlubiqTSFormFields: React.FC<{
 						type={showPassword ? 'text' : 'password'}
 						label={hasInlineLabel ? label : undefined}
 						placeholder={fieldConfig.placeholder}
-						value={value}
+						value={
+							fieldConfig.readonly ? (fieldConfig.predefinedValue ?? '') : value
+						}
 						onChange={(e) => handleChange(e.target.value)}
 						onBlur={() => field.handleBlur()}
 						error={!!error}
 						helperText={error || helperText}
-						disabled={disabled}
+						disabled={disabled || fieldConfig.readonly}
 						inputProps={{
 							autoComplete: 'current-password',
+							readOnly: fieldConfig.readonly,
 						}}
 						InputProps={{
 							endAdornment: (
@@ -704,6 +765,7 @@ export const KlubiqTSFormFields: React.FC<{
 										aria-label='toggle password visibility'
 										onClick={() => setShowPassword(!showPassword)}
 										edge='end'
+										disabled={disabled || fieldConfig.readonly}
 									>
 										{showPassword ? <VisibilityOff /> : <Visibility />}
 									</IconButton>
@@ -785,7 +847,10 @@ export const KlubiqTSFormFields: React.FC<{
 						}}
 						error={!!error}
 						helperText={error || helperText}
-						disabled={disabled}
+						disabled={disabled || fieldConfig.readonly}
+						inputProps={{
+							readOnly: fieldConfig.readonly,
+						}}
 						InputProps={{
 							...(fieldConfig.adornment && {
 								startAdornment: fieldConfig.adornment.prefix && (
