@@ -424,7 +424,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		);
 	};
 
-	const validateField = (
+	const validateFieldValue = (
 		value: any,
 		field: FormFieldV1,
 		formValues: any,
@@ -433,7 +433,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		try {
 			const schema = getFieldSchema(field, formValues, fullPath);
 			if (schema) {
-				// For group fields, we need to validate the entire group object
 				if (field.type === 'group') {
 					const groupValue = formValues[field.name] || {};
 					schema.parse(groupValue);
@@ -450,35 +449,58 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	};
 
-	const validateDependencies = async (
+	const validateFieldDependencies = async (
 		value: any,
 		field: FormFieldV1,
 		formValues: any,
 	) => {
 		if (field.validation?.dependencies) {
 			for (const dep of field.validation.dependencies) {
-				const dependentValue = formValues[dep.field];
+				const fieldPath = dep.field.split('.');
+				const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], formValues);
+				const dependentValue = dependentFieldValue;
+
 				if (dep.type === 'min' && value <= dependentValue) {
-					return (
-						dep.message || `${field.label} must be greater than ${dep.field}`
-					);
+					return dep.message || `${field.label} must be greater than ${dep.field}`;
 				} else if (dep.type === 'max' && value >= dependentValue) {
-					return (
-						dep.message || `${field.label} must be less than ${dep.field}`
-					);
+					return dep.message || `${field.label} must be less than ${dep.field}`;
 				} else if (dep.type === 'equals' && value !== dependentValue) {
-					return (
-						dep.message || `${field.label} must be equal to ${dep.field}`
-					);
+					return dep.message || `${field.label} must be equal to ${dep.field}`;
 				} else if (dep.type === 'notEquals' && value === dependentValue) {
-					return (
-						dep.message || `${field.label} must be not equal to ${dep.field}`
-					);
+					return dep.message || `${field.label} must be not equal to ${dep.field}`;
 				}
 			}
 		}
 		return undefined;
 	};
+
+	const getFieldValidators = (field: FormFieldV1, formValues: any, fullPath: string) => ({
+		onChange: ({ value }: { value: any }) => {
+			try {
+				if (field.type === 'group') {
+					// For group fields, update the parent object
+					const parentValue = formValues[field.name] || {};
+					const newParentValue = {
+						...parentValue,
+						[field.name]: value,
+					};
+					form.setFieldValue(field.name, newParentValue);
+					setTimeout(() => validateCurrentStep(), 0);
+				}
+				return validateFieldValue(value, field, formValues, fullPath);
+			} catch (error) {
+				if (error instanceof z.ZodError) {
+					return error.errors[0].message;
+				}
+				return `${field.label} is invalid`;
+			}
+		},
+		onChangeAsync: async ({ value }: { value: any }) => {
+			return validateFieldDependencies(value, field, formValues);
+		},
+		onChangeAsyncDebounceMs: 500,
+	});
+
 	const confirmSubmission = async () => {
 		form.setFieldValue('filesWaitingForUpload', 0);
 		setShowPreSubmitDialog(false);
@@ -799,53 +821,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							key={`${field.name}-${idx}`}
 							name={field.name}
 							mode='array'
-							validators={{
-								onChange: () => {
-									try {
-										setTimeout(() => {
-											validateCurrentStep();
-										}, 0);
-										return undefined;
-									} catch (error) {
-										if (error instanceof z.ZodError) {
-											return error.errors[0].message;
-										}
-										return `${field.label} is invalid`;
-									}
-								},
-								onChangeAsync: async ({ value }) => {
-									if (field.validation?.dependencies) {
-										for (const dep of field.validation.dependencies) {
-											const fieldPath = dep.field.split('.');
-											const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
-											const dependentValue =
-												dependentFieldValue;
-											if (dep.type === 'min' && value <= dependentValue) {
-												return (
-													dep.message ||
-													`${field.label} must be greater than ${dep.field}`
-												);
-											} else if (dep.type === 'max' && value >= dependentValue) {
-												return (
-													dep.message ||
-													`${field.label} must be less than ${dep.field}`
-												);
-											} else if (dep.type === 'equals' && value !== dependentValue) {
-												return (
-													dep.message ||
-													`${field.label} must be equal to ${dep.field}`
-												);
-											} else if (dep.type === 'notEquals' && value === dependentValue) {
-												return (
-													dep.message ||
-													`${field.label} must be not equal to ${dep.field}`
-												);
-											}
-										}
-									}
-									return undefined;
-								},
-							}}
+							validators={getFieldValidators(field, form.state.values, field.name)}
 						>
 							{(fieldApi) => (
 								<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
@@ -933,58 +909,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 													<form.Field
 														key={`ff-${fieldPath}-${index}`}
 														name={fieldPath}
-														validators={{
-															onChange: ({ value }) => {
-																try {
-																	if (subField.validation?.schema) {
-																		subField.validation.schema.parse(value);
-																	}
-																	// Update the parent group object
-																	const parentValue =
-																		form.state.values[field.name] || {};
-																	const newParentValue = {
-																		...parentValue,
-																		[subField.name]: value,
-																	};
-																	form.setFieldValue(
-																		field.name,
-																		newParentValue,
-																	);
-																	// Force validation after state update
-																	setTimeout(() => {
-																		validateCurrentStep();
-																	}, 0);
-																	return undefined;
-																} catch (error) {
-																	if (error instanceof z.ZodError) {
-																		return error.errors[0].message;
-																	}
-																	return 'Invalid value';
-																}
-															},
-															onChangeAsync: async ({ value }) => {
-																if (subField.validation?.dependencies) {
-																	for (const dep of subField.validation
-																		.dependencies) {
-																		const fieldPath = dep.field.split('.');
-																		const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
-																		const dependentValue =
-																			dependentFieldValue;
-																		if (
-																			dep.type === 'min' &&
-																			value <= dependentValue
-																		) {
-																			console.log('dep.message is less than value', dep.message);
-																			return (
-																				dep.message ||
-																				`${subField.label} must be greater than ${dep.field}`
-																			);
-																		}
-																	}
-																}
-																return undefined;
-															},
-														}}
+														validators={getFieldValidators(subField, form.state.values, fieldPath)}
 													>
 														{(subFieldApi) => (
 															<KlubiqTSFormFields
@@ -1009,12 +934,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					<form.Field
 						key={field.name}
 						name={field.name}
-						validators={{
-							onChange: ({ value }) =>
-								validateField(value, field, form.state.values, field.name),
-							onChangeAsync: async ({ value }) =>
-								validateDependencies(value, field, form.state.values),
-						}}
+						validators={getFieldValidators(field, form.state.values, field.name)}
 					>
 						{(fieldApi) => (
 							<KlubiqTSFormFields
@@ -1060,38 +980,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									key={field.name}
 									name={field.name}
 									mode='array'
-									validators={{
-										onChange: ({ value }) => {
-											try {
-												if (field.validation?.schema) {
-													field.validation.schema.parse(value);
-												}
-												return undefined;
-											} catch (error) {
-												if (error instanceof z.ZodError) {
-													return error.errors[0].message;
-												}
-												return `${field.label} is invalid`;
-											}
-										},
-										onChangeAsync: async ({ value }) => {
-											if (field.validation?.dependencies) {
-												for (const dep of field.validation.dependencies) {
-													const fieldPath = dep.field.split('.');
-													const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
-													const dependentValue =
-														dependentFieldValue;
-													if (dep.type === 'min' && value <= dependentValue) {
-														return (
-															dep.message ||
-															`${field.label} must be greater than ${dep.field}`
-														);
-													}
-												}
-											}
-											return undefined;
-										},
-									}}
+									validators={getFieldValidators(field, values, field.name)}
 								>
 									{(fieldApi) => (
 										<Stack key={field.name} direction='column' gap={1}>
@@ -1163,55 +1052,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 														<form.Field
 															key={`ff-${fieldPath}-${index}`}
 															name={fieldPath}
-															validators={{
-																onChange: ({ value }) => {
-																	try {
-																		if (subField.validation?.schema) {
-																			subField.validation.schema.parse(value);
-																		}
-																		// Update the parent group object
-																		const parentValue =
-																			form.state.values[field.name] || {};
-																		const newParentValue = {
-																			...parentValue,
-																			[subField.name]: value,
-																		};
-																		form.setFieldValue(
-																			field.name,
-																			newParentValue,
-																		);
-																		return undefined;
-																	} catch (error) {
-																		if (error instanceof z.ZodError) {
-																			return error.errors[0].message;
-																		}
-																		return 'Invalid value';
-																	}
-																},
-																onChangeAsync: async ({ value }) => {
-																	if (subField.validation?.dependencies) {
-																		for (const dep of subField.validation
-																			.dependencies) {
-																			const fieldPath = dep.field.split('.');
-																			const dependentFieldValue = fieldPath.reduce((acc, curr) => acc[curr], form.state.values);
-																			const dependentValue =
-																				dependentFieldValue;
-																			if (
-																				dep.type === 'min' &&
-																				value <= dependentValue
-																			) {
-																				console.log('dep.message is less than value', dep.message);
-																				return (
-																					dep.message ||
-																					`${subField.label} must be greater than ${dep.field}`
-																				);
-																			}
-																		}
-																	}
-																	return undefined;
-																},
-																onChangeAsyncDebounceMs: 500,
-															}}
+															validators={getFieldValidators(subField, values, fieldPath)}
 														>
 															{(subFieldApi) => (
 																<KlubiqTSFormFields
@@ -1235,13 +1076,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							<form.Field
 								key={field.name}
 								name={field.name}
-								validators={{
-									onChange: ({ value }) =>
-										validateField(value, field, values, field.name),
-									onChangeAsync: async ({ value }) =>
-										validateDependencies(value, field, values),
-									onChangeAsyncDebounceMs: 500,
-								}}
+								validators={getFieldValidators(field, values, field.name)}
 							>
 								{(fieldApi) => (
 									<KlubiqTSFormFields
