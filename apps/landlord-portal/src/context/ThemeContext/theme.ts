@@ -81,13 +81,13 @@ export const LightTheme: Theme = createTheme({
 			main: primaryColors.mainBlue,
 			light: primaryColors.lightBlue,
 			dark: primaryColors.mainBlue,
-			contrastText: primaryColors.white, 
+			contrastText: primaryColors.black, 
 		},
 		secondary: {
 			main: secondaryColors.yellow,
 			light: secondaryColors.blue,
 			dark: backgroundColors.dark,
-			contrastText: primaryColors.white,
+			contrastText: primaryColors.black,
 		},
 		background: {
 			default: backgroundColors.light,
@@ -101,12 +101,27 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		// error:{},
+		error:{
+			main: '#FF0000',
+			light: '#FF0000',
+			dark: '#FF0000',
+		},
 		// warning:{},
 		// info:{},
 		// success:{},
 	},
 	components: {
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.mainBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
@@ -338,7 +353,7 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-
+	
 		MuiOutlinedInput: {
 			styleOverrides: {
 				root: {
@@ -361,7 +376,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: primaryColors.white,
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
 
@@ -517,12 +532,54 @@ export const LightTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
+		upTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #17B26A',
+			color: '#17B26A',
+			backgroundColor: 'rgba(236,253,243)',
+		},
+		downTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #FF0000',
+			color: '#FF0000',
+			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+
+		},
+		neutralTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #49a0e3',
+			color: '#49a0e3',
+			backgroundColor: '#c2daed',
+		},
 		dashboardTypography: {
 			fontWeight: 800,
-			// fontSize: '1rem',
+			fontSize: '1.5rem',
 			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
-			fontSize: '1rem',
 		},
 		button: {
 			textTransform: 'none',
@@ -593,6 +650,17 @@ export const DarkTheme: Theme = createTheme({
 	},
 
 	components: {
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.lightBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
@@ -870,7 +938,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: '#161616',
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},
@@ -1009,6 +1077,15 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
+		},
+		upTrendIndicator: {
+			color: '#0088F0',
+		},
+		downTrendIndicator: {
+			color: '#FF0000',
+		},
+		neutralTrendIndicator: {
+			color: '#000000',
 		},
 		dashboardTypography: {
 			fontWeight: 800,

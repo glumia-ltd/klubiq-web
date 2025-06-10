@@ -1,4 +1,4 @@
-import { LoadingSubmitButton, SubmitButton } from '../../../styles/button';
+import { LoadingSubmitButton } from '../../../styles/button';
 import { Box, Button, Modal, Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useFormik } from 'formik';
@@ -109,7 +109,7 @@ const ForgotPassword = () => {
 									Set Password
 								</LoadingSubmitButton>
 							) : (
-								<SubmitButton type='submit'> Set Password </SubmitButton>
+								<Button fullWidth variant='klubiqMainButton' type='submit'> Set Password </Button>
 							)}
 						</Box>
 					</Stack>

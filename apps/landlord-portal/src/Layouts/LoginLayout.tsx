@@ -4,15 +4,14 @@ import style from './style';
 
 type LoginLayoutType = {
 	children: JSX.Element;
-	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+	// handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 };
 
-const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
+const LoginLayout: FC<LoginLayoutType> = ({ children }) => {
 	return (
 		<Grid
 			container
 			spacing={0}
-			component='form'
 			sx={{
 				justifyContent: 'center',
 				height: '100vh',
@@ -23,7 +22,7 @@ const LoginLayout: FC<LoginLayoutType> = ({ children, handleSubmit }) => {
 					lg: 0,
 				},
 			}}
-			onSubmit={handleSubmit}
+			// onSubmit={handleSubmit}
 			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
 		>
 			{children}

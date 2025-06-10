@@ -148,7 +148,7 @@ const SideBar = () => {
 			variants={drawerVariants}
 			open={sidebarOpen}
 			onMouseEnter={() => setSidebarOpen(true)}
-			onMouseLeave={() => setSidebarOpen(true)}
+			onMouseLeave={() => setSidebarOpen(false)}
 			onTransitionEnd={handleDrawerTransitionEnd}
 			onClose={handleDrawerClose}
 			sx={sidebarOpen ? openDrawerStyles : closedDrawerStyles}

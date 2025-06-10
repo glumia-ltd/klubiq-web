@@ -12,7 +12,7 @@ const AddLeasePage = () => {
 	const unitId = query.get('unit');
 
 	return (
-		<AddPropertiesInformationLayout>
+		<AddPropertiesInformationLayout backButtonText='Leases'>
 			<AddLeaseForm propertyId={propertyId || ''} unitId={unitId || ''} />
 		</AddPropertiesInformationLayout>
 	);

@@ -1,18 +1,14 @@
 import { RootState } from '@/store';
-import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 const TenantDashboard = () => {
 	const { user } = useSelector((state: RootState) => state.auth);
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-			<Typography variant='h6'>Welcome {user.firstname}</Typography>
+			<Typography variant='h3'>Welcome {user.firstname}</Typography>
 			<Card>
 				<CardContent>
-					<Typography variant='body2'>
-						Your account has been created successfully. You can now start using the app.
-					</Typography>
-					<Divider />
 					<Typography variant='subtitle2'>
 						Name: {user.firstname} {user.lastname}
 					</Typography>
