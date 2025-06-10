@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Add } from '@mui/icons-material';
+import { Add, Close } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -14,6 +14,7 @@ import {
   MenuItem,
   ListItemText,
   FormControl,
+  IconButton,
 } from '@mui/material';
 import { KlubiqTSFormFields } from '@klubiq/ui-components';
 
@@ -30,6 +31,7 @@ export const AmenitiesDialog: React.FC<AmenitiesDialogProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [customAmenity, setCustomAmenity] = useState('');
+  const [openSelect, setOpenSelect] = useState(false);
   // Use a local copy of options to allow adding custom amenities
   const [options, setOptions] = useState(field.fieldConfig.options || []);
   
@@ -66,15 +68,30 @@ export const AmenitiesDialog: React.FC<AmenitiesDialogProps> = ({
        <Select
           multiple
           value={value}
+          open={openSelect}
+          onOpen={() => setOpenSelect(true)}
+          onClose={() => setOpenSelect(false)}
           onChange={(e) => field.handleChange(e.target.value as string[])}
           displayEmpty
-          renderValue={() => `${value.length} amenitie${value.length > 1 ? 's' : ''} selected`}
+          renderValue={() => `${value.length > 0 ? `${value.length} amenit${value.length > 1 ? 'ies' : 'y'} selected` : 'Select amenities'}`}
           sx={{
             '& .MuiSelect-select': {
               p: 1,
             },
           }}
         >
+          <Stack direction='row' justifyContent='flex-end' sx={{ p: 0,}}>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenSelect(false);
+              }}
+              sx={{ mr: 1 }}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </Stack>
           {(field.fieldConfig.options || []).map((option: any) => (
             <MenuItem key={option.value} value={option.value}>
               <Checkbox

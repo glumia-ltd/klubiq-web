@@ -50,6 +50,19 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		scope: '/',
 		start_url: '/',
 		orientation: 'portrait',
+		display_override: ['window-controls-overlay'],
+		edge_side_panel: {
+			preferred_width: 400
+		},
+		launch_handler: {
+			client_mode: ['auto', 'focus-existing']
+		},
+		prefer_related_applications: false,
+		related_applications: [],
+		shortcuts: [],
+		screenshots: [],
+		lang: 'en',
+		dir: 'ltr',
 	},
 	workbox: {
 		globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
@@ -216,9 +229,22 @@ export default ({ mode }: { mode: any }) => {
 		},
 		build: {
 			outDir: 'dist',
-			sourcemap: true,
+			sourcemap: mode === 'local' || mode === 'test',
+			minify: 'terser',
+			terserOptions: {
+				compress: {
+					drop_console: mode === 'development',
+					drop_debugger: mode === 'development',
+				},
+			},
+			rollupOptions: {
+				output: {
+					manualChunks: {
+						vendor: ['react', 'react-dom', 'react-router-dom'],
+					},
+				},
+			},
 		},
-
 		server: {
 			port: 5173,
 			host: true,
