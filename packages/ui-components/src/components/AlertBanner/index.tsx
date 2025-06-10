@@ -31,7 +31,7 @@ const AlertBanner = ({
       open={isOpen}
       autoHideDuration={autoHideDuration}
       onClose={handleClose}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <Alert onClose={handleClose} {...alertProps}>
         {message}

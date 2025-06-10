@@ -276,6 +276,12 @@ const getResidentialUnitFields = (
 		label: 'Bedrooms',
 		required: true,
 		width: isMobile ? '100%' : '48%',
+		validation: {
+			schema: z
+				.number({ message: 'Bedrooms must be a number' })
+				.min(1, { message: 'Bedrooms must be greater than 0' })
+				.nullable(),
+		},
 	},
 	...getGeneralUnitFields(z, isMobile),
 	customAmenitiesField,
@@ -756,6 +762,12 @@ export const CreateProperty = () => {
 							customComponent: (fieldApi, fieldConfig, form) => {
 								const debouncedValidate = useDebounce(() => {
 									form.validateField('address');
+									form.validateField('address.addressLine1');
+									form.validateField('address.addressLine2');
+									form.validateField('address.country');
+									form.validateField('address.state');
+									form.validateField('address.city');
+									form.validateField('address.postalCode');
 								}, 500); // 500ms delay
 
 								return (
@@ -961,7 +973,7 @@ export const CreateProperty = () => {
 	}
 	const handleCreateLeaseClick = (formData: any, result: any) => {
 		consoleLog('createLease', formData, result);
-		navigate(`/leases/add-lease?property=${result?.uuid}`);
+		navigate(`/leases/add-lease?property=${result?.uuid}&unit=${result?.units?.[0]?.id}`);
 	}
 	const handleAllPropertiesClick = () => {
 		navigate('/properties');

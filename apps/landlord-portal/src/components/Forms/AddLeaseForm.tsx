@@ -29,6 +29,7 @@ import { TenantDialog } from '../CustomFormComponents/TenantDialog';
 import { Close, Info } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+
 function renderPropertySelectField(fieldApi: any, fieldConfig: any, form: any) {
 	const options = Array.isArray(fieldConfig.options)
 		? fieldConfig.options
@@ -315,7 +316,9 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			return '';
 		}
 
-		const startDayAndMonth = dayjs(values?.leaseDates?.start).format('MMMM DD, YYYY');
+		const startDayAndMonth = dayjs(values?.leaseDates?.start).format(
+			'MMMM DD, YYYY',
+		);
 		const monthDueDate = dayjs(values?.leaseDates?.start)
 			.add(1, 'month')
 			.set('date', values?.rentDueDay || 1);
@@ -581,7 +584,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				}),
 			);
 			return await addLease(requestBody).unwrap();
-			
 		} catch (error) {
 			const errorMessage = (error as any)?.message;
 			dispatch(
@@ -598,14 +600,13 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 
 	const handleAllLeasesClick = () => {
 		navigate('/leases');
-	}
+	};
 	const handleViewLeaseClick = (_: any, result: any) => {
 		navigate(`/leases/${result?.id}`);
-	}
+	};
 	const handleViewTenantsClick = () => {
 		navigate(`/tenants`);
-	}
-
+	};
 	const leaseFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		submitButtonText: 'Add Lease',
@@ -620,10 +621,11 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
+		// header: renderHeader(),
 		nextAction: {
 			title: 'Lease Created',
 			description: 'Your new lease was created successfully and ready for use',
-			closeIcon:  <Close />,
+			closeIcon: <Close />,
 			onClose: handleAllLeasesClick,
 			buttons: [
 				{

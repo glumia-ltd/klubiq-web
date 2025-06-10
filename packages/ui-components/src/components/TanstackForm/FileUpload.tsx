@@ -144,8 +144,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		// If we have files with storage results, preserve them even if value is empty
 		const hasStorageResults = localFiles.some((file) => file.storageResult);
 		// If we have storage results, always preserve the files
-		const filesWaitingForUpload = (localFiles?.length || 0 - form?.getFieldValue(fieldName)?.length || 0);
+		const filesWaitingForUpload = localFiles.length - form?.getFieldValue(fieldName)?.length;
 		form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
+		localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
+		console.log('filesWaitingForUpload', filesWaitingForUpload);
 
 		if (hasStorageResults) {
 			setHasUploadedFiles(true);
@@ -436,7 +438,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	};
 	const handleDelete = async (index: number) => {
 		const fileToDelete = localFiles[index];
-
 		try {
 			setIsDeleting(true);
 			setDeleteProgress(0);
@@ -472,11 +473,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 					dataTransfer.items.add(file);
 				}
 			});
-
+			const localFilesCount = newFiles.length;
 			// Update form value
 			onChange(dataTransfer.files);
 			setLocalFiles(newFiles);
-
+			// If we have storage results, always preserve the files
+			const filesWaitingForUpload = localFilesCount - form?.getFieldValue(fieldName)?.length;
+			form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
+			localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
 			clearInterval(deleteProgressInterval);
 			setDeleteProgress(100);
 			setSnackbar({
@@ -557,7 +561,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			});
 
 			const storageResults = await onUpload(formData);
-
+			const uploadedFilesCount = storageResults.length;
 			// Update local files with storage results while preserving existing state
 			const updatedFiles = localFiles.map((file, index) => {
 				const storageResult = storageResults[index];
@@ -568,6 +572,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 					isFavorite: file.isFavorite,
 					storageResult: storageResult,
 				};
+				form?.setFieldValue('filesWaitingForUpload', 0);
+				localStorage.setItem('filesWaitingForUpload', '0');
 
 				// Clean up blob URL if we now have a storage URL
 				if (file.preview && (storageResult?.secure_url || storageResult?.url)) {
@@ -576,7 +582,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 				return updatedFile;
 			});
-
 
 			// Update local state first
 			setLocalFiles(updatedFiles);
@@ -608,7 +613,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// Don't update the form value with an empty FileList
 			// This was causing localFiles to be cleared
 			// onChange(dataTransfer.files);
-
+			// If we have storage results, always preserve the files
+			
 			clearInterval(progressInterval);
 			setUploadProgress(100);
 
@@ -846,14 +852,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 								justifyContent='flex-end'
 								alignItems='center'
 							>
-								{!hasUploadedFiles && (<Button
-									variant='klubiqMainButton'
-									onClick={handleUpload}
-									disabled={isUploading || hasUploadedFiles}
-									startIcon={<Upload />}
-								>
-									{isUploading ? 'Uploading...': uploadButtonText}
-								</Button>)}
+								{!hasUploadedFiles && (
+									<Button
+										variant='klubiqMainButton'
+										onClick={handleUpload}
+										disabled={isUploading || hasUploadedFiles}
+										startIcon={<Upload />}
+									>
+										{isUploading ? 'Uploading...' : uploadButtonText}
+									</Button>
+								)}
 							</Stack>
 							{isUploading && (
 								<Box sx={{ width: '100%', mt: 1 }}>
@@ -895,7 +903,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				open={snackbar.open}
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
-				anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 				sx={{
 					'& .MuiAlert-root': {
 						width: '100%',

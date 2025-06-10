@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
   ListItemText,
+  FormControl,
 } from '@mui/material';
 import { KlubiqTSFormFields } from '@klubiq/ui-components';
 
@@ -61,12 +62,13 @@ export const AmenitiesDialog: React.FC<AmenitiesDialogProps> = ({
   return (
     <Stack spacing={1}>
       <Stack spacing={1}>
-        <Select
+       <FormControl fullWidth>
+       <Select
           multiple
           value={value}
           onChange={(e) => field.handleChange(e.target.value as string[])}
           displayEmpty
-          renderValue={() => 'Select amenities'}
+          renderValue={() => `${value.length} amenitie${value.length > 1 ? 's' : ''} selected`}
           sx={{
             '& .MuiSelect-select': {
               p: 1,
@@ -87,6 +89,7 @@ export const AmenitiesDialog: React.FC<AmenitiesDialogProps> = ({
             </MenuItem>
           ))}
         </Select>
+       </FormControl>
         <Box
           sx={{
             display: 'flex',

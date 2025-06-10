@@ -49,7 +49,7 @@ export default style;
 
 export const FormLayoutStyle = {
 	container: {
-		width: { xs: '100%', md: '90%' },
+		width: '100%',
 	},
 	headerContainer: {
 		backgroundColor: 'primary.main',
