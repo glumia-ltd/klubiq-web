@@ -278,9 +278,10 @@ const getResidentialUnitFields = (
 		width: isMobile ? '100%' : '48%',
 		validation: {
 			schema: z
-				.number({ message: 'Bedrooms must be a number' })
-				.min(1, { message: 'Bedrooms must be greater than 0' })
-				.nullable(),
+				.any({ message: 'No. of bedrooms is required' })
+				.refine((data: any) => data > 0, {
+					message: 'No. of bedrooms is required',
+				})
 		},
 	},
 	...getGeneralUnitFields(z, isMobile),
@@ -300,9 +301,10 @@ const getCommercialUnitFields = (
 		width: isMobile ? '100%' : '48%',
 		validation: {
 			schema: z
-				.number({ message: 'Offices must be a number' })
-				.min(1, { message: 'Offices must be greater than 0' })
-				.nullable(),
+				.any({ message: 'No. of offices is required' })
+				.refine((data: any) => data > 0, {
+					message: 'No. of offices is required',
+				})
 		},
 	},
 	...getGeneralUnitFields(z, isMobile),
@@ -322,9 +324,10 @@ const getHospitalityUnitFields = (
 		width: isMobile ? '100%' : '48%',
 		validation: {
 			schema: z
-				.number({ message: 'Rooms must be a number' })
-				.min(1, { message: 'Rooms must be greater than 0' })
-				.nullable(),
+				.any({ message: 'No. of rooms is required' })
+				.refine((data: any) => data > 0, {
+					message: 'No. of rooms is required',
+				})
 		},
 	},
 	...getGeneralUnitFields(z, isMobile),
