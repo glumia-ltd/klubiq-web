@@ -47,6 +47,7 @@
   "dependencies": {
     "@mui/x-data-grid": "^7.13.0",
     "@mui/x-date-pickers": "^7.29.1",
+    "buffer": "^6.0.3",
     "date-fns": "^3.6.0",
     "framer-motion": "^12.9.2",
     "react-qr-code": "^2.0.15",

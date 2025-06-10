@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../../Layouts/LoginLayout';
 import { BoldTextLink } from '../../../styles/links';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography, Button } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
@@ -17,6 +17,8 @@ import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 import { z } from 'zod';
+import { useBiometrics } from '../../../hooks/useBiometrics';
+import { Fingerprint } from '@mui/icons-material';
 
 type IValuesType = {
 	password: string;
@@ -33,10 +35,17 @@ const Login = () => {
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
+	const [email, setEmail] = useState('');
+	const { isAvailable, isRegistered, isLoading: isBiometricLoading, checkAvailability, register, authenticate } = useBiometrics();
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
 	const [signIn] = useSignInMutation();
+
+	useEffect(() => {
+		checkAvailability();
+	}, [checkAvailability]);
+
 	const verifyOTP = async () => {
 		setIsVerifying(true);
 		if (otp.length != 6) {
@@ -141,6 +150,42 @@ const Login = () => {
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
 	};
+
+	const handleBiometricLogin = async () => {
+		try {
+			if (!email) {
+				dispatch(
+					openSnackbar({
+						message: 'Please enter your email first',
+						severity: 'error',
+						isOpen: true,
+					}),
+				);
+				return;
+			}
+
+			if (!isRegistered) {
+				await register(email, {
+					rpName: 'Klubiq',
+					userName: email,
+					userDisplayName: email,
+				});
+			}
+			await authenticate(email);
+			// If authentication is successful, proceed with login
+			await signIn({ email, password: '' }).unwrap();
+			loadUserAfterSignIn();
+		} catch (error: any) {
+			dispatch(
+				openSnackbar({
+					message: error.message || 'Biometric authentication failed',
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+		}
+	};
+
 	const loginFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
@@ -196,8 +241,28 @@ const Login = () => {
 					</Typography>
 				),
 			},
+			{
+				name: 'biometric',
+				type: 'custom',
+				label: '',
+				component: isAvailable && (
+					<Button
+						fullWidth
+						variant="outlined"
+						startIcon={<Fingerprint />}
+						onClick={handleBiometricLogin}
+						disabled={isBiometricLoading}
+						sx={{ mt: 2 }}
+					>
+						{isBiometricLoading ? 'Authenticating...' : isRegistered ? 'Login with Biometrics' : 'Register Biometrics'}
+					</Button>
+				),
+			},
 		],
-		onSubmit: onSubmit,
+		onSubmit: async (values: IValuesType) => {
+			setEmail(values.email);
+			await onSubmit(values);
+		},
 		initialValues: {
 			email: '',
 			password: '',
