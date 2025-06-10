@@ -25,7 +25,7 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <Stack direction={{ sm: 'column', md: 'row' }} spacing={3} gap={3} justifyContent="space-between">
+      <Stack direction={{ sm: 'column', md: 'row' }} spacing={3} gap={3} justifyContent="space-between" width="100%">
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <Card
             key={`skeleton-${index}`}
@@ -34,7 +34,8 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({
               borderColor: 'primary.contrastText',
               borderRadius: 2,
               boxShadow: 'none',
-              minWidth: 200,
+              flex: 1,
+              minWidth: { sm: '100%', md: 0 },
               p: 4,
               textAlign: 'center',
             }}
@@ -51,7 +52,7 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({
   }
 
   return (
-    <Stack direction={{ sm: 'column', md: 'row' }} spacing={3} gap={3} justifyContent="space-between">
+    <Stack direction={{ sm: 'column', md: 'row' }} spacing={3} gap={3} justifyContent="space-between" width="100%">
       {options.map((option) => (
         <Card
           key={option.value}
@@ -64,6 +65,8 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({
             borderColor: value === option.value ? 'primary.light' : 'primary.contrastText',
             borderRadius: 2,
             boxShadow: 'none',
+            flex: 1,
+            minWidth: { sm: '100%', md: 0 },
             p: 4,
             textAlign: 'center',
             outline: value === option.value ? '2px solid primary.light' : '1px solid primary.contrastText',

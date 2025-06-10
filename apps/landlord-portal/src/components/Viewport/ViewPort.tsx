@@ -69,13 +69,18 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 
 					<Box
 						width={'100%'}
-						mt={'80px'}
-						mb={'40px'}
+						mt={10}
+						mb={5}
 						sx={{
 							display: 'flex',
 							flexDirection: 'column',
 							alignItems: 'center',
 							justifyContent: 'space-between',
+							px: {
+								xs: 1,
+								sm: 2,
+								md: 4,
+							}
 						}}
 					>
 						{children}

@@ -575,14 +575,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				firstPaymentDate: calculateDueDate(values),
 				unitNumber: values.property.unitNumber,
 			};
-			dispatch(
-				openSnackbar({
-					message: 'Lease created successfully',
-					severity: 'success',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
 			return await addLease(requestBody).unwrap();
 		} catch (error) {
 			const errorMessage = (error as any)?.message;

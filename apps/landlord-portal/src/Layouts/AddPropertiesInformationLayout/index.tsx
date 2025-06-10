@@ -14,9 +14,11 @@ const AddPropertiesInformationLayout: FC<{
 	};
 	return (
 		<Stack gap={2} direction='column'>
+			<Stack direction='row' justifyContent='flex-start' alignItems='center'>
 			<Button
 					sx={{
-						pl: 0,
+						width: 'auto',
+						p: 1,
 						justifyContent: 'flex-start',
 						alignItems: 'flex-start',
 						display: 'flex',
@@ -28,6 +30,7 @@ const AddPropertiesInformationLayout: FC<{
 				>
 					{backButtonText}
 				</Button>
+			</Stack>
 			<Stack  justifyContent='center' alignItems='center'>
 				{children}
 			</Stack>
