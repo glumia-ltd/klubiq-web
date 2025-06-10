@@ -75,9 +75,9 @@ const StepIconRoot = styled('div')<{
 	...(ownerState.completed && {
 		backgroundColor: theme.palette.success.main,
 	}),
-	...(ownerState.error && {
-		backgroundColor: theme.palette.error.main,
-	}),
+	// ...(ownerState.error && {
+	// 	backgroundColor: theme.palette.error.main,
+	// }),
 }));
 
 function StepIcon(props: StepIconProps) {
@@ -136,15 +136,15 @@ const CustomStepIcon = (props: StepIconProps & { step?: any }) => {
 					{step.icon.completedIcon}
 				</StepIconRoot>
 			);
-		if (error && step.icon?.errorIcon)
-			return (
-				<StepIconRoot
-					className='MuiStepIcon-root'
-					ownerState={{ active, completed, error }}
-				>
-					{step.icon.errorIcon}
-				</StepIconRoot>
-			);
+		// if (error && step.icon?.errorIcon)
+		// 	return (
+		// 		<StepIconRoot
+		// 			className='MuiStepIcon-root'
+		// 			ownerState={{ active, completed, error }}
+		// 		>
+		// 			{step.icon.errorIcon}
+		// 		</StepIconRoot>
+		// 	);
 		if (active && step.icon?.icon)
 			return (
 				<StepIconRoot
@@ -357,7 +357,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					val !== '0' &&
 					val !== 0
 				);
-			}, `${field.label} is required`);
+			}, `${field.label || 'This field'} is required`);
 		} else if (field.type === 'array') {
 			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
 		} else if (field.type === 'checkbox') {
@@ -368,13 +368,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					`${field.label} is required`,
 				);
 		} else if (field.type === 'select' && (field as any).multiple) {
-			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
+			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
 		} else if (field.type === 'radio') {
-			return z.string().min(field.required ? 1 : 0, `${field.label} is required`);
+			return z.string().min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
 		} else if (field.type === 'file') {
-			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
+			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
 		} else {
-			return z.string().min(field.required ? 1 : 0, `${field.label} is required`);
+			return z.string().min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
 		}
 	};
 
@@ -1300,7 +1300,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 											error={stepErrors[index]}
 										/>
 									)}
-									error={stepErrors[index]}
+									//error={stepErrors[index]}
 									optional={
 										'description' in step ? step.description : undefined
 									}

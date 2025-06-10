@@ -196,7 +196,7 @@ export const GooglePlacesAutocomplete: React.FC<
 						label={isInFieldLabel ? label : undefined}
 						fullWidth
 						error={error}
-						helperText={helperText}
+						// helperText={helperText}
 						onBlur={onBlur}
 						inputRef={inputRef}
 						{...props}
