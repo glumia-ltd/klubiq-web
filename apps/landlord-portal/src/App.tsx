@@ -36,10 +36,10 @@ function App() {
 	}, []);
 
 	return (
-		<ThemeContextProvider>
-			<AuthProvider>
-				<BreadcrumbProvider>
-					<LocalizationProvider dateAdapter={AdapterDayjs}>
+		<LocalizationProvider dateAdapter={AdapterDayjs}>
+			<ThemeContextProvider>
+				<AuthProvider>
+					<BreadcrumbProvider>
 						<AnimatePresence mode='wait'>
 							<PageTransition key={window.location.pathname}>
 								<RouterProvider router={router} />
@@ -56,10 +56,10 @@ function App() {
 								/>
 							</PageTransition>
 						</AnimatePresence>
-					</LocalizationProvider>
-				</BreadcrumbProvider>
-			</AuthProvider>
-		</ThemeContextProvider>
+					</BreadcrumbProvider>
+				</AuthProvider>
+			</ThemeContextProvider>
+		</LocalizationProvider>
 	);
 }
 
