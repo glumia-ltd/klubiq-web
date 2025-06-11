@@ -95,7 +95,7 @@ const ResetPassword = () => {
 	};
 
 	return (
-		<Stack item sx={styles.container}>
+		<Stack sx={styles.container}>
 			<Stack>
 				<Stack sx={{ justifyContent: 'center', alignItems: 'center' }}>
 					<img src={Logo} />
