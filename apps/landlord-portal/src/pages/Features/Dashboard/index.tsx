@@ -21,7 +21,6 @@ import { PropertiesGuage } from '../../../components/PropertiesGuage';
 import { styles } from './style';
 import {
 	indicatorColor,
-	indicatorBackground,
 	indicatorText,
 	showChangeArrow,
 	showTrendArrow,
