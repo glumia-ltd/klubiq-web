@@ -202,10 +202,7 @@ const Login = () => {
 			email: '',
 			password: '',
 		},
-		buttonLoadingText: 'Signing in...',
 		enableErrorAlert: true,
-		errorAlertTitle: 'Invalid credentials',
-		errorAlertMessage: 'Please check your email and password and try again.',
 	};
 	return (
 		<>

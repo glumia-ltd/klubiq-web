@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -101,14 +102,10 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		error:{
-			main: '#FF0000',
-			light: '#FF0000',
-			dark: '#FF0000',
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
 		},
-		// warning:{},
-		// info:{},
-		// success:{},
 	},
 	components: {
 		MuiTooltip: {
@@ -128,6 +125,34 @@ export const LightTheme: Theme = createTheme({
 					background: backgroundColors.light,
 					height: '100%',
 				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.mainBlue,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
 			},
 		},
 		MuiAlert: {
@@ -647,9 +672,40 @@ export const DarkTheme: Theme = createTheme({
 			default: backgroundColors.dark,
 			paper: backgroundColors.dark,
 		},
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
+		},
 	},
 
 	components: {
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
+			},
+		},
 		MuiTooltip: {
 			styleOverrides: {
 				tooltip: {
@@ -797,6 +853,7 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
+							color: primaryColors.white,
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
 						},

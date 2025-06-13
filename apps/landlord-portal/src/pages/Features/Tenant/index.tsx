@@ -57,9 +57,9 @@ const Tenant = () => {
 	};
 
 	const navigateToAddTenant = () => {
-		navigate('/tenants/invite-tenant', {
+		navigate('/tenants/add-tenant', {
 			state: {
-				mode: 'onboarding',
+				mode: 'create',
 				returnPath: '/tenants',
 			},
 		});
