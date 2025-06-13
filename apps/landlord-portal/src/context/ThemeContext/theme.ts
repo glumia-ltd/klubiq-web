@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -124,6 +125,34 @@ export const LightTheme: Theme = createTheme({
 					background: backgroundColors.light,
 					height: '100%',
 				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.mainBlue,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
 			},
 		},
 		MuiAlert: {
@@ -650,6 +679,33 @@ export const DarkTheme: Theme = createTheme({
 	},
 
 	components: {
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
+			},
+		},
 		MuiTooltip: {
 			styleOverrides: {
 				tooltip: {
