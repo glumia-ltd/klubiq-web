@@ -243,6 +243,7 @@ const InviteTenantForm = ({
 					label: 'Phone Number',
 					type: 'text',
 					width: isMobile ? '100%' : '48%',
+					placeholder: "Enter tenant's phone number",
 					validation: {
 						schema: z
 							.string()
@@ -370,6 +371,7 @@ const InviteTenantForm = ({
 					width: isMobile ? '100%' : '48%',
 					formatType: 'decimal',
 					required: true,
+					placeholder: "0.00",
 					decimals: 2,
 					adornment: {
 						prefix: getCurrencySymbol(user?.orgSettings),

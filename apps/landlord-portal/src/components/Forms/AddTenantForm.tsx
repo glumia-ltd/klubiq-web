@@ -210,6 +210,7 @@ const AddTenantForm = ({
 					label: 'Phone Number',
 					type: 'text',
 					width: isMobile ? '100%' : '48%',
+					placeholder: "Enter tenant's phone number",
 					validation: {
 						schema: z
 							.string()
@@ -244,6 +245,7 @@ const AddTenantForm = ({
 			type: 'textarea',
 			rows: 3,
 			required: false,
+			placeholder: "Enter any additional notes about the tenant",
 		},
 		{
 			name: 'leaseId',

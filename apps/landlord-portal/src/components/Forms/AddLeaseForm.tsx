@@ -354,6 +354,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			label: 'Lease Name',
 			type: 'text',
 			required: true,
+			placeholder: "Enter a lease name",
 			validation: {
 				schema: z.string({ message: 'Lease name is required' }).min(1, { message: 'Lease name is required' }),
 			},
@@ -425,6 +426,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 					formatType: 'decimal',
 					required: true,
 					decimals: 2,
+					placeholder: "0.00",
 					adornment: {
 						prefix: getCurrencySymbol(user?.orgSettings),
 					} as InputAdornmentType,
@@ -439,6 +441,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 					width: isMobile ? '100%' : '48%',
 					formatType: 'decimal',
 					decimals: 2,
+					placeholder: "0.00",
 					adornment: {
 						prefix: getCurrencySymbol(user?.orgSettings),
 					} as InputAdornmentType,
