@@ -358,7 +358,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		const returnPath = `/properties/${currentUUId}`;
 		const unit = currentProperty?.units?.[0];
 		const state = {
-			mode: 'new-tenant' as const,
+			mode: 'create' as const,
 			returnPath,
 			...(currentProperty && {
 				leaseAndUnitDetails: {
@@ -371,10 +371,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			}),
 		};
 		navigate('/tenants/add-tenant', {
-			state: {
-				mode: 'create',
-				returnPath: '/tenants',
-			},
+			state,
 		});
 	};
 

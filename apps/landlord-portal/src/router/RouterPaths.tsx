@@ -31,7 +31,6 @@ import EditPropertyPage from '../pages/Features/properties/EditProperty';
 import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
-import TenantProfile from '../pages/Features/Tenant/TenantProfile';
 import { CreateProperty } from '../pages/Features/properties/CreateProperty';
 
 export const router = createBrowserRouter(

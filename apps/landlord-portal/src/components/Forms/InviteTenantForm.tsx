@@ -4,11 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { getCurrencySymbol } from '../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
-import { omit } from 'lodash';
-import { Typography, useTheme, useMediaQuery, Box } from '@mui/material';
+import { useTheme, useMediaQuery, Box } from '@mui/material';
 import {
-	KlubiqForm,
-	FormField,
 	InputAdornment as InputAdornmentType,
 	FormFieldV1,
 	DynamicTanstackFormProps,
@@ -19,10 +16,8 @@ import dayjs from 'dayjs';
 // API and Store imports
 import { useOnboardTenantMutation } from '../../store/TenantStore/tenantApiSlice';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { InviteTenantFormValues } from '../../shared/type';
 import { PERSON_TITLES } from '../../helpers/constants';
 import FormSkeleton from '../skeletons/FormSkeleton';
-import { consoleLog } from '../../helpers/debug-logger';
 import { CustomDateField } from '../CustomFormComponents/CustomDateField';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { screenMessages } from '../../helpers/screen-messages';
@@ -104,12 +99,6 @@ const InviteTenantForm = ({
 	const [onboardTenant] = useOnboardTenantMutation();
 	const { user } = useSelector(getAuthState);
 
-	const validateLeaseDates = (startDate: string, endDate: string) => {
-		if (dayjs(startDate).isAfter(dayjs(endDate))) {
-			return 'End date must be after start date';
-		}
-		return true;
-	};
 
 	const onSubmit = async (values: InitialValues) => {
 		try {

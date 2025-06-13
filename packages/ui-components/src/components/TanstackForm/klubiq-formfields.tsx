@@ -114,7 +114,9 @@ const formatValue = (
 };
 
 const parseValue = (value: string) => {
-	if (!value) return '';
+	if (!value) {
+		return '';
+	}
 	const cleaned = value.replace(/[^\d.]/g, '');
 	const parts = cleaned.split('.');
 	if (parts.length > 2) {
@@ -484,8 +486,8 @@ export const KlubiqTSFormFields: React.FC<{
 						label={hasInlineLabel ? label : undefined}
 						multiple={!!fieldConfig.multiple}
 						disabled={disabled || fieldConfig.readonly}
-					>	
-					    {fieldConfig.placeholder && (
+					>
+						{fieldConfig.placeholder && (
 							<MenuItem value=''>
 								<em>{fieldConfig.placeholder}</em>
 							</MenuItem>
