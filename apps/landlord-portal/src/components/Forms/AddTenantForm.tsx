@@ -14,6 +14,7 @@ import { PERSON_TITLES } from '../../helpers/constants';
 import { z } from 'zod';
 import { useDispatch } from 'react-redux';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { screenMessages } from '../../helpers/screen-messages';
 
 interface AddTenantFormProps {
 	leaseAndUnitDetails: {
@@ -88,7 +89,14 @@ const AddTenantForm = ({
 			// Make API call based on lease details
 			const apiCall = leaseId ? addNewTenantToLease : addNewTenantWithoutLease;
 			await apiCall(requestData).unwrap();
-			
+			dispatch(
+				openSnackbar({
+					message: screenMessages.tenant.add.success,
+					severity: 'success',
+					isOpen: true,
+					duration: 5000,
+				})
+			);
 			navigate(returnPath);
 		} catch (error) {
 			const errorMessage = (error as any)?.message;
