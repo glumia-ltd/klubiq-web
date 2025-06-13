@@ -205,7 +205,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			property?.units?.[0]?.tenants?.map((tenant) => ({
 				id: String(tenant.id),
 				tenant: {
-					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName ||''} ${tenant.profile.lastName  || ''}`,
+					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''}`,
 					image: tenant.profile?.profilePicUrl ?? null,
 				},
 				phone: tenant.profile?.phoneNumber ?? null,
@@ -324,12 +324,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
 	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
-	const handleEditProperty = () => navigate(
-		`/properties/${currentUUId}/edit`, 
-		{state: {
-			returnPath: `/properties/${currentUUId}`,
-		}
-	});
+	const handleEditProperty = () =>
+		navigate(`/properties/${currentUUId}/edit`, {
+			state: {
+				returnPath: `/properties/${currentUUId}`,
+			},
+		});
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
@@ -370,7 +370,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				},
 			}),
 		};
-		navigate('/tenants/add-tenant', { state });
+		navigate('/tenants/add-tenant', {
+			state: {
+				mode: 'create',
+				returnPath: '/tenants',
+			},
+		});
 	};
 
 	const handleArchiveDialogButtonAction = (event: any) => {
@@ -570,7 +575,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			multiUnitMode = false;
 			updateBreadcrumb({});
 		};
-		
 	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
 	return (
 		<Grid container spacing={2}>
@@ -578,76 +582,78 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				<Breadcrumb />
 			</Grid>
 
-		{!multiUnitMode && <Grid item xs={12} sx={styles.actionButtonContainerStyle}>
-				<Button
-					ref={anchorRef}
-					variant='klubiqMainButton'
-					onClick={handleToggle}
-					endIcon={<MoreVertIcon />}
-				>
-					Action
-				</Button>
-				<Popper
-					open={open}
-					anchorEl={anchorRef.current}
-					placement='bottom-start'
-					transition
-					disablePortal
-					sx={{ minWidth: '160px', zIndex: 10 }}
-				>
-					{({ TransitionProps, placement }) => (
-						<Grow
-							{...TransitionProps}
-							style={{
-								transformOrigin:
-									placement === 'bottom-start' ? 'left top' : 'left bottom',
-							}}
-						>
-							<Paper>
-								<ClickAwayListener onClickAway={() => setOpen(false)}>
-									<MenuList
-										id='composition-menu'
-										aria-labelledby='composition-button'
-										onKeyDown={handleListKeyDown}
-									>
-										<MenuItem
-											onClick={handleArchiveProperty}
-											sx={{ padding: '10px' }}
-											divider
+			{!multiUnitMode && (
+				<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+					<Button
+						ref={anchorRef}
+						variant='klubiqMainButton'
+						onClick={handleToggle}
+						endIcon={<MoreVertIcon />}
+					>
+						Action
+					</Button>
+					<Popper
+						open={open}
+						anchorEl={anchorRef.current}
+						placement='bottom-start'
+						transition
+						disablePortal
+						sx={{ minWidth: '160px', zIndex: 10 }}
+					>
+						{({ TransitionProps, placement }) => (
+							<Grow
+								{...TransitionProps}
+								style={{
+									transformOrigin:
+										placement === 'bottom-start' ? 'left top' : 'left bottom',
+								}}
+							>
+								<Paper>
+									<ClickAwayListener onClickAway={() => setOpen(false)}>
+										<MenuList
+											id='composition-menu'
+											aria-labelledby='composition-button'
+											onKeyDown={handleListKeyDown}
 										>
-											Archive Property
-										</MenuItem>
-										<MenuItem
-											onClick={handleEditProperty}
-											sx={{ padding: '10px' }}
-											divider
-										>
-											Edit Property
-										</MenuItem>
-										<MenuItem
-											onClick={handleDeleteProperty}
-											sx={{ padding: '10px' }}
-										>
-											Delete Property
-										</MenuItem>
-									</MenuList>
-								</ClickAwayListener>
-							</Paper>
-						</Grow>
-					)}
-				</Popper>
-			</Grid>}
+											<MenuItem
+												onClick={handleArchiveProperty}
+												sx={{ padding: '10px' }}
+												divider
+											>
+												Archive Property
+											</MenuItem>
+											<MenuItem
+												onClick={handleEditProperty}
+												sx={{ padding: '10px' }}
+												divider
+											>
+												Edit Property
+											</MenuItem>
+											<MenuItem
+												onClick={handleDeleteProperty}
+												sx={{ padding: '10px' }}
+											>
+												Delete Property
+											</MenuItem>
+										</MenuList>
+									</ClickAwayListener>
+								</Paper>
+							</Grow>
+						)}
+					</Popper>
+				</Grid>
+			)}
 
 			<Grid item xs={12}>
 				{currentProperty?.purpose?.displayText && (
 					<Chip
 						label={currentProperty?.purpose?.displayText}
-					variant={
-						currentProperty?.purpose?.name?.toLowerCase() === 'rent'
-							? 'rent'
-							: 'sale'
-					}
-				/>
+						variant={
+							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+								? 'rent'
+								: 'sale'
+						}
+					/>
 				)}
 			</Grid>
 

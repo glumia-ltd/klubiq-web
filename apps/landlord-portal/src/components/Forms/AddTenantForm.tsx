@@ -1,228 +1,275 @@
-
 import FormLayout from '../../Layouts/FormLayout';
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { omit } from 'lodash';
-import { Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import {
-    KlubiqForm,
-    FormField,
-    FormGroup,
+	FormFieldV1,
+	DynamicTanstackFormProps,
+	KlubiqFormV1,
 } from '@klubiq/ui-components';
 
-// API and Store imports
 import { useAddNewTenantWithoutLeaseMutation } from '../../store/TenantStore/tenantApiSlice';
 import { useAddNewTenantToLeaseMutation } from '../../store/LeaseStore/leaseApiSlice';
-
-// Types and Constants
-import { AddTenantFormValues } from '../../shared/type';
 import { PERSON_TITLES } from '../../helpers/constants';
-import FormSkeleton from '../skeletons/FormSkeleton';
-import { consoleError } from '../../helpers/debug-logger';
+import { z } from 'zod';
+import { useDispatch } from 'react-redux';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
 interface AddTenantFormProps {
-    leaseAndUnitDetails: {
-        leaseId: string;
-        unitId: string;
-        unitNumber: string;
-        propertyId: string;
-        propertyName: string;
-    };
-    returnPath: string;
-    formHeader?: string;
-    rentAmountPortion?: boolean;
+	leaseAndUnitDetails: {
+		leaseId: string;
+		unitId: string;
+		unitNumber: string;
+		propertyId: string;
+		propertyName: string;
+	};
+	returnPath: string;
+	formHeader?: string;
+	rentAmountPortion?: boolean;
+}
+interface InitialFormValues {
+	tenantType: string;
+	tenantDetails: {
+		title: string;
+		firstName: string;
+		lastName: string;
+		companyName: string;
+		email: string;
+		phoneNumber: string;
+	};
+	notes: string;
+	leaseId: string;
+	unitId: string;
+	unitNumber: string;
 }
 
-const defaultValues: AddTenantFormValues = {
-    title: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    notes: '',
-    companyName: '',
-    unitId: '',
-};
-
 const AddTenantForm = ({
-    leaseAndUnitDetails,
-    returnPath,
+	leaseAndUnitDetails,
+	returnPath,
 }: AddTenantFormProps) => {
-    // State Management
-    const [loading, setLoading] = useState<boolean>(false);
-    const [initialValues, setInitialValues] = useState<AddTenantFormValues>(defaultValues);
-    // Hooks
-    const navigate = useNavigate();			
-    
-    // API Mutations with cache configuration
-    const [addNewTenantWithoutLease] = useAddNewTenantWithoutLeaseMutation();
-    
-    const [addNewTenantToLease] = useAddNewTenantToLeaseMutation();
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-    // Initialize form values
-    useEffect(() => {
-        if (leaseAndUnitDetails || returnPath) {
-            setInitialValues({
-                ...defaultValues,
-                title: 'Mr',
-            });
-            setLoading(false);
-        }
-    }, [leaseAndUnitDetails, returnPath]);
+	const [addNewTenantWithoutLease] = useAddNewTenantWithoutLeaseMutation();
 
-    // Form submission handler
-    const onSubmit = async (values: AddTenantFormValues) => {
-        try {
-            // Prepare request data
-            let requestData = omit(values, ['unitId', 'tenantType']);
-            
-            // Handle tenant type specific fields
-            if (values.tenantType === 'company') {
-                requestData = omit(requestData, ['firstName', 'lastName', 'title']);
-            } else {
-                requestData = omit(requestData, ['companyName']);
-            }
+	const [addNewTenantToLease] = useAddNewTenantToLeaseMutation();
 
-            // Make API call based on lease details
-            await (leaseAndUnitDetails?.leaseId
-                ? await addNewTenantToLease(requestData).unwrap()
-                : await addNewTenantWithoutLease(omit(requestData, ['leaseId'])).unwrap());
+	// Initialize form values
+	const leaseUnitDetails = useMemo(() => {
+		return {
+			leaseId: leaseAndUnitDetails?.leaseId,
+			unitId: leaseAndUnitDetails?.unitId,
+			unitNumber: leaseAndUnitDetails?.unitNumber,
+		};
+	}, [leaseAndUnitDetails]);
 
+	// Form submission handler
+	const onSubmit = async (values: InitialFormValues) => {
+		try {
+			const { tenantType, tenantDetails, notes, leaseId, unitId, unitNumber } = values;
+			const { title, firstName, lastName, companyName, email, phoneNumber } = tenantDetails;
 
-            navigate(returnPath);
-            
-        } catch (error) {
-            // Handle error without resetting form
-			consoleError('error in add tenant form', error);
-        }
-    };
+			// Create base request data based on tenant type
+			const baseRequestData = tenantType === 'company' 
+				? { companyName, email, phoneNumber }
+				: { title, firstName, lastName, email, phoneNumber };
 
-    // Form field definitions
-    const tenantFormFields: (FormField | FormGroup)[] = [
-        {
-            name: 'unitId',
-            label: '',
-            type: 'text',
-            customComponent: (
-                <Typography variant='subtitle2'>
-                    {leaseAndUnitDetails
-                        ? `Add a new tenant to ${leaseAndUnitDetails.propertyName}-${leaseAndUnitDetails.unitNumber}`
-                        : 'Add a new tenant to your tenant list'}
-                </Typography>
-            ),
-        },
-        {
-            name: 'tenantType',
-            label: 'Tenant Type',
-            type: 'radio',
-            required: true,
-            radioGroupDirection: 'row',
-            options: [
-                { value: 'company', label: 'Company' },
-                { value: 'individual', label: 'Individual' },
-            ],
-        },
-        {
-            name: 'companyName',
-            label: 'Company Name',
-            type: 'text',
-            required: true,
-            validation: Yup.string().when('tenantType', {
-                is: 'company',
-                then: (schema) => schema.required('Company name is required'),
-                otherwise: (schema) => schema.notRequired(),
-            }),
-            showIf: (values) => values.tenantType === 'company',
-        },
-        {
-            name: 'title',
-            label: 'Title',
-            type: 'select',
-            placeholder: 'Select Title',
-            options: PERSON_TITLES.map((title) => ({ value: title, label: title })),
-            showIf: (values) => values.tenantType === 'individual',
-        },
-        {
-            name: 'firstName',
-            label: 'First Name',
-            type: 'text',
-            required: true,
-            validation: Yup.string()
-                .min(2, 'Too Short!')
-                .max(50, 'Too Long!')
-                .when('tenantType', {
-                    is: 'individual',
-                    then: (schema) => schema.required('First name is required'),
-                    otherwise: (schema) => schema.notRequired(),
-                }),
-            showIf: (values) => values.tenantType === 'individual',
-        },
-        {
-            name: 'lastName',
-            label: 'Last Name',
-            type: 'text',
-            required: true,
-            showIf: (values) => values.tenantType === 'individual',
-            validation: Yup.string()
-                .min(2, 'Too Short!')
-                .max(50, 'Too Long!')
-                .when('tenantType', {
-                    is: 'individual',
-                    then: (schema) => schema.required('Last name is required'),
-                    otherwise: (schema) => schema.notRequired(),
-                }),
-        },
-        {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            required: true,
-            validation: Yup.string()
-                .email('Invalid email')
-                .required('Email is required'),
-        },
-        {
-            name: 'phoneNumber',
-            label: 'Phone Number',
-            type: 'text',
-            required: false,
-            validation: Yup.string().matches(/^[0-9]+$/, 'Invalid phone number'),
-        },
-        {
-            name: 'notes',
-            label: 'Notes',
-            type: 'text',
-            rows: 3,
-            required: false,
-        },
-        {
-            name: 'leaseId',
-            label: '',
-            type: 'hidden',
-            hidden: true,
-            defaultValue: leaseAndUnitDetails?.leaseId,
-            predefinedValue: leaseAndUnitDetails?.leaseId,
-        },
-    ];
+			// Add optional fields if they exist
+			const requestData = {
+				...baseRequestData,
+				...(notes && { notes }),
+				...(leaseId && { leaseId }),
+				...(unitId && { unitId }),
+				...(unitNumber && { unitNumber })
+			};
 
-    return (
-        <FormLayout Header={'Add Tenant'}>
-            {loading ? (
-                <FormSkeleton rows={tenantFormFields.length} columns={[1, 1, 1]} />
-            ) : (
-                <KlubiqForm
-                    fields={tenantFormFields as FormField[]}
-                    onSubmit={onSubmit}
-                    initialValues={initialValues}
-                    enableReset={true}
-                    submitButtonText='Add Tenant'
-                    resetButtonText='Cancel'
-                />
-            )}
-        </FormLayout>
-    );
+			// Make API call based on lease details
+			const apiCall = leaseId ? addNewTenantToLease : addNewTenantWithoutLease;
+			await apiCall(requestData).unwrap();
+			
+			navigate(returnPath);
+		} catch (error) {
+			const errorMessage = (error as any)?.message;
+			dispatch(
+				openSnackbar({
+					message: errorMessage,
+					severity: 'error',
+					isOpen: true,
+					duration: 7000,
+				})
+			);
+			throw error;
+		}
+	};
+	const initialValues: InitialFormValues = {
+		tenantType: '',
+		tenantDetails: {
+			title: '',
+			firstName: '',
+			lastName: '',
+			companyName: '',
+			email: '',
+			phoneNumber: '',
+		},
+		notes: '',
+		leaseId: leaseUnitDetails?.leaseId,
+		unitId: leaseUnitDetails?.unitId,
+		unitNumber: leaseUnitDetails?.unitNumber,
+	};
+
+	// Form field definitions
+	const tenantFormFields: FormFieldV1[] = [
+		{
+			name: 'subHeader',
+			label: '',
+			type: 'custom',
+			component: (
+				<Typography variant='subtitle2'>
+					{leaseAndUnitDetails
+						? `Add a new tenant to ${leaseAndUnitDetails.propertyName}-${leaseAndUnitDetails.unitNumber}`
+						: "Add a new tenant to your organization's tenant list"}
+				</Typography>
+			),
+		},
+		{
+			name: 'tenantType',
+			label: 'Tenant Type',
+			type: 'radio',
+			required: true,
+			radioGroupDirection: 'row',
+			validation: {
+				schema: z
+					.string({ message: 'Tenant type is required' })
+					.min(1, { message: 'Tenant type is required' }),
+			},
+			options: [
+				{ value: 'individual', label: 'Individual' },
+				{ value: 'company', label: 'Company' },
+			],
+		},
+		{
+			name: 'tenantDetails',
+			label: '',
+			type: 'group',
+			layout: isMobile ? 'column' : 'row',
+			groupFields: [
+				{
+					name: 'title',
+					label: 'Title',
+					type: 'select',
+					options: PERSON_TITLES.map((title) => ({
+						value: title,
+						label: title,
+					})),
+				},
+				{
+					name: 'firstName',
+					label: 'First Name',
+					type: 'text',
+					width: isMobile ? '100%' : '48%',
+					required: (values) => values.tenantType === 'individual',
+					placeholder: "Enter tenant's first name",
+					showIf: (values) => values.tenantType === 'individual',
+				},
+				{
+					name: 'lastName',
+					label: 'Last Name',
+					type: 'text',
+					width: isMobile ? '100%' : '48%',
+					required: (values) => values.tenantType === 'individual',
+					placeholder: "Enter tenant's last name",
+					showIf: (values) => values.tenantType === 'individual',
+				},
+
+				{
+					name: 'email',
+					label: 'Email',
+					type: 'email',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					placeholder: "Enter tenant's email",
+					validation: {
+						schema: z
+							.string({ message: 'Email is required' })
+							.email('Please enter a valid email address')
+							.min(1, { message: 'Email is required' }),
+					},
+				},
+				{
+					name: 'phoneNumber',
+					label: 'Phone Number',
+					type: 'text',
+					width: isMobile ? '100%' : '48%',
+					validation: {
+						schema: z
+							.string()
+							.refine(
+								(value) => {
+									if (value.length === 0) {
+										return true;
+									}
+									return value.match(/^[0-9]+$/);
+								},
+								{
+									message: 'Invalid phone number',
+								},
+							)
+							.optional()
+							.nullable(),
+					},
+				},
+				{
+					name: 'companyName',
+					label: 'Company Name',
+					type: 'text',
+					placeholder: "Enter company's name",
+					required: (values) => values.tenantType === 'company',
+					showIf: (values) => values.tenantType === 'company',
+				},
+			],
+		},
+		{
+			name: 'notes',
+			label: 'Notes',
+			type: 'textarea',
+			rows: 3,
+			required: false,
+		},
+		{
+			name: 'leaseId',
+			label: '',
+			type: 'hidden',
+			hidden: true,
+			defaultValue: leaseUnitDetails?.leaseId,
+			predefinedValue: leaseUnitDetails?.leaseId,
+		},
+	];
+
+	const addTenantFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		submitButtonText: 'Add Tenant',
+		enableReset: true,
+		resetButtonText: 'Cancel',
+		fields: tenantFormFields,
+		initialValues,
+		isMultiStep: false,
+		onSubmit,
+		showBackdrop: true,
+		backdropText: 'Please wait while we add your tenant...',
+		fullWidthButtons: false,
+		horizontalAlignment: 'right',
+		verticalAlignment: 'top',
+	};
+
+	return (
+		<FormLayout Header={'Add Tenant'}>
+			<Box sx={{ width: '100%', p: 2 }}>
+				<KlubiqFormV1 {...addTenantFormConfig} />
+			</Box>
+		</FormLayout>
+	);
 };
 
 export default AddTenantForm;

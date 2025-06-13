@@ -7,7 +7,7 @@ import { handleApiResponse } from '../../helpers/apiResponseHandler';
 export const tenantApiSlice = createApi({
 	reducerPath: 'tenantApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.TENANT, API_TAGS.TENANT_FILTER_METADATA],
+	tagTypes: [API_TAGS.TENANT, API_TAGS.TENANT_FILTER_METADATA, API_TAGS.LEASE, API_TAGS.DASHBOARD_METRICS, API_TAGS.DASHBOARD_REVENUE_REPORT],
 	endpoints: (builder) => ({
 		getTenantFilterMetaData: builder.query<any, void>({
 			query: () => ({
@@ -58,18 +58,7 @@ export const tenantApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				await handleApiResponse(queryFulfilled, dispatch, {
-					successMessage: screenMessages.tenant.add.success,
-					errorMessage: screenMessages.tenant.add.error,
-					tagsToInvalidate: [
-						API_TAGS.TENANT,
-						API_TAGS.TENANT_FILTER_METADATA,
-						API_TAGS.PROPERTY,
-						API_TAGS.LEASE,
-					]
-				});
-			},
+			invalidatesTags: [API_TAGS.TENANT],
 		}),
 	}),
 });

@@ -261,7 +261,6 @@ const DashBoard = () => {
 													}}
 												>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
@@ -304,7 +303,6 @@ const DashBoard = () => {
 													}}
 												>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
@@ -346,7 +344,6 @@ const DashBoard = () => {
 												</Typography>
 												<Box display={'flex'} justifyContent={'space-between'}>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>

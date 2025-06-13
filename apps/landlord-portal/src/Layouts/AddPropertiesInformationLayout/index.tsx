@@ -6,11 +6,16 @@ import { useNavigate } from 'react-router-dom';
 const AddPropertiesInformationLayout: FC<{
 	children: ReactElement;
 	backButtonText?: string;
-}> = ({ children, backButtonText = 'Back' }) => {
+	backButtonOnClick?: () => void;
+}> = ({ children, backButtonText = 'Back', backButtonOnClick }) => {
 	const navigate = useNavigate();
 
 	const handleBackArrowClick = () => {
-		navigate(-1);
+		if (backButtonOnClick) {
+			backButtonOnClick();
+		} else {
+			navigate(-1);
+		}
 	};
 	return (
 		<Stack gap={2} direction='column'>

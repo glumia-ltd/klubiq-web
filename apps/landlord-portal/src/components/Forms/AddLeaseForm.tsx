@@ -355,7 +355,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			type: 'text',
 			required: true,
 			validation: {
-				schema: z.string().min(1, { message: 'Lease name is required' }),
+				schema: z.string({ message: 'Lease name is required' }).min(1, { message: 'Lease name is required' }),
 			},
 		},
 		{

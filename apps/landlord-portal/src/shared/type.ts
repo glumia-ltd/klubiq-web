@@ -436,6 +436,7 @@ export type AddTenantToLeaseDetailsType = {
 	propertyName: string;
 };
 
+
 export type AddTenantFormValues = {
 	title?: string;
 	firstName?: string;

@@ -33,6 +33,7 @@ const Login = () => {
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
+	const [errorAlertData, setErrorAlertData] = useState<{title: string, message: string}>({title: 'Invalid credentials', message: 'Please check your email and password and try again.'});
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
@@ -130,6 +131,7 @@ const Login = () => {
 				set2FARequired(true);
 			} else {
 				set2FARequired(false);
+				setErrorAlertData({title: 'Login failed', message: error.message});
 				throw error;
 			}
 		}
@@ -137,6 +139,12 @@ const Login = () => {
 
 	const routeToSignUp = () => {
 		navigate('/signup/createaccount', { replace: true });
+	};
+	const getErrorAlertMessage = () => {
+		return errorAlertData.message;
+	};
+	const getErrorAlertTitle = () => {
+		return errorAlertData.title;
 	};
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
@@ -202,10 +210,7 @@ const Login = () => {
 			email: '',
 			password: '',
 		},
-		buttonLoadingText: 'Signing in...',
 		enableErrorAlert: true,
-		errorAlertTitle: 'Invalid credentials',
-		errorAlertMessage: 'Please check your email and password and try again.',
 	};
 	return (
 		<>

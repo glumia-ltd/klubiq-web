@@ -77,7 +77,7 @@ const renderLabel = (
 	hasInlineLabel: boolean,
 ) =>
 	!hasInlineLabel && label ? (
-		<Typography variant='subtitle1' component='label' gutterBottom>
+		<Typography variant='subtitle1' component='label'>
 			{label}
 			{required && (
 				<Typography variant='subtitle2' component='span' sx={{ ml: 0.5 }}>
@@ -186,12 +186,6 @@ export const KlubiqTSFormFields: React.FC<{
 
 	// Common change handler
 	const handleChange = (newValue: any) => {
-		console.log('Field change:', {
-			fieldName: field.name,
-			oldValue: field.state.value,
-			newValue,
-			formValues: form.state.values
-		});
 		field.handleChange(newValue);
 		if (
 			isArraySubField &&
@@ -490,7 +484,12 @@ export const KlubiqTSFormFields: React.FC<{
 						label={hasInlineLabel ? label : undefined}
 						multiple={!!fieldConfig.multiple}
 						disabled={disabled || fieldConfig.readonly}
-					>
+					>	
+					    {fieldConfig.placeholder && (
+							<MenuItem value=''>
+								<em>{fieldConfig.placeholder}</em>
+							</MenuItem>
+						)}
 						{options.map((option: any) => (
 							<MenuItem key={option.value} value={option.value}>
 								{option.label}
@@ -536,50 +535,50 @@ export const KlubiqTSFormFields: React.FC<{
 		case 'date':
 			return (
 				<Stack spacing={1}>
-						{renderLabel(label, isRequired, hasInlineLabel)}
-						<DatePicker
-							label={hasInlineLabel ? label : undefined}
-							value={
-								fieldConfig.readonly
-									? fieldConfig.predefinedValue
-									: value
-										? dayjs(value)
-										: null
+					{renderLabel(label, isRequired, hasInlineLabel)}
+					<DatePicker
+						label={hasInlineLabel ? label : undefined}
+						value={
+							fieldConfig.readonly
+								? fieldConfig.predefinedValue
+								: value
+									? dayjs(value)
+									: null
+						}
+						onChange={(newValue) => {
+							if (newValue && dayjs.isDayjs(newValue)) {
+								handleChange(newValue.toDate());
+							} else {
+								handleChange(null);
 							}
-							onChange={(newValue) => {
-								if (newValue && dayjs.isDayjs(newValue)) {
-									handleChange(newValue.toDate());
-								} else {
-									handleChange(null);
-								}
-								if (
-									isArraySubField &&
-									arrayFieldName !== undefined &&
-									arrayIndex !== undefined
-								) {
-									debouncedValidate(arrayFieldName);
-								}
-							}}
-							slotProps={{
-								textField: {
-									sx: {
-										borderRadius: '0.5rem',
-										height: '2.7rem',
-										color: 'inherit',
-									},
-									size: 'small',
-									fullWidth: true,
-									error: !!error,
-									helperText: error || helperText,
-									disabled: disabled || fieldConfig.readonly,
-									inputProps: {
-										readOnly: fieldConfig.readonly,
-									},
+							if (
+								isArraySubField &&
+								arrayFieldName !== undefined &&
+								arrayIndex !== undefined
+							) {
+								debouncedValidate(arrayFieldName);
+							}
+						}}
+						slotProps={{
+							textField: {
+								sx: {
+									borderRadius: '0.5rem',
+									height: '2.7rem',
+									color: 'inherit',
 								},
-							}}
-							disabled={disabled || fieldConfig.readonly}
-						/>
-					</Stack>
+								size: 'small',
+								fullWidth: true,
+								error: !!error,
+								helperText: error || helperText,
+								disabled: disabled || fieldConfig.readonly,
+								inputProps: {
+									readOnly: fieldConfig.readonly,
+								},
+							},
+						}}
+						disabled={disabled || fieldConfig.readonly}
+					/>
+				</Stack>
 			);
 		case 'address':
 			return (
@@ -688,11 +687,8 @@ export const KlubiqTSFormFields: React.FC<{
 					>
 						{subFields.map((subField: FormFieldV1, index: number) => {
 							// Check showIf condition for subfield
-							if (subField.showIf) {
-								// Get the full form values
-								if (!subField.showIf(values)) {
-									return null;
-								}
+							if (subField.showIf && !subField.showIf(values)) {
+								return null;
 							}
 							return (
 								<Stack
@@ -722,6 +718,9 @@ export const KlubiqTSFormFields: React.FC<{
 										key={`ff-${fieldConfig.name}.${subField.name}-${index}`}
 										name={`${fieldConfig.name}.${subField.name}`}
 										asyncAlways={true}
+										validateOnBlur={true}
+										validateOnChange={true}
+										validators={form.validateField(subField.name)}
 									>
 										{(subFieldApi: FormFieldApi) => (
 											<FieldWithDefaultValue
@@ -1238,6 +1237,8 @@ export const KlubiqTSFormFields: React.FC<{
 									key={`ff-${arrayFieldConfig.name}[${idx}].${subField.name}-${index}`}
 									name={`${arrayFieldConfig.name}[${idx}].${subField.name}`}
 									asyncAlways={true}
+									validateOnBlur={true}
+									validateOnChange={true}
 									validators={{
 										onChange: ({ value }: { value: any }) => {
 											if (

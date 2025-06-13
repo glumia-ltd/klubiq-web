@@ -30,11 +30,6 @@ const AddTenant = () => {
 	const propertyDetails = 'propertyDetails' in state ? state.propertyDetails : undefined;
 	const leaseAndUnitDetails = 'leaseAndUnitDetails' in state ? state.leaseAndUnitDetails : undefined;
 
-	if (!leaseAndUnitDetails && mode !== 'onboarding') {
-		navigate('/dashboard');
-		return null;
-	}
-
 	return (
 		<AddPropertiesInformationLayout>
 			{mode === 'onboarding' && propertyDetails ? (

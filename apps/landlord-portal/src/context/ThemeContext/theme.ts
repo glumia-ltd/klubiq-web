@@ -101,14 +101,10 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		error:{
-			main: '#FF0000',
-			light: '#FF0000',
-			dark: '#FF0000',
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
 		},
-		// warning:{},
-		// info:{},
-		// success:{},
 	},
 	components: {
 		MuiTooltip: {
@@ -647,6 +643,10 @@ export const DarkTheme: Theme = createTheme({
 			default: backgroundColors.dark,
 			paper: backgroundColors.dark,
 		},
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
+		},
 	},
 
 	components: {
@@ -797,6 +797,7 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
+							color: primaryColors.white,
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
 						},

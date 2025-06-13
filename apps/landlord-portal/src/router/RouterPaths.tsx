@@ -80,7 +80,6 @@ export const router = createBrowserRouter(
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
 						<Route index element={<Tenant />} />
-						<Route path='tenants/:id' element={<TenantProfile />} />
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>

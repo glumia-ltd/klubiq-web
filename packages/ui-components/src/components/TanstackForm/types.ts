@@ -233,8 +233,8 @@ export interface DynamicTanstackFormProps {
   fullWidthButtons?: boolean;
   buttonLoadingText?: string;
   enableErrorAlert?: boolean;
-  errorAlertTitle?: string;
-  errorAlertMessage?: string;
+  errorAlertTitle?: string | (() => string);
+  errorAlertMessage?: string | (() => string);
 }
 // For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
 export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };
