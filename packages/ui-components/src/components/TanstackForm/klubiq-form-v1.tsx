@@ -256,6 +256,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [showErrorAlert, setShowErrorAlert] = useState(false);
+	const [errorAlertData, setErrorAlertData] = useState<{title: string, message: string}>({title: '', message: ''});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const normalizedFields = Array.isArray(fields) ? fields : [fields];
 	const steps = isMultiStep
@@ -598,9 +599,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					// Only reset form if there's no next action
 					return result;
 				}
-			} catch (error) {
+			} catch (error: any) {
 				console.error('Form submission error:', error);
 				setIsSubmitted(false);
+				setErrorAlertData({title: '', message: error.message || 'An error occurred while submitting the form. Please try again.'});
 				setShowErrorAlert(true);
 				throw error;
 			}
@@ -621,6 +623,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				}
 			},
 			onSubmit: ({ value }) => {
+
 				// Only validate the current step for submission
 				const stepFields = steps[currentStep].fields;
 				const stepSchema = createStepSchema(stepFields);
@@ -1185,6 +1188,22 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			}
 		}
 	};
+	const getErrorAlertTitle = () => {
+		if (typeof errorAlertTitle === 'function') {
+			return errorAlertTitle();
+		} else if (errorAlertData.title) {
+			return errorAlertData.title;
+		}
+		return errorAlertTitle;
+	};
+	const getErrorAlertMessage = () => {
+		if (typeof errorAlertMessage === 'function') {
+			return errorAlertMessage();
+		} else if (errorAlertData.message) {
+			return errorAlertData.message;
+		}
+		return errorAlertMessage;
+	};
 
 	return (
 		<Stack
@@ -1203,7 +1222,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			spacing={4}
 		>
 			{/* Add submission overlay */}
-			{isSubmitted && !nextAction && !form.state.isSubmitting && (
+			{!showBackdrop && isSubmitted && !nextAction && !form.state.isSubmitting && (
 				<Box
 					sx={{
 						position: 'fixed',
@@ -1368,8 +1387,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						}}
 						onClose={() => setShowErrorAlert(false)}
 					>
-						<AlertTitle>{errorAlertTitle}</AlertTitle>
-						{errorAlertMessage}
+						{getErrorAlertTitle() && <AlertTitle>{getErrorAlertTitle()}</AlertTitle>}
+						{getErrorAlertMessage() && <Typography variant='body1'>{getErrorAlertMessage()}</Typography>}
 					</Alert>
 				)}
 
@@ -1426,16 +1445,29 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 														typeof field.required === 'function'
 															? field.required(form.state.values)
 															: field.required;
-
-													if (isRequired) {
-														acc[field.name] =
-															getFieldSchema(
-																field,
-																form.state.values,
-																field.name,
-															) || z.any();
+													const isGroup = field.type === 'group';
+													if (isGroup) {
+														const groupFields = typeof field.groupFields === 'function' ? field.groupFields(form.state.values) : field.groupFields;
+														const groupSchema = z.object(groupFields.reduce((acc: Record<string, z.ZodType<any>>, groupField: FormFieldV1) => {
+															const groupFieldRequired = typeof groupField.required === 'function' ? groupField.required(form.state.values) : groupField.required;
+															if (groupFieldRequired) {
+																acc[groupField.name] = getFieldSchema(groupField, form.state.values, groupField.name) || z.any();
+															}
+															return acc;
+														}, {} as Record<string, z.ZodType<any>>));
+														acc[field.name] = groupSchema;
+														return acc;
+													} else {
+														if (isRequired) {
+															acc[field.name] =
+																getFieldSchema(
+																	field,
+																	form.state.values,
+																	field.name,
+																) || z.any();
+														}
+														return acc;
 													}
-													return acc;
 												},
 												{} as Record<string, z.ZodType<any>>,
 											),
@@ -1474,9 +1506,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										<>
 											{isSubmitting ? (
 												<LoadingButton
-													variant='contained'
-													loadingPosition='start'
-													loadingIndicator={buttonLoadingText}
+													variant='klubiqOutlinedButton'
 													loading={isSubmitting}
 													sx={style.loadingButton}
 												></LoadingButton>

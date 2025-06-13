@@ -59,12 +59,19 @@ export const CardRadioGroup: React.FC<CardRadioGroupProps> = ({
           onClick={() => onChange(option.value)}
           tabIndex={0}
           onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onChange(option.value)}
+          data-active={value === option.value ? 'true' : 'false'}
           sx={{
             cursor: 'pointer',
             border: value === option.value ? '2.5px solid' : '1px solid',
             borderColor: value === option.value ? 'primary.light' : 'primary.contrastText',
             borderRadius: 2,
             boxShadow: 'none',
+            '&[data-active="true"]': {
+              backgroundColor: 'action.selected',
+              '&:hover': {
+                backgroundColor: 'action.hover',
+              },
+            },
             flex: 1,
             minWidth: { sm: '100%', md: 0 },
             p: 4,

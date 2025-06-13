@@ -31,7 +31,6 @@ import EditPropertyPage from '../pages/Features/properties/EditProperty';
 import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
-import TenantProfile from '../pages/Features/Tenant/TenantProfile';
 import { CreateProperty } from '../pages/Features/properties/CreateProperty';
 
 export const router = createBrowserRouter(
@@ -80,7 +79,6 @@ export const router = createBrowserRouter(
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
 						<Route index element={<Tenant />} />
-						<Route path='tenants/:id' element={<TenantProfile />} />
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
