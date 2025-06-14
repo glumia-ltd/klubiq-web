@@ -92,3 +92,6 @@ Thumbs.db
 apps/landlord-portal/src/components/DynamicForm-local/*.ts
 apps/landlord-portal/src/components/DynamicForm-local/*.tsx
 apps/landlord-portal/src/components/DynamicForm-local
+
+dev-dist/ 
+**/dev_dist/*

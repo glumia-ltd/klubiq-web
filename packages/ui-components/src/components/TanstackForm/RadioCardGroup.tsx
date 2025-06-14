@@ -40,10 +40,10 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 							background: 'transparent',
 						}}
 					>
-						<Skeleton variant="circular" width={24} height={24} />
+						<Skeleton variant='circular' width={24} height={24} />
 						<Stack direction='column' sx={{ flex: 1 }}>
-							<Skeleton variant="text" width="40%" />
-							<Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
+							<Skeleton variant='text' width='40%' />
+							<Skeleton variant='text' width='60%' sx={{ mt: 1 }} />
 						</Stack>
 					</Card>
 				))}
@@ -58,6 +58,7 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 					key={option.value}
 					onClick={() => onChange(option.value)}
 					tabIndex={0}
+					data-active={value === option.value ? 'true' : 'false'}
 					onKeyDown={(e) =>
 						(e.key === 'Enter' || e.key === ' ') && onChange(option.value)
 					}
@@ -72,7 +73,12 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 						display: 'flex',
 						alignItems: 'center',
 						gap: 2,
-						background: 'transparent',
+						'&[data-active="true"]': {
+							backgroundColor: 'action.selected',
+							'&:hover': {
+								backgroundColor: 'action.hover',
+							},
+						},
 						outline:
 							value === option.value
 								? '2px solid primary.light'

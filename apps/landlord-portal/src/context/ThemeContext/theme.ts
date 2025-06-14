@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -101,14 +102,10 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		error:{
-			main: '#FF0000',
-			light: '#FF0000',
-			dark: '#FF0000',
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
 		},
-		// warning:{},
-		// info:{},
-		// success:{},
 	},
 	components: {
 		MuiTooltip: {
@@ -128,6 +125,34 @@ export const LightTheme: Theme = createTheme({
 					background: backgroundColors.light,
 					height: '100%',
 				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.mainBlue,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
 			},
 		},
 		MuiAlert: {
@@ -647,9 +672,40 @@ export const DarkTheme: Theme = createTheme({
 			default: backgroundColors.dark,
 			paper: backgroundColors.dark,
 		},
+		action:{
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
+		},
 	},
 
 	components: {
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+					'&.Mui-selected': {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+				}
+				},
+				selected: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+					'&:hover': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.mainBlue,
+					},
+				},
+				
+			},
+		},
 		MuiTooltip: {
 			styleOverrides: {
 				tooltip: {
@@ -797,6 +853,7 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
+							color: primaryColors.white,
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
 
 						},
@@ -1079,13 +1136,47 @@ export const DarkTheme: Theme = createTheme({
 			textTransform: 'uppercase',
 		},
 		upTrendIndicator: {
-			color: '#0088F0',
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #17B26A',
+			color: '#17B26A',
+			backgroundColor: 'rgba(236,253,243)',
 		},
 		downTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #FF0000',
 			color: '#FF0000',
+			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+
 		},
 		neutralTrendIndicator: {
-			color: '#000000',
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #49a0e3',
+			color: '#49a0e3',
+			backgroundColor: '#c2daed',
 		},
 		dashboardTypography: {
 			fontWeight: 800,
