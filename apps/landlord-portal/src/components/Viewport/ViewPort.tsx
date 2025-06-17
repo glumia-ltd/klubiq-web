@@ -76,7 +76,10 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 							flexDirection: 'column',
 							alignItems: 'center',
 							justifyContent: 'space-between',
-							px: 5
+							px: {
+								sm: 2,
+								md: 4,
+							},
 						}}
 					>
 						{children}
@@ -84,9 +87,9 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 					<Box 
 						width={'100%'} 
 						sx={{
-							position: 'fixed',
+							position: 'static',
 							bottom: 0,
-							zIndex: 1
+							zIndex: 1,
 						}}
 					>
 						<AppFooter {...landlordFooterConfig} />
