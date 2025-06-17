@@ -1,4 +1,4 @@
-import { Card, Grid, Typography, SxProps } from '@mui/material';
+import { Card, Grid, Typography, SxProps, Stack } from '@mui/material';
 import style from './style';
 
 type Props = {
@@ -10,25 +10,25 @@ type Props = {
 const LeaseFormLayout = ({ children, Header, sx }: Props) => {
 	return (
 		<>
-		<Grid container spacing={1} alignItems='center' justifyContent={'center'}>
-			<Card sx={sx}>
-				{' '}
-				<Grid container spacing={1}>
-					<Grid item xs={12} sx={style.headerContainer}>
-						<Typography sx={style.leaseHeader}>{Header}</Typography>
+			<Stack spacing={1} alignItems='center' justifyContent={'center'}>
+				<Card sx={sx}>
+					{' '}
+					<Grid container spacing={1}>
+						<Grid item xs={12} sx={style.headerContainer}>
+							<Typography sx={style.leaseHeader}>{Header}</Typography>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							sx={{
+								borderRadius: '0px, 0px, 3px, 0px',
+							}}
+						>
+							{children}
+						</Grid>
 					</Grid>
-					<Grid
-						item
-						xs={12}
-						sx={{
-							borderRadius: '0px, 0px, 3px, 0px',
-						}}
-					>
-						{children}
-					</Grid>
-				</Grid>
 				</Card>
-			</Grid>
+			</Stack>
 		</>
 	);
 };
