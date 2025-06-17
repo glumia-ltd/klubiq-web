@@ -1,4 +1,4 @@
-import { Chip, Typography, Box, Tooltip } from '@mui/material';
+import { Chip, Typography,Stack } from '@mui/material';
 import { FC } from 'react';
 import { styles } from './styles';
 import { TenantType } from '../../../shared/type';
@@ -43,24 +43,21 @@ export const TenantTable: FC<TenantTableProps> = ({
 					return 'N/A';
 				};
 				return (
-					<Box display='flex' alignItems='center' justifyContent='left'>
-						<DynamicAvatar
-							items={[tenant?.profilePicUrl || '']}
-							size='medium'
-							showName={false}
-						/>
-						<Tooltip title={getDisplayName()} arrow>
-							<Typography
-								variant='body2'
-								ml='0.5rem'
-								whiteSpace='nowrap'
-								overflow='hidden'
-								textOverflow='ellipsis'
-							>
-								{getDisplayName()}{' '}
-							</Typography>
-						</Tooltip>
-					</Box>
+					<Stack direction='row' alignItems='center' spacing={2}>
+							<DynamicAvatar
+								items={[{ id: tenant?.id ?? getDisplayName(), name: getDisplayName() }]}
+								size='medium'
+								showName={false}
+							/>
+						<Typography
+							variant='body2'
+							whiteSpace='nowrap'
+							overflow='hidden'
+							textOverflow='ellipsis'
+						>
+							{getDisplayName()}{' '}
+						</Typography>
+					</Stack>  
 				);
 			},
 		},
