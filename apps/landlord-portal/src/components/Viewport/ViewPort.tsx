@@ -88,7 +88,7 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 					<Box 
 						width={'100%'} 
 						sx={{
-							position: 'sticky',
+							position: 'fixed',
 							bottom: 0,
 							zIndex: 1
 						}}

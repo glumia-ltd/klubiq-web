@@ -35,9 +35,10 @@ const setCsrfToken = (token: string) => sessionStorage.setItem('csrf_token', tok
 const fetchNewCsrfToken = async () => {
     try {
         const response = await api.get(authEndpoints.csrf());
-        const { token } = response.data;
-        setCsrfToken(token);
-        return token;
+		console.log('refreshing csrf token response', response);
+        const { data } = response.data;
+        setCsrfToken(data.token);
+        return data.token;
     } catch (error) {
         console.error('Failed to fetch CSRF token:', error);
         return null;
@@ -99,9 +100,10 @@ api.interceptors.response.use(
 			return Promise.reject(error);
 		}
 		 // Handle CSRF token errors
-		 if (error.response?.status === 403 && error.response?.data?.message?.includes('CSRF')) {
+		 if (error.response?.status === 401 && error.response?.data?.message?.includes('CSRF')) {
             try {
                 const newToken = await fetchNewCsrfToken();
+				console.log('newToken', newToken);
                 if (newToken) {
                     originalRequest.headers['x-csrf-token'] = newToken;
                     return api(originalRequest);

@@ -781,6 +781,7 @@ export const CreateProperty = () => {
 											value={form.state.values.address.addressLine1}
 											label={'Street Address'}
 											onChange={(value: AddressValue) => {
+												consoleLog('value', value);
 												// Update the entire address group
 												form.setFieldValue('address', {
 													...form.state.values.address,
