@@ -75,6 +75,12 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
+		fetchCsrfToken: builder.query<{ token: string, expiresIn: number, message: string }, void>({
+			query: () => ({
+				url: authEndpoints.csrf(),
+				method: 'GET',
+			}),
+		}),
 		signUp: builder.mutation({
 			query: (body) => ({
 				url: authEndpoints.signup(),
@@ -119,4 +125,6 @@ export const {
 	useVerifyMFAOtpMutation,
 	useResetPasswordMutation,
 	useSignUpMutation,
+	useLazyFetchCsrfTokenQuery,
+	useFetchCsrfTokenQuery,
 } = authApiSlice;

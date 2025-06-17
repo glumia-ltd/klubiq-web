@@ -14,6 +14,7 @@ export const authEndpoints = {
 	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
+	csrf: () => '/security/csrf-token',
 };
 
 export const dashboardEndpoints = {

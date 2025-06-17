@@ -9,6 +9,7 @@ import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
 import {
+	useLazyFetchCsrfTokenQuery,
 	useLazyGetUserByFbidQuery,
 	useSignInMutation,
 	useVerifyMFAOtpMutation,
@@ -33,6 +34,7 @@ const Login = () => {
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
+	const [fetchCsrfTokenQuery] = useLazyFetchCsrfTokenQuery();
 
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
@@ -83,7 +85,15 @@ const Login = () => {
 			consoleDebug(`Setting ${item.key} in session storage:`, value);
 		});
 	};
-
+	const fetchCsrfToken = async () => {
+		try {
+			const { token } = await fetchCsrfTokenQuery().unwrap();
+			sessionStorage.setItem('csrf_token', token);
+		} catch (error) {
+			console.error('Failed to fetch CSRF token:', error);
+			throw new Error('An error occurred during sign in');
+		}
+	};
 	const loadUserAfterSignIn = async () => {
 		const user = await triggerGetUserByFbid().unwrap();
 		if (user && user.profileUuid) {
@@ -122,7 +132,8 @@ const Login = () => {
 		try {
 			// setLoading(true);
 			await signIn({ email, password }).unwrap();
-			loadUserAfterSignIn();
+			await loadUserAfterSignIn();
+			await fetchCsrfToken();
 			return;
 		} catch (error: any) {
 			if (error.message === 'MFA-required') {
