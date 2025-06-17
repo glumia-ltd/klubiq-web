@@ -1,4 +1,15 @@
-import { Stack, Button, Chip } from '@mui/material';
+import {
+	Stack,
+	Button,
+	Chip,
+	MenuList,
+	MenuItem,
+	ClickAwayListener,
+	Grow,
+	Popper,
+	Paper,
+} from '@mui/material';
+import { useState, useRef } from 'react';
 import { styles } from './style';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import LeasePropertyCard from '../../../components/LeaseCards/LeasePropertyCard';
@@ -21,17 +32,20 @@ import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { Breadcrumb } from '../../../components/Breadcrumb';
 import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 
-
 const LeaseDetails = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { user } = useSelector(getAuthState);
+	const [open, setOpen] = useState<boolean>(false);
+
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
 	};
 	const currentLeaseId = location.pathname.split('/')[2]!;
+	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
+	const anchorRef = useRef<HTMLButtonElement>(null);
 
 	const { data: leaseData } = useGetSingleLeaseByIdQuery({
 		id: currentLeaseId || '',
@@ -94,10 +108,63 @@ const LeaseDetails = () => {
 				>
 					<Breadcrumb />
 					<Stack>
-						<Button variant='klubiqMainButton'>
+						<Button
+							ref={anchorRef}
+							variant='klubiqMainButton'
+							onClick={handleToggle}
+							endIcon={<MoreVertIcon />}
+						>
 							Action
-							<MoreVertIcon />
 						</Button>
+						<Popper
+							open={open}
+							anchorEl={anchorRef.current}
+							placement='bottom-start'
+							transition
+							disablePortal
+							sx={{ minWidth: '160px', zIndex: 10 }}
+						>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{
+										transformOrigin:
+											placement === 'bottom-start' ? 'left top' : 'left bottom',
+									}}
+								>
+									<Paper>
+										<ClickAwayListener onClickAway={() => setOpen(false)}>
+											<MenuList
+												id='composition-menu'
+												aria-labelledby='composition-button'
+												// onKeyDown={handleListKeyDown}
+											>
+												<MenuItem
+													// onClick={handleArchiveLease}
+													sx={{ padding: '10px' }}
+													divider
+												>
+													Archive Lease
+												</MenuItem>
+												<MenuItem
+													// onClick={handleEditLease}
+													sx={{ padding: '10px' }}
+													divider
+												>
+													Edit Lease
+												</MenuItem>
+												<MenuItem
+													// onClick={handleTerminateLease}
+													sx={{ padding: '10px' }}
+												>
+													Terminate Lease
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
+							)}
+						</Popper>
 					</Stack>
 				</Stack>
 
@@ -168,7 +235,11 @@ const LeaseDetails = () => {
 						name='Next Payment'
 						status={leaseData?.status}
 					/>
-					<MiniCard value={leaseData?.tenants?.length?.toString() ?? '0'} name='Tenant' status={leaseData?.status} />
+					<MiniCard
+						value={leaseData?.tenants?.length?.toString() ?? '0'}
+						name='Tenant'
+						status={leaseData?.status}
+					/>
 					<MiniCard
 						value={`${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`}
 						name='Lease Expires'

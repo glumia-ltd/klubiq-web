@@ -30,6 +30,9 @@ export const screenMessages = {
 			loading: 'Adding tenant...',
 			confirm: 'Are you sure you want to add this tenant?',
 		},
+		list:{
+			noMatches: "Couldn't find any matches. Try again with different filters.",
+		}
 	},
 	property: {
 		create: {
@@ -50,6 +53,9 @@ export const screenMessages = {
 			loading: 'Deleting property...',
 			confirm: 'Are you sure you want to delete this property?',
 		},
+		list:{
+			noMatches: "Couldn't find any matches. Try again with different filters.",
+		}
 	},
 	lease: {
 		create: {
@@ -58,6 +64,9 @@ export const screenMessages = {
 			loading: 'Creating lease...',
 			confirm: 'Are you sure you want to create this lease?',
 		},
+		list:{
+			noMatches: "Couldn't find any matches. Try again with different filters.",
+		}
 	},
 	auth:{
 		signIn:{

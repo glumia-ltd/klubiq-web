@@ -102,7 +102,21 @@ export const GooglePlacesAutocomplete: React.FC<
 
 			const response =
 				await autocompleteService.current.getPlacePredictions(request);
-			setPredictions(response.predictions);
+			if (response.predictions.length > 0) {
+				setPredictions(response.predictions);
+			} else {
+				onChange({
+					addressLine1: newValue,
+					addressLine2: '',
+					city: '',
+					state: '',
+					postalCode: '',
+					country: '',
+					latitude: 0,
+					longitude: 0,
+					isManualAddress: true
+				});
+			}
 		} catch (error) {
 			console.error('Error fetching predictions:', error);
 			setPredictions([]);
@@ -185,7 +199,18 @@ export const GooglePlacesAutocomplete: React.FC<
 				onInputChange={(_, newValue) => handleInputChange(newValue)}
 				onChange={(_, newValue) => {
 					if (typeof newValue === 'string') {
-						onChange({ formatted_address: newValue });
+						// Handle manual address input
+						onChange({
+							addressLine1: newValue,
+							addressLine2: '',
+							city: '',
+							state: '',
+							postalCode: '',
+							country: '',
+							latitude: 0,
+							longitude: 0,
+							isManualAddress: true
+						});
 					} else if (newValue) {
 						handlePlaceSelect(newValue.place_id);
 					}

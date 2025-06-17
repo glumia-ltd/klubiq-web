@@ -147,8 +147,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		const filesWaitingForUpload = localFiles.length - form?.getFieldValue(fieldName)?.length;
 		form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
 		localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
-		console.log('filesWaitingForUpload', filesWaitingForUpload);
-
 		if (hasStorageResults) {
 			setHasUploadedFiles(true);
 			return;
@@ -538,6 +536,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 	const handleUpload = async () => {
 		if (!onUpload || localFiles.length === 0) {
+			return;
+		}
+
+		// Calculate total size of all files
+		const totalSize = localFiles.reduce((sum, file) => sum + file.size, 0);
+		if (totalSize > maxSize) {
+			setSnackbar({
+				open: true,
+				message: `Total file size (${(totalSize / (1024 * 1024)).toFixed(2)}MB) exceeds the maximum allowed size of ${maxSize / (1024 * 1024)}MB`,
+				severity: 'error',
+			});
 			return;
 		}
 
