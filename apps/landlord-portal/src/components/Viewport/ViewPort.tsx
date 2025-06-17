@@ -76,11 +76,7 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 							flexDirection: 'column',
 							alignItems: 'center',
 							justifyContent: 'space-between',
-							px: {
-								xs: 1,
-								sm: 2,
-								md: 4,
-							}
+							px: 5
 						}}
 					>
 						{children}
