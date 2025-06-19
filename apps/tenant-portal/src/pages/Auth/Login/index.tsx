@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { Stack, Typography } from '@mui/material';
+import {
+	CardContent,
+	Card,
+	Stack,
+	Typography
+} from '@mui/material';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
@@ -13,6 +18,7 @@ import { useDispatch } from 'react-redux';
 
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
+import { BoldTextLink } from '@/styles/links';
 
 type IValuesType = {
 	password: string;
@@ -24,7 +30,13 @@ const Login = () => {
 	const [signIn] = useSignInMutation();
 	const [triggerGetUserByFbidQuery] = useLazyGetUserByFbidQuery();
 	const dispatch = useDispatch();
-
+	// const renderResetPasswordButton = () => {
+	// 	return (
+	// 		<Button variant='klubiqOutlinedButton' fullWidth  onClick={() => navigate('/reset-password')}>
+	// 			Reset Password
+	// 		</Button>
+	// 	);
+	// };
 	const loadUserAfterSignIn = async () => {
 		const { isError, error, data } = await triggerGetUserByFbidQuery();
 
@@ -85,7 +97,6 @@ const Login = () => {
 				label: 'Email',
 				type: 'email',
 				placeholder: 'Enter your email',
-				required: true,
 				validation: {
 					schema: z
 						.string({ required_error: 'Email is required' })
@@ -97,12 +108,24 @@ const Login = () => {
 				label: 'Password',
 				type: 'password',
 				placeholder: 'Enter your password',
-				required: true,
 				validation: {
 					schema: z
 						.string({ required_error: 'Password is required' })
-						.min(8, { message: 'Password must be at least 8 characters long' })
+						.min(8, { message: 'Password must be at least 8 characters long' }),
 				},
+			},
+			{
+				name: 'forgotPassword',
+				type: 'custom',
+				label: '',
+				component: (
+					<Typography
+						textAlign='left'
+						onClick={() => navigate('/reset-password')}
+					>
+						<BoldTextLink>Forgot password</BoldTextLink>
+					</Typography>
+				),
 			},
 		],
 		onSubmit: onSubmit,
@@ -113,13 +136,32 @@ const Login = () => {
 		buttonLoadingText: 'Signing in...',
 		enableErrorAlert: true,
 		errorAlertTitle: 'Invalid credentials',
-		errorAlertMessage: 'Please check your email and password and try again.'
+		errorAlertMessage: 'Please check your email and password and try again.',
 	};
 
 	return (
-		<Stack sx={styles.container} spacing={1}>
-			<KlubiqFormV1 {...loginFormConfig} />
-		</Stack>
+		<Card
+			sx={{
+				padding: 3,
+				maxHeight: '80%',
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<CardContent sx={{ height: '100%' }}>
+				<Stack
+					sx={{
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<KlubiqFormV1 {...loginFormConfig} />
+				</Stack>
+			</CardContent>
+		</Card>
 	);
 };
 

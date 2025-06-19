@@ -11,6 +11,9 @@ import { useSignOutMutation } from '@/store/AuthStore/authApi.slice';
 import { AppFooter } from '@klubiq/ui-components';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { BottomNav } from '@/components/BottomNav/BottomNav';
+import { useTheme } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 // Example for tenant portal
 const tenantFooterConfig = {
 	appName: 'Tenant Portal',
@@ -23,6 +26,8 @@ const tenantFooterConfig = {
 };
 
 const AppContainer = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const navigate = useNavigate();
 	const { user } = useSelector((state: RootState) => state.auth);
 	const [signOut] = useSignOutMutation()
@@ -40,21 +45,21 @@ const AppContainer = () => {
 			icon: <ApartmentIcon />,
 			route: '/properties',
 			index: 1,
-			disabled: true,
+			// disabled: true,
 		},
 		{
 			label: 'Tenants',
 			icon: <PeopleIcon />,
 			route: '/tenants',
 			index: 2,
-			disabled: true,
+			// disabled: true,
 		},
 		{
 			label: 'Payments',
 			icon: <PaymentsIcon />,
 			route: '/payments',
 			index: 3,
-			disabled: true,
+			// disabled: true,
 		},
 	];
 
@@ -80,19 +85,20 @@ const AppContainer = () => {
 	};
 
 	return (
-		<Box sx={AppContainerStyle.box}>
-			<SideNav
+		<Box sx={AppContainerStyle(isMobile).box}>
+			{!isMobile && (<SideNav
 				navLinks={navLinks}
 				user={user}
 				onNavClick={handleNavClick}
 				onSignOut={handleSignOut}
-			/>
-			<Box sx={AppContainerStyle.content}>
+			/>)}
+			<Box sx={AppContainerStyle(isMobile).content} p={isMobile ? 2 : 5}>
 				<Outlet />
-				<Box width={'100%'}>
+				{!isMobile && (<Box width={'100%'}>
 					<AppFooter {...tenantFooterConfig} />
-				</Box>
+				</Box>)}
 			</Box>
+			{isMobile && (<BottomNav navLinks={navLinks} onNavClick={handleNavClick} />)}
 		</Box>
 	);
 };
