@@ -1,10 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
-const baseURL =
-	import.meta.env.VITE_NODE_ENV !== 'local'
-		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
-		: '/api';
+const baseURL = (() => {
+	switch (import.meta.env.VITE_NODE_ENV) {
+		case 'local':
+			return '/api';
+		case 'development':
+			return `${import.meta.env.VITE_BASE_URL_DEV}/api`;
+		case 'staging':
+			return `${import.meta.env.VITE_BASE_URL_STAGING}/api`;
+		case 'production':
+			return `${import.meta.env.VITE_BASE_URL_PROD}/api`;
+		default:
+			return `${import.meta.env.VITE_BASE_URL_LOCAL}/api`;
+	}
+})();
 const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_tp_app-web';
 const CSRF_IGNORE_ENDPOINTS = [

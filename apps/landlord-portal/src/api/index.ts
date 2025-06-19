@@ -4,10 +4,20 @@ import { authEndpoints } from '../helpers/endpoints';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
 import { dashboardEndpoints, fileEndpoints } from '../helpers/endpoints';
-const baseURL = 
-	import.meta.env.VITE_NODE_ENV !== 'local'
-		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
-		: '/api';
+const baseURL = (() => {
+	switch (import.meta.env.VITE_NODE_ENV) {
+		case 'local':
+			return '/api';
+		case 'development':
+			return `${import.meta.env.VITE_BASE_URL_DEV}/api`;
+		case 'staging':
+			return `${import.meta.env.VITE_BASE_URL_STAGING}/api`;
+		case 'production':
+			return `${import.meta.env.VITE_BASE_URL_PROD}/api`;
+		default:
+			return `${import.meta.env.VITE_BASE_URL_LOCAL}/api`;
+	}
+})();
 const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_lp_app-web';
 const DOWNLOAD_ENDPOINTS =[
