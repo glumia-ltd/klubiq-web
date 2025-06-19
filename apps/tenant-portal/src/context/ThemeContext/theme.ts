@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
 const cardHeaderStyle = {
 	fontWeight: 600,
 	fontSize: '0.875rem',
@@ -249,35 +250,176 @@ export const LightTheme: Theme = createTheme({
 				}
 			],
 		},
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.mainBlue,
+				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.mainBlue,
+					'&.Mui-selected': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+						'&:hover': {
+							backgroundColor: primaryColors.mainBlue,
+							color: primaryColors.white,
+						},
+					},
+				},
+			},
+		},
 		MuiSelect: {
+			styleOverrides: {
+				root: {
+					maxHeight: 'calc(100% - 200px)',
+				},
+			},
 		},
 		MuiListItemButton: {
+			defaultProps: {
+				disableTouchRipple: true,
+			},
 		},
 		MuiAppBar: {
+			styleOverrides: {
+				colorPrimary: {
+					backgroundColor: primaryColors.white,
+					color: backgroundColors.dark,
+				},
+			},
 		},
 		MuiDrawer: {
+			styleOverrides: {
+				docked: {
+					maxWidth: '250px',
+					minWidth: '100px',
+				},
+				paper: {
+					display: 'flex',
+					background: primaryColors.mainBlue,
+					alignItems: 'center',
+					maxWidth: '250px',
+					minWidth: '100px',
+					overflowX: 'hidden',
+					msOverflowY: 'auto',
+				},
+			},
 		},
 		MuiListItemIcon: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.white,
+				},
+			},
 		},
 
 		MuiListItemText: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.white,
+					fontSize: '1.5rem',
+				},
+			},
 		},
 
 		MuiOutlinedInput: {
+			styleOverrides: {
+				root: {
+					background: 'white',
+					height: '2.7rem',
+					borderRadius: '0.5rem',
+				},
+			},
 		},
 		MuiPaper: {
+			styleOverrides: {
+				root: {
+					//background: '#ffffff',
+					color: '#1B1B1B !important',
+				},
+			},
 		},
 
 		MuiCard: {
+			styleOverrides: {
+				root: {
+					background: primaryColors.white,
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+				},
+			},
+
+			variants: [
+				{
+					props: { variant: 'expired' },
+					style: {
+						backgroundColor: '#D9D9D9B2',
+					},
+				},
+				{
+					props: { variant: 'overdue' },
+					style: {
+						backgroundColor: '#FF00001A',
+					},
+				},
+				{
+					props: { variant: 'active' },
+					style: {
+						backgroundColor: primaryColors.white,
+					},
+				},
+			],
 		},
 
 		MuiButtonBase: {
+			defaultProps: {
+				disableRipple: true,
+			},
 		},
 		MuiButtonGroup: {
+			defaultProps: {
+				disableRipple: true,
+			},
 		},
 		MuiStep: {
+			styleOverrides: {
+				root: {
+					padding: '0px',
+					fontWeight: '100',
+				},
+			},
 		},
 		MuiChip: {
+			variants: [
+				{
+					props: { variant: 'rent' },
+					style: {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+					},
+				},
+				{
+					props: { variant: 'sale' },
+					style: {
+						backgroundColor: '#FF0000',
+						color: primaryColors.white,
+					},
+				},
+				{
+					props: { variant: 'propertyType' },
+					style: {
+						backgroundColor: '#0C36A01A',
+						color: '#0C36A0',
+					},
+				},
+			],
 		},
 	},
 	typography: {

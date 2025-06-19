@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
 	Drawer,
@@ -14,19 +13,15 @@ import {
 	Paper,
 	useTheme,
 	useMediaQuery,
-	Tooltip,
 	ListItemButton,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { KlubiqSideNavProps } from './SideNavTypes';
 import logo from '@/assets/images/icons.svg';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
-const drawerWidth = 260;
-const collapsedWidth = 80;
+const drawerWidth = 256;
 
 export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	navLinks,
@@ -38,8 +33,6 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-	const [mobileOpen, setMobileOpen] = useState(false);
-	const [collapsed, setCollapsed] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState(() => {
 		// Get the initial selected index from localStorage or default to 0
 		const savedIndex = localStorage.getItem('selectedNavIndex');
@@ -49,9 +42,10 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 		setSelectedIndex(index);
 		localStorage.setItem('selectedNavIndex', index.toString());
 		onNavClick(route);
-		if (isMobile) {
-			setMobileOpen(false);
-		}
+	};
+	const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		console.log('search');
 	};
 
 	// Drawer content
@@ -62,52 +56,49 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				
 			}}
 		>
-			<Box sx={{ p: 2 }}>
+			<Stack
+				direction='column'
+				justifyContent='flex-start'
+				alignItems='stretch'
+				height='100%'
+				spacing={3}
+				py={4}
+			>
 				{/* Logo & Collapse Toggle */}
 				<Box
 					sx={{
-						p: 3,
 						display: 'flex',
 						alignItems: 'center',
-						flexDirection: collapsed ? 'column' : 'row',
+						flexDirection: 'row',
 						gap: 2,
-						justifyContent: collapsed ? 'center' : 'flex-start',
+						justifyContent: isMobile ? 'center' : 'flex-start',
 					}}
 				>
-					<img src={logo} alt='KLUBIQ Logo' width={40} height={40} />
-					{!collapsed && (
-						<Typography variant='h6' sx={{ letterSpacing: 1 }}>
-							KLUBIQ
-						</Typography>
-					)}
-					<IconButton
-						aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-						onClick={() => setCollapsed((prev) => !prev)}
-						sx={{
-							// ml: 'auto',
-							color: 'primary.contrastText',
-							display: { xs: 'none', md: 'inline-flex' },
-						}}
-						size='small'
+					<img src={logo} alt='KLUBIQ Logo' width={32} height={32} />
+
+					<Typography
+						variant='h4'
+						sx={{ letterSpacing: 1, color: 'primary.contrastText' }}
 					>
-						{collapsed ? <MenuIcon /> : <ChevronLeftIcon />}
-					</IconButton>
+						KLUBIQ
+					</Typography>
 				</Box>
 				{/* Search */}
-				{!collapsed && (
-					<Box sx={{ px: 2, pb: 2 }}>
+				<Box sx={{ width: '221px' }}>
 						<Paper
+							component='form'
+							onSubmit={handleSearchSubmit}
 							sx={{
 								display: 'flex',
 								alignItems: 'center',
 								bgcolor: 'primary.main',
-								borderRadius: 2,
-								px: 1,
+								borderRadius: 8,
+								px: 0.5,
 								py: 0.5,
-								
+								border: '1px solid #fff',
+								height: 36,
 							}}
 						>
 							<IconButton
@@ -123,64 +114,58 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							/>
 						</Paper>
 					</Box>
-				)}
 				{/* Nav Links */}
-				<Box sx={{ px: collapsed ? 0 : 3, pt: 2 }}>
+				<Box sx={{ width: '221px' }}>
 					<Stack spacing={1}>
-						{navLinks.map((link, index) => (
+						{navLinks.map((link, index) =>
 							link.disabled ? null : (
-							<Tooltip
-								key={link.label}
-								title={collapsed ? link.label : ''}
-								placement='right'
-								arrow
-							>
 								<ListItemButton
-									onClick={() => handleNavClick(index, link.route)}
-									sx={{
-										bgcolor:
-											index === selectedIndex
-												? 'primary.contrastText'
-												: 'transparent',
-										color:
-											index === selectedIndex
-												? 'primary.main'
-												: 'primary.contrastText',
-										borderRadius: 2,
-										my: 0.5,
-										minHeight: 40,
-										px: collapsed ? 2 : 3,
-										'&:hover': {
-											bgcolor: 'primary.light',
-											color: 'primary.contrastText',
-										},
-										justifyContent: collapsed ? 'center' : 'flex-start',
-									}}
-									aria-label={link.label}
-									tabIndex={0}
-								>
-									<ListItemIcon
+										onClick={() => handleNavClick(index, link.route)}
 										sx={{
-											color: 'inherit',
-											minWidth: 0,
-											mr: collapsed ? 0 : 2,
-											justifyContent: 'center',
+											bgcolor:
+												index === selectedIndex
+													? 'primary.contrastText'
+													: 'transparent',
+											color:
+												index === selectedIndex
+													? 'primary.main'
+													: 'primary.contrastText',
+											borderRadius: 2,
+											my: 0.5,
+											minHeight: 40,
+											px:  3,
+											'&:hover': {
+												bgcolor: 'primary.light',
+												color: 'primary.contrastText',
+											},
+											justifyContent:  'flex-start',
 										}}
+										aria-label={link.label}
+										tabIndex={0}
 									>
-										{link.icon}
-									</ListItemIcon>
-									{!collapsed && <ListItemText primary={link.label} />}
+										<ListItemIcon
+											sx={{
+												color: 'inherit',
+												minWidth: 0,
+												mr: 2,
+												justifyContent: 'center',
+											}}
+										>
+											{link.icon}
+										</ListItemIcon>
+										<ListItemText primary={link.label} sx={{ color:
+												index === selectedIndex
+													? 'primary.main'
+													: 'primary.contrastText', }} />
 									</ListItemButton>
-								</Tooltip>
-							)
-						))}
+							),
+						)}
 					</Stack>
 				</Box>
 				{/* Help & Settings */}
-				<Box sx={{ px: collapsed ? 0 : 3, pt: 2 }}>
+				<Box sx={{ width: '221px' }}>
 					<Stack spacing={1}>
-						<Tooltip title={collapsed ? 'Help' : ''} placement='right' arrow>
-							<ListItemButton
+					<ListItemButton
 								onClick={() => onNavClick('/help')}
 								sx={{
 									color: 'primary.contrastText',
@@ -190,8 +175,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 										bgcolor: 'primary.light',
 										color: 'primary.contrastText',
 									},
-									justifyContent: collapsed ? 'center' : 'flex-start',
-									px: collapsed ? 2 : 3,
+									justifyContent: 'flex-start',
+									px: 3,
 								}}
 								aria-label='Help'
 								tabIndex={0}
@@ -200,20 +185,14 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 									sx={{
 										color: 'inherit',
 										minWidth: 0,
-										mr: collapsed ? 0 : 2,
+										mr: 2,
 										justifyContent: 'center',
 									}}
 								>
 									<HelpOutlineIcon />
 								</ListItemIcon>
-								{!collapsed && <ListItemText primary='Help' />}
+								<ListItemText primary='Help' />
 							</ListItemButton>
-						</Tooltip>
-						<Tooltip
-							title={collapsed ? 'Settings' : ''}
-							placement='right'
-							arrow
-						>
 							<ListItemButton
 								onClick={() => onNavClick('/settings')}
 								sx={{
@@ -224,8 +203,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 										bgcolor: 'primary.light',
 										color: 'primary.contrastText',
 									},
-									justifyContent: collapsed ? 'center' : 'flex-start',
-									px: collapsed ? 2 : 3,
+									justifyContent: 'flex-start',
+									px: 3,
 								}}
 								aria-label='Settings'
 								tabIndex={0}
@@ -234,21 +213,21 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 									sx={{
 										color: 'inherit',
 										minWidth: 0,
-										mr: collapsed ? 0 : 2,
+										mr: 2,
 										justifyContent: 'center',
 									}}
 								>
 									<SettingsIcon />
 								</ListItemIcon>
-								{!collapsed && <ListItemText primary='Settings' />}
+								<ListItemText primary='Settings' />
 							</ListItemButton>
-						</Tooltip>
 					</Stack>
 				</Box>
-			</Box>
+			</Stack>
 			{/* User Info Bottom */}
-			<Box sx={{ px: collapsed ? 0 : 1, pb: 2 }}>
-				<Divider sx={{ bgcolor: 'primary.main', my: 2 }} />
+			<Divider sx={{ bgcolor: 'primary.contrastText', my: 2 }} />
+			<Box sx={{ px: 1, pb: 2 }}>
+				
 				{customBottomContent ? (
 					customBottomContent
 				) : (
@@ -256,14 +235,17 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						direction='row'
 						alignItems='center'
 						spacing={1}
-						justifyContent={collapsed ? 'center' : 'flex-start'}
+						justifyContent='flex-start'
 					>
-						<Avatar src={user.profilePicUrl || user.firstname || ''} alt={user.firstname || ''} />
-						{!collapsed && (
+						<Avatar
+							src={user.profilePicUrl || user.firstname || ''}
+							alt={user.firstname || ''}
+						/>
 							<Box>
-								<Typography variant='subtitle1'>{user.firstname} {user.lastname}</Typography>
+								<Typography variant='subtitle1' sx={{ color: 'primary.contrastText' }}>
+									{user.firstname} {user.lastname}
+								</Typography>
 							</Box>
-						)}
 						<IconButton
 							aria-label='sign out'
 							onClick={onSignOut}
@@ -280,51 +262,32 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	// Responsive Drawer
 	return (
 		<>
-			{/* Hamburger for mobile */}
-			{isMobile && (
-				<IconButton
-					aria-label='open drawer'
-					onClick={() => setMobileOpen(true)}
-					sx={{
-						position: 'fixed',
-						top: 16,
-						left: 16,
-						zIndex: theme.zIndex.drawer + 1,
-						bgcolor: '#0a2259',
-						color: '#fff',
-						'&:hover': { bgcolor: '#17316a' },
-					}}
-				>
-					<MenuIcon />
-				</IconButton>
-			)}
 			<Drawer
-				variant={isMobile ? 'temporary' : 'permanent'}
-				open={isMobile ? mobileOpen : true}
-				onClose={() => setMobileOpen(false)}
-				ModalProps={{
-					keepMounted: true, // Better open performance on mobile.
-				}}
-				sx={{
-					width: collapsed ? collapsedWidth : drawerWidth,
-					flexShrink: 0,
-					[`& .MuiDrawer-paper`]: {
-						width: collapsed ? collapsedWidth : drawerWidth,
-						boxSizing: 'border-box',
-						bgcolor: 'primary.main',
-						color: 'primary.contrastText',
-						borderRight: 0,
-						transition: theme.transitions.create('width', {
-							easing: theme.transitions.easing.sharp,
-							duration: theme.transitions.duration.enteringScreen,
-						}),
-						overflowX: 'hidden',
-					},
-				}}
-				PaperProps={{ elevation: 3 }}
-			>
-				{drawerContent}
-			</Drawer>
+					variant={'permanent'}
+					open={true}
+					ModalProps={{
+						keepMounted: true, // Better open performance on mobile.
+					}}
+					sx={{
+						width: drawerWidth,
+						flexShrink: 0,
+						[`& .MuiDrawer-paper`]: {
+							width: drawerWidth,
+							boxSizing: 'border-box',
+							bgcolor: 'primary.main',
+							color: 'primary.contrastText',
+							borderRight: 0,
+							transition: theme.transitions.create('width', {
+								easing: theme.transitions.easing.sharp,
+								duration: theme.transitions.duration.enteringScreen,
+							}),
+							overflowX: 'hidden',
+						},
+					}}
+					PaperProps={{ elevation: 3 }}
+				>
+					{drawerContent}
+				</Drawer>
 		</>
 	);
 };
