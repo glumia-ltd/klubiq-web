@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 
 import { NavLink } from './BottomNavTypes';
+import { Person } from '@mui/icons-material';
 
 
 export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: string) => void }> = ({ navLinks, onNavClick }) => {
@@ -40,6 +41,13 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 							/>
 						),
 					)}
+					<BottomNavigationAction
+						label={'Profile'}
+						icon={<Person />}
+						onClick={() => {
+							handleNavClick(navLinks.length, '/profile');
+						}}
+					/>
 				</BottomNavigation>
 		</Box>
 	);
