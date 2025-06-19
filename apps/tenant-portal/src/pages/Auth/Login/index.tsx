@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import {
 	CardContent,
 	Card,
-	Box,
 	Stack,
-	Typography,
-	Button,
+	Typography
 } from '@mui/material';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 

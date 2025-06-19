@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, Card, CardContent, Stack, Typography } from '@mui/material';
+import { Card, CardContent, Stack, Typography } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
 	FormFieldV1,
