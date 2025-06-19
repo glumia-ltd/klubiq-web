@@ -72,6 +72,8 @@ const Login = () => {
 
 	const loginFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
+		verticalAlignment: 'top',
+		horizontalAlignment: 'center',
 		header: (
 			<Stack direction='row' justifyContent='center' alignItems='center'>
 				<img src={Logo} alt='Klubiq Logo' />
@@ -89,8 +91,7 @@ const Login = () => {
 			</Typography>
 		),
 		fullWidthButtons: true,
-		verticalAlignment: 'center',
-		horizontalAlignment: 'center',
+
 		fields: [
 			{
 				name: 'email',
@@ -142,18 +143,22 @@ const Login = () => {
 	return (
 		<Card
 			sx={{
-				padding: 3,
-				maxHeight: '80%',
+				minHeight: '600px',
+				width: {
+					xs: '95%',
+					sm: '50%',
+					md: '400px',
+				},
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'center',
 				alignItems: 'center',
 			}}
 		>
-			<CardContent sx={{ height: '100%' }}>
+			<CardContent sx={{ height: 'auto', width: '100%' }}>
 				<Stack
 					sx={{
-						height: '100%',
+						height: 'auto',
 						justifyContent: 'center',
 						alignItems: 'center',
 					}}
