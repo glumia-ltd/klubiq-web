@@ -1,5 +1,5 @@
 import { RootState } from '@/store';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { PageHeader, DBInfoCard, DBInfoCardProps } from '@klubiq/ui-components';
 import {
@@ -7,9 +7,11 @@ import {
 	CheckCircle,
 	MonetizationOn,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const TenantDashboard = () => {
 	const { user } = useSelector((state: RootState) => state.auth);
+	const navigate = useNavigate();
 	const tenantRentMetrics: DBInfoCardProps[] = [
 		{
 			icon: <MonetizationOn />,
@@ -57,7 +59,9 @@ const TenantDashboard = () => {
 				subtitle={<Typography variant='h6'>Here is your dashboard</Typography>}
 				variant='compact'
 				rightContent={renderRightContent()}
-				// actions={<Button variant='klubiqTextButton'>View Profile</Button>}
+				actions={<Button variant='klubiqTextButton' onClick={() => {
+					navigate('/login');
+				}}>Logout</Button>}
 				sx={{
 					color: 'white',
 					background: 'linear-gradient(45deg, #615FFF, #9810FA)',

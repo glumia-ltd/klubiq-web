@@ -4,32 +4,71 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store/index.ts';
 import App from './App.tsx';
+import { registerSW } from 'virtual:pwa-register';
 import './index.css';
 
-window.addEventListener('load', function () {
-	const preloader = document.querySelector('#loader') as HTMLElement;
-	if (preloader) {
-		const fadeOut = (element: HTMLElement) => {
-			let opacity = 1;
-			const fadeOutInterval = setInterval(() => {
-				if (opacity > 0) {
-					opacity -= 0.5;
-					element.style.opacity = opacity.toString();
-				} else {
-					clearInterval(fadeOutInterval);
-					element.style.display = 'none';
-				}
-			}, 500);
-		};
-		fadeOut(preloader);
-	}
-	ReactDOM.createRoot(document.getElementById('root')!).render(
-		<React.StrictMode>
-			<Provider store={store}>
-				<PersistGate loading={null} persistor={persistor}>
-					<App />
-				</PersistGate>
-			</Provider>
-		</React.StrictMode>,
-	);
+// Optimize service worker registration with cleanup
+const updateSW = registerSW({
+	onNeedRefresh() {
+		// Use a more efficient update check
+		const shouldUpdate = window.confirm('New content available. Reload?');
+		if (shouldUpdate) {
+			updateSW(true); // Force update
+		}
+	},
+	onOfflineReady() {
+		console.log('App ready to work offline');
+	},
+	immediate: true, // Register immediately
+	onRegistered(registration) {
+		// Cleanup old service workers
+		if (registration) {
+			registration.update();
+		}
+	},
 });
+const handlePreloader = () => {
+	const preloader = document.querySelector('#loader');
+	if (!preloader) {
+		return;
+	}
+
+	// Use requestAnimationFrame for smoother animation
+	const fadeOut = (element: HTMLElement) => {
+		let start: number | null = null;
+		const duration = 500;
+
+		const animate = (timestamp: number) => {
+			if (!start) {
+				start = timestamp;
+			}
+			const progress = timestamp - start;
+			const opacity = Math.max(1 - progress / duration, 0);
+
+			element.style.opacity = opacity.toString();
+
+			if (progress < duration) {
+				requestAnimationFrame(animate);
+			} else {
+				element.style.display = 'none';
+				// Cleanup
+				element.remove();
+			}
+		};
+
+		requestAnimationFrame(animate);
+	};
+
+	fadeOut(preloader as HTMLElement);
+};
+ReactDOM.createRoot(document.getElementById('root')!).render(
+	<React.StrictMode>
+		<Provider store={store}>
+			<PersistGate loading={null} persistor={persistor}>
+				<App />
+			</PersistGate>
+		</Provider>
+	</React.StrictMode>,
+);
+// Handle preloader with passive event listener
+window.addEventListener('load', handlePreloader, { passive: true });
