@@ -498,6 +498,35 @@ const LeaseIcon = createSvgIcon(
 	</svg>,
 	'LeaseIcon',
 );
+ const PhoneIcon = createSvgIcon(
+  <svg
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M6.62 10.79C8.06 13.99 10.92 16.85 14.12 18.28L16.53 15.87C16.79 15.61 17.16 15.53 17.49 15.64C18.66 16.03 19.92 16.24 21.22 16.24C21.66 16.24 22 16.58 22 17.02V21C22 21.55 21.55 22 21 22C10.5 22 2 13.5 2 3C2 2.45 2.45 2 3 2H7C7.42 2 7.76 2.34 7.76 2.78C7.76 4.08 7.97 5.34 8.36 6.51C8.47 6.84 8.39 7.21 8.13 7.47L6.62 8.98C6.27 9.33 6.16 9.87 6.32 10.33L6.62 10.79Z'
+      fill='currentColor'
+    />
+  </svg>,
+  'PhoneIcon')
+  const EmailIcon = createSvgIcon(
+  <svg
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 6V6.01L12 11L4 6.01V6H20ZM4 18V8L12 13L20 8V18H4Z'
+      fill='currentColor'
+    />
+  </svg>,
+  'EmailIcon',
+);
 
 const WarningIcon = createSvgIcon(
 	<svg
@@ -515,9 +544,93 @@ const WarningIcon = createSvgIcon(
 	</svg>,
 	'WarningIcon',
 );
+const CalendarIcon = createSvgIcon(
+  <svg
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M19 4H18V2H16V4H8V2H6V4H5C3.9 4 3 4.9 3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4ZM19 20H5V10H19V20ZM5 8V6H19V8H5Z'
+      fill='currentColor'
+    />
+  </svg>,
+  'CalendarIcon'
+);
+  const MoneyIcon = createSvgIcon(
+  <svg
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M4 6C2.9 6 2 6.9 2 8V16C2 17.1 2.9 18 4 18H20C21.1 18 22 17.1 22 16V8C22 6.9 21.1 6 20 6H4ZM4 8H6C6 9.66 7.34 11 9 11C10.66 11 12 9.66 12 8H20V16H4V8ZM12 14C13.66 14 15 12.66 15 11C15 9.34 13.66 8 12 8C10.34 8 9 9.34 9 11C9 12.66 10.34 14 12 14ZM7 11C7 10.45 6.55 10 6 10C5.45 10 5 10.45 5 11C5 11.55 5.45 12 6 12C6.55 12 7 11.55 7 11Z'
+      fill='currentColor'
+    />
+  </svg>,
+  'MoneyIcon'
+);
+const RoundedCheckIcon = createSvgIcon(
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="12" cy="12" r="10" fill="currentColor" />
+    <path
+      d="M9.00002 12.6L10.8 14.4L15 10.2"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>,
+  'RoundedCheckIcon'
+);
+const DownloadIconCustom = createSvgIcon(
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 20H19C19.55 20 20 19.55 20 19V17H18V18H6V17H4V19C4 19.55 4.45 20 5 20ZM11 4V14.17L8.41 11.59L7 13L12 18L17 13L15.59 11.59L13 14.17V4H11Z"
+      fill="currentColor"
+    />
+  </svg>,
+  'DownloadIconCustom'
+);
 
+const DescriptionIconCustom = createSvgIcon(
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM14 9V3.5L19.5 9H14ZM6 20V4H13V10H19V20H6Z"
+      fill="currentColor"
+    />
+  </svg>,
+  'DescriptionIconCustom'
+);
 export {
 	Place,
+	DownloadIconCustom,
+	DescriptionIconCustom,
+	CalendarIcon,
+	RoundedCheckIcon,
+	MoneyIcon,
 	Bedroom,
 	Bathroom,
 	Bungalow,
@@ -542,4 +655,6 @@ export {
 	EmojiOneBuildingIcon,
 	LeaseIcon,
 	WarningIcon,
+	PhoneIcon,
+	EmailIcon,
 };

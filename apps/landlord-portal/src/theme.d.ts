@@ -18,7 +18,7 @@ declare module '@mui/material/styles' {
 		dashboardTypography?: React.CSSProperties;
 		link: React.CSSProperties;
 		cardHeader: React.CSSProperties;
-		cardContentText: React.CSSProperties;
+		cardContentText: React.CSSProperties; 
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;

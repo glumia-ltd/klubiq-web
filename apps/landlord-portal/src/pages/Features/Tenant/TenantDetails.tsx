@@ -70,7 +70,7 @@ const TenantDetails = () => {
 		name: (() => {
 			const fullName = tenantData?.profile?.fullName?.trim();
 			const companyName = tenantData?.profile?.companyName?.trim();
-	const isInvalid = (val?: string) =>
+			const isInvalid = (val?: string) =>
 				!val ||
 				val.toLowerCase() === 'null' ||
 				val.toLowerCase() === 'null null';
@@ -84,15 +84,10 @@ const TenantDetails = () => {
 		since: tenantData?.profile?.updatedDate
 			? dayjs(tenantData?.profile?.updatedDate).format('ll')
 			: 'N/A',
-		image: tenantData?.profile?.profilePicUrl || 'https://via.placeholder.com/150',
+		image:
+			tenantData?.profile?.profilePicUrl || 'https://via.placeholder.com/150',
 	};
-	// const rows: TenantDocumentRow[] = [
-	// 	{ name: 'Maintenance fee', dueDate: 'March 13, 2025' },
-	// 	{ name: 'Insurance fee', dueDate: 'April 4, 2024' },
-	// 	{ name: 'Landmark House unit 1 Lease payment', dueDate: 'March 13, 2025' },
-	// 	{ name: 'Landmark House unit 2 Lease payment', dueDate: 'April 4, 2024' },
-	// ];
-
+	
 	const columns = [
 		{
 			key: 'name',
@@ -155,9 +150,7 @@ const TenantDetails = () => {
 			>
 				<Breadcrumb />
 				<Stack>
-					<Button variant='contained' sx={styles.actionButton}>
-						Message
-					</Button>
+					<Button variant='klubiqMainButton'>Message</Button>
 				</Stack>
 			</Stack>
 			<Stack direction='row' spacing={1} sx={styles.detailsCard}>
