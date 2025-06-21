@@ -1,7 +1,7 @@
-export const AppContainerStyle = {
+export const AppContainerStyle = (isMobile: boolean) => ({
 	box: {
 		display: 'flex',
-		flexDirection: 'row',
+		flexDirection: isMobile ? 'column' : 'row',
 		minHeight: '100vh',
 		minWidth: '100vw',
 	},
@@ -9,11 +9,10 @@ export const AppContainerStyle = {
 		display: 'flex',
 		flexDirection: 'column',
 		flex: 1,
-		padding: '20px',
 		overflowY: 'auto',
 		justifyContent: 'space-between',
 	},
-};
+});
 export const SharedStyles = {
 	actionButton: {
 		backgroundColor: 'primary.main',

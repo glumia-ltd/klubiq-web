@@ -1,4 +1,5 @@
 import { Theme, createTheme } from '@mui/material';
+import '@mui/x-date-pickers/themeAugmentation';
 const transitionsTheme = {
 	duration: {
 		shortest: 150,
@@ -54,16 +55,16 @@ const primaryColors = {
 	lightBlue: '#005CFF',
 	white: '#FFFFFF',
 	black: '#000000',
-}
+};
 const secondaryColors = {
 	yellow: '#FFD700',
 	blue: '#6699CC',
 	lightBlue: '#E2EAF2',
-}
+};
 const backgroundColors = {
 	light: '#F3F6F8',
 	dark: '#1B1B1B',
-}
+};
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -81,13 +82,13 @@ export const LightTheme: Theme = createTheme({
 			main: primaryColors.mainBlue,
 			light: primaryColors.lightBlue,
 			dark: primaryColors.mainBlue,
-			contrastText: primaryColors.white, 
+			contrastText: primaryColors.black,
 		},
 		secondary: {
 			main: secondaryColors.yellow,
 			light: secondaryColors.blue,
 			dark: backgroundColors.dark,
-			contrastText: primaryColors.white,
+			contrastText: primaryColors.black,
 		},
 		background: {
 			default: backgroundColors.light,
@@ -101,17 +102,43 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		// error:{},
-		// warning:{},
-		// info:{},
-		// success:{},
+		action: {
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
+		},
 	},
 	components: {
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.mainBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.mainBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
 					background: backgroundColors.light,
 					height: '100%',
+				},
+			},
+		},
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					color: primaryColors.mainBlue,
+					'&.Mui-selected': {
+						backgroundColor: primaryColors.mainBlue,
+						color: primaryColors.white,
+						'&:hover': {
+							backgroundColor: primaryColors.mainBlue,
+							color: primaryColors.white,
+						},
+					},
 				},
 			},
 		},
@@ -159,66 +186,62 @@ export const LightTheme: Theme = createTheme({
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqSecondaryButton' },
 					style: {
-						background:secondaryColors.blue, 
+						background: secondaryColors.blue,
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
-							background:primaryColors.mainBlue,
+							background: primaryColors.mainBlue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqTertiaryButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: secondaryColors.lightBlue,
-							background:backgroundColors.dark,
+							background: backgroundColors.dark,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqAccentButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:backgroundColors.dark,
+							background: backgroundColors.dark,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -229,13 +252,12 @@ export const LightTheme: Theme = createTheme({
 						'&:hover': {
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
-
 						},
 					},
 				},
@@ -248,14 +270,13 @@ export const LightTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -361,7 +382,7 @@ export const LightTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: primaryColors.white,
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 				},
 			},
 
@@ -517,12 +538,60 @@ export const LightTheme: Theme = createTheme({
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
+		upTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #17B26A',
+			color: '#17B26A',
+			backgroundColor: 'rgba(236,253,243)',
+		},
+		downTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #FF0000',
+			color: '#FF0000',
+			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+		},
+		neutralTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #49a0e3',
+			color: '#49a0e3',
+			backgroundColor: '#c2daed',
+		},
 		dashboardTypography: {
 			fontWeight: 800,
-			// fontSize: '1rem',
-			// lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
 			fontSize: '1rem',
+			fontFamily: 'Maven Pro, sans-serif',
+			whiteSpace: 'normal',
+			wordBreak: 'break-word',
+			overflowWrap: 'break-word',
+			wordWrap: 'break-word',
+			hyphens: 'auto',
+			textOverflow: 'ellipsis',
+			overflow: 'hidden',
+			display: 'block',
 		},
 		button: {
 			textTransform: 'none',
@@ -590,13 +659,42 @@ export const DarkTheme: Theme = createTheme({
 			default: backgroundColors.dark,
 			paper: backgroundColors.dark,
 		},
+		action: {
+			hover: '#005CFF1A',
+			selected: '#005CFF2A',
+		},
 	},
 
 	components: {
+		MuiPickersDay: {
+			styleOverrides: {
+				root: {
+					'&.Mui-selected': {
+						backgroundColor: primaryColors.lightBlue,
+						color: primaryColors.white,
+						'&:hover': {
+							backgroundColor: primaryColors.lightBlue,
+							color: primaryColors.white,
+						},
+					},
+				},
+			},
+		},
+		MuiTooltip: {
+			styleOverrides: {
+				tooltip: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+				},
+				arrow: {
+					color: primaryColors.lightBlue,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					background:'#0D0D0D',
+					background: '#0D0D0D',
 					height: '100%',
 				},
 			},
@@ -711,66 +809,64 @@ export const DarkTheme: Theme = createTheme({
 						color: primaryColors.white,
 						border: '1.6px solid #FFFFFF',
 					},
-				}
+				},
 			},
 			variants: [
 				{
 					props: { variant: 'klubiqMainButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
+							color: primaryColors.white,
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqSecondaryButton' },
 					style: {
-						background:secondaryColors.blue, 
+						background: secondaryColors.blue,
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:secondaryColors.lightBlue,
+							background: secondaryColors.lightBlue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqTertiaryButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -778,7 +874,7 @@ export const DarkTheme: Theme = createTheme({
 				{
 					props: { variant: 'klubiqAccentButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						opacity: '1',
 						display: 'flex',
@@ -791,14 +887,13 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -810,13 +905,12 @@ export const DarkTheme: Theme = createTheme({
 							//opacity: '0.5',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
-
 						},
 					},
 				},
@@ -829,14 +923,13 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -870,7 +963,7 @@ export const DarkTheme: Theme = createTheme({
 			styleOverrides: {
 				root: {
 					background: '#161616',
-					boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
+					//boxShadow: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 					border: '1px solid rgba(211, 217, 223, 0.25)',
 				},
 			},
@@ -1009,6 +1102,48 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
+		},
+		upTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #17B26A',
+			color: '#17B26A',
+			backgroundColor: 'rgba(236,253,243)',
+		},
+		downTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #FF0000',
+			color: '#FF0000',
+			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+		},
+		neutralTrendIndicator: {
+			fontSize: '14px',
+			lineHeight: '20px',
+			fontWeight: 500,
+			alignItems: 'center',
+			justifyContent: 'center',
+			borderRadius: '20px',
+			padding: '10px',
+			height: '24px',
+			display: 'flex',
+			border: '1px solid #49a0e3',
+			color: '#49a0e3',
+			backgroundColor: '#c2daed',
 		},
 		dashboardTypography: {
 			fontWeight: 800,

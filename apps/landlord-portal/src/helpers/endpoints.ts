@@ -14,6 +14,7 @@ export const authEndpoints = {
 	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
+	csrf: () => '/security/csrf-token',
 };
 
 export const dashboardEndpoints = {
@@ -72,4 +73,10 @@ export const publicEndpoints = {
 	getRoles: () => '/public/organization-roles',
 	getFeatures: () => '/public/features',
 	getPermissions: () => '/public/permissions',
+};
+
+export const fileEndpoints = {
+	uploadImages: () => '/uploads/images',
+	uploadFiles: () => '/uploads/files',
+	deleteFile: () => `/uploads/delete-file`,
 };

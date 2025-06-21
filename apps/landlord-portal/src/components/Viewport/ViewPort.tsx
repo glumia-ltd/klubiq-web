@@ -7,7 +7,6 @@ import NavBar from '../NavBar/NavBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-import { useLocation } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
 import { AppFooter } from '@klubiq/ui-components';	
@@ -16,6 +15,7 @@ import pkg from '../../../package.json';
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
+	pathname?: string;
 };
 // Example for landlord portal
 const landlordFooterConfig = {
@@ -28,20 +28,17 @@ const landlordFooterConfig = {
 	// ... other props
 };
 
-const ViewPort = ({ children }: ViewPortProp) => {
+const ViewPort = ({ children, pathname }: ViewPortProp) => {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-
 	const { mode } = useContext(ThemeContext);
-
-	const { pathname } = useLocation();
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [pathname]);
 
-	return (
-		<NavToggleProvider>
+	const content = (
+		<>
 			<CssBaseline />
 			{isMediumScreen && <MobileSideBar />}
 			<Box
@@ -72,25 +69,37 @@ const ViewPort = ({ children }: ViewPortProp) => {
 
 					<Box
 						width={'100%'}
-						mt={'80px'}
-						mb={'40px'}
+						mt={10}
+						mb={10}
 						sx={{
 							display: 'flex',
 							flexDirection: 'column',
 							alignItems: 'center',
 							justifyContent: 'space-between',
+							px: {
+								sm: 2,
+								md: 4,
+							},
 						}}
 					>
-						{' '}
 						{children}
 					</Box>
-					<Box width={'100%'}>
+					<Box 
+						width={'100%'} 
+						sx={{
+							position: 'static',
+							bottom: 0,
+							zIndex: 1,
+						}}
+					>
 						<AppFooter {...landlordFooterConfig} />
 					</Box>
 				</Box>
 			</Box>
-		</NavToggleProvider>
+		</>
 	);
+
+	return <NavToggleProvider>{content}</NavToggleProvider>;
 };
 
 export default ViewPort;

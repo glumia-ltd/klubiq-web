@@ -1,5 +1,4 @@
-import { Stack, Typography } from '@mui/material';
-import { SubmitButton } from '../../styles/button';
+import { Button, Stack, Typography } from '@mui/material';
 interface FeedbackProps {
 	showButton?: boolean;
 	imageLink: string;
@@ -42,8 +41,20 @@ const FeedbackContent = ({
 				</div>
 				{showButton && (
 					<Stack width='100%' direction={'row'} spacing={1}>
-						<SubmitButton href={continueUrl}> Sign In </SubmitButton>
-						<SubmitButton onClick={onMFASetupClick}> Setup 2FA </SubmitButton>
+						<Button
+							href={continueUrl}
+							fullWidth
+							variant='klubiqMainButton'
+						>
+							Sign In
+						</Button>
+						<Button
+							onClick={onMFASetupClick}
+							fullWidth
+							variant='klubiqMainButton'
+						>
+							Setup 2FA
+						</Button>
 					</Stack>
 				)}
 			</>

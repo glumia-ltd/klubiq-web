@@ -15,20 +15,22 @@ export const styles = {
 			md: '80px 120px!important',
 		},
 	},
+	subtitle:{
+		textAlign: 'center',
+		fontSize: {
+			xs: '1rem',
+			sm: '1.25rem',
+			md: '1.5rem',
+			lg: '1.75rem',
+		},
+	},
 	title: {
 		textAlign: 'center',
-		fontWeight: 'semibold',
 		fontSize: {
 			xs: '1.5rem',
-			sm: '2rem',
-			md: '2.3rem',
-			lg: '2.5rem',
-		},
-		marginBottom: {
-			xs: '1.5rem',
-			sm: '2rem',
-			md: '3rem',
-			lg: '3rem',
+			sm: '1.75rem',
+			md: '2rem',
+			lg: '2.25rem',
 		},
 	},
 	text: {

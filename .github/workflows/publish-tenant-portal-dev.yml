@@ -7,10 +7,12 @@ on:
       - "apps/tenant-portal/**"
       - "packages/**"
 env:
+  NODE_ENV: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/prod' && 'production' || github.ref == 'refs/heads/qa' && 'staging' ||'development'}}
   VITE_BASE_URL_DEV: ${{ vars.VITE_BASE_URL_DEV }}
+  VITE_BASE_URL_STAGING: ${{ vars.VITE_BASE_URL_STAGING }}
+  VITE_BASE_URL_PROD: ${{ vars.VITE_BASE_URL_PROD }}
   VITE_APPLICATION_NAME: klubiq-tenant-portal
-  NODE_ENV: ${{ github.env }}
-  VITE_NODE_ENV: ${{ github.env }}
+  VITE_NODE_ENV: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/prod' && 'production' || github.ref == 'refs/heads/qa' && 'staging' ||'development'}}
   VITE_IDB_VERSION: ${{ vars.VITE_IDB_VERSION }}
   REACT_APP_DATA_CACHE: ${{ vars.REACT_APP_DATA_CACHE }}
   REACT_APP_ALLOWED_ORIGINS: ${{ vars.REACT_APP_ALLOWED_ORIGINS }}
@@ -18,6 +20,7 @@ env:
   REACT_APP_CACHE_EXPIRATION_TIME: ${{ vars.REACT_APP_CACHE_EXPIRATION_TIME }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
+  BUILD_NUMBER: ${{ github.run_number }}
 
   APP: klubiq-tenat-portal
 jobs:
@@ -39,6 +42,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/qa' && 'staging' || 'development'}}
     steps:
       - name: Download dev artifacts
         uses: actions/download-artifact@v4

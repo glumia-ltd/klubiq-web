@@ -135,6 +135,7 @@ export type TenantType = {
 	profileUuid?: string;
 
 }
+
 export type TenantsType = {
 	tenantId: string;
 	profile: UserProfile;
@@ -435,6 +436,7 @@ export type AddTenantToLeaseDetailsType = {
 	propertyName: string;
 };
 
+
 export type AddTenantFormValues = {
 	title?: string;
 	firstName?: string;
@@ -450,12 +452,12 @@ export type AddTenantFormValues = {
 };
 
 export type InviteTenantFormValues = {
+	title: string;
 	firstName: string;
 	lastName: string;
 	email: string;
 	phoneNumber?: string;
-	title?: string;
-	company?: string;
+	companyName?: string;
 	leaseDetails: {
 		name?: string;
 		startDate?: string;

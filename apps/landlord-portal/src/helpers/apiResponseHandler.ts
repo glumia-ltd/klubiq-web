@@ -24,11 +24,9 @@ export const handleApiResponse = async (
             isOpen: true,
             duration: config.successDuration || 3000
         }));
-        
         if (config.tagsToInvalidate) {
             invalidateMultipleTags(dispatch, config.tagsToInvalidate);
         }
-        
         return result;
     } catch (error) {
         console.error('API Error:', (error as any).error);

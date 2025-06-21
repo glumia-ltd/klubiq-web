@@ -12,11 +12,11 @@ import type { RootState } from './store';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { initDB } from './services/indexedDb';
-import { consoleLog } from './helpers/debug-logger';
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 import { BreadcrumbProvider } from './context/BreadcrumbContext/BreadcrumbContext';
 import { AuthProvider } from './context/AuthContext/AuthProvider';
+
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
@@ -25,16 +25,8 @@ function App() {
 	useEffect(() => {
 		if ('serviceWorker' in navigator) {
 			const executeOnLoad = () => {
-				navigator.serviceWorker
-					.register('/service-worker.js')
-					.then(() => {
-						initDB();
-					})
-					.catch((error) => {
-						consoleLog('ServiceWorker registration failed: ', error);
-					});
+				initDB();
 			};
-
 			if (document.readyState === 'loading') {
 				document.addEventListener('DOMContentLoaded', executeOnLoad);
 			} else {
@@ -44,14 +36,13 @@ function App() {
 	}, []);
 
 	return (
-		<ThemeContextProvider>
-			<AuthProvider>
-				<BreadcrumbProvider>
-					<LocalizationProvider dateAdapter={AdapterDayjs}>
+		<LocalizationProvider dateAdapter={AdapterDayjs}>
+			<ThemeContextProvider>
+				<AuthProvider>
+					<BreadcrumbProvider>
 						<AnimatePresence mode='wait'>
-							<PageTransition key={location.pathname}>
+							<PageTransition key={window.location.pathname}>
 								<RouterProvider router={router} />
-
 								<ControlledSnackbar
 									anchorOrigin={{
 										vertical: 'top',
@@ -65,10 +56,10 @@ function App() {
 								/>
 							</PageTransition>
 						</AnimatePresence>
-					</LocalizationProvider>
-				</BreadcrumbProvider>
-			</AuthProvider>
-		</ThemeContextProvider>
+					</BreadcrumbProvider>
+				</AuthProvider>
+			</ThemeContextProvider>
+		</LocalizationProvider>
 	);
 }
 

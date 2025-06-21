@@ -21,10 +21,10 @@ import { PropertiesGuage } from '../../../components/PropertiesGuage';
 import { styles } from './style';
 import {
 	indicatorColor,
-	indicatorBackground,
 	indicatorText,
 	showChangeArrow,
 	showTrendArrow,
+	IndicatorOptions,
 } from './dashboardUtils';
 import DashBoardSkeleton from './DashBoardSkeleton';
 import { getLocaleFormat } from '../../../helpers/utils';
@@ -145,23 +145,9 @@ const DashBoard = () => {
 							{/* PROPERTIES */}
 							<Grid item xs={12} sm={12} md={4} lg={4}>
 								<Card sx={styles.cardStyle}>
-									{/* <Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography sx={styles.typoStyle}>
-											Total Properties{' '}
-										</Typography>{' '}
-										<Typography
-											sx={styles.valueTextStyle}
-											variant='dashboardTypography'
-										>
-											{TOTALPROPERTIES || 0}
-										</Typography>
-									</Stack> */}
 									<Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography sx={styles.typoStyle}>Total Units </Typography>{' '}
-										<Typography
-											sx={styles.valueTextStyle}
-											variant='dashboardTypography'
-										>
+										<Typography variant='subtitle2'>Total Units </Typography>{' '}
+										<Typography variant='dashboardTypography'>
 											{TOTALUNITS || 0}
 										</Typography>
 									</Stack>
@@ -181,15 +167,12 @@ const DashBoard = () => {
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography sx={styles.typoStyle}>
+										<Typography variant='subtitle2'>
 											Occupancy Rate
 										</Typography>
 									</Stack>
 
-									<Typography
-										sx={styles.occupancyTextStyle}
-										variant='dashboardTypography'
-									>
+									<Typography variant='dashboardTypography'>
 										{getLocaleFormat(
 											user?.orgSettings,
 											OCCUPANCYRATE || 0,
@@ -202,15 +185,8 @@ const DashBoard = () => {
 										direction={'row'}
 										spacing={2}
 									>
-										<Typography
-											sx={{
-												...styles.changeTypographyStyle,
-												color: indicatorColor(OCCUPANCYRATECHANGEINDICATOR),
-												border: `1px solid ${indicatorColor(OCCUPANCYRATECHANGEINDICATOR)}`,
-												backgroundColor: indicatorBackground(
-													OCCUPANCYRATECHANGEINDICATOR,
-												),
-											}}
+										<Typography variant={OCCUPANCYRATECHANGEINDICATOR === IndicatorOptions.POSITIVE ? 'upTrendIndicator' : OCCUPANCYRATECHANGEINDICATOR === IndicatorOptions.NEGATIVE ? 'downTrendIndicator' : 'neutralTrendIndicator'}
+											sx={styles.changeTypographyStyle}
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
 											{getLocaleFormat(
@@ -219,7 +195,7 @@ const DashBoard = () => {
 												'percent',
 											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
-										<Typography sx={styles.overdueTypo}>
+										<Typography variant='caption'>
 											{indicatorText(OCCUPANCYRATECHANGEINDICATOR)}
 										</Typography>
 									</Stack>
@@ -229,13 +205,12 @@ const DashBoard = () => {
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography sx={styles.typoStyle}>Rent Overdue</Typography>
+										<Typography variant='subtitle2'>Rent Overdue</Typography>
 									</Stack>
 
 									<Box display={'flex'} alignItems={'center'}>
 										<CalendarTodayIcon sx={styles.calendarTodayStyle} />
 										<Typography
-											sx={styles.overdueTextStyle}
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
@@ -245,7 +220,7 @@ const DashBoard = () => {
 											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 									</Box>
-									<Typography sx={styles.overdueTypo}>
+									<Typography variant='caption'>
 										{OVERDUELEASECOUNT || 0}
 										<span style={{ marginLeft: '5px' }}>overdue</span>
 									</Typography>
@@ -274,7 +249,7 @@ const DashBoard = () => {
 											}}
 										>
 											<Stack direction={'column'} spacing={1}>
-												<Typography sx={styles.typoStyle}>
+												<Typography variant='subtitle2'>
 													Total Revenue
 												</Typography>
 												<Typography variant='caption'>This month</Typography>
@@ -286,7 +261,6 @@ const DashBoard = () => {
 													}}
 												>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
@@ -317,7 +291,7 @@ const DashBoard = () => {
 											</Stack>
 
 											<Stack direction={'column'} spacing={1}>
-												<Typography sx={styles.typoStyle}>
+												<Typography variant='subtitle2'>
 													Total Expenses
 												</Typography>
 												<Typography variant='caption'>This month</Typography>
@@ -329,7 +303,6 @@ const DashBoard = () => {
 													}}
 												>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
@@ -366,12 +339,11 @@ const DashBoard = () => {
 											sx={styles.totalExpensesStyle}
 										>
 											<Stack direction={'column'} spacing={1}>
-												<Typography sx={styles.typoStyle}>
+												<Typography variant='subtitle2'>
 													Net Cash Flow
 												</Typography>
 												<Box display={'flex'} justifyContent={'space-between'}>
 													<Typography
-														sx={styles.overdueTextStyle}
 														mr={'1rem'}
 														variant='dashboardTypography'
 													>
@@ -406,7 +378,7 @@ const DashBoard = () => {
 													justifyContent: 'flex-end',
 												}}
 											>
-												<Typography sx={styles.overdueTypo}>
+												<Typography variant='caption'>
 													{indicatorText(NETCASHFLOWCHANGEINDICATOR)}
 												</Typography>
 											</Stack>
@@ -451,7 +423,7 @@ const DashBoard = () => {
 															color: '#6EC03C',
 														}}
 													/>
-													<Typography sx={styles.leaseMetricsTextStyle}>
+													<Typography variant='caption'>
 														Active Lease
 														{ACTIVELEASECOUNT && ACTIVELEASECOUNT > 1
 															? 's'
@@ -460,7 +432,6 @@ const DashBoard = () => {
 												</Stack>
 												<Stack direction={'row'}>
 													<Typography
-														sx={styles.leaseMetricsValues}
 														variant='dashboardTypography'
 													>
 														{ACTIVELEASECOUNT || 0}
@@ -494,7 +465,7 @@ const DashBoard = () => {
 															color: '#D108A5',
 														}}
 													/>
-													<Typography sx={styles.leaseMetricsTextStyle}>
+													<Typography variant='caption'>
 														Lease
 														{EXPIRINGLEASEFORPERIODCOUNT &&
 														EXPIRINGLEASEFORPERIODCOUNT > 1
@@ -505,7 +476,6 @@ const DashBoard = () => {
 												</Stack>
 												<Stack direction={'row'}>
 													<Typography
-														sx={styles.leaseMetricsValues}
 														variant='dashboardTypography'
 													>
 														{EXPIRINGLEASEFORPERIODCOUNT || 0}
@@ -539,14 +509,13 @@ const DashBoard = () => {
 															color: '#0088F0',
 														}}
 													/>
-													<Typography sx={styles.leaseMetricsTextStyle}>
+													<Typography variant='caption'>
 														Tenant
 														{TENANTCOUNT && TENANTCOUNT > 1 ? 's' : ''}{' '}
 													</Typography>
 												</Stack>
 												<Stack direction={'row'}>
 													<Typography
-														sx={styles.leaseMetricsValues}
 														variant='dashboardTypography'
 													>
 														{TENANTCOUNT || 0}
@@ -554,82 +523,7 @@ const DashBoard = () => {
 												</Stack>
 											</Stack>
 										</Card>
-
-										{/* <Card
-											variant='outlined'
-											sx={{ width: '100%', p: 1, borderRadius: '10px' }}
-										>
-											<Stack
-												direction={'row'}
-												sx={{
-													justifyContent: 'space-between',
-													alignItems: 'center',
-													width: '100%',
-												}}
-											>
-												<Stack
-													direction={'row'}
-													spacing={1}
-													sx={{
-														alignItems: 'center',
-													}}
-												>
-													<FunctionsOutlinedIcon
-														fontSize='small'
-														sx={{
-															color: '#0088F0',
-														}}
-													/>
-													<Typography sx={styles.leaseMetricsTextStyle}>
-														Average Lease Duration
-													</Typography>
-												</Stack>
-												<Stack direction={'row'}>
-													<Typography
-														sx={styles.overdueTextStyle}
-														variant='dashboardTypography'
-													>
-														{AVGLEASEDURATION || 0}
-														{' days'}
-													</Typography>
-												</Stack>
-											</Stack>
-										</Card> */}
 									</Stack>
-
-									{/* <Typography sx={styles.typoStyle}>Active Lease</Typography>
-									<Typography
-										sx={styles.overdueTextStyle}
-										variant='dashboardTypography'
-									>
-										{ACTIVELEASECOUNT || 0}
-									</Typography>
-									<Box sx={styles.changeArrowBoxStyle}>
-										<Typography
-											sx={{
-												...styles.changeTypographyStyle,
-												color: indicatorColor(
-													ACTIVELEASEFORPERIODCHANGEINDICATOR,
-												),
-												border: `1px solid ${indicatorColor(
-													ACTIVELEASEFORPERIODCHANGEINDICATOR,
-												)}`,
-												backgroundColor: indicatorBackground(
-													ACTIVELEASEFORPERIODCHANGEINDICATOR,
-												),
-											}}
-										>
-											{showChangeArrow(ACTIVELEASEFORPERIODCHANGEINDICATOR)}
-											{getLocaleFormat(
-												ACTIVELEASEFORPERIODCHANGEDIFFERENCE || 0.0,
-												'percent',
-											)}
-										</Typography>
-
-										<Typography sx={{ ...styles.overdueTypo, mt: 0 }}>
-											Since last month
-										</Typography>
-									</Box> */}
 								</Card>
 							</Grid>
 						</Grid>
@@ -652,15 +546,15 @@ const DashBoard = () => {
 					>
 						<Grid item xs={12} sm={12} md={7}>
 							<Stack direction={'column'} spacing={2}>
-								<Typography sx={styles.typoStyle}>Total Revenue </Typography>
+								<Typography variant='subtitle2'>Total Revenue </Typography>
 								{!isRevenueReportLoading && (
 									<Box
 										display={'flex'}
 										textAlign={'center'}
 										alignItems={'center'}
+										gap={1}
 									>
 										<Typography
-											sx={styles.occupancyTextStyle}
 											variant='dashboardTypography'
 										>
 											{getLocaleFormat(
@@ -670,17 +564,9 @@ const DashBoard = () => {
 											) || <Skeleton variant='rounded' width='50px' />}
 										</Typography>
 
-										<Typography
-											sx={{
-												...styles.changeTypographyStyle,
-												backgroundColor: indicatorBackground(
-													revenueReport?.changeIndicator,
-												),
-												color: indicatorColor(revenueReport?.changeIndicator),
-												border: `1px solid ${indicatorColor(
-													revenueReport?.changeIndicator,
-												)}`,
-											}}
+										<Typography 
+											variant={revenueReport?.changeIndicator === IndicatorOptions.POSITIVE ? 'upTrendIndicator' : revenueReport?.changeIndicator === IndicatorOptions.NEGATIVE ? 'downTrendIndicator' : 'neutralTrendIndicator'}
+											sx={styles.changeTypographyStyle}
 										>
 											{showChangeArrow(revenueReport?.changeIndicator)}
 											{getLocaleFormat(

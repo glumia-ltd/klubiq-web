@@ -9,13 +9,6 @@ import { consoleDebug } from '../helpers/debug-logger';
 
 const PrivateRoute = () => {
 	const {isSignedIn } = useSelector(getAuthState);
-	// const {
-	// 	showMFAPrompt,
-	// 	goToMFASetup,
-	// 	optOutOf2fa,
-	// 	handleCloseMFAPrompt,
-	// 	alertDialogs,
-	// } = useAuth();
 
 
 	const loginUrl = 'login';

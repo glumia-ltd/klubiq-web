@@ -1,4 +1,4 @@
-import { Chip, Typography, Box, Tooltip } from '@mui/material';
+import { Chip, Typography,Stack } from '@mui/material';
 import { FC } from 'react';
 import { styles } from './styles';
 import { TenantType } from '../../../shared/type';
@@ -26,13 +26,13 @@ export const TenantTable: FC<TenantTableProps> = ({
 	allTenant,
 	onRowClick,
 }) => {
-	const { tableSx, tableStyles  } = useTenantActions();
+	const { tableSx, tableStyles } = useTenantActions();
 
 	const columns: TableColumn[] = [
 		{
 			key: 'profile',
 			label: 'Name',
-			align: 'center',
+			align: 'left',
 			render: (tenant) => {
 				const getDisplayName = (): string => {
 					const fullName = tenant?.fullName?.trim();
@@ -43,47 +43,43 @@ export const TenantTable: FC<TenantTableProps> = ({
 					return 'N/A';
 				};
 				return (
-					<Box display='flex' alignItems='center' justifyContent='center'>
-						<DynamicAvatar
-							items={[tenant?.profilePicUrl || '']}
-							size='medium'
-							showName={false}
-						/>
-						<Tooltip title={getDisplayName()} arrow>
-							<Typography
-								variant='body2'
-								ml='0.5rem'
-								whiteSpace='nowrap'
-								overflow='hidden'
-								textOverflow='ellipsis'
-								width="25%"
-							>
-								{getDisplayName()}{' '}
-							</Typography>
-						</Tooltip>
-					</Box>
+					<Stack direction='row' alignItems='center' spacing={2}>
+							<DynamicAvatar
+								items={[{ id: tenant?.id ?? getDisplayName(), name: getDisplayName() }]}
+								size='medium'
+								showName={false}
+							/>
+						<Typography
+							variant='body2'
+							whiteSpace='nowrap'
+							overflow='hidden'
+							textOverflow='ellipsis'
+						>
+							{getDisplayName()}{' '}
+						</Typography>
+					</Stack>  
 				);
 			},
 		},
 		{
 			key: 'mostRecentPropertyName',
 			label: 'Property Name',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentUnitName',
 			label: 'Unit',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentUnitAddress',
 			label: 'Address',
-			align: 'center',
+			align: 'left',
 		},
 		{
 			key: 'mostRecentPaymentStatus',
 			label: 'Status',
-			align: 'center',
+			align: 'left',
 			render: (tenant) => {
 				const status = tenant?.mostRecentPaymentStatus?.status;
 				if (!status) return null;

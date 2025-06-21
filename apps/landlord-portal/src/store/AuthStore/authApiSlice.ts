@@ -57,7 +57,7 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signOut(),
 				method: 'POST',
 			}),
-			
+
 			async onQueryStarted(_, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
@@ -73,7 +73,13 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signin(),
 				method: 'POST',
 				body,
-			})
+			}),
+		}),
+		fetchCsrfToken: builder.query<{ token: string, expiresIn: number, message: string }, void>({
+			query: () => ({
+				url: authEndpoints.csrf(),
+				method: 'GET',
+			}),
 		}),
 		signUp: builder.mutation({
 			query: (body) => ({
@@ -85,6 +91,20 @@ export const authApiSlice = createApi({
 				await handleApiResponse(queryFulfilled, dispatch, {
 					successMessage: screenMessages.auth.signUp.success,
 					errorMessage: screenMessages.auth.signUp.error,
+				});
+			},
+		}),
+		resetPassword: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.resetPassword(),
+				method: 'POST',
+				body,
+			}),
+
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				await handleApiResponse(queryFulfilled, dispatch, {
+					successMessage: screenMessages.auth.resetPassword.success,
+					errorMessage: screenMessages.auth.resetPassword.error,
 				});
 			},
 		}),
@@ -103,4 +123,8 @@ export const {
 	useSignOutMutation,
 	useSignInMutation,
 	useVerifyMFAOtpMutation,
+	useResetPasswordMutation,
+	useSignUpMutation,
+	useLazyFetchCsrfTokenQuery,
+	useFetchCsrfTokenQuery,
 } = authApiSlice;

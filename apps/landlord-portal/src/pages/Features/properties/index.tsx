@@ -31,6 +31,7 @@ import {
 // import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useDebounce } from '../../../hooks/useDebounce';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 const Properties = () => {
 	const isMobile = useMediaQuery('(max-width: 500px)');
@@ -92,7 +93,7 @@ const Properties = () => {
 	};
 
 	const handleAddProperties = () => {
-		navigate('/properties/create/property-category');
+		navigate('/properties/create');
 	};
 
 	const handlePropertiesSearch = (e: any) => {
@@ -121,15 +122,6 @@ const Properties = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 
-	// useEffect(() => {
-	// 	const currentFilter = {
-	// 		...filter,
-	// 		...defaultParams,
-	// 	};
-
-	// 	dispatch(setCurrentFilter({ currentFilter }));
-	// }, [defaultParams, dispatch, filter]);
-
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [filter, getCurrentPage]);
@@ -139,7 +131,6 @@ const Properties = () => {
 			{isPropertyLoading ? (
 				<PropertiesSkeleton />
 			) : (
-				// <Container maxWidth={'xl'} sx={styles.container}>
 				<>
 					<Grid container rowSpacing={2}>
 						<Grid
@@ -180,6 +171,7 @@ const Properties = () => {
 						</Grid>
 
 						<Grid xs={12} container rowSpacing={1}>
+							{/* Search Bar */}
 							<Grid xs={12}>
 								<Paper component='form' sx={styles.inputStyle}>
 									<IconButton aria-label='search'>
@@ -196,6 +188,7 @@ const Properties = () => {
 								</Paper>
 							</Grid>
 
+							{/* Filter Bar */}
 							<Grid xs={12}>
 								{
 									<Filter
@@ -207,7 +200,8 @@ const Properties = () => {
 									/>
 								}
 							</Grid>
-							<Grid xs={12} mb={3}>
+							{/* Filter Result Text */}
+							<Grid xs={12}>
 								{showFilterResultOnlyWhenFiltered || searchText ? (
 									isPropertyFetching ? (
 										<Typography variant='filterResultText'>
@@ -232,44 +226,54 @@ const Properties = () => {
 								) : null}
 							</Grid>
 
-							<Grid xs={12} container spacing={3}>
-								{allProperties?.map(
-									(
-										property: PropertyDataType,
-										index: Key | null | undefined,
-									) => (
-										<Grid
-											xs={12}
-											sm={layout === 'row' ? 12 : 6}
-											md={layout === 'row' ? 12 : 6}
-											lg={layout === 'row' ? 12 : 4}
-											xl={layout === 'row' ? 12 : 3}
-											key={index}
-										>
-											{isPropertyFetching ? (
-												<PropertiesCardSkeleton layout={layout} />
-											) : (
-												<PropertyCard
-													propertyData={property}
-													layout={isMobile ? 'column' : layout}
-												/>
-											)}
-										</Grid>
-									),
-								)}
-							</Grid>
+							{/* Properties List */}
+							{allProperties && allProperties.length > 0 ? (
+								<Grid xs={12} container spacing={2}>
+									{allProperties?.map(
+										(
+											property: PropertyDataType,
+											index: Key | null | undefined,
+										) => (
+											<Grid
+												xs={12}
+												sm={layout === 'row' ? 12 : 6}
+												md={layout === 'row' ? 12 : 6}
+												lg={layout === 'row' ? 12 : 4}
+												xl={layout === 'row' ? 12 : 3}
+												key={index}
+											>
+												{isPropertyFetching ? (
+													<PropertiesCardSkeleton layout={layout} />
+												) : (
+													<PropertyCard
+														propertyData={property}
+														layout={isMobile ? 'column' : layout}
+													/>
+												)}
+											</Grid>
+										),
+									)}
+								</Grid>
+							) : (
+								<Grid xs={12}>
+									<Typography variant='caption'>
+										{screenMessages.property.list.noMatches}
+									</Typography>
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
-					<Stack mt={4}>
-						<DataPagination
-							getCurrentPage={getCurrentPage}
-							getItemsPerPageCount={getItemsPerPageCount}
-							pageCount={pageCount}
-							currentPage={currentPage}
-						/>
-					</Stack>
+					{allProperties && allProperties.length > 0 && (
+						<Stack mt={4}>
+							<DataPagination
+								getCurrentPage={getCurrentPage}
+								getItemsPerPageCount={getItemsPerPageCount}
+								pageCount={pageCount}
+								currentPage={currentPage}
+							/>
+						</Stack>
+					)}
 				</>
-				// </Container>
 			)}
 		</>
 	);

@@ -51,16 +51,15 @@ const Tenant = () => {
 	const getItemsPerPageCount = (value: number) => {
 		setCurrentPage(1);
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
-	};
-
+	}; 
 	const handleTenantSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchText(e.target.value);
 	};
 
 	const navigateToAddTenant = () => {
-		navigate('/tenants/invite-tenant', {
+		navigate('/tenants/add-tenant', {
 			state: {
-				mode: 'onboarding',
+				mode: 'create',
 				returnPath: '/tenants',
 			},
 		});

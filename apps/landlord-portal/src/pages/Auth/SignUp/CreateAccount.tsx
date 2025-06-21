@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
 import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
-import { SubmitButton, LoadingSubmitButton } from '../../../styles/button';
+import { LoadingSubmitButton } from '../../../styles/button';
 import { BoldTextLink } from '../../../styles/links';
 import { useNavigate } from 'react-router-dom';
 import { signInWithCustomToken } from 'firebase/auth';
@@ -325,9 +325,9 @@ const CreateAccount: React.FC = () => {
 									Sign Up
 								</LoadingSubmitButton>
 							) : (
-								<SubmitButton type='submit' disableRipple>
+								<Button fullWidth variant='klubiqMainButton' type='submit' disableRipple>
 									Sign Up
-								</SubmitButton>
+								</Button>
 							)}
 						</Grid>
 						<Grid

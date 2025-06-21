@@ -13,7 +13,6 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import fileIcon from '../../../assets/images/Phone.svg';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
 import { DynamicTable } from '@klubiq/ui-components';
-import bukky from '../../../assets/images/aisha.jpg';
 import HistoryTable from '../Lease/HistoryTable';
 import MailOutlinedIcon from '@mui/icons-material/MailOutlined';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
@@ -85,7 +84,7 @@ const TenantDetails = () => {
 		since: tenantData?.profile?.updatedDate
 			? dayjs(tenantData?.profile?.updatedDate).format('ll')
 			: 'N/A',
-		image: tenantData?.profile?.profilePicUrl || bukky,
+		image: tenantData?.profile?.profilePicUrl || 'https://via.placeholder.com/150',
 	};
 	// const rows: TenantDocumentRow[] = [
 	// 	{ name: 'Maintenance fee', dueDate: 'March 13, 2025' },
