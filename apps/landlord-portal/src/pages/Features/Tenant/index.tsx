@@ -70,7 +70,7 @@ const Tenant = () => {
 	}, [getCurrentPage]);
 
 	const handleRowClick = (id: string) => {
-		navigate(`/tenant/${id}`);
+		navigate(`/tenants/${id}`);
 	};
 	return (
 		<>

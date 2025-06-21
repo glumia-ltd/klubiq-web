@@ -7,7 +7,8 @@ import {
 	Box,
 	IconButton,
 	Chip,
-	Button,
+	useTheme,
+	useMediaQuery,
 } from '@mui/material';
 import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import dayjs from 'dayjs';
@@ -21,6 +22,8 @@ import { TenantInfo } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 import { Breadcrumb } from '../../../components/Breadcrumb';
 const TenantDetailsNew = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
@@ -49,7 +52,7 @@ const TenantDetailsNew = () => {
 		if (currentTenantId) {
 			newBreadcrumbs['feature-details'] = {
 				label: `Tenant Details${tenantData?.profile?.firstName ? `: ${tenantData?.profile?.firstName}` : ''}`, // Prefer a human-readable name if available
-				path: `/tenant/${currentTenantId}`,
+				path: `/tenants/${currentTenantId}`,
 				icon: null,
 				showIcon: false,
 			};
@@ -77,7 +80,7 @@ const TenantDetailsNew = () => {
 			? dayjs(tenantData?.profile?.updatedDate).format('ll')
 			: 'N/A',
 		image:
-			tenantData?.profile?.profilePicUrl || 'https://via.placeholder.com/150',
+			tenantData?.profile?.profilePicUrl || '',
 	};
 	const documents = [
 		{
@@ -135,7 +138,7 @@ const TenantDetailsNew = () => {
 		return (
 			<Stack spacing={1}>
 				{documents.map((doc, index) => (
-					<Card elevation={1} variant='outlined' key={index}>
+					<Card variant='outlined' key={index}>
 						<Stack
 							direction='row'
 							justifyContent='space-between'
@@ -182,7 +185,7 @@ const TenantDetailsNew = () => {
 	};
 
 	return (
-		<Stack spacing={2}>
+		<Stack gap={2} justifyContent={'space-between'}>
 			<Stack
 				direction={'row'}
 				sx={{
@@ -192,35 +195,42 @@ const TenantDetailsNew = () => {
 				}}
 			>
 				<Breadcrumb />
-				<Stack>
+				{/* <Stack>
 					<Button variant='klubiqMainButton' >
 						Message
 					</Button>
-				</Stack>
+				</Stack> */}
 			</Stack>
 			<Card sx={styles.detailsCard}>
-				<Stack direction='row' spacing={4} alignItems={'center'}>
-					<Stack direction='row'>
-						<DynamicAvatar
-							items={[
-								{
-									image: tenant.image,
-									id: '',
-								},
-							]}
-							variant='square'
-							size='large'
-						/>
-					</Stack>
-					<Stack spacing={1}>
-						<Typography sx={styles.nameText2}>{tenant.name}</Typography>
-						<Stack direction='row' spacing={1} alignItems='center'>
+				<Stack direction='row' gap={2} alignItems={'center'} justifyContent={'flex-start'}>
+					<DynamicAvatar
+					showName={false}
+						items={[
+							{
+								image: tenant.image || '',
+								id: '',
+								variant: 'square',
+								name: tenant.name,
+							},
+						]}
+						size={isMobile ? 'medium' : 'large'}
+					/>
+					<Stack gap={1} direction='column'>
+						<Typography variant='h4'>{tenant.name}</Typography>
+						<Stack direction='row' gap={1} alignItems='center'>
 							<KlubiqIcons.EmailIcon fontSize='small' color='action' />
-							<Typography variant='body2' color='text.secondary'>
-								{tenant.email}
+							<Typography variant='body2' color='text.secondary' sx={{wordBreak:'break-word'}}>
+								{tenant.email} {' '}
+								
 							</Typography>
+							<Chip
+								size='small'
+								label={'active'}
+								color={'info'}
+							/>
+							
 						</Stack>
-						<Stack direction='row' spacing={1} alignItems='center'>
+						<Stack direction='row' gap={1} alignItems='center' >
 							<KlubiqIcons.PhoneIcon color='action' />
 							<Typography
 								variant='body2'
@@ -231,20 +241,12 @@ const TenantDetailsNew = () => {
 							</Typography>
 						</Stack>
 					</Stack>
-					<Chip
-						label={tenantData?.activeLeases?.[0]?.unit?.status || 'N/A'}
-						color={
-							(statusColors[
-								tenantData?.activeLeases?.[0]?.unit?.status
-							] as any) || 'info'
-						}
-					/>
 				</Stack>
 			</Card>
 			<Card sx={styles.detailsCard}>
 				<Stack direction='column'>
 					<Stack spacing={1.5}>
-						<Typography sx={styles.nameText2}>Property Information</Typography>
+						<Typography variant='h4'>Property Information</Typography>
 						<InfoRow
 							icon={<KlubiqIcons.HomeIcon fontSize='small' color='action' />}
 							label={tenantData?.activeLeases?.[0]?.propertyName || 'N/A'}
@@ -261,7 +263,7 @@ const TenantDetailsNew = () => {
 			<Card sx={styles.detailsCard}>
 				<Stack direction='column'>
 					<Stack spacing={1.5}>
-						<Typography sx={styles.nameText2}>Lease Information</Typography>
+						<Typography variant='h4'>Lease Information</Typography>
 
 						<InfoRow
 							label='Start Date'
@@ -305,7 +307,7 @@ const TenantDetailsNew = () => {
 			<Card sx={styles.detailsCard}>
 				<Stack direction='column'>
 					<Stack spacing={1.5}>
-						<Typography sx={styles.nameText2}>Payment Status</Typography>
+						<Typography variant='h4'>Payment Status</Typography>
 						<InfoRow
 							label='Status'
 							value={<Chip label='Paid' color='success' size='small' />}
@@ -335,7 +337,7 @@ const TenantDetailsNew = () => {
 			<Stack direction='row' spacing={2}>
 				<Card sx={styles.detailsCard}>
 					<Stack direction='column' spacing={3}>
-						<Typography sx={styles.nameText2}>Application Document</Typography>
+						<Typography variant='h4'>Application Document</Typography>
 						<DocumentCard documents={documents} />
 					</Stack>
 				</Card>
