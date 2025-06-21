@@ -31,7 +31,11 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import CustomPopper from '../Shared/CustomPopper';
-import { useCountNotificationsQuery, useGetNotificationsQuery, useReadNotificationsMutation } from '../../store/NotificationStore/NotificationApiSlice';
+import {
+	useCountNotificationsQuery,
+	useGetNotificationsQuery,
+	useReadNotificationsMutation,
+} from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
@@ -50,26 +54,31 @@ const NavBar = () => {
 	const [userSignOut] = useSignOutMutation();
 	const [readNotifications] = useReadNotificationsMutation();
 
-	const { toggleMobileSidebar, mobileSideBarOpen, setIsclosing, drawerWidth, sidebarOpen } =
-		useContext(Context);
+	const {
+		toggleMobileSidebar,
+		mobileSideBarOpen,
+		setIsclosing,
+		drawerWidth,
+		sidebarOpen,
+	} = useContext(Context);
 	// const [searchText, setSearchText] = useState('');
-	 // Format the section name from the path
-	 const getFormattedSection = () => {
-        // Get the first segment of the path (after the first /)
-        const section = location.pathname.split('/')[1];
-        
-        // Handle empty path
-        if (!section) {
-          return 'Dashboard';
-        }
-        
-        // Convert kebab-case or snake_case to Title Case
-        // e.g., 'property-units' -> 'Property Units'
-        return section
-            .split(/[-_]/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
-    };
+	// Format the section name from the path
+	const getFormattedSection = () => {
+		// Get the first segment of the path (after the first /)
+		const section = location.pathname.split('/')[1];
+
+		// Handle empty path
+		if (!section) {
+			return 'Dashboard';
+		}
+
+		// Convert kebab-case or snake_case to Title Case
+		// e.g., 'property-units' -> 'Property Units'
+		return section
+			.split(/[-_]/)
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+			.join(' ');
+	};
 
 	// const simplifyRoleName = (role: string) => {
 	// 	const simplifiedRole = replace(role.toLowerCase(), 'organization', '');
@@ -106,7 +115,6 @@ const NavBar = () => {
 		resetStore();
 		await userSignOut({}).unwrap();
 		navigate('/login');
-
 	};
 	const avatarMenus: menuItem[] = [
 		...(isSmallScreen
@@ -126,9 +134,7 @@ const NavBar = () => {
 				consoleDebug('redirect to profile page later');
 			},
 			icon: <PersonOutlineOutlinedIcon sx={{ color: 'text.primary' }} />,
-			sx: {
-				padding: '10px',
-			},
+			sx: { padding: '10px' },
 		},
 		{
 			label: 'Settings',
@@ -136,9 +142,7 @@ const NavBar = () => {
 				consoleDebug('redirect to settings page later');
 			},
 			icon: <SettingsOutlinedIcon sx={{ color: 'text.primary' }} />,
-			sx: {
-				padding: '10px',
-			},
+			sx: { padding: '10px' },
 		},
 		{
 			label: 'Logout',
@@ -146,14 +150,11 @@ const NavBar = () => {
 				handleSignOut();
 			},
 			icon: <LogoutOutlinedIcon sx={{ color: 'text.primary' }} />,
-			sx: {
-				padding: '10px',
-			},
+			sx: { padding: '10px' },
 		},
 	];
 	const navigate = useNavigate();
-	useEffect(() => {
-	}, [notificationData]);
+	useEffect(() => {}, [notificationData]);
 
 	const handleNotificationAction = async (item: NotificationData) => {
 		const readPayload: ReadNotificationType = {
@@ -162,7 +163,10 @@ const NavBar = () => {
 			isDelivered: false,
 		};
 		await readNotifications(readPayload).unwrap();
-		window.location.href = item.actionLink;
+
+		if (item?.type === 'property-created') {
+			window.location.href = item.actionLink;
+		}
 	};
 
 	return (
@@ -193,7 +197,16 @@ const NavBar = () => {
 									<MenuIcon />
 								</IconButton>
 							)}
-							<Grid item xs={2} ml={{xs: `${drawerWidth.smallClosed}px`, md: sidebarOpen ? `${drawerWidth.largeOpen}px` : `${drawerWidth.largeClosed}px`}}>
+							<Grid
+								item
+								xs={2}
+								ml={{
+									xs: `${drawerWidth.smallClosed}px`,
+									md: sidebarOpen
+										? `${drawerWidth.largeOpen}px`
+										: `${drawerWidth.largeClosed}px`,
+								}}
+							>
 								<Typography sx={styles(isSmallScreen).appSectionTitle}>
 									{getFormattedSection()}
 								</Typography>
@@ -242,71 +255,80 @@ const NavBar = () => {
 									/>
 								</Badge>
 							</IconButton>
-							{ notificationData && notificationData.length > 0 && (
-							<CustomPopper
-								open={isNotificationPopperOpen}
-								anchorEl={notificationAnchorRef.current}
-								onClose={handleNotificationPopperClose}
-							>
-								<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
-									<List>
-										{notificationData?.map((item) => (
-											<Box key={`notification-${item.id}`}>
-												<ListItem
-													key={`notification-${item.id}`}
-													sx={styles(isSmallScreen, theme).listItem}
-													onClick={() =>
-														handleNotificationAction(item)
-													}
-												>
-													<ListItemText
-														primary={item.title}
-														secondary={item.message}
-														primaryTypographyProps={{
-															color: 'text.primary',
-															marginBottom: '2px',
-															variant: 'body2',
-															fontWeight: item.isRead ? 'normal' : 'bold',
-															
-														}}
-														secondaryTypographyProps={{
-															color: 'text.secondary',
-															variant: 'caption',
-															fontWeight: item.isRead ? 'normal' : 'bold',
-														}}
-													/>
-												</ListItem>
-												<Divider  />
-											</Box>
-										))}
-										<ListItemButton key={'see-more-link'} alignItems='center' component='a' sx={styles(isSmallScreen, theme).seeMoreLink}>
-											<ListItemText primary='See more' sx={{color: 'text.primary', textAlign: 'center'}}>
-											</ListItemText>
-										</ListItemButton>
-									</List>
-								</Box>
-							</CustomPopper>)}
+							{notificationData && notificationData.length > 0 && (
+								<CustomPopper
+									open={isNotificationPopperOpen}
+									anchorEl={notificationAnchorRef.current}
+									onClose={handleNotificationPopperClose}
+								>
+									<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
+										<List>
+											{notificationData?.map((item) => (
+												<Box key={`notification-${item.id}`}>
+													<ListItem
+														key={`notification-${item.id}`}
+														sx={styles(isSmallScreen, theme).listItem}
+														onClick={() => handleNotificationAction(item)}
+													>
+														<ListItemText
+															primary={item.title}
+															secondary={item.message}
+															primaryTypographyProps={{
+																color: 'text.primary',
+																marginBottom: '2px',
+																variant: 'body2',
+																fontWeight: item.isRead ? 'normal' : 'bold',
+															}}
+															secondaryTypographyProps={{
+																color: 'text.secondary',
+																variant: 'caption',
+																fontWeight: item.isRead ? 'normal' : 'bold',
+															}}
+														/>
+													</ListItem>
+													<Divider />
+												</Box>
+											))}
+											<ListItemButton
+												key={'see-more-link'}
+												alignItems='center'
+												component='a'
+												sx={styles(isSmallScreen, theme).seeMoreLink}
+											>
+												<ListItemText
+													primary='See more'
+													sx={{ color: 'text.primary', textAlign: 'center' }}
+												></ListItemText>
+											</ListItemButton>
+										</List>
+									</Box>
+								</CustomPopper>
+							)}
 							<Divider
 								orientation='vertical'
 								variant='middle'
 								color={theme.palette.primary.main}
 								flexItem
 							/>
-							{user ?( <Stack direction='column' sx={{ml: 1}}>
-								<Typography sx={styles(isSmallScreen).nameRoleText}>
-									{user?.firstName || ''}{' '}{user?.lastName || ''}
-								</Typography>
-								<Typography sx={styles(isSmallScreen).nameRoleText}>
-									{user?.organization || ''}
-								</Typography>
-								<Typography sx={styles(isSmallScreen).nameRoleText}>
-									{user?.roleName || ''}
-								</Typography>
-							</Stack>): (<Stack>
-								<Skeleton variant='rectangular' width='30px' />
-								<Skeleton variant='rectangular' width='30px' />
-								<Skeleton variant='rectangular' width='30px' />
-							</Stack>)}
+							{user ? (
+								<Stack direction='column' sx={{ ml: 1 }}>
+									<Typography sx={styles(isSmallScreen).nameRoleText}>
+										{user?.firstName || ''} {user?.lastName || ''}
+									</Typography>
+									<Typography sx={styles(isSmallScreen).nameRoleText}>
+										{user?.organization || ''}
+									</Typography>
+									<Typography sx={styles(isSmallScreen).nameRoleText}>
+										{user?.roleName || ''}
+									</Typography>
+								</Stack>
+							) : (
+								<Stack>
+									<Skeleton variant='rectangular' width='30px' />
+									<Skeleton variant='rectangular' width='30px' />
+									<Skeleton variant='rectangular' width='30px' />
+								</Stack>
+							)}
 							<div>
 								<IconButton
 									edge='end'
