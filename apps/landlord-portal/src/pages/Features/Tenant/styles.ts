@@ -40,6 +40,7 @@ export const styles = {
 		fontWeight: '700',
 		fontSize: '24px',
 		marginTop: '15px',
+		textTransform: 'capitalize',
 	},
 	subheadText: {
 		fontWeight: '400',
