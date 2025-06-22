@@ -23,7 +23,7 @@
     "@storybook/addon-essentials": "8.6.12",
     "@types/node": "^20.12.7",
     "axios": "^1.8.4",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.13", 
     "firebase": "^11.6.0",
     "formik": "^2.4.5",
     "idb": "^8.0.0",

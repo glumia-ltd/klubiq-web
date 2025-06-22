@@ -8,12 +8,14 @@ type InviteTenantState = {
 	mode: string;
 	propertyDetails?: InviteTenantPropertyDetailsType;
 	returnPath: string;
+	formHeader?: string;
 };
 
 type AddTenantState = {
 	mode: string;
 	leaseAndUnitDetails: AddTenantToLeaseDetailsType;
 	returnPath: string;
+	formHeader?: string;
 };
 
 const AddTenant = () => {
@@ -26,16 +28,16 @@ const AddTenant = () => {
 		return null;
 	}
 
-	const { mode, returnPath } = state;
+	const { mode, returnPath, formHeader } = state;
 	const propertyDetails = 'propertyDetails' in state ? state.propertyDetails : undefined;
 	const leaseAndUnitDetails = 'leaseAndUnitDetails' in state ? state.leaseAndUnitDetails : undefined;
 
 	return (
 		<AddPropertiesInformationLayout>
 			{mode === 'onboarding' && propertyDetails ? (
-				<InviteTenantForm propertyDetails={propertyDetails} returnPath={returnPath} formHeader='Invite Tenant' />
+				<InviteTenantForm propertyDetails={propertyDetails} returnPath={returnPath} formHeader={formHeader || 'Invite Tenant'} />
 			) : (
-				<AddTenantForm leaseAndUnitDetails={leaseAndUnitDetails!} returnPath={returnPath} formHeader='Add Tenant' />
+				<AddTenantForm leaseAndUnitDetails={leaseAndUnitDetails!} returnPath={returnPath} formHeader={formHeader || 'Add Tenant'} />
 			)}
 		</AddPropertiesInformationLayout>
 	);

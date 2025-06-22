@@ -40,6 +40,7 @@ export const styles = {
 		fontWeight: '700',
 		fontSize: '24px',
 		marginTop: '15px',
+		textTransform: 'capitalize',
 	},
 	subheadText: {
 		fontWeight: '400',
@@ -177,8 +178,6 @@ export const styles = {
 		p: '2px 4px',
 		display: 'flex',
 		alignItems: 'center',
-		border: '1px solid #262626',
-		borderRadius: '10px',
 	},
 	tableCell: {
 		// padding: '10px',
