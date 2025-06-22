@@ -29,7 +29,7 @@ const transitionsTheme = {
 const cardHeaderStyle = {
 	fontWeight: 600,
 	fontSize: '0.875rem',
-	lineHeight: 1.5,
+	lineHeight: 1,
 };
 const cardContentTextStyle = {
 	fontWeight: 400,
@@ -39,7 +39,7 @@ const cardContentTextStyle = {
 const cardTitleStyle = {
 	fontWeight: 700,
 	fontSize: '1rem',
-	lineHeight: 2,
+	lineHeight: 1,
 };
 const filterResultTextStyle = {
 	fontSize: '1.125rem',
@@ -48,7 +48,7 @@ const filterResultTextStyle = {
 const filterResultCountStyle = {
 	fontSize: '3rem',
 	fontWeight: 700,
-	lineHeight: '2.375rem',
+	lineHeight: 1,
 };
 const primaryColors = {
 	mainBlue: '#002147',
@@ -457,31 +457,31 @@ export const LightTheme: Theme = createTheme({
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
 			fontWeight: 600,
 			fontSize: '2.25rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h4: {
 			fontWeight: 600,
 			fontSize: '1.5rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h5: {
 			fontWeight: 500,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
@@ -505,20 +505,20 @@ export const LightTheme: Theme = createTheme({
 		body2: {
 			fontWeight: 600,
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
 			fontWeight: 500,
 			fontSize: '1rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		subtitle2: {
 			fontWeight: 500,
 			fontSize: '0.875rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
@@ -526,21 +526,21 @@ export const LightTheme: Theme = createTheme({
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
-			lineHeight: 1.6,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		overline: {
 			fontWeight: 600,
 			fontSize: '0.75rem',
-			lineHeight: 2.46,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
 		upTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -554,7 +554,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -568,7 +568,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1020,32 +1020,32 @@ export const DarkTheme: Theme = createTheme({
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
 			fontWeight: 600,
 			fontSize: '2.25rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h4: {
 			fontWeight: 600,
 			fontSize: '1.5rem',
-			lineHeight: 1.5,
+			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h5: {
 			fontWeight: 500,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
@@ -1070,20 +1070,20 @@ export const DarkTheme: Theme = createTheme({
 		body2: {
 			fontWeight: 600,
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
 			fontWeight: 500,
 			fontSize: '1rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		subtitle2: {
 			fontWeight: 500,
 			fontSize: '0.875rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
@@ -1091,21 +1091,21 @@ export const DarkTheme: Theme = createTheme({
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
-			lineHeight: 1.6,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		overline: {
 			fontWeight: 600,
 			fontSize: '0.75rem',
-			lineHeight: 2.46,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
 		upTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1119,7 +1119,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1133,7 +1133,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',

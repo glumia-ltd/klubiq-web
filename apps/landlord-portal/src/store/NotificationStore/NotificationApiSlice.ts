@@ -83,29 +83,29 @@ export const notificationApiSlice = createApi({
 				method: 'DELETE',
 				body: data,
 			}),
-			onQueryStarted: async (readData, { dispatch, queryFulfilled }) => {
-				// Optimistic Update
-				const patchResult = dispatch(
-					notificationApiSlice.util.updateQueryData(
-						'getGroupedNotifications',
-						undefined,
-						(draft) => {
-							draft.forEach((group) => {
-								group.notifications = group.notifications.filter(
-									(notification) =>
-										!readData.notificationIds.includes(notification.id),
-								);
-							});
-						},
-					),
-				);
+			// onQueryStarted: async (readData, { dispatch, queryFulfilled }) => {
+			// 	// Optimistic Update
+			// 	const patchResult = dispatch(
+			// 		notificationApiSlice.util.updateQueryData(
+			// 			'getGroupedNotifications',
+			// 			undefined,
+			// 			(draft) => {
+			// 				draft.forEach((group) => {
+			// 					group.notifications = group.notifications.filter(
+			// 						(notification) =>
+			// 							!readData.notificationIds.includes(notification.id),
+			// 					);
+			// 				});
+			// 			},
+			// 		),
+			// 	);
 
-				try {
-					await queryFulfilled;
-				} catch {
-					patchResult.undo();
-				}
-			},
+			// 	try {
+			// 		await queryFulfilled;
+			// 	} catch {
+			// 		patchResult.undo();
+			// 	}
+			// },
 		}),
 		countNotifications: builder.query<number, void>({
 			query: () => ({

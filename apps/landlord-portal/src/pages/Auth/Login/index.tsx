@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import LoginLayout from '../../../Layouts/LoginLayout';
 import { BoldTextLink } from '../../../styles/links';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
@@ -26,7 +26,8 @@ type IValuesType = {
 const Login = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	// const [loading, setLoading] = useState<boolean>(false);
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const [verifying, setIsVerifying] = useState<boolean>(false);
 	const [verifyMFAOtp] = useVerifyMFAOtpMutation();
 	const [is2faRequired, set2FARequired] = useState<boolean>(false);
@@ -238,14 +239,14 @@ const Login = () => {
 						lg={6}
 						xl={6}
 						sx={{
-							width: '33rem',
+							width: isMobile ? '100%' : '33rem',
 						}}
 					>
 						<Grid container sx={styles.container}>
 							<Stack
 								justifyContent='center'
 								direction='column'
-								width='50%'
+								width={isMobile ? '90%' : '50%'}
 								gap={1}
 								sx={{
 									height: '100vh',

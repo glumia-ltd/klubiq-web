@@ -6,6 +6,8 @@ import {
 	Button,
 	Stack,
 	Skeleton,
+	useMediaQuery,
+	useTheme,
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -14,9 +16,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import ReportCard from './ReportCard';
 import TableChart from './TableChart';
-import { useContext } from 'react';
-import { ThemeMode } from '../../../context/ThemeContext/themeTypes';
-import { ThemeContext } from '../../../context/ThemeContext/ThemeContext';
 import { PropertiesGuage } from '../../../components/PropertiesGuage';
 import { styles } from './style';
 import {
@@ -31,30 +30,27 @@ import { getLocaleFormat } from '../../../helpers/utils';
 import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
-import { consoleDebug } from '../../../helpers/debug-logger';
 import { getCurrencySymbol } from '../../../helpers/utils';
 import { useDashboardActions } from '../../../hooks/page-hooks/dashboard.hooks';
 
 const DashBoard = () => {
-	consoleDebug('Dashboard component rendering');
-	
-	const { 
-		handleDownload, 
-		firstDay, 
-		setFirstDay, 
-		user, 
-		secondDay, 
-		setSecondDay, 
-		greeting, 
-		isDashboardMetricsLoading, 
-		dashboardMetrics, 
-		isRevenueReportLoading, 
-		revenueReport 
+	const {
+		handleDownload,
+		firstDay,
+		setFirstDay,
+		user,
+		secondDay,
+		setSecondDay,
+		greeting,
+		isDashboardMetricsLoading,
+		dashboardMetrics,
+		isRevenueReportLoading,
+		revenueReport,
 	} = useDashboardActions();
 
-
-	const { mode } = useContext(ThemeContext);
-
+	//const { mode } = useContext(ThemeContext);
+    const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const TOTALUNITS = dashboardMetrics?.propertyMetrics?.totalUnits;
 	//const TOTALPROPERTIES = dashboardMetrics?.propertyMetrics?.totalProperties;
 
@@ -107,7 +103,6 @@ const DashBoard = () => {
 		maintenance: MAINTENANCEUNITS || 0,
 	};
 
-
 	return (
 		<>
 			<Grid item xs={12}>
@@ -135,7 +130,7 @@ const DashBoard = () => {
 			{isDashboardMetricsLoading ? (
 				<DashBoardSkeleton />
 			) : (
-				<>
+				<Stack gap={2} direction={'column'} justifyContent={'space-between'}>
 					<Grid
 						container
 						spacing={2}
@@ -167,9 +162,7 @@ const DashBoard = () => {
 							<Grid item xs={12} sm={6} md={4} lg={4}>
 								<Card sx={styles.cardStyleTwo}>
 									<Stack sx={styles.boxStyle} direction={'row'}>
-										<Typography variant='subtitle2'>
-											Occupancy Rate
-										</Typography>
+										<Typography variant='subtitle2'>Occupancy Rate</Typography>
 									</Stack>
 
 									<Typography variant='dashboardTypography'>
@@ -185,7 +178,16 @@ const DashBoard = () => {
 										direction={'row'}
 										spacing={2}
 									>
-										<Typography variant={OCCUPANCYRATECHANGEINDICATOR === IndicatorOptions.POSITIVE ? 'upTrendIndicator' : OCCUPANCYRATECHANGEINDICATOR === IndicatorOptions.NEGATIVE ? 'downTrendIndicator' : 'neutralTrendIndicator'}
+										<Typography
+											variant={
+												OCCUPANCYRATECHANGEINDICATOR ===
+												IndicatorOptions.POSITIVE
+													? 'upTrendIndicator'
+													: OCCUPANCYRATECHANGEINDICATOR ===
+														  IndicatorOptions.NEGATIVE
+														? 'downTrendIndicator'
+														: 'neutralTrendIndicator'
+											}
 											sx={styles.changeTypographyStyle}
 										>
 											{showChangeArrow(OCCUPANCYRATECHANGEINDICATOR)}
@@ -210,9 +212,7 @@ const DashBoard = () => {
 
 									<Box display={'flex'} alignItems={'center'}>
 										<CalendarTodayIcon sx={styles.calendarTodayStyle} />
-										<Typography
-											variant='dashboardTypography'
-										>
+										<Typography variant='dashboardTypography'>
 											{getLocaleFormat(
 												user?.orgSettings,
 												OVERDUERENTSUM || 0.0,
@@ -260,10 +260,7 @@ const DashBoard = () => {
 														alignItems: 'flex-start',
 													}}
 												>
-													<Typography
-														mr={'1rem'}
-														variant='dashboardTypography'
-													>
+													<Typography mr={'1rem'} variant='dashboardTypography'>
 														{getLocaleFormat(
 															user?.orgSettings,
 															TOTALREVENUE || 0.0,
@@ -302,10 +299,7 @@ const DashBoard = () => {
 														alignItems: 'flex-start',
 													}}
 												>
-													<Typography
-														mr={'1rem'}
-														variant='dashboardTypography'
-													>
+													<Typography mr={'1rem'} variant='dashboardTypography'>
 														{getLocaleFormat(
 															user?.orgSettings,
 															TOTALEXPENSES || 0.0,
@@ -343,10 +337,7 @@ const DashBoard = () => {
 													Net Cash Flow
 												</Typography>
 												<Box display={'flex'} justifyContent={'space-between'}>
-													<Typography
-														mr={'1rem'}
-														variant='dashboardTypography'
-													>
+													<Typography mr={'1rem'} variant='dashboardTypography'>
 														{getLocaleFormat(
 															user?.orgSettings,
 															NETCASHFLOW || 0.0,
@@ -431,9 +422,7 @@ const DashBoard = () => {
 													</Typography>
 												</Stack>
 												<Stack direction={'row'}>
-													<Typography
-														variant='dashboardTypography'
-													>
+													<Typography variant='dashboardTypography'>
 														{ACTIVELEASECOUNT || 0}
 													</Typography>
 												</Stack>
@@ -475,9 +464,7 @@ const DashBoard = () => {
 													</Typography>
 												</Stack>
 												<Stack direction={'row'}>
-													<Typography
-														variant='dashboardTypography'
-													>
+													<Typography variant='dashboardTypography'>
 														{EXPIRINGLEASEFORPERIODCOUNT || 0}
 													</Typography>
 												</Stack>
@@ -515,9 +502,7 @@ const DashBoard = () => {
 													</Typography>
 												</Stack>
 												<Stack direction={'row'}>
-													<Typography
-														variant='dashboardTypography'
-													>
+													<Typography variant='dashboardTypography'>
 														{TENANTCOUNT || 0}
 													</Typography>
 												</Stack>
@@ -534,127 +519,124 @@ const DashBoard = () => {
 
 					<Grid
 						container
-						rowSpacing={2}
 						sx={{
 							...styles.totalRevenueStyle,
-							background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
-							boxShadow:
-								mode === ThemeMode.LIGHT
-									? '0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12)'
-									: '0px 0px 25px 0px rgba(211, 217, 223, 0.25)',
 						}}
 					>
-						<Grid item xs={12} sm={12} md={7}>
-							<Stack direction={'column'} spacing={2}>
-								<Typography variant='subtitle2'>Total Revenue </Typography>
-								{!isRevenueReportLoading && (
-									<Box
-										display={'flex'}
-										textAlign={'center'}
-										alignItems={'center'}
-										gap={1}
-									>
-										<Typography
-											variant='dashboardTypography'
-										>
-											{getLocaleFormat(
-												user?.orgSettings,
-												revenueReport?.totalRevenueLast12Months || 0.0,
-												'currency',
-											) || <Skeleton variant='rounded' width='50px' />}
-										</Typography>
-
-										<Typography 
-											variant={revenueReport?.changeIndicator === IndicatorOptions.POSITIVE ? 'upTrendIndicator' : revenueReport?.changeIndicator === IndicatorOptions.NEGATIVE ? 'downTrendIndicator' : 'neutralTrendIndicator'}
-											sx={styles.changeTypographyStyle}
-										>
-											{showChangeArrow(revenueReport?.changeIndicator)}
-											{getLocaleFormat(
-												user?.orgSettings,
-												revenueReport?.percentageDifference || 0,
-												'percent',
-											) || <Skeleton variant='rounded' width='50px' />}
-										</Typography>
-									</Box>
-								)}
-							</Stack>
-						</Grid>
-
-						<Grid
-							item
-							xs={12}
-							sm={12}
-							md={5}
-							lg={5}
-							xl={5}
-							alignItems={'center'}
-							justifyContent={{ xs: 'left', sm: 'left', md: 'space-between' }}
-							display={'flex'}
+						<Card
+							sx={{
+								...styles.totalRevenueCardStyle,
+							}}
 						>
-							<Stack
-								direction={'row'}
-								spacing={1}
-								sx={styles.datepickerStackStyle}
-							>
-								<DatePicker
-									defaultValue={dayjs().subtract(11, 'months')}
-									value={firstDay}
-									maxDate={
-										!secondDay
-											? dayjs().subtract(11, 'months')
-											: secondDay.subtract(11, 'months')
-									}
-									onChange={(date) => {
-										setFirstDay(dayjs(date));
-										setSecondDay(dayjs(date).add(11, 'months'));
-									}}
-									format='DD/MM/YYYY'
-									slotProps={{
-										inputAdornment: {
-											position: 'start',
-										},
-									}}
-								/>
-								<TrendingFlatIcon sx={{ fontSize: '30px' }} />
-								<DatePicker
-									defaultValue={dayjs()}
-									value={secondDay}
-									maxDate={dayjs()}
-									onChange={(date) => {
-										setSecondDay(dayjs(date));
-										setFirstDay(dayjs(date).subtract(11, 'months'));
-									}}
-									format='DD/MM/YYYY'
-									slotProps={{
-										inputAdornment: {
-											position: 'start',
-										},
-									}}
-								/>
+							<Grid item xs={12} sm={12} md={12} lg={12}>
+								<Stack direction={'column'} gap={2} alignItems={'flex-start'}>
+									<Typography variant='subtitle2'>Total Revenue </Typography>
+									{!isRevenueReportLoading && (
+										<Stack
+											alignItems={isMobile ? 'flex-start' : 'center'}
+											direction={isMobile ? 'column' : 'row'}
+											justifyContent={'space-between'}
+											width={'100%'}
+											gap={isMobile ? 2 : 0}
+										>
+											<Stack direction={'row'} gap={1} justifyContent={'flex-start'}  alignItems={'center'}>
+												<Typography variant='dashboardTypography'>
+													{getLocaleFormat(
+														user?.orgSettings,
+														revenueReport?.totalRevenueLast12Months || 0.0,
+														'currency',
+													) || <Skeleton variant='rounded' width='50px' />}
+												</Typography>
 
-								<Button
-									variant='klubiqOutlinedButton'
-									onClick={handleDownload}
-								>
-									<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
-								</Button>
-							</Stack>
-						</Grid>
+												<Typography
+													variant={
+														revenueReport?.changeIndicator ===
+														IndicatorOptions.POSITIVE
+															? 'upTrendIndicator'
+															: revenueReport?.changeIndicator ===
+																  IndicatorOptions.NEGATIVE
+																? 'downTrendIndicator'
+																: 'neutralTrendIndicator'
+													}
+													sx={styles.changeTypographyStyle}
+												>
+													{showChangeArrow(revenueReport?.changeIndicator)}
+													{getLocaleFormat(
+														user?.orgSettings,
+														revenueReport?.percentageDifference || 0,
+														'percent',
+													) || <Skeleton variant='rounded' width='50px' />}
+												</Typography>
+											</Stack>
+											<Stack
+												direction={'row'}
+												gap={1}
+												alignItems={'center'}
+												justifyContent={'flex-end'}
+											>
+												<DatePicker
+													defaultValue={dayjs().subtract(11, 'months')}
+													value={firstDay}
+													maxDate={
+														!secondDay
+															? dayjs().subtract(11, 'months')
+															: secondDay.subtract(11, 'months')
+													}
+													onChange={(date) => {
+														setFirstDay(dayjs(date));
+														setSecondDay(dayjs(date).add(11, 'months'));
+													}}
+													format='DD/MM/YYYY'
+													slotProps={{
+														inputAdornment: {
+															position: 'start',
+														},
+													}}
+												/>
+												<TrendingFlatIcon sx={{ fontSize: '30px' }} />
+												<DatePicker
+													defaultValue={dayjs()}
+													value={secondDay}
+													maxDate={dayjs()}
+													onChange={(date) => {
+														setSecondDay(dayjs(date));
+														setFirstDay(dayjs(date).subtract(11, 'months'));
+													}}
+													format='DD/MM/YYYY'
+													slotProps={{
+														inputAdornment: {
+															position: 'start',
+														},
+													}}
+												/>
 
-						<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
-							{!isRevenueReportLoading && (
-								<TableChart
-									seriesData={revenueReport?.revenueChart?.seriesData || []}
-									maxRevenue={revenueReport?.maxRevenue || 0}
-									xAxisData={revenueReport?.revenueChart?.xAxisData}
-									currencySymbol={
-										getCurrencySymbol(user?.orgSettings) as string
-									}
-								/>
-							)}
-						</Grid>
+												<Button
+													variant='klubiqOutlinedButton'
+													onClick={handleDownload}
+												>
+													<SaveAltOutlinedIcon sx={{ color: 'text.primary' }} />
+												</Button>
+											</Stack>
+										</Stack>
+									)}
+								</Stack>
+							</Grid>
+
+							<Grid item xs={12} sm={12} md={12} lg={12} mt={'10px'}>
+								{!isRevenueReportLoading && (
+									<TableChart
+										seriesData={revenueReport?.revenueChart?.seriesData || []}
+										maxRevenue={revenueReport?.maxRevenue || 0}
+										xAxisData={revenueReport?.revenueChart?.xAxisData}
+										currencySymbol={
+											getCurrencySymbol(user?.orgSettings) as string
+										}
+									/>
+								)}
+							</Grid>
+						</Card>
 					</Grid>
-				</>
+				</Stack>
 			)}
 		</>
 	);

@@ -8,7 +8,6 @@ import {
 	InputBase,
 	Typography,
 	Skeleton,
-	// Container,
 } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -17,7 +16,6 @@ import GridOnIcon from '@mui/icons-material/GridOn';
 import SearchIcon from '@mui/icons-material/Search';
 import PropertyCard from '../../../components/PropertyCard';
 import Filter from '../../../components/Filter/Filter';
-import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 import { styles } from './styles';
 import { useNavigate } from 'react-router-dom';
 import PropertiesCardSkeleton from '../../../components/skeletons/PropertiesCardSkeleton';
@@ -27,8 +25,6 @@ import {
 	useGetPropertiesQuery,
 	useGetPropertiesMetaDataQuery,
 } from '../../../store/PropertyPageStore/propertyApiSlice';
-// import { useDispatch } from 'react-redux';
-// import { setCurrentFilter } from '../../store/PropertyPageStore/PropertySlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { screenMessages } from '../../../helpers/screen-messages';
@@ -164,7 +160,7 @@ const Properties = () => {
 									variant='klubiqMainButton'
 									onClick={handleAddProperties}
 								>
-									<LeftArrowIcon />
+									{/* <LeftArrowIcon /> */}
 									Add New Property
 								</Button>
 							</Stack>
@@ -255,8 +251,8 @@ const Properties = () => {
 									)}
 								</Grid>
 							) : (
-								<Grid xs={12}>
-									<Typography variant='caption'>
+								<Grid xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'} height={'100%'}>
+									<Typography variant='body1'>
 										{screenMessages.property.list.noMatches}
 									</Typography>
 								</Grid>

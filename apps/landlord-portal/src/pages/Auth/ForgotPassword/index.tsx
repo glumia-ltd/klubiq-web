@@ -1,5 +1,5 @@
 import { LoadingSubmitButton } from '../../../styles/button';
-import { Box, Button, Modal, Stack, Typography } from '@mui/material';
+import { Box, Button, Modal, Stack, Typography, useTheme, useMediaQuery } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -24,6 +24,8 @@ type IValuesType = {
 const ForgotPassword = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const [loading, setLoading] = useState<boolean>(false);
 	const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -68,12 +70,12 @@ const ForgotPassword = () => {
 	return (
 		<Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} component="form" onSubmit={formik.handleSubmit}>
 			<Stack 
-				width="33rem" 
+				width={isMobile ? '100%' : '33rem'} 
 				height="100vh" 
 				justifyContent="center" 
 				alignItems="center"
 			>
-				<Stack width="30rem" spacing={3}>
+				<Stack width={isMobile ? '90%' : '30rem'} spacing={3}>
 					<Stack 
 						direction="row" 
 						alignItems="center" 
@@ -82,11 +84,11 @@ const ForgotPassword = () => {
 					</Stack>
 
 					<Stack spacing={3}>
-						<Typography variant='h3' sx={{ fontWeight: '700', textAlign: 'left' }}>
+						<Typography variant='h3' textAlign='left' fontSize={isMobile ? '1.25rem' : '1.75rem'}>
 							Forgot your password?
 						</Typography>
 
-						<Typography variant='body2'>
+						<Typography variant='body2' fontSize={isMobile ? '1rem' : '1.25rem'}>
 							Don't worry, happens to all of us. Enter your email below to
 							recover your password.
 						</Typography>
