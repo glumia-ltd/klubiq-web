@@ -1,4 +1,4 @@
-import { Stack, Button, Chip, Typography } from '@mui/material';
+import { Stack, Button, Chip, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
@@ -21,11 +21,14 @@ import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
 import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
+import { screenMessages } from '../../../helpers/screen-messages';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
@@ -37,7 +40,7 @@ const Lease = () => {
 	});
 	const filterObjectLength = Object.keys(filter).length;
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
-	const { data: leaseData } = useGetLeasesQuery({
+	const { data: leaseData, isLoading: isLeaseDataLoading } = useGetLeasesQuery({
 		...defaultParams,
 		...filter,
 	});
@@ -119,35 +122,37 @@ const Lease = () => {
 				key: 'startDate',
 				label: 'Lease Start',
 				align: 'left',
-				
 			},
 			{
 				key: 'endDate',
 				label: 'Lease End',
 				align: 'left',
-				
 			},
-			
 		];
-		const rows = leases.map((lease) => ({
-			status: lease.status,
-			tenants: lease.tenants?.map((tenant) => ({
+		const rows =
+			leases.map((lease) => ({
+				status: lease.status,
+				tenants:
+					lease.tenants?.map((tenant) => ({
 						name:
 							`${tenant.profile.firstName} ${tenant.profile.lastName}` ||
 							'Tenant',
 						image: tenant.profile?.profilePicUrl ?? '',
 					})) || [],
-			property: lease.property,
-			unit: lease.unitNumber,
-			startDate: dayjs(lease.startDate).format('ll'),
-			endDate: dayjs(lease.endDate).format('ll'),
-			id: lease.id,
-			unitId: lease.unitId,
-		})) ?? [];
+				property: lease.property,
+				unit: lease.unitNumber,
+				startDate: dayjs(lease.startDate).format('ll'),
+				endDate: dayjs(lease.endDate).format('ll'),
+				id: lease.id,
+				unitId: lease.unitId,
+			})) ?? [];
 		return { tableColumns, rows };
 	};
 
-	const leaseTableData = useMemo(() => getLeaseTableData(allLease ?? []), [allLease]);
+	const leaseTableData = useMemo(
+		() => getLeaseTableData(allLease ?? []),
+		[allLease],
+	);
 
 	useEffect(() => {
 		getCurrentPage(1);
@@ -157,27 +162,29 @@ const Lease = () => {
 	const handleRowClick = (id: number) => {
 		navigate(`/leases/${id}`);
 	};
-
+	const EmptyState = () => {
+		return (
+			<Stack>
+				<Typography variant='body1'>
+					{screenMessages.lease.list.noMatches}
+				</Typography>
+			</Stack>
+		);
+	};
 	return (
 		<>
-			<Stack spacing={5}>
+			<Stack gap={1}>
 				<Stack
 					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 4 }}
-					sx={styles.buttonContainer}
+					gap={1}
+					justifyContent={isMobile ? 'flex-start' : 'flex-end'}
 				>
-					<Button
-						variant='klubiqMainButton'
-						onClick={navigateToAddLease}
-					>
-						<LeftArrowIcon />
+					<Button variant='klubiqMainButton' onClick={navigateToAddLease}>
 						Add New Lease
 					</Button>
 				</Stack>
 				<Stack
 					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 4 }}
-					// sx={styles.buttonContainer}
 				>
 					<Filter
 						filterList={filterOptions}
@@ -188,18 +195,24 @@ const Lease = () => {
 					/>
 				</Stack>
 				<Stack sx={{ width: '100%' }}>
-					{allLease ? <DynamicTable
-						colors={tableSx}
-						styles={tableStyles}
-						header='Leases'
-						columns={leaseTableData.tableColumns}
-						rows={leaseTableData.rows}
-						onRowClick={(rowData: any) => handleRowClick(rowData.id)}
-					/> : <TableSkeleton />}
+					{isLeaseDataLoading ? (
+						<TableSkeleton />
+					) : allLease ? (
+						<DynamicTable
+							colors={tableSx}
+							styles={tableStyles}
+							header='Leases'
+							columns={leaseTableData.tableColumns}
+							rows={leaseTableData.rows}
+							onRowClick={(rowData: any) => handleRowClick(rowData.id)}
+						/>
+					) : (
+						<EmptyState />
+					)}
 				</Stack>
 			</Stack>
 
-			<Stack mt={4}>
+			{allLease && allLease.length > 0 && <Stack mt={4}>
 				<DataPagination
 					getCurrentPage={getCurrentPage}
 					getItemsPerPageCount={getItemsPerPageCount}
@@ -207,7 +220,7 @@ const Lease = () => {
 					currentPage={currentPage}
 					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
 				/>
-			</Stack>
+			</Stack>}
 		</>
 	);
 };

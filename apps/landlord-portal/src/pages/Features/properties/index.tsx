@@ -164,7 +164,7 @@ const Properties = () => {
 									variant='klubiqMainButton'
 									onClick={handleAddProperties}
 								>
-									<LeftArrowIcon />
+									{/* <LeftArrowIcon /> */}
 									Add New Property
 								</Button>
 							</Stack>
@@ -255,8 +255,8 @@ const Properties = () => {
 									)}
 								</Grid>
 							) : (
-								<Grid xs={12}>
-									<Typography variant='caption'>
+								<Grid xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'} height={'100%'}>
+									<Typography variant='body1'>
 										{screenMessages.property.list.noMatches}
 									</Typography>
 								</Grid>

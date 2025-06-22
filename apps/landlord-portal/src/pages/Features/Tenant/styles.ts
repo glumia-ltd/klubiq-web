@@ -178,8 +178,6 @@ export const styles = {
 		p: '2px 4px',
 		display: 'flex',
 		alignItems: 'center',
-		border: '1px solid #262626',
-		borderRadius: '10px',
 	},
 	tableCell: {
 		// padding: '10px',
