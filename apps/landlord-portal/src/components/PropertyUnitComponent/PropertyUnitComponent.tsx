@@ -347,6 +347,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					propertyId: currentUUId,
 				},
 				returnPath: `/properties/${currentUUId}`,
+				formHeader: header,
 			},
 		});
 	};

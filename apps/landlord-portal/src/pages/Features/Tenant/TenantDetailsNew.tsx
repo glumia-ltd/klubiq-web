@@ -5,13 +5,13 @@ import {
 	Stack,
 	Card,
 	Box,
-	IconButton,
+	// IconButton,
 	Chip,
-	useTheme,
+	// useTheme,
 	// useMediaQuery,
 	CardContent,
 } from '@mui/material';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import { 
 	// DynamicAvatar, 
@@ -20,7 +20,7 @@ import {
 import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
-import { TenantInfo } from '../../../shared/type';
+// import { TenantInfo } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 import { Breadcrumb } from '../../../components/Breadcrumb';
 import { formatDate, getLocaleFormat } from '../../../helpers/utils';

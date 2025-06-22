@@ -1,5 +1,5 @@
 import { Stack, Button, Chip, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { styles } from './style';
+// import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,7 @@ import {
 import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
-import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
+// 	import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 import { screenMessages } from '../../../helpers/screen-messages';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 
