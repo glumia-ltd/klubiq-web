@@ -2,11 +2,11 @@ import React from 'react';
 import { Card, CardContent, Typography, Stack, Box, useTheme } from '@mui/material';
 import { InfoCardProps } from './types';
 
-export const InfoCard: React.FC<InfoCardProps> = ({ title, items }) => {
+export const InfoCard: React.FC<InfoCardProps> = ({ title, items, elevation = 0 }) => {
   const theme = useTheme();
 
   return (
-    <Card elevation={0} sx={{ borderRadius: 2, backgroundColor: theme.palette.background.default }}>
+    <Card elevation={elevation} sx={{ borderRadius: 2, ...(elevation === 0 && {backgroundColor: theme.palette.background.default}) }}>
       <CardContent>
         <Typography variant="h6" fontWeight={600} mb={2}>
           {title}

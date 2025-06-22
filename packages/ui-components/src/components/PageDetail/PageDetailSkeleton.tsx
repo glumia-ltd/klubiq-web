@@ -1,48 +1,41 @@
 import React from 'react';
 import { Box, Paper, Stack, Skeleton, useTheme, useMediaQuery } from '@mui/material';
 
-export const PageDetailSkeleton: React.FC<{ showTabs?: boolean }> = ({ showTabs = true }) => {
+export const PageDetailSkeleton: React.FC<{
+    showTabs?: boolean;
+    displayMode?: 'container' | 'modal';
+    position?: 'left' | 'right';
+}> = ({ showTabs = true, displayMode = 'modal', position = 'right' }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const modalStyles = {
+        width: isMobile ? '100%' : 400,
+        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        [position]: 0,
+        zIndex: theme.zIndex.drawer + 1,
+    };
+
+    const containerStyles = {
+        width: '100%',
+        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: 2,
+    };
+
     return (
         <Paper
-            elevation={3}
+            elevation={displayMode === 'modal' ? 3 : 0}
             sx={{
-                width: isMobile ? '100%' : 400,
-                height: '100vh',
-                position: 'fixed',
-                right: 0,
-                top: 0,
-                display: 'flex',
-                flexDirection: 'column',
+                ...(displayMode === 'modal' ? modalStyles : containerStyles),
+                backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[50] : theme.palette.background.default,
                 overflow: 'hidden',
-                zIndex: theme.zIndex.drawer + 1,
             }}
         >
-            <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                <Stack direction="row" spacing={1} alignItems="flex-start">
-                    <Skeleton variant="circular" width={60} height={60} />
-                    <Stack flex={1} spacing={0.5}>
-                        <Skeleton variant="text" width="60%" />
-                        <Skeleton variant="text" width="80%" />
-                        <Skeleton variant="text" width="70%" />
-                    </Stack>
-                    <Skeleton variant="rectangular" width={60} height={24} sx={{ borderRadius: '16px' }}/>
-                </Stack>
-            </Box>
-
-            {showTabs && (
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Stack direction="row" justifyContent="space-around" sx={{p: 1}}>
-                        <Skeleton variant="text" width="40%" height={30} />
-                        <Skeleton variant="text" width="40%" height={30} />
-                    </Stack>
-                </Box>
-            )}
-
-            <Box sx={{ p: 2, flex: 1, overflowY: 'auto' }}>
+            <Box sx={{ height: '100%', overflowY: 'auto', p: 2 }}>
                 <Stack spacing={2}>
+                    <Skeleton variant="rounded" height={160} />
                     <Skeleton variant="rounded" height={150} />
                     <Skeleton variant="rounded" height={150} />
                     <Skeleton variant="rounded" height={200} />

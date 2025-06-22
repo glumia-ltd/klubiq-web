@@ -10,6 +10,7 @@ export interface PageDetailHeaderData {
   name: string;
   email: string;
   phone: string;
+  companyName?: string;
   status: 'Active' | 'Inactive' | string;
 }
 
@@ -48,4 +49,6 @@ export interface PageDetailProps {
   tabs?: TabInfo[];
   onClose?: () => void;
   loading?: boolean;
+  displayMode?: 'container' | 'modal';
+  position?: 'left' | 'right';
 } 

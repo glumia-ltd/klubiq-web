@@ -10,4 +10,5 @@ export interface InfoCardItem {
 export interface InfoCardProps {
   title: string;
   items: InfoCardItem[];
+  elevation?: number;
 } 

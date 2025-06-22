@@ -11,4 +11,5 @@ export interface DocumentListItem {
 export interface DocumentListProps {
   title: string;
   items: DocumentListItem[];
+  elevation?: number;
 } 

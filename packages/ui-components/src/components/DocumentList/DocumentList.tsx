@@ -3,11 +3,11 @@ import { Card, CardContent, Typography, Stack, Box, IconButton, useTheme } from 
 import { DocumentListProps } from './types';
 import { Download } from '@mui/icons-material';
 
-export const DocumentList: React.FC<DocumentListProps> = ({ title, items }) => {
+export const DocumentList: React.FC<DocumentListProps> = ({ title, items, elevation = 0 }) => {
   const theme = useTheme();
 
   return (
-    <Card elevation={0} sx={{ borderRadius: 2, backgroundColor: theme.palette.background.default }}>
+    <Card elevation={elevation} sx={{ borderRadius: 2, ...(elevation === 0 && {backgroundColor: theme.palette.background.default}) }}>
       <CardContent>
         <Typography variant="h6" fontWeight={600} mb={2}>
           {title}

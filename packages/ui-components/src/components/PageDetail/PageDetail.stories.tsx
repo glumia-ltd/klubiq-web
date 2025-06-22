@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PageDetail } from './PageDetail';
 import { HomeOutlined, CalendarToday, AttachMoney, CheckCircle, Description } from '@mui/icons-material';
-import { Chip, Typography } from '@mui/material';
+import { Chip, Typography, Box } from '@mui/material';
 import { DocumentList } from '../DocumentList';
 
 const meta: Meta<typeof PageDetail> = {
@@ -85,6 +85,7 @@ const applicationDocuments = [
 
 export const TenantDetail: Story = {
   args: {
+    displayMode: 'modal',
     variant: 'tenant-detail',
     headerData,
     detailSections: [
@@ -104,8 +105,24 @@ export const WithoutCloseButton: Story = {
     },
   };
 
+export const ContainerMode: Story = {
+    args: {
+        ...TenantDetail.args,
+        displayMode: 'container',
+        onClose: undefined,
+    },
+    decorators: [
+        (Story) => (
+            <Box sx={{ maxWidth: 600, margin: 'auto', p: 2 }}>
+                <Story />
+            </Box>
+        ),
+    ],
+};
+
 export const WithoutTabs: Story = {
     args: {
+      displayMode: 'modal',
       variant: 'tenant-detail',
       headerData,
       detailSections: [
@@ -121,6 +138,7 @@ export const WithoutTabs: Story = {
   
 export const WithCustomTabs: Story = {
     args: {
+      displayMode: 'modal',
       variant: 'tenant-detail',
       headerData,
       showTabs: true,
@@ -136,6 +154,14 @@ export const WithCustomTabs: Story = {
 export const Loading: Story = {
     args: {
         ...TenantDetail.args,
+        displayMode: 'modal',
         loading: true,
     },
+};
+
+export const LoadingContainer: Story = {
+    args: {
+        ...ContainerMode.args,
+        loading: true,
+    }
 }; 
