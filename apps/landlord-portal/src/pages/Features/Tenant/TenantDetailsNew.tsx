@@ -13,9 +13,11 @@ import {
 } from '@mui/material';
 // import dayjs from 'dayjs';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
-import { 
-	// DynamicAvatar, 
-	PageDetail } from '@klubiq/ui-components';
+import {
+	InfoCard,
+	// DynamicAvatar,
+	PageDetail,
+} from '@klubiq/ui-components';
 // import { styles } from './styles';
 import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
@@ -41,6 +43,8 @@ interface TenantDetails {
 		unitId: string;
 	}[];
 	leases: {
+		property?: string;
+		unit?: string;
 		id: string;
 		startDate: string;
 		endDate: string;
@@ -48,6 +52,8 @@ interface TenantDetails {
 		paymentFrequency: string;
 	}[];
 	paymentStatus: {
+		property?: string;
+		unit?: string;
 		status: string;
 		lastPaymentDate: string;
 	}[];
@@ -114,11 +120,16 @@ const TenantDetailsNew = () => {
 			endDate: lease.leaseEnd,
 			rentAmount: lease.rentAmount,
 			paymentFrequency: lease.paymentFrequency,
+			property: activeLeases.length > 1 ? lease.propertyName : '',
+			unit: activeLeases.length > 1 ? lease.unit?.unitNumber : '',
 		});
 
 		const mapPaymentStatus = (lease: any) => ({
+			leaseName: lease.propertyName,
 			status: lease.paymentStatus || null,
 			lastPaymentDate: lease.lastPaymentDate || null,
+			property: activeLeases.length > 1 ? lease.propertyName : '',
+			unit: activeLeases.length > 1 ? lease.unit?.unitNumber : '',
 		});
 
 		const mapDocuments = (document: any) => ({
@@ -270,30 +281,155 @@ const TenantDetailsNew = () => {
 					</Typography>
 					<Stack spacing={2}>
 						{properties.map((property, index) => (
-							<Stack
-								direction='column'
+							<Card elevation={0} sx={{ borderRadius: 2, backgroundColor: 'background.default' }}>
+								<CardContent>
+									<Stack
+										direction='column'
+										key={index}
+										justifyContent='space-between'
+										alignItems='flex-start'
+										gap={1}
+									>
+										<Stack
+											direction='row'
+											alignItems='center'
+											justifyContent='flex-start'
+											spacing={1.5}
+										>
+											{icon && (
+												<Box sx={{ color: 'text.secondary', display: 'flex' }}>
+													{icon}
+												</Box>
+											)}
+											<Typography variant='body2'>{property.name}</Typography>
+										</Stack>
+										<Typography variant='body1' sx={{ textAlign: 'left' }}>
+											Unit {property.unitNumber}
+										</Typography>
+									</Stack>
+								</CardContent>
+							</Card>
+						))}
+					</Stack>
+				</CardContent>
+			</Card>
+		);
+	};
+
+	const renderLeaseInfo = (leases: TenantDetails['leases']) => {
+		if (!leases || leases.length === 0) {
+			return null;
+		}
+
+		return (
+			<Card elevation={0}>
+				<CardContent>
+					<Typography variant='h6' fontWeight={600} mb={2}>
+						Lease Information
+					</Typography>
+					<Stack spacing={2}>
+						{leases.map((lease, index) => (
+							<InfoCard
 								key={index}
-								justifyContent='space-between'
-								alignItems='flex-start'
-								gap={2}
-							>
-								<Stack
-									direction='row'
-									alignItems='center'
-									justifyContent='flex-start'
-									spacing={1.5}
-								>
-									{icon && (
-										<Box sx={{ color: 'text.secondary', display: 'flex' }}>
-											{icon}
-										</Box>
-									)}
-									<Typography variant='body2'>{property.name}</Typography>
-								</Stack>
-								<Typography variant='body1' sx={{ textAlign: 'left' }}>
-									Unit {property.unitNumber}
-								</Typography>
-							</Stack>
+								title={`${lease.property ? lease.property + ':' + lease.unit : ''}`}
+								items={[
+									{
+										id: `lease-${index}-start-date`,
+										label: 'Start Date',
+										value: formatDate(lease.startDate),
+										icon: (
+											<KlubiqIcons.CalendarIcon
+												fontSize='small'
+												color='action'
+											/>
+										),
+									},
+									{
+										id: `lease-${index}-end-date`,
+										label: 'End Date',
+										value: formatDate(lease.endDate),
+										icon: (
+											<KlubiqIcons.CalendarIcon
+												fontSize='small'
+												color='action'
+											/>
+										),
+									},
+									{
+										id: `lease-${index}-rent-amount`,
+										label: 'Rent',
+										value: (
+											<Typography variant='body2'>
+												{getLocaleFormat(
+													user?.orgSettings,
+													+(lease.rentAmount || 0),
+													'currency',
+												)}{' '}
+												/ {lease.paymentFrequency}
+											</Typography>
+										),
+										icon: (
+											<KlubiqIcons.MoneyIcon fontSize='small' color='action' />
+										),
+									},
+								]}
+							/>
+						))}
+					</Stack>
+				</CardContent>
+			</Card>
+		);
+	};
+
+	const renderPaymentStatusInfo = (
+		paymentStatus: TenantDetails['paymentStatus'],
+	) => {
+		if (!paymentStatus || paymentStatus.length === 0) {
+			return null;
+		}
+
+		return (
+			<Card elevation={0}>
+				<CardContent>
+					<Typography variant='h6' fontWeight={600} mb={2}>
+						Payment Status
+					</Typography>
+					<Stack spacing={2}>
+						{paymentStatus.map((payment, index) => (
+							<InfoCard
+								key={index}
+								title={`${payment.property ? payment.property + ':' + payment.unit : ''}`}
+								items={[
+									{
+										id: `lease-${index}-start-date`,
+										label: 'Status',
+										value: (
+											<Chip
+												label={payment.status === 'Paid' ? 'Paid' : 'Unpaid'}
+												color={payment.status === 'Paid' ? 'success' : 'error'}
+												size='small'
+											/>
+										),
+										icon: (
+											<KlubiqIcons.RoundedCheckIcon
+												fontSize='small'
+												color={payment.status === 'Paid' ? 'success' : 'error'}
+											/>
+										),
+									},
+									{
+										id: `lease-${index}-end-date`,
+										label: 'End Date',
+										value: formatDate(payment.lastPaymentDate),
+										icon: (
+											<KlubiqIcons.CalendarIcon
+												fontSize='small'
+												color='action'
+											/>
+										),
+									},
+								]}
+							/>
 						))}
 					</Stack>
 				</CardContent>
@@ -493,77 +629,16 @@ const TenantDetailsNew = () => {
 								<KlubiqIcons.HomeIcon fontSize='small' color='action' />,
 							),
 						},
-						...tenantDetails.leases.map((lease, index) => ({
-							id: `lease-${index}`,
-							type: 'infoCard' as const,
-							title: index === 0 ? 'Lease Information' : '',
-							items: [
-								{
-									id: `lease-${index}-start-date`,
-									label: 'Start Date',
-									value: formatDate(lease.startDate),
-									icon: (
-										<KlubiqIcons.CalendarIcon fontSize='small' color='action' />
-									),
-								},
-								{
-									id: `lease-${index}-end-date`,
-									label: 'End Date',
-									value: formatDate(lease.endDate),
-									icon: (
-										<KlubiqIcons.CalendarIcon fontSize='small' color='action' />
-									),
-								},
-								{
-									id: `lease-${index}-rent-amount`,
-									label: 'Rent',
-									value: (
-										<Typography variant='body2'>
-											{getLocaleFormat(
-												user?.orgSettings,
-												+(lease.rentAmount || 0),
-												'currency',
-											)} / {lease.paymentFrequency}
-										</Typography>
-									),
-									icon: (
-										<KlubiqIcons.MoneyIcon fontSize='small' color='action' />
-									),
-								},
-							],
-						})),
-						...tenantDetails.paymentStatus.map((payment, index) => ({
-							id: `payment-${index}`,
-							type: 'infoCard' as const,
-							title: index === 0 ? 'Payment Status' : '',
-							items: [
-								{
-									id: `payment-${index}-status`,
-									label: 'Status',
-									value: (
-										<Chip
-											label={payment.status === 'Paid' ? 'Paid' : 'Unpaid'}
-											color={payment.status === 'Paid' ? 'success' : 'error'}
-											size='small'
-										/>
-									),
-									icon: (
-										<KlubiqIcons.RoundedCheckIcon
-											fontSize='small'
-											color={payment.status === 'Paid' ? 'success' : 'error'}
-										/>
-									),
-								},
-								{
-									id: `payment-${index}-last-payment-date`,
-									label: 'Last Payment Date',
-									value: formatDate(payment.lastPaymentDate),
-									icon: (
-										<KlubiqIcons.CalendarIcon fontSize='small' color='action' />
-									),
-								},
-							],
-						})),
+						{
+							id: 'lease-info',
+							type: 'custom',
+							content: renderLeaseInfo(tenantDetails.leases),
+						},
+						{
+							id: 'payment-status-info',
+							type: 'custom',
+							content: renderPaymentStatusInfo(tenantDetails.paymentStatus),
+						},
 						...tenantDetails.documents.map((document, index) => ({
 							id: `document-${index}`,
 							type: 'infoCard' as const,

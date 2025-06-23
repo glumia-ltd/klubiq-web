@@ -52,12 +52,13 @@ export const leaseApiSlice = createApi({
 			}),
 			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
 		}),
-		addNewTenantToLease: builder.mutation({
-			query: (body) => ({
-				url: leaseEndpoints.addNewTenantToLease(body?.leaseId),
+		addNewTenantToLease: builder.mutation<any, { leaseId: string, body: any }>({
+			query: ({ leaseId, body }) => ({
+				url: leaseEndpoints.addNewTenantToLease(leaseId),
 				method: 'POST',
 				body,
 			}),
+			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
 		}),
 	}),
 });

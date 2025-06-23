@@ -459,6 +459,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					<Grid sx={styles.unitInfoCardStyle}>
 						<UnitInfoCard data={unitInfoData} />
 					</Grid>
+					
 				)}
 
 				{tabValue === 0 && (

@@ -164,7 +164,7 @@ const Lease = () => {
 	};
 	const EmptyState = () => {
 		return (
-			<Stack>
+			<Stack alignItems='center' justifyContent='center' height='100%'>
 				<Typography variant='body1'>
 					{screenMessages.lease.list.noMatches}
 				</Typography>
@@ -183,7 +183,7 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
-				<Stack
+				{allLease && allLease.length > 0 && <Stack
 					direction={'row'}
 				>
 					<Filter
@@ -193,11 +193,11 @@ const Lease = () => {
 						}}
 						disable={filterObjectLength ? false : !allLease}
 					/>
-				</Stack>
+				</Stack>}
 				<Stack sx={{ width: '100%' }}>
 					{isLeaseDataLoading ? (
 						<TableSkeleton />
-					) : allLease ? (
+					) : allLease && allLease.length > 0 ? (
 						<DynamicTable
 							colors={tableSx}
 							styles={tableStyles}

@@ -69,7 +69,7 @@ const AddTenantForm = ({
 	// Form submission handler
 	const onSubmit = async (values: InitialFormValues) => {
 		try {
-			const { tenantType, tenantDetails, notes, leaseId, unitId, unitNumber } = values;
+			const { tenantType, tenantDetails, notes, leaseId } = values;
 			const { title, firstName, lastName, companyName, email, phoneNumber } = tenantDetails;
 
 			// Create base request data based on tenant type
@@ -81,14 +81,11 @@ const AddTenantForm = ({
 			const requestData = {
 				...baseRequestData,
 				...(notes && { notes }),
-				...(leaseId && { leaseId }),
-				...(unitId && { unitId }),
-				...(unitNumber && { unitNumber })
 			};
 
 			// Make API call based on lease details
 			const apiCall = leaseId ? addNewTenantToLease : addNewTenantWithoutLease;
-			await apiCall(requestData).unwrap();
+			await apiCall({ leaseId: leaseId || '', body: requestData }).unwrap();
 			dispatch(
 				openSnackbar({
 					message: screenMessages.tenant.add.success,
@@ -136,7 +133,7 @@ const AddTenantForm = ({
 			component: (
 				<Typography variant='subtitle2'>
 					{leaseAndUnitDetails
-						? `Add a new tenant to ${leaseAndUnitDetails.propertyName}-${leaseAndUnitDetails.unitNumber}`
+						? `Add a new tenant to ${leaseAndUnitDetails.propertyName}-${leaseAndUnitDetails.unitNumber}. Lease ID: ${leaseAndUnitDetails.leaseId}`
 						: "Add a new tenant to your organization's tenant list"}
 				</Typography>
 			),
