@@ -14,6 +14,9 @@ export const propertyApiSlice = createApi({
 		API_TAGS.PROPERTY,
 		API_TAGS.DASHBOARD_METRICS,
 		API_TAGS.DASHBOARD_REVENUE_REPORT,
+		API_TAGS.PROPERTY_METADATA,
+		API_TAGS.PROPERTIES_AND_TENANTS,
+		API_TAGS.NOTIFICATION,
 	],
 	endpoints: (builder) => ({
 		getProperties: builder.query<GetPropertiesResponse, { [key: string]: any }>(
@@ -31,6 +34,7 @@ export const propertyApiSlice = createApi({
 				url: propertiesEndpoints.getPropertiesMetaData(),
 				method: 'GET',
 			}),
+			providesTags: [API_TAGS.PROPERTY_METADATA],
 		}),
 
 		getSinglePropertyByUUID: builder.query<any, { uuid: string }>({
@@ -53,6 +57,7 @@ export const propertyApiSlice = createApi({
 				API_TAGS.PROPERTY,
 				API_TAGS.DASHBOARD_METRICS,
 				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
 			],
 		}),
 
@@ -87,6 +92,7 @@ export const propertyApiSlice = createApi({
 				API_TAGS.PROPERTY,
 				API_TAGS.DASHBOARD_METRICS,
 				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
 			],
 		}),
 
