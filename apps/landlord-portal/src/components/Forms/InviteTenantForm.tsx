@@ -37,6 +37,15 @@ function renderCustomDateField(
 		/>
 	);
 }
+enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One-Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+}
 interface InitialValues {
 	tenantType: string;
 	tenantDetails: {
@@ -55,6 +64,8 @@ interface InitialValues {
 		rentAmount?: number | string;
 		propertyName?: string;
 		unitNumber?: string;
+		paymentFrequency?: PaymentFrequency;
+		rentDueDay?: number;
 	};
 }				
 
@@ -79,7 +90,10 @@ const defaultValues: InitialValues = {
 		phoneNumber: '',
 		companyName: '',
 	},
-	leaseDetails: {},
+	leaseDetails: {
+		paymentFrequency: PaymentFrequency.ANNUALLY,
+		rentDueDay: 0,
+	},
 };
 
 const InviteTenantForm = ({
@@ -155,6 +169,8 @@ const InviteTenantForm = ({
 					rentAmount: '',
 					propertyName: propertyDetails?.propertyName,
 					unitNumber: propertyDetails?.unitNumber,
+					paymentFrequency: PaymentFrequency.ANNUALLY,
+					rentDueDay: 0,
 				},
 			});
 			setLoading(false);
@@ -379,6 +395,33 @@ const InviteTenantForm = ({
 					validation: {
 						schema: z.string().min(1, { message: 'Rent is required' }),
 					},
+				},
+				{
+					name: 'paymentFrequency',
+					label: 'Payment Frequency',
+					type: 'select',
+					required: true,
+					options: Object.values(PaymentFrequency).map((freq) => ({
+						label: freq,
+						value: freq,
+					})),
+					width: isMobile ? '100%' : '48%',
+					validation: {
+						schema: z.string({ required_error: 'Payment frequency is required' }),
+					},
+				},
+				{
+					name: 'rentDueDay',
+					label: 'Payment Day',
+					type: 'select',
+					options: Array.from({ length: 31 }, (_, i) => ({
+						label: i === 0 ? 'select due day' : `${i}`,
+						value: `${i}`,
+					})),
+					width: isMobile ? '100%' : '48%',
+					showIf: (values) =>
+						values.leaseDetails.paymentFrequency === 'Monthly' ||
+						values.leaseDetails.paymentFrequency === 'Bi-Monthly',
 				},
 			],
 		},

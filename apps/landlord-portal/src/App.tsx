@@ -16,11 +16,14 @@ import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 import { BreadcrumbProvider } from './context/BreadcrumbContext/BreadcrumbContext';
 import { AuthProvider } from './context/AuthContext/AuthProvider';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	useEffect(() => {
 		if ('serviceWorker' in navigator) {
@@ -45,8 +48,8 @@ function App() {
 								<RouterProvider router={router} />
 								<ControlledSnackbar
 									anchorOrigin={{
-										vertical: 'top',
-										horizontal: 'right',
+										vertical: isMobile ? 'bottom' : 'top',
+										horizontal: isMobile ? 'center' : 'right',
 									}}
 									autoHideDuration={duration || 2000}
 									key={message}

@@ -13,6 +13,8 @@ import {
 	LinearProgress,
 	Snackbar,
 	Alert,
+	useTheme,
+	useMediaQuery,
 } from '@mui/material';
 import {
 	CloudUpload,
@@ -119,6 +121,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	form,
 	fieldName = 'uploadedFiles',
 }): JSX.Element => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [errorMessage, setErrorMessage] = useState<string>('');
 	const [localFiles, setLocalFiles] = useState<FileWithPreview[]>([]);
@@ -912,7 +916,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				open={snackbar.open}
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+				anchorOrigin={{ vertical: isMobile ? 'bottom' : 'top', horizontal: isMobile ? 'center' : 'right' }}
 				sx={{
 					'& .MuiAlert-root': {
 						width: '100%',
