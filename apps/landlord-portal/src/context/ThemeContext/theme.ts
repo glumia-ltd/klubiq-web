@@ -29,7 +29,7 @@ const transitionsTheme = {
 const cardHeaderStyle = {
 	fontWeight: 600,
 	fontSize: '0.875rem',
-	lineHeight: 1.5,
+	lineHeight: 1,
 };
 const cardContentTextStyle = {
 	fontWeight: 400,
@@ -39,7 +39,7 @@ const cardContentTextStyle = {
 const cardTitleStyle = {
 	fontWeight: 700,
 	fontSize: '1rem',
-	lineHeight: 2,
+	lineHeight: 1,
 };
 const filterResultTextStyle = {
 	fontSize: '1.125rem',
@@ -48,7 +48,7 @@ const filterResultTextStyle = {
 const filterResultCountStyle = {
 	fontSize: '3rem',
 	fontWeight: 700,
-	lineHeight: '2.375rem',
+	lineHeight: 1,
 };
 const primaryColors = {
 	mainBlue: '#002147',
@@ -60,21 +60,11 @@ const secondaryColors = {
 	yellow: '#FFD700',
 	blue: '#6699CC',
 	lightBlue: '#E2EAF2',
+	grey: '#E4E4E4',
 };
-const backgroundColors = {
-	light: '#F3F6F8',
-	dark: '#1B1B1B',
-};
+const backgroundColors = { light: '#F3F6F8', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
-	breakpoints: {
-		values: {
-			xs: 0,
-			sm: 600,
-			md: 900,
-			lg: 1200,
-			xl: 1536,
-		},
-	},
+	breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
 	spacing: 8,
 	palette: {
 		mode: 'light',
@@ -94,18 +84,13 @@ export const LightTheme: Theme = createTheme({
 			default: backgroundColors.light,
 			paper: backgroundColors.light,
 		},
-		notification: {
-			light: primaryColors.mainBlue,
-		},
+		notification: { light: primaryColors.mainBlue },
 		buttonColors: {
 			common: {
 				// color:
 			},
 		},
-		action: {
-			hover: '#005CFF1A',
-			selected: '#005CFF2A',
-		},
+		action: { hover: '#005CFF1A', selected: '#005CFF2A' },
 	},
 	components: {
 		MuiTooltip: {
@@ -114,17 +99,12 @@ export const LightTheme: Theme = createTheme({
 					backgroundColor: primaryColors.mainBlue,
 					color: primaryColors.white,
 				},
-				arrow: {
-					color: primaryColors.mainBlue,
-				},
+				arrow: { color: primaryColors.mainBlue },
 			},
 		},
 		MuiCssBaseline: {
 			styleOverrides: {
-				body: {
-					background: backgroundColors.light,
-					height: '100%',
-				},
+				body: { background: backgroundColors.light, height: '100%' },
 			},
 		},
 		MuiPickersDay: {
@@ -142,13 +122,7 @@ export const LightTheme: Theme = createTheme({
 				},
 			},
 		},
-		MuiAlert: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF !important',
-				},
-			},
-		},
+		MuiAlert: { styleOverrides: { root: { color: '#FFFFFF !important' } } },
 		MuiButton: {
 			styleOverrides: {
 				root: {
@@ -299,25 +273,15 @@ export const LightTheme: Theme = createTheme({
 						outline: 'none',
 						display: 'flex',
 						gap: '5px',
-						'&:hover': {
-							background: 'none',
-						},
+						'&:hover': { background: 'none' },
 					},
 				},
 			],
 		},
 		MuiSelect: {
-			styleOverrides: {
-				root: {
-					maxHeight: 'calc(100% - 200px)',
-				},
-			},
+			styleOverrides: { root: { maxHeight: 'calc(100% - 200px)' } },
 		},
-		MuiListItemButton: {
-			defaultProps: {
-				disableTouchRipple: true,
-			},
-		},
+		MuiListItemButton: { defaultProps: { disableTouchRipple: true } },
 		MuiAppBar: {
 			styleOverrides: {
 				colorPrimary: {
@@ -328,10 +292,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		MuiDrawer: {
 			styleOverrides: {
-				docked: {
-					maxWidth: '250px',
-					minWidth: '100px',
-				},
+				docked: { maxWidth: '250px', minWidth: '100px' },
 				paper: {
 					display: 'flex',
 					background: primaryColors.mainBlue,
@@ -344,29 +305,18 @@ export const LightTheme: Theme = createTheme({
 			},
 		},
 		MuiListItemIcon: {
-			styleOverrides: {
-				root: {
-					color: primaryColors.white,
-				},
-			},
+			styleOverrides: { root: { color: primaryColors.white } },
 		},
 
 		MuiListItemText: {
 			styleOverrides: {
-				root: {
-					color: primaryColors.white,
-					fontSize: '1.5rem',
-				},
+				root: { color: primaryColors.white, fontSize: '1.5rem' },
 			},
 		},
 
 		MuiOutlinedInput: {
 			styleOverrides: {
-				root: {
-					background: 'white',
-					height: '2.7rem',
-					borderRadius: '0.5rem',
-				},
+				root: { background: 'white', height: '2.7rem', borderRadius: '0.5rem' },
 			},
 		},
 		MuiPaper: {
@@ -389,42 +339,23 @@ export const LightTheme: Theme = createTheme({
 			variants: [
 				{
 					props: { variant: 'expired' },
-					style: {
-						backgroundColor: '#D9D9D9B2',
-					},
+					style: { backgroundColor: '#D9D9D9B2' },
 				},
 				{
 					props: { variant: 'overdue' },
-					style: {
-						backgroundColor: '#FF00001A',
-					},
+					style: { backgroundColor: '#FF00001A' },
 				},
 				{
 					props: { variant: 'active' },
-					style: {
-						backgroundColor: primaryColors.white,
-					},
+					style: { backgroundColor: primaryColors.white },
 				},
 			],
 		},
 
-		MuiButtonBase: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
-		MuiButtonGroup: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
+		MuiButtonBase: { defaultProps: { disableRipple: true } },
+		MuiButtonGroup: { defaultProps: { disableRipple: true } },
 		MuiStep: {
-			styleOverrides: {
-				root: {
-					padding: '0px',
-					fontWeight: '100',
-				},
-			},
+			styleOverrides: { root: { padding: '0px', fontWeight: '100' } },
 		},
 		MuiChip: {
 			variants: [
@@ -437,17 +368,15 @@ export const LightTheme: Theme = createTheme({
 				},
 				{
 					props: { variant: 'sale' },
-					style: {
-						backgroundColor: '#FF0000',
-						color: primaryColors.white,
-					},
+					style: { backgroundColor: '#FF0000', color: primaryColors.white },
 				},
 				{
 					props: { variant: 'propertyType' },
-					style: {
-						backgroundColor: '#0C36A01A',
-						color: '#0C36A0',
-					},
+					style: { backgroundColor: '#0C36A01A', color: '#0C36A0' },
+				},
+				{
+					props: { variant: 'archived' },
+					style: { backgroundColor: secondaryColors.grey },
 				},
 			],
 		},
@@ -457,31 +386,31 @@ export const LightTheme: Theme = createTheme({
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
 			fontWeight: 600,
 			fontSize: '2.25rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h4: {
 			fontWeight: 600,
 			fontSize: '1.5rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h5: {
 			fontWeight: 500,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
@@ -505,20 +434,20 @@ export const LightTheme: Theme = createTheme({
 		body2: {
 			fontWeight: 600,
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
 			fontWeight: 500,
 			fontSize: '1rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		subtitle2: {
 			fontWeight: 500,
 			fontSize: '0.875rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
@@ -526,21 +455,21 @@ export const LightTheme: Theme = createTheme({
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
-			lineHeight: 1.6,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		overline: {
 			fontWeight: 600,
 			fontSize: '0.75rem',
-			lineHeight: 2.46,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
 		upTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -554,7 +483,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -568,7 +497,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -593,9 +522,7 @@ export const LightTheme: Theme = createTheme({
 			overflow: 'hidden',
 			display: 'block',
 		},
-		button: {
-			textTransform: 'none',
-		},
+		button: { textTransform: 'none' },
 		link: {
 			textTransform: 'none',
 			fontWeight: 600,
@@ -604,36 +531,18 @@ export const LightTheme: Theme = createTheme({
 			cursor: 'pointer',
 			pointerEvents: 'auto',
 		},
-		cardHeader: {
-			...cardHeaderStyle,
-		},
-		cardContentText: {
-			...cardContentTextStyle,
-		},
+		cardHeader: { ...cardHeaderStyle },
+		cardContentText: { ...cardContentTextStyle },
 
-		cardTitle: {
-			...cardTitleStyle,
-		},
-		filterResultText: {
-			...filterResultTextStyle,
-		},
-		filterResultNumber: {
-			...filterResultCountStyle,
-		},
+		cardTitle: { ...cardTitleStyle },
+		filterResultText: { ...filterResultTextStyle },
+		filterResultNumber: { ...filterResultCountStyle },
 	},
 	transitions: transitionsTheme,
 });
 
 export const DarkTheme: Theme = createTheme({
-	breakpoints: {
-		values: {
-			xs: 0,
-			sm: 600,
-			md: 900,
-			lg: 1200,
-			xl: 1536,
-		},
-	},
+	breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
 	spacing: 8,
 	palette: {
 		mode: 'dark',
@@ -649,9 +558,7 @@ export const DarkTheme: Theme = createTheme({
 			dark: backgroundColors.dark,
 			contrastText: primaryColors.white,
 		},
-		notification: {
-			light: '#B8D9FF',
-		},
+		notification: { light: '#B8D9FF' },
 
 		background: {
 			// default: '#0D0D0D',
@@ -659,10 +566,7 @@ export const DarkTheme: Theme = createTheme({
 			default: backgroundColors.dark,
 			paper: backgroundColors.dark,
 		},
-		action: {
-			hover: '#005CFF1A',
-			selected: '#005CFF2A',
-		},
+		action: { hover: '#005CFF1A', selected: '#005CFF2A' },
 	},
 
 	components: {
@@ -686,43 +590,19 @@ export const DarkTheme: Theme = createTheme({
 					backgroundColor: primaryColors.lightBlue,
 					color: primaryColors.white,
 				},
-				arrow: {
-					color: primaryColors.lightBlue,
-				},
+				arrow: { color: primaryColors.lightBlue },
 			},
 		},
 		MuiCssBaseline: {
-			styleOverrides: {
-				body: {
-					background: '#0D0D0D',
-					height: '100%',
-				},
-			},
+			styleOverrides: { body: { background: '#0D0D0D', height: '100%' } },
 		},
-		MuiAlert: {
-			styleOverrides: {
-				root: {
-					color: '#FFFFFF !important',
-				},
-			},
-		},
-		MuiListItemButton: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
+		MuiAlert: { styleOverrides: { root: { color: '#FFFFFF !important' } } },
+		MuiListItemButton: { defaultProps: { disableRipple: true } },
 
 		MuiButtonBase: {
-			defaultProps: {
-				disableRipple: true,
-				disableTouchRipple: true,
-			},
+			defaultProps: { disableRipple: true, disableTouchRipple: true },
 		},
-		MuiButtonGroup: {
-			defaultProps: {
-				disableRipple: true,
-			},
-		},
+		MuiButtonGroup: { defaultProps: { disableRipple: true } },
 
 		MuiAppBar: {
 			styleOverrides: {
@@ -735,10 +615,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		MuiDrawer: {
 			styleOverrides: {
-				docked: {
-					maxWidth: '250px',
-					minWidth: '100px',
-				},
+				docked: { maxWidth: '250px', minWidth: '100px' },
 				paper: {
 					display: 'flex',
 					background: '#OFOFOF',
@@ -765,10 +642,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		MuiListItemText: {
 			styleOverrides: {
-				root: {
-					color: primaryColors.white,
-					fontSize: '1.5rem',
-				},
+				root: { color: primaryColors.white, fontSize: '1.5rem' },
 			},
 		},
 		MuiPaper: {
@@ -783,10 +657,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		MuiDialog: {
 			styleOverrides: {
-				paper: {
-					background: '#161616',
-					backgroundImage: 'none',
-				},
+				paper: { background: '#161616', backgroundImage: 'none' },
 			},
 		},
 		MuiButton: {
@@ -951,9 +822,7 @@ export const DarkTheme: Theme = createTheme({
 						outline: 'none',
 						display: 'flex',
 						gap: '5px',
-						'&:hover': {
-							background: 'none',
-						},
+						'&:hover': { background: 'none' },
 					},
 				},
 			],
@@ -970,22 +839,13 @@ export const DarkTheme: Theme = createTheme({
 			variants: [
 				{
 					props: { variant: 'expired' },
-					style: {
-						backgroundColor: '#D9D9D9B2',
-					},
+					style: { backgroundColor: '#D9D9D9B2' },
 				},
 				{
 					props: { variant: 'overdue' },
-					style: {
-						backgroundColor: '#FF00001A',
-					},
+					style: { backgroundColor: '#FF00001A' },
 				},
-				{
-					props: { variant: 'active' },
-					style: {
-						background: '#161616',
-					},
-				},
+				{ props: { variant: 'active' }, style: { background: '#161616' } },
 			],
 		},
 		MuiChip: {
@@ -999,10 +859,7 @@ export const DarkTheme: Theme = createTheme({
 				},
 				{
 					props: { variant: 'sale' },
-					style: {
-						backgroundColor: '#FF0000',
-						color: primaryColors.white,
-					},
+					style: { backgroundColor: '#FF0000', color: primaryColors.white },
 				},
 				{
 					props: { variant: 'propertyType' },
@@ -1020,32 +877,32 @@ export const DarkTheme: Theme = createTheme({
 		h1: {
 			fontWeight: 600,
 			fontSize: '3rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h2: {
 			fontWeight: 600,
 			fontSize: '2.25rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 
 		h3: {
 			fontWeight: 600,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h4: {
 			fontWeight: 600,
 			fontSize: '1.5rem',
-			lineHeight: 1.5,
+			// lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h5: {
 			fontWeight: 500,
 			fontSize: '2rem',
-			lineHeight: 1.5,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
@@ -1070,20 +927,20 @@ export const DarkTheme: Theme = createTheme({
 		body2: {
 			fontWeight: 600,
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
 			fontWeight: 500,
 			fontSize: '1rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		subtitle2: {
 			fontWeight: 500,
 			fontSize: '0.875rem',
-			lineHeight: 1.75,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
@@ -1091,21 +948,21 @@ export const DarkTheme: Theme = createTheme({
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
-			lineHeight: 1.6,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		overline: {
 			fontWeight: 600,
 			fontSize: '0.75rem',
-			lineHeight: 2.46,
+			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',
 		},
 		upTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1119,7 +976,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1133,7 +990,7 @@ export const DarkTheme: Theme = createTheme({
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
-			lineHeight: '20px',
+			lineHeight: 1,
 			fontWeight: 500,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -1152,10 +1009,7 @@ export const DarkTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 			color: '#BBD9FF',
 		},
-		button: {
-			textTransform: 'none',
-			disableRipple: true,
-		},
+		button: { textTransform: 'none', disableRipple: true },
 		link: {
 			textTransform: 'none',
 			fontWeight: 600,
@@ -1164,21 +1018,11 @@ export const DarkTheme: Theme = createTheme({
 			cursor: 'pointer',
 			pointerEvents: 'auto',
 		},
-		cardHeader: {
-			...cardHeaderStyle,
-		},
-		cardContentText: {
-			...cardContentTextStyle,
-		},
-		cardTitle: {
-			...cardTitleStyle,
-		},
-		filterResultText: {
-			...filterResultTextStyle,
-		},
-		filterResultNumber: {
-			...filterResultCountStyle,
-		},
+		cardHeader: { ...cardHeaderStyle },
+		cardContentText: { ...cardContentTextStyle },
+		cardTitle: { ...cardTitleStyle },
+		filterResultText: { ...filterResultTextStyle },
+		filterResultNumber: { ...filterResultCountStyle },
 	},
 	transitions: transitionsTheme,
 });

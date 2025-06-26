@@ -3,6 +3,7 @@ export interface AvatarItem {
     image?: string | null;
     name?: string;
     label?: string;
+    variant?: 'square' | 'circle';
   }
   
   export interface DynamicAvatarProps {

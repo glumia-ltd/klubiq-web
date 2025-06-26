@@ -82,7 +82,7 @@ export const router = createBrowserRouter(
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
-					<Route path='tenant/:id' element={<TenantDetailsNew/>} />
+					<Route path='tenants/:id' element={<TenantDetailsNew/>} />
 					
 
 					<Route path='/settings' element={<Setting />} />

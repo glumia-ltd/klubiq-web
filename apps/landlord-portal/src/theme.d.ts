@@ -18,7 +18,7 @@ declare module '@mui/material/styles' {
 		dashboardTypography?: React.CSSProperties;
 		link: React.CSSProperties;
 		cardHeader: React.CSSProperties;
-		cardContentText: React.CSSProperties; 
+		cardContentText: React.CSSProperties;
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
@@ -31,12 +31,14 @@ declare module '@mui/material/styles' {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -48,23 +50,13 @@ declare module '@mui/material/styles' {
 	}
 
 	interface Palette {
-		buttonColors?: {
-			common: React.CSSProperties;
-		};
-		notification?: {
-			light?: string;
-			dark?: string;
-		};
+		buttonColors?: { common: React.CSSProperties };
+		notification?: { light?: string; dark?: string };
 	}
 
 	interface PaletteOptions {
-		buttonColors?: {
-			common: React.CSSProperties;
-		};
-		notification?: {
-			light?: string;
-			dark?: string;
-		};
+		buttonColors?: { common: React.CSSProperties };
+		notification?: { light?: string; dark?: string };
 	}
 }
 
@@ -106,6 +98,7 @@ declare module '@mui/material/Chip' {
 		rent: true;
 		sale: true;
 		propertyType: true;
+		archived: true;
 	}
 }
 

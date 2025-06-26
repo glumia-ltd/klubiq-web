@@ -7,9 +7,9 @@ import NavBar from '../NavBar/NavBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { AppBar, useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
-import { AppFooter } from '@klubiq/ui-components';	
+import { AppFooter } from '@klubiq/ui-components';
 import pkg from '../../../package.json';
 
 type ViewPortProp = {
@@ -69,13 +69,13 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 
 					<Box
 						width={'100%'}
-						mt={10}
-						mb={10}
+						mt={13}
+						mb={5}
 						sx={{
+							minHeight: 'calc(100vh - 100px)',
 							display: 'flex',
 							flexDirection: 'column',
 							alignItems: 'center',
-							justifyContent: 'space-between',
 							px: {
 								sm: 2,
 								md: 4,
@@ -84,16 +84,9 @@ const ViewPort = ({ children, pathname }: ViewPortProp) => {
 					>
 						{children}
 					</Box>
-					<Box 
-						width={'100%'} 
-						sx={{
-							position: 'static',
-							bottom: 0,
-							zIndex: 1,
-						}}
-					>
+					<AppBar position='static' sx={{ top: 'auto', bottom: 0, width: '100%', backgroundColor: 'background.default' }}>
 						<AppFooter {...landlordFooterConfig} />
-					</Box>
+					</AppBar>
 				</Box>
 			</Box>
 		</>

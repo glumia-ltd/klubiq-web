@@ -5,7 +5,6 @@ import {
   Stack,
   Tooltip,
   Typography,
-  Box,
 } from '@mui/material';
 import { DynamicAvatarProps, AvatarItem } from './types';
 
@@ -47,6 +46,7 @@ const getInitials = (name: string) => {
           sx={{
             ...avatarSize,
             bgcolor: !item.image ? 'primary.main' : undefined,
+            borderRadius: item.variant === 'square' ? '4px' : '50%',
           }}
         >
           {!item.image && getInitials(displayText)}
@@ -100,6 +100,7 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
               src={item.image || undefined}
               sx={{
                 bgcolor: !item.image ? 'primary.main' : undefined,
+                borderRadius: item.variant === 'square' ? '4px' : '50%',
               }}
             >
               {!item.image && getInitials(displayText)}

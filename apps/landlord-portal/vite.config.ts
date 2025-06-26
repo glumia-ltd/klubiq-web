@@ -189,7 +189,20 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 
 export default ({ mode }: { mode: any }) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
-
+	const getBaseURL = () => {
+		switch (process.env.VITE_NODE_ENV) {
+			case 'local':
+				return process.env.VITE_BASE_URL_LOCAL;
+			case 'development':
+				return process.env.VITE_BASE_URL_DEV;
+			case 'staging':
+				return process.env.VITE_BASE_URL_STAGING;
+			case 'production':
+				return process.env.VITE_BASE_URL_PROD;
+			default:
+				return process.env.VITE_BASE_URL_LOCAL;
+		}
+	};
 	// https://vitejs.dev/config/
 	return defineConfig({
 		plugins: [
@@ -202,16 +215,16 @@ export default ({ mode }: { mode: any }) => {
 					navigateFallback: 'index.html',
 				},
 				includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-				manifest: {
-					...manifestForPlugin.manifest,
-					start_url: '/',
-					scope: '/',
-					display: 'standalone',
-					orientation: 'portrait',
-					theme_color: '#002147',
-					background_color: '#FFFFFF',
-					icons: (manifestForPlugin.manifest as any)?.icons || [],
-				},
+				// manifest: {
+				// 	...manifestForPlugin.manifest,
+				// 	start_url: '/',
+				// 	scope: '/',
+				// 	display: 'standalone',
+				// 	orientation: 'portrait',
+				// 	theme_color: '#002147',
+				// 	background_color: '#FFFFFF',
+				// 	icons: (manifestForPlugin.manifest as any)?.icons || [],
+				// },
 			}),
 		],
 		optimizeDeps: {
@@ -241,14 +254,18 @@ export default ({ mode }: { mode: any }) => {
 				output: {
 					manualChunks: {
 						vendor: ['react', 'react-dom', 'react-router-dom'],
+						mui: ['@mui/material', '@mui/icons-material'],
 					},
 				},
 			},
 		},
+		css: {
+			devSourcemap: true,
+		},
 		server: {
 			port: 5173,
 			host: true,
-			strictPort: true,
+			strictPort: false,
 			allowedHosts: ['localhost', '127.0.0.1', '0.0.0.0'],
 			open: true,
 			hmr: {
@@ -260,7 +277,7 @@ export default ({ mode }: { mode: any }) => {
 			},
 			proxy: {
 				'/api': {
-					target: process.env.VITE_BASE_URL_DEV,
+					target: getBaseURL(),
 					changeOrigin: true,
 					secure: false,
 					ws: true,

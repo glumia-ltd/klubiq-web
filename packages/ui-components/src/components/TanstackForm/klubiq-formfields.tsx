@@ -462,12 +462,14 @@ export const KlubiqTSFormFields: React.FC<{
 					: [];
 			return (
 				<FormControl fullWidth error={!!error}>
+					<Stack spacing={1}>
 					{hasInlineLabel ? (
 						<InputLabel>{label}</InputLabel>
 					) : (
 						renderLabel(label, isRequired, hasInlineLabel)
 					)}
 					<Select
+
 						value={fieldConfig.readonly ? fieldConfig.predefinedValue : value}
 						placeholder={fieldConfig.placeholder}
 						onChange={(e) => {
@@ -499,6 +501,7 @@ export const KlubiqTSFormFields: React.FC<{
 						))}
 					</Select>
 					{renderHelperText(error, helperText)}
+					</Stack>
 				</FormControl>
 			);
 		case 'range':

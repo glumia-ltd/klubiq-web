@@ -240,7 +240,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	fullWidthButtons = false,
 	buttonLoadingText = 'Submitting...',
 	enableErrorAlert = true,
-	errorAlertTitle = 'Form Validation Error',
+	errorAlertTitle,
 	errorAlertMessage = 'Please check the form for errors. All required fields must be filled correctly.',
 }) => {
 	const [currentStep, setCurrentStep] = useState(0);

@@ -25,12 +25,14 @@ declare module '@mui/material/styles' {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -95,6 +97,7 @@ declare module '@mui/material/Chip' {
 		rent: true;
 		sale: true;
 		propertyType: true;
+		archived: true;
 	}
 }
 
