@@ -155,13 +155,13 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 									size='large'
 								/>
 								<Stack flex={1} spacing={0.5}>
-									<Typography
+									{headerData.name && <Typography
 										variant='h6'
 										fontWeight={600}
 										sx={{ textTransform: 'capitalize' }}
 									>
 										{headerData.name}
-									</Typography>
+									</Typography>}
 									{headerData.companyName && (
 										<Typography variant='h6'>
 											{headerData.companyName}
