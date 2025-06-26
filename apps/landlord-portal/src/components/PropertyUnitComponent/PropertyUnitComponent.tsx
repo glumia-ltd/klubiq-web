@@ -336,7 +336,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		navigate(`/leases/${lease.id}`);
 	const handleAddUnit = () => navigate(`/properties/${currentUUId}/unit`);
 
-	const handleInviteTenant = () => {
+	const handleInviteTenant = (header?: string) => {
 		navigate(`/tenants/invite-tenant`, {
 			state: {
 				mode: 'onboarding',
@@ -347,8 +347,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					propertyId: currentUUId,
 				},
 				returnPath: `/properties/${currentUUId}`,
+				formHeader: header,
 			},
 		});
+	};
+
+	const viewTenant = (id: string) => {
+		navigate(`/tenants/${id}`);
 	};
 
 	const handleAddTenant = (
@@ -454,6 +459,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					<Grid sx={styles.unitInfoCardStyle}>
 						<UnitInfoCard data={unitInfoData} />
 					</Grid>
+					
 				)}
 
 				{tabValue === 0 && (
@@ -468,9 +474,9 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 									buttonLabel='Add Tenant'
 									columns={tenantTableData.tableColumns}
 									rows={tenantTableData.rows}
-									onButtonClick={() => handleAddTenant(null)}
+									onButtonClick={() => handleInviteTenant('Add Tenant')}
 									onRowClick={(rowData) => {
-										console.log('Tenant clicked:', rowData);
+										viewTenant(rowData.id);
 									}}
 								/>
 							) : (
@@ -486,11 +492,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 											? 'Add Tenant'
 											: 'Invite Tenant'
 									}
-									handleAdd={
-										currentProperty?.units?.[0]?.lease
-											? () => handleAddTenant(currentProperty)
-											: handleInviteTenant
-									}
+									handleAdd={currentProperty?.units?.[0]?.lease ? () => handleAddTenant(currentProperty) : () => handleInviteTenant('Invite Tenant')}
 								/>
 							)}
 

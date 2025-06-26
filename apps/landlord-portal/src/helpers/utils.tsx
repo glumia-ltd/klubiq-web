@@ -22,7 +22,9 @@ export const MEASUREMENTS: any[] = [
 	},
 ];
 export const formatDate = (dateString: string, format = 'MMMM D, YYYY') => {
-	if (!dateString) return 'N/A';
+	if (!dateString) {
+		return '';
+	}
 	return dayjs(dateString).format(format);
 };
 export const getCurrencySymbol = (orgSettings: Record<string, unknown>) => {

@@ -3,6 +3,7 @@ import {
 	Box,
 	BottomNavigation,
 	BottomNavigationAction,
+	Paper,
 } from '@mui/material';
 
 import { NavLink } from './BottomNavTypes';
@@ -24,6 +25,7 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 	// Responsive Drawer
 	return (
 		<Box>
+			<Paper elevation={3} sx={{position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000, borderRadius: 3, padding: 2}} >
 				<BottomNavigation
 					showLabels
 					value={selectedIndex}
@@ -49,6 +51,7 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 						}}
 					/>
 				</BottomNavigation>
+			</Paper>
 		</Box>
 	);
 };

@@ -57,7 +57,7 @@ const TenantDetails = () => {
 		if (currentTenantId) {
 			newBreadcrumbs['feature-details'] = {
 				label: `Tenant Details${tenantData?.profile?.firstName ? `: ${tenantData?.profile?.firstName}` : ''}`, // Prefer a human-readable name if available
-				path: `/tenant/${currentTenantId}`,
+				path: `/tenants/${currentTenantId}`,
 				icon: null,
 				showIcon: false,
 			};
@@ -85,7 +85,7 @@ const TenantDetails = () => {
 			? dayjs(tenantData?.profile?.updatedDate).format('ll')
 			: 'N/A',
 		image:
-			tenantData?.profile?.profilePicUrl || 'https://via.placeholder.com/150',
+			tenantData?.profile?.profilePicUrl || '',
 	};
 	
 	const columns = [

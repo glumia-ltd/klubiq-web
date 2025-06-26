@@ -8,7 +8,8 @@ import { LeaseDetailsType, LeaseType } from '../../shared/type';
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
+	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA, API_TAGS.TENANT, API_TAGS.PROPERTY, 
+		API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
 	endpoints: (builder) => ({
 		getLeaseMetaData: builder.query<any, void>({
 			query: () => ({
@@ -43,6 +44,7 @@ export const leaseApiSlice = createApi({
 				url: propertiesEndpoints.getOrgPropertiesViewList(params?.orgId),
 				method: 'GET',
 			}),
+			providesTags: [API_TAGS.PROPERTIES_AND_TENANTS],
 		}),
 		addLease: builder.mutation({
 			query: (body) => ({
@@ -50,14 +52,17 @@ export const leaseApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS],
+			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
+				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
 		}),
-		addNewTenantToLease: builder.mutation({
-			query: (body) => ({
-				url: leaseEndpoints.addNewTenantToLease(body?.leaseId),
+		addNewTenantToLease: builder.mutation<any, { leaseId: string, body: any }>({
+			query: ({ leaseId, body }) => ({
+				url: leaseEndpoints.addNewTenantToLease(leaseId),
 				method: 'POST',
 				body,
 			}),
+			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
+				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
 		}),
 	}),
 });
