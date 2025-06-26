@@ -183,7 +183,7 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
-				{allLease && allLease.length > 0 && <Stack
+				<Stack
 					direction={'row'}
 				>
 					<Filter
@@ -193,7 +193,7 @@ const Lease = () => {
 						}}
 						disable={filterObjectLength ? false : !allLease}
 					/>
-				</Stack>}
+				</Stack>
 				<Stack sx={{ width: '100%' }}>
 					{isLeaseDataLoading ? (
 						<TableSkeleton />
