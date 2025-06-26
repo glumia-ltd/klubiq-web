@@ -164,7 +164,11 @@ const NavBar = () => {
 		};
 		await readNotifications(readPayload).unwrap();
 
-		if (item?.type.includes('deleted') || !item.actionLink) {
+		if (
+			item?.type.toLowerCase().includes('deleted') ||
+			item?.title.toLowerCase().includes('deleted') ||
+			!item.actionLink
+		) {
 			return;
 		}
 		window.location.href = item.actionLink;
