@@ -29,11 +29,12 @@ const getInitials = (name: string) => {
     .slice(0, 2);
 };
 
-const SingleAvatar: React.FC<{
+ const SingleAvatar: React.FC<{
   item: AvatarItem;
   size?: 'small' | 'medium' | 'large';
   showName?: boolean;
-}> = ({ item, size, showName }) => {
+  variant?: 'circular' | 'rounded' | 'square';
+}> = ({ item, size, showName,variant }) => {
   const displayText = item.name || item.label || '';
   const avatarSize = getAvatarSize(size);
 
@@ -41,6 +42,7 @@ const SingleAvatar: React.FC<{
     <Stack alignItems="center" spacing={1}>
       <Tooltip title={displayText}>
         <Avatar
+        variant={variant || 'circular'}
           src={item.image || undefined}
           sx={{
             ...avatarSize,
@@ -65,7 +67,7 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
   spacing = 'medium',
   size = 'medium',
   showTotal = true,
-  showName = true,
+  showName = true
 }) => {
   if (!items || items.length === 0) {
     return null;

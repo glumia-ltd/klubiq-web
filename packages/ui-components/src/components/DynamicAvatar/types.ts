@@ -1,5 +1,5 @@
 export interface AvatarItem {
-    id: string | number;
+    id?: string | number;
     image?: string | null;
     name?: string;
     label?: string;
@@ -12,4 +12,5 @@ export interface AvatarItem {
     size?: 'small' | 'medium' | 'large';
     showTotal?: boolean;
     showName?: boolean;
+    variant?: 'circular' | 'rounded' | 'square';
   }
