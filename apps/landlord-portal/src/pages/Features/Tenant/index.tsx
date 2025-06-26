@@ -1,4 +1,14 @@
-import { Stack, Button, IconButton, InputBase, Paper } from '@mui/material';
+import {
+	Stack,
+	Button,
+	IconButton,
+	InputBase,
+	Paper,
+	Typography,
+	Box,
+	useMediaQuery,
+	useTheme,
+} from '@mui/material';
 import { styles } from './styles';
 // import Filter from '../../../components/Filter/Filter';
 // import Filter from '../../../components/Filter/Filter';
@@ -12,13 +22,17 @@ import {
 	// useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
+import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
+import { screenMessages } from '../../../helpers/screen-messages';
 // import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 // import { Filter } from '@mui/icons-material';
 
-const ITEMSCOUNTOPTIONS = [5, 10, 20, 40, 60];
+const ITEMSCOUNTOPTIONS = [10, 20, 40, 60];
 
 const Tenant = () => {
 	// const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchText, setSearchText] = useState('');
 	const [defaultParams, setDefaultParams] = useState({
@@ -32,10 +46,11 @@ const Tenant = () => {
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	// const filterObjectLength = Object.keys(filter).length;
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
-	const { data: tenantData } = useGetTenantsQuery({
-		...defaultParams,
-		// ...filter,
-	});
+	const { data: tenantData, isLoading: isTenantDataLoading } =
+		useGetTenantsQuery({
+			...defaultParams,
+			// ...filter,
+		});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
 	// const filterOptions = tenantMetaData?.filterOptions;
@@ -51,7 +66,7 @@ const Tenant = () => {
 	const getItemsPerPageCount = (value: number) => {
 		setCurrentPage(1);
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
-	}; 
+	};
 	const handleTenantSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchText(e.target.value);
 	};
@@ -64,32 +79,43 @@ const Tenant = () => {
 			},
 		});
 	};
+	const EmptyState = () => {
+		return (
+			<Box
+				display={'flex'}
+				justifyContent={'center'}
+				alignItems={'center'}
+				height={'100%'}
+			>
+				<Typography variant='body1'>
+					{screenMessages.tenant.list.noMatches}
+				</Typography>
+			</Box>
+		);
+	};
 
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [getCurrentPage]);
 
 	const handleRowClick = (id: string) => {
-		navigate(`/tenant/${id}`);
+		navigate(`/tenants/${id}`);
 	};
 	return (
 		<>
-			<Stack spacing={2}>
+			<Stack gap={2}>
 				<Stack
 					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 4 }}
-					sx={styles.buttonContainer}
+					gap={1}
+					justifyContent={isMobile ? 'flex-start' : 'flex-end'}
 				>
-					<Button
-						variant='klubiqMainButton'
-						onClick={navigateToAddTenant}
-					>
+					<Button variant='klubiqMainButton' onClick={navigateToAddTenant}>
 						{/* <LeftArrowIcon /> */}
 						Add New Tenant
 					</Button>
 				</Stack>
 				<Stack>
-					<Paper component='form' sx={styles.inputStyle}>
+					<Paper component='form' elevation={0} sx={{...styles.inputStyle, border: '1px solid', borderColor: 'primary.contrastText', borderRadius: '10px'}}>
 						<IconButton aria-label='search'>
 							<SearchIcon />
 						</IconButton>
@@ -113,17 +139,23 @@ const Tenant = () => {
 					/> */}
 				</Stack>
 				<Stack>
-					<TenantTable
-						title='Tenant'
-						allTenant={allTenants}
-						onRowClick={(tenant) => {
-							console.log('here');
-							handleRowClick(tenant.id);
-						}}
-					/>
+					{isTenantDataLoading ? (
+						<TableSkeleton />
+					) : allTenants.length > 0 ? (
+						<TenantTable
+							title='Tenant'
+							allTenant={allTenants}
+							onRowClick={(tenant) => {
+								console.log('here');
+								handleRowClick(tenant.id);
+							}}
+						/>
+					) : (
+						<EmptyState />
+					)}
 				</Stack>
 			</Stack>
-			<Stack mt={4}>
+			{allTenants && allTenants.length > 0 && <Stack mt={4}>
 				<DataPagination
 					getCurrentPage={getCurrentPage}
 					getItemsPerPageCount={getItemsPerPageCount}
@@ -131,7 +163,7 @@ const Tenant = () => {
 					currentPage={currentPage}
 					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
 				/>
-			</Stack>
+			</Stack>}
 		</>
 	);
 };

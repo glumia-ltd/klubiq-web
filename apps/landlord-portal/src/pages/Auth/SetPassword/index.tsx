@@ -1,4 +1,4 @@
-import { Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import LoginLayout from '../../../Layouts/LoginLayout';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
@@ -11,6 +11,8 @@ type IValuesType = {
 };
 
 const SetPassword = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 
@@ -40,12 +42,12 @@ const SetPassword = () => {
 	const resetPasswordFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
-			<Typography variant='h1' textAlign='left'>
+			<Typography variant={'h1'} fontSize={isMobile ? '1.75rem' : '2.25rem'} textAlign='left'>
 				Time for a Fresh Start!
 			</Typography>
 		),
 		subHeader: (
-			<Typography variant='h2' textAlign='left'>
+			<Typography variant={'h2'} fontSize={isMobile ? '1.25rem' : '1.75rem'} textAlign='left'>
 				Let's Secure Your Klubiq Account with a New Password.
 			</Typography>
 		),
@@ -102,7 +104,7 @@ const SetPassword = () => {
 
 	return (
 		<LoginLayout>
-			<Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: '33rem' }}>
+			<Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: isMobile ? '100%' : '33rem' }}>
 				<Grid
 					container
 					sx={{
@@ -113,7 +115,7 @@ const SetPassword = () => {
 					<Stack
 						justifyContent='center'
 						direction='column'
-						width='50%'
+						width={isMobile ? '90%' : '50%'}
 						gap={1}
 						sx={{
 							height: '100vh',

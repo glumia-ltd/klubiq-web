@@ -74,12 +74,14 @@ export type TenantTableType = {
 		};
 	};
 };
+
 export type TenantInfo = {
 	name?: string;
 	phone?: string;
 	email?: string;
 	since?: string;
 	image?: string;
+	active?: boolean;
 	tenant?: {
 		id?: string;
 		fullName?: string;

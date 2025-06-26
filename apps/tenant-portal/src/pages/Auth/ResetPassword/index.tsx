@@ -136,7 +136,7 @@ const ResetPassword = () => {
 		),
 		submitButtonText: 'ResetPassword',
 		fullWidthButtons: true,
-		verticalAlignment: 'center',
+		verticalAlignment: 'top',
 		horizontalAlignment: 'center',
 		fields: resetPasswordFields,
 		onSubmit: onSubmit,
@@ -161,17 +161,22 @@ const ResetPassword = () => {
 	return (
 		<Card
 			sx={{
-				maxHeight: '90%',
+				minHeight: '600px',
+				width: {
+					xs: '95%',
+					sm: '50%',
+					md: '400px',
+				},
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'center',
 				alignItems: 'center',
 			}}
 		>
-			<CardContent sx={{ height: '100%' }}>
+			<CardContent sx={{ height: 'auto', width: '100%' }}>
 				<Stack
 					sx={{
-						height: '100%',
+						height: 'auto',
 						justifyContent: 'center',
 						alignItems: 'center',
 					}}

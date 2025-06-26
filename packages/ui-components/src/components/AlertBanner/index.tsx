@@ -1,4 +1,4 @@
-import { Alert, AlertProps, Snackbar } from '@mui/material'
+import { Alert, AlertProps, Snackbar, useMediaQuery, useTheme } from '@mui/material'
 import { useState, useEffect } from 'react'
 
 interface AlertBannerProps extends AlertProps {
@@ -16,6 +16,8 @@ const AlertBanner = ({
   ...alertProps
 }: AlertBannerProps) => {
   const [isOpen, setIsOpen] = useState(open)
+  const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     setIsOpen(open)
@@ -31,7 +33,7 @@ const AlertBanner = ({
       open={isOpen}
       autoHideDuration={autoHideDuration}
       onClose={handleClose}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: isMobile ? 'bottom' : 'top', horizontal: isMobile ? 'center' : 'right' }}
     >
       <Alert onClose={handleClose} {...alertProps}>
         {message}
