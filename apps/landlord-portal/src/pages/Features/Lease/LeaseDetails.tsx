@@ -1,39 +1,48 @@
 import {
 	Stack,
 	Button,
-	Chip,
 	MenuList,
 	MenuItem,
 	ClickAwayListener,
 	Grow,
 	Popper,
 	Paper,
+	Box,
 } from '@mui/material';
-import { useState, useRef } from 'react';
-import { styles } from './style';
+import { useState, useRef, useEffect } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import LeasePropertyCard from '../../../components/LeaseCards/LeasePropertyCard';
-import MiniCard from '../../../components/LeaseCards/MiniCard';
-// import DocumentUploadCard from '../../components/LeaseCards/DocumentUploadCard';
-import { LeaseDocumentTable } from './LeaseDocumentTable';
-import { useGetOrgPropertiesViewListQuery, useGetSingleLeaseByIdQuery } from '../../../store/LeaseStore/leaseApiSlice';
+import {
+	useAddTenantsMutation,
+	useGetOrgPropertiesViewListQuery,
+	useGetSingleLeaseByIdQuery,
+} from '../../../store/LeaseStore/leaseApiSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	DateStyle,
 	getLocaleDateFormat,
 	getLocaleFormat,
 } from '../../../helpers/utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { useEffect } from 'react';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { Breadcrumb } from '../../../components/Breadcrumb';
-import { statusColors } from '../../../page-tytpes/leases/list-page.type';
 import { TenantDialog } from '../../../components/CustomFormComponents/TenantDialog';
-import { DynamicTanstackFormProps, KlubiqFormV1, DynamicModal, DynamicModalProps } from '@klubiq/ui-components';
-
+import {
+	DynamicTanstackFormProps,
+	KlubiqFormV1,
+	DynamicModal,
+	DynamicModalProps,
+	PageDetail,
+	LeaseStatus,
+	AvatarItem,
+} from '@klubiq/ui-components';
+import { UserProfile } from '../../../shared/auth-types';
+import { HourglassBottom, Payments, PendingActions, People, Timeline, Today } from '@mui/icons-material';
+import { consoleLog } from '../../../helpers/debug-logger';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 	return (
@@ -76,13 +85,24 @@ function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 		/>
 	);
 }
+
+const useMenuStatus = (status?: string, isArchived?: boolean) => ({
+	canAddTenant:
+		status !== 'Terminated' && status !== 'Expired' && status !== 'Archived',
+	canArchive: !isArchived,
+	canEdit: true,
+	canTerminate: status !== 'Terminated',
+});
+
 const LeaseDetails = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { user } = useSelector(getAuthState);
+	const dispatch = useDispatch();
 	const [open, setOpen] = useState<boolean>(false);
 	const [openAddTenants, setOpenAddTenants] = useState<boolean>(false);
 	const { updateBreadcrumb } = useDynamicBreadcrumbs();
+	const [addTenants] = useAddTenantsMutation();
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
@@ -90,9 +110,9 @@ const LeaseDetails = () => {
 	const initialValues = {
 		tenantsIds: [],
 		primaryTenantId: '',
-	}
+	};
 
-	const modalConfig  =  (header: string): DynamicModalProps => {
+	const modalConfig = (header: string): DynamicModalProps => {
 		return {
 			open: openAddTenants,
 			onClose: () => setOpenAddTenants(false),
@@ -108,8 +128,8 @@ const LeaseDetails = () => {
 				height: 'auto',
 			},
 		} as DynamicModalProps;
-	}
-	
+	};
+
 	const tenantsQueryResult = useGetOrgPropertiesViewListQuery(
 		{ orgId: user?.organizationUuid },
 		{
@@ -123,28 +143,57 @@ const LeaseDetails = () => {
 	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
 	const anchorRef = useRef<HTMLButtonElement>(null);
 
-	const { data: leaseData } = useGetSingleLeaseByIdQuery({
-		id: currentLeaseId || '',
-	});
+	const { data: leaseData, isLoading: leaseLoading, refetch: refetchLeaseData } =
+		useGetSingleLeaseByIdQuery({
+			id: currentLeaseId || '',
+		});
 
-	const documentTableData = {
-		column: [
-			{ id: 'name', label: 'Name' },
-			{ id: 'date', label: 'Date' },
-		],
-		row: [{ name: 'Maintenance Fee', date: 'second' }],
-	};
- 
+
 	const onAddTenantsSubmit = async (values: any) => {
 		console.log(values);
-	}
+		const { tenantsIds, primaryTenantId } = values;
+		const secondaryTenants = tenantsIds.filter((tenantId: string) => tenantId !== primaryTenantId);
+		const body = {
+			primaryTenant: {id: primaryTenantId, isPrimary: true},
+			secondaryTenants
+		}
+		consoleLog('body', body);
+		try{
+			await addTenants({ leaseId: currentLeaseId, body }).unwrap();
+			dispatch(
+				openSnackbar({
+					message: screenMessages.tenant.add.success,
+					severity: 'success',
+					isOpen: true,
+					duration: 5000,
+				}),
+			);
+			setOpenAddTenants(false);
+			await refetchLeaseData();
+		} catch (error) {
+			consoleLog('error', error);
+			throw error;
+		}
+	
+	};
 	const getSelectedTenants = (values: any) => {
-		const selectedTenants = tenantsQueryResult.tenants.filter((tenant: { id: string; }) => values?.tenantsIds?.includes(tenant.id)) || []; 
-		return selectedTenants.map((tenant: { id: string; firstName: string; lastName: string; email: string; companyName?: string; }) => ({
-			label: `${tenant.companyName || ''} ${tenant.companyName && (tenant.firstName || tenant.lastName) ? ' - ' : ''}${tenant.firstName} ${tenant.lastName}`,
-			value: tenant.id,
-		}));
-	}
+		const selectedTenants =
+			tenantsQueryResult.tenants.filter((tenant: { id: string }) =>
+				values?.tenantsIds?.includes(tenant.id),
+			) || [];
+		return selectedTenants.map(
+			(tenant: {
+				id: string;
+				firstName: string;
+				lastName: string;
+				email: string;
+				companyName?: string;
+			}) => ({
+				label: `${tenant.companyName || ''} ${tenant.companyName && (tenant.firstName || tenant.lastName) ? ' - ' : ''}${tenant.firstName} ${tenant.lastName}`,
+				value: tenant.id,
+			}),
+		);
+	};
 	const addTenantsFormConfig: DynamicTanstackFormProps = {
 		initialValues: initialValues,
 		fields: [
@@ -152,6 +201,7 @@ const LeaseDetails = () => {
 				name: 'tenantsIds',
 				label: 'Select Tenants',
 				type: 'checkbox-group',
+				required: true,
 				options: tenantsQueryResult.tenants.map(
 					(tenant: {
 						firstName: string;
@@ -171,11 +221,18 @@ const LeaseDetails = () => {
 				name: 'primaryTenantId',
 				label: 'Select Primary Tenant',
 				type: 'select',
+				required: true,
 				options: (values: any) => {
 					return getSelectedTenants(values);
 				},
 			},
-			
+			{
+				name: 'leaseId',
+				type: 'hidden',
+				disabled: true,
+				defaultValue: currentLeaseId,
+				label: ''
+			}
 		],
 		onSubmit: onAddTenantsSubmit,
 		submitButtonText: 'Add Tenants',
@@ -184,11 +241,11 @@ const LeaseDetails = () => {
 		backdropText: 'Please wait while we add tenants...',
 		verticalAlignment: 'top',
 		horizontalAlignment: 'center',
-	}
+	};
 
 	const handleAddTenants = () => {
 		setOpenAddTenants(true);
-	}
+	};
 
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
@@ -218,6 +275,22 @@ const LeaseDetails = () => {
 		newBreadcrumbs['feature-details-sub'] = {};
 		updateBreadcrumb(newBreadcrumbs);
 	}, [leaseData?.name, currentLeaseId, location.pathname]);
+
+	// Helper for menu status
+	const { canAddTenant, canArchive, canEdit, canTerminate } = useMenuStatus(
+		leaseData?.status,
+		leaseData?.isArchived,
+	);
+	const renderHeaderAvatar = (): AvatarItem[] => {
+		return (
+			leaseData?.tenants?.map((tenant: { profile: UserProfile }) => ({
+				image: tenant.profile.profilePicUrl || '',
+				id: tenant.profile.profileUuid || '',
+				variant: 'circle',
+				name: `${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''} ${tenant.profile.companyName || ''}`,
+			})) || []
+		);
+	};
 	return (
 		<>
 			<Stack
@@ -270,33 +343,41 @@ const LeaseDetails = () => {
 												aria-labelledby='composition-button'
 												// onKeyDown={handleListKeyDown}
 											>
-												{ leaseData?.status !== 'Terminated' && leaseData?.status !== 'Expired' && leaseData?.status !== 'Archived' && <MenuItem
-													onClick={handleAddTenants}
-													sx={{ padding: '10px' }}
-													divider
-												>
-													Add Tenant(s)
-												</MenuItem>}
-												{ !leaseData?.isArchived && <MenuItem
-													// onClick={handleArchiveLease}
-													sx={{ padding: '10px' }}
-													divider
-												>
-													Archive Lease
-												</MenuItem>}
-												<MenuItem
-													// onClick={handleEditLease}
-													sx={{ padding: '10px' }}
-													divider
-												>
-													Edit Lease
-												</MenuItem>
-												{ leaseData?.status !== 'Terminated' && <MenuItem
-													// onClick={handleTerminateLease}
-													sx={{ padding: '10px' }}
-												>
-													Terminate Lease
-												</MenuItem>}
+												{canAddTenant && (
+													<MenuItem
+														onClick={handleAddTenants}
+														sx={{ padding: '10px' }}
+														divider
+													>
+														Add Tenant(s)
+													</MenuItem>
+												)}
+												{canArchive && (
+													<MenuItem
+														// onClick={handleArchiveLease}
+														sx={{ padding: '10px' }}
+														divider
+													>
+														Archive Lease
+													</MenuItem>
+												)}
+												{canEdit && (
+													<MenuItem
+														// onClick={handleEditLease}
+														sx={{ padding: '10px' }}
+														divider
+													>
+														Edit Lease
+													</MenuItem>
+												)}
+												{canTerminate && (
+													<MenuItem
+														// onClick={handleTerminateLease}
+														sx={{ padding: '10px' }}
+													>
+														Terminate Lease
+													</MenuItem>
+												)}
 											</MenuList>
 										</ClickAwayListener>
 									</Paper>
@@ -305,93 +386,104 @@ const LeaseDetails = () => {
 						</Popper>
 					</Stack>
 				</Stack>
-
-				<Stack direction={'row'} fontWeight={600}>
-					<Chip
-						label={leaseData?.status}
-						color={statusColors[leaseData?.status ?? ''] as any}
-						variant='outlined'
-						sx={styles.chip}
+				<Box sx={{ width: '100%' }}>
+					<PageDetail
+						loading={leaseLoading}
+						variant='lease-detail'
+						headerData={{
+							avatar: renderHeaderAvatar(),
+							name: leaseData?.name ?? '',
+							email: '',
+							phone: '',
+							status: '',
+							showAvatarNames: true,
+							leaseDetailsHeaderData: {
+								leaseStatus: leaseData?.status as LeaseStatus,
+								propertyName: `${leaseData?.propertyName} ${leaseData?.unitNumber ? `- ${leaseData?.unitNumber}` : ''}`,
+								unitType: leaseData?.isMultiUnitProperty
+									? 'Multi-Unit'
+									: 'Single-Unit',
+								propertyType: leaseData?.propertyType ?? '',
+								unitNumber: leaseData?.unitNumber ?? '',
+								address: leaseData?.propertyAddress ?? '',
+							},
+						}}
+						showTabs={false}
+						displayMode='container'
+						detailSections={[
+							{
+								id: 'lease-dates',
+								type: 'infoCard' as const,
+								title: '',
+								items: [
+									{
+										id: 'lease-start-date',
+										label: 'Start Date',
+										value: leaseData?.startDate ? getLocaleDateFormat(user?.orgSettings, leaseData.startDate, timeDateOptions) : '',
+										icon: <Today fontSize='small' color='action' />,
+									},
+									{
+										id: 'lease-end-date',
+										label: 'End Date',
+										value: leaseData?.endDate ? getLocaleDateFormat(user?.orgSettings, leaseData.endDate, timeDateOptions) : '',
+										icon: <Today fontSize='small' color='action' />,
+									}
+								]
+							},
+							{
+								id: 'lease-details',
+								type: 'infoCard' as const,
+								title: 'Lease Details',
+								items: [
+									{
+										id: 'lease-expires',
+										label: 'Lease Expires',
+										value: `${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`,
+										icon: <HourglassBottom fontSize='small' color='action' />,
+									},
+									{
+										id: 'next-payment-date',
+										label: 'Next Payment Date',
+										value: leaseData?.nextPaymentDate
+											? getLocaleDateFormat(
+													user?.orgSettings,
+													leaseData.nextPaymentDate,
+													timeDateOptions,
+												)
+											: '',
+										icon: <Today fontSize='small' color='action' />,
+									},
+									{
+										id: 'payment-frequency',
+										label: 'Payment Frequency',
+										value: leaseData?.paymentFrequency ?? '',
+										icon: <Timeline fontSize='small' color='action' />,
+									},
+									{
+										id: 'rent-amount',
+										label: 'Rent Amount',
+										value: `${getLocaleFormat(user?.orgSettings, +(leaseData?.rentAmount ?? 0), 'currency')}`,
+										icon: <Payments fontSize='small' color='action' />,
+									},
+									{
+										id: 'rent-due-on',
+										label: 'Rent Due On',
+										value: leaseData?.rentDueOn ?? '',
+										icon: <PendingActions fontSize='small' color='action' />,
+									},
+									{
+										id: 'tenants',
+										label: 'Number of Tenants',
+										value: leaseData?.tenants?.length?.toString() ?? '0',
+										icon: <People fontSize='small' color='action' />,
+									},
+								],
+							},
+						]}
 					/>
-				</Stack>
-
-				<Stack
-					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 8 }}
-					sx={{ width: '100%' }}
-				>
-					<LeasePropertyCard
-						propertyName={leaseData?.propertyName ?? ''}
-						isMultiUnitProperty={leaseData?.isMultiUnitProperty ?? false}
-						propertyAddress={leaseData?.propertyAddress ?? ''}
-						propertyType={leaseData?.propertyType ?? ''}
-						tenants={leaseData?.tenants ?? []}
-					/>
-				</Stack>
-
-				<Stack
-					spacing={2}
-					useFlexGap
-					direction={{ xs: 'column', sm: 'row' }}
-					sx={{
-						justifyContent: 'space-between',
-						width: '100%',
-						flexWrap: {
-							xs: 'nowrap',
-							sm: 'nowrap',
-							md: 'nowrap',
-							lg: 'nowrap',
-							xl: 'nowrap',
-						},
-					}}
-				>
-					<MiniCard
-						value={`${getLocaleFormat(user?.orgSettings, +(leaseData?.rentAmount ?? 0), 'currency')}`}
-						name='Rent'
-						status={leaseData?.status}
-					/>
-					<MiniCard
-						dangerouslySetInnerHTML={leaseData?.rentDueOn}
-						name='Due On'
-						status={leaseData?.status}
-					/>
-					<MiniCard
-						value={leaseData?.paymentFrequency}
-						name='Payment Period'
-						status={leaseData?.status}
-					/>
-					<MiniCard
-						value={
-							leaseData?.nextPaymentDate
-								? getLocaleDateFormat(
-										user?.orgSettings,
-										leaseData.nextPaymentDate,
-										timeDateOptions,
-									)
-								: 'N/A'
-						}
-						name='Next Payment'
-						status={leaseData?.status}
-					/>
-					<MiniCard
-						value={leaseData?.tenants?.length?.toString() ?? '0'}
-						name='Tenant'
-						status={leaseData?.status}
-					/>
-					<MiniCard
-						value={`${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`}
-						name='Lease Expires'
-						status={leaseData?.status}
-					/>
-				</Stack>
-				<Stack
-					direction={'row'}
-					spacing={{ xs: 1, sm: 2, md: 8 }}
-					sx={{ width: '100%' }}
-				>
-					<LeaseDocumentTable documentTableData={documentTableData} />
-				</Stack>
+				</Box>
 			</Stack>
+
 			<DynamicModal {...modalConfig('Add Tenants')} />
 		</>
 	);
