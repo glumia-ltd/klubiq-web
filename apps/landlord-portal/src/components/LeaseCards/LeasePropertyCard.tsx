@@ -57,8 +57,8 @@ const LeasePropertyCard: FC<LeasePropertyCardType> = ({
 							divider={<Divider orientation='vertical' flexItem />}
 							spacing={2.5}
 						>
-							<Typography sx={styles.typoText}>{propertyName}</Typography>
-							<Typography sx={styles.typoText}>
+							<Typography variant='h4' >{propertyName}</Typography>
+							<Typography variant='h4'>
 								{isMultiUnitProperty ? 'Multi Unit' : 'Single Unit'}
 							</Typography>
 						</Stack>{' '}

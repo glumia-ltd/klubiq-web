@@ -64,6 +64,15 @@ export const leaseApiSlice = createApi({
 			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
 				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
 		}),
+		addTenants: builder.mutation<any, { leaseId: string, body: any }>({
+			query: ({ leaseId, body }) => ({
+				url: leaseEndpoints.addTenants(leaseId),
+				method: 'POST',
+				body,
+			}),
+			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
+				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+		}),
 	}),
 });
 
@@ -82,4 +91,5 @@ export const {
 	useGetUnitLeasesQuery,
 	useLazyGetUnitLeasesQuery,
 	useAddNewTenantToLeaseMutation,
+	useAddTenantsMutation,
 } = leaseApiSlice;
