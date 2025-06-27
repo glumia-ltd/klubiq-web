@@ -18,7 +18,7 @@ import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 // import TenantDetails from '../pages/Features/Tenant/TenantDetails';
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
-import TenantDetailsNew from '../pages/Features/Tenant/TenantDetails';
+import TenantDetails from '../pages/Features/Tenant/TenantDetails';
 import Properties from '../pages/Features/properties';
 
 import ViewPortLayout from '../Layouts/ViewPortLayout';
@@ -82,7 +82,7 @@ export const router = createBrowserRouter(
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
-					<Route path='tenants/:id' element={<TenantDetailsNew/>} />
+					<Route path='tenants/:id' element={<TenantDetails/>} />
 					
 
 					<Route path='/settings' element={<Setting />} />
