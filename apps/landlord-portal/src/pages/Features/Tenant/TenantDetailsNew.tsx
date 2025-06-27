@@ -281,7 +281,7 @@ const TenantDetailsNew = () => {
 					</Typography>
 					<Stack spacing={2}>
 						{properties.map((property, index) => (
-							<Card elevation={0} sx={{ borderRadius: 2, backgroundColor: 'background.default' }}>
+							<Card elevation={0} key={index} sx={{ borderRadius: 2, backgroundColor: 'background.default' }}>
 								<CardContent>
 									<Stack
 										direction='column'
@@ -359,14 +359,14 @@ const TenantDetailsNew = () => {
 										id: `lease-${index}-rent-amount`,
 										label: 'Rent',
 										value: (
-											<Typography variant='body2'>
+											<span>
 												{getLocaleFormat(
 													user?.orgSettings,
 													+(lease.rentAmount || 0),
 													'currency',
 												)}{' '}
-												/ {lease.paymentFrequency}
-											</Typography>
+												[{lease.paymentFrequency}]
+											</span>
 										),
 										icon: (
 											<KlubiqIcons.MoneyIcon fontSize='small' color='action' />
@@ -606,11 +606,14 @@ const TenantDetailsNew = () => {
 					loading={isLoading}
 					variant='tenant-detail'
 					headerData={{
-						avatar: {
-							image: tenantDetails.image,
-							id: '',
-							variant: 'square',
-						},
+						avatar: [
+							{
+								image: tenantDetails.image,
+								id: '',
+								variant: 'square',
+								name: tenantDetails.name,
+							},
+						],
 						companyName: tenantDetails.companyName,
 						name: tenantDetails.name,
 						email: tenantDetails.email,

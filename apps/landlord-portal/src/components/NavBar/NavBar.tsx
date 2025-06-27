@@ -164,9 +164,14 @@ const NavBar = () => {
 		};
 		await readNotifications(readPayload).unwrap();
 
-		if (item?.type === 'property-created') {
-			window.location.href = item.actionLink;
+		if (
+			item?.type.toLowerCase().includes('deleted') ||
+			item?.title.toLowerCase().includes('deleted') ||
+			!item.actionLink
+		) {
+			return;
 		}
+		window.location.href = item.actionLink;
 	};
 
 	return (

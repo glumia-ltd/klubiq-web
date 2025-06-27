@@ -459,7 +459,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					<Grid sx={styles.unitInfoCardStyle}>
 						<UnitInfoCard data={unitInfoData} />
 					</Grid>
-					
 				)}
 
 				{tabValue === 0 && (
@@ -492,7 +491,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 											? 'Add Tenant'
 											: 'Invite Tenant'
 									}
-									handleAdd={currentProperty?.units?.[0]?.lease ? () => handleAddTenant(currentProperty) : () => handleInviteTenant('Invite Tenant')}
+									handleAdd={
+										currentProperty?.units?.[0]?.lease
+											? () => handleAddTenant(currentProperty)
+											: () => handleInviteTenant('Invite Tenant')
+									}
 								/>
 							)}
 
@@ -618,6 +621,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 												onClick={handleArchiveProperty}
 												sx={{ padding: '10px' }}
 												divider
+												disabled={currentProperty?.isArchived}
 											>
 												Archive Property
 											</MenuItem>
@@ -648,9 +652,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					<Chip
 						label={currentProperty?.purpose?.displayText}
 						variant={
-							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
-								? 'rent'
-								: 'sale'
+							!currentProperty?.isArchived
+								? currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+									? 'rent'
+									: 'sale'
+								: 'archived'
 						}
 					/>
 				)}

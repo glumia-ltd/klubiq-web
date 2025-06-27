@@ -14,9 +14,9 @@ import {
 	Box,
 	Button,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Close } from '@mui/icons-material';
 
-type ModalAction = {
+export type ModalAction = {
 	label: string;
 	onClick: () => void;
 	variant?: 'text' | 'outlined' | 'contained';
@@ -26,7 +26,7 @@ type ModalAction = {
 	[key: string]: any; // for extra Button props
 };
 
-type DynamicModalProps = {
+export type DynamicModalProps = {
 	open: boolean;
 	onClose: () => void;
 	header?: React.ReactNode;
@@ -45,7 +45,7 @@ type DynamicModalProps = {
 	sx?: object;
 };
 
-const DynamicModal: React.FC<DynamicModalProps> = ({
+export const DynamicModal: React.FC<DynamicModalProps> = ({
 	open,
 	onClose,
 	header,
@@ -148,7 +148,7 @@ const DynamicModal: React.FC<DynamicModalProps> = ({
 						}}
 						size='large'
 					>
-						<CloseIcon />
+						<Close />
 					</IconButton>
 				</Stack>
 			</DialogTitle>
@@ -219,4 +219,3 @@ const DynamicModal: React.FC<DynamicModalProps> = ({
 	);
 };
 
-export default DynamicModal;
