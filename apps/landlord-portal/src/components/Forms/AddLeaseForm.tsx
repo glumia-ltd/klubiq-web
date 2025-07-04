@@ -428,7 +428,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 					decimals: 2,
 					placeholder: "0.00",
 					adornment: {
-						prefix: getCurrencySymbol(user?.orgSettings),
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
 					} as InputAdornmentType,
 					validation: {
 						schema: z.string().min(1, { message: 'Rent is required' }),
@@ -443,7 +443,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 					decimals: 2,
 					placeholder: "0.00",
 					adornment: {
-						prefix: getCurrencySymbol(user?.orgSettings),
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
 					} as InputAdornmentType,
 				},
 			],

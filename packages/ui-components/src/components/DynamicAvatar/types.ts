@@ -4,6 +4,7 @@ export interface AvatarItem {
     name?: string;
     label?: string;
     variant?: 'square' | 'circle';
+    background?: 'dark' | 'light';
   }
   
   export interface DynamicAvatarProps {

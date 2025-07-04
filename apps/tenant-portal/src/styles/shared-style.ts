@@ -2,15 +2,14 @@ export const AppContainerStyle = (isMobile: boolean) => ({
 	box: {
 		display: 'flex',
 		flexDirection: isMobile ? 'column' : 'row',
-		minHeight: '100vh',
-		minWidth: '100vw',
 	},
 	content: {
 		display: 'flex',
 		flexDirection: 'column',
 		flex: 1,
-		overflowY: 'auto',
 		justifyContent: 'space-between',
+		width: '100%',
+		minHeight: 'calc(100vh - 100px)',
 	},
 });
 export const SharedStyles = {

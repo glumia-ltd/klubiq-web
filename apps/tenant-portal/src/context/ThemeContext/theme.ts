@@ -29,7 +29,7 @@ const secondaryColors = {
 	lightBlue: '#E2EAF2',
 	grey: '#BOBOBO',
 };
-const backgroundColors = { light: '#F3F6F8', dark: '#1B1B1B' };
+const backgroundColors = { light: '#FFFFFF', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
 	breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
 
@@ -43,7 +43,7 @@ export const LightTheme: Theme = createTheme({
 		},
 		secondary: {
 			main: secondaryColors.yellow,
-			light: secondaryColors.blue,
+			light: secondaryColors.lightBlue,
 			dark: backgroundColors.dark,
 			contrastText: primaryColors.white,
 		},
@@ -73,6 +73,14 @@ export const LightTheme: Theme = createTheme({
 		},
 	},
 	components: {
+		MuiAvatar: {
+			styleOverrides: {
+				root: {
+					backgroundColor: primaryColors.lightBlue,
+					color: primaryColors.white,
+				},
+			},
+		},
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: { background: backgroundColors.light, height: '100%' },

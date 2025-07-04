@@ -390,7 +390,7 @@ const InviteTenantForm = ({
 					placeholder: "0.00",
 					decimals: 2,
 					adornment: {
-						prefix: getCurrencySymbol(user?.orgSettings),
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
 					} as InputAdornmentType,
 					validation: {
 						schema: z.string().min(1, { message: 'Rent is required' }),

@@ -7,3 +7,11 @@ export const authEndpoints = {
 		`/auth/accept-tenant-invitation?token=${token}`,
 	csrf: () => '/security/csrf-token',
 };
+
+export const tenantEndpoints = {
+	leaseInsights: () => '/tenants/lease-insights',
+	paymentHistory: () => '/tenants/payment-history',
+	maintenanceRequests: () => '/tenants/maintenance-requests',
+	documents: () => '/tenants/documents',
+	profile: () => '/tenants/profile',
+};

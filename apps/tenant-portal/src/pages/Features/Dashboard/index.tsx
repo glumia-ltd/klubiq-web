@@ -1,5 +1,5 @@
 import { RootState } from '@/store';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { PageHeader, DBInfoCard, DBInfoCardProps, ActivityCard, ActivityItem } from '@klubiq/ui-components';
 import {
@@ -9,23 +9,28 @@ import {
 	AttachMoney,
 	WarningAmber
 } from '@mui/icons-material';
+import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
+import { getLocaleFormat } from '@/helpers/utils';
 // import { useNavigate } from 'react-router-dom';
 
 const TenantDashboard = () => {
+	const theme = useTheme();
 	const { user } = useSelector((state: RootState) => state.auth);
-	// const navigate = useNavigate();
+	const { data: leaseInsights, isLoading: isLeaseInsightsLoading } = useGetLeaseInsightsQuery();
+	
 
+	 
 	const tenantRentMetrics: DBInfoCardProps[] = [
 		{
 			icon: <MonetizationOn />,
-			amount: '$68k',
-			label: 'Monthly Rent',
-			badgeText: 'Due Sep 1',
-			badgeColor: '#F1F5F9',
+			amount: `${getLocaleFormat(leaseInsights?.rentAmount || 0, 'currency', 2)}`,
+			label: `${leaseInsights?.paymentFrequency} Rent`,
+			badgeText: `Due ${leaseInsights?.nextDueDate}`,
+			badgeColor: theme.palette.success.main,
 			variant: 'custom',
 			backgroundColor: '#EEF2FF',
-		},
-		{
+			},
+			{
 			icon: <CalendarMonth />,
 			amount: '238 days',
 			label: 'Days remaining',
