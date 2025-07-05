@@ -18,6 +18,7 @@ import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 import { z } from 'zod';
+import { defaultOrgSettings } from '../../../helpers/constants';
 
 type IValuesType = {
 	password: string;
@@ -103,7 +104,7 @@ const Login = () => {
 					key: 'tenant_id',
 					value: user.tenantId || user.organizationUuid || '',
 				},
-				{ key: 'org-settings', value: JSON.stringify(user.orgSettings) },
+				{ key: 'org-settings', value: JSON.stringify(user.orgSettings?.settings || defaultOrgSettings) },
 				{
 					key: 'org-subscription',
 					value: JSON.stringify(user.orgSubscription),

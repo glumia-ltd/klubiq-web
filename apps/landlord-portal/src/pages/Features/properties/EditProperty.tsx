@@ -120,7 +120,7 @@ const EditProperty = () => {
 			address: {
 				addressLine1: '',
 				addressLine2: '',
-				city: '',
+				city: '', 
 				state: '',
 				postalCode: '',
 				latitude: 0,

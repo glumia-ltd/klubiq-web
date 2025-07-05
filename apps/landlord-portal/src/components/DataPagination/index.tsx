@@ -11,7 +11,7 @@ type PaginationType = {
 	currentPage?: number;
 };
 
-const DEFAULTITEMSPERPAGE = [12, 24, 36];
+const DEFAULTITEMSPERPAGE = [10, 24, 36];
 
 export const DataPagination: FC<PaginationType> = ({
 	getCurrentPage,

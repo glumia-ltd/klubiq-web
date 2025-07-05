@@ -49,6 +49,10 @@ const Tenant = () => {
 	const { data: tenantData, isLoading: isTenantDataLoading } =
 		useGetTenantsQuery({
 			...defaultParams,
+			page: currentPage,
+			take: 20,
+			sortBy: 'createdDate',
+			order: 'ASC',
 			// ...filter,
 		});
 	const allTenants = tenantData?.pageData || [];
@@ -101,6 +105,10 @@ const Tenant = () => {
 	const handleRowClick = (id: string) => {
 		navigate(`/tenants/${id}`);
 	};
+	console.log('tenants from API:', tenantData?.pageData);
+	console.log('🚨 page:', defaultParams.page, 'take:', defaultParams.take);
+	console.log('✅ rows from backend:', allTenants.length);
+	console.log('📦 tenantData.meta:', tenantData?.meta);
 	return (
 		<>
 			<Stack gap={2}>
@@ -115,7 +123,16 @@ const Tenant = () => {
 					</Button>
 				</Stack>
 				<Stack>
-					<Paper component='form' elevation={0} sx={{...styles.inputStyle, border: '1px solid', borderColor: 'primary.contrastText', borderRadius: '10px'}}>
+					<Paper
+						component='form'
+						elevation={0}
+						sx={{
+							...styles.inputStyle,
+							border: '1px solid',
+							borderColor: 'primary.contrastText',
+							borderRadius: '10px',
+						}}
+					>
 						<IconButton aria-label='search'>
 							<SearchIcon />
 						</IconButton>
@@ -155,15 +172,17 @@ const Tenant = () => {
 					)}
 				</Stack>
 			</Stack>
-			{allTenants && allTenants.length > 0 && <Stack mt={4}>
-				<DataPagination
-					getCurrentPage={getCurrentPage}
-					getItemsPerPageCount={getItemsPerPageCount}
-					pageCount={pageCount}
-					currentPage={currentPage}
-					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
-				/>
-			</Stack>}
+			{allTenants && allTenants.length > 0 && (
+				<Stack mt={4}>
+					<DataPagination
+						getCurrentPage={getCurrentPage}
+						getItemsPerPageCount={getItemsPerPageCount}
+						pageCount={pageCount}
+						currentPage={currentPage}
+						itemsPerPageOptions={ITEMSCOUNTOPTIONS}
+					/>
+				</Stack>
+			)}
 		</>
 	);
 };

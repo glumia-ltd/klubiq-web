@@ -11,12 +11,18 @@ import {
 	useTheme,
 	useMediaQuery,
 	Card,
+	Divider,
 } from '@mui/material';
-import { Close, MailOutline, Phone } from '@mui/icons-material';
+import { Close, MailOutline, Phone, Place } from '@mui/icons-material';
 import { DynamicAvatar } from '../DynamicAvatar/DynamicAvatar';
 import { InfoCard } from '../InfoCard/InfoCard';
 import { DocumentList } from '../DocumentList/DocumentList';
-import { PageDetailProps } from './types';
+import {
+	LeaseStatus,
+	PageDetailHeaderData,
+	PageDetailProps,
+	PageDetailVariant,
+} from './types';
 import { PageDetailSkeleton } from './PageDetailSkeleton';
 
 const TabPanel = (props: {
@@ -47,6 +53,7 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 	loading = false,
 	displayMode = 'modal',
 	position = 'right',
+	variant,
 }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -110,6 +117,64 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 			),
 		},
 	];
+  const getStatusStyle = (status: LeaseStatus | undefined) => {
+    switch (status) {
+      case 'Active':
+        return {
+          color: theme.palette.success.main,
+          border: `1px solid ${theme.palette.success.main}`,
+        };
+      case 'In Active':
+        return {
+          color: theme.palette.secondary.main,
+          border: `1px solid ${theme.palette.secondary.main}`,
+        };
+      case 'Expired':
+        return {
+          color: theme.palette.error.main,
+          border: `1px solid ${theme.palette.error.main}`,
+        };
+      case 'Terminated':
+        return {
+          color: theme.palette.error.main,
+          border: `1px solid ${theme.palette.error.main}`,
+        };
+      case 'Archived':
+        return {
+          color: theme.palette.warning.main,
+          border: `1px solid ${theme.palette.warning.main}`,
+        };
+      case 'Expiring Soon':   
+        return {
+          color: theme.palette.warning.main,
+          border: `1px solid ${theme.palette.warning.main}`,
+        };
+      default:
+        return {
+          color: theme.palette.primary.main,
+          border: `1px solid ${theme.palette.primary.main}`,
+        };
+    }
+  }
+
+	const getStatusColor = (status: LeaseStatus | undefined) => {
+		switch (status) {
+			case 'Active':
+				return 'success';
+			case 'In Active':
+				return 'secondary';
+			case 'Expired':
+				return 'error';
+			case 'Terminated':
+				return 'error';
+			case 'Archived':
+				return 'warning';
+			case 'Expiring Soon':
+				return 'warning';
+			default:
+				return 'primary';
+		}
+	};
 
 	const tabs = customTabs || defaultTabs;
 
@@ -130,6 +195,148 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 		borderRadius: 2,
 	};
 
+	const TenantDetailHeader = (headerData: PageDetailHeaderData) => {
+		return (
+			<Stack direction='row' spacing={1} alignItems='flex-start'>
+				<DynamicAvatar
+					items={headerData.avatar}
+					showName={headerData.showAvatarNames}
+					size={headerData.avatarSize || 'large'}
+				/>
+				<Stack flex={1} spacing={0.5}>
+					{headerData.name && (
+						<Typography
+							variant='h6'
+							fontWeight={600}
+							sx={{ textTransform: 'capitalize' }}
+						>
+							{headerData.name}
+						</Typography>
+					)}
+					{headerData.companyName && (
+						<Typography variant='h6'>{headerData.companyName}</Typography>
+					)}
+					{headerData.email && (
+						<Stack direction='row' alignItems='center' spacing={1}>
+							<MailOutline fontSize='small' />
+							<Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+								{headerData.email}
+							</Typography>
+						</Stack>
+					)}
+					{headerData.phone && (
+						<Stack direction='row' alignItems='center' spacing={1}>
+							<Phone fontSize='small' />
+							<Typography variant='body2'>{headerData.phone}</Typography>
+						</Stack>
+					)}
+				</Stack>
+				<Chip
+					label={headerData.status}
+					color={headerData.status === 'Active' ? 'primary' : 'default'}
+					size='small'
+					sx={{
+						backgroundColor: '#e2eaf2',
+						color: '#005CFF',
+					}}
+				/>
+				{displayMode === 'modal' && onClose && (
+					<IconButton
+						onClick={onClose}
+						sx={{ position: 'absolute', top: 8, right: 8 }}
+					>
+						<Close />
+					</IconButton>
+				)}
+			</Stack>
+		);
+	};
+
+	const LeaseDetailHeader = (headerData: PageDetailHeaderData) => {
+		return (
+			<Stack
+				direction={isMobile ? 'column' : 'row'}
+				spacing={isMobile ? 2 : 1}
+				justifyContent='space-between'
+				alignItems={isMobile ? 'flex-start' : 'center'}
+			>
+				<Stack flex={1} direction='column' spacing={1} alignItems={'flex-start'}>
+					<Chip
+						label={headerData.leaseDetailsHeaderData?.propertyType}
+						size='medium'
+					/>
+					{headerData.leaseDetailsHeaderData && (
+						<Stack
+							direction={isMobile ? 'column' : 'row'}
+							divider={isMobile ? undefined : <Divider orientation='vertical' flexItem />}
+							spacing={1}
+							alignItems={isMobile ? 'flex-start' : 'center'}
+						>
+							<Typography variant='h4' sx={{ textTransform: 'capitalize' }}>
+								{headerData.leaseDetailsHeaderData?.propertyName}
+							</Typography>
+							<Typography variant='h4' sx={{ textTransform: 'capitalize' }}>
+								{headerData.leaseDetailsHeaderData?.unitType}
+							</Typography>
+						</Stack>
+					)}
+					{headerData.leaseDetailsHeaderData?.address && (
+						<Stack direction='row' spacing={1} alignItems='center'>
+							<Place fontSize='small' />
+							<Typography>
+								{headerData.leaseDetailsHeaderData?.address}
+							</Typography>
+						</Stack>
+					)}
+				</Stack>
+				<Stack direction= {isMobile ? 'row' : 'column'} justifyContent={'space-between'} spacing={isMobile ? 2 : 1} alignItems={isMobile ? 'center' : 'flex-end'}>
+					<Chip
+						label={headerData.leaseDetailsHeaderData?.leaseStatus}
+						color={getStatusColor(
+							headerData.leaseDetailsHeaderData?.leaseStatus,
+						)}
+						size='medium'
+						sx={{
+							backgroundColor: 'transparent',
+              ...getStatusStyle(headerData.leaseDetailsHeaderData?.leaseStatus),
+						}}
+					/>
+					<DynamicAvatar
+						items={headerData.avatar}
+						showName={headerData.showAvatarNames}
+						size={headerData.avatarSize || 'large'}
+					/>
+				</Stack>
+
+				{displayMode === 'modal' && onClose && (
+					<IconButton
+						onClick={onClose}
+						sx={{ position: 'absolute', top: 8, right: 8 }}
+					>
+						<Close />
+					</IconButton>
+				)}
+			</Stack>
+		);
+	};
+
+	// const PropertyDetailHeader = () => {
+	// 	return <div>PropertyDetailHeader</div>;
+	// };
+
+	const renderHeaderByVariant = (variant: PageDetailVariant) => {
+		switch (variant) {
+			case 'tenant-detail':
+				return <TenantDetailHeader {...headerData} />;
+			case 'lease-detail':
+				return <LeaseDetailHeader {...headerData} />;
+			case 'property-detail':
+				return <TenantDetailHeader {...headerData} />;
+			default:
+				return <TenantDetailHeader {...headerData} />;
+		}
+	};
+
 	return (
 		<Paper
 			elevation={displayMode === 'modal' ? 3 : 0}
@@ -148,20 +355,23 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				<Stack spacing={2}>
 					<Card elevation={1}>
 						<Box sx={{ p: 2 }}>
-							<Stack direction='row' spacing={1} alignItems='flex-start'>
+              {renderHeaderByVariant(variant)}
+							{/* <Stack direction='row' spacing={1} alignItems='flex-start'>
 								<DynamicAvatar
-									items={[headerData.avatar]}
-									showName={false}
-									size='large'
+									items={headerData.avatar}
+									showName={headerData.showAvatarNames}
+									size={headerData.avatarSize || 'large'}
 								/>
 								<Stack flex={1} spacing={0.5}>
-									{headerData.name && <Typography
-										variant='h6'
-										fontWeight={600}
-										sx={{ textTransform: 'capitalize' }}
-									>
-										{headerData.name}
-									</Typography>}
+									{headerData.name && (
+										<Typography
+											variant='h6'
+											fontWeight={600}
+											sx={{ textTransform: 'capitalize' }}
+										>
+											{headerData.name}
+										</Typography>
+									)}
 									{headerData.companyName && (
 										<Typography variant='h6'>
 											{headerData.companyName}
@@ -170,7 +380,10 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 									{headerData.email && (
 										<Stack direction='row' alignItems='center' spacing={1}>
 											<MailOutline fontSize='small' />
-											<Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+											<Typography
+												variant='body2'
+												sx={{ wordBreak: 'break-word' }}
+											>
 												{headerData.email}
 											</Typography>
 										</Stack>
@@ -201,7 +414,7 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 										<Close />
 									</IconButton>
 								)}
-							</Stack>
+							</Stack> */}
 						</Box>
 						{showTabs && (
 							<Box>

@@ -70,12 +70,14 @@ const AddTenantForm = ({
 	const onSubmit = async (values: InitialFormValues) => {
 		try {
 			const { tenantType, tenantDetails, notes, leaseId } = values;
-			const { title, firstName, lastName, companyName, email, phoneNumber } = tenantDetails;
+			const { title, firstName, lastName, companyName, email, phoneNumber } =
+				tenantDetails;
 
 			// Create base request data based on tenant type
-			const baseRequestData = tenantType === 'company' 
-				? { companyName, email, phoneNumber }
-				: { title, firstName, lastName, email, phoneNumber };
+			const baseRequestData =
+				tenantType === 'company'
+					? { companyName, email, phoneNumber }
+					: { title, firstName, lastName, email, phoneNumber };
 
 			// Add optional fields if they exist
 			const requestData = {
@@ -84,17 +86,21 @@ const AddTenantForm = ({
 			};
 
 			// Make API call based on lease details
-			const apiCall = leaseId ? addNewTenantToLease : addNewTenantWithoutLease;
-			await apiCall({ leaseId: leaseId || '', body: requestData }).unwrap();
+			const apiCall = leaseId
+				? addNewTenantToLease({ leaseId: leaseId || '', body: requestData })
+				: addNewTenantWithoutLease(requestData);
+			await apiCall.unwrap();
 			dispatch(
 				openSnackbar({
 					message: screenMessages.tenant.add.success,
 					severity: 'success',
 					isOpen: true,
 					duration: 5000,
-				})
+				}),
 			);
-			navigate(returnPath);
+			if (returnPath) {
+				navigate(returnPath);
+			}
 		} catch (error) {
 			const errorMessage = (error as any)?.message;
 			dispatch(
@@ -103,7 +109,7 @@ const AddTenantForm = ({
 					severity: 'error',
 					isOpen: true,
 					duration: 7000,
-				})
+				}),
 			);
 			throw error;
 		}
@@ -242,7 +248,7 @@ const AddTenantForm = ({
 			type: 'textarea',
 			rows: 3,
 			required: false,
-			placeholder: "Enter any additional notes about the tenant",
+			placeholder: 'Enter any additional notes about the tenant',
 		},
 		{
 			name: 'leaseId',

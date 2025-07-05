@@ -4,14 +4,26 @@ import { InfoCardItem } from '../InfoCard/types';
 import { DocumentListItem } from '../DocumentList/types';
 
 export type PageDetailVariant = 'tenant-detail' | 'lease-detail' | 'property-detail';
-
+export type LeaseStatus = 'Active'| 'Expiring Soon' | 'In Active' | 'Expired' | 'Archived' | 'Terminated' | string;
+export type LeaseDetailsHeaderData = {
+  propertyName: string;
+  address: string;
+  leaseStatus: LeaseStatus;
+  propertyType: string;
+  unitType: string;
+  unitNumber: string;
+}
 export interface PageDetailHeaderData {
-  avatar: AvatarItem;
+  avatar: AvatarItem[];
   name: string;
   email: string;
   phone: string;
   companyName?: string;
   status: 'Active' | 'Inactive' | string;
+  showAvatarNames?: boolean;
+  avatarSize?: 'small' | 'medium' | 'large';
+  address?: string;
+  leaseDetailsHeaderData?: LeaseDetailsHeaderData;
 }
 
 export interface TabInfo {
