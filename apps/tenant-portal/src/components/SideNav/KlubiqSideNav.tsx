@@ -11,7 +11,6 @@ import {
 	Stack,
 	Paper,
 	useTheme,
-	useMediaQuery,
 	ListItemButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -32,7 +31,6 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	customBottomContent,
 }) => {
 	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [selectedIndex, setSelectedIndex] = useState(() => {
 		// Get the initial selected index from localStorage or default to 0
 		const savedIndex = localStorage.getItem('selectedNavIndex');
@@ -226,12 +224,18 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								]}
 								showName={false}
 							/>
-							<Box sx={{ flexGrow: 1 }}>
+							<Box sx={{ flexGrow: 1, textAlign: 'left', direction: 'column' }}>
 								<Typography
-									variant="subtitle1"
-									sx={{ color: 'primary.contrastText', fontWeight: 500 }}
+									variant="body1"
+									sx={{ color: 'primary.contrastText' }}
 								>
 									{user.firstname} {user.lastname}
+								</Typography>
+								<Typography
+									variant="body2"
+									sx={{ color: 'primary.contrastText' }}
+								>
+									{user.role}
 								</Typography>
 							</Box>
 							<IconButton

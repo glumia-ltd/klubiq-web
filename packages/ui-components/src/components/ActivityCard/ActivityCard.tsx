@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Card, Box, Stack, Typography, useTheme, SxProps, Theme } from '@mui/material';
+import { Card, Box, Stack, Typography, useTheme, SxProps, Theme, Skeleton } from '@mui/material';
 
 export type ActivityCardVariant = 'cards' | 'alerts' | 'custom';
 export type PaletteColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
@@ -25,6 +25,8 @@ export interface ActivityCardProps {
   onViewAllClick?: () => void;
   maxItems?: number;
   sx?: SxProps<Theme>;
+  /** Show skeletons when loading */
+  loading?: boolean;
 }
 
 export const ActivityCard: React.FC<ActivityCardProps> = ({
@@ -37,6 +39,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
   onViewAllClick,
   maxItems = 5,
   sx = {},
+  loading = false,
 }) => {
   const theme = useTheme();
 
@@ -48,6 +51,45 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
     boxShadow: theme.shadows[1],
     ...sx,
   };
+
+  if (loading) {
+    return (
+      <Card sx={cardStyles}>
+        <Stack spacing={3}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+            <Box>
+              <Skeleton variant="text" width={120} height={32} />
+              <Skeleton variant="text" width={80} height={20} />
+            </Box>
+            <Skeleton variant="rectangular" width={60} height={24} />
+          </Stack>
+          <Box>
+            {[1, 2, 3].map((i) => (
+              <Card
+                key={i}
+                elevation={0}
+                sx={{
+                  p: 2,
+                  mb: 2,
+                  borderRadius: 2,
+                  backgroundColor: theme.palette.background.default,
+                }}
+              >
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Skeleton variant="circular" width={40} height={40} />
+                  <Box sx={{ flex: 1 }}>
+                    <Skeleton variant="text" width="70%" height={24} />
+                    <Skeleton variant="text" width="50%" height={18} />
+                  </Box>
+                  <Skeleton variant="text" width={40} height={16} />
+                </Stack>
+              </Card>
+            ))}
+          </Box>
+        </Stack>
+      </Card>
+    );
+  }
 
   const renderDefaultCard = (item: ActivityItem) => (
     <Card

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { Preview } from '@storybook/react'
-import { theme } from '../src/theme'
+import { theme } from '../src/components/theme/theme'
 
 const preview: Preview = {
   parameters: {

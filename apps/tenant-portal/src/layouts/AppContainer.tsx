@@ -2,29 +2,27 @@ import Box from '@mui/system/Box';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AppContainerStyle } from '@/styles/shared-style';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import PeopleIcon from '@mui/icons-material/People';
-import ApartmentIcon from '@mui/icons-material/Apartment';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { SideNav } from '@/components/SideNav/KlubiqSideNav';
 import { NavLink } from '@/components/SideNav/SideNavTypes';
 import { useSignOutMutation } from '@/store/AuthStore/authApi.slice';
-import { AppFooter } from '@klubiq/ui-components';
+//import { AppFooter } from '@klubiq/ui-components';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { BottomNav } from '@/components/BottomNav/BottomNav';
 import { useTheme } from '@mui/material/styles';
-import { AppBar, useMediaQuery } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import { Build, Description, Person } from '@mui/icons-material';
 // Example for tenant portal
-const tenantFooterConfig = {
-	appName: 'Tenant Portal',
-	version: import.meta.env.REACT_TP_APP_VERSION || '0.0.1',
-	environment: import.meta.env.VITE_NODE_ENV as
-		| 'development'
-		| 'staging'
-		| 'production',
-	// ... other props
-};
+// const tenantFooterConfig = {
+// 	appName: 'Tenant Portal',
+// 	version: import.meta.env.REACT_TP_APP_VERSION || '0.0.1',
+// 	environment: import.meta.env.VITE_NODE_ENV as
+// 		| 'development'
+// 		| 'staging'
+// 		| 'production',
+// 	// ... other props
+// };
 
 const AppContainer = () => {
 	const theme = useTheme();

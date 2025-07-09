@@ -5,8 +5,14 @@ export type LeaseInsights = {
 	propertyAddress: string;
 	rentAmount: number;
 	paymentFrequency: string;
-	nextDueDate: Date;
+	nextDueDate: string;
 	daysRemaining: number;
 	onTimeRentPaymentPercentage: number;
-	upcomingPayment: any;
+	upcomingPaymentReminder: any;
+	overduePaymentReminder: any;
+	isOverdue: boolean;
+	missedPayments: number;
+	missedPaymentsAmount: number;
+	rentDueInDays: number;
+	totalLateFees: number;
 };
