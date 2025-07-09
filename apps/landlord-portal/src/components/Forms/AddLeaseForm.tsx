@@ -201,7 +201,7 @@ function renderLeaseDatesField(
 	);
 }
 
-enum PaymentFrequency {
+export enum PaymentFrequency {
 	ANNUALLY = 'Annually',
 	BI_MONTHLY = 'Bi-Monthly',
 	BI_WEEKLY = 'Bi-Weekly',
@@ -605,8 +605,8 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		const { start, end } = leaseDates || {};
 
 		if (!start || !end || !paymentFrequency) {
-    return false;
-  }
+			return false;
+		}
 
 		const startDate = dayjs(start);
 		const endDate = dayjs(end);
@@ -622,7 +622,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			[PaymentFrequency.BI_WEEKLY]: diffInDays > 14,
 			[PaymentFrequency.QUARTERLY]: diffInDays > 90,
 			[PaymentFrequency.BI_MONTHLY]: diffInDays > 60,
-			[PaymentFrequency.CUSTOM]: customPaymentFrequency > 0 && diffInDays > customPaymentFrequency,
+			[PaymentFrequency.CUSTOM]: !!customPaymentFrequency && customPaymentFrequency > 0 && diffInDays > customPaymentFrequency,
 		};
 
 		return paymentFrequency in frequencyChecks

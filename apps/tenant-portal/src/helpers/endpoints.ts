@@ -6,6 +6,8 @@ export const authEndpoints = {
 	acceptInvitation: (token: string) =>
 		`/auth/accept-tenant-invitation?token=${token}`,
 	csrf: () => '/security/csrf-token',
+	validateInvitationToken: (token: string) =>
+		`/auth/is-invite-valid?token=${token}`,
 };
 
 export const tenantEndpoints = {

@@ -56,4 +56,5 @@ export * from './components/AppFooter';
 export * from './components/TanstackForm';
 
 export * from './components/DBInfoCard';
+export * from './components/AmenityIconMap';
 
