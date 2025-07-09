@@ -145,7 +145,7 @@ const SideBar = () => {
 			variant='permanent'
 			initial='collapsed'
 			animate={sidebarOpen ? 'expanded' : 'collapsed'}
-			variants={drawerVariants}
+			variants={drawerVariants as any}
 			open={sidebarOpen}
 			onMouseEnter={() => setSidebarOpen(true)}
 			onMouseLeave={() => setSidebarOpen(false)}
