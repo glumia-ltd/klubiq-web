@@ -209,6 +209,7 @@ enum PaymentFrequency {
 	ONE_TIME = 'One-Time',
 	QUARTERLY = 'Quarterly',
 	WEEKLY = 'Weekly',
+	CUSTOM = 'Custom',
 }
 
 interface AddLeaseFormProps {
@@ -236,11 +237,14 @@ interface LeaseFormValues {
 	unitId: string;
 	rentDueDay: number;
 	rentAmount: number;
+	lateFeeAmount?: number;
 	securityDeposit?: number;
 	paymentFrequency: PaymentFrequency;
+	customPaymentFrequency: number;
 	propertyName: string;
 	firstPaymentDate?: string;
 	unitNumber: string;
+	leaseConfig: Record<string, any>;
 }
 
 const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
@@ -299,24 +303,31 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 		fees: {
 			rent: null,
 			securityDeposit: null,
+			lateFeeAmount: null,
 		},
 		leaseDates: {
 			start: null,
 			end: null,
 		},
 		paymentFrequency: PaymentFrequency.ANNUALLY,
+		customPaymentFrequency: 0,
 		rentDueDay: 0,
 		firstPaymentDate: '',
 		selectedProperty: propertyData || null,
 		selectedUnit: unitData || null,
 	};
-
+	const calculateFirstPaymentDate = (values: any) => {
+		if (!values?.paymentFrequency || !values?.leaseDates?.start) {
+			return '';
+		}
+		return dayjs(values?.leaseDates?.start).format('MMMM DD, YYYY');
+	};
 	const calculateDueDate = (values: any) => {
 		if (!values?.paymentFrequency || !values?.leaseDates?.start) {
 			return '';
 		}
 
-		const startDayAndMonth = dayjs(values?.leaseDates?.start).format(
+		const startDayAndMonthPlusYear = dayjs(values?.leaseDates?.start).add(365, 'day').format(
 			'MMMM DD, YYYY',
 		);
 		const monthDueDate = dayjs(values?.leaseDates?.start)
@@ -334,20 +345,21 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			'Friday',
 			'Saturday',
 		];
+		const leaseDateDiffs = dayjs(values?.leaseDates?.end).diff(dayjs(values?.leaseDates?.start), 'day');
 
 		const dueDates = {
-			[PaymentFrequency.WEEKLY]: `${days[dayjs(values?.leaseDates?.start).add(1, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(1, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.BI_WEEKLY]: `${days[dayjs(values?.leaseDates?.start).add(2, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(2, 'week').format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.MONTHLY]: `${days[monthDueDate.get('day')]}, ${monthDueDate.format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.ANNUALLY]: startDayAndMonth,
-			[PaymentFrequency.ONE_TIME]: `${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${days[biMonthlyDueDate.get('day')]}, ${biMonthlyDueDate.format('MMMM DD, YYYY')}`,
-			[PaymentFrequency.QUARTERLY]: `${days[dayjs(values?.leaseDates?.start).add(3, 'month').get('day')]}, ${dayjs(values?.leaseDates?.start).add(3, 'month').format('MMMM DD, YYYY')}`,
+			[PaymentFrequency.WEEKLY]:  leaseDateDiffs > 7 ? `${days[dayjs(values?.leaseDates?.start).add(1, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(1, 'week').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.BI_WEEKLY]: leaseDateDiffs > 14 ? `${days[dayjs(values?.leaseDates?.start).add(2, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(2, 'week').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.MONTHLY]: leaseDateDiffs > 30 ? `${days[monthDueDate.get('day')]}, ${monthDueDate.format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.ANNUALLY]: leaseDateDiffs > 365 ? startDayAndMonthPlusYear : null,
+			[PaymentFrequency.ONE_TIME]: null,
+			[PaymentFrequency.BI_MONTHLY]: leaseDateDiffs > 60 ? `${days[biMonthlyDueDate.get('day')]}, ${biMonthlyDueDate.format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.QUARTERLY]: leaseDateDiffs > 90 ? `${days[dayjs(values?.leaseDates?.start).add(3, 'month').get('day')]}, ${dayjs(values?.leaseDates?.start).add(3, 'month').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.CUSTOM]: null,
 		};
 
 		return dueDates[values?.paymentFrequency as PaymentFrequency] || '';
 	};
-
 	const leaseFormFields: FormFieldV1[] = [
 		{
 			name: 'name',
@@ -446,6 +458,18 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 						prefix: getCurrencySymbol(user.orgSettings?.settings),
 					} as InputAdornmentType,
 				},
+				{
+					name: 'lateFeeAmount',
+					type: 'decimal',
+					label: 'Late Fee',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
+				},
 			],
 		},
 		{
@@ -524,7 +548,7 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			type: 'select',
 			required: true,
 			options: Object.values(PaymentFrequency).map((freq) => ({
-				label: freq,
+				label: freq === PaymentFrequency.CUSTOM ? 'Custom (shortlets/daily rentals)' : freq,
 				value: freq,
 			})),
 			width: isMobile ? '100%' : '48%',
@@ -533,17 +557,31 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 			},
 		},
 		{
+			name: 'customPaymentFrequency',
+			label: 'Select a custom payment interval',
+			type: 'select',
+			options: Array.from({ length: 6 }, (_, i) => ({
+				label: i === 0 ? 'select interval' : `${i}`,
+				value: `${i}`,
+			})),
+			width: '50%',
+			required: (values) =>
+				values.paymentFrequency === PaymentFrequency.CUSTOM,
+			showIf: (values) =>
+				values.paymentFrequency === PaymentFrequency.CUSTOM,
+		},
+		{
 			name: 'rentDueDay',
 			label: 'Payment Day',
 			type: 'select',
-			options: Array.from({ length: 31 }, (_, i) => ({
+			options: Array.from({ length: 30 }, (_, i) => ({
 				label: i === 0 ? 'select due day' : `${i}`,
 				value: `${i}`,
 			})),
 			width: '50%',
 			showIf: (values) =>
-				values.paymentFrequency === 'Monthly' ||
-				values.paymentFrequency === 'Bi-Monthly',
+				values.paymentFrequency === PaymentFrequency.MONTHLY ||
+				values.paymentFrequency === PaymentFrequency.BI_MONTHLY,
 		},
 		{
 			name: 'firstPaymentDate',
@@ -555,15 +593,47 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 						<Info sx={{ fontSize: 16, color: theme.palette.primary.main }} />
 						<Typography variant='body2' textAlign='left'>
-							First payment due on {calculateDueDate(form.state.values)}
+							First payment due on {calculateFirstPaymentDate(form.state.values)} {calculateDueDate(form.state.values) && `and next payment due on ${calculateDueDate(form.state.values)}`}
 						</Typography>
 					</Box>
 				);
 			},
 		},
 	];
+	const validateLeaseDatesWithPaymentFrequency = (values: Record<string, any>): boolean => {
+		const { leaseDates, paymentFrequency, customPaymentFrequency } = values;
+		const { start, end } = leaseDates || {};
+
+		if (!start || !end || !paymentFrequency) {
+    return false;
+  }
+
+		const startDate = dayjs(start);
+		const endDate = dayjs(end);
+
+		const diffInDays = endDate.diff(startDate, 'day');
+		const diffInMonths = endDate.diff(startDate, 'month');
+		const diffInYears = endDate.diff(startDate, 'year');
+
+		const frequencyChecks: Record<string, boolean> = {
+			[PaymentFrequency.ANNUALLY]: diffInYears > 0,
+			[PaymentFrequency.MONTHLY]: diffInMonths > 0,
+			[PaymentFrequency.WEEKLY]: diffInDays > 7,
+			[PaymentFrequency.BI_WEEKLY]: diffInDays > 14,
+			[PaymentFrequency.QUARTERLY]: diffInDays > 90,
+			[PaymentFrequency.BI_MONTHLY]: diffInDays > 60,
+			[PaymentFrequency.CUSTOM]: customPaymentFrequency > 0 && diffInDays > customPaymentFrequency,
+		};
+
+		return paymentFrequency in frequencyChecks
+			? !!frequencyChecks[paymentFrequency]
+			: true;
+	};
 	const onSubmit = async (values: any) => {
 		try {
+			if (!validateLeaseDatesWithPaymentFrequency(values)) {
+				throw new Error('Lease dates are not valid for the selected payment frequency');
+			}
 			const requestBody: LeaseFormValues = {
 				name: values.name,
 				startDate: values.leaseDates.start,
@@ -575,8 +645,14 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				securityDeposit: Number(values.fees.securityDeposit),
 				paymentFrequency: values.paymentFrequency,
 				propertyName: values.property.name,
+				customPaymentFrequency: values.customPaymentFrequency,
+				lateFeeAmount: Number(values.fees.lateFeeAmount),
 				firstPaymentDate: calculateDueDate(values),
 				unitNumber: values.property.unitNumber,
+				leaseConfig: {
+					currency: user.orgSettings?.settings?.currency || 'NGN',
+					currencySymbol: user.orgSettings?.settings?.currencySymbol || '₦',
+				}
 			};
 			return await addLease(requestBody).unwrap();
 		} catch (error) {
