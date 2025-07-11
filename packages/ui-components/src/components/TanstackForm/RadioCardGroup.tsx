@@ -5,6 +5,7 @@ export type RadioCardOption = {
 	value: string;
 	label: React.ReactNode;
 	description?: string;
+	tag?: React.ReactNode; // Add tag property
 };
 
 interface RadioCardGroupProps {
@@ -106,7 +107,12 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 							</Typography>
 						)}
 					</Stack>
-
+					{/* Render tag if provided, always as a Chip */}
+					{option.tag && (
+						<Box ml={2} display='flex' alignItems='center'>
+							{option.tag}
+						</Box>
+					)}
 					{radioPosition === 'right' && (
 						<Radio
 							checked={value === option.value}

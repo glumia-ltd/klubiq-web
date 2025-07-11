@@ -4,6 +4,7 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { Box, Typography, useTheme } from '@mui/material';
+import Chip from '@mui/material/Chip';
 
 const paymentMethodOptions = [
 	{
@@ -51,9 +52,17 @@ const paymentMethodOptions = [
 				</Box>
 			</Box>
 		),
+		// No tag for wallet by default
 	},
 ];
 
+/**
+ * PaymentMethodSelector component
+ * @param {Object} props
+ * @param {function} props.onChange - Callback when selection changes
+ * @param {string} props.value - Selected value
+ * @param {boolean} [props.loading] - Loading state
+ */
 const PaymentMethodSelector = ({ onChange, value, loading }: any) => {
 	return (
 		<Box>
