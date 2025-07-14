@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Typography, Box, Chip, useTheme, Link } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 
-export interface PaymentMethodCardProps {
+export interface SavedPaymentCardProps {
 	last4: string;
 	brand: string;
 	isPrimary?: boolean;
@@ -11,7 +11,7 @@ export interface PaymentMethodCardProps {
 	children?: React.ReactNode;
 }
 
-const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
+export const SavedPaymentCard: React.FC<SavedPaymentCardProps> = ({
 	last4,
 	brand,
 	isPrimary,
@@ -121,5 +121,3 @@ const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
 		</Card>
 	);
 };
-
-export default PaymentMethodCard;

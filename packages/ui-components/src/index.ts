@@ -18,6 +18,7 @@ export * from './components/AmenityCard';
 export * from './components/PageDetail';
 export * from './components/DocumentList';
 export * from './components/InfoCard';
+export * from './components/SavedPaymentCard';
 
 // Export DynamicForm components and types
 export { KlubiqForm } from './components/DynamicForm/klubiq-form';

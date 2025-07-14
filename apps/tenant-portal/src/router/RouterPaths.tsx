@@ -5,8 +5,8 @@ import {
 	createRoutesFromElements,
 } from 'react-router-dom';
 
-
 import Login from '@/pages/Auth/Login';
+import Payments from '@/pages/Features/Payments';
 import TenantDashboard from '@/pages/Features/Dashboard';
 import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
@@ -24,6 +24,7 @@ export const router = createBrowserRouter(
 			<Route element={<PrivateRoute />}>
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
+					<Route path='/payments' element={<Payments />} />
 				</Route>
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}

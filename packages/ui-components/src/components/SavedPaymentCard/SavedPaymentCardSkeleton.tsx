@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Box, Skeleton } from '@mui/material';
 
-const PaymentMethodCardSkeleton: React.FC = () => (
+export const SavedPaymentCardSkeleton: React.FC = () => (
 	<Card
 		sx={{ display: 'flex', alignItems: 'center', p: 2, width: '100%', gap: 2 }}
 	>
@@ -15,4 +15,4 @@ const PaymentMethodCardSkeleton: React.FC = () => (
 	</Card>
 );
 
-export default PaymentMethodCardSkeleton;
+

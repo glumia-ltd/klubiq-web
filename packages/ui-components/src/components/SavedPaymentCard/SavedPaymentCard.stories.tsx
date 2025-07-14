@@ -1,12 +1,13 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-import { PaymentCardDisplay, PaymentCardDisplaySkeleton } from './';
+import { SavedPaymentCard } from './SavedPaymentCard';
+import { SavedPaymentCardSkeleton } from './SavedPaymentCardSkeleton';
 import { Box, Chip } from '@mui/material';
 
 export default {
 	title: 'Components/PaymentCardDisplay',
-	component: PaymentCardDisplay,
-	subcomponents: { PaymentCardDisplaySkeleton },
+	component: SavedPaymentCard,
+	subcomponents: { SavedPaymentCardSkeleton },
 	argTypes: {
 		onEdit: { action: 'edit clicked' },
 		variant: {
@@ -14,11 +15,11 @@ export default {
 			options: ['default', 'compact'],
 		},
 	},
-} as Meta<typeof PaymentCardDisplay>;
+} as Meta<typeof SavedPaymentCard>;
 
-const Template: StoryFn<typeof PaymentCardDisplay> = (args) => (
+const Template: StoryFn<typeof SavedPaymentCard> = (args) => (
 	<Box maxWidth={600}>
-		<PaymentCardDisplay {...args} />
+		<SavedPaymentCard {...args} />
 	</Box>
 );
 
@@ -47,7 +48,7 @@ WithDynamicChildren.args = {
 
 export const LoadingSkeleton: React.FC = () => (
 	<Box maxWidth={600}>
-		<PaymentCardDisplaySkeleton />
+		<SavedPaymentCardSkeleton />
 	</Box>
 );
 LoadingSkeleton.displayName = 'Loading Skeleton';
