@@ -342,6 +342,13 @@ export const LightTheme: Theme = createTheme({
 					props: { variant: 'archived' },
 					style: { backgroundColor: secondaryColors.grey, color: '#0C36A0' },
 				},
+				{
+					props: { variant: 'greenChip' },
+					style: {
+						backgroundColor: '#D1FADF',
+						color: '#027A48',
+					},
+				},
 			],
 		},
 	},
