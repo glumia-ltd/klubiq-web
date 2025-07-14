@@ -5,7 +5,7 @@ import ControlledTextField from '../../../components/ControlledComponents/Contro
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
-import Logo from '../../assets/images/info.svg';
+import Logo from '../../../assets/images/info.svg';
 import { useState, useEffect } from 'react';
 import { consoleDebug } from '../../../helpers/debug-logger';
 

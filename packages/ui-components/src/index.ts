@@ -10,7 +10,6 @@ export * from './components/GroupedAvatar';
 export * from './components/LoaderComponent';
 export * from './components/PageHeader';
 export * from './components/PasswordStrengthBar';
-export * from './components/PaymentMethodSelector';
 export * from './components/TabsComponent';
 export * from './components/ViewPort';
 export * from './components/Table';
