@@ -27,6 +27,9 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
@@ -34,6 +37,9 @@ declare module '@mui/material/styles' {
 		sale?: React.CSSProperties;
 		propertyType?: React.CSSProperties;
 		greenChip?: React.CSSProperties;
+		pattensBlueChip?: React.CSSProperties;
+		pippinRedChip?: React.CSSProperties;
+		beesWaxYellowChip?: React.CSSProperties;
 	}
 
 	interface Palette {
@@ -96,6 +102,9 @@ declare module '@mui/material/Chip' {
 		sale: true;
 		propertyType: true;
 		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
 	}
 }
 

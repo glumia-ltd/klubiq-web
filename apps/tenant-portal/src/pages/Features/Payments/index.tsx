@@ -27,6 +27,7 @@ import {
 } from '@klubiq/ui-components';
 import DataPagination from '../../../../../../packages/ui-components/src/components/DataPagination';
 import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMethodCard';
+import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 // Dummy data for demonstration
 const paymentMethodsLoading = false;
 const paymentHistoryLoading = false;
@@ -226,7 +227,8 @@ const PaymentsPage = () => {
 			</Card>
 
 			{/* Payment History */}
-			<Card sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
+			<PaymentHistoryTable />
+			{/* <Card sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
 				<Stack
 					direction={{ xs: 'column', md: 'row' }}
 					justifyContent='space-between'
@@ -290,7 +292,7 @@ const PaymentsPage = () => {
 						/>
 					</>
 				)}
-			</Card>
+			</Card> */}
 		</Box>
 	);
 };

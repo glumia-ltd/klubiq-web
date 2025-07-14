@@ -33,6 +33,9 @@ declare module '@mui/material/styles' {
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
 		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
@@ -41,6 +44,9 @@ declare module '@mui/material/styles' {
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
 		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -102,6 +108,9 @@ declare module '@mui/material/Chip' {
 		propertyType: true;
 		archived: true;
 		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
 	}
 }
 
