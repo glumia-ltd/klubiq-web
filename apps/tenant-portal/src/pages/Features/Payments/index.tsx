@@ -26,7 +26,7 @@ import {
 	Column,
 } from '@klubiq/ui-components';
 import DataPagination from '../../../../../../packages/ui-components/src/components/DataPagination';
-
+import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMethodCard';
 // Dummy data for demonstration
 const paymentMethodsLoading = false;
 const paymentHistoryLoading = false;
@@ -217,40 +217,11 @@ const PaymentsPage = () => {
 							isPrimary={paymentMethods[0].isPrimary}
 							onEdit={() => {}}
 						/>
-						<Box
-							sx={{
-								border: `1.5px dashed ${theme.palette.divider}`,
-								borderRadius: 2,
-								mt: 2,
-								p: 2,
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								cursor: 'pointer',
-								color: theme.palette.text.secondary,
-								transition: 'background 0.2s',
-								'&:hover': {
-									background: theme.palette.action.hover,
-								},
-							}}
-						>
-							<AddIcon sx={{ mr: 1 }} /> Add Payment Method
-						</Box>
+
+						<AddPaymentMethodCard onClick={() => {}} />
 					</>
 				) : (
-					<Box
-						sx={{
-							border: `1.5px dashed ${theme.palette.divider}`,
-							borderRadius: 2,
-							p: 2,
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							color: theme.palette.text.secondary,
-						}}
-					>
-						<AddIcon sx={{ mr: 1 }} /> Add Payment Method
-					</Box>
+					<AddPaymentMethodCard onClick={() => {}} />
 				)}
 			</Card>
 
