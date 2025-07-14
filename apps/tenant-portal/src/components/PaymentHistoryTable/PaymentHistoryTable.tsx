@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 const paymentData = [
 	{
 		datePaid: 'Jan 01, 2025',
-		amount: 1200,
+		amount: 1500,
 		paymentMethod: 'Auto-pay',
 		property: 'Victoria Garden City',
 		status: <Chip variant='pattensBlueChip' label='Due Soon' />,
@@ -22,7 +22,7 @@ const paymentData = [
 	},
 	{
 		datePaid: 'Dec 01, 2024',
-		amount: 1200,
+		amount: 1300,
 		paymentMethod: 'Bank Transfer',
 		property: 'Victoria Garden City',
 		status: <Chip variant='pippinRedChip' label='Overdue' />,
@@ -30,7 +30,7 @@ const paymentData = [
 	},
 	{
 		datePaid: 'Nov 01, 2024',
-		amount: 1200,
+		amount: 1900,
 		paymentMethod: 'Bank Transfer',
 		property: 'Victoria Garden City',
 		status: <Chip variant='beesWaxYellowChip' label='Pending' />,
@@ -38,7 +38,7 @@ const paymentData = [
 	},
 	{
 		datePaid: 'Oct 01, 2024',
-		amount: 1200,
+		amount: 200,
 		paymentMethod: 'Bank Transfer',
 		property: 'Victoria Garden City',
 		status: <Chip variant='greenChip' label='Paid' />,
@@ -59,7 +59,27 @@ const statusOptions = [
 ];
 
 type SortOrder = 'asc' | 'desc';
-const sortButtonStyles = {
+// DRY: Extracted styles
+const filterInputWrapperSx = (isMobile: boolean) => ({
+	minWidth: isMobile ? '100%' : 140,
+	maxWidth: isMobile ? '100%' : 180,
+	position: 'relative',
+	width: isMobile ? '100%' : 'auto',
+});
+const filterInputBoxSx = (isMobile: boolean) => ({
+	position: 'absolute',
+	inset: 0,
+	pointerEvents: 'none',
+	'& .MuiInputBase-root': {
+		height: 36,
+		borderRadius: 8,
+		fontSize: 15,
+		fontWeight: 500,
+		padding: '0 10px',
+		width: isMobile ? '100%' : 'auto',
+	},
+});
+const sortButtonStyles = (isMobile: boolean) => ({
 	color: '#1A2746',
 	fontWeight: 700,
 	borderRadius: 8,
@@ -68,7 +88,8 @@ const sortButtonStyles = {
 	minWidth: 0,
 	height: 36,
 	boxShadow: 'none',
-};
+	width: isMobile ? '50%' : 'auto',
+});
 
 const PaymentHistorySection: React.FC = () => {
 	const [property, setProperty] = useState('');
@@ -193,14 +214,7 @@ const PaymentHistorySection: React.FC = () => {
 					alignItems={isMobile ? 'stretch' : 'center'}
 				>
 					{/* Filters */}
-					<Box
-						sx={{
-							minWidth: isMobile ? '100%' : 140,
-							maxWidth: isMobile ? '100%' : 180,
-							position: 'relative',
-							width: isMobile ? '100%' : 'auto',
-						}}
-					>
+					<Box sx={filterInputWrapperSx(isMobile)}>
 						<Filter
 							options={propertyOptions}
 							value={property}
@@ -208,28 +222,13 @@ const PaymentHistorySection: React.FC = () => {
 							label=' '
 							placeholder='All Properties'
 						/>
-						<Box
-							sx={{
-								position: 'absolute',
-								inset: 0,
-								pointerEvents: 'none',
-								'& .MuiInputBase-root': {
-									height: 36,
-									borderRadius: 8,
-									fontSize: 15,
-									fontWeight: 500,
-									padding: '0 10px',
-									width: isMobile ? '100%' : 'auto',
-								},
-							}}
-						/>
+						<Box sx={filterInputBoxSx(isMobile)} />
 					</Box>
 					<Box
 						sx={{
+							...filterInputWrapperSx(isMobile),
 							minWidth: isMobile ? '100%' : 110,
 							maxWidth: isMobile ? '100%' : 150,
-							position: 'relative',
-							width: isMobile ? '100%' : 'auto',
 						}}
 					>
 						<Filter
@@ -239,21 +238,7 @@ const PaymentHistorySection: React.FC = () => {
 							label=' '
 							placeholder='Status'
 						/>
-						<Box
-							sx={{
-								position: 'absolute',
-								inset: 0,
-								pointerEvents: 'none',
-								'& .MuiInputBase-root': {
-									height: 36,
-									borderRadius: 8,
-									fontSize: 15,
-									fontWeight: 500,
-									padding: '0 10px',
-									width: isMobile ? '100%' : 'auto',
-								},
-							}}
-						/>
+						<Box sx={filterInputBoxSx(isMobile)} />
 					</Box>
 					{/* Sort Controls - just the two buttons side by side */}
 					<Stack
@@ -273,10 +258,10 @@ const PaymentHistorySection: React.FC = () => {
 							sx={{
 								bgcolor:
 									sortBy === 'datePaid'
-										? theme.palette.primary.main
+										? theme.palette.background.default
 										: 'transparent',
-								width: isMobile ? '50%' : 'auto',
-								...sortButtonStyles,
+
+								...sortButtonStyles(isMobile),
 							}}
 						>
 							Date Paid{' '}
@@ -292,10 +277,10 @@ const PaymentHistorySection: React.FC = () => {
 							sx={{
 								bgcolor:
 									sortBy === 'amount'
-										? theme.palette.primary.main
+										? theme.palette.background.default
 										: 'transparent',
-								width: isMobile ? '50%' : 'auto',
-								...sortButtonStyles,
+
+								...sortButtonStyles(isMobile),
 							}}
 						>
 							Amount{' '}
