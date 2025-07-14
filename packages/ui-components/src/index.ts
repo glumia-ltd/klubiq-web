@@ -56,7 +56,7 @@ export * from './components/DynamicHighlights/index';
 export * from './components/Errors/ErrorBoundary';
 
 // Re-export everything from DynamicModal
-export * from './components/DynamicModal/DynamicModal';
+export * from './components/DynamicModal';
 
 export * from './components/AppFooter';
 

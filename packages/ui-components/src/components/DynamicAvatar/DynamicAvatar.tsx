@@ -89,15 +89,15 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
         '& .MuiAvatar-root': avatarSize,
       }}
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const displayText = item.name || item.label || '';
         
         return (
-          <Tooltip key={item.id} title={displayText}>
+          <Tooltip key={`${item.id}-${index}`} title={displayText}>
             <Avatar
               src={item.image || undefined}
               sx={{
-                bgcolor: !item.image ? 'primary.main' : undefined,
+                bgcolor: item.image ? undefined : 'primary.main',
                 borderRadius: item.variant === 'square' ? '4px' : '50%',
               }}
             >

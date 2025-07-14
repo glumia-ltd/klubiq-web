@@ -14,7 +14,7 @@ export default meta;
 type Story = StoryObj<typeof PageDetail>;
 
 const headerData = {
-    avatar: { id: '1', name: 'Ngozi Nwosu', image: 'https://i.pravatar.cc/150?img=1' },
+    avatar: [{ id: '1', name: 'Ngozi Nwosu', image: 'https://i.pravatar.cc/150?img=1' }],
     name: 'Ngozi Nwosu',
     email: 'ngozi.n@example.com',
     phone: '+234 903 456 7890',

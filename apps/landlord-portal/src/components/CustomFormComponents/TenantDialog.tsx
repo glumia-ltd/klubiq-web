@@ -11,8 +11,10 @@ import {
   Select,
   MenuItem,
   ListItemText,
+  IconButton,
 } from '@mui/material';
 import { KlubiqTSFormFields } from '@klubiq/ui-components';
+import { Close } from '@mui/icons-material';
 
 interface TenantDialogProps {
   field: any; // FormFieldApi
@@ -41,7 +43,7 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
     phone: '',
     companyName: '',
   });
-
+  const [openSelect, setOpenSelect] = useState(false);
   // Use a local copy of options to allow adding custom amenities
   const [options] = useState(field.fieldConfig.options || []);
   
@@ -102,6 +104,9 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
         <Select
           multiple
           value={value}
+          open={openSelect}
+          onOpen={() => setOpenSelect(true)}
+          onClose={() => setOpenSelect(false)}
           onChange={(e) => field.handleChange(e.target.value as string[])}
           displayEmpty
           renderValue={() => `${value.length > 0 ? value.length : 'Select'} tenant${value.length > 1 ? 's' : ''}`}
@@ -111,6 +116,18 @@ export const TenantDialog: React.FC<TenantDialogProps> = ({
             },
           }}
         >
+           <Stack direction='row' justifyContent='flex-end' sx={{ p: 0,}}>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenSelect(false);
+              }}
+              sx={{ mr: 1 }}
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </Stack>
           {(field.fieldConfig.options || []).map((option: TenantOption) => (
             <MenuItem key={option.value} value={option.value}>
               <Checkbox
