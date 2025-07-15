@@ -59,6 +59,11 @@ declare module '@mui/material/styles' {
 			light?: string;
 			dark?: string;
 		};
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
+		};
 	}
 
 	interface PaletteOptions {
@@ -68,6 +73,11 @@ declare module '@mui/material/styles' {
 		notification?: {
 			light?: string;
 			dark?: string;
+		};
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
 		};
 	}
 }

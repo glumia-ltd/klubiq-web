@@ -12,6 +12,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
+import ConfirmPayment from '@/pages/Features/Payments/ConfirmPayment';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -25,6 +26,7 @@ export const router = createBrowserRouter(
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
 					<Route path='/payments' element={<Payments />} />
+					<Route path='/payments/confirm' element={<ConfirmPayment />} />
 				</Route>
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}

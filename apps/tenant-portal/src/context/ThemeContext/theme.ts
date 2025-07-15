@@ -17,17 +17,21 @@ const filterResultCountStyle = {
 	fontWeight: 700,
 	lineHeight: '2.375rem',
 };
-const primaryColors = {
+export const primaryColors = {
 	mainBlue: '#002147',
 	lightBlue: '#005CFF',
 	white: '#FFFFFF',
 	black: '#000000',
 };
-const secondaryColors = {
+export const secondaryColors = {
 	yellow: '#FFD700',
 	blue: '#6699CC',
 	lightBlue: '#E2EAF2',
 	grey: '#BOBOBO',
+	klubiqFiord: '#475569',
+	azureKlubiqText: '#1E293B',
+	azureKlubiqTextLight: '#475569',
+	azureKlubiqPickedBluewood: '#334155',
 };
 const backgroundColors = { light: '#F3F6F8', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
@@ -50,6 +54,11 @@ export const LightTheme: Theme = createTheme({
 		background: {
 			default: backgroundColors.light,
 			paper: backgroundColors.light,
+		},
+		textColors: {
+			azureKlubiqText: secondaryColors.azureKlubiqText,
+			azureKlubiqTextLight: secondaryColors.azureKlubiqTextLight,
+			azureKlubiqPickedBluewood: secondaryColors.azureKlubiqPickedBluewood,
 		},
 		error: {
 			main: 'rgba(255, 0, 0, 0.5)',
