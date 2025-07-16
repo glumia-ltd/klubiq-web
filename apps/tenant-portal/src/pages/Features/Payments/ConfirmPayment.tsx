@@ -11,6 +11,7 @@ import {
 	Alert,
 	IconButton,
 	FormControl,
+	Theme,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -42,7 +43,7 @@ const paymentOptions = [
 		label: (
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
 				<Box sx={iconBoxStyle}>
-					<CreditCardIcon fontSize='medium' color='primary' />
+					<CreditCardIcon fontSize='medium' color='inherit' />
 				</Box>
 				<Box sx={labelColumnStyle}>
 					<Typography variant='h6' fontWeight={600}>
@@ -60,7 +61,7 @@ const paymentOptions = [
 		label: (
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
 				<Box sx={iconBoxStyle}>
-					<AccountBalanceIcon fontSize='medium' color='primary' />
+					<AccountBalanceIcon fontSize='medium' color='inherit' />
 				</Box>
 				<Box sx={labelColumnStyle}>
 					<Typography variant='h6' fontWeight={600}>
@@ -78,7 +79,7 @@ const paymentOptions = [
 		label: (
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
 				<Box sx={iconBoxStyle}>
-					<AccountBalanceWalletIcon fontSize='medium' color='primary' />
+					<AccountBalanceWalletIcon fontSize='medium' color='inherit' />
 				</Box>
 				<Box sx={labelColumnStyle}>
 					<Typography variant='h6' fontWeight={600}>
@@ -106,6 +107,37 @@ const ConfirmPayment: React.FC = () => {
 	const [loading, setLoading] = useState(false); // Simulate loading state
 	const [paymentMethod, setPaymentMethod] = useState('card');
 
+	// DRY: Extracted repeated colors and styles
+	const getCardBorderColor = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.klubiqMysticGrey;
+	const getCardActiveBorderColor = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.klubiqRoyalBlue;
+	const getCardActiveBg = (theme: Theme) =>
+		(theme as any)?.palette?.background?.default;
+	const getAlertBg = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.klubiqLightBlue;
+	const getAlertTitleColor = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.alertDeepBlue;
+	const getAlertTextColor = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.alertLightBlue;
+	const alertBoxStyle = (theme: Theme) => ({
+		bgcolor: getAlertBg(theme),
+		borderRadius: 2,
+		mb: 3,
+		fontSize: 14,
+		alignItems: 'flex-start',
+		padding: 3,
+	});
+
+	const summaryTextColor = (theme: Theme) =>
+		(theme as any)?.palette?.textColors?.azureKlubiqPickedBluewood;
+	const summaryRowStyle = {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	};
+
 	return (
 		<Box
 			sx={{
@@ -121,7 +153,12 @@ const ConfirmPayment: React.FC = () => {
 		>
 			<Box sx={{ width: '100%', maxWidth: 600 }}>
 				{/* Back Button */}
-				<Stack direction='row' alignItems='center' spacing={1} sx={{ mb: 2 }}>
+				<Stack
+					direction='row'
+					alignItems='center'
+					spacing={1}
+					sx={{ mb: 2, cursor: 'pointer' }}
+				>
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
@@ -151,7 +188,7 @@ const ConfirmPayment: React.FC = () => {
 				>
 					{/* Payment Summary */}
 					<Box sx={{ mb: 3 }}>
-						<Typography variant='h4' sx={{ mb: 4 }}>
+						<Typography variant='h4' sx={{ mb: 3 }}>
 							Payment Summary
 						</Typography>
 						{loading ? (
@@ -166,91 +203,35 @@ const ConfirmPayment: React.FC = () => {
 								<Box sx={{ width: '100%' }}>
 									<Stack spacing={3}>
 										{/* Details Rows */}
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'row',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-											}}
-										>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+										<Box sx={summaryRowStyle}>
+											<Typography color={summaryTextColor(theme)}>
 												{paymentSummary.title}
 											</Typography>
 											<Typography variant='h4' color='text.primary'>
 												${paymentSummary.amount.toLocaleString()}
 											</Typography>
 										</Box>
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'row',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-											}}
-										>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+										<Box sx={summaryRowStyle}>
+											<Typography color={summaryTextColor(theme)}>
 												Due Date
 											</Typography>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+											<Typography color={summaryTextColor(theme)}>
 												{paymentSummary.dueDate}
 											</Typography>
 										</Box>
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'row',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-											}}
-										>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+										<Box sx={summaryRowStyle}>
+											<Typography color={summaryTextColor(theme)}>
 												Property
 											</Typography>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+											<Typography color={summaryTextColor(theme)}>
 												{paymentSummary.property}
 											</Typography>
 										</Box>
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'row',
-												justifyContent: 'space-between',
-												alignItems: 'center',
-											}}
-										>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+										<Box sx={summaryRowStyle}>
+											<Typography color={summaryTextColor(theme)}>
 												Payee
 											</Typography>
-											<Typography
-												color={
-													theme?.palette?.textColors?.azureKlubiqPickedBluewood
-												}
-											>
+											<Typography color={summaryTextColor(theme)}>
 												{paymentSummary.payee}
 											</Typography>
 										</Box>
@@ -262,20 +243,24 @@ const ConfirmPayment: React.FC = () => {
 					<Divider sx={{ my: 2 }} />
 					{/* Payment Method Section */}
 					<Box sx={{ mb: 3 }}>
-						<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
+						<Typography
+							variant='h4'
+							sx={{ mb: 3 }}
+							color={theme?.palette?.textColors?.azureKlubiqText}
+						>
 							Choose Payment Method
 						</Typography>
 						<FormControl component='fieldset' fullWidth>
 							<Box
 								sx={{
 									'& .MuiCard-root': {
-										border: '2px solid #D6DEEB',
+										border: `2px solid ${getCardBorderColor(theme)}`,
 										borderRadius: '8px',
 										boxShadow: 'none',
 									},
 									'& .MuiCard-root[data-active="true"]': {
-										border: '2px solid #0A2343',
-										backgroundColor: '#F3F6FA',
+										border: `2px solid ${getCardActiveBorderColor(theme)}`,
+										backgroundColor: getCardActiveBg(theme),
 									},
 								}}
 							>
@@ -290,23 +275,18 @@ const ConfirmPayment: React.FC = () => {
 					</Box>
 					{/* Secure Payment Info */}
 					<Alert
-						icon={<LockOutlinedIcon color='primary' />}
+						icon={<LockOutlinedIcon color='inherit' />}
 						severity='info'
-						sx={{
-							bgcolor:
-								theme.palette.mode === 'dark'
-									? 'rgba(30, 60, 120, 0.12)'
-									: 'rgba(30, 60, 120, 0.06)',
-							borderRadius: 2,
-							mb: 3,
-							fontSize: 15,
-							alignItems: 'flex-start',
-						}}
+						sx={alertBoxStyle(theme)}
 					>
-						<Typography fontWeight={600} sx={{ mb: 0.5 }}>
+						<Typography
+							fontWeight={600}
+							sx={{ mb: 0.5 }}
+							color={getAlertTitleColor(theme)}
+						>
 							Secure Payment
 						</Typography>
-						<Typography variant='body2' color='primary.main'>
+						<Typography color={getAlertTextColor(theme)}>
 							Your payment information is encrypted and secure. We use
 							industry-standard security measures to protect your data.
 						</Typography>

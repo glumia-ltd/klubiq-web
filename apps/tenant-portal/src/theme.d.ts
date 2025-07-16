@@ -63,6 +63,11 @@ declare module '@mui/material/styles' {
 			azureKlubiqText?: string;
 			azureKlubiqTextLight?: string;
 			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
 		};
 	}
 
@@ -78,6 +83,11 @@ declare module '@mui/material/styles' {
 			azureKlubiqText?: string;
 			azureKlubiqTextLight?: string;
 			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
 		};
 	}
 }

@@ -2,7 +2,17 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { Box, Typography, useTheme } from '@mui/material';
 
-const AddPaymentMethodCard = ({ onClick }: { onClick?: () => void }) => {
+const AddPaymentMethodCard = ({
+	content,
+	onClick,
+	height,
+	iconPosition = 'top',
+}: {
+	content: string;
+	onClick?: () => void;
+	height?: number;
+	iconPosition?: 'top' | 'left';
+}) => {
 	const theme = useTheme();
 	return (
 		<Box
@@ -13,13 +23,13 @@ const AddPaymentMethodCard = ({ onClick }: { onClick?: () => void }) => {
 				mt: 2,
 				p: { xs: 3, sm: 3.5 },
 				display: 'flex',
-				flexDirection: 'column',
+				flexDirection: iconPosition === 'top' ? 'column' : 'row',
 				alignItems: 'center',
 				justifyContent: 'center',
 				cursor: 'pointer',
 				color: theme.palette.text.secondary,
 				transition: 'background 0.2s',
-				minHeight: 80,
+				minHeight: height || 80,
 				outline: 'none',
 				'&:hover, &:focus': {
 					background: theme.palette.action.hover,
@@ -30,11 +40,11 @@ const AddPaymentMethodCard = ({ onClick }: { onClick?: () => void }) => {
 			}}
 			tabIndex={0}
 			role='button'
-			aria-label='Add Payment Method'
+			aria-label={content}
 		>
 			<AddIcon sx={{ fontSize: 32, mb: 0.5 }} />
-			<Typography variant='body1' fontWeight={500} sx={{ mt: 1 }}>
-				Add Payment Method
+			<Typography variant='body1' fontWeight={500}>
+				{content}
 			</Typography>
 		</Box>
 	);

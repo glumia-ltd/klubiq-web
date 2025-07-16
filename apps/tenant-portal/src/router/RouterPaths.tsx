@@ -13,6 +13,7 @@ import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
 import ConfirmPayment from '@/pages/Features/Payments/ConfirmPayment';
+import CardPayment from '@/pages/Features/Payments/CardPayment';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -27,6 +28,7 @@ export const router = createBrowserRouter(
 					<Route path='/dashboard' element={<TenantDashboard />} />
 					<Route path='/payments' element={<Payments />} />
 					<Route path='/payments/confirm' element={<ConfirmPayment />} />
+					<Route path='/payments/card' element={<CardPayment />} />
 				</Route>
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}

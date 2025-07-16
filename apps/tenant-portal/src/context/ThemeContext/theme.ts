@@ -32,6 +32,11 @@ export const secondaryColors = {
 	azureKlubiqText: '#1E293B',
 	azureKlubiqTextLight: '#475569',
 	azureKlubiqPickedBluewood: '#334155',
+	klubiqMysticGrey: '#E2E8F0',
+	klubiqRoyalBlue: '#002147',
+	klubiqLightBlue: '#EEF2FF',
+	alertLightBlue: '#1447E6',
+	alertDeepBlue: '#1C398E',
 };
 const backgroundColors = { light: '#F3F6F8', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
@@ -59,6 +64,11 @@ export const LightTheme: Theme = createTheme({
 			azureKlubiqText: secondaryColors.azureKlubiqText,
 			azureKlubiqTextLight: secondaryColors.azureKlubiqTextLight,
 			azureKlubiqPickedBluewood: secondaryColors.azureKlubiqPickedBluewood,
+			klubiqMysticGrey: secondaryColors.klubiqMysticGrey,
+			klubiqRoyalBlue: secondaryColors.klubiqRoyalBlue,
+			klubiqLightBlue: secondaryColors.klubiqLightBlue,
+			alertLightBlue: secondaryColors.alertLightBlue,
+			alertDeepBlue: secondaryColors.alertDeepBlue,
 		},
 		error: {
 			main: 'rgba(255, 0, 0, 0.5)',

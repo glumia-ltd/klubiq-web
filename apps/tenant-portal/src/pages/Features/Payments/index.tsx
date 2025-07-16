@@ -219,80 +219,21 @@ const PaymentsPage = () => {
 							onEdit={() => {}}
 						/>
 
-						<AddPaymentMethodCard onClick={() => {}} />
+						<AddPaymentMethodCard
+							content='Add Payment Method'
+							onClick={() => {}}
+						/>
 					</>
 				) : (
-					<AddPaymentMethodCard onClick={() => {}} />
+					<AddPaymentMethodCard
+						content='Add Payment Method'
+						onClick={() => {}}
+					/>
 				)}
 			</Card>
 
 			{/* Payment History */}
 			<PaymentHistoryTable />
-			{/* <Card sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
-				<Stack
-					direction={{ xs: 'column', md: 'row' }}
-					justifyContent='space-between'
-					alignItems={{ xs: 'flex-start', md: 'center' }}
-					spacing={2}
-					mb={2}
-				>
-					<Typography variant='h6' fontWeight={600}>
-						Payment History
-					</Typography>
-					<Stack
-						direction='row'
-						spacing={1}
-						alignItems='center'
-						flexWrap='wrap'
-					>
-						<FormControl size='small' sx={{ minWidth: 140 }}>
-							<InputLabel>All Properties</InputLabel>
-							<Select label='All Properties' value='all'>
-								<MenuItem value='all'>All Properties</MenuItem>
-								<MenuItem value='Victoria Garden City'>
-									Victoria Garden City
-								</MenuItem>
-							</Select>
-						</FormControl>
-						<FormControl size='small' sx={{ minWidth: 120 }}>
-							<InputLabel>Status</InputLabel>
-							<Select label='Status' value='all'>
-								<MenuItem value='all'>Status</MenuItem>
-								<MenuItem value='Due Soon'>Due Soon</MenuItem>
-								<MenuItem value='Overdue'>Overdue</MenuItem>
-								<MenuItem value='Pending'>Pending</MenuItem>
-								<MenuItem value='Paid'>Paid</MenuItem>
-							</Select>
-						</FormControl>
-						<FormControl size='small' sx={{ minWidth: 120 }}>
-							<InputLabel>Sort by</InputLabel>
-							<Select label='Sort by' value='datePaid'>
-								<MenuItem value='datePaid'>Date Paid</MenuItem>
-								<MenuItem value='amount'>Amount</MenuItem>
-							</Select>
-						</FormControl>
-					</Stack>
-				</Stack>
-				{paymentHistoryLoading ? (
-					<Box sx={{ mt: 2 }}>
-						<Skeleton
-							variant='rectangular'
-							height={220}
-							sx={{ borderRadius: 2 }}
-						/>
-					</Box>
-				) : (
-					<>
-						<Table columns={columns} data={paginatedHistory} />
-						<DataPagination
-							totalItems={paymentHistory.length}
-							itemsPerPage={itemsPerPage}
-							currentPage={currentPage}
-							onPageChange={setCurrentPage}
-						/>
-					</>
-				)}
-			</Card> */}
 		</Box>
 	);
 };
