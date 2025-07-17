@@ -33,7 +33,6 @@ const EditLeaseForm: FC = () => {
 	const { data: lease, isLoading: isLeaseLoading } = useGetSingleLeaseByIdQuery(
 		{ id: currentLeaseId || '' },
 	);
-	console.log(lease, 'leasehere');
 	const getUnits = (unitNumber?: string) =>
 		unitNumber ? [{ label: unitNumber, value: unitNumber }] : [];
 	const properties = lease
@@ -172,7 +171,6 @@ const EditLeaseForm: FC = () => {
 	];
 	const onSubmit = async (values: any) => {
 		if (!lease?.id) return;
-		console.log(values, 'val');
 		try {
 			const payload = {
 				leaseId: String(lease.id),
@@ -205,7 +203,6 @@ const EditLeaseForm: FC = () => {
 					duration: 2000,
 				}),
 			);
-			console.log('Lease edited successfully... navigating to lease page');
 			navigate('/leases');
 		} catch (error) {
 			dispatch(
