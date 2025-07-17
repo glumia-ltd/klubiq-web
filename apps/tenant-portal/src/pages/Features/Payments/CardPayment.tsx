@@ -51,15 +51,13 @@ const savedCards = [
 			>
 				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					<Box sx={iconBoxStyle}>
-						<CreditCardIcon fontSize='medium' color='primary' />
+						<CreditCardIcon fontSize='medium' />
 					</Box>
 					<Box sx={labelColumnStyle}>
 						<Typography variant='h6' fontWeight={600}>
 							Visa •••• •••• •••• 4242
 						</Typography>
-						<Typography variant='body2' color='text.secondary'>
-							Expires 12/2027
-						</Typography>
+						<Typography variant='body2'>Expires 12/2027</Typography>
 					</Box>
 				</Box>
 				<Box sx={{ ml: 2, display: 'flex', alignItems: 'center' }}>
@@ -73,15 +71,13 @@ const savedCards = [
 		label: (
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
 				<Box sx={iconBoxStyle}>
-					<CreditCardIcon fontSize='medium' color='primary' />
+					<CreditCardIcon fontSize='medium' color='inherit' />
 				</Box>
 				<Box sx={labelColumnStyle}>
 					<Typography variant='h6' fontWeight={600}>
 						Mastercard •••• •••• •••• 5555
 					</Typography>
-					<Typography variant='body2' color='text.secondary'>
-						Expires 08/2026
-					</Typography>
+					<Typography variant='body2'>Expires 08/2026</Typography>
 				</Box>
 			</Box>
 		),
@@ -124,7 +120,7 @@ const addCardFields: FormFieldV1[] = [
 		placeholder: '1234 5678 9012 3456',
 		required: true,
 		adornment: {
-			prefix: <CreditCardIcon color='primary' />,
+			prefix: <CreditCardIcon color='inherit' />,
 		},
 	},
 	{
@@ -196,22 +192,13 @@ const CardPayment: React.FC = () => {
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
-					<Typography color={theme?.palette?.textColors?.azureKlubiqTextLight}>
-						Back to Payment Methods
-					</Typography>
+					<Typography>Back to Payment Methods</Typography>
 				</Stack>
 				{/* Title and Subtitle */}
-				<Typography
-					variant='h4'
-					sx={{ mb: 1 }}
-					color={theme?.palette?.textColors?.azureKlubiqText}
-				>
+				<Typography variant='h4' sx={{ mb: 1 }}>
 					Card Payment
 				</Typography>
-				<Typography
-					color={theme?.palette?.textColors?.azureKlubiqPickedBluewood}
-					sx={{ mb: 3 }}
-				>
+				<Typography sx={{ mb: 3 }}>
 					Choose your card or add a new one
 				</Typography>
 				{/* Main Card */}
@@ -225,12 +212,7 @@ const CardPayment: React.FC = () => {
 				>
 					{/* Payment Summary */}
 					<Box sx={{ mb: 3 }}>
-						<Typography
-							variant='h6'
-							fontWeight={600}
-							sx={{ mb: 3 }}
-							color={theme?.palette?.textColors?.azureKlubiqText}
-						>
+						<Typography variant='h6' fontWeight={600} sx={{ mb: 3 }}>
 							Payment Summary
 						</Typography>
 						{loading ? (
@@ -248,18 +230,10 @@ const CardPayment: React.FC = () => {
 									mb: 2,
 								}}
 							>
-								<Typography
-									variant='body1'
-									fontWeight={600}
-									color={theme?.palette?.textColors?.azureKlubiqPickedBluewood}
-								>
+								<Typography variant='body1' fontWeight={600}>
 									{paymentSummary.title}
 								</Typography>
-								<Typography
-									variant='h4'
-									fontWeight={700}
-									color={theme?.palette?.textColors?.azureKlubiqText}
-								>
+								<Typography variant='h4' fontWeight={700}>
 									${paymentSummary.amount.toLocaleString()}
 								</Typography>
 							</Box>

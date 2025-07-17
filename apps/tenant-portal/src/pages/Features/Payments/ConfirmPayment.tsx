@@ -162,19 +162,10 @@ const ConfirmPayment: React.FC = () => {
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
-					<Typography
-						variant='body1'
-						color={theme?.palette?.textColors?.azureKlubiqTextLight}
-					>
-						Back
-					</Typography>
+					<Typography variant='body1'>Back</Typography>
 				</Stack>
 				{/* Confirm Payment Title */}
-				<Typography
-					variant='h2'
-					sx={{ mb: 3 }}
-					color={theme?.palette?.textColors?.azureKlubiqText}
-				>
+				<Typography variant='h2' sx={{ mb: 3 }}>
 					Confirm Payment
 				</Typography>
 				{/* Main Card */}
@@ -204,36 +195,22 @@ const ConfirmPayment: React.FC = () => {
 									<Stack spacing={3}>
 										{/* Details Rows */}
 										<Box sx={summaryRowStyle}>
-											<Typography color={summaryTextColor(theme)}>
-												{paymentSummary.title}
-											</Typography>
+											<Typography>{paymentSummary.title}</Typography>
 											<Typography variant='h4' color='text.primary'>
 												${paymentSummary.amount.toLocaleString()}
 											</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
-											<Typography color={summaryTextColor(theme)}>
-												Due Date
-											</Typography>
-											<Typography color={summaryTextColor(theme)}>
-												{paymentSummary.dueDate}
-											</Typography>
+											<Typography>Due Date</Typography>
+											<Typography>{paymentSummary.dueDate}</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
-											<Typography color={summaryTextColor(theme)}>
-												Property
-											</Typography>
-											<Typography color={summaryTextColor(theme)}>
-												{paymentSummary.property}
-											</Typography>
+											<Typography>Property</Typography>
+											<Typography>{paymentSummary.property}</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
-											<Typography color={summaryTextColor(theme)}>
-												Payee
-											</Typography>
-											<Typography color={summaryTextColor(theme)}>
-												{paymentSummary.payee}
-											</Typography>
+											<Typography>Payee</Typography>
+											<Typography>{paymentSummary.payee}</Typography>
 										</Box>
 									</Stack>
 								</Box>
@@ -243,11 +220,7 @@ const ConfirmPayment: React.FC = () => {
 					<Divider sx={{ my: 2 }} />
 					{/* Payment Method Section */}
 					<Box sx={{ mb: 3 }}>
-						<Typography
-							variant='h4'
-							sx={{ mb: 3 }}
-							color={theme?.palette?.textColors?.azureKlubiqText}
-						>
+						<Typography variant='h4' sx={{ mb: 3 }}>
 							Choose Payment Method
 						</Typography>
 						<FormControl component='fieldset' fullWidth>
