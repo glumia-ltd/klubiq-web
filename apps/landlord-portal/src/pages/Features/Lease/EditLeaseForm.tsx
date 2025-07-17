@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme, Button, Stack } from '@mui/material';
 import { Info } from '@mui/icons-material';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,10 +11,10 @@ import {
 	KlubiqFormV1,
 	InputAdornment as InputAdornmentType,
 } from '@klubiq/ui-components';
+import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
 
 import FormLayout from '../../../Layouts/FormLayout';
 import FormSkeleton from '../../../components/skeletons/FormSkeleton';
-import { Breadcrumb } from '../../../components/Breadcrumb';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import {
@@ -47,14 +47,13 @@ const EditLeaseForm: FC = () => {
 		: [];
 
 	const tenants =
-	lease?.tenants
-		?.filter((tenant) => !!tenant.profile.profileUuid)
-		.map((tenant) => ({
-			label: `${tenant.profile.firstName} ${tenant.profile.lastName}`,
-			value: tenant.profile.profileUuid!, 
-			email: tenant.profile.email,
-		})) ?? [];
-
+		lease?.tenants
+			?.filter((tenant) => !!tenant.profile.profileUuid)
+			.map((tenant) => ({
+				label: `${tenant.profile.firstName} ${tenant.profile.lastName}`,
+				value: tenant.profile.profileUuid!,
+				email: tenant.profile.email,
+			})) ?? [];
 
 	const getUnitsForProperty = (values: any) =>
 		properties.find((p) => p.value === values.propertyId)?.units || [];
@@ -63,14 +62,19 @@ const EditLeaseForm: FC = () => {
 		? {
 				name: lease.name ?? '',
 				propertyId: lease.id,
-				unitId: lease.unitNumber,
+				unitId: lease.id,
 				tenantId: lease.tenants?.[0]?.profile?.profileUuid ?? '',
 				rentAmount: lease.rentAmount,
-				depositAmount: '', 
+				// depositAmount: '',
 				startDate: lease.startDate,
 				endDate: lease.endDate,
-				frequency: lease.paymentFrequency,
+				// frequency: lease.paymentFrequency,
 				rentDueDay: lease.rentDueDay ?? '',
+				propertyName: lease.propertyName,
+				securityDeposit: '',
+				firstPaymentDate: lease.startDate,
+				lateFeeAmount: '',
+				customPaymentFrequency: lease.paymentFrequency,
 			}
 		: {};
 
@@ -116,7 +120,7 @@ const EditLeaseForm: FC = () => {
 			} as InputAdornmentType,
 		},
 		{
-			name: 'depositAmount',
+			name: 'securityDeposit',
 			label: 'Deposit Amount',
 			type: 'decimal',
 			decimals: 2,
@@ -125,7 +129,7 @@ const EditLeaseForm: FC = () => {
 			} as InputAdornmentType,
 		},
 		{
-			name: 'frequency',
+			name: 'customPaymentFrequency',
 			label: 'Payment Frequency',
 			type: 'select',
 			required: true,
@@ -168,21 +172,26 @@ const EditLeaseForm: FC = () => {
 	];
 	const onSubmit = async (values: any) => {
 		if (!lease?.id) return;
-
+		console.log(values, 'val');
 		try {
 			const payload = {
 				leaseId: String(lease.id),
 				body: {
 					name: values.name,
-					propertyId: values.propertyId,
-					unitId: values.unitId,
-					tenantId: values.tenantId,
+					// propertyId: values.propertyId,
+					unitId: values.id,
+					// tenantId: values.tenantId,
 					rentAmount: values.rentAmount,
-					depositAmount: values.depositAmount,
+					// depositAmount: values.depositAmount,
 					startDate: values.startDate,
 					endDate: values.endDate,
-					frequency: values.frequency,
+					// frequency: values.frequency,
 					rentDueDay: values.rentDueDay,
+					propertyName: lease.propertyName,
+					securityDeposit: values.depositAmount,
+					firstPaymentDate: values.startDate,
+					lateFeeAmount: '',
+					customPaymentFrequency: values.paymentFrequency,
 				},
 			};
 
@@ -225,9 +234,15 @@ const EditLeaseForm: FC = () => {
 
 	return (
 		<>
-			<Box mb={5}>
-				<Breadcrumb />
-			</Box>
+			<Stack direction='row' alignItems='center' mb='15px'>
+				<Button
+					variant='text'
+					startIcon={<ArrowLeftIcon />}
+					onClick={() => navigate('/leases')}
+				>
+					Edit Lease{' '}
+				</Button>
+			</Stack>
 			<FormLayout Header='Edit Lease'>
 				{isLeaseLoading ? (
 					<FormSkeleton rows={fields.length} columns={[1]} />
