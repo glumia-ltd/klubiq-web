@@ -196,18 +196,21 @@ const CardPayment: React.FC = () => {
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
-					<Typography variant='body1' color='text.secondary'>
+					<Typography color={theme?.palette?.textColors?.azureKlubiqTextLight}>
 						Back to Payment Methods
 					</Typography>
 				</Stack>
 				{/* Title and Subtitle */}
-				<Typography variant='h4' fontWeight={700} sx={{ mb: 1 }}>
+				<Typography
+					variant='h4'
+					sx={{ mb: 1 }}
+					color={theme?.palette?.textColors?.azureKlubiqText}
+				>
 					Card Payment
 				</Typography>
 				<Typography
-					variant='body1'
-					color='text.secondary'
-					sx={{ mb: 3, fontWeight: 500 }}
+					color={theme?.palette?.textColors?.azureKlubiqPickedBluewood}
+					sx={{ mb: 3 }}
 				>
 					Choose your card or add a new one
 				</Typography>
@@ -222,7 +225,12 @@ const CardPayment: React.FC = () => {
 				>
 					{/* Payment Summary */}
 					<Box sx={{ mb: 3 }}>
-						<Typography variant='h6' fontWeight={600} sx={{ mb: 3 }}>
+						<Typography
+							variant='h6'
+							fontWeight={600}
+							sx={{ mb: 3 }}
+							color={theme?.palette?.textColors?.azureKlubiqText}
+						>
 							Payment Summary
 						</Typography>
 						{loading ? (
@@ -240,10 +248,18 @@ const CardPayment: React.FC = () => {
 									mb: 2,
 								}}
 							>
-								<Typography variant='body1' fontWeight={600}>
+								<Typography
+									variant='body1'
+									fontWeight={600}
+									color={theme?.palette?.textColors?.azureKlubiqPickedBluewood}
+								>
 									{paymentSummary.title}
 								</Typography>
-								<Typography variant='h4' fontWeight={700} color='primary.main'>
+								<Typography
+									variant='h4'
+									fontWeight={700}
+									color={theme?.palette?.textColors?.azureKlubiqText}
+								>
 									${paymentSummary.amount.toLocaleString()}
 								</Typography>
 							</Box>
