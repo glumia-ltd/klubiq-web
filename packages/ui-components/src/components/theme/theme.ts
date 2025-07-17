@@ -36,9 +36,9 @@ export const LightTheme: Theme = createTheme({
 		},
 		secondary: {
 			main: secondaryColors.yellow,
-			light: secondaryColors.blue,
+			light: secondaryColors.lightBlue,
 			dark: backgroundColors.dark,
-			contrastText: primaryColors.black,
+			contrastText: secondaryColors.blue,
 		},
 		background: {
 			default: backgroundColors.light,

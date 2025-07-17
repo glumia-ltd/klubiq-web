@@ -7,10 +7,17 @@ import {
 } from '@mui/material';
 
 import { NavLink } from './BottomNavTypes';
-import { Person } from '@mui/icons-material';
 
 
 export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: string) => void }> = ({ navLinks, onNavClick }) => {
+	// const profileNavLink = {
+	// 	label: 'Profile',
+	// 	icon: <Person />,
+	// 	route: '/profile',
+	// 	index: navLinks.length + 1,
+	// 	disabled: false,
+	// };
+	// const mobileNavLinks= [...navLinks, profileNavLink];
 	const [selectedIndex, setSelectedIndex] = useState(() => {
 		// Get the initial selected index from localStorage or default to 0
 		const savedIndex = localStorage.getItem('selectedNavIndex');
@@ -33,6 +40,11 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 						console.log(`${event} newValue`, newValue);``
 						handleNavClick(newValue, navLinks[newValue].route);
 					}}
+					sx={{
+						pt: 1,
+						pb: 1,
+						px: 2,
+					}}
 				>
 					{navLinks.map((link, index) =>
 						link.disabled ? null : (
@@ -43,13 +55,7 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 							/>
 						),
 					)}
-					<BottomNavigationAction
-						label={'Profile'}
-						icon={<Person />}
-						onClick={() => {
-							handleNavClick(navLinks.length, '/profile');
-						}}
-					/>
+					
 				</BottomNavigation>
 			</Paper>
 		</Box>

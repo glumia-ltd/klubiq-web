@@ -610,7 +610,7 @@ export const CreateProperty = () => {
 							formatType: 'decimal',
 							decimals: 2,
 							adornment: {
-								prefix: getCurrencySymbol(user?.orgSettings),
+								prefix: getCurrencySymbol(user.orgSettings?.settings),
 							} as InputAdornmentType,
 							showIf: (values) => {
 								const selectedPurpose = purposes?.find(
@@ -627,7 +627,7 @@ export const CreateProperty = () => {
 							formatType: 'decimal',
 							decimals: 2,
 							adornment: {
-								prefix: getCurrencySymbol(user?.orgSettings),
+								prefix: getCurrencySymbol(user.orgSettings?.settings),
 							} as InputAdornmentType,
 							width: '100%',
 							showIf: (values) => {

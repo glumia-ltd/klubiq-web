@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Card, Box, Stack, Typography, Chip, useTheme, SxProps, Theme } from '@mui/material';
+import { Card, Box, Stack, Typography, Chip, useTheme, SxProps, Theme, Skeleton } from '@mui/material';
 
 export type DBInfoCardVariant = 'default' | 'gradient' | 'primary' | 'secondary' | 'custom';
 
@@ -9,10 +9,13 @@ export interface DBInfoCardProps {
   label: string;
   badgeText?: string;
   badgeColor?: string;
+  badgeBackground?: string;
   variant?: DBInfoCardVariant;
   backgroundColor?: string;
   children?: ReactNode;
   sx?: SxProps<Theme>;
+  /** Show skeletons when loading */
+  loading?: boolean;
 }
 
 const getCardStyles = (variant: DBInfoCardVariant, theme: Theme, backgroundColor?: string): SxProps<Theme> | any => {
@@ -51,10 +54,12 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
   label,
   badgeText,
   badgeColor,
+  badgeBackground,
   variant = 'default',
   backgroundColor,
   children,
   sx = {},
+  loading = false,
 }) => {
   const theme = useTheme();
   // Merge all styles into a single object
@@ -68,6 +73,23 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
     ...getCardStyles(variant, theme, backgroundColor),
     ...(typeof sx === 'object' ? sx : {}),
   };
+  if (loading) {
+    return (
+      <Card elevation={0} sx={cardStyles}>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
+          <Skeleton variant="circular" width={44} height={44} />
+          <Skeleton variant="rectangular" width={60} height={28} />
+        </Stack>
+        <Box mt={2} mb={0.5}>
+          <Skeleton variant="text" width="50%" height={48} />
+        </Box>
+        <Skeleton variant="text" width="40%" height={28} />
+        <Box mt={2}>
+          <Skeleton variant="rectangular" width="100%" height={24} />
+        </Box>
+      </Card>
+    );
+  }
   return (
     <Card elevation={0} sx={cardStyles}>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
@@ -93,9 +115,9 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
             label={badgeText}
             size="small"
             sx={{
-              background: badgeColor || theme.palette.success.light || '#E6F4EA',
-              color: badgeColor ? theme.palette.getContrastText(badgeColor) : theme.palette.success.main,
-              fontWeight: 500,
+              background: badgeBackground || '#E6F4EA',
+              color: badgeColor ? badgeColor :theme.palette.getContrastText(badgeBackground || '#E6F4EA'),
+              fontWeight: 600,
               borderRadius: 2,
               px: 1.5,
               height: 28,
@@ -106,13 +128,8 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
       </Stack>
       <Box mt={icon ? 2 : 0} mb={0.5}>
         <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            fontSize: '2.25rem',
-            lineHeight: 1.1,
-            color: 'inherit',
-          }}
+          variant="h4"
+          color='inherit'
         >
           {amount}
         </Typography>

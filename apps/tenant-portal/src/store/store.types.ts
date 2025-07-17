@@ -11,5 +11,6 @@ export type RootState = {
 
 export const API_TAGS = {
     USER: 'User',
+	INSIGHTS: 'Insights',
   } as const;
 export const ALL_TAGS = Object.values(API_TAGS);

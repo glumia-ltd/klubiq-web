@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme, Theme, SxProps } from '@mui/material';
+import { Box, Stack, Typography, useTheme, Theme, SxProps, Skeleton } from '@mui/material';
 import React, { ReactNode } from 'react';
 
 export type PageHeaderVariant = 'default' | 'compact' | 'detailed' | 'custom';
@@ -20,6 +20,9 @@ export interface PageHeaderProps {
   backgroundColor?: string;
   /** Optional style overrides */
   sx?: SxProps<Theme>;
+  /** Show skeletons when loading */
+  loading?: boolean;
+  
 }
 
 const getVariantStyles = (variant: PageHeaderVariant, theme: Theme) => {
@@ -72,8 +75,45 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   icon,
   backgroundColor,
   sx = {},
+  loading = false,
 }) => {
   const theme = useTheme();
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          ...getVariantStyles(variant, theme),
+          backgroundColor: backgroundColor || theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          width: '100%',
+          minWidth: 0,
+          ...sx,
+        }}
+      >
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent={{ xs: 'center', sm: 'space-between' }}
+          alignItems= {{ xs: 'stretch', sm: 'center' }}
+          spacing={2}
+          width="100%"
+          minWidth={0}
+        >
+          <Stack direction="row" spacing={2} alignItems="center" flex={1} width="100%" minWidth={0}>
+            <Skeleton variant="circular" width={40} height={40} />
+            <Stack spacing={0.5} flex={1}>
+              <Skeleton variant="text" width="60%" height={36} />
+              <Skeleton variant="text" width="40%" height={24} />
+            </Stack>
+          </Stack>
+          <Stack direction="row" spacing={2} alignItems="center" width={{ xs: '100%', sm: 'auto' }} justifyContent={{ xs: 'flex-end', sm: 'flex-end' }} mt={{ xs: 2, sm: 0 }}>
+            <Skeleton variant="rectangular" width={80} height={36} />
+            <Skeleton variant="rectangular" width={36} height={36} />
+          </Stack>
+        </Stack>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -81,16 +121,30 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         ...getVariantStyles(variant, theme),
         backgroundColor: backgroundColor || theme.palette.background.paper,
         color: theme.palette.text.primary,
+        width: '100%',
+        minWidth: 0,
         ...sx,
       }}
     >
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
-        justifyContent="space-between"
-        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        justifyContent={{ xs: 'center', sm: 'space-between' }}
+        alignItems= {{ xs: 'stretch', sm: 'center' }}
         spacing={2}
+        width="100%"
+        minWidth={0}
       >
-        <Stack direction="row" spacing={2} alignItems="center" flex={1}>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          width="100%"
+          minWidth={0}
+          sx={{
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            textAlign: { xs: 'left', sm: 'inherit' },
+          }}
+        >
           {icon && (
             <Box
               sx={{
@@ -146,10 +200,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             direction="row"
             spacing={2}
             alignItems="center"
-            sx={{
-              width: { xs: '100%', sm: 'auto' },
-              justifyContent: { xs: 'flex-start', sm: 'flex-end' },
-            }}
+            width={{ xs: '100%', sm: 'auto' }}
+            justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
+            mt={{ xs: 2, sm: 0 }}
           >
             {rightContent}
             {actions && (
