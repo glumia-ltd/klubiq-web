@@ -8,7 +8,6 @@ import {
 	Popper,
 	Paper,
 	Box,
-	Typography,
 } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
