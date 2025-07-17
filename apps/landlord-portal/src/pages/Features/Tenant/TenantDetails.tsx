@@ -15,7 +15,6 @@ import {
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import {
 	InfoCard,
-	// DynamicAvatar,
 	PageDetail,
 } from '@klubiq/ui-components';
 // import { styles } from './styles';
@@ -281,7 +280,10 @@ const TenantDetails = () => {
 					</Typography>
 					<Stack spacing={2}>
 						{properties.map((property, index) => (
-							<Card elevation={0} sx={{ borderRadius: 2, backgroundColor: 'background.default' }}>
+							<Card
+								elevation={0}
+								sx={{ borderRadius: 2, backgroundColor: 'background.default' }}
+							>
 								<CardContent>
 									<Stack
 										direction='column'
@@ -606,11 +608,14 @@ const TenantDetails = () => {
 					loading={isLoading}
 					variant='tenant-detail'
 					headerData={{
-						avatar: {
-							image: tenantDetails.image,
-							id: '',
-							variant: 'square',
-						},
+						avatar: [
+							{
+								image: tenantDetails.image,
+								id: '',
+								variant: 'square',
+								name: tenantDetails.name, // optional but helpful
+							},
+						],
 						companyName: tenantDetails.companyName,
 						name: tenantDetails.name,
 						email: tenantDetails.email,

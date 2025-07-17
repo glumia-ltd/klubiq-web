@@ -49,8 +49,12 @@ export const leaseEndpoints = {
 	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
 	addLease: () => '/leases',
 	getUnitLeases: (unitId: number | string) => `/leases/unit/${unitId}`,
-	addNewTenantToLease: (leaseId: number | string) => `/leases/${leaseId}/invite-tenant`,
+	addNewTenantToLease: (leaseId: number | string) =>
+		`/leases/${leaseId}/invite-tenant`,
 	addTenants: (leaseId: number | string) => `/leases/${leaseId}/add-tenants`,
+	editLease: (leaseid: string) => `/leases/${leaseid}`,
+	deleteLease: (leaseid: string) => `/leases/${leaseid}`,
+	archiveLease: (leaseid: string) => `/leases/${leaseid}/archive`,
 };
 export const tenantEndpoints = {
 	getTenantMetaData: () => '/public/tenant-metadata',
