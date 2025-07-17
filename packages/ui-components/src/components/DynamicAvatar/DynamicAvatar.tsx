@@ -43,10 +43,11 @@ const SingleAvatar: React.FC<{
 								? 'primary.main'
 								: 'secondary.light',
 						borderRadius: item.variant === 'square' ? '4px' : '50%',
+						border: item.background === 'dark' ? '1px solid #fff' : 'none',
 						color:
 							item.background === 'dark'
 								? 'secondary.contrastText'
-								: 'primary.contrastText',
+								: 'primary.main',
 					}}
 				>
 					{!item.image && getInitials(displayText)}
@@ -114,10 +115,11 @@ export const DynamicAvatar: React.FC<DynamicAvatarProps> = ({
 										? 'primary.main'
 										: 'secondary.light',
 								borderRadius: item.variant === 'square' ? '4px' : '50%',
+								border: item.background === 'dark' ? '1px solid #fff' : 'none',
 								color:
 									item.background === 'dark'
 										? 'secondary.contrastText'
-										: 'primary.contrastText',
+										: 'primary.main',
 							}}
 						>
 							{!item.image && getInitials(displayText)}

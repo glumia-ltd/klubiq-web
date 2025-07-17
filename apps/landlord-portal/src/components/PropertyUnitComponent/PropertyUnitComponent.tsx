@@ -11,6 +11,7 @@ import {
 	Popper,
 	Stack,
 	Link,
+	Box,
 } from '@mui/material';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -35,6 +36,7 @@ import {
 	DynamicTable,
 	TableColumn,
 	DynamicAvatar,
+	DynamicBreadcrumb,
 } from '@klubiq/ui-components';
 import { PROPERTY_CONSTANTS } from '../../helpers/constants';
 import {
@@ -44,19 +46,12 @@ import {
 } from '../../page-tytpes/properties/detail-page.types';
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 import { LeaseType, PropertyDataType } from '../../shared/type';
-import propertyImage from '../../assets/images/propertyImage.png';
 import { Breadcrumb } from '../Breadcrumb/index';
 import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
 import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
 import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-
-const stackedImages = [
-	propertyImage,
-	propertyImage,
-	propertyImage,
-	propertyImage,
-];
+import { ViewList } from '@mui/icons-material';
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
@@ -76,6 +71,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
 	const [tabValue, setTabValue] = useState<number>(0);
+	const [routeMap, setRouteMap] = useState({});
 	const [open, setOpen] = useState<boolean>(false);
 	const [leaseTableBodyRows, setLeaseTableBodyRows] = useState<any>([]);
 	const [openArchivePropertyDialog, setOpenArchivePropertyDialog] =
@@ -411,7 +407,14 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			propertyName: currentProperty?.name || '',
 			propertyAddress,
 			buildingType: currentProperty?.type?.name,
-			additionalImages: stackedImages,
+			additionalImages: Array.isArray(currentProperty?.images)
+				? currentProperty.images.reduce<string[]>((acc, { url, isMain }) => {
+						if (!isMain) {
+							acc.push(url);
+						}
+						return acc;
+					}, [])
+				: [],
 		};
 
 		if (multiUnitMode) {
@@ -462,9 +465,17 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				)}
 
 				{tabValue === 0 && (
-					<>
-						<Overview initialText={currentProperty?.description} />
-						<Grid sx={styles.addfieldStyle}>
+					<Stack
+						spacing={2}
+						mt={2}
+						direction={'column'}
+						width={'100%'}
+						justifyContent={'center'}
+					>
+						<Stack spacing={2} direction={'row'}>
+							<Overview initialText={currentProperty?.description} />
+						</Stack>
+						<Stack spacing={2} direction={'column'}>
 							{currentProperty?.units?.[0]?.tenants?.length ? (
 								<DynamicTable
 									colors={tableSx}
@@ -507,11 +518,17 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 									handleAdd={handleAddLease}
 								/>
 							)}
-						</Grid>
-					</>
+						</Stack>
+					</Stack>
 				)}
 				{tabValue === 1 && (
-					<Grid sx={styles.addfieldStyle}>
+					<Stack
+						spacing={2}
+						mt={2}
+						direction={'column'}
+						width={'100%'}
+						justifyContent={'center'}
+					>
 						{leaseTableBodyRows?.length > 0 ? (
 							<DynamicTable
 								colors={tableSx}
@@ -529,11 +546,31 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 								handleAdd={handleAddLease}
 							/>
 						)}
-					</Grid>
+					</Stack>
 				)}
 			</Grid>
 		);
 	};
+	useEffect(() => {
+		setRouteMap({
+			'/properties': {
+				path: '/properties',
+				slug: '',
+				icon: <ViewList />,
+			},
+			'/properties/:id': {
+				path: '/properties/:id',
+				slug: currentProperty?.name || 'property-details',
+				dynamic: true,
+			},
+			'/properties/:id/unit/:id': {
+				path: '/properties/:id/unit/:id',
+				slug: multiUnitNumber || 'unit-details',
+				dynamic: true,
+			},
+		});
+		
+	}, [multiUnitNumber]);
 
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
@@ -571,17 +608,42 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			};
 		}
 		updateBreadcrumb(newBreadcrumbs);
-
+		setRouteMap({
+			'/properties': {
+				path: '/properties',
+				slug: '',
+				icon: <ViewList />,
+			},
+			'/properties/:id': {
+				path: '/properties/:id',
+				slug: currentProperty?.name || 'property-details',
+				dynamic: true,
+			},
+			// '/properties/:id/unit/:id': {
+			// 	path: '/properties/:id/unit/:id',
+			// 	slug: multiUnitNumber || 'unit-details',
+			// 	dynamic: true,
+			// },
+		});
 		// Clear breadcrumbs on unmount
 		return () => {
 			multiUnitMode = false;
 			updateBreadcrumb({});
 		};
-	}, [currentProperty?.name, currentUUId, multiUnitMode, multiUnitNumber]);
+	}, [currentProperty?.name, currentUUId, multiUnitMode]);
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12}>
-				<Breadcrumb />
+				<Box>
+					<Breadcrumb />
+				</Box>
+				<Box>
+					<DynamicBreadcrumb
+						currentPath={`/properties/${currentUUId}`}
+						routeMap={routeMap}
+						onNavigate={(path) => navigate(path)}
+					/>
+				</Box>
 			</Grid>
 
 			{!multiUnitMode && (

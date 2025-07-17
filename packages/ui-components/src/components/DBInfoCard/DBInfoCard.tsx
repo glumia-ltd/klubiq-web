@@ -117,7 +117,7 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
             sx={{
               background: badgeBackground || '#E6F4EA',
               color: badgeColor ? badgeColor :theme.palette.getContrastText(badgeBackground || '#E6F4EA'),
-              fontWeight: 500,
+              fontWeight: 600,
               borderRadius: 2,
               px: 1.5,
               height: 28,
@@ -128,13 +128,8 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
       </Stack>
       <Box mt={icon ? 2 : 0} mb={0.5}>
         <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            fontSize: '2.25rem',
-            lineHeight: 1.1,
-            color: 'inherit',
-          }}
+          variant="h4"
+          color='inherit'
         >
           {amount}
         </Typography>

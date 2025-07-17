@@ -5,18 +5,24 @@ import {
 	PageHeader,
 	DBInfoCard,
 	DBInfoCardProps,
-	// ActivityCard,
-	// ActivityItem
+	ActivityItem,
+	ActivityCard,
+	AmenityItem,
+	amenityIconMap,
+	AmenityCard,
 } from '@klubiq/ui-components';
 import {
 	CalendarMonth,
 	CheckCircle,
 	MonetizationOn,
+	Notifications,
 	// AttachMoney,
 	// WarningAmber
 } from '@mui/icons-material';
 import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
-import { formatDate, getLocaleFormat } from '@/helpers/utils';
+import { formatDate, formatNumberShort } from '@/helpers/utils';
+import { useGetNotificationsQuery } from '@/store/GlobalStore/notificationsApi.slice';
+import { skipToken } from '@reduxjs/toolkit/query';
 // import { useNavigate } from 'react-router-dom';
 
 const TenantDashboard = () => {
@@ -24,11 +30,14 @@ const TenantDashboard = () => {
 	const { user } = useSelector((state: RootState) => state.auth);
 	const { data: leaseInsights, isLoading: isLeaseInsightsLoading } =
 		useGetLeaseInsightsQuery();
-
+	const { data: notifications, isLoading: isNotificationsLoading } = useGetNotificationsQuery(
+		user.uuid ? { userId: user.uuid, isRead: false } : skipToken
+	);
+	console.log(notifications);
 	const tenantRentMetrics: DBInfoCardProps[] = [
 		{
 			icon: <MonetizationOn />,
-			amount: `${getLocaleFormat(leaseInsights?.rentAmount || 0, 'currency', 2)}`,
+			amount: `₦${formatNumberShort(leaseInsights?.rentAmount || 0)}`,
 			label: `${leaseInsights?.paymentFrequency} Rent`,
 			badgeText: `Due on ${formatDate(leaseInsights?.nextDueDate || '', 'MMM D, YYYY')}`,
 			badgeColor: leaseInsights?.isOverdue
@@ -60,6 +69,23 @@ const TenantDashboard = () => {
 		},
 	];
 
+	const amenityCardItems: AmenityItem[] = leaseInsights?.amenities?.map((amenity, idx) => ({
+		id: idx,
+		title: amenity,
+		icon: amenityIconMap[amenity],
+		available: true,
+	})) || [];
+
+	const notificationCardItems: ActivityItem[] =
+		notifications?.map((notification, idx) => ({
+			id: idx,
+			title: notification.title,
+			content: <></>,
+			subtitle: notification.message,
+			icon: <Notifications />,
+			timestamp: notification.createdAt,
+			PaletteColor: 'primary',
+		})) || [];
 	// const RecentActivityCardItems: ActivityItem[] = [
 	// 	{
 	// 		id: 1,
@@ -176,6 +202,7 @@ const TenantDashboard = () => {
 						wordBreak: 'break-word',
 						fontWeight: 'normal',
 					}}
+					textAlign={{ xs: 'left', sm: 'right' }}
 				>
 					{leaseInsights?.propertyAddress}
 				</Typography>
@@ -211,6 +238,7 @@ const TenantDashboard = () => {
 					color: 'white',
 					background: 'linear-gradient(45deg, #615FFF, #9810FA)',
 				}}
+				loading={isLeaseInsightsLoading}
 			/>
 			<Stack
 				direction={{ sm: 'row', md: 'row', xs: 'column' }}
@@ -237,6 +265,32 @@ const TenantDashboard = () => {
 					/>
 				))}
 			</Stack>
+			<Stack
+				direction={{ xs: 'column', sm: 'row' }}
+				justifyContent={{ xs: 'start', sm: 'space-between' }}
+				alignItems={{ xs: 'start', sm: 'center' }}
+				spacing={2}
+				width='100%'
+			>
+				<ActivityCard
+					items={[]}
+					loading={isNotificationsLoading}
+					title='Recent Activity'
+					variant='alerts'
+					viewAllLink='/activities'
+				/>
+				<ActivityCard
+					items={notificationCardItems || []}
+					loading={isNotificationsLoading}
+					title='Property Updates'
+					variant='cards'
+					viewAllLink='/notifications'
+				/>
+			</Stack>
+
+			{amenityCardItems.length > 0 && (
+				<AmenityCard items={amenityCardItems} />
+			)}
 		</Box>
 	);
 };

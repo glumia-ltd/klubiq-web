@@ -22,6 +22,7 @@ export interface PageHeaderProps {
   sx?: SxProps<Theme>;
   /** Show skeletons when loading */
   loading?: boolean;
+  
 }
 
 const getVariantStyles = (variant: PageHeaderVariant, theme: Theme) => {
@@ -200,11 +201,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             spacing={2}
             alignItems="center"
             width={{ xs: '100%', sm: 'auto' }}
-            justifyContent={{ xs: 'center', sm: 'flex-end' }}
+            justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
             mt={{ xs: 2, sm: 0 }}
-            sx={{
-              textAlign: { xs: 'center', sm: 'inherit' },
-            }}
           >
             {rightContent}
             {actions && (

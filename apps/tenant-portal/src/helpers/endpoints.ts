@@ -17,3 +17,6 @@ export const tenantEndpoints = {
 	documents: () => '/tenants/documents',
 	profile: () => '/tenants/profile',
 };
+export const publicEndpoints = {
+	notifications: (userId: string, isRead: boolean) => `/notifications?userId=${userId}&isRead=${isRead}`,
+};

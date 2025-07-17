@@ -28,7 +28,6 @@ export const getLocaleFormat = (
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
 	decimals: number = 2,
 	userLocationPreference: Record<string, unknown> = {},
-
 ) => {
 	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(
 		userLocationPreference,
@@ -108,3 +107,23 @@ export const getLocaleFormat1 = (
 // 	const match = callerLine.match(/:(\d+):\d+\)?$/);
 // 	return match?.[1] ? parseInt(match[1], 10) : null;
 //   }
+// utils/formatNumberShort.ts
+export const formatNumberShort = (num: number): string => {
+	if (num < 1_000) {
+		return num.toString();
+	}
+
+	const units = [
+		{ value: 1_000_000_000, symbol: 'B' },
+		{ value: 1_000_000, symbol: 'M' },
+		{ value: 1_000, symbol: 'k' },
+	];
+
+	for (const { value, symbol } of units) {
+		if (num >= value) {
+			const formatted = (num / value).toFixed(num % value === 0 ? 0 : 1);
+			return `${formatted}${symbol}`;
+		}
+	}
+	return num.toString();
+};

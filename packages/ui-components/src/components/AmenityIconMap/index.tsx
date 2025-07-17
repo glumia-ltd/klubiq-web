@@ -42,13 +42,11 @@ import {
   Recycling,
   HelpOutline,
 } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
 
 // Normalize amenity names for mapping
 const normalizeAmenity = (name: string) =>
   name.toLowerCase().replace(/[^a-z0-9]/gi, '');
 
-const theme = useTheme();
 
 export const amenityIconMap: Record<string, React.ReactNode> = {
   swimmingpool: <Pool color='info'/>,

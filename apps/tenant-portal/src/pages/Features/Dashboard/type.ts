@@ -15,4 +15,15 @@ export type LeaseInsights = {
 	missedPaymentsAmount: number;
 	rentDueInDays: number;
 	totalLateFees: number;
+	amenities: string[];
+};
+
+export type NotificationType = {
+	type: string;
+	title: string;
+	message: string;
+	data?: Record<string, any>;
+	actionLink: string;
+	actionText: string;
+	createdAt: string;
 };
