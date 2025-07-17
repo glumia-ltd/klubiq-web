@@ -1,11 +1,10 @@
-import { Grid, Breadcrumbs, Button, Chip, Skeleton } from '@mui/material';
+import { Grid, Breadcrumbs, Chip, Skeleton, Box } from '@mui/material';
 // import { Container } from '@mui/system';
 import { styles } from '../PropertyUnitComponent/style';
 // import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../Overview/Overview';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useState } from 'react';
 import UnitCardSkeleton from '../UnitCard/UnitCardSkeleton';
 import InfoCardSkeleton from '../UnitInfoComponent/InfoCardSkeleton';
@@ -15,10 +14,8 @@ import {
 	HouseIcon,
 	TenantIcon,
 	VacantHomeIcon,
-	HomeIcon,
 } from '../Icons/CustomIcons';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
-import { useNavigate } from 'react-router-dom';
 import { PropertyDataType } from '../../shared/type';
 import SharedStyles from '../../styles/shared-style';
 
@@ -36,14 +33,9 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 	tenantTableBodyRows,
 	leaseTableBodyRows,
 }) => {
-	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
 
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
-
-	const handleHomeClick = () => {
-		navigate(-1);
-	};
 
 	const unitInfoData = [
 		{
@@ -84,26 +76,29 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 						aria-label='breadcrumb'
 						sx={SharedStyles.breadCrumbStyle}
 					>
-						<HomeIcon sx={SharedStyles.iconStyle} onClick={handleHomeClick} />
+						<Skeleton variant='rectangular' width='30px' height='10px' />
 
 						<Skeleton variant='rectangular' width='90px' height='10px' />
 					</Breadcrumbs>
 				</Grid>
 				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='klubiqMainButton'>
-						<Skeleton variant='rectangular' width='30px' height='10px' />
-						<MoreVertIcon />
-					</Button>
+					<Skeleton variant='rectangular' width='100px' height='40px' />
 				</Grid>
 				{currentProperty?.purpose ? (
-						<Chip
+					<Chip
 						label={currentProperty?.purpose?.displayText || 'For sale'}
 						variant={
 							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
 								? 'rent'
 								: 'sale'
 						}
-					/>) : (<Skeleton width='50px' height='20px' />) }
+					/>
+				) : (
+					<Box mb={1}>
+						<Skeleton  width='50px' height='30px' />
+					</Box>
+					
+				)}
 
 				<Grid sx={styles.firstCardContainer}>
 					<UnitCardSkeleton
@@ -173,7 +168,6 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 				)}
 
 				{/* MAINTENANCE TAB */}
-
 
 				{/* DOCUMENT TAB */}
 

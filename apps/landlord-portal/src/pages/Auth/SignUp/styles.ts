@@ -10,18 +10,18 @@ export const styles = {
 		},
 	},
 	title: {
-		textAlign: 'center',
+		textAlign: 'left',
 		fontSize: {
-			xs: '1.5rem',
-			sm: '2rem',
-			md: '3rem',
-			lg: '3rem',
+			xs: '1.25rem',
+			sm: '1.25rem',
+			md: '1.5rem',
+			lg: '1.75rem',
 		},
 		marginBottom: {
-			xs: '1.5rem',
-			sm: '2rem',
-			md: '3rem',
-			lg: '3rem',
+			xs: '1.25rem',
+			sm: '1.25rem',
+			md: '1.5rem',
+			lg: '1.75rem',
 		},
 	},
 	inputStyle: {
@@ -40,7 +40,7 @@ export const styles = {
 	},
 	formContainer: {
 		width: {
-			xs: '20rem',
+			xs: '100%',
 			sm: '25rem',
 			md: '27rem',
 			lg: '30rem',

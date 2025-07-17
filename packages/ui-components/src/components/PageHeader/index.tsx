@@ -12,6 +12,7 @@ export interface PageHeaderProps {
   icon?: ReactNode;
   backgroundColor?: string;
   sx?: SxProps<Theme>;
+  loading?: boolean;
 }
 
 const getVariantStyles = (variant: PageHeaderVariant, theme: Theme) => {

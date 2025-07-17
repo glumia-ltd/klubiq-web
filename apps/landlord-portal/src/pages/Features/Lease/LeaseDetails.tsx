@@ -91,7 +91,8 @@ const useMenuStatus = (status?: string, isArchived?: boolean) => ({
 		status !== 'Terminated' && status !== 'Expired' && status !== 'Archived',
 	canArchive: !isArchived,
 	canEdit: true,
-	canTerminate: status !== 'Terminated',
+	canTerminate: status !== 'Terminated' && status !== 'Expired',
+	canRenew: status !== 'Active' && status !== 'Expiring',
 });
 
 const LeaseDetails = () => {
@@ -438,7 +439,7 @@ const LeaseDetails = () => {
 									{
 										id: 'lease-expires',
 										label: 'Lease Expires',
-										value: `${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`,
+										value: leaseData?.daysToLeaseExpires && leaseData?.daysToLeaseExpires > 0 ? `${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}` : 'Expired',
 										icon: <HourglassBottom fontSize='small' color='action' />,
 									},
 									{
@@ -468,7 +469,7 @@ const LeaseDetails = () => {
 									{
 										id: 'rent-due-on',
 										label: 'Rent Due On',
-										value: leaseData?.rentDueOn ?? '',
+										value: <div dangerouslySetInnerHTML={{ __html: leaseData?.rentDueOn ?? '' }} />,
 										icon: <PendingActions fontSize='small' color='action' />,
 									},
 									{

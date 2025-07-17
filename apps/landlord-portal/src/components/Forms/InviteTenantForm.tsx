@@ -21,6 +21,7 @@ import FormSkeleton from '../skeletons/FormSkeleton';
 import { CustomDateField } from '../CustomFormComponents/CustomDateField';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { screenMessages } from '../../helpers/screen-messages';
+import { PaymentFrequency } from './AddLeaseForm';
 
 function renderCustomDateField(
 	fieldApi: any,
@@ -37,15 +38,7 @@ function renderCustomDateField(
 		/>
 	);
 }
-enum PaymentFrequency {
-	ANNUALLY = 'Annually',
-	BI_MONTHLY = 'Bi-Monthly',
-	BI_WEEKLY = 'Bi-Weekly',
-	MONTHLY = 'Monthly',
-	ONE_TIME = 'One-Time',
-	QUARTERLY = 'Quarterly',
-	WEEKLY = 'Weekly',
-}
+
 interface InitialValues {
 	tenantType: string;
 	tenantDetails: {
@@ -62,9 +55,12 @@ interface InitialValues {
 		endDate?: string;
 		unitId?: string;
 		rentAmount?: number | string;
+		lateFeeAmount?: number | string;
+		securityDeposit?: number | string;
 		propertyName?: string;
 		unitNumber?: string;
 		paymentFrequency?: PaymentFrequency;
+		customPaymentFrequency?: number;
 		rentDueDay?: number;
 	};
 }				
@@ -167,6 +163,9 @@ const InviteTenantForm = ({
 					endDate: '',
 					unitId: propertyDetails?.unitId,
 					rentAmount: '',
+					lateFeeAmount: '',
+					securityDeposit: '',
+					customPaymentFrequency: 0,
 					propertyName: propertyDetails?.propertyName,
 					unitNumber: propertyDetails?.unitNumber,
 					paymentFrequency: PaymentFrequency.ANNUALLY,
@@ -390,11 +389,35 @@ const InviteTenantForm = ({
 					placeholder: "0.00",
 					decimals: 2,
 					adornment: {
-						prefix: getCurrencySymbol(user?.orgSettings),
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
 					} as InputAdornmentType,
 					validation: {
 						schema: z.string().min(1, { message: 'Rent is required' }),
 					},
+				},
+				{
+					name: 'securityDeposit',
+					type: 'decimal',
+					label: 'Security Deposit',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
+				},
+				{
+					name: 'lateFeeAmount',
+					type: 'decimal',
+					label: 'Late Fee',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
 				},
 				{
 					name: 'paymentFrequency',
@@ -402,13 +425,27 @@ const InviteTenantForm = ({
 					type: 'select',
 					required: true,
 					options: Object.values(PaymentFrequency).map((freq) => ({
-						label: freq,
+						label: freq === PaymentFrequency.CUSTOM ? 'Custom (shortlets/daily rentals)' : freq,
 						value: freq,
 					})),
 					width: isMobile ? '100%' : '48%',
 					validation: {
 						schema: z.string({ required_error: 'Payment frequency is required' }),
 					},
+				},
+				{
+					name: 'customPaymentFrequency',
+					label: 'Select a custom payment interval',
+					type: 'select',
+					options: Array.from({ length: 6 }, (_, i) => ({
+						label: i === 0 ? 'select interval' : `${i}`,
+						value: `${i}`,
+					})),
+					width: isMobile ? '100%' : '48%',
+					required: (values) =>
+						values.leaseDetails.paymentFrequency === PaymentFrequency.CUSTOM,
+					showIf: (values) =>
+						values.leaseDetails.paymentFrequency === PaymentFrequency.CUSTOM,
 				},
 				{
 					name: 'rentDueDay',
@@ -420,8 +457,8 @@ const InviteTenantForm = ({
 					})),
 					width: isMobile ? '100%' : '48%',
 					showIf: (values) =>
-						values.leaseDetails.paymentFrequency === 'Monthly' ||
-						values.leaseDetails.paymentFrequency === 'Bi-Monthly',
+						values.leaseDetails.paymentFrequency === PaymentFrequency.MONTHLY ||
+						values.leaseDetails.paymentFrequency === PaymentFrequency.BI_MONTHLY,
 				},
 			],
 		},
@@ -433,7 +470,7 @@ const InviteTenantForm = ({
 	const inviteTenantFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		submitButtonText: 'Invite Tenant',
-		subHeader: 'We\'ll invite the tenant to setup their tenant account so they can pay their rent.',
+		subHeader: 'Fill in the details below to invite a new tenant to your property.',
 		enableReset: true,
 		resetButtonText: 'Cancel',
 		fields: tenantFormFields,

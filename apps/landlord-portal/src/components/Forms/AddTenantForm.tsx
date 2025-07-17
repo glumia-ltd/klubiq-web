@@ -263,6 +263,7 @@ const AddTenantForm = ({
 	const addTenantFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		submitButtonText: 'Add Tenant',
+		subHeader: 'Fill in the details below to add a new tenant to your organization.',
 		enableReset: true,
 		resetButtonText: 'Cancel',
 		fields: tenantFormFields,
