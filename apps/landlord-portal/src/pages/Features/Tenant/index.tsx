@@ -105,10 +105,7 @@ const Tenant = () => {
 	const handleRowClick = (id: string) => {
 		navigate(`/tenants/${id}`);
 	};
-	console.log('tenants from API:', tenantData?.pageData);
-	console.log('🚨 page:', defaultParams.page, 'take:', defaultParams.take);
-	console.log('✅ rows from backend:', allTenants.length);
-	console.log('📦 tenantData.meta:', tenantData?.meta);
+	
 	return (
 		<>
 			<Stack gap={2}>
