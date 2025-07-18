@@ -15,6 +15,8 @@ import {
 } from 'redux-persist';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { authApiSlice } from './AuthStore/authApi.slice';
+import { insightsApiSlice } from './GlobalStore/insightsApi.slice';
+import { notificationsApiSlice } from './GlobalStore/notificationsApi.slice';
 
 export type RootState = ReturnType<typeof store.getState>;
 
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
 	snack: snackbarReducer,
 	loader: loaderReducer,
 	[authApiSlice.reducerPath]: authApiSlice.reducer,
+	[insightsApiSlice.reducerPath]: insightsApiSlice.reducer,
+	[notificationsApiSlice.reducerPath]: notificationsApiSlice.reducer,
 });
 const persistConfig = {
 	key: 'root',
@@ -34,12 +38,12 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store: Store = configureStore({
 	reducer: persistedReducer,
-	middleware: (getDefaultMiddleware) =>
+	middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware({
 			serializableCheck: {
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
-		}).concat(authApiSlice.middleware),
+		}).concat(authApiSlice.middleware, insightsApiSlice.middleware, notificationsApiSlice.middleware),
 });
 
 const persistor = persistStore(store);

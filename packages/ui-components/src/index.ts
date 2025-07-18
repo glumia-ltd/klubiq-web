@@ -8,7 +8,7 @@ export * from './components/FeedbackContent'
 export * from './components/Filter'
 export * from './components/GroupedAvatar'
 export * from './components/LoaderComponent'
-export * from './components/PageHeader'
+export * from './components/PageHeader/PageHeader'
 export * from './components/PasswordStrengthBar'
 export * from './components/TabsComponent'
 export * from './components/ViewPort'
@@ -56,4 +56,6 @@ export * from './components/AppFooter';
 export * from './components/TanstackForm';
 
 export * from './components/DBInfoCard';
+export * from './components/AmenityIconMap';
 
+export * from './components/DynamicBreadcrumb';

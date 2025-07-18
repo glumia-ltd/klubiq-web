@@ -6,4 +6,17 @@ export const authEndpoints = {
 	acceptInvitation: (token: string) =>
 		`/auth/accept-tenant-invitation?token=${token}`,
 	csrf: () => '/security/csrf-token',
+	validateInvitationToken: (token: string) =>
+		`/auth/is-invite-valid?token=${token}`,
+};
+
+export const tenantEndpoints = {
+	leaseInsights: () => '/tenants/lease-insights',
+	paymentHistory: () => '/tenants/payment-history',
+	maintenanceRequests: () => '/tenants/maintenance-requests',
+	documents: () => '/tenants/documents',
+	profile: () => '/tenants/profile',
+};
+export const publicEndpoints = {
+	notifications: (userId: string, isRead: boolean) => `/notifications?userId=${userId}&isRead=${isRead}`,
 };

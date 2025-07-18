@@ -63,7 +63,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									sx={styles.stacks.propertyDetail.dataStack}
 									spacing={{ xs: 2, sm: 1 }}
 								>
-									<Stack direction={'column'}>
+									<Stack direction={'column'} spacing={2}>
 										<Typography sx={styles.propertyHeaderText} variant='h2'>
 											{propertyName}
 										</Typography>
@@ -72,7 +72,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 											{propertyAddress}
 										</Typography>
 									</Stack>
-									<Stack direction={'row'}>
+									<Stack direction={'row'} spacing={1}>
 										<Typography variant='h6'>Property ID:</Typography>
 										<Typography>{propertyId}</Typography>
 									</Stack>
@@ -135,7 +135,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 								/>
 							</Stack>
 						</CardContent>
-						<CardContent>
+						{additionalImages.length > 0 && <CardContent>
 							<Box sx={styles.stackedImagesContainer}>
 								{additionalImages.map((property, index) => {
 									return (
@@ -149,7 +149,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									);
 								})}
 							</Box>
-						</CardContent>
+						</CardContent>}
 					</Stack>
 				</Stack>
 			</Card>

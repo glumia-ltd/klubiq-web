@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, CardContent, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, CircularProgress, Stack, Typography } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
 	FormFieldV1,
@@ -14,6 +14,7 @@ import { api } from '@/api';
 import { authEndpoints } from '@/helpers/endpoints';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
 import { ArrowBack } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
 
 type IPasswordType = {
 	password: string;
@@ -24,7 +25,23 @@ type IPasswordType = {
 const ResetPassword = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+	const [isInvitationValid, setIsInvitationValid] = useState(false);
+	const [isValidating, setIsValidating] = useState(false);
 	const emailFromUrl = searchParams.get('email');
+
+	useEffect(() => {
+		const token = searchParams.get('token');
+		if (token) {
+			api.get(authEndpoints.validateInvitationToken(token)).then((res) => {
+				console.log(res.data);
+				setIsInvitationValid(res.data);
+				setIsValidating(false);
+			});
+		} else {
+			setIsInvitationValid(true);
+			setIsValidating(false);
+		}
+	}, [searchParams]);
 
 	const onSubmit = async (values: IPasswordType) => {
 		const token = searchParams.get('token');
@@ -158,34 +175,45 @@ const ResetPassword = () => {
 		},
 	};
 
-	return (
-		<Card
-			sx={{
-				minHeight: '600px',
-				width: {
-					xs: '95%',
-					sm: '50%',
-					md: '400px',
-				},
-				display: 'flex',
-				flexDirection: 'column',
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
-		>
-			<CardContent sx={{ height: 'auto', width: '100%' }}>
-				<Stack
-					sx={{
-						height: 'auto',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
-				>
-					<KlubiqFormV1 {...resetPasswordFormConfig} />
-				</Stack>
-			</CardContent>
-		</Card>
-	);
+		return isValidating ? (
+			<Stack sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+				<CircularProgress />
+				<Typography>Verifying invitation</Typography>
+			</Stack>
+		) : isInvitationValid ? (
+			<Card
+				sx={{
+					minHeight: '600px',
+					width: {
+						xs: '95%',
+						sm: '50%',
+						md: '400px',
+					},
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<CardContent sx={{ height: 'auto', width: '100%' }}>
+					<Stack
+						sx={{
+							height: 'auto',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<KlubiqFormV1 {...resetPasswordFormConfig} />
+					</Stack>
+				</CardContent>
+			</Card>
+		) : (
+			<Stack spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+				<Typography variant='h5'>Your invitation has expired</Typography>
+				<Typography variant='body1'>Please contact your landlord to get a new invitation</Typography>
+				<Button variant='klubiqMainButton' onClick={() => navigate('/login')}>Back to Login</Button>
+			</Stack>
+		);
 };
 
 export default ResetPassword;

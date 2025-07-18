@@ -15,6 +15,7 @@ export type User = {
 	firstname?: string;
 	lastname?: string;
 	profilePicUrl?: string | null;
+	role?: string;
 };
 
 export type KlubiqSideNavProps = {

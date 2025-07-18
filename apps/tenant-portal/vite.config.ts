@@ -287,7 +287,7 @@ export default ({ mode }: { mode: any }) => {
 				'@mui/material/Tooltip',
 				'@mui/material/Unstable_Grid2',
 			],
-			exclude: ['@klubiq/ui-components/dist', 'node_modules/.cache'],
+			exclude: ['node_modules/.cache'],
 		},
 		css: {
 			devSourcemap: true,
