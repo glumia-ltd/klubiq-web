@@ -1,4 +1,4 @@
-import { Grid, Breadcrumbs, Chip, Skeleton, Box } from '@mui/material';
+import { Grid, Breadcrumbs, Chip, Skeleton, Box, Stack } from '@mui/material';
 // import { Container } from '@mui/system';
 import { styles } from '../PropertyUnitComponent/style';
 // import { HomeIcon } from '../Icons/HomeIcon';
@@ -118,12 +118,10 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 
 				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
 				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<InfoCardSkeleton data={unitInfoData} />
-						</Grid>
+					<Stack>
+						<InfoCardSkeleton data={unitInfoData} />
 
-						<Overview initialText={currentProperty?.description} />
+						<Overview initialText={currentProperty?.description} propertyUuid={''} />
 
 						{/* Single unit table and add cards */}
 
@@ -142,18 +140,16 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 								{!leaseTableBodyRows?.length && <FieldCardSkeleton />}
 							</Grid>
 						}
-					</Grid>
+					</Stack>
 				)}
 
 				{/* Multi unit */}
 
 				{propertyType === 'Multi' && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<InfoCardSkeleton data={unitInfoData} />
-						</Grid>
+					<Stack>
+						<InfoCardSkeleton data={unitInfoData} />
 
-						<Overview initialText={currentProperty?.description} />
+						<Overview initialText={currentProperty?.description} propertyUuid={''} />
 
 						<Grid sx={styles.addfieldStyle}>
 							{currentProperty?.units && currentProperty?.units?.length > 0 && (
@@ -164,7 +160,7 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 								<FieldCardSkeleton />
 							)}
 						</Grid>
-					</Grid>
+					</Stack>
 				)}
 
 				{/* MAINTENANCE TAB */}
