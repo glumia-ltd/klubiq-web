@@ -18,7 +18,7 @@ import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 // import TenantDetails from '../pages/Features/Tenant/TenantDetails';
 import NestedRoutesLayout from '../Layouts/NestedRoutesLayout/NestedRoutesLayout';
-import TenantDetailsNew from '../pages/Features/Tenant/TenantDetailsNew';
+import TenantDetails from '../pages/Features/Tenant/TenantDetails';
 import Properties from '../pages/Features/properties';
 
 import ViewPortLayout from '../Layouts/ViewPortLayout';
@@ -32,6 +32,7 @@ import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
 import { CreateProperty } from '../pages/Features/properties/CreateProperty';
+import EditLeaseForm from '../pages/Features/Lease/EditLeaseForm';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -64,7 +65,6 @@ export const router = createBrowserRouter(
 						errorElement={<ErrorComponent />}
 					/>
 
-
 					<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 						<Route index element={<PropertyPage />} />
 						<Route path='edit' element={<EditPropertyPage />} />
@@ -75,6 +75,7 @@ export const router = createBrowserRouter(
 					<Route path='/leases' element={<NestedRoutesLayout />}>
 						<Route index element={<Lease />} />
 						<Route path='add-lease' element={<AddLeasePage />} />
+						<Route path='edit/:leaseId' element={<EditLeaseForm />} />
 					</Route>
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
@@ -82,8 +83,7 @@ export const router = createBrowserRouter(
 						<Route path='add-tenant' element={<AddTenant />} />
 						<Route path='invite-tenant' element={<AddTenant />} />
 					</Route>
-					<Route path='tenants/:id' element={<TenantDetailsNew/>} />
-					
+					<Route path='tenants/:id' element={<TenantDetails />} />
 
 					<Route path='/settings' element={<Setting />} />
 				</Route>
