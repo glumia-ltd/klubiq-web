@@ -1,12 +1,9 @@
 import { Box, Card, Stack, Typography, Button } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {
-	PageHeader,
-	SavedPaymentCard,
-	SavedPaymentCardSkeleton,
-} from '@klubiq/ui-components';
-import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMethodCard';
+import { PageHeader } from '@klubiq/ui-components';
+import { SavedPaymentCard, SavedPaymentCardSkeleton } from '@/components/SavedPaymentCard';
+// import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMethodCard';
 import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 // Dummy data for demonstration
 const paymentMethodsLoading = false;
@@ -46,9 +43,7 @@ const PaymentsPage = () => {
 				alignItems='center'
 				sx={{ mb: 1, mt: 2 }}
 			>
-				<Typography variant='h5' fontWeight={700}>
-					Rent Payments
-				</Typography>
+				<Typography variant='h5'>Rent Payments</Typography>
 				<Button
 					variant='contained'
 					color='primary'
@@ -97,16 +92,17 @@ const PaymentsPage = () => {
 							onEdit={() => {}}
 						/>
 
-						<AddPaymentMethodCard
+						{/* <AddPaymentMethodCard
 							content='Add Payment Method'
 							onClick={() => {}}
-						/>
+						/> */}
 					</>
 				) : (
-					<AddPaymentMethodCard
-						content='Add Payment Method'
-						onClick={() => {}}
-					/>
+					<></>
+					// <AddPaymentMethodCard
+					// 	content='Add Payment Method'
+					// 	onClick={() => {}}
+					// />
 				)}
 			</Card>
 

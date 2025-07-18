@@ -1,5 +1,13 @@
 import React from 'react';
-import { Card, Typography, Box, Chip, useTheme, Link } from '@mui/material';
+import {
+	Card,
+	Typography,
+	Box,
+	Chip,
+	useTheme,
+	Link,
+	Button,
+} from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 export interface SavedPaymentCardProps {
@@ -71,7 +79,7 @@ export const SavedPaymentCard: React.FC<SavedPaymentCardProps> = ({
 						sx={{
 							fontSize: { xs: 14, sm: 16 },
 							fontWeight: 400,
-							color: theme.palette.textColors?.greyText,
+							color: theme.palette.primary.main,
 							mt: 0.5,
 							overflow: 'hidden',
 							textOverflow: 'ellipsis',
@@ -102,21 +110,19 @@ export const SavedPaymentCard: React.FC<SavedPaymentCardProps> = ({
 						}}
 					/>
 				)}
-				<Link
-					component='button'
+				<Button
+					variant='klubiqTextButton'
 					onClick={onEdit}
-					underline='none'
 					sx={{
 						color: theme.palette.primary.light,
 						fontWeight: 500,
 						fontSize: { xs: 12, sm: 16 },
 						ml: 1,
-						'&:hover': { textDecoration: 'underline' },
 						whiteSpace: 'nowrap',
 					}}
 				>
 					Edit
-				</Link>
+				</Button>
 			</Box>
 		</Card>
 	);
