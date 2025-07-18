@@ -208,6 +208,7 @@ function isFieldVisible(
 export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	fields,
 	onSubmit,
+	onReset,
 	initialValues = {},
 	submitButtonText = 'Submit',
 	enableReset = false,
@@ -1204,6 +1205,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 		return errorAlertMessage;
 	};
+	const handleReset = () => {
+		form.reset();
+		onReset?.(form.state.values);
+	};
 
 	return (
 		<Stack
@@ -1485,7 +1490,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 								<>
 									{enableReset && (
 										<Button
-											onClick={() => form.reset()}
+											onClick={handleReset}
 											disabled={isSubmitting}
 											fullWidth={fullWidthButtons}
 										>

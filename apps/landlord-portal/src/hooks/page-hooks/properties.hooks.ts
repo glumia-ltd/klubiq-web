@@ -107,9 +107,9 @@ import { useTheme } from "@mui/material";
 		paperElevation: 0,
 		buttonVariant: 'klubiqTextButton',
 		titleVariant: 'h4',
-		titleFontWeight: 700,
+		titleFontWeight: 600,
 		headerVariant: 'body1',
-		headerFontWeight: 400,
+		headerFontWeight: 500,
 		cellAlign: 'left',
 	};
 

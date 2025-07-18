@@ -24,10 +24,7 @@ import {
 } from '../../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
-import { Breadcrumb } from '../../../components/Breadcrumb';
+import { ViewList } from '@mui/icons-material';
 import { TenantDialog } from '../../../components/CustomFormComponents/TenantDialog';
 import {
 	DynamicTanstackFormProps,
@@ -37,6 +34,7 @@ import {
 	PageDetail,
 	LeaseStatus,
 	AvatarItem,
+	DynamicBreadcrumb,
 } from '@klubiq/ui-components';
 import { UserProfile } from '../../../shared/auth-types';
 import { HourglassBottom, Payments, PendingActions, People, Timeline, Today } from '@mui/icons-material';
@@ -102,8 +100,8 @@ const LeaseDetails = () => {
 	const dispatch = useDispatch();
 	const [open, setOpen] = useState<boolean>(false);
 	const [openAddTenants, setOpenAddTenants] = useState<boolean>(false);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const [addTenants] = useAddTenantsMutation();
+	const [routeMap, setRouteMap] = useState({});
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
@@ -121,7 +119,7 @@ const LeaseDetails = () => {
 			headerAlign: 'center',
 			contentAlign: 'center',
 			contentDirection: 'column',
-			borderRadius: 1,
+			borderRadius: 2,
 			maxWidth: 'sm',
 			fullScreenOnMobile: true,
 			children: <KlubiqFormV1 {...addTenantsFormConfig} />,
@@ -247,7 +245,7 @@ const LeaseDetails = () => {
 		showBackdrop: true,
 		backdropText: 'Please wait while we add tenants...',
 		verticalAlignment: 'top',
-		horizontalAlignment: 'center',
+		horizontalAlignment: 'right',
 	};
 
 	const handleAddTenants = () => {
@@ -255,32 +253,18 @@ const LeaseDetails = () => {
 	};
 
 	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Leases',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Leases'
-						onClick={() => navigate(`/leases`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
+		setRouteMap({
+			'/leases': {
 				path: '/leases',
+				slug: '',
+				icon: <ViewList />,
 			},
-		};
-		// Add the current lease as the second breadcrumb
-		if (currentLeaseId) {
-			newBreadcrumbs['feature-details'] = {
-				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`, // Prefer a human-readable name if available
-				path: `/leases/${currentLeaseId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		newBreadcrumbs['feature-details-sub'] = {};
-		updateBreadcrumb(newBreadcrumbs);
+			'/leases/:id': {
+				path: '/leases/:id',
+				slug: leaseData?.name || 'lease-details',
+				dynamic: true,
+			},
+		});
 	}, [leaseData?.name, currentLeaseId, location.pathname]);
 
 	// Helper for menu status
@@ -294,6 +278,7 @@ const LeaseDetails = () => {
 				image: tenant.profile.profilePicUrl || '',
 				id: tenant.profile.profileUuid || '',
 				variant: 'circle',
+				size: 'small',
 				name: `${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''} ${tenant.profile.companyName || ''}`,
 			})) || []
 		);
@@ -317,7 +302,12 @@ const LeaseDetails = () => {
 						width: '100%',
 					}}
 				>
-					<Breadcrumb />
+					<DynamicBreadcrumb
+						currentPath={location.pathname.replace(`/unit`, '')}
+						routeMap={routeMap}
+						onNavigate={(path) => navigate(path)}
+					/>
+					
 					<Stack>
 						<Button
 							ref={anchorRef}

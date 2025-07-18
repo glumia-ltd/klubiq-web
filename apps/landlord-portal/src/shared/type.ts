@@ -209,6 +209,7 @@ export type UnitType = {
 	unitNumber?: string;
 	totalTenants?: number;
 	tenants?: TenantType[];
+	amenities?: string[];
 };
 
 export type PropertyDataType = {

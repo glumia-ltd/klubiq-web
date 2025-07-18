@@ -113,6 +113,20 @@ export const propertyApiSlice = createApi({
 				body: data,
 			}),
 		}),
+		addUnit: builder.mutation<any, { propertyUuid: string; data: any }>({
+			query: ({ propertyUuid, data }) => ({
+				url: propertiesEndpoints.addUnit(propertyUuid),
+				method: 'POST',
+				body: data,
+			}),
+			invalidatesTags: (_result, _error, { propertyUuid }) => [
+				{ type: API_TAGS.PROPERTY, id: propertyUuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
 	}),
 });
 
@@ -134,4 +148,5 @@ export const {
 	useDeletePropertyMutation,
 	useEditPropertyMutation,
 	usePatchPropertyMutation,
+	useAddUnitMutation,
 } = propertyApiSlice;

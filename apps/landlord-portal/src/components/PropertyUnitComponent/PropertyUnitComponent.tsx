@@ -37,6 +37,11 @@ import {
 	TableColumn,
 	DynamicAvatar,
 	DynamicBreadcrumb,
+	DynamicModalProps,
+	DynamicModal,
+	AmenityItem,
+	AmenityCard,
+	getAmenityIcon,
 } from '@klubiq/ui-components';
 import { PROPERTY_CONSTANTS } from '../../helpers/constants';
 import {
@@ -49,6 +54,7 @@ import { LeaseType, PropertyDataType } from '../../shared/type';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
 import { ViewList } from '@mui/icons-material';
 import { useTheme } from '@mui/system';
+import UnitForm from '../Forms/UnitForm';
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
@@ -69,6 +75,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [routeMap, setRouteMap] = useState({});
 	const [open, setOpen] = useState<boolean>(false);
+	const [openAddUnitDialog, setOpenAddUnitDialog] = useState<boolean>(false);
 	const [leaseTableBodyRows, setLeaseTableBodyRows] = useState<any>([]);
 	const [openArchivePropertyDialog, setOpenArchivePropertyDialog] =
 		useState<boolean>(false);
@@ -284,6 +291,31 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		return { tableColumns, rows };
 	};
 
+
+	const addUnitModalConfig = (header: string): DynamicModalProps => {
+		return {
+			headerText: header,
+			open: openAddUnitDialog,
+			onClose: () => setOpenAddUnitDialog(false),
+			headerAlign: 'center',
+			contentAlign: 'center',
+			contentDirection: 'column',
+			borderRadius: 2,
+			maxWidth: 'sm',
+			fullScreenOnMobile: true,
+			sx: {
+				height: 'auto',
+			},
+			children: (
+				<UnitForm
+					propertyId={currentProperty?.uuid}
+					categoryId={currentProperty?.category?.id || '1'}
+					onClose={() => setOpenAddUnitDialog(false)}
+				/>
+			),
+		} as DynamicModalProps;
+	};
+
 	const tenantTableData = useMemo(
 		() => getTenantTableData(currentProperty),
 		[currentProperty],
@@ -327,7 +359,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
 		navigate(`/leases/${lease.id}`);
-	const handleAddUnit = () => navigate(`/properties/${currentUUId}/unit`);
+	const handleAddUnit = () => setOpenAddUnitDialog(true);
 
 	const handleInviteTenant = (header?: string) => {
 		navigate(`/tenants/invite-tenant`, {
@@ -402,6 +434,14 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			(unit) => unit.unitNumber === unitNumber,
 		);
 	};
+	const getUnitAmenities = () => {
+		if (multiUnitMode && multiUnitNumber) {
+			return getUnitData(multiUnitNumber)?.amenities;
+		} else if(!currentProperty?.isMultiUnit) {
+			return currentProperty?.units?.[0]?.amenities;
+		}
+		return [];
+	};
 	const renderUnitCard = () => {
 		const commonProps = {
 			propertyImage: mainImage?.url,
@@ -474,7 +514,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		return (
 			<Stack direction='column' spacing={2} width={'100%'}>
 				{!multiUnitMode && <UnitInfoCard data={unitInfoData} />}
-
+				
 				{tabValue === 0 && (
 					<Stack
 						spacing={2}
@@ -584,161 +624,175 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			},
 		});
 	}, [multiUnitNumber]);
-
+	const amenityCardItems: AmenityItem[] = getUnitAmenities()?.map((amenity: string, idx: number) => ({
+		id: idx,
+		title: amenity,
+		icon: getAmenityIcon(amenity),
+		available: true,
+	})) || [];
 	return (
-		<Stack direction='column' spacing={2} width={'100%'}>
-			<Box>
-				<DynamicBreadcrumb
-					currentPath={location.pathname.replace(`/unit`, '')}
-					routeMap={routeMap}
-					onNavigate={(path) => navigate(path)}
-				/>
-			</Box>
-
-			{!multiUnitMode && (
-				<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
-					<Button
-						ref={anchorRef}
-						variant='klubiqMainButton'
-						onClick={handleToggle}
-						endIcon={<MoreVertIcon />}
-					>
-						Action
-					</Button>
-					<Popper
-						open={open}
-						anchorEl={anchorRef.current}
-						placement='bottom-start'
-						transition
-						disablePortal
-						sx={{ minWidth: '160px', zIndex: 10 }}
-					>
-						{({ TransitionProps, placement }) => (
-							<Grow
-								{...TransitionProps}
-								style={{
-									transformOrigin:
-										placement === 'bottom-start' ? 'left top' : 'left bottom',
-								}}
-							>
-								<Paper>
-									<ClickAwayListener onClickAway={() => setOpen(false)}>
-										<MenuList
-											id='composition-menu'
-											aria-labelledby='composition-button'
-											onKeyDown={handleListKeyDown}
-										>
-											<MenuItem
-												onClick={handleArchiveProperty}
-												sx={{ padding: '10px' }}
-												divider
-												disabled={currentProperty?.isArchived}
-											>
-												Archive Property
-											</MenuItem>
-											<MenuItem
-												onClick={handleEditProperty}
-												sx={{ padding: '10px' }}
-												divider
-											>
-												Edit Property
-											</MenuItem>
-											<MenuItem
-												onClick={handleDeleteProperty}
-												sx={{ padding: '10px' }}
-											>
-												Delete Property
-											</MenuItem>
-										</MenuList>
-									</ClickAwayListener>
-								</Paper>
-							</Grow>
-						)}
-					</Popper>
-				</Grid>
-			)}
-
-			<Grid item xs={12}>
-				{currentProperty?.purpose?.displayText && (
-					<Chip
-						label={currentProperty?.purpose?.displayText}
-						variant={
-							!currentProperty?.isArchived
-								? currentProperty?.purpose?.name?.toLowerCase() === 'rent'
-									? 'rent'
-									: 'sale'
-								: 'archived'
-						}
-					/>
-				)}
-			</Grid>
-
+		<>
 			<Stack direction='column' spacing={2} width={'100%'}>
-				{renderUnitCard()}
-				{(propertyType === 'Single' || multiUnitMode) && (
-					<TabsComponent
-						handleTabChange={handleTabChange}
-						tabValue={tabValue}
-						allTabs={PROPERTY_CONSTANTS.tabs}
+				<Box>
+					<DynamicBreadcrumb
+						currentPath={location.pathname.replace(`/unit`, '')}
+						routeMap={routeMap}
+						onNavigate={(path) => navigate(path)}
 					/>
-				)}
-			</Stack>
+				</Box>
 
-			{propertyType === 'Single' &&
-				(tabValue === 0 || tabValue === 1) &&
-				renderTabsContent(tabValue)}
-
-			{/* Multi Unit Section */}
-			{propertyType === 'Multi' && !multiUnitMode && (
-				<Stack direction='column' spacing={2} width={'100%'}>
-					<UnitInfoCard data={unitInfoData} />
-
-					<Overview
-						initialText={currentProperty?.description}
-						propertyUuid={currentProperty?.uuid}
-					/>
-
-					<Grid sx={styles.addfieldStyle}>
-						{currentProperty?.units?.length &&
-							currentProperty?.units?.length > 0 && (
-								<UnitsTable
-									title='Units'
-									handleAdd={handleAddUnit}
-									buttonText='Add Unit'
-									tableBodyRows={currentProperty.units}
-								/>
+				{!multiUnitMode && (
+					<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+						<Button
+							ref={anchorRef}
+							variant='klubiqMainButton'
+							onClick={handleToggle}
+							endIcon={<MoreVertIcon />}
+						>
+							Action
+						</Button>
+						<Popper
+							open={open}
+							anchorEl={anchorRef.current}
+							placement='bottom-start'
+							transition
+							disablePortal
+							sx={{ minWidth: '160px', zIndex: 10 }}
+						>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{
+										transformOrigin:
+											placement === 'bottom-start' ? 'left top' : 'left bottom',
+									}}
+								>
+									<Paper>
+										<ClickAwayListener onClickAway={() => setOpen(false)}>
+											<MenuList
+												id='composition-menu'
+												aria-labelledby='composition-button'
+												onKeyDown={handleListKeyDown}
+											>
+												<MenuItem
+													onClick={handleArchiveProperty}
+													sx={{ padding: '10px' }}
+													divider
+													disabled={currentProperty?.isArchived}
+												>
+													Archive Property
+												</MenuItem>
+												<MenuItem
+													onClick={handleEditProperty}
+													sx={{ padding: '10px' }}
+													divider
+												>
+													Edit Property
+												</MenuItem>
+												<MenuItem
+													onClick={handleDeleteProperty}
+													sx={{ padding: '10px' }}
+												>
+													Delete Property
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
 							)}
+						</Popper>
 					</Grid>
+				)}
+
+				<Grid item xs={12}>
+					{currentProperty?.purpose?.displayText && (
+						<Chip
+							label={currentProperty?.purpose?.displayText}
+							variant={
+								!currentProperty?.isArchived
+									? currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+										? 'rent'
+										: 'sale'
+									: 'archived'
+							}
+						/>
+					)}
+				</Grid>
+
+				<Stack direction='column' spacing={2} width={'100%'}>
+					{renderUnitCard()}
+					{amenityCardItems.length > 0 && (
+					<AmenityCard title={<Typography variant='h4'>Amenities</Typography>} spacing={2} sx={{mt: 2, backgroundColor: ''}} items={amenityCardItems} />
+				)}
+					{(propertyType === 'Single' || multiUnitMode) && (
+						<TabsComponent
+							handleTabChange={handleTabChange}
+							tabValue={tabValue}
+							allTabs={PROPERTY_CONSTANTS.tabs}
+						/>
+					)}
 				</Stack>
-			)}
 
-			{propertyType === 'Multi' && multiUnitMode && renderTabsContent(tabValue)}
+				{propertyType === 'Single' &&
+					(tabValue === 0 || tabValue === 1) &&
+					renderTabsContent(tabValue)}
 
-			{/* Document Tab */}
-			{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
+				{/* Multi Unit Section */}
+				{propertyType === 'Multi' && !multiUnitMode && (
+					<Stack direction='column' spacing={2} width={'100%'}>
 
-			{/* Dialogs */}
-			<PropertiesActionsPrompts
-				open={openArchivePropertyDialog}
-				progress={progress}
-				title={progress ? 'Archive in progress' : 'Attention!'}
-				content='Are you sure you want to archive this property?'
-				rightButtonContent='Archive Property'
-				handleDialogButtonAction={(e) =>
-					handleArchiveDialogButtonAction(e.target.value)
-				}
-			/>
+						<UnitInfoCard data={unitInfoData} />
 
-			<PropertiesActionsPrompts
-				open={openDeletePropertyDialog}
-				progress={progress}
-				title={progress ? 'Deleting this property' : 'Delete Property'}
-				content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
-				rightButtonContent='Delete Property'
-				handleDialogButtonAction={(e) =>
-					handleDeleteDialogButtonAction(e.target.value)
-				}
-			/>
-		</Stack>
+						<Overview
+							initialText={currentProperty?.description}
+							propertyUuid={currentProperty?.uuid}
+						/>
+
+						<Grid sx={styles.addfieldStyle}>
+							{currentProperty?.units?.length &&
+								currentProperty?.units?.length > 0 && (
+									<UnitsTable
+										title='Units'
+										handleAdd={handleAddUnit}
+										buttonText='Add Unit'
+										tableBodyRows={currentProperty.units}
+									/>
+								)}
+						</Grid>
+					</Stack>
+				)}
+
+				{propertyType === 'Multi' &&
+					multiUnitMode &&
+					renderTabsContent(tabValue)}
+
+				{/* Document Tab */}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
+
+				{/* Dialogs */}
+				<PropertiesActionsPrompts
+					open={openArchivePropertyDialog}
+					progress={progress}
+					title={progress ? 'Archive in progress' : 'Attention!'}
+					content='Are you sure you want to archive this property?'
+					rightButtonContent='Archive Property'
+					handleDialogButtonAction={(e) =>
+						handleArchiveDialogButtonAction(e.target.value)
+					}
+				/>
+
+				<PropertiesActionsPrompts
+					open={openDeletePropertyDialog}
+					progress={progress}
+					title={progress ? 'Deleting this property' : 'Delete Property'}
+					content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
+					rightButtonContent='Delete Property'
+					handleDialogButtonAction={(e) =>
+						handleDeleteDialogButtonAction(e.target.value)
+					}
+				/>
+			</Stack>
+			<DynamicModal {...addUnitModalConfig('Add Unit')} />
+		</>
 	);
 };

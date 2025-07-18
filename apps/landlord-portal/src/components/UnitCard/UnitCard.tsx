@@ -72,7 +72,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									spacing={{ xs: 2, sm: 1 }}
 								>
 									<Stack direction={'column'} spacing={2}>
-										<Typography sx={styles.propertyHeaderText} variant='h2'>
+										<Typography variant='h4'>
 											{propertyName}
 										</Typography>
 										<Typography sx={styles.reducedTextStyle}>
@@ -89,7 +89,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									direction={{ xs: 'column', sm: 'row' }}
 									gap={{ xs: 2, sm: 2 }}
 									flexWrap={'wrap'}
-									alignItems={'center'}
+									alignItems={{xs: 'flex-start', sm: 'center'}}
 									sx={styles.stacks.propertyDetail.dataStack}
 								>
 									{variant === 'property' && <Stack

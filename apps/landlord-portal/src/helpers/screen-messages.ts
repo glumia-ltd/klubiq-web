@@ -1,4 +1,12 @@
 export const screenMessages = {
+	unit: {
+		add: {
+			success: 'Unit added successfully',
+			error: 'Failed to add unit',
+			loading: 'Adding unit...',
+			confirm: 'Are you sure you want to add this unit?',
+		},
+	},
 	tenant: {
 		invite: {
 			success: 'Tenant invited successfully',
