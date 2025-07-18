@@ -18,5 +18,8 @@ export const tenantEndpoints = {
 	profile: () => '/tenants/profile',
 };
 export const publicEndpoints = {
-	notifications: (userId: string, isRead: boolean) => `/notifications?userId=${userId}&isRead=${isRead}`,
+	notifications: (userId: string, isRead: boolean) =>
+		`/notifications?userId=${userId}&isRead=${isRead}`,
 };
+
+export const paymentsEndpoints = {};

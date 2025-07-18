@@ -18,9 +18,6 @@ const paymentMethods = [
 	},
 ];
 
-
-
-
 const PaymentsPage = () => {
 	// Table columns
 
@@ -32,10 +29,7 @@ const PaymentsPage = () => {
 				<Typography variant='h4' sx={{ fontWeight: 'normal' }}>
 					$1,200
 				</Typography>
-				<Typography
-					variant='subtitle2'
-					sx={{ textWrap: 'wrap', wordBreak: 'break-word', fontSize: '12px' }}
-				>
+				<Typography sx={{ fontSize: '12px', whiteSpace: 'nowrap' }}>
 					12 days remaining
 				</Typography>
 			</Stack>
