@@ -109,9 +109,9 @@ const LeaseDetails = () => {
 	const navigate = useNavigate();
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
-	const [archiveLease, { isLoading: archiveLoading }] =
+	const [archiveLease] =
 		useArchiveLeaseMutation();
-	const [deleteLease, { isLoading: deleteLoading }] = useDeleteLeaseMutation();
+	const [deleteLease] = useDeleteLeaseMutation();
 
 	const [open, setOpen] = useState<boolean>(false);
 	const [openAddTenants, setOpenAddTenants] = useState<boolean>(false);
