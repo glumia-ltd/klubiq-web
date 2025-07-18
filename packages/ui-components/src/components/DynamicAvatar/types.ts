@@ -13,5 +13,4 @@ export interface AvatarItem {
     size?: 'small' | 'medium' | 'large';
     showTotal?: boolean;
     showName?: boolean;
-    variant?: 'circular' | 'rounded' | 'square';
   }

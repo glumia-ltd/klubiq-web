@@ -32,8 +32,7 @@ const getInitials = (name: string) => {
   item: AvatarItem;
   size?: 'small' | 'medium' | 'large';
   showName?: boolean;
-  variant?: 'circular' | 'rounded' | 'square';
-}> = ({ item, size, showName,variant }) => {
+}> = ({ item, size, showName }) => {
   const displayText = item.name || item.label || '';
   const avatarSize = getAvatarSize(size);
 
@@ -41,7 +40,6 @@ const getInitials = (name: string) => {
     <Stack alignItems="center" spacing={1}>
       <Tooltip title={displayText}>
         <Avatar
-        variant={variant || 'circular'}
           src={item.image || undefined}
           sx={{
             ...avatarSize,
