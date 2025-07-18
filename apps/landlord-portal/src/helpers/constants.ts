@@ -1,5 +1,7 @@
 import { SimpleTableColumn } from '../page-tytpes/properties/detail-page.types';
-export const ALL_TABS = ['Overview', 'Lease', 'Document'];
+export const ALL_TABS = ['Overview', 'Lease', 
+	//'Document'
+];
 export const PROPERTY_CONSTANTS = {
 	tabs: ALL_TABS,
 	leaseTableColumns: [

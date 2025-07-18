@@ -21,14 +21,14 @@ export const useTenantActions = () => {
     };
     const tableStyles: DynamicTableStyles = {
         borderStyle: 'none',
-		borderRadius: 0,
+		borderRadius: 2,
 		borderWidth: 0,
 		paperElevation: 0,
 		buttonVariant: 'klubiqTextButton',
 		titleVariant: 'h4',
-		titleFontWeight: 700,
+		titleFontWeight: 600,
 		headerVariant: 'body1',
-		headerFontWeight: 400,
+		headerFontWeight: 500,
 		cellAlign: 'left',
     };
 

@@ -2,6 +2,7 @@ export const styles = {
 	overviewStyle: {
 		display: 'flex',
 		flexDirection: 'column',
+		borderRadius: 2,
 		// marginTop: '32px',
 		// padding: '0px 24px',
 	},

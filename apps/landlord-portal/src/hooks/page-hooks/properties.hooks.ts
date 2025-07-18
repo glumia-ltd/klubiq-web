@@ -102,7 +102,7 @@ import { useTheme } from "@mui/material";
 	};
 	const tableStyles: DynamicTableStyles = {
 		borderStyle: 'none',
-		borderRadius: 0,
+		borderRadius: 2,
 		borderWidth: 0,
 		paperElevation: 0,
 		buttonVariant: 'klubiqTextButton',
