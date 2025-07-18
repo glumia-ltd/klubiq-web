@@ -59,3 +59,4 @@ export * from './components/DBInfoCard';
 export * from './components/AmenityIconMap';
 
 export * from './components/DynamicBreadcrumb';
+export * from './components/DynamicCarousel';

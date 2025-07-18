@@ -27,10 +27,7 @@ import {
 } from '../../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
-import { Breadcrumb } from '../../../components/Breadcrumb';
+import { ViewList } from '@mui/icons-material';
 import { TenantDialog } from '../../../components/CustomFormComponents/TenantDialog';
 import {
 	DynamicTanstackFormProps,
@@ -40,6 +37,7 @@ import {
 	PageDetail,
 	LeaseStatus,
 	AvatarItem,
+	DynamicBreadcrumb,
 } from '@klubiq/ui-components';
 import { UserProfile } from '../../../shared/auth-types';
 import {
@@ -121,7 +119,7 @@ const LeaseDetails = () => {
 		useState<boolean>(false);
 	const [openDeleteLeaseDialog, setOpenDeleteLeaseDialog] =
 		useState<boolean>(false);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
+	const [routeMap, setRouteMap] = useState({});
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
@@ -139,7 +137,7 @@ const LeaseDetails = () => {
 			headerAlign: 'center',
 			contentAlign: 'center',
 			contentDirection: 'column',
-			borderRadius: 1,
+			borderRadius: 2,
 			maxWidth: 'sm',
 			fullScreenOnMobile: true,
 			children: <KlubiqFormV1 {...addTenantsFormConfig} />,
@@ -176,10 +174,11 @@ const LeaseDetails = () => {
 			(tenantId: string) => tenantId !== primaryTenantId,
 		);
 		const body = {
-			primaryTenant: { id: primaryTenantId, isPrimary: true },
-			secondaryTenants,
-		};
-		try {
+			primaryTenant: {id: primaryTenantId || tenantsIds[0], isPrimary: true},
+			secondaryTenants
+		}
+		consoleLog('body', body);
+		try{
 			await addTenants({ leaseId: currentLeaseId, body }).unwrap();
 			dispatch(
 				openSnackbar({
@@ -241,7 +240,13 @@ const LeaseDetails = () => {
 				name: 'primaryTenantId',
 				label: 'Select Primary Tenant',
 				type: 'select',
-				required: true,
+				required: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+				showIf: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+
 				options: (values: any) => {
 					return getSelectedTenants(values);
 				},
@@ -260,7 +265,7 @@ const LeaseDetails = () => {
 		showBackdrop: true,
 		backdropText: 'Please wait while we add tenants...',
 		verticalAlignment: 'top',
-		horizontalAlignment: 'center',
+		horizontalAlignment: 'right',
 	};
 
 	const handleAddTenants = () => {
@@ -268,32 +273,19 @@ const LeaseDetails = () => {
 	};
 
 	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Leases',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Leases'
-						onClick={() => navigate(`/leases`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
+		setRouteMap({
+			'/leases': {
 				path: '/leases',
+				slug: '',
+				icon: <ViewList />,
 			},
-		};
-		if (currentLeaseId) {
-			newBreadcrumbs['feature-details'] = {
-				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`,
-				path: `/leases/${currentLeaseId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		newBreadcrumbs['feature-details-sub'] = {};
-		updateBreadcrumb(newBreadcrumbs);
-	}, [leaseData?.name, currentLeaseId, location.pathname, updateBreadcrumb, navigate]);
+			'/leases/:id': {
+				path: '/leases/:id',
+				slug: leaseData?.name || 'lease-details',
+				dynamic: true,
+			},
+		});
+	}, [leaseData?.name, currentLeaseId, location.pathname]);
 
 	// Helper for menu status
 	const { canAddTenant, canArchive, canEdit, canTerminate } = useMenuStatus(
@@ -306,6 +298,7 @@ const LeaseDetails = () => {
 				image: tenant.profile.profilePicUrl || '',
 				id: tenant.profile.profileUuid || '',
 				variant: 'circle',
+				size: 'small',
 				name: `${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''} ${tenant.profile.companyName || ''}`,
 			})) || []
 		);
@@ -389,7 +382,12 @@ const LeaseDetails = () => {
 						width: '100%',
 					}}
 				>
-					<Breadcrumb />
+					<DynamicBreadcrumb
+						currentPath={location.pathname.replace(`/unit`, '')}
+						routeMap={routeMap}
+						onNavigate={(path) => navigate(path)}
+					/>
+					
 					<Stack>
 						<Button
 							ref={anchorRef}
