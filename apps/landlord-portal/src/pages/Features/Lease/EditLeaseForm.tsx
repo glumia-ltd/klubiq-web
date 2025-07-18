@@ -149,7 +149,6 @@ const EditLeaseForm: FC = () => {
 			name: 'startDate',
 			label: 'Lease Start Date',
 			type: 'date',
-			required: true,
 		},
 		{
 			name: 'endDate',

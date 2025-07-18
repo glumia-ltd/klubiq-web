@@ -50,9 +50,9 @@ import {
 	Timeline,
 	Today,
 } from '@mui/icons-material';
-import { consoleLog } from '../../../helpers/debug-logger';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { screenMessages } from '../../../helpers/screen-messages';
+import { consoleLog } from '../../../helpers/debug-logger';
 import LeaseActionsPrompts from '../../../components/Dialogs/LeaseActionPrompt';
 function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 	return (
@@ -170,7 +170,6 @@ const LeaseDetails = () => {
 	});
 
 	const onAddTenantsSubmit = async (values: any) => {
-		console.log(values);
 		const { tenantsIds, primaryTenantId } = values;
 		const secondaryTenants = tenantsIds.filter(
 			(tenantId: string) => tenantId !== primaryTenantId,
@@ -179,7 +178,6 @@ const LeaseDetails = () => {
 			primaryTenant: { id: primaryTenantId, isPrimary: true },
 			secondaryTenants,
 		};
-		consoleLog('body', body);
 		try {
 			await addTenants({ leaseId: currentLeaseId, body }).unwrap();
 			dispatch(
@@ -284,10 +282,9 @@ const LeaseDetails = () => {
 				path: '/leases',
 			},
 		};
-		// Add the current lease as the second breadcrumb
 		if (currentLeaseId) {
 			newBreadcrumbs['feature-details'] = {
-				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`, // Prefer a human-readable name if available
+				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`,
 				path: `/leases/${currentLeaseId}`,
 				icon: null,
 				showIcon: false,
@@ -335,7 +332,6 @@ const LeaseDetails = () => {
 			setOpenArchiveLeaseDialog(false);
 			navigate('/leases'); // redirect after action
 		} catch (error) {
-			consoleLog('Archive Lease Error', error);
 			dispatch(
 				openSnackbar({
 					message: screenMessages.lease.archive.error,
@@ -363,7 +359,6 @@ const LeaseDetails = () => {
 			setOpenDeleteLeaseDialog(false);
 			navigate('/leases');
 		} catch (error) {
-			consoleLog('Delete Lease Error', error);
 			dispatch(
 				openSnackbar({
 					message: screenMessages.lease.delete.error,
