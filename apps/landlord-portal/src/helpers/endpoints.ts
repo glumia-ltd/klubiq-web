@@ -37,6 +37,7 @@ export const propertiesEndpoints = {
 	editProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getOrgPropertiesViewList: (orgId: string) =>
 		`/public/org/${orgId}/properties`,
+	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 };
 
 export const organizationEndpoints = {

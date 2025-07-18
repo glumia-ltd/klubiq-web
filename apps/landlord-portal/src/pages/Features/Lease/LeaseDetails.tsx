@@ -155,7 +155,7 @@ const LeaseDetails = () => {
 		const { tenantsIds, primaryTenantId } = values;
 		const secondaryTenants = tenantsIds.filter((tenantId: string) => tenantId !== primaryTenantId);
 		const body = {
-			primaryTenant: {id: primaryTenantId, isPrimary: true},
+			primaryTenant: {id: primaryTenantId || tenantsIds[0], isPrimary: true},
 			secondaryTenants
 		}
 		consoleLog('body', body);
@@ -222,7 +222,13 @@ const LeaseDetails = () => {
 				name: 'primaryTenantId',
 				label: 'Select Primary Tenant',
 				type: 'select',
-				required: true,
+				required: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+				showIf: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+
 				options: (values: any) => {
 					return getSelectedTenants(values);
 				},

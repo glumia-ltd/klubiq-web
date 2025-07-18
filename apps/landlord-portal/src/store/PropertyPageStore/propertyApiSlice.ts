@@ -106,6 +106,13 @@ export const propertyApiSlice = createApi({
 				{ type: API_TAGS.PROPERTY, id: uuid },
 			],
 		}),
+		patchProperty: builder.mutation<any, { uuid: string; data: any }>({
+			query: ({ uuid, data }) => ({
+				url: propertiesEndpoints.patchProperty(uuid),
+				method: 'PATCH',
+				body: data,
+			}),
+		}),
 	}),
 });
 
@@ -126,4 +133,5 @@ export const {
 	useArchivePropertyMutation,
 	useDeletePropertyMutation,
 	useEditPropertyMutation,
+	usePatchPropertyMutation,
 } = propertyApiSlice;

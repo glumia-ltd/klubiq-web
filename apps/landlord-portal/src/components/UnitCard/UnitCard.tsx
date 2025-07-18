@@ -26,6 +26,10 @@ type UnitCardPropType = {
 	totalArea?: string;
 	buildingType?: string;
 	additionalImages: string[];
+	variant?: 'property' | 'unit';
+	marketValue?: string;
+	sellingPrice?: string;
+	purpose?: string;
 };
 
 export const UnitCard: FC<UnitCardPropType> = ({
@@ -38,6 +42,10 @@ export const UnitCard: FC<UnitCardPropType> = ({
 	totalArea,
 	buildingType,
 	additionalImages,
+	variant = 'property',
+	marketValue,
+	sellingPrice,
+	purpose,
 }) => {
 	return (
 		<>
@@ -73,16 +81,18 @@ export const UnitCard: FC<UnitCardPropType> = ({
 										</Typography>
 									</Stack>
 									<Stack direction={'row'} spacing={1}>
-										<Typography variant='h6'>Property ID:</Typography>
+										<Typography variant='h6'>{variant === 'property' ? 'Property ID:' : 'Unit:'}</Typography>
 										<Typography>{propertyId}</Typography>
 									</Stack>
 								</Stack>
 								<Stack
 									direction={{ xs: 'column', sm: 'row' }}
-									spacing={{ xs: 2, sm: 1 }}
+									gap={{ xs: 2, sm: 2 }}
+									flexWrap={'wrap'}
+									alignItems={'center'}
 									sx={styles.stacks.propertyDetail.dataStack}
 								>
-									<Stack
+									{variant === 'property' && <Stack
 										direction={'row'}
 										spacing={2}
 										sx={{ alignItems: 'center' }}
@@ -93,8 +103,8 @@ export const UnitCard: FC<UnitCardPropType> = ({
 
 											<Typography variant='h6'>{numberOfUnits}</Typography>
 										</Stack>
-									</Stack>
-									<Stack
+									</Stack>}
+									{rent && <Stack
 										direction={'row'}
 										spacing={2}
 										sx={{ alignItems: 'center' }}
@@ -105,7 +115,31 @@ export const UnitCard: FC<UnitCardPropType> = ({
 
 											<Typography variant='h6'>{rent}</Typography>
 										</Stack>
-									</Stack>
+									</Stack>}
+									{purpose?.toLowerCase().includes('sale') && sellingPrice && <Stack
+										direction={'row'}
+										spacing={2}
+										sx={{ alignItems: 'center' }}
+									>
+										<HandCoins />
+										<Stack direction={'column'} spacing={2}>
+											<Typography>Selling Price</Typography>
+
+											<Typography variant='h6'>{sellingPrice}</Typography>
+										</Stack>
+									</Stack>}
+									{purpose?.toLowerCase().includes('sale') && marketValue && <Stack
+										direction={'row'}
+										spacing={2}
+										sx={{ alignItems: 'center' }}
+									>
+										<HandCoins />
+										<Stack direction={'column'} spacing={2}>
+											<Typography>Market Value</Typography>
+
+											<Typography variant='h6'>{marketValue}</Typography>
+										</Stack>
+									</Stack>}
 									{numberOfUnits !== 'Multi' && totalArea && (
 										<Stack
 											direction={'row'}

@@ -46,12 +46,9 @@ import {
 } from '../../page-tytpes/properties/detail-page.types';
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 import { LeaseType, PropertyDataType } from '../../shared/type';
-import { Breadcrumb } from '../Breadcrumb/index';
-import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
-import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { ViewList } from '@mui/icons-material';
+import { useTheme } from '@mui/system';
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
@@ -64,9 +61,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const location = useLocation();
 	const navigate = useNavigate();
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const { user } = useSelector(getAuthState);
-
+	const theme = useTheme();
 	const currentUUId = location.pathname.split('/')[2]!;
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
@@ -203,6 +199,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				tenant: {
 					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''}`,
 					image: tenant.profile?.profilePicUrl ?? null,
+					background: theme.palette.mode === 'dark' ? 'dark' : 'light',
 				},
 				phone: tenant.profile?.phoneNumber ?? null,
 				email: tenant.profile?.email ?? '',
@@ -400,7 +397,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	};
 
 	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
-
+	const getUnitData = (unitNumber: string | undefined) => {
+		return currentProperty?.units?.find(
+			(unit) => unit.unitNumber === unitNumber,
+		);
+	};
 	const renderUnitCard = () => {
 		const commonProps = {
 			propertyImage: mainImage?.url,
@@ -425,10 +426,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					numberOfUnits={`${currentProperty?.units?.length}`}
 					rent={getLocaleFormat(
 						user?.orgSettings,
-						+(currentProperty?.units?.[0]?.rentAmount || 0),
+						+(getUnitData(multiUnitNumber)?.rentAmount || 0) || 0,
 						'currency',
 					)}
-					totalArea={`${currentProperty?.units?.[0]?.area?.value} ${currentProperty?.units?.[0]?.area?.unit}`}
+					variant='unit'
+					additionalImages={getUnitData(multiUnitNumber)?.images || []}
+					totalArea={`${getUnitData(multiUnitNumber)?.area?.value} ${getUnitData(multiUnitNumber)?.area?.unit}`}
 				/>
 			);
 		}
@@ -447,22 +450,30 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					+currentProperty?.totalRent || 0,
 					'currency',
 				)}
+				variant='property'
+				marketValue={getLocaleFormat(
+					user?.orgSettings,
+					+currentProperty?.marketValue || 0,
+					'currency',
+				)}
+				sellingPrice={getLocaleFormat(
+					user?.orgSettings,
+					+currentProperty?.sellingPrice || 0,
+					'currency',
+				)}
 				totalArea={
 					currentProperty?.isMultiUnit
 						? ''
 						: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
 				}
+				purpose={currentProperty?.purpose?.name}
 			/>
 		);
 	};
 	const renderTabsContent = (tabValue: number) => {
 		return (
-			<Grid item xs={12}>
-				{!multiUnitMode && (
-					<Grid sx={styles.unitInfoCardStyle}>
-						<UnitInfoCard data={unitInfoData} />
-					</Grid>
-				)}
+			<Stack direction='column' spacing={2} width={'100%'}>
+				{!multiUnitMode && <UnitInfoCard data={unitInfoData} />}
 
 				{tabValue === 0 && (
 					<Stack
@@ -472,9 +483,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						width={'100%'}
 						justifyContent={'center'}
 					>
-						<Stack spacing={2} direction={'row'}>
-							<Overview initialText={currentProperty?.description} />
-						</Stack>
+						{!multiUnitMode && (
+							<Overview
+								initialText={currentProperty?.description}
+								propertyUuid={currentProperty?.uuid}
+							/>
+						)}
 						<Stack spacing={2} direction={'column'}>
 							{currentProperty?.units?.[0]?.tenants?.length ? (
 								<DynamicTable
@@ -548,7 +562,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						)}
 					</Stack>
 				)}
-			</Grid>
+			</Stack>
 		);
 	};
 	useEffect(() => {
@@ -563,88 +577,23 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				slug: currentProperty?.name || 'property-details',
 				dynamic: true,
 			},
-			'/properties/:id/unit/:id': {
+			'/properties/:id/:id': {
 				path: '/properties/:id/unit/:id',
 				slug: multiUnitNumber || 'unit-details',
 				dynamic: true,
 			},
 		});
-		
 	}, [multiUnitNumber]);
 
-	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Properties',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Properties'
-						onClick={() => navigate(`/properties`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
-				path: '/leases',
-			},
-		};
-
-		if (currentUUId) {
-			newBreadcrumbs['feature-details'] = {
-				label: currentProperty?.name,
-				path: `/properties/${currentUUId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		if (multiUnitNumber) {
-			const unitUUId = location.pathname.split('/')[4]!;
-			const path = `/properties/${currentUUId}/units/${unitUUId}`;
-			newBreadcrumbs['feature-details-sub'] = {
-				label: multiUnitNumber,
-				path,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		updateBreadcrumb(newBreadcrumbs);
-		setRouteMap({
-			'/properties': {
-				path: '/properties',
-				slug: '',
-				icon: <ViewList />,
-			},
-			'/properties/:id': {
-				path: '/properties/:id',
-				slug: currentProperty?.name || 'property-details',
-				dynamic: true,
-			},
-			// '/properties/:id/unit/:id': {
-			// 	path: '/properties/:id/unit/:id',
-			// 	slug: multiUnitNumber || 'unit-details',
-			// 	dynamic: true,
-			// },
-		});
-		// Clear breadcrumbs on unmount
-		return () => {
-			multiUnitMode = false;
-			updateBreadcrumb({});
-		};
-	}, [currentProperty?.name, currentUUId, multiUnitMode]);
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<Box>
-					<Breadcrumb />
-				</Box>
-				<Box>
-					<DynamicBreadcrumb
-						currentPath={`/properties/${currentUUId}`}
-						routeMap={routeMap}
-						onNavigate={(path) => navigate(path)}
-					/>
-				</Box>
-			</Grid>
+		<Stack direction='column' spacing={2} width={'100%'}>
+			<Box>
+				<DynamicBreadcrumb
+					currentPath={location.pathname.replace(`/unit`, '')}
+					routeMap={routeMap}
+					onNavigate={(path) => navigate(path)}
+				/>
+			</Box>
 
 			{!multiUnitMode && (
 				<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
@@ -724,7 +673,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				)}
 			</Grid>
 
-			<Grid item xs={12} sx={styles.firstCardContainer}>
+			<Stack direction='column' spacing={2} width={'100%'}>
 				{renderUnitCard()}
 				{(propertyType === 'Single' || multiUnitMode) && (
 					<TabsComponent
@@ -733,7 +682,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						allTabs={PROPERTY_CONSTANTS.tabs}
 					/>
 				)}
-			</Grid>
+			</Stack>
 
 			{propertyType === 'Single' &&
 				(tabValue === 0 || tabValue === 1) &&
@@ -741,12 +690,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 			{/* Multi Unit Section */}
 			{propertyType === 'Multi' && !multiUnitMode && (
-				<Grid item xs={12}>
-					<Grid sx={styles.unitInfoCardStyle}>
-						<UnitInfoCard data={unitInfoData} />
-					</Grid>
+				<Stack direction='column' spacing={2} width={'100%'}>
+					<UnitInfoCard data={unitInfoData} />
 
-					<Overview initialText={currentProperty?.description} />
+					<Overview
+						initialText={currentProperty?.description}
+						propertyUuid={currentProperty?.uuid}
+					/>
 
 					<Grid sx={styles.addfieldStyle}>
 						{currentProperty?.units?.length &&
@@ -759,7 +709,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 								/>
 							)}
 					</Grid>
-				</Grid>
+				</Stack>
 			)}
 
 			{propertyType === 'Multi' && multiUnitMode && renderTabsContent(tabValue)}
@@ -789,6 +739,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					handleDeleteDialogButtonAction(e.target.value)
 				}
 			/>
-		</Grid>
+		</Stack>
 	);
 };

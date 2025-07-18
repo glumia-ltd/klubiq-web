@@ -212,6 +212,8 @@ export type UnitType = {
 };
 
 export type PropertyDataType = {
+	marketValue: any;
+	sellingPrice: any;
 	uuid: string;
 	id: number;
 	name: string;
