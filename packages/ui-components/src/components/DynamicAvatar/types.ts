@@ -1,5 +1,5 @@
 export interface AvatarItem {
-    id: string | number;
+    id?: string | number;
     image?: string | null;
     name?: string;
     label?: string;

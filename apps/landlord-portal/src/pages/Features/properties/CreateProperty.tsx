@@ -469,10 +469,7 @@ export const CreateProperty = () => {
 			formData.append('organization', user?.organization);
 		}
 		formData.append('rootFolder', 'properties');
-		consoleLog('Uploading property images', formData);
-		const response = await uploadImages(formData).unwrap();
-		consoleInfo('Uploading property images response', response);
-		return response;
+		return await uploadImages(formData).unwrap();
 	}
 	const deletePropertyImage = async (fileId: string) => {
 		try {

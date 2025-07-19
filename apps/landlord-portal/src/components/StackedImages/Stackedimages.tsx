@@ -6,16 +6,19 @@ type StackedImagesProps = {
 	topOffset: number;
 	leftOffset: number;
 	zIndex: number;
+	onClick?: () => void;
 };
 
 export const Stackedimages: FC<StackedImagesProps> = ({
 	image,
 	topOffset,
 	leftOffset,
-	zIndex,
+	zIndex,	
+	onClick,
 }) => {
 	return (
 		<CardMedia
+			onClick={onClick}
 			component='img'
 			image={image}
 			alt='stacked Images'

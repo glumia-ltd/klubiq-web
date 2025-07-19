@@ -64,6 +64,26 @@ const getInfoFromUserSettings = (orgSettings: Record<string, unknown>) => {
 
 	return { currencyCode, countryCode, lang };
 };
+export const formatNumberShort = (num: number): string => {
+	if (num < 1_000) {
+		return num.toString();
+	}
+
+	const units = [
+		{ value: 1_000_000_000, symbol: 'B' },
+		{ value: 1_000_000, symbol: 'M' },
+		{ value: 1_000, symbol: 'k' },
+	];
+
+	for (const { value, symbol } of units) {
+		if (num >= value) {
+			const formatted = (num / value).toFixed(num % value === 0 ? 0 : 1);
+			return `${formatted}${symbol}`;
+		}
+	}
+	return num.toString();
+};
+
 
 export const getLocaleFormat = (
 	orgSettings: Record<string, unknown>,

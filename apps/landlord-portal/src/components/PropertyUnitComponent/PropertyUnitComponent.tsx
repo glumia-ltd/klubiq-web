@@ -37,6 +37,11 @@ import {
 	TableColumn,
 	DynamicAvatar,
 	DynamicBreadcrumb,
+	DynamicModalProps,
+	DynamicModal,
+	AmenityItem,
+	AmenityCard,
+	getAmenityIcon,
 } from '@klubiq/ui-components';
 import { PROPERTY_CONSTANTS } from '../../helpers/constants';
 import {
@@ -46,12 +51,10 @@ import {
 } from '../../page-tytpes/properties/detail-page.types';
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 import { LeaseType, PropertyDataType } from '../../shared/type';
-import { Breadcrumb } from '../Breadcrumb/index';
-import { useDynamicBreadcrumbs } from '../../hooks/useDynamicBreadcrumbs';
-import { BreadcrumbItem } from '../../context/BreadcrumbContext/BreadcrumbContext';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
 import { ViewList } from '@mui/icons-material';
+import { useTheme } from '@mui/system';
+import UnitForm from '../Forms/UnitForm';
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
@@ -64,15 +67,15 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const location = useLocation();
 	const navigate = useNavigate();
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const { user } = useSelector(getAuthState);
-
+	const theme = useTheme();
 	const currentUUId = location.pathname.split('/')[2]!;
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [routeMap, setRouteMap] = useState({});
 	const [open, setOpen] = useState<boolean>(false);
+	const [openAddUnitDialog, setOpenAddUnitDialog] = useState<boolean>(false);
 	const [leaseTableBodyRows, setLeaseTableBodyRows] = useState<any>([]);
 	const [openArchivePropertyDialog, setOpenArchivePropertyDialog] =
 		useState<boolean>(false);
@@ -203,6 +206,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				tenant: {
 					name: `${tenant.profile.companyName || ''} ${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''}`,
 					image: tenant.profile?.profilePicUrl ?? null,
+					background: theme.palette.mode === 'dark' ? 'dark' : 'light',
 				},
 				phone: tenant.profile?.phoneNumber ?? null,
 				email: tenant.profile?.email ?? '',
@@ -287,6 +291,31 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		return { tableColumns, rows };
 	};
 
+
+	const addUnitModalConfig = (header: string): DynamicModalProps => {
+		return {
+			headerText: header,
+			open: openAddUnitDialog,
+			onClose: () => setOpenAddUnitDialog(false),
+			headerAlign: 'center',
+			contentAlign: 'center',
+			contentDirection: 'column',
+			borderRadius: 2,
+			maxWidth: 'sm',
+			fullScreenOnMobile: true,
+			sx: {
+				height: 'auto',
+			},
+			children: (
+				<UnitForm
+					propertyId={currentProperty?.uuid}
+					categoryId={currentProperty?.category?.id || '1'}
+					onClose={() => setOpenAddUnitDialog(false)}
+				/>
+			),
+		} as DynamicModalProps;
+	};
+
 	const tenantTableData = useMemo(
 		() => getTenantTableData(currentProperty),
 		[currentProperty],
@@ -330,7 +359,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
 		navigate(`/leases/${lease.id}`);
-	const handleAddUnit = () => navigate(`/properties/${currentUUId}/unit`);
+	const handleAddUnit = () => setOpenAddUnitDialog(true);
 
 	const handleInviteTenant = (header?: string) => {
 		navigate(`/tenants/invite-tenant`, {
@@ -400,7 +429,19 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	};
 
 	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
-
+	const getUnitData = (unitNumber: string | undefined) => {
+		return currentProperty?.units?.find(
+			(unit) => unit.unitNumber === unitNumber,
+		);
+	};
+	const getUnitAmenities = () => {
+		if (multiUnitMode && multiUnitNumber) {
+			return getUnitData(multiUnitNumber)?.amenities;
+		} else if(!currentProperty?.isMultiUnit) {
+			return currentProperty?.units?.[0]?.amenities;
+		}
+		return [];
+	};
 	const renderUnitCard = () => {
 		const commonProps = {
 			propertyImage: mainImage?.url,
@@ -425,10 +466,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					numberOfUnits={`${currentProperty?.units?.length}`}
 					rent={getLocaleFormat(
 						user?.orgSettings,
-						+(currentProperty?.units?.[0]?.rentAmount || 0),
+						+(getUnitData(multiUnitNumber)?.rentAmount || 0) || 0,
 						'currency',
 					)}
-					totalArea={`${currentProperty?.units?.[0]?.area?.value} ${currentProperty?.units?.[0]?.area?.unit}`}
+					variant='unit'
+					additionalImages={getUnitData(multiUnitNumber)?.images || []}
+					totalArea={`${getUnitData(multiUnitNumber)?.area?.value} ${getUnitData(multiUnitNumber)?.area?.unit}`}
 				/>
 			);
 		}
@@ -447,23 +490,31 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					+currentProperty?.totalRent || 0,
 					'currency',
 				)}
+				variant='property'
+				marketValue={getLocaleFormat(
+					user?.orgSettings,
+					+currentProperty?.marketValue || 0,
+					'currency',
+				)}
+				sellingPrice={getLocaleFormat(
+					user?.orgSettings,
+					+currentProperty?.sellingPrice || 0,
+					'currency',
+				)}
 				totalArea={
 					currentProperty?.isMultiUnit
 						? ''
 						: `${currentProperty?.area?.value} ${currentProperty?.area?.unit}`
 				}
+				purpose={currentProperty?.purpose?.name}
 			/>
 		);
 	};
 	const renderTabsContent = (tabValue: number) => {
 		return (
-			<Grid item xs={12}>
-				{!multiUnitMode && (
-					<Grid sx={styles.unitInfoCardStyle}>
-						<UnitInfoCard data={unitInfoData} />
-					</Grid>
-				)}
-
+			<Stack direction='column' spacing={2} width={'100%'}>
+				{!multiUnitMode && <UnitInfoCard data={unitInfoData} />}
+				
 				{tabValue === 0 && (
 					<Stack
 						spacing={2}
@@ -472,9 +523,12 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						width={'100%'}
 						justifyContent={'center'}
 					>
-						<Stack spacing={2} direction={'row'}>
-							<Overview initialText={currentProperty?.description} />
-						</Stack>
+						{!multiUnitMode && (
+							<Overview
+								initialText={currentProperty?.description}
+								propertyUuid={currentProperty?.uuid}
+							/>
+						)}
 						<Stack spacing={2} direction={'column'}>
 							{currentProperty?.units?.[0]?.tenants?.length ? (
 								<DynamicTable
@@ -548,7 +602,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						)}
 					</Stack>
 				)}
-			</Grid>
+			</Stack>
 		);
 	};
 	useEffect(() => {
@@ -563,232 +617,182 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				slug: currentProperty?.name || 'property-details',
 				dynamic: true,
 			},
-			'/properties/:id/unit/:id': {
+			'/properties/:id/:id': {
 				path: '/properties/:id/unit/:id',
 				slug: multiUnitNumber || 'unit-details',
 				dynamic: true,
 			},
 		});
-		
 	}, [multiUnitNumber]);
-
-	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Properties',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Properties'
-						onClick={() => navigate(`/properties`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
-				path: '/leases',
-			},
-		};
-
-		if (currentUUId) {
-			newBreadcrumbs['feature-details'] = {
-				label: currentProperty?.name,
-				path: `/properties/${currentUUId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		if (multiUnitNumber) {
-			const unitUUId = location.pathname.split('/')[4]!;
-			const path = `/properties/${currentUUId}/units/${unitUUId}`;
-			newBreadcrumbs['feature-details-sub'] = {
-				label: multiUnitNumber,
-				path,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		updateBreadcrumb(newBreadcrumbs);
-		setRouteMap({
-			'/properties': {
-				path: '/properties',
-				slug: '',
-				icon: <ViewList />,
-			},
-			'/properties/:id': {
-				path: '/properties/:id',
-				slug: currentProperty?.name || 'property-details',
-				dynamic: true,
-			},
-			// '/properties/:id/unit/:id': {
-			// 	path: '/properties/:id/unit/:id',
-			// 	slug: multiUnitNumber || 'unit-details',
-			// 	dynamic: true,
-			// },
-		});
-		// Clear breadcrumbs on unmount
-		return () => {
-			multiUnitMode = false;
-			updateBreadcrumb({});
-		};
-	}, [currentProperty?.name, currentUUId, multiUnitMode]);
+	const amenityCardItems: AmenityItem[] = getUnitAmenities()?.map((amenity: string, idx: number) => ({
+		id: idx,
+		title: amenity,
+		icon: getAmenityIcon(amenity),
+		available: true,
+	})) || [];
 	return (
-		<Grid container spacing={2}>
-			<Grid item xs={12}>
-				<Box>
-					<Breadcrumb />
-				</Box>
+		<>
+			<Stack direction='column' spacing={2} width={'100%'}>
 				<Box>
 					<DynamicBreadcrumb
-						currentPath={`/properties/${currentUUId}`}
+						currentPath={location.pathname.replace(`/unit`, '')}
 						routeMap={routeMap}
 						onNavigate={(path) => navigate(path)}
 					/>
 				</Box>
-			</Grid>
 
-			{!multiUnitMode && (
-				<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
-					<Button
-						ref={anchorRef}
-						variant='klubiqMainButton'
-						onClick={handleToggle}
-						endIcon={<MoreVertIcon />}
-					>
-						Action
-					</Button>
-					<Popper
-						open={open}
-						anchorEl={anchorRef.current}
-						placement='bottom-start'
-						transition
-						disablePortal
-						sx={{ minWidth: '160px', zIndex: 10 }}
-					>
-						{({ TransitionProps, placement }) => (
-							<Grow
-								{...TransitionProps}
-								style={{
-									transformOrigin:
-										placement === 'bottom-start' ? 'left top' : 'left bottom',
-								}}
-							>
-								<Paper>
-									<ClickAwayListener onClickAway={() => setOpen(false)}>
-										<MenuList
-											id='composition-menu'
-											aria-labelledby='composition-button'
-											onKeyDown={handleListKeyDown}
-										>
-											<MenuItem
-												onClick={handleArchiveProperty}
-												sx={{ padding: '10px' }}
-												divider
-												disabled={currentProperty?.isArchived}
+				{!multiUnitMode && (
+					<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
+						<Button
+							ref={anchorRef}
+							variant='klubiqMainButton'
+							onClick={handleToggle}
+							endIcon={<MoreVertIcon />}
+						>
+							Action
+						</Button>
+						<Popper
+							open={open}
+							anchorEl={anchorRef.current}
+							placement='bottom-start'
+							transition
+							disablePortal
+							sx={{ minWidth: '160px', zIndex: 10 }}
+						>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{
+										transformOrigin:
+											placement === 'bottom-start' ? 'left top' : 'left bottom',
+									}}
+								>
+									<Paper>
+										<ClickAwayListener onClickAway={() => setOpen(false)}>
+											<MenuList
+												id='composition-menu'
+												aria-labelledby='composition-button'
+												onKeyDown={handleListKeyDown}
 											>
-												Archive Property
-											</MenuItem>
-											<MenuItem
-												onClick={handleEditProperty}
-												sx={{ padding: '10px' }}
-												divider
-											>
-												Edit Property
-											</MenuItem>
-											<MenuItem
-												onClick={handleDeleteProperty}
-												sx={{ padding: '10px' }}
-											>
-												Delete Property
-											</MenuItem>
-										</MenuList>
-									</ClickAwayListener>
-								</Paper>
-							</Grow>
-						)}
-					</Popper>
-				</Grid>
-			)}
-
-			<Grid item xs={12}>
-				{currentProperty?.purpose?.displayText && (
-					<Chip
-						label={currentProperty?.purpose?.displayText}
-						variant={
-							!currentProperty?.isArchived
-								? currentProperty?.purpose?.name?.toLowerCase() === 'rent'
-									? 'rent'
-									: 'sale'
-								: 'archived'
-						}
-					/>
-				)}
-			</Grid>
-
-			<Grid item xs={12} sx={styles.firstCardContainer}>
-				{renderUnitCard()}
-				{(propertyType === 'Single' || multiUnitMode) && (
-					<TabsComponent
-						handleTabChange={handleTabChange}
-						tabValue={tabValue}
-						allTabs={PROPERTY_CONSTANTS.tabs}
-					/>
-				)}
-			</Grid>
-
-			{propertyType === 'Single' &&
-				(tabValue === 0 || tabValue === 1) &&
-				renderTabsContent(tabValue)}
-
-			{/* Multi Unit Section */}
-			{propertyType === 'Multi' && !multiUnitMode && (
-				<Grid item xs={12}>
-					<Grid sx={styles.unitInfoCardStyle}>
-						<UnitInfoCard data={unitInfoData} />
-					</Grid>
-
-					<Overview initialText={currentProperty?.description} />
-
-					<Grid sx={styles.addfieldStyle}>
-						{currentProperty?.units?.length &&
-							currentProperty?.units?.length > 0 && (
-								<UnitsTable
-									title='Units'
-									handleAdd={handleAddUnit}
-									buttonText='Add Unit'
-									tableBodyRows={currentProperty.units}
-								/>
+												<MenuItem
+													onClick={handleArchiveProperty}
+													sx={{ padding: '10px' }}
+													divider
+													disabled={currentProperty?.isArchived}
+												>
+													Archive Property
+												</MenuItem>
+												<MenuItem
+													onClick={handleEditProperty}
+													sx={{ padding: '10px' }}
+													divider
+												>
+													Edit Property
+												</MenuItem>
+												<MenuItem
+													onClick={handleDeleteProperty}
+													sx={{ padding: '10px' }}
+												>
+													Delete Property
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
 							)}
+						</Popper>
 					</Grid>
+				)}
+
+				<Grid item xs={12}>
+					{currentProperty?.purpose?.displayText && (
+						<Chip
+							label={currentProperty?.purpose?.displayText}
+							variant={
+								!currentProperty?.isArchived
+									? currentProperty?.purpose?.name?.toLowerCase() === 'rent'
+										? 'rent'
+										: 'sale'
+									: 'archived'
+							}
+						/>
+					)}
 				</Grid>
-			)}
 
-			{propertyType === 'Multi' && multiUnitMode && renderTabsContent(tabValue)}
+				<Stack direction='column' spacing={2} width={'100%'}>
+					{renderUnitCard()}
+					{amenityCardItems.length > 0 && (
+					<AmenityCard title={<Typography variant='h4'>Amenities</Typography>} spacing={2} sx={{mt: 2, backgroundColor: ''}} items={amenityCardItems} />
+				)}
+					{(propertyType === 'Single' || multiUnitMode) && (
+						<TabsComponent
+							handleTabChange={handleTabChange}
+							tabValue={tabValue}
+							allTabs={PROPERTY_CONSTANTS.tabs}
+						/>
+					)}
+				</Stack>
 
-			{/* Document Tab */}
-			{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
+				{propertyType === 'Single' &&
+					(tabValue === 0 || tabValue === 1) &&
+					renderTabsContent(tabValue)}
 
-			{/* Dialogs */}
-			<PropertiesActionsPrompts
-				open={openArchivePropertyDialog}
-				progress={progress}
-				title={progress ? 'Archive in progress' : 'Attention!'}
-				content='Are you sure you want to archive this property?'
-				rightButtonContent='Archive Property'
-				handleDialogButtonAction={(e) =>
-					handleArchiveDialogButtonAction(e.target.value)
-				}
-			/>
+				{/* Multi Unit Section */}
+				{propertyType === 'Multi' && !multiUnitMode && (
+					<Stack direction='column' spacing={2} width={'100%'}>
 
-			<PropertiesActionsPrompts
-				open={openDeletePropertyDialog}
-				progress={progress}
-				title={progress ? 'Deleting this property' : 'Delete Property'}
-				content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
-				rightButtonContent='Delete Property'
-				handleDialogButtonAction={(e) =>
-					handleDeleteDialogButtonAction(e.target.value)
-				}
-			/>
-		</Grid>
+						<UnitInfoCard data={unitInfoData} />
+
+						<Overview
+							initialText={currentProperty?.description}
+							propertyUuid={currentProperty?.uuid}
+						/>
+
+						<Grid sx={styles.addfieldStyle}>
+							{currentProperty?.units?.length &&
+								currentProperty?.units?.length > 0 && (
+									<UnitsTable
+										title='Units'
+										handleAdd={handleAddUnit}
+										buttonText='Add Unit'
+										tableBodyRows={currentProperty.units}
+									/>
+								)}
+						</Grid>
+					</Stack>
+				)}
+
+				{propertyType === 'Multi' &&
+					multiUnitMode &&
+					renderTabsContent(tabValue)}
+
+				{/* Document Tab */}
+				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
+
+				{/* Dialogs */}
+				<PropertiesActionsPrompts
+					open={openArchivePropertyDialog}
+					progress={progress}
+					title={progress ? 'Archive in progress' : 'Attention!'}
+					content='Are you sure you want to archive this property?'
+					rightButtonContent='Archive Property'
+					handleDialogButtonAction={(e) =>
+						handleArchiveDialogButtonAction(e.target.value)
+					}
+				/>
+
+				<PropertiesActionsPrompts
+					open={openDeletePropertyDialog}
+					progress={progress}
+					title={progress ? 'Deleting this property' : 'Delete Property'}
+					content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
+					rightButtonContent='Delete Property'
+					handleDialogButtonAction={(e) =>
+						handleDeleteDialogButtonAction(e.target.value)
+					}
+				/>
+			</Stack>
+			<DynamicModal {...addUnitModalConfig('Add Unit')} />
+		</>
 	);
 };

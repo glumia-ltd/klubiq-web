@@ -4,10 +4,9 @@ import HomeIcon from '@mui/icons-material/Home';
 // import ConstructionIcon from '@mui/icons-material/Construction';
 import LogoutIcon from '@mui/icons-material/Logout';
 // import HelpIcon from '@mui/icons-material/Help';
-import SettingsIcon from '@mui/icons-material/Settings';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import PeopleIcon from '@mui/icons-material/People';
-const adminPathList = [
+const userPathList = [
 	{
 		title: 'Dashboard',
 		icon: DashboardIcon,
@@ -28,26 +27,7 @@ const adminPathList = [
 		icon: PeopleIcon,
 		path: '/tenants',
 	},
-	// {
-	// 	title: 'Maintenance',
-	// 	icon: ConstructionIcon,
-	// 	path: '/maintenance',
-	// },
-	// {
-	// 	title: 'Message',
-	// 	icon: EmailIcon,
-	// 	path: '/message',
-	// },
-	// {
-	// 	title: 'Support',
-	// 	icon: HelpIcon,
-	// 	path: '/support',
-	// },
-	{
-		title: 'Settings',
-		icon: SettingsIcon,
-		path: '/settings',
-	},
+	
 	{
 		title: 'Logout',
 		icon: LogoutIcon,
@@ -55,4 +35,4 @@ const adminPathList = [
 	},
 ];
 
-export default adminPathList;
+export default userPathList;

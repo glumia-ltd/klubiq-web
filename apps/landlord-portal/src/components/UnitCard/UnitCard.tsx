@@ -6,15 +6,18 @@ import {
 	Stack,
 	CardContent,
 	CardMedia,
+	useMediaQuery,
+	useTheme,
 } from '@mui/material';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import { Bungalow, HandCoins, FloorPlan } from '../Icons/CustomIcons';
 import { styles } from './style';
 import { Stackedimages } from '../StackedImages/Stackedimages';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { MEASUREMENTS } from '../../helpers/utils';
 import { find } from 'lodash';
 import defaultPropertyImage from '../../assets/images/defaultPropertyImage.png';
+import { DynamicCarousel, DynamicModal, DynamicModalProps } from '@klubiq/ui-components';
 
 type UnitCardPropType = {
 	propertyImage?: string;
@@ -26,6 +29,10 @@ type UnitCardPropType = {
 	totalArea?: string;
 	buildingType?: string;
 	additionalImages: string[];
+	variant?: 'property' | 'unit';
+	marketValue?: string;
+	sellingPrice?: string;
+	purpose?: string;
 };
 
 export const UnitCard: FC<UnitCardPropType> = ({
@@ -38,7 +45,51 @@ export const UnitCard: FC<UnitCardPropType> = ({
 	totalArea,
 	buildingType,
 	additionalImages,
+	variant = 'property',
+	marketValue,
+	sellingPrice,
+	purpose,
 }) => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const [openCarousel, setOpenCarousel] = useState(false);
+	const handleOpenCarousel = () => {
+		setOpenCarousel(true);
+	};
+	const carouselModalConfig = (): DynamicModalProps => {
+		return {
+			open: openCarousel,
+			onClose: () => setOpenCarousel(false),
+			headerAlign: 'center',
+			contentAlign: 'center',
+			contentDirection: 'column',
+			borderRadius: 2,
+			maxWidth: 'xs',
+			fullScreenOnMobile: true,
+			sx: {
+				height: 'auto',
+				width: 'auto',
+				backgroundColor: '#fff',
+		
+			},
+			children:<Box sx={{
+				width: 'auto',
+				height: 'auto',
+				padding: 1,
+			}}>
+				 <DynamicCarousel images={additionalImages.map((image, index) => 
+				({ src: image, alt: `${propertyName}-image-${index}`, caption: `${propertyName} - ${propertyAddress}` }))} 
+				variant='dots'
+				showThumbnails={true}
+				autoPlay={isMobile}
+				interval={isMobile ? 5000 : 0}
+				sx={{
+					paddingBottom: 1,
+				}}
+				/>
+			</Box>
+		} as DynamicModalProps;
+	};
 	return (
 		<>
 			<Card sx={styles.mainCardContainerStyle}>
@@ -64,7 +115,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 									spacing={{ xs: 2, sm: 1 }}
 								>
 									<Stack direction={'column'} spacing={2}>
-										<Typography sx={styles.propertyHeaderText} variant='h2'>
+										<Typography variant='h4'>
 											{propertyName}
 										</Typography>
 										<Typography sx={styles.reducedTextStyle}>
@@ -73,16 +124,18 @@ export const UnitCard: FC<UnitCardPropType> = ({
 										</Typography>
 									</Stack>
 									<Stack direction={'row'} spacing={1}>
-										<Typography variant='h6'>Property ID:</Typography>
+										<Typography variant='h6'>{variant === 'property' ? 'Property ID:' : 'Unit:'}</Typography>
 										<Typography>{propertyId}</Typography>
 									</Stack>
 								</Stack>
 								<Stack
 									direction={{ xs: 'column', sm: 'row' }}
-									spacing={{ xs: 2, sm: 1 }}
+									gap={{ xs: 2, sm: 2 }}
+									flexWrap={'wrap'}
+									alignItems={{xs: 'flex-start', sm: 'center'}}
 									sx={styles.stacks.propertyDetail.dataStack}
 								>
-									<Stack
+									{variant === 'property' && <Stack
 										direction={'row'}
 										spacing={2}
 										sx={{ alignItems: 'center' }}
@@ -93,8 +146,8 @@ export const UnitCard: FC<UnitCardPropType> = ({
 
 											<Typography variant='h6'>{numberOfUnits}</Typography>
 										</Stack>
-									</Stack>
-									<Stack
+									</Stack>}
+									{rent && <Stack
 										direction={'row'}
 										spacing={2}
 										sx={{ alignItems: 'center' }}
@@ -105,7 +158,31 @@ export const UnitCard: FC<UnitCardPropType> = ({
 
 											<Typography variant='h6'>{rent}</Typography>
 										</Stack>
-									</Stack>
+									</Stack>}
+									{purpose?.toLowerCase().includes('sale') && sellingPrice && <Stack
+										direction={'row'}
+										spacing={2}
+										sx={{ alignItems: 'center' }}
+									>
+										<HandCoins />
+										<Stack direction={'column'} spacing={2}>
+											<Typography>Selling Price</Typography>
+
+											<Typography variant='h6'>{sellingPrice}</Typography>
+										</Stack>
+									</Stack>}
+									{purpose?.toLowerCase().includes('sale') && marketValue && <Stack
+										direction={'row'}
+										spacing={2}
+										sx={{ alignItems: 'center' }}
+									>
+										<HandCoins />
+										<Stack direction={'column'} spacing={2}>
+											<Typography>Market Value</Typography>
+
+											<Typography variant='h6'>{marketValue}</Typography>
+										</Stack>
+									</Stack>}
 									{numberOfUnits !== 'Multi' && totalArea && (
 										<Stack
 											direction={'row'}
@@ -145,6 +222,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 											topOffset={8 * index}
 											leftOffset={7 * index}
 											zIndex={additionalImages?.length - index}
+											onClick={() => handleOpenCarousel()}
 										/>
 									);
 								})}
@@ -153,91 +231,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 					</Stack>
 				</Stack>
 			</Card>
+			<DynamicModal {...carouselModalConfig()} />
 		</>
 	);
 };
-
-{
-	/* <Card sx={styles.mainCardContainerStyle}>
-	<Grid >
-		<img
-			src={propertyImage || defaultPropertyImage}
-			style={styles.mainPictureStyle}
-			alt='property picture'
-		/>
-
-		<Grid sx={styles.propertyDetailsStyle}>
-			<Grid sx={styles.propertyHeaderStyle}>
-				<Typography sx={styles.propertyHeaderText} variant='h2'>
-					{propertyName}
-					<Typography sx={styles.reducedTextStyle}>
-						<LocationOnOutlinedIcon />
-						{propertyAddress}
-					</Typography>
-				</Typography>
-
-				<Grid sx={styles.propertyIdStyle}>
-					<Typography variant='h6'>Property ID:</Typography>
-					<Typography>{propertyId}</Typography>
-				</Grid>
-			</Grid>
-
-			<Grid sx={styles.additionalInfoContainer}>
-				<Grid sx={styles.additionalInfo}>
-					<Bungalow />
-					<Grid sx={styles.additionalInfoText}>
-						<Typography>Number of Units</Typography>
-
-						<Typography variant='h6'>{numberOfUnits}</Typography>
-					</Grid>
-				</Grid>
-
-				<Grid sx={styles.additionalInfo}>
-					<HandCoins />
-					<Grid sx={styles.additionalInfoText}>
-						<Typography>Rent</Typography>
-
-						<Typography variant='h6'>{rent}</Typography>
-					</Grid>
-				</Grid>
-
-				{numberOfUnits !== 'Multi' && totalArea && (
-					<Grid sx={styles.additionalInfo}>
-						<FloorPlan />
-						<Grid sx={styles.additionalInfoText}>
-							<Typography>Total Area</Typography>
-
-							<Typography variant='h6'>
-								{totalArea.split(' ')[0]}{' '}
-								{find(MEASUREMENTS, { unit: totalArea.split(' ')[1] })?.symbol}
-							</Typography>
-						</Grid>
-					</Grid>
-				)}
-			</Grid>
-
-			<Grid sx={styles.additionalChipStyle}>
-				<Chip
-					sx={styles.additionalChipText}
-					label={buildingType}
-					variant='propertyType'
-				/>
-			</Grid>
-		</Grid>
-
-		<Box sx={styles.stackedImagesContainer}>
-			{additionalImages.map((property, index) => {
-				return (
-					<Stackedimages
-						key={`${index}-${property}`}
-						image={property}
-						topOffset={8 * index}
-						leftOffset={7 * index}
-						zIndex={additionalImages?.length - index}
-					/>
-				);
-			})}
-		</Box>
-	</Grid>
-</Card>; */
-}

@@ -203,6 +203,7 @@ export interface NextActionButton {
 export interface DynamicTanstackFormProps {
   fields: FormFieldV1[] | FormStep[];
   onSubmit: (values: any) => Promise<any>;
+  onReset?: (values: any) => void;
   initialValues?: Record<string, any>;
   submitButtonText?: string;
   enableReset?: boolean;

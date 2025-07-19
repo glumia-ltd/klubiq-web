@@ -50,9 +50,6 @@ export const styles = {
 		borderRadius: '8px',
 	},
 
-	unitInfoCardStyle: {
-		marginTop: '32px',
-	},
 
 	addfieldStyle: {
 		marginTop: '32px',

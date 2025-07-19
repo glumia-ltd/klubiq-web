@@ -209,9 +209,12 @@ export type UnitType = {
 	unitNumber?: string;
 	totalTenants?: number;
 	tenants?: TenantType[];
+	amenities?: string[];
 };
 
 export type PropertyDataType = {
+	marketValue: any;
+	sellingPrice: any;
 	uuid: string;
 	id: number;
 	name: string;

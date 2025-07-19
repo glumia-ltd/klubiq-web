@@ -11,7 +11,7 @@ export interface AmenityItem {
 }
 
 export interface AmenityCardProps {
-  title?: string;
+  title?: string | ReactNode;
   items: AmenityItem[];
   spacing?: number;
   sx?: SxProps<Theme>;
@@ -87,7 +87,7 @@ export const AmenityCard: React.FC<AmenityCardProps> = ({
         ...sx,
       }}
     >
-      {title && (
+      {title && typeof title === 'string' ? (
         <Typography
           variant="h6"
           sx={{
@@ -97,6 +97,8 @@ export const AmenityCard: React.FC<AmenityCardProps> = ({
         >
           {title}
         </Typography>
+      ) : (
+        <Box sx={{ mb: 3 }}>{title}</Box>
       )}
       <Grid container spacing={spacing}>
         {items.map((item) => (

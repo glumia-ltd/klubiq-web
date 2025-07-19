@@ -1,226 +1,254 @@
-import LeaseFormLayout from '../../../Layouts/LeaseFormLayout';
-import { Grid, Typography, Skeleton, Button } from '@mui/material';
-import { styles } from './style';
-import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
-import Logo from '../../../assets/images/info.svg';
-import { useState, useEffect } from 'react';
-import { consoleDebug } from '../../../helpers/debug-logger';
+import { FC } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Typography, useTheme, Button, Stack } from '@mui/material';
+import { Info } from '@mui/icons-material';
+import { z } from 'zod';
+import { useDispatch, useSelector } from 'react-redux';
+import { screenMessages } from '../../../helpers/screen-messages';
+import {
+	DynamicTanstackFormProps,
+	FormFieldV1,
+	KlubiqFormV1,
+	InputAdornment as InputAdornmentType,
+} from '@klubiq/ui-components';
+import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
 
-const EditLeaseForm = () => {
-	const [loading, setLoading] = useState<boolean>(true);
+import FormLayout from '../../../Layouts/FormLayout';
+import FormSkeleton from '../../../components/skeletons/FormSkeleton';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import {
+	useGetSingleLeaseByIdQuery,
+	useEditLeaseMutation,
+} from '../../../store/LeaseStore/leaseApiSlice';
+import { getCurrencySymbol } from '../../../helpers/utils';
 
-	const validationSchema = yup.object({
-		nickName: yup.string().required('field is required'),
-		// description: yup.string().required('This field is required'),
-		unit: yup.string().required('Select an option'),
-		propertyName: yup.string().required('Select an option'),
-		tenant: yup.string().required('Select an option'),
-		rentAmount: yup.string().required('field is required'),
-		depositAmount: yup.string().required('field is required'),
-		frequency: yup.string().required('field is required'),
-		startDate: yup.string().required('field is required'),
-		endDate: yup.string().required('field is required'),
-	});
+const EditLeaseForm: FC = () => {
+	const theme = useTheme();
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { leaseId: currentLeaseId } = useParams();
+	const { user } = useSelector(getAuthState);
+	const [editLease] = useEditLeaseMutation();
+	const { data: lease, isLoading: isLeaseLoading } = useGetSingleLeaseByIdQuery(
+		{ id: currentLeaseId || '' },
+	);
+	const getUnits = (unitNumber?: string) =>
+		unitNumber ? [{ label: unitNumber, value: unitNumber }] : [];
+	const properties = lease
+		? [
+				{
+					label: lease.propertyName,
+					value: lease.propertyName,
+					units: getUnits(lease.unitNumber),
+				},
+			]
+		: [];
 
-	type formValues = {
-		endDate: string;
-		startDate: string;
-		frequency: string;
-		rentAmount: string;
-		depositAmount: string;
-		nickname: string;
-		propertyName: string;
-		unit: string;
-		tenant: string;
-	};
+	const tenants =
+		lease?.tenants
+			?.filter((tenant) => !!tenant.profile.profileUuid)
+			.map((tenant) => ({
+				label: `${tenant.profile.firstName} ${tenant.profile.lastName}`,
+				value: tenant.profile.profileUuid!,
+				email: tenant.profile.email,
+			})) ?? [];
 
-	const property = [
+	const getUnitsForProperty = (values: any) =>
+		properties.find((p) => p.value === values.propertyId)?.units || [];
+
+	const initialValues = lease
+		? {
+				name: lease.name ?? '',
+				propertyId: lease.id,
+				unitId: lease.id,
+				tenantId: lease.tenants?.[0]?.profile?.profileUuid ?? '',
+				rentAmount: lease.rentAmount,
+				// depositAmount: '',
+				startDate: lease.startDate,
+				endDate: lease.endDate,
+				// frequency: lease.paymentFrequency,
+				rentDueDay: lease.rentDueDay ?? '',
+				propertyName: lease.propertyName,
+				securityDeposit: '',
+				firstPaymentDate: lease.startDate,
+				lateFeeAmount: '',
+				customPaymentFrequency: lease.paymentFrequency,
+			}
+		: {};
+
+	const fields: FormFieldV1[] = [
 		{
-			value: 'A',
-			label: 'A',
+			name: 'name',
+			label: 'Lease Name',
+			type: 'text',
+			required: true,
+			placeholder: 'Enter lease name',
+			validation: {
+				schema: z.string().min(1, { message: 'Required' }),
+			},
 		},
 		{
-			value: 'B',
-			label: 'B',
+			name: 'propertyId',
+			label: 'Property Name',
+			type: 'select',
+			required: true,
+			options: properties,
+		},
+		{
+			name: 'unitId',
+			label: 'Unit',
+			type: 'select',
+			options: getUnitsForProperty,
+		},
+		{
+			name: 'tenantId',
+			label: 'Tenant',
+			type: 'select',
+			required: true,
+			options: tenants,
+		},
+		{
+			name: 'rentAmount',
+			label: 'Rent Amount',
+			type: 'decimal',
+			decimals: 2,
+			required: true,
+			adornment: {
+				prefix: getCurrencySymbol(user?.orgSettings),
+			} as InputAdornmentType,
+		},
+		{
+			name: 'securityDeposit',
+			label: 'Deposit Amount',
+			type: 'decimal',
+			decimals: 2,
+			adornment: {
+				prefix: getCurrencySymbol(user?.orgSettings),
+			} as InputAdornmentType,
+		},
+		{
+			name: 'customPaymentFrequency',
+			label: 'Payment Frequency',
+			type: 'select',
+			required: true,
+			options: ['Monthly', 'Bi-Monthly', 'Annually', 'Weekly', 'Bi-Weekly'].map(
+				(f) => ({ label: f, value: f }),
+			),
+		},
+		{
+			name: 'rentDueDay',
+			label: 'Lease Due Day',
+			type: 'select',
+			options: Array.from({ length: 31 }, (_, i) => ({
+				label: `${i + 1}`,
+				value: i + 1,
+			})),
+		},
+		{
+			name: 'startDate',
+			label: 'Lease Start Date',
+			type: 'date',
+		},
+		{
+			name: 'endDate',
+			label: 'Lease End Date',
+			type: 'date',
+		},
+		{
+			name: 'firstPaymentDueText',
+			type: 'custom',
+			label: '',
+			showIf: (values) => !!values.startDate && !!values.frequency,
+			component: () => (
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					<Info sx={{ fontSize: 16, color: theme.palette.primary.main }} />
+					<Typography variant='body2'>First payment due on </Typography>
+				</Box>
+			),
 		},
 	];
+	const onSubmit = async (values: any) => {
+		if (!lease?.id) return;
+		try {
+			const payload = {
+				leaseId: String(lease.id),
+				body: {
+					name: values.name,
+					// propertyId: values.propertyId,
+					unitId: values.id,
+					// tenantId: values.tenantId,
+					rentAmount: values.rentAmount,
+					// depositAmount: values.depositAmount,
+					startDate: values.startDate,
+					endDate: values.endDate,
+					// frequency: values.frequency,
+					rentDueDay: values.rentDueDay,
+					propertyName: lease.propertyName,
+					securityDeposit: values.depositAmount,
+					firstPaymentDate: values.startDate,
+					lateFeeAmount: '',
+					customPaymentFrequency: values.paymentFrequency,
+				},
+			};
 
-	const onSubmit = async (values: formValues) => {
-		consoleDebug(values, 'val');
+			await editLease(payload).unwrap();
+
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.edit.success,
+					severity: 'info',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+			navigate('/leases');
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: `There was an error editing the lease. 
+					\n${screenMessages.lease.edit.error}`,
+					severity: 'error',
+					isOpen: true,
+					duration: 7000,
+				}),
+			);
+		}
 	};
 
-	const formik = useFormik({
-		initialValues: {
-			endDate: '',
-			startDate: '',
-			frequency: '',
-			rentAmount: '',
-			depositAmount: '',
-			nickname: '',
-			propertyName: '',
-			unit: '',
-			tenant: '',
-		},
-		validationSchema,
+	const formConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		submitButtonText: 'Save Lease',
+		fields,
+		initialValues,
 		onSubmit,
-	});
-	useEffect(() => {
-		setTimeout(() => setLoading(false), 20000);
-	}, []);
+		enableReset: true,
+		resetButtonText: 'Cancel',
+		showBackdrop: true,
+		backdropText: 'Saving lease...',
+	};
+
 	return (
-		<LeaseFormLayout
-			Header='LandMark Estate > Single unit'
-			sx={styles.leaseCard}
-		>
-			{loading ? (
-				<Grid container spacing={1} sx={styles.content}>
-					<Grid item xs={12}>
-						<Skeleton variant='text' height={25} width='50%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={styles.skeleton}>
-						<Skeleton variant='text' height={25} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={styles.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={styles.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={styles.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={12} sx={styles.skeleton}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>
-					<Grid item xs={6} sx={styles.skeleton}>
-						<Skeleton variant='text' height={20} width='40%' />
-						<Skeleton variant='rectangular' height={30} width='100%' />
-					</Grid>{' '}
-					<Grid item xs={6}></Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} />
-					</Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<Skeleton variant='text' height={20} width='50%' />
-
-						<Skeleton variant='rectangular' height={30} />
-					</Grid>
-					<Grid item xs={12}>
-						<Skeleton variant='text' sx={styles.skeleton} width='90%' />
-					</Grid>
-				</Grid>
-			) : (
-				<Grid container spacing={1} sx={styles.content}>
-					<Grid item xs={12}>
-						<ControlledTextField
-							name='nickname'
-							label='Lease Nickname'
-							formik={formik}
-							type='text'
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledSelect
-							name='propertyName'
-							label='Property Name'
-							type='text'
-							formik={formik}
-							options={property}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledSelect
-							name='unit'
-							label='Unit '
-							type='text'
-							formik={formik}
-							options={property}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledSelect
-							name='tenant'
-							label='Tenant'
-							type='text'
-							formik={formik}
-							options={property}
-						/>
-					</Grid>
-					<Grid xs={12}>
-						<ControlledTextField
-							name='rentAmount'
-							label='Rent Amount '
-							formik={formik}
-							type='text'
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledTextField
-							name='depositAmount'
-							label='Deposit Amount'
-							type='text'
-							formik={formik}
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						<ControlledTextField
-							name='frequency'
-							label='Payment Frequency *'
-							formik={formik}
-							type='text'
-						/>
-					</Grid>
-					<Grid item xs={6}></Grid>
-
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<ControlledTextField
-							name='startDate'
-							label='Lease Start Date '
-							formik={formik}
-							type='date'
-						/>
-					</Grid>
-					<Grid item xs={6} sm={6} md={3} lg={3}>
-						<ControlledTextField
-							name='endDate'
-							label='Lease End Date '
-							formik={formik}
-							type='date'
-						/>
-					</Grid>
-					<Grid item xs={12} sx={styles.infobox}>
-						<img src={Logo} alt='logo' style={styles.infoimg} />
-
-						<Typography variant='subtitle2' sx={styles.infotypo}>
-							The first rent payment will be due on 24 April 2024 and then every
-							year on the same date
-						</Typography>
-					</Grid>
-					<Grid item xs={12} sx={styles.buttonGrid}>
-						<Button variant='klubiqTextButton'>Cancel </Button>
-						<Button type='submit' variant='klubiqMainButton'>
-							Save{' '}
-						</Button>
-					</Grid>
-				</Grid>
-			)}
-		</LeaseFormLayout>
+		<>
+			<Stack direction='row' alignItems='center' mb='15px'>
+				<Button
+					variant='text'
+					startIcon={<ArrowLeftIcon />}
+					onClick={() => navigate('/leases')}
+				>
+					Edit Lease{' '}
+				</Button>
+			</Stack>
+			<FormLayout Header='Edit Lease'>
+				{isLeaseLoading ? (
+					<FormSkeleton rows={fields.length} columns={[1]} />
+				) : (
+					<Box sx={{ width: '100%', p: 2 }}>
+						<KlubiqFormV1 {...formConfig} />
+					</Box>
+				)}
+			</FormLayout>
+		</>
 	);
 };
 
