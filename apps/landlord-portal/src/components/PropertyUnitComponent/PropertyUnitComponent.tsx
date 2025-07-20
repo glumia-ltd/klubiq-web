@@ -13,6 +13,8 @@ import {
 	Link,
 	Box,
 	TextField,
+	Backdrop,
+	CircularProgress,
 } from '@mui/material';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -24,11 +26,7 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import {
-	HouseIcon,
-	TenantIcon,
-	VacantHomeIcon,
-} from '../Icons/CustomIcons';
+import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
@@ -57,7 +55,7 @@ import {
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 import { LeaseType, PropertyDataType, UnitImageType } from '../../shared/type';
 import { statusColors } from '../../page-tytpes/leases/list-page.type';
-import {ViewList } from '@mui/icons-material';
+import { ViewList } from '@mui/icons-material';
 import { useTheme } from '@mui/system';
 import UnitForm from '../Forms/UnitForm';
 import { useDeleteUnitMutation } from '../../store/PropertyPageStore/propertyApiSlice';
@@ -331,7 +329,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					<UnitForm
 						propertyId={currentProperty?.uuid}
 						categoryId={currentProperty?.category?.id!}
-						unit={multiUnitNumber && unitId ? getUnitData(multiUnitNumber, unitId) : undefined}
+						unit={
+							multiUnitNumber && unitId
+								? getUnitData(multiUnitNumber, unitId)
+								: undefined
+						}
 						onClose={() => setOpenUnitDialog(false)}
 					/>
 				</Box>
@@ -498,7 +500,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	);
 
 	const handleDeleteUnitConfirmation = async () => {
-		if(confirmUnitNumber === multiUnitNumber){
+		if (confirmUnitNumber === multiUnitNumber) {
 			console.log('confirmUnitNumber', confirmUnitNumber);
 			console.log('multiUnitNumber', multiUnitNumber);
 			const resp = await deleteUnit({
@@ -506,10 +508,9 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				unitIds: [unitId],
 			}).unwrap();
 
-			if(resp){
+			if (resp) {
 				console.log('resp', resp);
 				setOpenDeleteUnitDialog(false);
-				navigate(`/properties/${currentUUId}`);
 				return resp;
 			}
 		}
@@ -630,7 +631,10 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
 	const handleToggleUnitAction = () =>
 		setOpenUnitAction((prevOpen) => !prevOpen);
-	const getUnitData = (unitNumber: string | undefined, unitId: string | undefined) => {
+	const getUnitData = (
+		unitNumber: string | undefined,
+		unitId: string | undefined,
+	) => {
 		return currentProperty?.units?.find(
 			(unit) => unit.unitNumber === unitNumber && unit.id === unitId,
 		);
@@ -671,7 +675,11 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						'currency',
 					)}
 					variant='unit'
-					additionalImages={getUnitData(multiUnitNumber, unitId)?.images?.map((image: UnitImageType) => image.url) || []}
+					additionalImages={
+						getUnitData(multiUnitNumber, unitId)?.images?.map(
+							(image: UnitImageType) => image.url,
+						) || []
+					}
 					totalArea={`${getUnitData(multiUnitNumber, unitId)?.area?.value} ${getUnitData(multiUnitNumber, unitId)?.area?.unit}`}
 				/>
 			);
@@ -1060,11 +1068,22 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			</Stack>
 			<DynamicModal
 				{...unitModalConfig(
-					unitDialogType === 'add' ? 'Add Unit' : `Edit Unit: ${multiUnitNumber}`,
+					unitDialogType === 'add'
+						? 'Add Unit'
+						: `Edit Unit: ${multiUnitNumber}`,
 				)}
 			/>
 			<DynamicModal {...deleteUnitModalConfig()} />
-			<DynamicModal {...uploadUnitImagesModalConfig()} />	
+			<DynamicModal {...uploadUnitImagesModalConfig()} />
+			<Backdrop
+				sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+				open={isDeletingUnit}
+			>
+				<CircularProgress color='error' />
+				<Typography variant='h6' color='error'>
+					Deleting unit...
+				</Typography>
+			</Backdrop>
 		</>
 	);
 };
