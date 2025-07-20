@@ -22,6 +22,7 @@ export const dashboardEndpoints = {
 	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
 	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
+	getActivities: (orgId: string, page: number = 1, limit: number = 20) => `/activities/${orgId}?page=${page}&limit=${limit}`,
 };
 
 export const propertiesEndpoints = {
@@ -39,6 +40,8 @@ export const propertiesEndpoints = {
 		`/public/org/${orgId}/properties`,
 	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	addUnit: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
+	editUnit: (propertyUuid: string, unitId: string) => `/properties/${propertyUuid}/units/${unitId}`,
+	deleteUnits: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
 };
 
 export const organizationEndpoints = {

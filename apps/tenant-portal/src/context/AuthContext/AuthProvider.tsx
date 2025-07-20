@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	const [signOut] = useSignOutMutation();
 
 	useEffect(() => {
-		console.log('AuthProvider mounted');
 		const handleAuth = async () => {
 			if (user) {
 				dispatch(saveUser({ user, isAuthenticated: true }));

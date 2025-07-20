@@ -9,6 +9,8 @@ interface ApiResponseConfig {
     tagsToInvalidate?: any[];
     successDuration?: number;
     errorDuration?: number;
+    onSuccess?: () => void;
+    onError?: () => void;
 }
 
 export const handleApiResponse = async (
@@ -27,6 +29,9 @@ export const handleApiResponse = async (
         if (config.tagsToInvalidate) {
             invalidateMultipleTags(dispatch, config.tagsToInvalidate);
         }
+        if (config.onSuccess) {
+            config.onSuccess();
+        }
         return result;
     } catch (error) {
         console.error('API Error:', (error as any).error);
@@ -37,6 +42,9 @@ export const handleApiResponse = async (
             isOpen: true,
             duration: config.errorDuration || 7000
         }));
+        if (config.onError) {
+            config.onError();
+        }
         throw error;
     }
 };

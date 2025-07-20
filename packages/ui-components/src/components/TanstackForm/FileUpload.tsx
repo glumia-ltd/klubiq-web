@@ -148,9 +148,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		// If we have files with storage results, preserve them even if value is empty
 		const hasStorageResults = localFiles.some((file) => file.storageResult);
 		// If we have storage results, always preserve the files
-		const filesWaitingForUpload = localFiles.length - form?.getFieldValue(fieldName)?.length;
+		const filesWaitingForUpload =
+			localFiles.length - (form?.getFieldValue(fieldName) || []).length;
 		form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
-		localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
+		localStorage.setItem(
+			'filesWaitingForUpload',
+			filesWaitingForUpload.toString(),
+		);
 		if (hasStorageResults) {
 			setHasUploadedFiles(true);
 			return;
@@ -159,13 +163,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		// Handle new files from value prop
 		if (value) {
 			// Get uploaded files from form if available
+			console.log('fieldName', fieldName);
+			console.log('form', form);
 			const formUploadedFiles = form?.getFieldValue(fieldName) || [];
-
+			console.log('formUploadedFiles', formUploadedFiles);
 			const filesWithPreview = Array.from(value).map((file) => {
 				// First try to find a matching file in form values
-				const formFile = formUploadedFiles.find((f: any) =>
-					f.externalId.includes(file.name),
-				);
+
+				const formFile = Array.isArray(formUploadedFiles)
+					? formUploadedFiles.find((f: any) =>
+							f.externalId?.includes(file.name),
+						)
+					: undefined;
 
 				if (formFile) {
 					// Restore storage result from form value
@@ -443,9 +452,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		try {
 			setIsDeleting(true);
 			setDeleteProgress(0);
-			const uploadedVersion = form
-				?.getFieldValue(fieldName)
-				?.find((file: any) => file.externalId.includes(fileToDelete.name));
+			const uploadedVersion = (form?.getFieldValue(fieldName) || []).find(
+				(file: any) => file.externalId.includes(fileToDelete.name),
+			);
 			if (uploadedVersion) {
 				setDeleteProgress(10);
 				await handleServerFilesDelete(index, uploadedVersion.externalId);
@@ -480,9 +489,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			onChange(dataTransfer.files);
 			setLocalFiles(newFiles);
 			// If we have storage results, always preserve the files
-			const filesWaitingForUpload = localFilesCount - form?.getFieldValue(fieldName)?.length;
+			const filesWaitingForUpload =
+				localFilesCount - (form?.getFieldValue(fieldName) || []).length;
 			form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
-			localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
+			localStorage.setItem(
+				'filesWaitingForUpload',
+				filesWaitingForUpload.toString(),
+			);
 			clearInterval(deleteProgressInterval);
 			setDeleteProgress(100);
 			setSnackbar({
@@ -627,7 +640,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// This was causing localFiles to be cleared
 			// onChange(dataTransfer.files);
 			// If we have storage results, always preserve the files
-			
+
 			clearInterval(progressInterval);
 			setUploadProgress(100);
 
@@ -702,7 +715,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<Card variant='outlined'>
 			<CardContent>
-				{form?.getFieldValue(fieldName)?.length === 0 && (
+				{(form?.getFieldValue(fieldName) || []).length === 0 && (
 					<>
 						<Typography variant='subtitle1' gutterBottom>
 							{subtitle}
@@ -916,7 +929,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				open={snackbar.open}
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
-				anchorOrigin={{ vertical: isMobile ? 'bottom' : 'top', horizontal: isMobile ? 'center' : 'right' }}
+				anchorOrigin={{
+					vertical: isMobile ? 'bottom' : 'top',
+					horizontal: isMobile ? 'center' : 'right',
+				}}
 				sx={{
 					'& .MuiAlert-root': {
 						width: '100%',

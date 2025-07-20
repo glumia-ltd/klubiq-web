@@ -40,7 +40,6 @@ import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 import { NotificationData } from '../../shared/global-types';
 import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
 import { useNavigate } from 'react-router-dom';
@@ -112,7 +111,6 @@ const NavBar = () => {
 		setNotificationPopperOpen(false);
 	};
 	const handleSignOut = async () => {
-		resetStore();
 		await userSignOut({}).unwrap();
 		navigate('/login');
 	};

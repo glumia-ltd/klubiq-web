@@ -8,8 +8,8 @@ import {
 	ActivityItem,
 	ActivityCard,
 	AmenityItem,
-	amenityIconMap,
 	AmenityCard,
+	getAmenityIcon,
 } from '@klubiq/ui-components';
 import {
 	CalendarMonth,
@@ -72,7 +72,7 @@ const TenantDashboard = () => {
 	const amenityCardItems: AmenityItem[] = leaseInsights?.amenities?.map((amenity, idx) => ({
 		id: idx,
 		title: amenity,
-		icon: amenityIconMap[amenity],
+		icon: getAmenityIcon(amenity),
 		available: true,
 	})) || [];
 

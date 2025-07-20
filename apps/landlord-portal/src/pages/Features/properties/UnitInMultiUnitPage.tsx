@@ -39,7 +39,7 @@ const UnitInMultiUnitPage = () => {
 	return isCurrentPropertyLoading ? (
 		<UnitSkeleton currentProperty={propertyWithSingleUnit} />
 	) : (
-			<PropertyUnitComponent currentProperty={propertyWithSingleUnit} multiUnitMode={true} multiUnitNumber={multiUnitNumber || '' } />
+			<PropertyUnitComponent currentProperty={propertyWithSingleUnit} multiUnitMode={true} multiUnitNumber={multiUnitNumber} unitId={unitUuid} />
 		);
 };
 
