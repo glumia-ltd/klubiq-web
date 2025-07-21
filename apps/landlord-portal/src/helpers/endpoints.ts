@@ -57,6 +57,7 @@ export const leaseEndpoints = {
 	editLease: (leaseid: string) => `/leases/${leaseid}`,
 	deleteLease: (leaseid: string) => `/leases/${leaseid}`,
 	archiveLease: (leaseid: string) => `/leases/${leaseid}/archive`,
+	terminateLease: (leaseid: string) => `/leases/terminate/${leaseid}`,
 };
 export const tenantEndpoints = {
 	getTenantMetaData: () => '/public/tenant-metadata',

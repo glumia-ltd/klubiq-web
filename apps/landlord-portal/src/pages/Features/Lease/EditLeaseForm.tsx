@@ -22,17 +22,23 @@ import {
 	useEditLeaseMutation,
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { getCurrencySymbol } from '../../../helpers/utils';
+export type  EditLeaseFormProps = {
+    leaseId: string;
+	onClose: () => void;
+}
 
-const EditLeaseForm: FC = () => {
+
+const EditLeaseForm = ({leaseId}: EditLeaseFormProps) => {
+ 
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { leaseId: currentLeaseId } = useParams();
 	const { user } = useSelector(getAuthState);
 	const [editLease] = useEditLeaseMutation();
 	const { data: lease, isLoading: isLeaseLoading } = useGetSingleLeaseByIdQuery(
-		{ id: currentLeaseId || '' },
+		{ id: leaseId || '' },
 	);
+console.log('lease', lease);
 	const getUnits = (unitNumber?: string) =>
 		unitNumber ? [{ label: unitNumber, value: unitNumber }] : [];
 	const properties = lease
@@ -64,12 +70,12 @@ const EditLeaseForm: FC = () => {
 				unitId: lease.id,
 				tenantId: lease.tenants?.[0]?.profile?.profileUuid ?? '',
 				rentAmount: lease.rentAmount,
+				propertyName: lease.propertyName,
 				// depositAmount: '',
 				startDate: lease.startDate,
 				endDate: lease.endDate,
 				// frequency: lease.paymentFrequency,
 				rentDueDay: lease.rentDueDay ?? '',
-				propertyName: lease.propertyName,
 				securityDeposit: '',
 				firstPaymentDate: lease.startDate,
 				lateFeeAmount: '',
