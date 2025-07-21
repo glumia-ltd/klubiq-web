@@ -19,6 +19,7 @@ import {
 	MenuItem,
 	Select,
 	TextField,
+	Stack,
 } from '@mui/material';
 import { AmenitiesDialog } from '../CustomFormComponents/AmenitiesDialog';
 import {
@@ -29,6 +30,7 @@ import {
 import { CategoryMetaDataType, UnitType } from '../../shared/type';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
+import FormLayout from '../../Layouts/FormLayout';
 
 interface UnitFormProps {
 	propertyId: string;
@@ -319,7 +321,6 @@ const UnitForm: FC<UnitFormProps> = ({
 		}
 	}, [unit]);
 
-	console.log('unitData', unitData);
 	const { amenities, categories, isLoading } = queryResult;
 	const amenitiesOptions = mapOptions(amenities);
 
@@ -419,7 +420,6 @@ const UnitForm: FC<UnitFormProps> = ({
 						changedFields[key] = value;
 					}
 				});
-				console.log('changedFields', changedFields);
 				const response = await editUnit({
 					propertyUuid: propertyId,
 					unitId: unitData.id,
@@ -483,7 +483,7 @@ const UnitForm: FC<UnitFormProps> = ({
 		backdropText: unitData ? 'Updating unit...' : 'Adding unit...',
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
-		verticalAlignment: 'top',
+		verticalAlignment: 'center',
 	};
 
 	return (
@@ -495,15 +495,7 @@ const UnitForm: FC<UnitFormProps> = ({
 					sx={{ width: '100%', p: 2 }}
 				/>
 			) : (
-				<Box
-					sx={{
-						display: 'flex',
-						flexDirection: 'column',
-						width: '100%',
-						height: '80%',
-					}}
-				>
-					<Box sx={{ height: '15px' }}></Box>
+				<Box sx={{ height: '100%', width: '100%', maxHeight: '650px', paddingTop: 2 }}>
 					<KlubiqFormV1 {...unitFormConfig} />
 				</Box>
 			)}

@@ -184,23 +184,14 @@ export const propertyApiSlice = createApi({
 				method: 'DELETE',
 				body: unitIds,
 			}),
-			async onQueryStarted(
-				{ propertyUuid, unitIds },
-				{ dispatch, queryFulfilled },
-			) {
-				await handleApiResponse(queryFulfilled, dispatch, {
-					successMessage: `Unit${unitIds.length > 1 ? 's' : ''} deleted successfully`,
-					errorMessage: `Failed to delete unit${unitIds.length > 1 ? 's' : ''}`,
-					tagsToInvalidate: [{ type: API_TAGS.PROPERTY, uuid: propertyUuid },API_TAGS.PROPERTY, API_TAGS.DASHBOARD_METRICS, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.NOTIFICATION],
-				});
-			},
-			// invalidatesTags: (_result, _error, { propertyUuid }) => [
-			// 	{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
-			// 	API_TAGS.PROPERTY,
-			// 	API_TAGS.DASHBOARD_METRICS,
-			// 	API_TAGS.DASHBOARD_REVENUE_REPORT,
-			// 	API_TAGS.NOTIFICATION,
-			// ],
+			
+			invalidatesTags: (_result, _error, { propertyUuid }) => [
+				{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
+			],
 		}),
 	}),
 });

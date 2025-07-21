@@ -142,7 +142,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	});
 	const [hasUploadedFiles, setHasUploadedFiles] = useState<boolean>(false);
 	const [isError, setIsError] = useState<boolean>(false);
-
+	const isFile = (file: any): file is File => {
+		return (
+			typeof window !== 'undefined' &&
+			typeof window.File !== 'undefined' &&
+			file instanceof window.File
+		);
+	};
 	// Initialize and sync localFiles with form value
 	useEffect(() => {
 		// If we have files with storage results, preserve them even if value is empty
@@ -163,21 +169,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		// Handle new files from value prop
 		if (value) {
 			// Get uploaded files from form if available
-			console.log('fieldName', fieldName);
-			console.log('form', form);
 			const formUploadedFiles = form?.getFieldValue(fieldName) || [];
-			console.log('formUploadedFiles', formUploadedFiles);
 			const filesWithPreview = Array.from(value).map((file) => {
 				// First try to find a matching file in form values
-
 				const formFile = Array.isArray(formUploadedFiles)
-					? formUploadedFiles.find((f: any) =>
-							f.externalId?.includes(file.name),
+					? formUploadedFiles.find(
+							(f: any) =>
+								f.externalId?.includes(file.name) ||
+								('externalId' in file &&
+									f.externalId === file.externalId &&
+									'url' in file &&
+									f.url === file.url),
 						)
 					: undefined;
 
-				if (formFile) {
+				if (formFile && isFile(file)) {
+					//console.log('formFile found:', formFile);
 					// Restore storage result from form value
+
 					const fileWithPreview = file as FileWithPreview;
 					fileWithPreview.preview = formFile.url;
 					fileWithPreview.isFavorite = formFile.isMain;
@@ -189,6 +198,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 						original_filename: formFile.fileName,
 					};
 					return fileWithPreview;
+				} else if (formFile && !isFile(file) && 'externalId' in file && 'url' in file) {
+					return {
+						preview: formFile.url,
+						isFavorite: formFile.isMain,
+						storageResult: {
+							secure_url: formFile.url,
+							url: formFile.url,
+							public_id: formFile.externalId,
+							bytes: formFile.fileSize,
+							original_filename: formFile.fileName,
+						},
+					} as FileWithPreview;
 				}
 
 				// If no form file found, check local files
@@ -217,7 +238,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 					}
 					fileWithPreview.isFavorite = false;
 				}
-
 				return fileWithPreview;
 			});
 
@@ -254,6 +274,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 			// If we don't have a preview URL, create one
 			if (!file.preview) {
+				//console.log('file is not preview: ', file);
 				const blobUrl = URL.createObjectURL(file);
 				currentBlobUrls.add(blobUrl);
 				return {
@@ -428,6 +449,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 	const handleServerFilesDelete = async (index: number, publicId: string) => {
 		try {
+			//console.log('handleServerFilesDelete: ', form, fieldName, publicId);
 			if (!onDelete || !form || !fieldName || !publicId) {
 				throw new Error('Missing required parameters for server file deletion');
 			}
@@ -438,6 +460,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				const updatedServerFiles = serverFiles.filter(
 					(file: any, i: number) => i !== index,
 				);
+				//console.log('updatedServerFiles: ', updatedServerFiles);
 				form?.setFieldValue(fieldName, updatedServerFiles);
 				setDeleteProgress(40);
 			} else {
@@ -448,13 +471,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		}
 	};
 	const handleDelete = async (index: number) => {
+		//console.log('form?.getFieldValue(fieldName) before delete: ', form?.getFieldValue(fieldName));
 		const fileToDelete = localFiles[index];
+		//console.log('fileToDelete: ', fileToDelete);
 		try {
 			setIsDeleting(true);
 			setDeleteProgress(0);
 			const uploadedVersion = (form?.getFieldValue(fieldName) || []).find(
-				(file: any) => file.externalId.includes(fileToDelete.name),
+				(file: any) => file.externalId.includes(fileToDelete.name) || file.externalId === fileToDelete.storageResult?.public_id,
 			);
+			//console.log('uploadedVersion: ', uploadedVersion);
 			if (uploadedVersion) {
 				setDeleteProgress(10);
 				await handleServerFilesDelete(index, uploadedVersion.externalId);
@@ -471,7 +497,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// Remove the file from local state
 			const dataTransfer = new DataTransfer();
 			const newFiles = [...localFiles];
-
+			//console.log('newFiles: ', newFiles);
 			// Clean up the blob URL before removing the file
 			if (newFiles[index].preview) {
 				URL.revokeObjectURL(newFiles[index].preview);
@@ -480,15 +506,19 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			newFiles.splice(index, 1);
 
 			newFiles.forEach((file) => {
-				if (file instanceof File) {
+				if (isFile(file)) {
 					dataTransfer.items.add(file);
 				}
 			});
 			const localFilesCount = newFiles.length;
 			// Update form value
-			onChange(dataTransfer.files);
+			if(dataTransfer.files?.length > 0){
+				onChange(dataTransfer.files);
+			}
 			setLocalFiles(newFiles);
 			// If we have storage results, always preserve the files
+			//console.log('form?.getFieldValue(fieldName) after delete: ', form?.getFieldValue(fieldName));
+			//console.log('localFiles: ', localFiles);
 			const filesWaitingForUpload =
 				localFilesCount - (form?.getFieldValue(fieldName) || []).length;
 			form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);

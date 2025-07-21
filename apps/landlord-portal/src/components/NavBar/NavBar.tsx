@@ -105,6 +105,14 @@ const NavBar = () => {
 
 	const handleNotificationPopperToggle = () => {
 		setNotificationPopperOpen((prevOpen) => !prevOpen);
+		const unreadNotifications = notificationData?.filter((item) => !item.isRead);
+		if (unreadNotifications && unreadNotifications.length > 0) {
+			readNotifications({
+				notificationIds: unreadNotifications.map((item) => item.id),
+				isDelivered: false,
+				isRead: true,
+			}).unwrap();
+		}
 	};
 
 	const handleNotificationPopperClose = () => {
@@ -155,13 +163,6 @@ const NavBar = () => {
 	useEffect(() => {}, [notificationData]);
 
 	const handleNotificationAction = async (item: NotificationData) => {
-		const readPayload: ReadNotificationType = {
-			notificationIds: [item.id],
-			isRead: true,
-			isDelivered: false,
-		};
-		await readNotifications(readPayload).unwrap();
-
 		if (
 			item?.type.toLowerCase().includes('deleted') ||
 			item?.title.toLowerCase().includes('deleted') ||

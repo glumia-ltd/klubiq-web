@@ -6,34 +6,25 @@ import {
 } from '@klubiq/ui-components';
 
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { MEASUREMENTS } from '../../helpers/utils';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
-import FormSkeleton from '../skeletons/FormSkeleton';
-
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/system/useMediaQuery';
 import { z } from 'zod';
 import {
 	Box,
-	InputAdornment,
-	MenuItem,
-	Select,
-	TextField,
 } from '@mui/material';
-import { AmenitiesDialog } from '../CustomFormComponents/AmenitiesDialog';
 import {
-	useAddUnitMutation,
 	useEditUnitMutation,
-	useGetPropertiesMetaDataQuery,
 } from '../../store/PropertyPageStore/propertyApiSlice';
-import { CategoryMetaDataType, UnitImageType, UnitType } from '../../shared/type';
-import { useDispatch } from 'react-redux';
+import { UnitImageType, UnitType } from '../../shared/type';
+import { useDispatch, useSelector } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
+import { useDeleteFileMutation, useUploadImagesMutation } from '../../store/GlobalStore/globalApiSlice';
+import { consoleError, consoleInfo } from '../../helpers/debug-logger';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
 
 interface UnitFormProps {
 	propertyId: string;
-	unit?: UnitType;
+	unit: UnitType;
 	onClose?: () => void;
 }
 const IMAGE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB
@@ -43,49 +34,40 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 	unit,
 	onClose,
 }) => {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	const [unitData, setUnitData] = useState<UnitType | undefined>(undefined);
+	const { user } = useSelector(getAuthState);
+	const [uploadImages] = useUploadImagesMutation();
+	const [deleteFile] = useDeleteFileMutation();
+	const [unitData, setUnitData] = useState<UnitType>(unit);
 	const [editUnit] = useEditUnitMutation();
 	const dispatch = useDispatch();
 
-
-	useEffect(() => {
-		if (unit) {
-			setUnitData(unit);
-		} else {
-			setUnitData(undefined);
-		}
-	}, [unit]);
 
 	const getUnitFields = () => {
 		const unitFields: FormFieldV1[] = [
 			{
 				name: 'images',
 				type: 'file',
-				label: '',
+				label: 'UNIT IMAGES',
 				validation: {
 					schema: z.any().optional(),
 				},
 				fileConfig: {
-					subtitle: 'UNIT IMAGES',
+					subtitle: 'Add or delete images of this unit',
 					caption: 'Drag and drop or click to upload images of this unit',
 					accept: 'image/*',
 					multiple: true,
 					maxSize: IMAGE_SIZE_LIMIT,
-					onUpload: async (formData) => {
-						console.log('formData', formData);
-						return [];
-					},
-					onDelete: async (publicId) => {
-						console.log('publicId', publicId);
-						return true;
-					},
+					maxFavorites: 1,
+					onUpload: uploadUnitImages,
+					onDelete: deleteUnitImage,
 					uploadButtonText: 'Upload Images',
 					tooltipMessages: {
 						upload: 'Upload unit images',
 						sizeLimit: `Maximum file size is ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB`,
+						favorite: 'Mark as cover photo',
+						unfavorite: 'Unmark as cover photo',
 						delete: 'Delete image',
+						maxFavoritesReached: 'You can only have one cover photo',
 					},
 				},
 				customComponent: (fieldApi, fieldConfig, form) => (
@@ -106,6 +88,26 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 			...unitFields,
 		];
 	};
+	const uploadUnitImages = async (formData: FormData) => {
+		if(user?.organizationUuid){
+			formData.append('organizationUuid', user?.organizationUuid);
+		}
+		if(user?.organization){
+			formData.append('organization', user?.organization);
+		}
+		formData.append('rootFolder', 'properties');
+		return await uploadImages(formData).unwrap();
+	}
+	const deleteUnitImage = async (fileId: string) => {
+		try {
+			const response = await deleteFile({ publicId: fileId }).unwrap();
+			consoleInfo('Delete property image response', response);
+			return true;
+		} catch (error) {
+			consoleError('Error deleting unit image', error);
+			throw error;
+		}
+	}
 	const unitImages = (unit: UnitType | undefined) => {
 		return unit?.images?.map((image: UnitImageType) => ({
 			publicId: image.externalId,
@@ -124,6 +126,35 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 	const onSubmit = async (values: any) => {
 		try {
 			console.log('values', values);
+			if(values.images.length > 0){
+				const body = values.images.map((image: any) => {
+					return {
+						externalId: image.externalId,
+						url: image.url,
+						fileName: image.fileName,
+						fileSize: image.fileSize,
+						isMain: image.isMain,
+					}
+				});
+				const response = await editUnit({
+					propertyUuid: propertyId,
+					unitId: unitData.id!,
+					data: {
+						images: body,
+					},
+				}).unwrap();
+				dispatch(
+					openSnackbar({
+						message: screenMessages.unit.edit.success,
+						severity: 'success',
+						isOpen: true,
+						duration: 5000,
+					}),
+				);
+				onClose?.();
+				return response;
+			}
+			throw new Error('No images uploaded');
 		} catch (error) {
 			const errorMessage = (error as any)?.message;
 			dispatch(
@@ -144,20 +175,18 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 
 	const unitFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
-		// submitButtonText: unitData ? 'Update Unit' : 'Add Unit',
-		// resetButtonText: 'Cancel',
-		// enableReset: true,
+		submitButtonText: 'Save',
+		resetButtonText: 'Cancel',
+		enableReset: true,
 		fields: unitFormFields,
 		initialValues: unitData || initialValues,
 		onSubmit,
-		// onReset,
+		onReset,
 		showBackdrop: true,
 		backdropText: 'Uploading unit images...',
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
-		hideSubmitButton: true,
-		
 	};
 
 	return (
