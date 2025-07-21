@@ -645,7 +645,8 @@ const LeaseDetails = () => {
 						leaseId={currentLeaseId}
 						onClose={() => {
 							setOpenEditLease(false);
-							refetchLeaseData(); // update after save
+							refetchLeaseData(); 
+							
 						}}
 					/>
 				}

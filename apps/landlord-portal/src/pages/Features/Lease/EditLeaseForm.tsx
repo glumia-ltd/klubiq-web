@@ -22,14 +22,12 @@ import {
 	useEditLeaseMutation,
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { getCurrencySymbol } from '../../../helpers/utils';
-export type  EditLeaseFormProps = {
-    leaseId: string;
+export type EditLeaseFormProps = {
+	leaseId: string;
 	onClose: () => void;
-}
+};
 
-
-const EditLeaseForm = ({leaseId}: EditLeaseFormProps) => {
- 
+const EditLeaseForm = ({ leaseId }: EditLeaseFormProps) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -38,9 +36,10 @@ const EditLeaseForm = ({leaseId}: EditLeaseFormProps) => {
 	const { data: lease, isLoading: isLeaseLoading } = useGetSingleLeaseByIdQuery(
 		{ id: leaseId || '' },
 	);
-console.log('lease', lease);
+	console.log('lease', lease);
 	const getUnits = (unitNumber?: string) =>
 		unitNumber ? [{ label: unitNumber, value: unitNumber }] : [];
+
 	const properties = lease
 		? [
 				{
@@ -66,15 +65,13 @@ console.log('lease', lease);
 	const initialValues = lease
 		? {
 				name: lease.name ?? '',
-				propertyId: lease.id,
-				unitId: lease.id,
+				propertyId: lease.propertyName, // assuming you're using propertyName as value
+				unitId: lease.unitNumber, // should match the unit select option value
 				tenantId: lease.tenants?.[0]?.profile?.profileUuid ?? '',
-				rentAmount: lease.rentAmount,
+				rentAmount: Number(lease.rentAmount), // ensure numeric
 				propertyName: lease.propertyName,
-				// depositAmount: '',
 				startDate: lease.startDate,
 				endDate: lease.endDate,
-				// frequency: lease.paymentFrequency,
 				rentDueDay: lease.rentDueDay ?? '',
 				securityDeposit: '',
 				firstPaymentDate: lease.startDate,
@@ -150,7 +147,11 @@ console.log('lease', lease);
 				label: `${i + 1}`,
 				value: i + 1,
 			})),
+			showIf: (values) =>
+				values.customPaymentFrequency === 'Monthly' ||
+				values.customPaymentFrequency === 'Bi-Monthly',
 		},
+
 		{
 			name: 'startDate',
 			label: 'Lease Start Date',
@@ -181,14 +182,10 @@ console.log('lease', lease);
 				leaseId: String(lease.id),
 				body: {
 					name: values.name,
-					// propertyId: values.propertyId,
 					unitId: values.id,
-					// tenantId: values.tenantId,
 					rentAmount: values.rentAmount,
-					// depositAmount: values.depositAmount,
 					startDate: values.startDate,
 					endDate: values.endDate,
-					// frequency: values.frequency,
 					rentDueDay: values.rentDueDay,
 					propertyName: lease.propertyName,
 					securityDeposit: values.depositAmount,
@@ -232,29 +229,20 @@ console.log('lease', lease);
 		resetButtonText: 'Cancel',
 		showBackdrop: true,
 		backdropText: 'Saving lease...',
+		horizontalAlignment: 'right',
+		buttonLoadingText: 'Saving...',
 	};
 
 	return (
-		<>
-			<Stack direction='row' alignItems='center' mb='15px'>
-				<Button
-					variant='text'
-					startIcon={<ArrowLeftIcon />}
-					onClick={() => navigate('/leases')}
-				>
-					Edit Lease{' '}
-				</Button>
-			</Stack>
-			<FormLayout Header='Edit Lease'>
-				{isLeaseLoading ? (
-					<FormSkeleton rows={fields.length} columns={[1]} />
-				) : (
-					<Box sx={{ width: '100%', p: 2 }}>
-						<KlubiqFormV1 {...formConfig} />
-					</Box>
-				)}
-			</FormLayout>
-		</>
+		<Box sx={{ width: '100%' }}>
+			{isLeaseLoading ? (
+				<FormSkeleton rows={fields.length} columns={[1]} />
+			) : (
+				<Box sx={{ width: '100%', mt: 60 }}>
+					<KlubiqFormV1 {...formConfig} />
+				</Box>
+			)}
+		</Box>
 	);
 };
 
