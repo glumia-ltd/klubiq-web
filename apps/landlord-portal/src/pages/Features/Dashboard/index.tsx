@@ -629,7 +629,7 @@ const DashBoard = () => {
 										maxRevenue={revenueReport?.maxRevenue || 0}
 										xAxisData={revenueReport?.revenueChart?.xAxisData}
 										currencySymbol={
-											getCurrencySymbol(user?.orgSettings) as string
+											getCurrencySymbol(user.orgSettings?.settings) as string
 										}
 									/>
 								)}

@@ -469,10 +469,7 @@ export const CreateProperty = () => {
 			formData.append('organization', user?.organization);
 		}
 		formData.append('rootFolder', 'properties');
-		consoleLog('Uploading property images', formData);
-		const response = await uploadImages(formData).unwrap();
-		consoleInfo('Uploading property images response', response);
-		return response;
+		return await uploadImages(formData).unwrap();
 	}
 	const deletePropertyImage = async (fileId: string) => {
 		try {
@@ -610,7 +607,7 @@ export const CreateProperty = () => {
 							formatType: 'decimal',
 							decimals: 2,
 							adornment: {
-								prefix: getCurrencySymbol(user?.orgSettings),
+								prefix: getCurrencySymbol(user.orgSettings?.settings),
 							} as InputAdornmentType,
 							showIf: (values) => {
 								const selectedPurpose = purposes?.find(
@@ -627,7 +624,7 @@ export const CreateProperty = () => {
 							formatType: 'decimal',
 							decimals: 2,
 							adornment: {
-								prefix: getCurrencySymbol(user?.orgSettings),
+								prefix: getCurrencySymbol(user.orgSettings?.settings),
 							} as InputAdornmentType,
 							width: '100%',
 							showIf: (values) => {

@@ -1,24 +1,15 @@
-import { Grid, Breadcrumbs, Button, Chip, Skeleton } from '@mui/material';
+import { Breadcrumbs, Chip, Skeleton, Box, Stack } from '@mui/material';
 // import { Container } from '@mui/system';
-import { styles } from '../PropertyUnitComponent/style';
 // import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../Overview/Overview';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useState } from 'react';
 import UnitCardSkeleton from '../UnitCard/UnitCardSkeleton';
 import InfoCardSkeleton from '../UnitInfoComponent/InfoCardSkeleton';
 import FieldCardSkeleton from '../AddFieldsComponent/FieldCardSkeleton';
 import TableSkeleton from '../TenantAndLeaseTable/TableSkeleton';
-import {
-	HouseIcon,
-	TenantIcon,
-	VacantHomeIcon,
-	HomeIcon,
-} from '../Icons/CustomIcons';
-import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
-import { useNavigate } from 'react-router-dom';
+import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
 import { PropertyDataType } from '../../shared/type';
 import SharedStyles from '../../styles/shared-style';
 
@@ -29,21 +20,13 @@ type UnitComponentType = {
 	leaseTableBodyRows?: any;
 };
 
-const allTabs = ['Overview', 'Lease', 'Document'];
+const allTabs = ['Overview', 'Lease'];
 
 export const UnitSkeleton: FC<UnitComponentType> = ({
 	currentProperty,
 	tenantTableBodyRows,
-	leaseTableBodyRows,
 }) => {
-	const navigate = useNavigate();
 	const [tabValue, setTabValue] = useState<number>(0);
-
-	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
-
-	const handleHomeClick = () => {
-		navigate(-1);
-	};
 
 	const unitInfoData = [
 		{
@@ -70,8 +53,8 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 	return (
 		// <Container maxWidth={'xl'} sx={styles.container}>
 		<>
-			<Grid>
-				<Grid>
+			<Stack direction='column' spacing={2} width={'100%'}>
+				<Stack>
 					<Breadcrumbs
 						separator={
 							<ArrowForwardIosIcon
@@ -84,101 +67,58 @@ export const UnitSkeleton: FC<UnitComponentType> = ({
 						aria-label='breadcrumb'
 						sx={SharedStyles.breadCrumbStyle}
 					>
-						<HomeIcon sx={SharedStyles.iconStyle} onClick={handleHomeClick} />
+						<Skeleton variant='rectangular' width='30px' height='10px' />
 
 						<Skeleton variant='rectangular' width='90px' height='10px' />
 					</Breadcrumbs>
-				</Grid>
-				<Grid sx={styles.actionButtonContainerStyle}>
-					<Button variant='klubiqMainButton'>
-						<Skeleton variant='rectangular' width='30px' height='10px' />
-						<MoreVertIcon />
-					</Button>
-				</Grid>
+				</Stack>
+				<Stack direction='row' justifyContent='flex-end' marginTop='3rem'>
+					<Skeleton variant='rectangular' width='100px' height='40px' />
+				</Stack>
 				{currentProperty?.purpose ? (
-						<Chip
+					<Chip
 						label={currentProperty?.purpose?.displayText || 'For sale'}
 						variant={
 							currentProperty?.purpose?.name?.toLowerCase() === 'rent'
 								? 'rent'
 								: 'sale'
 						}
-					/>) : (<Skeleton width='50px' height='20px' />) }
-
-				<Grid sx={styles.firstCardContainer}>
-					<UnitCardSkeleton
-						numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
 					/>
-
-					{/* Render conditionally based on property type */}
-
-					{propertyType === 'Single' && (
-						<TabsComponent
-							handleTabChange={handleTabChange}
-							tabValue={tabValue}
-							allTabs={allTabs}
-						/>
-					)}
-				</Grid>
-
-				{/* SINGLE UNIT OVERVIEW AND LEASE CONTENTS */}
-				{propertyType === 'Single' && (tabValue === 0 || tabValue === 1) && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<InfoCardSkeleton data={unitInfoData} />
-						</Grid>
-
-						<Overview initialText={currentProperty?.description} />
-
-						{/* Single unit table and add cards */}
-
-						{
-							<Grid sx={styles.addfieldStyle}>
-								{tabValue !== 1 && (
-									<>
-										{tenantTableBodyRows?.length > 0 && (
-											<TableSkeleton tableBodyRows={tenantTableBodyRows} />
-										)}
-
-										{!tenantTableBodyRows?.length && <FieldCardSkeleton />}
-									</>
-								)}
-
-								{!leaseTableBodyRows?.length && <FieldCardSkeleton />}
-							</Grid>
-						}
-					</Grid>
+				) : (
+					<Box mb={1}>
+						<Skeleton width='50px' height='30px' />
+					</Box>
 				)}
+				<UnitCardSkeleton
+					numberOfUnits={currentProperty?.isMultiUnit ? 'Multi' : 'Single'}
+				/>
+
+				<Stack
+					spacing={2}
+					mt={2}
+					direction={'column'}
+					width={'100%'}
+					justifyContent={'center'}
+				>
+					<InfoCardSkeleton data={unitInfoData} />
+
+					<Overview
+						initialText={currentProperty?.description}
+						propertyUuid={''}
+					/>
+					<TabsComponent
+						handleTabChange={handleTabChange}
+						tabValue={tabValue}
+						allTabs={allTabs}
+					/>
+					<FieldCardSkeleton />
+					<FieldCardSkeleton />
+					<TableSkeleton tableBodyRows={tenantTableBodyRows} />
+					<TableSkeleton tableBodyRows={currentProperty?.units} />
+				</Stack>
 
 				{/* Multi unit */}
-
-				{propertyType === 'Multi' && (
-					<Grid>
-						<Grid sx={styles.unitInfoCardStyle}>
-							<InfoCardSkeleton data={unitInfoData} />
-						</Grid>
-
-						<Overview initialText={currentProperty?.description} />
-
-						<Grid sx={styles.addfieldStyle}>
-							{currentProperty?.units && currentProperty?.units?.length > 0 && (
-								<TableSkeleton tableBodyRows={currentProperty?.units} />
-							)}
-							{currentProperty?.units &&
-							currentProperty?.units?.length > 0 ? null : (
-								<FieldCardSkeleton />
-							)}
-						</Grid>
-					</Grid>
-				)}
-
-				{/* MAINTENANCE TAB */}
-
-
-				{/* DOCUMENT TAB */}
-
-				{tabValue === 3 && <DocumentTableComponent documentTableData={[]} />}
-			</Grid>
+			</Stack>
 		</>
 		// </Container>
 	);

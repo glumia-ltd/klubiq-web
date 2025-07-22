@@ -2,13 +2,14 @@ export const styles = {
 	overviewStyle: {
 		display: 'flex',
 		flexDirection: 'column',
-		marginTop: '32px',
-		padding: '0px 24px',
+		borderRadius: 2,
+		// marginTop: '32px',
+		// padding: '0px 24px',
 	},
-	overviewHeader: {
-		alignItems: 'center',
-		gap: '8px',
-	},
+	// overviewHeader: {
+	// 	alignItems: 'center',
+	// 	gap: '8px',
+	// },
 	editImageStyle: {
 		cursor: 'pointer',
 	},

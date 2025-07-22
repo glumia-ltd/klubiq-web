@@ -203,6 +203,7 @@ export interface NextActionButton {
 export interface DynamicTanstackFormProps {
   fields: FormFieldV1[] | FormStep[];
   onSubmit: (values: any) => Promise<any>;
+  onReset?: (values: any) => void;
   initialValues?: Record<string, any>;
   submitButtonText?: string;
   enableReset?: boolean;
@@ -235,6 +236,7 @@ export interface DynamicTanstackFormProps {
   enableErrorAlert?: boolean;
   errorAlertTitle?: string | (() => string);
   errorAlertMessage?: string | (() => string);
+  hideSubmitButton?: boolean;
 }
 // For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
 export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };

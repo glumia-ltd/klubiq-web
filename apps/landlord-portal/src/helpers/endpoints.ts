@@ -22,6 +22,7 @@ export const dashboardEndpoints = {
 	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
 	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
+	getActivities: (orgId: string, page: number = 1, limit: number = 20) => `/activities/${orgId}?page=${page}&limit=${limit}`,
 };
 
 export const propertiesEndpoints = {
@@ -37,6 +38,10 @@ export const propertiesEndpoints = {
 	editProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	getOrgPropertiesViewList: (orgId: string) =>
 		`/public/org/${orgId}/properties`,
+	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
+	addUnit: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
+	editUnit: (propertyUuid: string, unitId: string) => `/properties/${propertyUuid}/units/${unitId}`,
+	deleteUnits: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
 };
 
 export const organizationEndpoints = {
@@ -49,8 +54,13 @@ export const leaseEndpoints = {
 	getLease: (leaseId: number | string) => `/leases/${leaseId}`,
 	addLease: () => '/leases',
 	getUnitLeases: (unitId: number | string) => `/leases/unit/${unitId}`,
-	addNewTenantToLease: (leaseId: number | string) => `/leases/${leaseId}/invite-tenant`,
+	addNewTenantToLease: (leaseId: number | string) =>
+		`/leases/${leaseId}/invite-tenant`,
 	addTenants: (leaseId: number | string) => `/leases/${leaseId}/add-tenants`,
+	editLease: (leaseid: string) => `/leases/${leaseid}`,
+	deleteLease: (leaseid: string) => `/leases/${leaseid}`,
+	archiveLease: (leaseid: string) => `/leases/${leaseid}/archive`,
+	terminateLease: (leaseid: string) => `/leases/terminate/${leaseid}`,
 };
 export const tenantEndpoints = {
 	getTenantMetaData: () => '/public/tenant-metadata',

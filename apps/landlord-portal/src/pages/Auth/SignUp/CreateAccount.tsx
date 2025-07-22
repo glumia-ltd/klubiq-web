@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography, useTheme } from '@mui/material';
 import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
 import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
 import { useFormik } from 'formik';
@@ -23,12 +23,18 @@ import bgillustration from '../../../assets/images/undraw_town_re_2ng5-removebg-
 import { PasswordStrengthBar } from '../../../components/PasswordStrengthBar/PasswordStrengthBar';
 import { useGetRolesQuery } from '../../../store/GlobalStore/globalApiSlice';
 import { consoleLog } from '../../../helpers/debug-logger';
+import logo from '../../../assets/images/logo-1.png';
+import logoText from '../../../assets/images/logo-text-2.png';
+import lightLogo from '../../../assets/images/logo-2.png';
+import lightLogoText from '../../../assets/images/logo-text-1.png';
+
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState<boolean>(false);
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
 	const { data: rolesData } = useGetRolesQuery();
+	const theme = useTheme();
 
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
@@ -65,7 +71,9 @@ const CreateAccount: React.FC = () => {
 		country: string | undefined;
 	};
 	// Add error handling for role
-    const role = rolesData ? find(rolesData, ['name', 'Organization_Owner']) : null;
+	const role = rolesData
+		? find(rolesData, ['name', 'Organization_Owner'])
+		: null;
 
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password, firstName, lastName, companyName, country } =
@@ -102,7 +110,7 @@ const CreateAccount: React.FC = () => {
 						message: passwordMessage,
 						severity: 'warning',
 						isOpen: true,
-						duration:5000
+						duration: 5000,
 					}),
 				);
 
@@ -198,6 +206,25 @@ const CreateAccount: React.FC = () => {
 				<Grid container sx={styles.mainContainer} spacing={0.5}>
 					<Grid container sx={styles.formContainer}>
 						<Grid item xs={12} sm={12} md={12} lg={12} sx={styles.headerGrid}>
+							<Stack
+								direction='row'
+								justifyContent='flex-start'
+								alignItems='center'
+								gap={2}
+								mb={2}
+								sx={{ width: '100%' }}
+							>
+								<img
+									src={theme.palette.mode === 'dark' ? logo : lightLogo}
+									alt='logo'
+									style={{ width: '10%', height: 'auto' }}
+								/>
+								<img
+									src={theme.palette.mode === 'dark' ? logoText : lightLogoText}
+									alt='logo'
+									style={{ width: '25%', height: 'auto' }}
+								/>
+							</Stack>
 							<Typography variant='h2' sx={styles.title}>
 								Create your Klubiq account
 							</Typography>
@@ -215,14 +242,14 @@ const CreateAccount: React.FC = () => {
 								Sign up and get 30 days free trial.
 							</Typography>
 						</Grid>
-						<Grid item sm={12} xs={12} lg={12}>
+						<Grid item sm={12} xs={12} lg={12} mb={1}>
 							<Stack direction={'row'} sx={styles.nameStack}>
 								<ControlledTextField
 									sx={styles.inputStyle}
 									name='firstName'
 									label='First Name'
 									type='text'
-									placeholder='Enter your first'
+									placeholder='Enter your first name'
 									autoComplete='given-name'
 									formik={formik}
 								/>
@@ -237,7 +264,7 @@ const CreateAccount: React.FC = () => {
 								/>
 							</Stack>
 						</Grid>
-						<Grid item sm={12} xs={12} lg={12}>
+						<Grid item sm={12} xs={12} lg={12} mb={1}>
 							<ControlledTextField
 								name='companyName'
 								label='Company Name'
@@ -248,7 +275,7 @@ const CreateAccount: React.FC = () => {
 							/>
 						</Grid>
 						{isGloballyAvailable && (
-							<Grid item sm={12} xs={12} lg={12}>
+							<Grid item sm={12} xs={12} lg={12} mb={1}>
 								<ControlledSelect
 									name='country'
 									label='Select Country'
@@ -261,7 +288,7 @@ const CreateAccount: React.FC = () => {
 								/>
 							</Grid>
 						)}
-						<Grid item sm={12} xs={12} lg={12}>
+						<Grid item sm={12} xs={12} lg={12} mb={1}>
 							<ControlledTextField
 								name='email'
 								label='Email '
@@ -272,7 +299,7 @@ const CreateAccount: React.FC = () => {
 							/>
 						</Grid>
 
-						<Grid item sm={12} xs={12} lg={12}>
+						<Grid item sm={12} xs={12} lg={12} mb={1}>
 							<ControlledPasswordField
 								name='password'
 								label='Password'
@@ -290,14 +317,7 @@ const CreateAccount: React.FC = () => {
 							/>
 						</Grid>
 
-						<Typography
-							sx={{
-								fontWeight: 500,
-								textAlign: 'center',
-								width: '498px',
-								lineHeight: '22px',
-							}}
-						>
+						<Typography variant='body1' textAlign='left' sx={{ width: '100%' }}>
 							<span>By creating an account you are agreeing to our </span>
 							<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
 							<span> and </span>
@@ -325,7 +345,12 @@ const CreateAccount: React.FC = () => {
 									Sign Up
 								</LoadingSubmitButton>
 							) : (
-								<Button fullWidth variant='klubiqMainButton' type='submit' disableRipple>
+								<Button
+									fullWidth
+									variant='klubiqMainButton'
+									type='submit'
+									disableRipple
+								>
 									Sign Up
 								</Button>
 							)}
@@ -342,7 +367,7 @@ const CreateAccount: React.FC = () => {
 								marginTop: '1.2rem',
 							}}
 						>
-							<Typography>
+							<Typography textAlign='left'>
 								Already have an account?{' '}
 								<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
 							</Typography>

@@ -3,9 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
-// import { screenMessages } from '../../helpers/screen-messages';
-// import { handleApiResponse } from '../../helpers/apiResponseHandler';
-// import { invalidateMultipleTags } from '../tags-invalidator';
+
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
@@ -43,7 +41,7 @@ export const propertyApiSlice = createApi({
 				method: 'GET',
 			}),
 			providesTags: (_result, _error, { uuid }) => [
-				{ type: API_TAGS.PROPERTY, id: uuid },
+				{ type: API_TAGS.PROPERTY, uuid: uuid },
 			],
 		}),
 
@@ -67,7 +65,7 @@ export const propertyApiSlice = createApi({
 				method: 'PUT',
 			}),
 			invalidatesTags: (_result, _error, { uuid }) => [
-				{ type: API_TAGS.PROPERTY, id: uuid },
+				{ type: API_TAGS.PROPERTY, uuid: uuid },
 				API_TAGS.PROPERTY,
 				API_TAGS.DASHBOARD_METRICS,
 				API_TAGS.DASHBOARD_REVENUE_REPORT,
@@ -88,7 +86,7 @@ export const propertyApiSlice = createApi({
 				},
 			}),
 			invalidatesTags: (_result, _error, { uuid }) => [
-				{ type: API_TAGS.PROPERTY, id: uuid },
+				{ type: API_TAGS.PROPERTY, uuid: uuid },
 				API_TAGS.PROPERTY,
 				API_TAGS.DASHBOARD_METRICS,
 				API_TAGS.DASHBOARD_REVENUE_REPORT,
@@ -103,7 +101,94 @@ export const propertyApiSlice = createApi({
 				body: data,
 			}),
 			invalidatesTags: (_result, _error, { uuid }) => [
-				{ type: API_TAGS.PROPERTY, id: uuid },
+				{ type: API_TAGS.PROPERTY, uuid: uuid },
+			],
+		}),
+		patchProperty: builder.mutation<any, { uuid: string; data: any }>({
+			query: ({ uuid, data }) => ({
+				url: propertiesEndpoints.patchProperty(uuid),
+				method: 'PATCH',
+				body: data,
+			}),
+		}),
+		addUnit: builder.mutation<any, { propertyUuid: string; data: any }>({
+			query: ({ propertyUuid, data }) => ({
+				url: propertiesEndpoints.addUnit(propertyUuid),
+				method: 'POST',
+				body: data,
+			}),
+			invalidatesTags: (_result, _error, { propertyUuid }) => [
+				{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
+		editUnit: builder.mutation<
+			any,
+			{ propertyUuid: string; unitId: string; data: any }
+		>({
+			query: ({ propertyUuid, unitId, data }) => ({
+				url: propertiesEndpoints.editUnit(propertyUuid, unitId),
+				method: 'PATCH',
+				body: data,
+			}),
+			invalidatesTags: (_result, _error, { propertyUuid }) => [
+				{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
+			],
+			// Add optimistic updates
+			async onQueryStarted(
+				{ propertyUuid, unitId, data },
+				{ dispatch, queryFulfilled },
+			) {
+				try {
+					await queryFulfilled;
+					// Optimistically update the cache
+					dispatch(
+						propertyApiSlice.util.updateQueryData(
+							'getSinglePropertyByUUID',
+							{ uuid: propertyUuid },
+							(draft) => {
+								if (draft?.units) {
+									const unitIndex = draft.units.findIndex(
+										(unit: any) => unit.id === unitId,
+									);
+									if (unitIndex !== -1) {
+										draft.units[unitIndex] = {
+											...draft.units[unitIndex],
+											...data,
+										};
+									}
+								}
+							},
+						),
+					);
+				} catch {
+					// If the mutation fails, the cache will be invalidated and refetched
+				}
+			},
+		}),
+		deleteUnit: builder.mutation<
+			any,
+			{ propertyUuid: string; unitIds: string[] }
+		>({
+			query: ({ propertyUuid, unitIds }) => ({
+				url: propertiesEndpoints.deleteUnits(propertyUuid),
+				method: 'DELETE',
+				body: unitIds,
+			}),
+			
+			invalidatesTags: (_result, _error, { propertyUuid }) => [
+				{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.NOTIFICATION,
 			],
 		}),
 	}),
@@ -126,4 +211,8 @@ export const {
 	useArchivePropertyMutation,
 	useDeletePropertyMutation,
 	useEditPropertyMutation,
+	usePatchPropertyMutation,
+	useAddUnitMutation,
+	useEditUnitMutation,
+	useDeleteUnitMutation,
 } = propertyApiSlice;

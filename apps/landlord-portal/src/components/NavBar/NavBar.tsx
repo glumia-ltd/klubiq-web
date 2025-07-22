@@ -40,9 +40,7 @@ import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
 import { consoleDebug } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 import { NotificationData } from '../../shared/global-types';
-import { ReadNotificationType } from '../../store/NotificationStore/NotificationType';
 import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
@@ -106,13 +104,20 @@ const NavBar = () => {
 
 	const handleNotificationPopperToggle = () => {
 		setNotificationPopperOpen((prevOpen) => !prevOpen);
+		const unreadNotifications = notificationData?.filter((item) => !item.isRead);
+		if (unreadNotifications && unreadNotifications.length > 0) {
+			readNotifications({
+				notificationIds: unreadNotifications.map((item) => item.id),
+				isDelivered: false,
+				isRead: true,
+			}).unwrap();
+		}
 	};
 
 	const handleNotificationPopperClose = () => {
 		setNotificationPopperOpen(false);
 	};
 	const handleSignOut = async () => {
-		resetStore();
 		await userSignOut({}).unwrap();
 		navigate('/login');
 	};
@@ -157,13 +162,6 @@ const NavBar = () => {
 	useEffect(() => {}, [notificationData]);
 
 	const handleNotificationAction = async (item: NotificationData) => {
-		const readPayload: ReadNotificationType = {
-			notificationIds: [item.id],
-			isRead: true,
-			isDelivered: false,
-		};
-		await readNotifications(readPayload).unwrap();
-
 		if (
 			item?.type.toLowerCase().includes('deleted') ||
 			item?.title.toLowerCase().includes('deleted') ||

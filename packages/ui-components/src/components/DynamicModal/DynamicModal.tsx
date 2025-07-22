@@ -141,9 +141,9 @@ export const DynamicModal: React.FC<DynamicModalProps> = ({
 						aria-label='close'
 						onClick={onClose}
 						sx={{
-							position: 'absolute',
-							right: 8,
-							top: 8,
+							// position: 'absolute',
+							// right: 8,
+							// top: 8,
 							color: (theme) => theme.palette.grey[500],
 						}}
 						size='large'

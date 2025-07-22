@@ -9,7 +9,7 @@ interface GroupedAvatarProps {
   max?: number
   size?: 'small' | 'medium' | 'large'
   spacing?: number
-  variant?: 'circular' | 'rounded' | 'square'
+  variant?: 'circular' | 'square'
 }
 
 const GroupedAvatar = ({

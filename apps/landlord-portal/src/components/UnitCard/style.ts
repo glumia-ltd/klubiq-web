@@ -1,6 +1,5 @@
 export const styles = {
 	mainCardContainerStyle: {
-		marginTop: '24px',
 		borderRadius: '8px',
 		padding: '16px',
 		// color:'primary.main'
@@ -11,8 +10,8 @@ export const styles = {
 		padding: '16px',
 	},
 	skelPic: {
-		minWidth: '182px',
-		minHeight: '182px',
+		minWidth: '100px',
+		minHeight: '100px',
 	},
 	mainPictureStyle: {
 		maxHeight: '182px',

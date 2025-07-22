@@ -14,27 +14,27 @@ import { DateStyle } from "../../helpers/utils";
 		hour12: true,
 	};
 	const tableSx: DynamicTableColors = {
-		headerBg: theme.palette.background.paper,
+		headerBg: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.background.paper,
 		headerColor: theme.palette.text.primary,
 		rowBg: 'transparent',
 		rowHoverBg: theme.palette.action.hover,
-		borderColor: 'transparent',
+		borderColor:  'transparent',
 		cellColor: theme.palette.text.secondary,
-		tableBorderColor: 'transparent',
-		cardBorderColor: 'transparent',
-		headerBorderColor: 'transparent',
+		tableBorderColor: theme.palette.divider,
+		cardBorderColor: theme.palette.mode === 'dark' ? theme.palette.divider : '',
+		headerBorderColor: theme.palette.divider,
 		cardBgColor: theme.palette.mode === 'dark' ? '#161616' : '#fff',
 	};
 	const tableStyles: DynamicTableStyles = {
 		borderStyle: 'none',
-		borderRadius: 0,
-		borderWidth: 0,
+		borderRadius: 2,
+		borderWidth: 2,
 		paperElevation: 0,
 		buttonVariant: 'klubiqTextButton',
 		titleVariant: 'h4',
-		titleFontWeight: 700,
+		titleFontWeight: 600,
 		headerVariant: 'body1',
-		headerFontWeight: 400,
+		headerFontWeight: 500,
 		cellAlign: 'left',
 	};
 

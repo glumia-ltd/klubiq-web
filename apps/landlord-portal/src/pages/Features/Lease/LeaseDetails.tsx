@@ -15,7 +15,11 @@ import {
 	useAddTenantsMutation,
 	useGetOrgPropertiesViewListQuery,
 	useGetSingleLeaseByIdQuery,
+	useDeleteLeaseMutation,
+	useArchiveLeaseMutation,
+	useTerminateLeaseMutation,
 } from '../../../store/LeaseStore/leaseApiSlice';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
 	DateStyle,
@@ -24,10 +28,7 @@ import {
 } from '../../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
-import { Breadcrumb } from '../../../components/Breadcrumb';
+import { ViewList } from '@mui/icons-material';
 import { TenantDialog } from '../../../components/CustomFormComponents/TenantDialog';
 import {
 	DynamicTanstackFormProps,
@@ -37,13 +38,22 @@ import {
 	PageDetail,
 	LeaseStatus,
 	AvatarItem,
+	DynamicBreadcrumb,
 } from '@klubiq/ui-components';
 import { UserProfile } from '../../../shared/auth-types';
-import { HourglassBottom, Payments, PendingActions, People, Timeline, Today } from '@mui/icons-material';
-import { consoleLog } from '../../../helpers/debug-logger';
+import {
+	HourglassBottom,
+	Payments,
+	PendingActions,
+	People,
+	Timeline,
+	Today,
+} from '@mui/icons-material';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { screenMessages } from '../../../helpers/screen-messages';
-
+import { consoleLog } from '../../../helpers/debug-logger';
+import LeaseActionsPrompts from '../../../components/Dialogs/LeaseActionPrompt';
+import EditLeaseForm from './EditLeaseForm';
 function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 	return (
 		<TenantDialog
@@ -91,7 +101,9 @@ const useMenuStatus = (status?: string, isArchived?: boolean) => ({
 		status !== 'Terminated' && status !== 'Expired' && status !== 'Archived',
 	canArchive: !isArchived,
 	canEdit: true,
-	canTerminate: status !== 'Terminated',
+	canDelete: true,
+	canTerminate: status !== 'Terminated' && status !== 'Expired',
+	canRenew: status !== 'Active' && status !== 'Expiring',
 });
 
 const LeaseDetails = () => {
@@ -99,10 +111,22 @@ const LeaseDetails = () => {
 	const navigate = useNavigate();
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
+	const [archiveLease] = useArchiveLeaseMutation();
+	const [deleteLease] = useDeleteLeaseMutation();
+	const [terminateLease] = useTerminateLeaseMutation();
+
 	const [open, setOpen] = useState<boolean>(false);
 	const [openAddTenants, setOpenAddTenants] = useState<boolean>(false);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
+	const [openEditLease, setOpenEditLease] = useState<boolean>(false);
+
 	const [addTenants] = useAddTenantsMutation();
+	const [openArchiveLeaseDialog, setOpenArchiveLeaseDialog] =
+		useState<boolean>(false);
+	const [openDeleteLeaseDialog, setOpenDeleteLeaseDialog] =
+		useState<boolean>(false);
+	const [openTerminateLeaseDialog, setOpenTerminateLeaseDialog] =
+		useState<boolean>(false);
+	const [routeMap, setRouteMap] = useState({});
 	const timeDateOptions = {
 		dateStyle: DateStyle.FULL,
 		hour12: true,
@@ -120,7 +144,7 @@ const LeaseDetails = () => {
 			headerAlign: 'center',
 			contentAlign: 'center',
 			contentDirection: 'column',
-			borderRadius: 1,
+			borderRadius: 2,
 			maxWidth: 'sm',
 			fullScreenOnMobile: true,
 			children: <KlubiqFormV1 {...addTenantsFormConfig} />,
@@ -143,22 +167,25 @@ const LeaseDetails = () => {
 	const handleToggle = () => setOpen((prevOpen) => !prevOpen);
 	const anchorRef = useRef<HTMLButtonElement>(null);
 
-	const { data: leaseData, isLoading: leaseLoading, refetch: refetchLeaseData } =
-		useGetSingleLeaseByIdQuery({
-			id: currentLeaseId || '',
-		});
-
+	const {
+		data: leaseData,
+		isLoading: leaseLoading,
+		refetch: refetchLeaseData,
+	} = useGetSingleLeaseByIdQuery({
+		id: currentLeaseId || '',
+	});
 
 	const onAddTenantsSubmit = async (values: any) => {
-		console.log(values);
 		const { tenantsIds, primaryTenantId } = values;
-		const secondaryTenants = tenantsIds.filter((tenantId: string) => tenantId !== primaryTenantId);
+		const secondaryTenants = tenantsIds.filter(
+			(tenantId: string) => tenantId !== primaryTenantId,
+		);
 		const body = {
-			primaryTenant: {id: primaryTenantId, isPrimary: true},
-			secondaryTenants
-		}
+			primaryTenant: { id: primaryTenantId || tenantsIds[0], isPrimary: true },
+			secondaryTenants,
+		};
 		consoleLog('body', body);
-		try{
+		try {
 			await addTenants({ leaseId: currentLeaseId, body }).unwrap();
 			dispatch(
 				openSnackbar({
@@ -174,7 +201,6 @@ const LeaseDetails = () => {
 			consoleLog('error', error);
 			throw error;
 		}
-	
 	};
 	const getSelectedTenants = (values: any) => {
 		const selectedTenants =
@@ -221,7 +247,13 @@ const LeaseDetails = () => {
 				name: 'primaryTenantId',
 				label: 'Select Primary Tenant',
 				type: 'select',
-				required: true,
+				required: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+				showIf: (values: any) => {
+					return values.tenantsIds.length > 1;
+				},
+
 				options: (values: any) => {
 					return getSelectedTenants(values);
 				},
@@ -231,8 +263,8 @@ const LeaseDetails = () => {
 				type: 'hidden',
 				disabled: true,
 				defaultValue: currentLeaseId,
-				label: ''
-			}
+				label: '',
+			},
 		],
 		onSubmit: onAddTenantsSubmit,
 		submitButtonText: 'Add Tenants',
@@ -240,7 +272,7 @@ const LeaseDetails = () => {
 		showBackdrop: true,
 		backdropText: 'Please wait while we add tenants...',
 		verticalAlignment: 'top',
-		horizontalAlignment: 'center',
+		horizontalAlignment: 'right',
 	};
 
 	const handleAddTenants = () => {
@@ -248,49 +280,118 @@ const LeaseDetails = () => {
 	};
 
 	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Leases',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Leases'
-						onClick={() => navigate(`/leases`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
+		setRouteMap({
+			'/leases': {
 				path: '/leases',
+				slug: '',
+				icon: <ViewList />,
 			},
-		};
-		// Add the current lease as the second breadcrumb
-		if (currentLeaseId) {
-			newBreadcrumbs['feature-details'] = {
-				label: `Lease Details${leaseData?.name ? `: ${leaseData?.name}` : ''}`, // Prefer a human-readable name if available
-				path: `/leases/${currentLeaseId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		newBreadcrumbs['feature-details-sub'] = {};
-		updateBreadcrumb(newBreadcrumbs);
+			'/leases/:id': {
+				path: '/leases/:id',
+				slug: leaseData?.name || 'lease-details',
+				dynamic: true,
+			},
+		});
 	}, [leaseData?.name, currentLeaseId, location.pathname]);
 
 	// Helper for menu status
-	const { canAddTenant, canArchive, canEdit, canTerminate } = useMenuStatus(
-		leaseData?.status,
-		leaseData?.isArchived,
-	);
+	const { canAddTenant, canArchive, canEdit, canTerminate, canDelete } =
+		useMenuStatus(leaseData?.status, leaseData?.isArchived);
 	const renderHeaderAvatar = (): AvatarItem[] => {
 		return (
 			leaseData?.tenants?.map((tenant: { profile: UserProfile }) => ({
 				image: tenant.profile.profilePicUrl || '',
 				id: tenant.profile.profileUuid || '',
 				variant: 'circle',
+				size: 'small',
 				name: `${tenant.profile.firstName || ''} ${tenant.profile.lastName || ''} ${tenant.profile.companyName || ''}`,
 			})) || []
 		);
 	};
+	const handleEditLease = () => {
+		setOpen(false);
+		setOpenEditLease(true);
+	};
+	const handleArchiveDialogButtonAction = async (action: string) => {
+		if (action === 'Cancel') {
+			setOpenArchiveLeaseDialog(false);
+			return;
+		}
+		try {
+			await archiveLease({ leaseId: currentLeaseId }).unwrap();
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.archive.success,
+					severity: 'success',
+					isOpen: true,
+				}),
+			);
+			setOpenArchiveLeaseDialog(false);
+			navigate('/leases'); // redirect after action
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.archive.error,
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+		}
+	};
+
+	const handleDeleteDialogButtonAction = async (action: string) => {
+		if (action === 'Cancel') {
+			setOpenDeleteLeaseDialog(false);
+			return;
+		}
+		try {
+			await deleteLease({ leaseId: currentLeaseId }).unwrap();
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.delete.success,
+					severity: 'success',
+					isOpen: true,
+				}),
+			);
+			setOpenDeleteLeaseDialog(false);
+			navigate('/leases');
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.delete.error,
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+		}
+	};
+	const handleTerminateDialogButtonAction = async (action: string) => {
+		if (action === 'Cancel') {
+			setOpenTerminateLeaseDialog(false);
+			return;
+		}
+		try {
+			await terminateLease({ leaseId: currentLeaseId }).unwrap();
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.terminate.success,
+					severity: 'success',
+					isOpen: true,
+				}),
+			);
+			setOpenTerminateLeaseDialog(false);
+			navigate('/leases');
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: screenMessages.lease.terminate.error,
+					severity: 'error',
+					isOpen: true,
+				}),
+			);
+		}
+	};
+
 	return (
 		<>
 			<Stack
@@ -310,7 +411,12 @@ const LeaseDetails = () => {
 						width: '100%',
 					}}
 				>
-					<Breadcrumb />
+					<DynamicBreadcrumb
+						currentPath={location.pathname}
+						routeMap={routeMap}
+						onNavigate={(path) => navigate(path)}
+					/>
+
 					<Stack>
 						<Button
 							ref={anchorRef}
@@ -354,7 +460,10 @@ const LeaseDetails = () => {
 												)}
 												{canArchive && (
 													<MenuItem
-														// onClick={handleArchiveLease}
+														onClick={() => {
+															setOpen(false);
+															setOpenArchiveLeaseDialog(true);
+														}}
 														sx={{ padding: '10px' }}
 														divider
 													>
@@ -363,19 +472,33 @@ const LeaseDetails = () => {
 												)}
 												{canEdit && (
 													<MenuItem
-														// onClick={handleEditLease}
+														onClick={handleEditLease}
 														sx={{ padding: '10px' }}
 														divider
 													>
 														Edit Lease
 													</MenuItem>
 												)}
-												{canTerminate && (
+												{canDelete && (
 													<MenuItem
-														// onClick={handleTerminateLease}
+														onClick={() => {
+															setOpen(false);
+															setOpenTerminateLeaseDialog(true);
+														}}
 														sx={{ padding: '10px' }}
 													>
 														Terminate Lease
+													</MenuItem>
+												)}
+												{canTerminate && (
+													<MenuItem
+														onClick={() => {
+															setOpen(false);
+															setOpenDeleteLeaseDialog(true);
+														}}
+														sx={{ padding: '10px' }}
+													>
+														Delete Lease
 													</MenuItem>
 												)}
 											</MenuList>
@@ -419,16 +542,28 @@ const LeaseDetails = () => {
 									{
 										id: 'lease-start-date',
 										label: 'Start Date',
-										value: leaseData?.startDate ? getLocaleDateFormat(user?.orgSettings, leaseData.startDate, timeDateOptions) : '',
+										value: leaseData?.startDate
+											? getLocaleDateFormat(
+													user?.orgSettings,
+													leaseData.startDate,
+													timeDateOptions,
+												)
+											: '',
 										icon: <Today fontSize='small' color='action' />,
 									},
 									{
 										id: 'lease-end-date',
 										label: 'End Date',
-										value: leaseData?.endDate ? getLocaleDateFormat(user?.orgSettings, leaseData.endDate, timeDateOptions) : '',
+										value: leaseData?.endDate
+											? getLocaleDateFormat(
+													user?.orgSettings,
+													leaseData.endDate,
+													timeDateOptions,
+												)
+											: '',
 										icon: <Today fontSize='small' color='action' />,
-									}
-								]
+									},
+								],
 							},
 							{
 								id: 'lease-details',
@@ -438,7 +573,11 @@ const LeaseDetails = () => {
 									{
 										id: 'lease-expires',
 										label: 'Lease Expires',
-										value: `${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`,
+										value:
+											leaseData?.daysToLeaseExpires &&
+											leaseData?.daysToLeaseExpires > 0
+												? `${leaseData?.daysToLeaseExpires} day${Number(leaseData?.daysToLeaseExpires) > 1 ? 's' : ''}`
+												: 'Expired',
 										icon: <HourglassBottom fontSize='small' color='action' />,
 									},
 									{
@@ -468,7 +607,13 @@ const LeaseDetails = () => {
 									{
 										id: 'rent-due-on',
 										label: 'Rent Due On',
-										value: leaseData?.rentDueOn ?? '',
+										value: (
+											<div
+												dangerouslySetInnerHTML={{
+													__html: leaseData?.rentDueOn ?? '',
+												}}
+											/>
+										),
 										icon: <PendingActions fontSize='small' color='action' />,
 									},
 									{
@@ -485,6 +630,60 @@ const LeaseDetails = () => {
 			</Stack>
 
 			<DynamicModal {...modalConfig('Add Tenants')} />
+			<DynamicModal
+				open={openEditLease}
+				onClose={() => setOpenEditLease(false)}
+				headerText='Edit Lease'
+				headerAlign='center'
+				contentAlign='center'
+				contentDirection='column'
+				borderRadius={2}
+				maxWidth='xl'
+				fullScreenOnMobile={true}
+				children={
+					<EditLeaseForm
+						leaseId={currentLeaseId}
+						onClose={() => {
+							setOpenEditLease(false);
+							refetchLeaseData(); 
+							
+						}}
+					/>
+				}
+			/>
+
+			<LeaseActionsPrompts
+				open={openArchiveLeaseDialog}
+				progress={leaseLoading}
+				title={leaseLoading ? 'Archive in progress' : 'Attention!'}
+				content='Are you sure you want to archive this Lease?'
+				rightButtonContent='Archive Lese'
+				handleDialogButtonAction={(e) =>
+					handleArchiveDialogButtonAction(e.target.value)
+				}
+			/>
+
+			<LeaseActionsPrompts
+				open={openDeleteLeaseDialog}
+				progress={leaseLoading}
+				title={leaseLoading ? 'Deleting this Lease' : 'Delete Lease'}
+				content='Are you sure you want to delete this Lease?  all leases, and related transactions will be deleted!'
+				rightButtonContent='Delete Lease'
+				handleDialogButtonAction={(e) =>
+					handleDeleteDialogButtonAction(e.target.value)
+				}
+			/>
+
+			<LeaseActionsPrompts
+				open={openTerminateLeaseDialog}
+				progress={leaseLoading}
+				title={leaseLoading ? 'Terminating this Lease' : 'Terminate Lease'}
+				content='Are you sure you want to Terminate this Lease?  all leases, and related transactions will be Terminated!'
+				rightButtonContent='Terminate Lease'
+				handleDialogButtonAction={(e) =>
+					handleTerminateDialogButtonAction(e.target.value)
+				}
+			/>
 		</>
 	);
 };

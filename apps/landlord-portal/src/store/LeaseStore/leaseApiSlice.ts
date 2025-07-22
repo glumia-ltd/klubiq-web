@@ -8,8 +8,16 @@ import { LeaseDetailsType, LeaseType } from '../../shared/type';
 export const leaseApiSlice = createApi({
 	reducerPath: 'leaseApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.LEASE, API_TAGS.LEASE_METADATA, API_TAGS.TENANT, API_TAGS.PROPERTY, 
-		API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+	tagTypes: [
+		API_TAGS.LEASE,
+		API_TAGS.LEASE_METADATA,
+		API_TAGS.TENANT,
+		API_TAGS.PROPERTY,
+		API_TAGS.DASHBOARD_REVENUE_REPORT,
+		API_TAGS.DASHBOARD_METRICS,
+		API_TAGS.PROPERTIES_AND_TENANTS,
+		API_TAGS.NOTIFICATION,
+	],
 	endpoints: (builder) => ({
 		getLeaseMetaData: builder.query<any, void>({
 			query: () => ({
@@ -27,7 +35,10 @@ export const leaseApiSlice = createApi({
 			}),
 			providesTags: [API_TAGS.LEASE],
 		}),
-		getSingleLeaseById: builder.query<LeaseDetailsType, { id: string | number }>({
+		getSingleLeaseById: builder.query<
+			LeaseDetailsType,
+			{ id: string | number }
+		>({
 			query: (params) => ({
 				url: leaseEndpoints.getLease(params?.id),
 				method: 'GET',
@@ -52,26 +63,109 @@ export const leaseApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
-				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
 		}),
-		addNewTenantToLease: builder.mutation<any, { leaseId: string, body: any }>({
+		addNewTenantToLease: builder.mutation<any, { leaseId: string; body: any }>({
 			query: ({ leaseId, body }) => ({
 				url: leaseEndpoints.addNewTenantToLease(leaseId),
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
-				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
 		}),
-		addTenants: builder.mutation<any, { leaseId: string, body: any }>({
+		addTenants: builder.mutation<any, { leaseId: string; body: any }>({
 			query: ({ leaseId, body }) => ({
 				url: leaseEndpoints.addTenants(leaseId),
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.LEASE, API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.DASHBOARD_REVENUE_REPORT, 
-				API_TAGS.DASHBOARD_METRICS, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
+
+		archiveLease: builder.mutation<any, { leaseId: string }>({
+			query: ({ leaseId }) => ({
+				url: leaseEndpoints.archiveLease(leaseId),
+				method: 'PATCH',
+			}),
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
+		editLease: builder.mutation<any, { leaseId: string; body: any }>({
+			query: ({ leaseId, body }) => ({
+				url: leaseEndpoints.editLease(leaseId),
+				method: 'PATCH',
+				body,
+			}),
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
+		deleteLease: builder.mutation<any, { leaseId: string }>({
+			query: ({ leaseId }) => ({
+				url: leaseEndpoints.deleteLease(leaseId),
+				method: 'DELETE',
+			}),
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
+		terminateLease: builder.mutation<any, { leaseId: string }>({
+			query: ({ leaseId }) => ({
+				url: leaseEndpoints.terminateLease(leaseId),
+				method: 'PATCH',
+			}),
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
 		}),
 	}),
 });
@@ -92,4 +186,8 @@ export const {
 	useLazyGetUnitLeasesQuery,
 	useAddNewTenantToLeaseMutation,
 	useAddTenantsMutation,
+	useArchiveLeaseMutation,
+	useDeleteLeaseMutation,
+	useTerminateLeaseMutation,
+	useEditLeaseMutation,
 } = leaseApiSlice;

@@ -14,7 +14,6 @@ import {  consoleError, consoleLog } from '../helpers/debug-logger';
 import { addData, getData } from '../services/indexedDb';
 import { UserProfile } from '../shared/auth-types';
 import { DialogProps } from '../components/Dialogs/AlertDialog';
-import { resetStore } from '../store';
 import { MultiFactorUser } from 'firebase/auth';
 
 const useAuth = () => {
@@ -150,7 +149,6 @@ const useAuth = () => {
 	const handleSignOutUser = async () => {
 		try {
 			await signOut({}).unwrap();
-			resetStore();
 		} catch (error) {
 			consoleError('Error during sign out:', error);
 		}

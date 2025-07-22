@@ -12,6 +12,10 @@ import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
+import Payments from '@/pages/Features/payments';
+import Maintenance from '@/pages/Features/maintenance';
+import Documents from '@/pages/Features/documents';
+import Profile from '@/pages/Auth/profile';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -24,6 +28,10 @@ export const router = createBrowserRouter(
 			<Route element={<PrivateRoute />}>
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
+					<Route path='/payments' element={<Payments />} />
+					<Route path='/maintenance' element={<Maintenance />} />
+					<Route path='/documents' element={<Documents />} />
+					<Route path='/profile' element={<Profile />} />
 				</Route>
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}

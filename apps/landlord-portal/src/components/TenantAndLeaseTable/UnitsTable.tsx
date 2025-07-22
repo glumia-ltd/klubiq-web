@@ -7,6 +7,7 @@ import {
 	FloorPlan,
 	ShowerIcon,
 	EmojiOneBuildingIcon,
+
 } from '../Icons/CustomIcons';
 import { UnitType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +17,6 @@ import {
 	DynamicAvatar,
 } from '@klubiq/ui-components';
 import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
-
 type UnitsTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
@@ -92,7 +92,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 				align: 'left',
 				render: (rowData: any) => (
 					<Stack direction={'row'} alignItems={'center'}>
-						<FloorPlan />
+						<FloorPlan sx={{ marginRight: '0.5rem', fontSize: '1.6rem' }} />
 						<Typography variant='subtitle2'>
 							{rowData?.floorPlan?.value} {rowData?.floorPlan?.unit}
 						</Typography>
@@ -105,36 +105,36 @@ export const UnitsTable: FC<UnitsTableType> = ({
 				label: 'Details',
 				align: 'left',
 				render: (rowData: any) => (
-					<Stack direction={'row'} spacing={2}>
+					<Stack direction={'row'} alignItems={'center'} spacing={2}>
 						{rowData?.details?.offices > 0 && (
-							<>
-								<EmojiOneBuildingIcon />
-								{rowData?.details?.offices}
-							</>
+							<Stack direction={'row'} alignItems={'center'}>
+								<EmojiOneBuildingIcon sx={{ marginRight: '0.5rem', fontSize: '1rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.offices}</Typography>
+							</Stack>
 						)}
 						{rowData?.details?.bedrooms > 0 && (
-							<>
-								<Bedroom />
-								{rowData?.details?.bedrooms}
-							</>
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bedroom sx={{ marginRight: '0.5rem', fontSize: '1.25rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.bedrooms}</Typography>
+							</Stack>
 						)}
 						{rowData?.details?.rooms > 0 && (
-							<>
-								<Bedroom />
-								{rowData?.details?.rooms}
-							</>
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bedroom sx={{ marginRight: '0.5rem', fontSize: '1.25rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.rooms}</Typography>
+							</Stack>
 						)}
 						{rowData?.details?.bathrooms > 0 && (
-							<>
-								<ShowerIcon />
-								{rowData?.details?.bathrooms}
-							</>
+							<Stack direction={'row'} alignItems={'center'}>
+								<ShowerIcon sx={{ marginRight: '0.5rem', fontSize: '1.15rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.bathrooms}</Typography>
+							</Stack>
 						)}
 						{rowData?.details?.toilets > 0 && (
-							<>
-								<Bathroom />
-								{rowData?.details?.toilets}
-							</>
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bathroom sx={{ marginRight: '0.5rem', fontSize: '1.6rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.toilets}</Typography>
+							</Stack>	
 						)}
 					</Stack>
 				),

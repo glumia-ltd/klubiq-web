@@ -19,6 +19,10 @@ import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 import { z } from 'zod';
 import { defaultOrgSettings } from '../../../helpers/constants';
+import logo from '../../../assets/images/logo-1.png';
+import logoText from '../../../assets/images/logo-text-2.png';
+import lightLogo from '../../../assets/images/logo-2.png';
+import lightLogoText from '../../../assets/images/logo-text-1.png';
 
 type IValuesType = {
 	password: string;
@@ -157,18 +161,19 @@ const Login = () => {
 	const loginFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
-			<Typography variant='h1' sx={styles.title} textAlign='center'>
-				Sign in
-			</Typography>
+			<Stack direction='row' justifyContent='flex-start' alignItems='center' gap={2} sx={{ width: '100%' }}>
+				<img src={theme.palette.mode === 'dark' ? logo : lightLogo} alt='logo' style={{ width: '10%', height: 'auto' }} />
+				<img src={theme.palette.mode === 'dark' ? logoText : lightLogoText} alt='logo' style={{ width: '25%', height: 'auto' }} />
+			</Stack>
 		),
 		subHeader: (
-			<Typography variant='h2' sx={styles.subTitle} textAlign='center'>
-				Welcome back! Please enter your details.
+			<Typography variant='h2' sx={styles.subTitle} textAlign='left'>
+				Please sign in to your account.
 			</Typography>
 		),
 		submitButtonText: 'Sign in',
 		underSubmitButtonNode: (
-			<Typography textAlign='center'>
+			<Typography textAlign='left'>
 				Don't have an account?{' '}
 				<BoldTextLink onClick={routeToSignUp}>Sign up</BoldTextLink>
 			</Typography>
