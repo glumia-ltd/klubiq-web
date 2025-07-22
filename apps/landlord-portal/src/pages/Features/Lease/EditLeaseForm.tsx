@@ -1,6 +1,5 @@
-import { FC } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Typography, useTheme, Button, Stack } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, useTheme } from '@mui/material';
 import { Info } from '@mui/icons-material';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,9 +10,7 @@ import {
 	KlubiqFormV1,
 	InputAdornment as InputAdornmentType,
 } from '@klubiq/ui-components';
-import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
 
-import FormLayout from '../../../Layouts/FormLayout';
 import FormSkeleton from '../../../components/skeletons/FormSkeleton';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
@@ -36,7 +33,7 @@ const EditLeaseForm = ({ leaseId }: EditLeaseFormProps) => {
 	const { data: lease, isLoading: isLeaseLoading } = useGetSingleLeaseByIdQuery(
 		{ id: leaseId || '' },
 	);
-	console.log('lease', lease);
+
 	const getUnits = (unitNumber?: string) =>
 		unitNumber ? [{ label: unitNumber, value: unitNumber }] : [];
 

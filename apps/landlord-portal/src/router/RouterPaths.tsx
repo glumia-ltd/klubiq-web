@@ -32,7 +32,7 @@ import NotFound from '../pages/ErrorPages/404';
 import AddTenant from '../pages/Features/Tenant/AddTenant';
 import Tenant from '../pages/Features/Tenant';
 import { CreateProperty } from '../pages/Features/properties/CreateProperty';
-import EditLeaseForm from '../pages/Features/Lease/EditLeaseForm';
+//import EditLeaseForm from '../pages/Features/Lease/EditLeaseForm';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -75,7 +75,7 @@ export const router = createBrowserRouter(
 					<Route path='/leases' element={<NestedRoutesLayout />}>
 						<Route index element={<Lease />} />
 						<Route path='add-lease' element={<AddLeasePage />} />
-						<Route path='edit/:leaseId' element={<EditLeaseForm />} />
+						{/* <Route path='edit/:leaseId' element={<EditLeaseForm />} /> */}
 					</Route>
 					<Route path='/leases/:id' element={<LeaseDetails />} />
 					<Route path='/tenants' element={<NestedRoutesLayout />}>
