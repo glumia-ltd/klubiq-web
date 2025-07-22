@@ -99,6 +99,12 @@ export const screenMessages = {
 			loading: 'Deleting lease...',
 			confirm: 'Are you sure you want to delete this lease?',
 		},
+		terminate:{
+			success: 'Lease terminated successfully',
+			error: 'Failed to terminate lease',
+			loading: 'Terminating lease...',
+			confirm: 'Are you sure you want to terminate this lease?',
+		},
 		archive: {
 			success: 'Lease archived successfully',
 			error: 'Failed to archive lease',

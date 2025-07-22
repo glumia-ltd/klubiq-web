@@ -152,6 +152,21 @@ export const leaseApiSlice = createApi({
 				API_TAGS.NOTIFICATION,
 			],
 		}),
+		terminateLease: builder.mutation<any, { leaseId: string }>({
+			query: ({ leaseId }) => ({
+				url: leaseEndpoints.terminateLease(leaseId),
+				method: 'PATCH',
+			}),
+			invalidatesTags: [
+				API_TAGS.LEASE,
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
+		}),
 	}),
 });
 
@@ -173,5 +188,6 @@ export const {
 	useAddTenantsMutation,
 	useArchiveLeaseMutation,
 	useDeleteLeaseMutation,
+	useTerminateLeaseMutation,
 	useEditLeaseMutation,
 } = leaseApiSlice;
