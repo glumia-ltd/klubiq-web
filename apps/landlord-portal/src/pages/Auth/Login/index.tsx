@@ -21,8 +21,8 @@ import { z } from 'zod';
 import { defaultOrgSettings } from '../../../helpers/constants';
 import logo from '../../../assets/images/logo-1.png';
 import logoText from '../../../assets/images/logo-text-2.png';
-import lightLogo from '../../../assets/images/logo-3.png';
-import lightLogoText from '../../../assets/images/logo-text-3.png';
+import lightLogo from '../../../assets/images/logo-2.png';
+import lightLogoText from '../../../assets/images/logo-text-1.png';
 
 type IValuesType = {
 	password: string;

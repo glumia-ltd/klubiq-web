@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import { useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -22,11 +22,11 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 import { motion } from 'framer-motion';
 
 const SideBar = () => {
 	const theme = useTheme();
+	const navigate = useNavigate();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
@@ -128,9 +128,8 @@ const SideBar = () => {
 		},
 	};
 	const handleSignOut = async () => {
-		resetStore();
 		await userSignOut({}).unwrap();
-		
+		navigate('/login');
 	};
 
 	const handleLinkClick = (title: string) => {

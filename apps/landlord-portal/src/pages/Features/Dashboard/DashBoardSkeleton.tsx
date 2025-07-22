@@ -215,6 +215,7 @@ const DashBoardSkeleton = () => {
 
 			<Grid
 				container
+				p={2}
 				sx={{
 					...styles.totalRevenueStyle,
 					background: mode === ThemeMode.LIGHT ? '#FFFFFF' : '#161616',
@@ -267,7 +268,7 @@ const DashBoardSkeleton = () => {
 					display={'flex'}
 					justifyContent={'center'}
 				>
-					<Stack direction={'row'} spacing={2} sx={{width: '80%', height: '100%', justifyContent: 'space-around'}}	>
+					<Stack direction={'row'} p={2} spacing={2} sx={{width: '80%', height: '100%', justifyContent: 'space-around'}}	>
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />

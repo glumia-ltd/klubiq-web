@@ -200,7 +200,7 @@ export type UnitType = {
 	bedrooms?: number;
 	floor?: number | null;
 	id?: string;
-	images?: string[];
+	images?: UnitImageType[];
 	lease?: LeaseType;
 	offices?: number | string | null;
 	rentAmount?: string;
@@ -246,10 +246,18 @@ export type PropertyDataType = {
 	owner?: string | null;
 	vacantUnitCount?: number;
 	totalRent: string;
-	images?: { isMain: boolean; url: string }[] | null;
+	images?: UnitImageType[] | null;
 	totalTenants: number;
 	offices: number;
 	rooms: number;
+};
+
+export type UnitImageType = {
+	isMain: boolean;
+	url: string;
+	externalId: string;
+	fileName: string;
+	fileSize?: number;
 };
 
 // export type PropertyType = {

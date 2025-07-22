@@ -6,7 +6,7 @@ import {
 
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { MEASUREMENTS } from '../../helpers/utils';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import FormSkeleton from '../skeletons/FormSkeleton';
 
@@ -21,7 +21,11 @@ import {
 	TextField,
 } from '@mui/material';
 import { AmenitiesDialog } from '../CustomFormComponents/AmenitiesDialog';
-import { useAddUnitMutation, useGetPropertiesMetaDataQuery } from '../../store/PropertyPageStore/propertyApiSlice';
+import {
+	useAddUnitMutation,
+	useEditUnitMutation,
+	useGetPropertiesMetaDataQuery,
+} from '../../store/PropertyPageStore/propertyApiSlice';
 import { CategoryMetaDataType, UnitType } from '../../shared/type';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
@@ -32,27 +36,6 @@ interface UnitFormProps {
 	unit?: UnitType;
 	onClose?: () => void;
 }
-const useDebounce = (callback: Function, delay: number) => {
-	const timeoutRef = useRef<NodeJS.Timeout>();
-
-	useEffect(() => {
-		return () => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current);
-			}
-		};
-	}, []);
-
-	return (...args: any[]) => {
-		if (timeoutRef.current) {
-			clearTimeout(timeoutRef.current);
-		}
-
-		timeoutRef.current = setTimeout(() => {
-			callback(...args);
-		}, delay);
-	};
-};
 const getGeneralUnitFields = (
 	z: any,
 	isMobile: boolean = false,
@@ -92,29 +75,19 @@ const getGeneralUnitFields = (
 		name: 'area',
 		type: 'number',
 		label: 'Floor Plan',
-		defaultValue: unit?.area || null,
-		predefinedValue: unit?.area || null,
-
 		width: isMobile ? '100%' : '48%',
-		validation: {
-			schema: z
-				.any({ message: 'Floor plan is required' })
-				.refine((data: any) => data.value !== null && data.value !== 0, {
-					message: 'Floor plan is required',
-				}),
-		},
+		// validation: {
+		// 	schema: z
+		// 		.any()
+		// 		.refine((data: any) => data.value !== null && data.value !== 0, {
+		// 			message: 'Floor plan is required',
+		// 		}),
+		// },
 		customComponent: renderAreaField,
 	},
 ];
 
-function renderAreaField(fieldApi: any, fieldConfig: any, form: any) {
-	const debouncedValidate = useDebounce(() => {
-		const isArraySubField = fieldConfig && fieldConfig._isArraySubField;
-		const arrayFieldName = fieldConfig._arrayFieldName;
-		if (isArraySubField && arrayFieldName !== undefined) {
-			form.validateField(arrayFieldName);
-		}
-	}, 500);
+function renderAreaField(fieldApi: any, fieldConfig: any, _form: any) {
 	return (
 		<Box sx={{ width: '100%' }}>
 			<TextField
@@ -132,7 +105,6 @@ function renderAreaField(fieldApi: any, fieldConfig: any, form: any) {
 							unit: fieldApi.state.value?.unit || 'SqM',
 						};
 						fieldApi.handleChange(newValue);
-						debouncedValidate();
 					}
 				}}
 				onBlur={fieldApi.handleBlur}
@@ -163,7 +135,6 @@ function renderAreaField(fieldApi: any, fieldConfig: any, form: any) {
 										unit: e.target.value,
 									};
 									fieldApi.handleChange(newValue);
-									debouncedValidate();
 								}}
 								sx={{ '.MuiOutlinedInput-notchedOutline': { border: 'none' } }}
 							>
@@ -318,11 +289,17 @@ const mapOptions = (arr: any[] = [], labelKey = 'name', valueKey = 'name') =>
 		value: item[valueKey],
 		label: item[labelKey],
 	}));
-const UnitForm: FC<UnitFormProps> = ({ propertyId, categoryId, unit, onClose }) => {
+const UnitForm: FC<UnitFormProps> = ({
+	propertyId,
+	categoryId,
+	unit,
+	onClose,
+}) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const [unitData, setUnitData] = useState<UnitType | undefined>(undefined);
 	const [addUnit] = useAddUnitMutation();
+	const [editUnit] = useEditUnitMutation();
 	const dispatch = useDispatch();
 	const sortByName = (a: { name: string }, b: { name: string }) =>
 		a.name.localeCompare(b.name);
@@ -380,7 +357,12 @@ const UnitForm: FC<UnitFormProps> = ({ propertyId, categoryId, unit, onClose }) 
 		];
 		return [
 			...unitFields,
-			...getUnitFieldsByCategory(selectedCategory, z, unit, customAmenitiesField),
+			...getUnitFieldsByCategory(
+				selectedCategory,
+				z,
+				unit,
+				customAmenitiesField,
+			),
 		];
 	};
 
@@ -402,17 +384,72 @@ const UnitForm: FC<UnitFormProps> = ({ propertyId, categoryId, unit, onClose }) 
 
 	const onSubmit = async (values: any) => {
 		try {
-			console.log(values);
-			const units = [{...values, propertyUuid: propertyId}];
-			const response = await addUnit({ propertyUuid: propertyId, data: units }).unwrap();
-			dispatch(openSnackbar({
-				message:screenMessages.unit.add.success,
-				severity: 'success',
-				isOpen: true,
-				duration: 5000,
-			}	));
-			onClose?.();
-			return response;
+			if (unitData && unitData.id) {
+				// Compare values and unitData, only select changed fields
+				const changedFields: Record<string, any> = {};
+				Object.entries(values).forEach(([key, value]) => {
+					// Handle nested objects (e.g., area)
+					if (
+						typeof value === 'object' &&
+						value !== null &&
+						!Array.isArray(value)
+					) {
+						const nestedChanged: Record<string, any> = {};
+						Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+							if ((unitData as any)[key]?.[nestedKey] !== nestedValue) {
+								nestedChanged[nestedKey] = nestedValue;
+							}
+						});
+						if (Object.keys(nestedChanged).length > 0) {
+							changedFields[key] = {
+								...(unitData as any)[key],
+								...nestedChanged,
+							};
+						}
+					} else if (Array.isArray(value)) {
+						// Compare arrays by stringifying (shallow compare)
+						if (
+							JSON.stringify((unitData as any)[key] ?? []) !==
+							JSON.stringify(value)
+						) {
+							changedFields[key] = value;
+						}
+					} else if ((unitData as any)[key] !== value) {
+						changedFields[key] = value;
+					}
+				});
+				const response = await editUnit({
+					propertyUuid: propertyId,
+					unitId: unitData.id,
+					data: changedFields,
+				}).unwrap();
+				dispatch(
+					openSnackbar({
+						message: screenMessages.unit.edit.success,
+						severity: 'success',
+						isOpen: true,
+						duration: 5000,
+					}),
+				);
+				onClose?.();
+				return response;
+			} else {
+				const units = [{ ...values, propertyUuid: propertyId }];
+				const response = await addUnit({
+					propertyUuid: propertyId,
+					data: units,
+				}).unwrap();
+				dispatch(
+					openSnackbar({
+						message: screenMessages.unit.add.success,
+						severity: 'success',
+						isOpen: true,
+						duration: 5000,
+					}),
+				);
+				onClose?.();
+				return response;
+			}
 		} catch (error) {
 			const errorMessage = (error as any)?.message;
 			dispatch(
@@ -437,14 +474,14 @@ const UnitForm: FC<UnitFormProps> = ({ propertyId, categoryId, unit, onClose }) 
 		resetButtonText: 'Cancel',
 		enableReset: true,
 		fields: unitFormFields,
-		initialValues,
+		initialValues: unitData || initialValues,
 		onSubmit,
 		onReset,
 		showBackdrop: true,
-		backdropText: 'Adding unit...',
+		backdropText: unitData ? 'Updating unit...' : 'Adding unit...',
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
-		verticalAlignment: 'top',
+		verticalAlignment: 'center',
 	};
 
 	return (
@@ -452,11 +489,13 @@ const UnitForm: FC<UnitFormProps> = ({ propertyId, categoryId, unit, onClose }) 
 			{isLoading ? (
 				<FormSkeleton
 					rows={unitFormFields.length}
-					columns={[1, 1, 1]}
+					columns={[...Array(unitFormFields.length).fill(1)]}
 					sx={{ width: '100%', p: 2 }}
 				/>
 			) : (
-				<KlubiqFormV1 {...unitFormConfig} />
+				<Box sx={{ height: '100%', width: '100%', maxHeight: '650px', paddingTop: 2 }}>
+					<KlubiqFormV1 {...unitFormConfig} />
+				</Box>
 			)}
 		</>
 	);

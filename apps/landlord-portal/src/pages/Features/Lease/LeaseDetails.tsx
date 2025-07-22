@@ -383,7 +383,7 @@ const LeaseDetails = () => {
 					}}
 				>
 					<DynamicBreadcrumb
-						currentPath={location.pathname.replace(`/unit`, '')}
+						currentPath={location.pathname}
 						routeMap={routeMap}
 						onNavigate={(path) => navigate(path)}
 					/>

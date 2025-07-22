@@ -18,6 +18,7 @@ import { MEASUREMENTS } from '../../helpers/utils';
 import { find } from 'lodash';
 import defaultPropertyImage from '../../assets/images/defaultPropertyImage.png';
 import { DynamicCarousel, DynamicModal, DynamicModalProps } from '@klubiq/ui-components';
+import { UnitImageType } from '../../shared/type';
 
 type UnitCardPropType = {
 	propertyImage?: string;
@@ -28,7 +29,7 @@ type UnitCardPropType = {
 	rent: string;
 	totalArea?: string;
 	buildingType?: string;
-	additionalImages: string[];
+	additionalImages: UnitImageType[];
 	variant?: 'property' | 'unit';
 	marketValue?: string;
 	sellingPrice?: string;
@@ -78,7 +79,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 				padding: 1,
 			}}>
 				 <DynamicCarousel images={additionalImages.map((image, index) => 
-				({ src: image, alt: `${propertyName}-image-${index}`, caption: `${propertyName} - ${propertyAddress}` }))} 
+				({ src: image.url, alt: image.fileName || `${propertyName}-image-${index}`, caption: image.fileName || `${propertyName} - ${propertyAddress}` }))} 
 				variant='dots'
 				showThumbnails={true}
 				autoPlay={isMobile}
@@ -90,6 +91,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 			</Box>
 		} as DynamicModalProps;
 	};
+	const hasOnlyMainImage = additionalImages.length === 1 && additionalImages?.[0]?.isMain;
 	return (
 		<>
 			<Card sx={styles.mainCardContainerStyle}>
@@ -97,9 +99,10 @@ export const UnitCard: FC<UnitCardPropType> = ({
 					<CardContent sx={styles.cardContents.mainImage}>
 						<CardMedia
 							component={'img'}
-							sx={styles.mainPictureStyle}
+							sx={{...styles.mainPictureStyle, cursor: hasOnlyMainImage ? 'pointer' : 'default'}}
 							alt='property picture'
-							image={propertyImage || defaultPropertyImage}
+							image={propertyImage || additionalImages.find((img) => img.isMain)?.url || defaultPropertyImage}
+							onClick={hasOnlyMainImage ? () => handleOpenCarousel() : undefined}
 						></CardMedia>
 					</CardContent>
 					<Stack direction={'row'} sx={styles.stacks.secondary}>
@@ -194,7 +197,7 @@ export const UnitCard: FC<UnitCardPropType> = ({
 												<Typography>Total Area</Typography>
 
 												<Typography variant='h6'>
-													{totalArea.split(' ')[0]}{' '}
+													{totalArea.split(' ')[0] || 0}{' '}
 													{
 														find(MEASUREMENTS, {
 															unit: totalArea.split(' ')[1],
@@ -214,19 +217,23 @@ export const UnitCard: FC<UnitCardPropType> = ({
 						</CardContent>
 						{additionalImages.length > 0 && <CardContent>
 							<Box sx={styles.stackedImagesContainer}>
-								{additionalImages.map((property, index) => {
+								{additionalImages.map((img, index) => {
+									if(hasOnlyMainImage){
+										return null;
+									}
 									return (
 										<Stackedimages
-											key={`${index}-${property}`}
-											image={property}
+											key={`${index}-${img.url}`}
+											image={img.url}
 											topOffset={8 * index}
 											leftOffset={7 * index}
 											zIndex={additionalImages?.length - index}
 											onClick={() => handleOpenCarousel()}
 										/>
 									);
+									
 								})}
-							</Box>
+							</Box>	
 						</CardContent>}
 					</Stack>
 				</Stack>

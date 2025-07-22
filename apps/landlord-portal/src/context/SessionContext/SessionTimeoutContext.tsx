@@ -10,7 +10,6 @@ import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -43,7 +42,6 @@ export const SessionTimeoutProvider = ({
 	};
 
 	const handleSignOut = async () => {
-		resetStore();
 		await userSignOut({}).unwrap();
 
 	};

@@ -5,6 +5,7 @@ export interface PropertyUnitComponentProps {
 	currentProperty: PropertyDataType;
 	multiUnitMode?: boolean;
 	multiUnitNumber?: string;
+	unitId?: string;
 }
 
 export interface PropertyActions {

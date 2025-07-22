@@ -7,6 +7,7 @@ export const API_TAGS = {
     TENANT_FILTER_METADATA: 'Tenant-Filter-Metadata',
     ORGANIZATION: 'Organization',
     NOTIFICATION: 'Notification',
+    NOTIFICATION_COUNT: 'Notification-Count',
     USER: 'User',
     DASHBOARD_METRICS: 'Dashboard-Metrics',
     DASHBOARD_REVENUE_REPORT: 'Dashboard-Revenue-Report',

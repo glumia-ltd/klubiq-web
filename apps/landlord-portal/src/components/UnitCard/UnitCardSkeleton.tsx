@@ -14,7 +14,7 @@ const UnitCardSkeleton: FC<UnitCardProp> = ({
 	return (
 		<>
 			<Card sx={styles.mainCardContainerStyle} >
-				<Grid spacing={2} sx={styles.mainCardStyle}>
+				<Grid gap={2} sx={styles.mainCardStyle}>
 					<Skeleton variant='rounded' sx={styles.skelPic} />
 					<Grid sx={styles.propertyDetailsStyle}>
 						<Grid sx={styles.propertyHeaderStyle}>

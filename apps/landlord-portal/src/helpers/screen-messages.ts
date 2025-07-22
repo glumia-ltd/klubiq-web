@@ -6,6 +6,18 @@ export const screenMessages = {
 			loading: 'Adding unit...',
 			confirm: 'Are you sure you want to add this unit?',
 		},
+		edit: {
+			success: 'Unit updated successfully',
+			error: 'Failed to update unit',
+			loading: 'Updating unit...',
+			confirm: 'Are you sure you want to update this unit?',
+		},
+		delete: {
+			success: 'Unit deleted successfully',
+			error: 'Failed to delete unit',
+			loading: 'Deleting unit...',
+			confirm: 'Are you sure you want to delete this unit?',
+		},
 	},
 	tenant: {
 		invite: {
