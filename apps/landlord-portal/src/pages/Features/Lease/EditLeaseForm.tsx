@@ -24,7 +24,7 @@ export type EditLeaseFormProps = {
 	onClose: () => void;
 };
 
-const EditLeaseForm = ({ leaseId }: EditLeaseFormProps) => {
+const EditLeaseForm = ({ leaseId, onClose }: EditLeaseFormProps) => {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -112,19 +112,23 @@ const EditLeaseForm = ({ leaseId }: EditLeaseFormProps) => {
 			name: 'rentAmount',
 			label: 'Rent Amount',
 			type: 'decimal',
+			formatType: 'decimal',
 			decimals: 2,
+			placeholder: '0.00',
 			required: true,
 			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings),
+				prefix: getCurrencySymbol(user.orgSettings?.settings),
 			} as InputAdornmentType,
 		},
 		{
 			name: 'securityDeposit',
 			label: 'Deposit Amount',
 			type: 'decimal',
+			formatType: 'decimal',
 			decimals: 2,
+			placeholder: '0.00',
 			adornment: {
-				prefix: getCurrencySymbol(user?.orgSettings),
+				prefix: getCurrencySymbol(user.orgSettings?.settings),
 			} as InputAdornmentType,
 		},
 		{
@@ -222,24 +226,25 @@ const EditLeaseForm = ({ leaseId }: EditLeaseFormProps) => {
 		fields,
 		initialValues,
 		onSubmit,
+		onReset: onClose,
 		enableReset: true,
 		resetButtonText: 'Cancel',
 		showBackdrop: true,
 		backdropText: 'Saving lease...',
 		horizontalAlignment: 'right',
-		buttonLoadingText: 'Saving...',
+		verticalAlignment: 'top',
 	};
 
 	return (
-		<Box sx={{ width: '100%' }}>
+		<>
 			{isLeaseLoading ? (
 				<FormSkeleton rows={fields.length} columns={[1]} />
 			) : (
-				<Box sx={{ width: '100%', mt: 60 }}>
+				<Box sx={{ height: '100%', width: '100%' }}>
 					<KlubiqFormV1 {...formConfig} />
 				</Box>
 			)}
-		</Box>
+		</>
 	);
 };
 
