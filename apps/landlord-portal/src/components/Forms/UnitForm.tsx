@@ -481,7 +481,7 @@ const UnitForm: FC<UnitFormProps> = ({
 		backdropText: unitData ? 'Updating unit...' : 'Adding unit...',
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
-		verticalAlignment: 'center',
+		verticalAlignment: 'top',
 	};
 
 	return (
@@ -493,7 +493,7 @@ const UnitForm: FC<UnitFormProps> = ({
 					sx={{ width: '100%', p: 2 }}
 				/>
 			) : (
-				<Box sx={{ height: '100%', width: '100%', maxHeight: '650px', paddingTop: 2 }}>
+				<Box sx={{ height: '100%', width: '100%', maxHeight: '650px'  }}>
 					<KlubiqFormV1 {...unitFormConfig} />
 				</Box>
 			)}

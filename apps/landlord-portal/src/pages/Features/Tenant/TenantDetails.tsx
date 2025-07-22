@@ -317,8 +317,8 @@ const TenantDetails = () => {
 										),
 									},
 									{
-										id: `lease-${index}-end-date`,
-										label: 'End Date',
+										id: `lease-${index}-payment-date`,
+										label: 'Payment Date',
 										value: formatDate(payment.lastPaymentDate),
 										icon: (
 											<KlubiqIcons.CalendarIcon

@@ -470,6 +470,18 @@ const LeaseDetails = () => {
 														Archive Lease
 													</MenuItem>
 												)}
+												{canTerminate && (
+													<MenuItem
+														onClick={() => {
+															setOpen(false);
+															setOpenDeleteLeaseDialog(true);
+														}}
+														sx={{ padding: '10px' }}
+														divider
+													>
+														Delete Lease
+													</MenuItem>
+												)}
 												{canEdit && (
 													<MenuItem
 														onClick={handleEditLease}
@@ -490,17 +502,7 @@ const LeaseDetails = () => {
 														Terminate Lease
 													</MenuItem>
 												)}
-												{canTerminate && (
-													<MenuItem
-														onClick={() => {
-															setOpen(false);
-															setOpenDeleteLeaseDialog(true);
-														}}
-														sx={{ padding: '10px' }}
-													>
-														Delete Lease
-													</MenuItem>
-												)}
+												
 											</MenuList>
 										</ClickAwayListener>
 									</Paper>
@@ -638,17 +640,29 @@ const LeaseDetails = () => {
 				contentAlign='center'
 				contentDirection='column'
 				borderRadius={2}
-				maxWidth='xl'
+				maxWidth='sm'
 				fullScreenOnMobile={true}
+				sx={{
+					height: '100%',
+					width: '100%',
+					maxHeight: '650px',
+					py: 2,
+				}}
 				children={
-					<EditLeaseForm
-						leaseId={currentLeaseId}
-						onClose={() => {
-							setOpenEditLease(false);
-							refetchLeaseData(); 
-							
-						}}
-					/>
+					<Stack
+						direction='column'
+						spacing={2}
+						justifyContent='center'
+						sx={{ width: '100%', height: '100%' }}
+					>
+						<EditLeaseForm
+							leaseId={currentLeaseId}
+							onClose={() => {
+								setOpenEditLease(false);
+								refetchLeaseData();
+							}}
+						/>
+					</Stack>
 				}
 			/>
 
