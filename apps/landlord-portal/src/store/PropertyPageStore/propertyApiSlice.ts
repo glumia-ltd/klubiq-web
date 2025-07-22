@@ -3,9 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
-// import { screenMessages } from '../../helpers/screen-messages';
-import { handleApiResponse } from '../../helpers/apiResponseHandler';
-// import { invalidateMultipleTags } from '../tags-invalidator';
+
 
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',

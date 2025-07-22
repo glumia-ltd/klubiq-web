@@ -20,7 +20,6 @@ import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
 // import { TenantInfo } from '../../../shared/type';
 import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
-import { Breadcrumb } from '../../../components/Breadcrumb';
 import { formatDate, getLocaleFormat } from '../../../helpers/utils';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
@@ -72,7 +71,7 @@ const TenantDetails = () => {
 	const { data: tenantData, isLoading } = useGetSingleTenantByIdQuery({
 		id: id || currentTenantId || '',
 	});
-	console.log('id', id, currentTenantId, tenantData);
+	
 	useEffect(() => {
 		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
 			feature: {

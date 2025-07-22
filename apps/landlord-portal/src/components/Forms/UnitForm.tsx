@@ -19,7 +19,6 @@ import {
 	MenuItem,
 	Select,
 	TextField,
-	Stack,
 } from '@mui/material';
 import { AmenitiesDialog } from '../CustomFormComponents/AmenitiesDialog';
 import {
@@ -30,7 +29,6 @@ import {
 import { CategoryMetaDataType, UnitType } from '../../shared/type';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
-import FormLayout from '../../Layouts/FormLayout';
 
 interface UnitFormProps {
 	propertyId: string;

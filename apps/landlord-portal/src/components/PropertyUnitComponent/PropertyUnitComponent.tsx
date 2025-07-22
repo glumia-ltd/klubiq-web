@@ -309,7 +309,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const handleDeleteUnitConfirmation = async () => {
 		if (confirmUnitNumber === multiUnitNumber) {
 			try {
-				const resp = await deleteUnit({
+				await deleteUnit({
 					propertyUuid: currentUUId,
 					unitIds: [unitId],
 				}).unwrap();

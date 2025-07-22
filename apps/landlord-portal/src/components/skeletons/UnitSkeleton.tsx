@@ -1,6 +1,5 @@
-import { Grid, Breadcrumbs, Chip, Skeleton, Box, Stack } from '@mui/material';
+import { Breadcrumbs, Chip, Skeleton, Box, Stack } from '@mui/material';
 // import { Container } from '@mui/system';
-import { styles } from '../PropertyUnitComponent/style';
 // import { HomeIcon } from '../Icons/HomeIcon';
 import { Overview } from '../Overview/Overview';
 import { TabsComponent } from '../TabsComponent/TabsComponent';
@@ -11,10 +10,8 @@ import InfoCardSkeleton from '../UnitInfoComponent/InfoCardSkeleton';
 import FieldCardSkeleton from '../AddFieldsComponent/FieldCardSkeleton';
 import TableSkeleton from '../TenantAndLeaseTable/TableSkeleton';
 import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
-import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { PropertyDataType } from '../../shared/type';
 import SharedStyles from '../../styles/shared-style';
-import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 
 type UnitComponentType = {
 	currentProperty?: PropertyDataType;
@@ -28,11 +25,8 @@ const allTabs = ['Overview', 'Lease'];
 export const UnitSkeleton: FC<UnitComponentType> = ({
 	currentProperty,
 	tenantTableBodyRows,
-	leaseTableBodyRows,
 }) => {
 	const [tabValue, setTabValue] = useState<number>(0);
-
-	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
 
 	const unitInfoData = [
 		{
