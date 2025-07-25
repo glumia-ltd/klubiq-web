@@ -5,6 +5,7 @@ import {
 	useLazyGetDashboardMetricsQuery,
 	useLazyGetRevenueReportDataQuery,
 	useDownloadReportMutation,
+	useLazyGetOrganizationActivitiesQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -60,6 +61,15 @@ export const useDashboardActions = () => {
 		},
 	] = useLazyGetRevenueReportDataQuery();
 
+	const [
+		getOrganizationActivities,
+		{
+			data: organizationActivities,
+			isLoading: isOrganizationActivitiesLoading,
+			error: organizationActivitiesError,
+		},
+	] = useLazyGetOrganizationActivitiesQuery();
+
 	const handleDownload = async () => {
 		if (!firstDay?.isValid() || !secondDay?.isValid()) {
 			return;
@@ -101,8 +111,9 @@ export const useDashboardActions = () => {
 			consoleDebug('Fetching dashboard data for user:', user.uuid);
 			getDashboardMetrics(user.uuid);
 			getRevenueReport(dateRange);
+			getOrganizationActivities({ orgId: user.organizationUuid, page: 1, limit: 10 });
 		}
-	}, [user?.uuid, dateRange, getDashboardMetrics, getRevenueReport]);
+	}, [user?.uuid, user?.organizationUuid, dateRange, getDashboardMetrics, getRevenueReport, getOrganizationActivities]);
 
 	return {
 		dashboardMetrics,
@@ -118,5 +129,8 @@ export const useDashboardActions = () => {
 		greeting,
 		handleDownload,
 		user,
+		organizationActivities,
+		isOrganizationActivitiesLoading,
+		organizationActivitiesError,
 	};
 };

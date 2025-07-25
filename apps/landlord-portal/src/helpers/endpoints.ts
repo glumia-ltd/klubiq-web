@@ -15,6 +15,7 @@ export const authEndpoints = {
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 	csrf: () => '/security/csrf-token',
+	resendInvitation: (invitationId: string) => `/auth/resend-invitation/${invitationId}`,
 };
 
 export const dashboardEndpoints = {
@@ -22,7 +23,7 @@ export const dashboardEndpoints = {
 	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
 	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
-	getActivities: (orgId: string, page: number = 1, limit: number = 20) => `/activities/${orgId}?page=${page}&limit=${limit}`,
+	getActivities: (orgId: string) => `/activities/${orgId}`,
 };
 
 export const propertiesEndpoints = {

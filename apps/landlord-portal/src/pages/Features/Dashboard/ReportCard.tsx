@@ -11,10 +11,11 @@ import { Typography, Card } from '@mui/material';
 // 	{ name: 'Amaka', id: '5' },
 // ];
 
-const ReportCard = () => {
+const ReportCard = ({ title, children }: { title: string, children: React.ReactNode }) => {
 	return (
 		<Card sx={styles.cardStyleFive}>
-			<Typography variant='h6'>In progress</Typography>
+			<Typography variant='h6'>{title}</Typography>
+			{children}
 
 			{/* <Box
 				sx={{

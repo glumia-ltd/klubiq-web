@@ -45,7 +45,6 @@ const setCsrfToken = (token: string) => sessionStorage.setItem('csrf_token', tok
 const fetchNewCsrfToken = async () => {
     try {
         const response = await api.get(authEndpoints.csrf());
-		console.log('refreshing csrf token response', response);
         const { data } = response.data;
         setCsrfToken(data.token);
         return data.token;

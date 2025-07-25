@@ -97,7 +97,7 @@ function MobileSideBar() {
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
-						alignItems: 'center',
+						alignItems: 'flex-start',
 						gap: '20px',
 					}}
 				>

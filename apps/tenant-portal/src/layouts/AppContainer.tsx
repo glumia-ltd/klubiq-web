@@ -108,7 +108,7 @@ const AppContainer = () => {
 					width: '100%',
 				}}
 			>
-				<Box sx={AppContainerStyle(isMobile).content} p={isMobile ? 2 : 5}>
+				<Box sx={AppContainerStyle(isMobile).content} p={isMobile ? 2 : 5} mb={isMobile ? 2 : 0}>
 					<Outlet />
 				</Box>
 				{/* {!isMobile && (

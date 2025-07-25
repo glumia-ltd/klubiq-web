@@ -960,43 +960,20 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
 				anchorOrigin={{
-					vertical: isMobile ? 'bottom' : 'top',
+					vertical: 'top',
 					horizontal: isMobile ? 'center' : 'right',
 				}}
 				sx={{
-					'& .MuiAlert-root': {
-						width: '100%',
-						backgroundColor: (theme) => {
-							switch (snackbar.severity) {
-								case 'error':
-									return theme.palette.error.dark;
-								case 'success':
-									return theme.palette.success.dark;
-								case 'warning':
-									return theme.palette.warning.dark;
-								default:
-									return theme.palette.info.dark;
-							}
-						},
-						color: 'white',
-						'& .MuiAlert-icon': {
-							color: 'white',
-						},
-						'& .MuiAlert-message': {
-							color: 'white',
-						},
-						'& .MuiAlert-action': {
-							'& .MuiIconButton-root': {
-								color: 'white',
-							},
-						},
-					},
+					width: '100%',
+					maxWidth: isMobile ? '100%' : '600px',
+					fontFamily: 'Maven Pro, sans-serif',
+					fontSize: '16px',
 				}}
 			>
 				<Alert
 					onClose={handleCloseSnackbar}
 					severity={snackbar.severity}
-					sx={{ width: '100%' }}
+					variant='filled'
 				>
 					{snackbar.message}
 				</Alert>

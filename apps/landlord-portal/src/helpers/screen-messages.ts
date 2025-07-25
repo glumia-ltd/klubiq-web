@@ -26,6 +26,12 @@ export const screenMessages = {
 			loading: 'Inviting tenant...',
 			confirm: 'Are you sure you want to invite this tenant?',
 		},
+		resendInvitation: {
+			success: 'Invitation resent successfully',
+			error: 'Failed to resend invitation',
+			loading: 'Resending invitation...',
+			confirm: 'Are you sure you want to resend this invitation?',
+		},
 		edit: {
 			success: 'Tenant updated successfully',
 			error: 'Failed to update tenant',

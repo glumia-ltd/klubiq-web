@@ -8,6 +8,10 @@ export const authEndpoints = {
 	csrf: () => '/security/csrf-token',
 	validateInvitationToken: (token: string) =>
 		`/auth/is-invite-valid?token=${token}`,
+	sendResetPasswordEmail: () => `/auth/reset-password-link`,
+	validateResetPasswordToken: () =>
+		`/auth/reset-token-valid`,
+	resetPassword: () => `/auth/reset-password`,
 };
 
 export const tenantEndpoints = {

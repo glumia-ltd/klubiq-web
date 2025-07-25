@@ -15,6 +15,7 @@ import { authEndpoints } from '@/helpers/endpoints';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
 import { ArrowBack } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
+import { useAcceptInvitationMutation, useResetPasswordMutation, useValidateResetPasswordTokenMutation } from '@/store/AuthStore/authApi.slice';
 
 type IPasswordType = {
 	password: string;
@@ -27,25 +28,35 @@ const ResetPassword = () => {
 	const [searchParams] = useSearchParams();
 	const [isInvitationValid, setIsInvitationValid] = useState(false);
 	const [isValidating, setIsValidating] = useState(false);
-	const emailFromUrl = searchParams.get('email');
-
+	const emailFromUrl = location.search.split('email=')[1]?.split('&')[0];
+	// searchParams.get('email');
+	const token = searchParams.get('token');
+	const mode = searchParams.get('mode');
+	const [resetPassword] = useResetPasswordMutation();
+	const [acceptInvitation] = useAcceptInvitationMutation();
+	const [validateResetPasswordToken] = useValidateResetPasswordTokenMutation();
 	useEffect(() => {
-		const token = searchParams.get('token');
 		if (token) {
-			api.get(authEndpoints.validateInvitationToken(token)).then((res) => {
-				console.log(res.data);
-				setIsInvitationValid(res.data);
-				setIsValidating(false);
-			});
+			if (mode === 'resetPassword') {
+				(async () => {
+					const res = await validateResetPasswordToken({ token, email: emailFromUrl ?? undefined }).unwrap();
+					setIsInvitationValid(res);
+					setIsValidating(false);
+				})();
+			} else {
+				api.get(authEndpoints.validateInvitationToken(token)).then((res) => {
+					setIsInvitationValid(res.data);
+					setIsValidating(false);
+				});
+			}
 		} else {
-			setIsInvitationValid(true);
-			setIsValidating(false);
+			navigate('/forgot-password', { replace: true });
 		}
-	}, [searchParams]);
+	}, [searchParams]);	
+
 
 	const onSubmit = async (values: IPasswordType) => {
-		const token = searchParams.get('token');
-		const oobCode = searchParams.get('oobCode');
+		const oobCode = mode === 'resetPassword' ? token : searchParams.get('oobCode');
 		const email = emailFromUrl ?? values.email;
 		if (!email) {
 			openSnackbar({
@@ -55,13 +66,25 @@ const ResetPassword = () => {
 			});
 			throw new Error('Email is required');
 		}
+		
 
 		try {
-			await api.post(authEndpoints.acceptInvitation(token!), {
-				password: values.password,
-				email,
-				oobCode,
-			});
+			if(mode === 'resetPassword') {
+				await resetPassword({
+					password: values.password,
+					email,
+					oobCode,
+				});
+			} else {
+				await acceptInvitation({
+					token: token ?? '',
+					data: {
+						password: values.password,
+						email: email ?? '',
+						oobCode: oobCode ?? '',
+					}
+				});
+			}
 
 			openSnackbar({
 				message: 'That was easy, please continue to login',
@@ -103,7 +126,7 @@ const ResetPassword = () => {
 							/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(
 								value ?? '',
 							),
-						'Password should be more than 7 characters.',
+						'Password should be more than 7 characters, contain at least one uppercase letter, one lowercase letter, one number and one special character.',
 					),
 			},
 		},
@@ -120,7 +143,7 @@ const ResetPassword = () => {
 							/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(
 								value ?? '',
 							),
-						'Password should be more than 7 characters.',
+						'Password should be more than 7 characters, contain at least one uppercase letter, one lowercase letter, one number and one special character.',
 					),
 				dependencies: [
 					{
@@ -178,7 +201,7 @@ const ResetPassword = () => {
 		return isValidating ? (
 			<Stack sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 				<CircularProgress />
-				<Typography>Verifying invitation</Typography>
+				{mode === 'resetPassword' ? <Typography>Verifying reset password link</Typography> : <Typography>Verifying invitation link</Typography>}
 			</Stack>
 		) : isInvitationValid ? (
 			<Card
@@ -209,8 +232,8 @@ const ResetPassword = () => {
 			</Card>
 		) : (
 			<Stack spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-				<Typography variant='h5'>Your invitation has expired</Typography>
-				<Typography variant='body1'>Please contact your landlord to get a new invitation</Typography>
+				{mode === 'resetPassword' ? <Typography variant='h4'>Your reset password link has expired!</Typography> : <Typography variant='h4'>Your invitation has expired</Typography>}
+				{mode !== 'resetPassword' && <Typography variant='body1'>Please contact your landlord to get a new invitation</Typography>}
 				<Button variant='klubiqMainButton' onClick={() => navigate('/login')}>Back to Login</Button>
 			</Stack>
 		);
