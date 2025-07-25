@@ -1,11 +1,6 @@
+import { Area } from '../page-tytpes/properties/detail-page.types';
 import { UserProfile } from './auth-types';
 
-export interface RouteObjectType {
-	'Property Category': { label: string; icon: React.ReactNode };
-	'Property Details': { label: string; icon: React.ReactNode };
-	'Unit Type': { label: string; icon: React.ReactNode };
-	[key: string]: { label: string; icon: React.ReactNode };
-}
 export type LeaseDetail = {
 	name: string;
 	amount: string;
@@ -34,45 +29,6 @@ export type TenantLocationState = {
 	selectedRow?: TenantType;
 	tenantId?: string;
 	tenantName?: string;
-};
-export type TenantTableType = {
-	uuid?: string;
-	tenantId?: string;
-	organizationUuid?: string;
-	tenant?: {
-		id?: string;
-		companyName?: string;
-		isActive?: boolean;
-		notes?: string | null;
-		createdDate?: string;
-		updatedDate?: string;
-		__profile__?: {
-			profileUuid?: string;
-			firstName?: string;
-			title?: string;
-			lastName?: string;
-			firebaseId?: string;
-			email?: string;
-			profilePicUrl?: string | null;
-			phoneNumber?: string;
-			countryPhoneCode?: string | null;
-			street?: string | null;
-			addressLine2?: string | null;
-			state?: string | null;
-			city?: string | null;
-			country?: string | null;
-			postalCode?: string | null;
-			formOfIdentity?: string | null;
-			dateOfBirth?: string | null;
-			gender?: string | null;
-			bio?: string | null;
-			isTermsAndConditionAccepted?: boolean;
-			isPrivacyPolicyAgreed?: boolean;
-			createdDate?: string;
-			updatedDate?: string;
-			isKYCVerified?: boolean;
-		};
-	};
 };
 
 export type TenantInfo = {
@@ -138,14 +94,6 @@ export type TenantType = {
 
 }
 
-export type TenantsType = {
-	tenantId: string;
-	profile: UserProfile;
-	leaseDetails: LeaseType;
-	propertyDetails: TenantTablePropertyDetailsType;
-	isPrimaryTenant: boolean;
-	id: string | number;
-};
 
 export type TenantTablePropertyDetailsType = {
 	name: string;
@@ -195,7 +143,7 @@ export type LeaseDetailsType = {
 };
 
 export type UnitType = {
-	area?: { value: number; unit: string };
+	area?: Area;
 	bathrooms?: number;
 	bedrooms?: number;
 	floor?: number | null;
@@ -210,9 +158,10 @@ export type UnitType = {
 	totalTenants?: number;
 	tenants?: TenantType[];
 	amenities?: string[];
+	status: string;
 };
 
-export type PropertyDataType = {
+export type PropertyMainType = {
 	marketValue: any;
 	sellingPrice: any;
 	uuid: string;
@@ -236,11 +185,7 @@ export type PropertyDataType = {
 	category: PropertyMetaData;
 	type: PropertyMetaData;
 	tags: string[];
-	area: {
-		value: number | string;
-		unit: string;
-	};
-	units?: UnitType[];
+	area: Area;
 	amenities?: Record<string, string>[];
 	status?: string | null;
 	owner?: string | null;
@@ -250,6 +195,10 @@ export type PropertyDataType = {
 	totalTenants: number;
 	offices: number;
 	rooms: number;
+};
+
+export type PropertyDataType = PropertyMainType & {
+	units?: UnitType[];
 };
 
 export type UnitImageType = {
@@ -342,6 +291,22 @@ export type DashboardMetricsType = {
 	rentsOverDueSummary?: RentOverdueLeaseType;
 };
 
+export type ActivityType = {
+	activities: Activity[];
+	totalCount: number;
+};
+
+export type Activity = {
+	id: string;
+	organizationUuid: string;
+	userId: string;
+	action: string;
+	targetType: string;
+	targetId: string;
+	metadata: any;
+	createdAt: Date;
+}
+
 export type RevenueReportType = {
 	maxRevenue: number;
 	monthlyRevenues: {
@@ -405,10 +370,7 @@ export type AddPropertyType = {
 		bedrooms: number | null;
 		bathrooms: number | null;
 		toilets: number | null;
-		area: {
-			value: number | null;
-			unit: string;
-		};
+		area: Area;
 		status: string;
 		rooms: number | null;
 		offices: number | null;

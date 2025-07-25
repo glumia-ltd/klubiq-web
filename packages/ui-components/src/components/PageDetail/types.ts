@@ -24,6 +24,7 @@ export interface PageDetailHeaderData {
   avatarSize?: 'small' | 'medium' | 'large';
   address?: string;
   leaseDetailsHeaderData?: LeaseDetailsHeaderData;
+  headerActions?: ReactNode[];
 }
 
 export interface TabInfo {

@@ -98,3 +98,31 @@ export interface SubscriptionPlan {
 	automated_rent_collection: boolean;
 	multi_currency_support: boolean;
 }
+export type TenantProfileType = {
+	id: string;
+	fullName: string;
+	firstName: string;
+	lastName: string;
+	companyName: string | null;
+	email: string;
+	phoneNumber: string;
+	title: string;
+	profilePicUrl: string | null;
+	countryPhoneCode: string | null;
+	street: string | null;
+	addressLine2: string | null;
+	state: string | null;
+	city: string | null;
+	country: string | null;
+	postalCode: string | null;
+	formOfIdentity: string | null;
+	dateOfBirth: string | null;
+	gender: string | null;
+	bio: string | null;
+	isTermsAndConditionAccepted: boolean;
+	isPrivacyPolicyAgreed: boolean;
+	createdDate: string;
+	updatedDate: string;
+	isKYCVerified: boolean;
+	active: boolean;
+  };

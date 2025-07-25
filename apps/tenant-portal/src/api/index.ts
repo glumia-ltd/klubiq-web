@@ -22,6 +22,9 @@ const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.login(),
 	authEndpoints.signOut(),
 	authEndpoints.csrf(),
+	authEndpoints.resetPassword(),
+	authEndpoints.sendResetPasswordEmail(),
+	authEndpoints.validateResetPasswordToken(),
 ];
 const getCsrfToken = () => sessionStorage.getItem('csrf_token');
 const setCsrfToken = (token: string) =>
@@ -30,7 +33,6 @@ const setCsrfToken = (token: string) =>
 const fetchNewCsrfToken = async () => {
 	try {
 		const response = await api.get(authEndpoints.csrf());
-		console.log('refreshing csrf token response', response);
 		const { data } = response.data;
 		setCsrfToken(data.token);
 		return data.token;

@@ -15,6 +15,8 @@ import {
 	TextField,
 	Backdrop,
 	CircularProgress,
+	SxProps,
+	Theme,
 } from '@mui/material';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -26,13 +28,17 @@ import { UnitCard } from '../UnitCard/UnitCard';
 import UnitInfoCard from '../UnitInfoComponent/UnitInfoCard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { HouseIcon, TenantIcon, VacantHomeIcon } from '../Icons/CustomIcons';
+import {
+	HouseIcon,
+	TenantIcon,
+	VacantHomeIcon,
+	WarningIcon,
+} from '../Icons/CustomIcons';
 import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLocaleFormat } from '../../helpers/utils';
-import { PropertiesActionsPrompts } from '../Dialogs/PropertiesActionsPrompts';
 import { useLazyGetUnitLeasesQuery } from '../../store/LeaseStore/leaseApiSlice';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
@@ -63,13 +69,22 @@ import UploadUnitImagesForm from '../Forms/UploadUnitImagesForm';
 import { screenMessages } from '../../helpers/screen-messages';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 
+type MenuItemType = {
+	label: string;
+	onClick: () => void;
+	divider?: boolean;
+	disabled?: boolean;
+};
+
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	currentProperty,
 	multiUnitMode = false,
 	multiUnitNumber = '',
 	unitId = '',
 }) => {
-	if (!currentProperty) return null;
+	if (!currentProperty) {
+		return null;
+	}
 
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -81,6 +96,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	const dispatch = useDispatch();
 	// State management
 	const [confirmUnitNumber, setConfirmUnitNumber] = useState<string>('');
+	const [confirmPropertyNumber, setConfirmPropertyNumber] =
+		useState<string>('');
 	const [tabValue, setTabValue] = useState<number>(0);
 	const [routeMap, setRouteMap] = useState({});
 	const [open, setOpen] = useState<boolean>(false);
@@ -115,6 +132,18 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			? currentProperty.images.find((image) => image.isMain)
 			: currentProperty.images[0];
 	}, [currentProperty?.images]);
+
+	const canArchiveProperty = useMemo(() => {
+		return !currentProperty?.isArchived;
+	}, [currentProperty?.isArchived]);
+
+	const canDeleteProperty = useMemo(() => {
+		return (
+			!currentProperty?.isArchived &&
+			currentProperty?.units?.length &&
+			currentProperty?.units?.length > 0
+		);
+	}, [currentProperty?.isArchived, currentProperty?.units]);
 
 	const unitInfoData = useMemo(
 		() => [
@@ -346,6 +375,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		header: string,
 		children: React.ReactNode,
 		footer?: React.ReactNode,
+		sx?: SxProps<Theme>,
 	): DynamicModalProps => ({
 		headerText: header,
 		open: open,
@@ -363,6 +393,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				theme.palette.mode === 'dark'
 					? theme.palette.divider
 					: theme.palette.background.paper,
+			...sx,
 		},
 		children,
 		footer,
@@ -378,6 +409,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			justifyContent='center'
 			alignItems='center'
 			sx={{ width: '100%', height: '100%' }}
+			mb={4}
 		>
 			<UnitForm
 				propertyId={currentProperty?.uuid}
@@ -394,7 +426,10 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 
 	const deleteUnitModalConfig = createModalConfig(
 		openDeleteUnitDialog,
-		() => setOpenDeleteUnitDialog(false),
+		() => {
+			setConfirmUnitNumber('');
+			setOpenDeleteUnitDialog(false);
+		},
 		`Unit Name: ${multiUnitNumber}`,
 		<Stack
 			sx={{
@@ -439,7 +474,10 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 			<Button
 				variant='klubiqOutlinedButton'
 				color='primary'
-				onClick={() => setOpenDeleteUnitDialog(false)}
+				onClick={() => {
+					setConfirmUnitNumber('');
+					setOpenDeleteUnitDialog(false);
+				}}
 			>
 				Cancel
 			</Button>
@@ -483,6 +521,137 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				onClose={() => setOpenAddImagesDialog(false)}
 			/>
 		</Stack>,
+		undefined,
+		{ py: 2 },
+	);
+
+	const archivePropertiesModalConfig = createModalConfig(
+		openArchivePropertyDialog,
+		() => setOpenArchivePropertyDialog(false),
+		`Archive Property: ${currentProperty?.name}`,
+		<Stack
+			sx={{
+				width: '100%',
+				height: 'auto',
+				paddingTop: 2,
+				gap: 2,
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
+		>
+			<WarningIcon fontSize='large' />
+			<Typography variant='body1'>
+				Are you sure you want to archive this property? All related units,
+				leases, and transactions will be archived!
+			</Typography>
+		</Stack>,
+		<Stack direction='row' spacing={2}>
+			<Button
+				variant='klubiqOutlinedButton'
+				color='primary'
+				onClick={() => setOpenArchivePropertyDialog(false)}
+			>
+				Cancel
+			</Button>
+			<Button
+				variant='contained'
+				color='error'
+				onClick={handleArchivePropertyRequest}
+			>
+				{progress ? 'Archiving...' : 'Archive Property'}
+			</Button>
+			<Backdrop
+				sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+				open={progress}
+			>
+				<CircularProgress color='inherit' />
+				<Typography variant='h6' color='inherit'>
+					Archiving property...
+				</Typography>
+			</Backdrop>
+		</Stack>,
+		{ py: 2, maxWidth: '500px' },
+	);
+
+	const deletePropertiesModalConfig = createModalConfig(
+		openDeletePropertyDialog,
+		() => {
+			setConfirmPropertyNumber('');
+			setOpenDeletePropertyDialog(false);
+		},
+		`🗑️ Delete Property: ${currentProperty?.name}`,
+		<Stack
+			sx={{
+				width: '100%',
+				height: 'auto',
+				paddingTop: 2,
+				gap: 2,
+				alignItems: 'stretch',
+				justifyContent: 'center',
+			}}
+		>
+			<Stack direction='row' alignItems='center' spacing={2}>
+				<WarningIcon fontSize='large' />
+				<Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+					Are you sure you want to delete this property?
+				</Typography>
+			</Stack>
+			<Typography variant='body1'>
+				Deleting this property will delete all units, leases and transactions
+				associated with it.
+			</Typography>
+			<Typography variant='body1'>This action cannot be undone.</Typography>
+			<Stack
+				sx={{
+					width: '100%',
+					height: 'auto',
+					paddingTop: 2,
+					gap: 2,
+					alignItems: 'flex-start',
+					justifyContent: 'center',
+				}}
+			>
+				<Typography variant='h6'>
+					Type the Property Name to confirm delete:
+				</Typography>
+				<TextField
+					value={confirmPropertyNumber}
+					onChange={(e) => setConfirmPropertyNumber(e.target.value)}
+					fullWidth
+					sx={{ width: '100%' }}
+				/>
+			</Stack>
+		</Stack>,
+		<Stack direction='row' spacing={2}>
+			<Button
+				variant='klubiqOutlinedButton'
+				color='primary'
+				onClick={() => {
+					setConfirmPropertyNumber('');
+					setOpenDeletePropertyDialog(false);
+				}}
+			>
+				Cancel
+			</Button>
+			<Button
+				variant='contained'
+				color='error'
+				onClick={handleDeletePropertyRequest}
+				disabled={confirmPropertyNumber !== currentProperty?.name}
+			>
+				{progress ? 'Deleting...' : 'Delete Property'}
+			</Button>
+			<Backdrop
+				sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+				open={progress}
+			>
+				<CircularProgress color='inherit' />
+				<Typography variant='h6' color='inherit'>
+					Deleting property...
+				</Typography>
+			</Backdrop>
+		</Stack>,
+		{ py: 2, maxWidth: '500px' },
 	);
 
 	// Memoized data
@@ -523,26 +692,42 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		setTabValue(newValue);
 	};
 
-	const handleArchiveProperty = () => setOpenArchivePropertyDialog(true);
-	const handleDeleteProperty = () => setOpenDeletePropertyDialog(true);
-	const handleEditProperty = () =>
+	const handleArchiveProperty = () => {
+		setOpen(false);
+		setOpenArchivePropertyDialog(true);
+	};
+	const handleDeleteProperty = () => {
+		setOpen(false);
+		setOpenDeletePropertyDialog(true);
+	};
+	const handleEditProperty = () => {
+		setOpen(false);
 		navigate(`/properties/${currentUUId}/edit`, {
 			state: { returnPath: `/properties/${currentUUId}` },
 		});
+	};
 	const handleAddLease = () =>
 		navigate(`/leases/add-lease?property=${currentUUId}`);
 	const handleLeaseDetailClick = (lease: LeaseType) =>
 		navigate(`/leases/${lease.id}`);
 	const handleAddUnit = () => {
+		setOpen(false);
 		setUnitDialogType('add');
 		setOpenUnitDialog(true);
 	};
 	const handleEditUnit = () => {
+		setOpen(false);
 		setUnitDialogType('edit');
 		setOpenUnitDialog(true);
 	};
-	const handleDeleteUnit = () => setOpenDeleteUnitDialog(true);
-	const handleAddImages = () => setOpenAddImagesDialog(true);
+	const handleDeleteUnit = () => {
+		setOpen(false);
+		setOpenDeleteUnitDialog(true);
+	};
+	const handleAddImages = () => {
+		setOpen(false);
+		setOpenAddImagesDialog(true);
+	};
 
 	const handleInviteTenant = (header?: string) => {
 		navigate(`/tenants/invite-tenant`, {
@@ -584,23 +769,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		navigate('/tenants/add-tenant', { state });
 	};
 
-	const handleArchiveDialogButtonAction = (event: any) => {
-		if (event === 'Cancel') {
-			setOpenArchivePropertyDialog(false);
-		} else {
-			handleArchivePropertyRequest();
-		}
-	};
-
-	const handleDeleteDialogButtonAction = (event: any) => {
-		if (event === 'Cancel') {
-			setOpenDeletePropertyDialog(false);
-		} else {
-			handleDeletePropertyRequest();
-		}
-	};
-
-	const handleListKeyDown = (event: React.KeyboardEvent) => {
+	const handleListKeyDown = (event: React.KeyboardEvent<any>) => {
 		if (event.key === 'Tab' || event.key === 'Escape') {
 			event.preventDefault();
 			setOpen(false);
@@ -634,9 +803,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						'currency',
 					)}
 					variant='unit'
-					additionalImages={
-						unitData?.images || []
-					}
+					additionalImages={unitData?.images || []}
 					totalArea={`${unitData?.area?.value} ${unitData?.area?.unit}`}
 				/>
 			);
@@ -768,11 +935,15 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	);
 
 	const renderActionMenu = (isMultiUnit: boolean) => {
-		const menuItems = isMultiUnit
+		const menuItems: (MenuItemType | false | 0 | undefined)[] = isMultiUnit
 			? [
-				{ label: 'Add / Delete Images', onClick: handleAddImages,  divider: true },
-				{ label: 'Edit Unit', onClick: handleEditUnit, divider: true },
-				{ label: 'Delete Unit', onClick: handleDeleteUnit },
+					{
+						label: 'Add / Delete Images',
+						onClick: handleAddImages,
+						divider: true,
+					},
+					{ label: 'Edit Unit', onClick: handleEditUnit, divider: true },
+					{ label: 'Delete Unit', onClick: handleDeleteUnit },
 				]
 			: [
 					{
@@ -780,19 +951,21 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						onClick: handleAddUnit,
 						divider: true,
 					},
-					{
+					canArchiveProperty && {
 						label: 'Archive Property',
 						onClick: handleArchiveProperty,
 						divider: true,
 						disabled: currentProperty?.isArchived,
 					},
-					{ label: 'Delete Property', onClick: handleDeleteProperty, divider: true, },
+					canDeleteProperty && {
+						label: 'Delete Property',
+						onClick: handleDeleteProperty,
+						divider: true,
+					},
 					{
 						label: 'Edit Property',
 						onClick: handleEditProperty,
-						
 					},
-					
 				];
 
 		return (
@@ -827,18 +1000,26 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 										id='composition-menu'
 										aria-labelledby='composition-button'
 										onKeyDown={handleListKeyDown}
+										component='ul'
 									>
-										{menuItems.map((item, index) => (
-											<MenuItem
-												key={index}
-												onClick={item.onClick}
-												sx={{ padding: '10px' }}
-												divider={item.divider}
-												disabled={item.disabled}
-											>
-												{item.label}
-											</MenuItem>
-										))}
+										{menuItems
+											.filter(
+												(item): item is MenuItemType =>
+													!!item &&
+													typeof item === 'object' &&
+													'onClick' in item,
+											)
+											.map((item, index) => (
+												<MenuItem
+													key={index}
+													onClick={item.onClick}
+													sx={{ padding: '10px' }}
+													divider={!!item.divider}
+													disabled={!!item.disabled}
+												>
+													{item.label}
+												</MenuItem>
+											))}
 									</MenuList>
 								</ClickAwayListener>
 							</Paper>
@@ -943,33 +1124,13 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					renderTabsContent(tabValue)}
 
 				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
-
-				<PropertiesActionsPrompts
-					open={openArchivePropertyDialog}
-					progress={progress}
-					title={progress ? 'Archive in progress' : 'Attention!'}
-					content='Are you sure you want to archive this property?'
-					rightButtonContent='Archive Property'
-					handleDialogButtonAction={(e) =>
-						handleArchiveDialogButtonAction(e.target.value)
-					}
-				/>
-
-				<PropertiesActionsPrompts
-					open={openDeletePropertyDialog}
-					progress={progress}
-					title={progress ? 'Deleting this property' : 'Delete Property'}
-					content='Are you sure you want to delete this property? Unit, all leases, and related transactions will be deleted!'
-					rightButtonContent='Delete Property'
-					handleDialogButtonAction={(e) =>
-						handleDeleteDialogButtonAction(e.target.value)
-					}
-				/>
 			</Stack>
 
 			<DynamicModal {...unitModalConfig} />
 			<DynamicModal {...deleteUnitModalConfig} />
 			<DynamicModal {...uploadUnitImagesModalConfig} />
+			<DynamicModal {...archivePropertiesModalConfig} />
+			<DynamicModal {...deletePropertiesModalConfig} />
 		</>
 	);
 };
