@@ -2,6 +2,12 @@ import { get } from 'lodash';
 
 import dayjs from 'dayjs';
 
+const DEFAULT_USER_LOCATION_PREFERENCE = {
+	currency: 'NGN',
+	countryCode: 'NG',
+	language: 'en',
+};
+
 export const formatDate = (dateString: string, format = 'MMMM D, YYYY') => {
 	if (!dateString) {
 		return '';
@@ -27,10 +33,10 @@ export const getLocaleFormat = (
 	numberVal: number,
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
 	decimals: number = 2,
-	userLocationPreference: Record<string, unknown> = {},
+	userLocationPreference?: Record<string, unknown> | undefined,
 ) => {
 	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(
-		userLocationPreference,
+		userLocationPreference || DEFAULT_USER_LOCATION_PREFERENCE,
 	);
 	if (lang && countryCode && currencyCode) {
 		return new Intl.NumberFormat(`${lang}-${countryCode}`, {

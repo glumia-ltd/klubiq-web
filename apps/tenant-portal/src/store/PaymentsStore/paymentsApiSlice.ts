@@ -8,14 +8,21 @@ export const paymentsApiSlice = createApi({
 	baseQuery: customApiFunction,
 	tagTypes: [API_TAGS.PAYMENTS],
 	endpoints: (builder) => ({
-		getPayments: builder.query<GetPaymentsResponse, { [key: string]: any }>({
+		getUpcomingPayments: builder.query<any, { leaseTenantId: string }>({
 			query: (params) => ({
-				url: paymentsEndpoints.getPayments(),
+				url: paymentsEndpoints.getUpcomingPayments(params.leaseTenantId),
 				method: 'GET',
 				params,
+			}),
+		}),
+		getPaymentMethods: builder.query<any, void>({
+			query: () => ({
+				url: paymentsEndpoints.getPaymentMethods(),
+				method: 'GET',
 			}),
 		}),
 	}),
 });
 
-interface GetPaymentsResponse {}
+export const { useGetUpcomingPaymentsQuery, useGetPaymentMethodsQuery } =
+	paymentsApiSlice;

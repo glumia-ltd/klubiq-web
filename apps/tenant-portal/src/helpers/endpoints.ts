@@ -22,4 +22,8 @@ export const publicEndpoints = {
 		`/notifications?userId=${userId}&isRead=${isRead}`,
 };
 
-export const paymentsEndpoints = {};
+export const paymentsEndpoints = {
+	getUpcomingPayments: (leaseTenantId: string) =>
+		`/payments/upcoming-payments/${leaseTenantId}`,
+	getPaymentMethods: () => '/payment-methods',
+};

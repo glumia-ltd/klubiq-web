@@ -13,7 +13,7 @@ import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
 import ConfirmPayment from '@/pages/Features/Payments/ConfirmPayment';
 import CardPayment from '@/pages/Features/Payments/CardPayment';
-import Payments from '@/pages/Features/Payments';
+import PaymentsPage from '@/pages/Features/Payments';
 import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';
 import Profile from '@/pages/Auth/profile';
@@ -29,7 +29,7 @@ export const router = createBrowserRouter(
 			<Route element={<PrivateRoute />}>
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
-					<Route path='/payments' element={<Payments />} />
+					<Route path='/payments' element={<PaymentsPage />} />
 					<Route path='/payments/confirm' element={<ConfirmPayment />} />
 					<Route path='/payments/card' element={<CardPayment />} />
 					<Route path='/maintenance' element={<Maintenance />} />
