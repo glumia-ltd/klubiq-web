@@ -122,7 +122,7 @@ const Login = () => {
 				component: (
 					<Typography
 						textAlign='left'
-						onClick={() => navigate('/reset-password')}
+						onClick={() => navigate('/forgot-password')}
 					>
 						<BoldTextLink>Forgot password</BoldTextLink>
 					</Typography>

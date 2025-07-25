@@ -15,6 +15,8 @@ import {
 	TextField,
 	Backdrop,
 	CircularProgress,
+	SxProps,
+	Theme,
 } from '@mui/material';
 import AddFieldCard from '../AddFieldsComponent/AddFieldCard';
 import { styles } from './style';
@@ -346,6 +348,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 		header: string,
 		children: React.ReactNode,
 		footer?: React.ReactNode,
+		sx?: SxProps<Theme>,
 	): DynamicModalProps => ({
 		headerText: header,
 		open: open,
@@ -363,6 +366,7 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				theme.palette.mode === 'dark'
 					? theme.palette.divider
 					: theme.palette.background.paper,
+			...sx,
 		},
 		children,
 		footer,
@@ -483,6 +487,8 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				onClose={() => setOpenAddImagesDialog(false)}
 			/>
 		</Stack>,
+		undefined,
+		{ py: 2 },
 	);
 
 	// Memoized data

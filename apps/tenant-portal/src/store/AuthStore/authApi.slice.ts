@@ -37,6 +37,27 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
+		resetPassword: builder.mutation({
+			query: (body) => ({
+				url: authEndpoints.resetPassword(),
+				method: 'POST',
+				body,
+			})
+		}),
+		acceptInvitation:builder.mutation<any, {token: string, data: any}>({
+			query: ({token, data}) => ({
+				url: authEndpoints.acceptInvitation(token),
+				method: 'POST',
+				body: data,
+			})
+		}),
+		validateResetPasswordToken: builder.mutation<boolean, {token: string, email?: string}>({
+			query: ({token, email}) => ({
+				url: authEndpoints.validateResetPasswordToken(),
+				method: 'POST',
+				body: {token, email},
+			})
+		}),
 	}),
 });
 
@@ -45,4 +66,7 @@ export const {
 	useLazyGetUserByFbidQuery,
 	useSignOutMutation,
 	useSignInMutation,
+	useResetPasswordMutation,
+	useAcceptInvitationMutation,
+	useValidateResetPasswordTokenMutation,
 } = authApiSlice;

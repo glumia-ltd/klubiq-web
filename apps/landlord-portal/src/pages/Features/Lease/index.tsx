@@ -9,7 +9,6 @@ import {
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { LeaseType } from '../../../shared/type';
 import {
@@ -31,12 +30,11 @@ const Lease = () => {
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
 		sortBy: 'createdDate',
-		order: 'ASC',
+		order: 'DESC',
 	});
 	const filterObjectLength = Object.keys(filter).length;
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
@@ -156,7 +154,6 @@ const Lease = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-		updateBreadcrumb({});
 	}, [filter, getCurrentPage]);
 
 	const handleRowClick = (id: number) => {

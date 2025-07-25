@@ -132,6 +132,16 @@ export const authApiSlice = createApi({
 				});
 			},
 		}),
+		resendInvitation: builder.mutation<void, {invitationId: string, email: string, isTenant: boolean}>({
+			query: (body) => ({
+				url: authEndpoints.resendInvitation(body.invitationId),
+				method: 'POST',
+				body: {
+					email: body.email,
+					isTenant: body.isTenant,
+				},
+			}),
+		}),
 	}),
 });
 
@@ -151,4 +161,5 @@ export const {
 	useSignUpMutation,
 	useLazyFetchCsrfTokenQuery,
 	useFetchCsrfTokenQuery,
+	useResendInvitationMutation,
 } = authApiSlice;
