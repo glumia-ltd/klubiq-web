@@ -1,5 +1,5 @@
 import { TableColumn } from '@klubiq/ui-components';
-import { PropertyAddressType, PropertyDataType, PropertyMainType, UnitType } from '../../shared/type';
+import { PropertyDataType, PropertyMainType, UnitType } from '../../shared/type';
 
 export interface PropertyUnitComponentProps {
 	currentProperty: PropertyDataType;

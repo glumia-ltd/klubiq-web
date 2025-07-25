@@ -20,7 +20,7 @@ import logo from '@/assets/images/icons.svg';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { DynamicAvatar } from '@klubiq/ui-components';
-const DRAWER_WIDTH = 221;
+const DRAWER_WIDTH = 235;
 
 export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	navLinks,
@@ -224,15 +224,15 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								]}
 								showName={false}
 							/>
-							<Box sx={{ flexGrow: 1, textAlign: 'left', direction: 'column' }}>
+							<Box sx={{ flexGrow: 1, textAlign: 'left', direction: 'column', width: '100%' }}>
 								<Typography
-									variant="body1"
+									variant="subtitle2"
 									sx={{ color: 'primary.contrastText' }}
 								>
 									{user.firstname} {user.lastname}
 								</Typography>
 								<Typography
-									variant="body2"
+									variant="subtitle1"
 									sx={{ color: 'primary.contrastText' }}
 								>
 									{user.role}

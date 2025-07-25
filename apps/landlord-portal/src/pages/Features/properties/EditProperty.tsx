@@ -140,7 +140,7 @@ const EditProperty = () => {
 					bathrooms: null,
 					toilets: null,
 					area: {
-						value: null,
+						value: '',
 						unit: 'SqM',
 					},
 					status: '',

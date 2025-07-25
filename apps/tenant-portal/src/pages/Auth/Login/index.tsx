@@ -62,11 +62,8 @@ const Login = () => {
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
 		} catch (error: any) {
-			openSnackbar({
-				message: error.response.data.message,
-				severity: 'error',
-				isOpen: true,
-			});
+			const errorMessage = error.data.message;
+			throw new Error(errorMessage);
 		}
 	};
 

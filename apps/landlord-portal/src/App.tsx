@@ -15,14 +15,14 @@ import { initDB } from './services/indexedDb';
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 import { AuthProvider } from './context/AuthContext/AuthProvider';
-import { useMediaQuery, useTheme } from '@mui/material';
+// import { useMediaQuery, useTheme } from '@mui/material';
 
 function App() {
 	const { message, severity, isOpen, duration } = useSelector(
 		(state: RootState) => state.snack,
 	);
-	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	// const theme = useTheme();
+	// const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	useEffect(() => {
 		if ('serviceWorker' in navigator) {

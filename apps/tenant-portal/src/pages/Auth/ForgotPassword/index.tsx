@@ -18,7 +18,7 @@ import {
 	KlubiqFormV1,
 } from '@klubiq/ui-components';
 import { z } from 'zod';
-import { CheckCircle, Close } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 
 type IValuesType = {
 	email: string;

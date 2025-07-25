@@ -3,6 +3,7 @@ import { authEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { UserProfile } from '@/shared/types/data.types';
 import { ALL_TAGS, API_TAGS } from '../store.types';
+import { resetStore } from '..';
 
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
@@ -21,10 +22,26 @@ export const authApiSlice = createApi({
 				url: authEndpoints.signOut(),
 				method: 'POST',
 			}),
-			invalidatesTags: ALL_TAGS,
+			invalidatesTags: (_result, _error) => ALL_TAGS,
 			async onQueryStarted(_, { queryFulfilled }) {
 				try {
 					await queryFulfilled;
+					resetStore();
+					await new Promise(resolve => setTimeout(resolve, 100));
+
+					// Clear service worker cache
+					const cacheNames = await caches.keys();
+					await Promise.all(
+						cacheNames.map(cacheName => caches.delete(cacheName))
+					);
+
+					// Clear IndexedDB if you're using it
+					const databases = await window.indexedDB.databases();
+					databases.forEach(db => {
+						if (db.name) {
+							window.indexedDB.deleteDatabase(db.name);
+						}
+					});
 					sessionStorage.clear();
 				} catch (error) {
 				}
