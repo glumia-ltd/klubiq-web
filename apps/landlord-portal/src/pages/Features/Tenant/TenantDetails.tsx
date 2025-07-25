@@ -87,7 +87,7 @@ const TenantDetails = () => {
 					`${tenantData?.profile?.firstName} ${tenantData?.profile?.lastName}` +
 					(tenantData?.profile?.companyName
 						? ` (${tenantData?.profile?.companyName})`
-						: ''),
+						: '') || 'tenant-details',
 				dynamic: true,
 			},
 		});
