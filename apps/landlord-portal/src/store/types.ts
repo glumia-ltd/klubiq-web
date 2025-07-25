@@ -7,9 +7,11 @@ export const API_TAGS = {
     TENANT_FILTER_METADATA: 'Tenant-Filter-Metadata',
     ORGANIZATION: 'Organization',
     NOTIFICATION: 'Notification',
+    NOTIFICATION_COUNT: 'Notification-Count',
     USER: 'User',
     DASHBOARD_METRICS: 'Dashboard-Metrics',
     DASHBOARD_REVENUE_REPORT: 'Dashboard-Revenue-Report',
     PROPERTIES_AND_TENANTS: 'Properties-And-Tenants',
+    ACTIVITY: 'Activity',
   } as const;
 export const ALL_TAGS = Object.values(API_TAGS);

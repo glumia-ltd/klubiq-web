@@ -6,6 +6,18 @@ export const screenMessages = {
 			loading: 'Adding unit...',
 			confirm: 'Are you sure you want to add this unit?',
 		},
+		edit: {
+			success: 'Unit updated successfully',
+			error: 'Failed to update unit',
+			loading: 'Updating unit...',
+			confirm: 'Are you sure you want to update this unit?',
+		},
+		delete: {
+			success: 'Unit deleted successfully',
+			error: 'Failed to delete unit',
+			loading: 'Deleting unit...',
+			confirm: 'Are you sure you want to delete this unit?',
+		},
 	},
 	tenant: {
 		invite: {
@@ -13,6 +25,12 @@ export const screenMessages = {
 			error: 'Failed to invite tenant',
 			loading: 'Inviting tenant...',
 			confirm: 'Are you sure you want to invite this tenant?',
+		},
+		resendInvitation: {
+			success: 'Invitation resent successfully',
+			error: 'Failed to resend invitation',
+			loading: 'Resending invitation...',
+			confirm: 'Are you sure you want to resend this invitation?',
 		},
 		edit: {
 			success: 'Tenant updated successfully',
@@ -86,6 +104,12 @@ export const screenMessages = {
 			error: 'Failed to delete lease',
 			loading: 'Deleting lease...',
 			confirm: 'Are you sure you want to delete this lease?',
+		},
+		terminate:{
+			success: 'Lease terminated successfully',
+			error: 'Failed to terminate lease',
+			loading: 'Terminating lease...',
+			confirm: 'Are you sure you want to terminate this lease?',
 		},
 		archive: {
 			success: 'Lease archived successfully',

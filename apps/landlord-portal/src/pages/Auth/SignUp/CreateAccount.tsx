@@ -25,8 +25,8 @@ import { useGetRolesQuery } from '../../../store/GlobalStore/globalApiSlice';
 import { consoleLog } from '../../../helpers/debug-logger';
 import logo from '../../../assets/images/logo-1.png';
 import logoText from '../../../assets/images/logo-text-2.png';
-import lightLogo from '../../../assets/images/logo-3.png';
-import lightLogoText from '../../../assets/images/logo-text-3.png';
+import lightLogo from '../../../assets/images/logo-2.png';
+import lightLogoText from '../../../assets/images/logo-text-1.png';
 
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
@@ -367,7 +367,7 @@ const CreateAccount: React.FC = () => {
 								marginTop: '1.2rem',
 							}}
 						>
-							<Typography>
+							<Typography textAlign='left'>
 								Already have an account?{' '}
 								<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
 							</Typography>

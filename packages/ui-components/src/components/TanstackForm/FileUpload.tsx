@@ -142,15 +142,25 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	});
 	const [hasUploadedFiles, setHasUploadedFiles] = useState<boolean>(false);
 	const [isError, setIsError] = useState<boolean>(false);
-
+	const isFile = (file: any): file is File => {
+		return (
+			typeof window !== 'undefined' &&
+			typeof window.File !== 'undefined' &&
+			file instanceof window.File
+		);
+	};
 	// Initialize and sync localFiles with form value
 	useEffect(() => {
 		// If we have files with storage results, preserve them even if value is empty
 		const hasStorageResults = localFiles.some((file) => file.storageResult);
 		// If we have storage results, always preserve the files
-		const filesWaitingForUpload = localFiles.length - form?.getFieldValue(fieldName)?.length;
+		const filesWaitingForUpload =
+			localFiles.length - (form?.getFieldValue(fieldName) || []).length;
 		form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
-		localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
+		localStorage.setItem(
+			'filesWaitingForUpload',
+			filesWaitingForUpload.toString(),
+		);
 		if (hasStorageResults) {
 			setHasUploadedFiles(true);
 			return;
@@ -160,15 +170,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		if (value) {
 			// Get uploaded files from form if available
 			const formUploadedFiles = form?.getFieldValue(fieldName) || [];
-
 			const filesWithPreview = Array.from(value).map((file) => {
 				// First try to find a matching file in form values
-				const formFile = formUploadedFiles.find((f: any) =>
-					f.externalId.includes(file.name),
-				);
+				const formFile = Array.isArray(formUploadedFiles)
+					? formUploadedFiles.find(
+							(f: any) =>
+								f.externalId?.includes(file.name) ||
+								('externalId' in file &&
+									f.externalId === file.externalId &&
+									'url' in file &&
+									f.url === file.url),
+						)
+					: undefined;
 
-				if (formFile) {
+				if (formFile && isFile(file)) {
+					//console.log('formFile found:', formFile);
 					// Restore storage result from form value
+
 					const fileWithPreview = file as FileWithPreview;
 					fileWithPreview.preview = formFile.url;
 					fileWithPreview.isFavorite = formFile.isMain;
@@ -180,6 +198,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 						original_filename: formFile.fileName,
 					};
 					return fileWithPreview;
+				} else if (formFile && !isFile(file) && 'externalId' in file && 'url' in file) {
+					return {
+						preview: formFile.url,
+						isFavorite: formFile.isMain,
+						storageResult: {
+							secure_url: formFile.url,
+							url: formFile.url,
+							public_id: formFile.externalId,
+							bytes: formFile.fileSize,
+							original_filename: formFile.fileName,
+						},
+					} as FileWithPreview;
 				}
 
 				// If no form file found, check local files
@@ -208,7 +238,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 					}
 					fileWithPreview.isFavorite = false;
 				}
-
 				return fileWithPreview;
 			});
 
@@ -245,6 +274,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 			// If we don't have a preview URL, create one
 			if (!file.preview) {
+				//console.log('file is not preview: ', file);
 				const blobUrl = URL.createObjectURL(file);
 				currentBlobUrls.add(blobUrl);
 				return {
@@ -419,6 +449,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 	const handleServerFilesDelete = async (index: number, publicId: string) => {
 		try {
+			//console.log('handleServerFilesDelete: ', form, fieldName, publicId);
 			if (!onDelete || !form || !fieldName || !publicId) {
 				throw new Error('Missing required parameters for server file deletion');
 			}
@@ -429,6 +460,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				const updatedServerFiles = serverFiles.filter(
 					(file: any, i: number) => i !== index,
 				);
+				//console.log('updatedServerFiles: ', updatedServerFiles);
 				form?.setFieldValue(fieldName, updatedServerFiles);
 				setDeleteProgress(40);
 			} else {
@@ -439,13 +471,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		}
 	};
 	const handleDelete = async (index: number) => {
+		//console.log('form?.getFieldValue(fieldName) before delete: ', form?.getFieldValue(fieldName));
 		const fileToDelete = localFiles[index];
+		//console.log('fileToDelete: ', fileToDelete);
 		try {
 			setIsDeleting(true);
 			setDeleteProgress(0);
-			const uploadedVersion = form
-				?.getFieldValue(fieldName)
-				?.find((file: any) => file.externalId.includes(fileToDelete.name));
+			const uploadedVersion = (form?.getFieldValue(fieldName) || []).find(
+				(file: any) => file.externalId.includes(fileToDelete.name) || file.externalId === fileToDelete.storageResult?.public_id,
+			);
+			//console.log('uploadedVersion: ', uploadedVersion);
 			if (uploadedVersion) {
 				setDeleteProgress(10);
 				await handleServerFilesDelete(index, uploadedVersion.externalId);
@@ -462,7 +497,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// Remove the file from local state
 			const dataTransfer = new DataTransfer();
 			const newFiles = [...localFiles];
-
+			//console.log('newFiles: ', newFiles);
 			// Clean up the blob URL before removing the file
 			if (newFiles[index].preview) {
 				URL.revokeObjectURL(newFiles[index].preview);
@@ -471,18 +506,26 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			newFiles.splice(index, 1);
 
 			newFiles.forEach((file) => {
-				if (file instanceof File) {
+				if (isFile(file)) {
 					dataTransfer.items.add(file);
 				}
 			});
 			const localFilesCount = newFiles.length;
 			// Update form value
-			onChange(dataTransfer.files);
+			if(dataTransfer.files?.length > 0){
+				onChange(dataTransfer.files);
+			}
 			setLocalFiles(newFiles);
 			// If we have storage results, always preserve the files
-			const filesWaitingForUpload = localFilesCount - form?.getFieldValue(fieldName)?.length;
+			//console.log('form?.getFieldValue(fieldName) after delete: ', form?.getFieldValue(fieldName));
+			//console.log('localFiles: ', localFiles);
+			const filesWaitingForUpload =
+				localFilesCount - (form?.getFieldValue(fieldName) || []).length;
 			form?.setFieldValue('filesWaitingForUpload', filesWaitingForUpload);
-			localStorage.setItem('filesWaitingForUpload', filesWaitingForUpload.toString());
+			localStorage.setItem(
+				'filesWaitingForUpload',
+				filesWaitingForUpload.toString(),
+			);
 			clearInterval(deleteProgressInterval);
 			setDeleteProgress(100);
 			setSnackbar({
@@ -627,7 +670,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			// This was causing localFiles to be cleared
 			// onChange(dataTransfer.files);
 			// If we have storage results, always preserve the files
-			
+
 			clearInterval(progressInterval);
 			setUploadProgress(100);
 
@@ -702,7 +745,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<Card variant='outlined'>
 			<CardContent>
-				{form?.getFieldValue(fieldName)?.length === 0 && (
+				{(form?.getFieldValue(fieldName) || []).length === 0 && (
 					<>
 						<Typography variant='subtitle1' gutterBottom>
 							{subtitle}
@@ -916,41 +959,21 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				open={snackbar.open}
 				autoHideDuration={6000}
 				onClose={handleCloseSnackbar}
-				anchorOrigin={{ vertical: isMobile ? 'bottom' : 'top', horizontal: isMobile ? 'center' : 'right' }}
+				anchorOrigin={{
+					vertical: 'top',
+					horizontal: isMobile ? 'center' : 'right',
+				}}
 				sx={{
-					'& .MuiAlert-root': {
-						width: '100%',
-						backgroundColor: (theme) => {
-							switch (snackbar.severity) {
-								case 'error':
-									return theme.palette.error.dark;
-								case 'success':
-									return theme.palette.success.dark;
-								case 'warning':
-									return theme.palette.warning.dark;
-								default:
-									return theme.palette.info.dark;
-							}
-						},
-						color: 'white',
-						'& .MuiAlert-icon': {
-							color: 'white',
-						},
-						'& .MuiAlert-message': {
-							color: 'white',
-						},
-						'& .MuiAlert-action': {
-							'& .MuiIconButton-root': {
-								color: 'white',
-							},
-						},
-					},
+					width: '100%',
+					maxWidth: isMobile ? '100%' : '600px',
+					fontFamily: 'Maven Pro, sans-serif',
+					fontSize: '16px',
 				}}
 			>
 				<Alert
 					onClose={handleCloseSnackbar}
 					severity={snackbar.severity}
-					sx={{ width: '100%' }}
+					variant='filled'
 				>
 					{snackbar.message}
 				</Alert>

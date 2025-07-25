@@ -8,8 +8,8 @@ import {
 	ActivityItem,
 	ActivityCard,
 	AmenityItem,
-	amenityIconMap,
 	AmenityCard,
+	getAmenityIcon,
 } from '@klubiq/ui-components';
 import {
 	CalendarMonth,
@@ -30,9 +30,10 @@ const TenantDashboard = () => {
 	const { user } = useSelector((state: RootState) => state.auth);
 	const { data: leaseInsights, isLoading: isLeaseInsightsLoading } =
 		useGetLeaseInsightsQuery();
-	const { data: notifications, isLoading: isNotificationsLoading } = useGetNotificationsQuery(
-		user.uuid ? { userId: user.uuid, isRead: false } : skipToken
-	);
+	const { data: notifications, isLoading: isNotificationsLoading } =
+		useGetNotificationsQuery(
+			user.uuid ? { userId: user.uuid, isRead: false } : skipToken,
+		);
 	console.log(notifications);
 	const tenantRentMetrics: DBInfoCardProps[] = [
 		{
@@ -69,12 +70,13 @@ const TenantDashboard = () => {
 		},
 	];
 
-	const amenityCardItems: AmenityItem[] = leaseInsights?.amenities?.map((amenity, idx) => ({
-		id: idx,
-		title: amenity,
-		icon: amenityIconMap[amenity],
-		available: true,
-	})) || [];
+	const amenityCardItems: AmenityItem[] =
+		leaseInsights?.amenities?.map((amenity, idx) => ({
+			id: idx,
+			title: amenity,
+			icon: getAmenityIcon(amenity),
+			available: true,
+		})) || [];
 
 	const notificationCardItems: ActivityItem[] =
 		notifications?.map((notification, idx) => ({
@@ -289,7 +291,13 @@ const TenantDashboard = () => {
 			</Stack>
 
 			{amenityCardItems.length > 0 && (
-				<AmenityCard items={amenityCardItems} />
+				<AmenityCard
+					items={amenityCardItems}
+					spacing={2}
+					sx={{
+						backgroundColor: '',
+					}}
+				/>
 			)}
 		</Box>
 	);

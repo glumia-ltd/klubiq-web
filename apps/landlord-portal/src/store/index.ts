@@ -85,6 +85,7 @@ export const resetStore = () => {
 	store.dispatch(notificationApiSlice.util.resetApiState());
 	store.dispatch(globalApiSlice.util.resetApiState());
 	store.dispatch(tenantApiSlice.util.resetApiState());
+	
 };
 export default store;
 export { persistor };

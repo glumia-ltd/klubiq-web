@@ -15,6 +15,7 @@ export const authEndpoints = {
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 	csrf: () => '/security/csrf-token',
+	resendInvitation: (invitationId: string) => `/auth/resend-invitation/${invitationId}`,
 };
 
 export const dashboardEndpoints = {
@@ -22,6 +23,7 @@ export const dashboardEndpoints = {
 	getRevenueReport: () => `/dashboard/revenue-report`,
 	downloadReport: () => '/dashboard/download-revenue-report',
 	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
+	getActivities: (orgId: string) => `/activities/${orgId}`,
 };
 
 export const propertiesEndpoints = {
@@ -39,6 +41,8 @@ export const propertiesEndpoints = {
 		`/public/org/${orgId}/properties`,
 	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	addUnit: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
+	editUnit: (propertyUuid: string, unitId: string) => `/properties/${propertyUuid}/units/${unitId}`,
+	deleteUnits: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
 };
 
 export const organizationEndpoints = {
@@ -57,6 +61,7 @@ export const leaseEndpoints = {
 	editLease: (leaseid: string) => `/leases/${leaseid}`,
 	deleteLease: (leaseid: string) => `/leases/${leaseid}`,
 	archiveLease: (leaseid: string) => `/leases/${leaseid}/archive`,
+	terminateLease: (leaseid: string) => `/leases/terminate/${leaseid}`,
 };
 export const tenantEndpoints = {
 	getTenantMetaData: () => '/public/tenant-metadata',

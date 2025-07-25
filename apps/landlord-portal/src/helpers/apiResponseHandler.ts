@@ -2,6 +2,7 @@
 
 import { openSnackbar } from '../store/SnackbarStore/SnackbarSlice';
 import { invalidateMultipleTags } from '../store/tags-invalidator';
+import { useNavigate } from 'react-router-dom';
 
 interface ApiResponseConfig {
     successMessage: string;
@@ -9,13 +10,17 @@ interface ApiResponseConfig {
     tagsToInvalidate?: any[];
     successDuration?: number;
     errorDuration?: number;
+    onSuccess?: () => void;
+    onError?: () => void;
+    navigateTo?: string;
 }
 
 export const handleApiResponse = async (
     queryFulfilled: Promise<any>,
     dispatch: any,
-    config: ApiResponseConfig
+    config: ApiResponseConfig,
 ) => {
+    const navigate = useNavigate();
     try {
         const result = await queryFulfilled;
         dispatch(openSnackbar({
@@ -27,6 +32,12 @@ export const handleApiResponse = async (
         if (config.tagsToInvalidate) {
             invalidateMultipleTags(dispatch, config.tagsToInvalidate);
         }
+        if (config.onSuccess) {
+            config.onSuccess();
+        }
+        if (config.navigateTo) {
+            navigate(config.navigateTo, { replace: true });
+        }
         return result;
     } catch (error) {
         console.error('API Error:', (error as any).error);
@@ -37,6 +48,9 @@ export const handleApiResponse = async (
             isOpen: true,
             duration: config.errorDuration || 7000
         }));
+        if (config.onError) {
+            config.onError();
+        }
         throw error;
     }
 };

@@ -243,6 +243,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	enableErrorAlert = true,
 	errorAlertTitle,
 	errorAlertMessage = 'Please check the form for errors. All required fields must be filled correctly.',
+	hideSubmitButton = false,
 }) => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
@@ -257,7 +258,10 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [showErrorAlert, setShowErrorAlert] = useState(false);
-	const [errorAlertData, setErrorAlertData] = useState<{title: string, message: string}>({title: '', message: ''});
+	const [errorAlertData, setErrorAlertData] = useState<{
+		title: string;
+		message: string;
+	}>({ title: '', message: '' });
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const normalizedFields = Array.isArray(fields) ? fields : [fields];
 	const steps = isMultiStep
@@ -350,18 +354,23 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		fullPath: string,
 	): z.ZodType<any> => {
 		if (field.customComponent) {
-			return z.any().refine((val) => {
-				// For custom components, we need to check if the value is a valid selection
-				return (
-					val !== undefined &&
-					val !== null &&
-					val !== '' &&
-					val !== '0' &&
-					val !== 0
-				);
-			}, `${field.label || 'This field'} is required`);
+			return z.any().refine(
+				(val) => {
+					// For custom components, we need to check if the value is a valid selection
+					return (
+						val !== undefined &&
+						val !== null &&
+						val !== '' &&
+						val !== '0' &&
+						val !== 0
+					);
+				},
+				`${field.label || 'This field'} is required`,
+			);
 		} else if (field.type === 'array') {
-			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label} is required`);
+			return z
+				.array(z.any())
+				.min(field.required ? 1 : 0, `${field.label} is required`);
 		} else if (field.type === 'checkbox') {
 			return z
 				.boolean()
@@ -370,13 +379,33 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					`${field.label} is required`,
 				);
 		} else if (field.type === 'select' && (field as any).multiple) {
-			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
+			return z
+				.array(z.any())
+				.min(
+					field.required ? 1 : 0,
+					`${field.label || 'This field'} is required`,
+				);
 		} else if (field.type === 'radio') {
-			return z.string().min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
+			return z
+				.string()
+				.min(
+					field.required ? 1 : 0,
+					`${field.label || 'This field'} is required`,
+				);
 		} else if (field.type === 'file') {
-			return z.array(z.any()).min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
+			return z
+				.array(z.any())
+				.min(
+					field.required ? 1 : 0,
+					`${field.label || 'This field'} is required`,
+				);
 		} else {
-			return z.string().min(field.required ? 1 : 0, `${field.label || 'This field'} is required`);
+			return z
+				.string()
+				.min(
+					field.required ? 1 : 0,
+					`${field.label || 'This field'} is required`,
+				);
 		}
 	};
 
@@ -500,14 +529,21 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						isValid = true;
 				}
 				if (!isValid) {
-					return dep.message || getDefaultDependencyMessage(dep.type, field.label, dep.field);
+					return (
+						dep.message ||
+						getDefaultDependencyMessage(dep.type, field.label, dep.field)
+					);
 				}
 			}
 		}
 		return undefined;
 	};
 
-	const getDefaultDependencyMessage = (type: string, fieldLabel: string, dependentField: string) => {
+	const getDefaultDependencyMessage = (
+		type: string,
+		fieldLabel: string,
+		dependentField: string,
+	) => {
 		switch (type) {
 			case 'min':
 				return `${fieldLabel} must be greater than ${dependentField}`;
@@ -522,7 +558,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		}
 	};
 
-	const getFieldValidators = (field: FormFieldV1, formValues: any, fullPath: string) => ({
+	const getFieldValidators = (
+		field: FormFieldV1,
+		formValues: any,
+		fullPath: string,
+	) => ({
 		onChange: ({ value }: { value: any }) => {
 			try {
 				// For group fields, update the parent object
@@ -535,7 +575,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					form.setFieldValue(field.name, newParentValue);
 				}
 				// Validate the field
-				const schemaResult = validateFieldValue(value, field, formValues, fullPath);
+				const schemaResult = validateFieldValue(
+					value,
+					field,
+					formValues,
+					fullPath,
+				);
 				if (schemaResult) {
 					return schemaResult;
 				}
@@ -603,7 +648,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			} catch (error: any) {
 				console.error('Form submission error:', error);
 				setIsSubmitted(false);
-				setErrorAlertData({title: '', message: error.message || 'An error occurred while submitting the form. Please try again.'});
+				setErrorAlertData({
+					title: '',
+					message:
+						error.message ||
+						'An error occurred while submitting the form. Please try again.',
+				});
 				setShowErrorAlert(true);
 				throw error;
 			}
@@ -624,7 +674,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				}
 			},
 			onSubmit: ({ value }) => {
-
 				// Only validate the current step for submission
 				const stepFields = steps[currentStep].fields;
 				const stepSchema = createStepSchema(stepFields);
@@ -892,7 +941,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 							name={field.name}
 							mode='array'
 							asyncAlways={true}
-							validators={getFieldValidators(field, form.state.values, field.name)}
+							validators={getFieldValidators(
+								field,
+								form.state.values,
+								field.name,
+							)}
 						>
 							{(fieldApi) => (
 								<Card key={field.name} sx={{ mb: 3, boxShadow: 1 }}>
@@ -953,7 +1006,9 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 									sx={{
 										display: 'flex',
 										justifyContent:
-											groupConfig.layout === 'row' ? 'space-between' : undefined,
+											groupConfig.layout === 'row'
+												? 'space-between'
+												: undefined,
 										flexDirection:
 											groupConfig.layout === 'column' ? 'column' : 'row',
 										flexWrap: 'wrap',
@@ -981,7 +1036,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 														key={`ff-${fieldPath}-${index}`}
 														name={fieldPath}
 														asyncAlways={true}
-														validators={getFieldValidators(subField, form.state.values, fieldPath)}
+														validators={getFieldValidators(
+															subField,
+															form.state.values,
+															fieldPath,
+														)}
 													>
 														{(subFieldApi) => (
 															<KlubiqTSFormFields
@@ -1007,7 +1066,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						key={field.name}
 						name={field.name}
 						asyncAlways={true}
-						validators={getFieldValidators(field, form.state.values, field.name)}
+						validators={getFieldValidators(
+							field,
+							form.state.values,
+							field.name,
+						)}
 					>
 						{(fieldApi) => (
 							<KlubiqTSFormFields
@@ -1127,7 +1190,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															key={`ff-${fieldPath}-${index}`}
 															name={fieldPath}
 															asyncAlways={true}
-															validators={getFieldValidators(subField, values, fieldPath)}
+															validators={getFieldValidators(
+																subField,
+																values,
+																fieldPath,
+															)}
 														>
 															{(subFieldApi) => (
 																<KlubiqTSFormFields
@@ -1227,24 +1294,27 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 			spacing={4}
 		>
 			{/* Add submission overlay */}
-			{!showBackdrop && isSubmitted && !nextAction && !form.state.isSubmitting && (
-				<Box
-					sx={{
-						position: 'fixed',
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						backgroundColor: 'rgba(255, 255, 255, 0.7)',
-						zIndex: (theme) => theme.zIndex.drawer + 2,
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-					}}
-				>
-					<CircularProgress />
-				</Box>
-			)}
+			{!showBackdrop &&
+				isSubmitted &&
+				!nextAction &&
+				!form.state.isSubmitting && (
+					<Box
+						sx={{
+							position: 'fixed',
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							backgroundColor: 'rgba(255, 255, 255, 0.7)',
+							zIndex: (theme) => theme.zIndex.drawer + 2,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+						}}
+					>
+						<CircularProgress />
+					</Box>
+				)}
 
 			{showBackdrop && (
 				<Backdrop
@@ -1392,8 +1462,12 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						}}
 						onClose={() => setShowErrorAlert(false)}
 					>
-						{getErrorAlertTitle() && <AlertTitle>{getErrorAlertTitle()}</AlertTitle>}
-						{getErrorAlertMessage() && <Typography variant='body1'>{getErrorAlertMessage()}</Typography>}
+						{getErrorAlertTitle() && (
+							<AlertTitle>{getErrorAlertTitle()}</AlertTitle>
+						)}
+						{getErrorAlertMessage() && (
+							<Typography variant='body1'>{getErrorAlertMessage()}</Typography>
+						)}
 					</Alert>
 				)}
 
@@ -1452,14 +1526,33 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															: field.required;
 													const isGroup = field.type === 'group';
 													if (isGroup) {
-														const groupFields = typeof field.groupFields === 'function' ? field.groupFields(form.state.values) : field.groupFields;
-														const groupSchema = z.object(groupFields.reduce((acc: Record<string, z.ZodType<any>>, groupField: FormFieldV1) => {
-															const groupFieldRequired = typeof groupField.required === 'function' ? groupField.required(form.state.values) : groupField.required;
-															if (groupFieldRequired) {
-																acc[groupField.name] = getFieldSchema(groupField, form.state.values, groupField.name) || z.any();
-															}
-															return acc;
-														}, {} as Record<string, z.ZodType<any>>));
+														const groupFields =
+															typeof field.groupFields === 'function'
+																? field.groupFields(form.state.values)
+																: field.groupFields;
+														const groupSchema = z.object(
+															groupFields.reduce(
+																(
+																	acc: Record<string, z.ZodType<any>>,
+																	groupField: FormFieldV1,
+																) => {
+																	const groupFieldRequired =
+																		typeof groupField.required === 'function'
+																			? groupField.required(form.state.values)
+																			: groupField.required;
+																	if (groupFieldRequired) {
+																		acc[groupField.name] =
+																			getFieldSchema(
+																				groupField,
+																				form.state.values,
+																				groupField.name,
+																			) || z.any();
+																	}
+																	return acc;
+																},
+																{} as Record<string, z.ZodType<any>>,
+															),
+														);
 														acc[field.name] = groupSchema;
 														return acc;
 													} else {
@@ -1509,22 +1602,28 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 										</Button>
 									) : (
 										<>
-											{isSubmitting ? (
-												<LoadingButton
-													variant='klubiqOutlinedButton'
-													loading={isSubmitting}
-													sx={style.loadingButton}
-												></LoadingButton>
-											) : (
-												<Button
-													type='submit'
-													variant='klubiqMainButton'
-													disabled={!isFormValid || isSubmitting || isSubmitted}
-													fullWidth={fullWidthButtons}
-													// onClick={handleNonMultiStepSubmit}
-												>
-													{submitButtonText}
-												</Button>
+											{!hideSubmitButton && (
+												<>
+													{isSubmitting ? (
+														<LoadingButton
+															variant='klubiqOutlinedButton'
+															loading={isSubmitting}
+															sx={style.loadingButton}
+														></LoadingButton>
+													) : (
+														<Button
+															type='submit'
+															variant='klubiqMainButton'
+															disabled={
+																!isFormValid || isSubmitting || isSubmitted
+															}
+															fullWidth={fullWidthButtons}
+															// onClick={handleNonMultiStepSubmit}
+														>
+															{submitButtonText}
+														</Button>
+													)}
+												</>
 											)}
 											{shouldShowNextAction() && nextAction && (
 												<>

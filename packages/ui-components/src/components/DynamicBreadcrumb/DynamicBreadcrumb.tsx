@@ -1,6 +1,6 @@
 // packages/ui-components/src/components/DynamicBreadcrumb/DynamicBreadcrumb.tsx
 import React, { useMemo } from 'react';
-import { Breadcrumbs, Link, Typography, Stack } from '@mui/material';
+import { Breadcrumbs, Link, Typography, Stack, Skeleton } from '@mui/material';
 //import { Home } from '@mui/icons-material';
 import { DynamicBreadcrumbProps, RouteConfig, BreadcrumbRoute } from './types';
 import { NavigateNext } from '@mui/icons-material';
@@ -56,7 +56,9 @@ export const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({
     return breadcrumbItems;
   }, [currentPath, routeMap]);
 
-  if (breadcrumbs.length <= 1) return null;
+  if (breadcrumbs.length <= 1) {
+    return null;
+  }
 
   return (
     <Breadcrumbs
@@ -72,7 +74,7 @@ export const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({
         const label = (
           <Stack direction="row" alignItems="center" spacing={0.5}>
             {route.icon && <span>{route.icon}</span>}
-            <span>{route.slug}</span>
+            <span>{route.slug || ''}</span> 
           </Stack>
         );
 
@@ -85,7 +87,7 @@ export const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({
               sx={{ display: 'flex', alignItems: 'center', direction: 'row', gap: 0.5 }}
             >
               {route.icon && <span>{route.icon}</span>}
-              <span>{route.slug}</span>
+              <span>{route.slug || ''}</span>
             </Typography>
           );
         }
@@ -104,7 +106,7 @@ export const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({
               }
             }}
             onClick={() => onNavigate?.(route.path)}
-            aria-label={route.slug}
+            aria-label={route.slug || ''}
           >
             {label}
           </Link>

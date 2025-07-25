@@ -21,7 +21,7 @@ const meta: Meta<typeof GroupedAvatar> = {
     },
     variant: {
       control: 'select',
-      options: ['circular', 'rounded', 'square'],
+      options: ['circular', 'square'],
     },
   },
 }
@@ -75,7 +75,7 @@ export const LargeSize: Story = {
 export const Rounded: Story = {
   args: {
     avatars,
-    variant: 'rounded',
+    variant: 'circular',
   },
 }
 

@@ -14,7 +14,7 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import ReportCard from './ReportCard';
+// import ReportCard from './ReportCard';
 import TableChart from './TableChart';
 import { PropertiesGuage } from '../../../components/PropertiesGuage';
 import { styles } from './style';
@@ -32,6 +32,11 @@ import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import { getCurrencySymbol } from '../../../helpers/utils';
 import { useDashboardActions } from '../../../hooks/page-hooks/dashboard.hooks';
+import { Activity } from '../../../shared/type';
+import { ActivityCard, ActivityItem } from '@klubiq/ui-components';
+// import { useNavigate } from 'react-router-dom';
+import { truncate } from 'lodash';
+// import { FileCopy, Home, } from '@mui/icons-material';
 
 const DashBoard = () => {
 	const {
@@ -46,10 +51,14 @@ const DashBoard = () => {
 		dashboardMetrics,
 		isRevenueReportLoading,
 		revenueReport,
+		organizationActivities,
+		isOrganizationActivitiesLoading,
+		organizationActivitiesError,
 	} = useDashboardActions();
 
 	//const { mode } = useContext(ThemeContext);
     const theme = useTheme();
+	// const navigate = useNavigate();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const TOTALUNITS = dashboardMetrics?.propertyMetrics?.totalUnits;
 	//const TOTALPROPERTIES = dashboardMetrics?.propertyMetrics?.totalProperties;
@@ -102,7 +111,58 @@ const DashBoard = () => {
 		vacant: dashboardMetrics?.propertyMetrics?.vacantUnits || 0,
 		maintenance: MAINTENANCEUNITS || 0,
 	};
+	// const getActivityIcon = (activity: Activity) => {
+	// 	if (activity.targetType === 'property') {
+	// 		return <Home />;
+	// 	} else if (activity.targetType === 'lease') {
+	// 		return <FileCopy />;
+	// 	} else if (activity.targetType === 'tenant') {
+	// 		return <GroupAddOutlinedIcon />;
+	// 	} else if (activity.targetType === 'payment') {
+	// 		return <PendingActionsOutlinedIcon />;
+	// 	}
+	// 	return <Home />;
+	// }
+	const getActivityVariant = (activity: Activity) => {
+		if (activity.action.includes('created')) {
+			return 'success';
+		} else if (activity.action.includes('updated')) {
+			return 'info';
+		} else if (activity.action.includes('deleted') || activity.action.includes('removed')) {
+			return 'error';
+		} else if (activity.action.includes('viewed')) {
+			return 'primary';
+		}
 
+		return 'info';
+	}
+	const renderActivities = () => {
+		if (isOrganizationActivitiesLoading) {
+			return <Skeleton variant='rounded' width='50px' />;
+		}
+		if (organizationActivitiesError) {
+			return <Typography variant='caption'>Unable to load activities</Typography>;
+		}
+		const activityItems: ActivityItem[] = organizationActivities?.activities
+			? organizationActivities.activities.map((activity: Activity) => ({
+					id: activity.id,
+					title: '',
+					subtitle: truncate(activity.metadata.message, { length: 200 }),
+					timestamp: dayjs(activity.createdAt).format('DD/MM/YYYY h:mm A'),
+					variant: getActivityVariant(activity),
+				}))
+			: [];
+		return (
+			<ActivityCard title={<Typography variant='h6' fontWeight={600} gutterBottom={false}>Recent Activities</Typography>} maxItems={5} items={activityItems} variant='alerts' 
+			sx={{ width: '100%', backgroundColor: '', overflow: 'auto', borderRadius: 3, minHeight: '386px', maxHeight: '436px' }}
+			loading={isOrganizationActivitiesLoading}
+			// viewAllLink={'/activities'}
+			// onViewAllClick={() => {
+			// 	navigate('/activities');
+			// }}
+			/>
+		);
+	};
 	return (
 		<>
 			<Grid item xs={12}>
@@ -135,6 +195,7 @@ const DashBoard = () => {
 						container
 						spacing={2}
 						direction={{ lg: 'row', xs: 'column-reverse' }}
+						
 					>
 						<Grid container item spacing={2} xs={12} sm={12} md={12} lg={9}>
 							{/* PROPERTIES */}
@@ -513,7 +574,8 @@ const DashBoard = () => {
 							</Grid>
 						</Grid>
 						<Grid container item xs={12} sm={12} md={12} lg={3}>
-							<ReportCard />
+						{renderActivities()}
+							{/* <ReportCard title='Activities'>{renderActivities()}</ReportCard> */}
 						</Grid>
 					</Grid>
 
@@ -521,6 +583,7 @@ const DashBoard = () => {
 						container
 						sx={{
 							...styles.totalRevenueStyle,
+							
 						}}
 					>
 						<Card
