@@ -183,17 +183,14 @@ const CardPayment: React.FC = () => {
 		>
 			<Box sx={{ width: '100%', maxWidth: 500 }}>
 				{/* Back Link */}
-				<Stack
-					direction='row'
-					alignItems='center'
-					spacing={1}
-					sx={{ mb: 1, cursor: 'pointer' }}
-				>
+
+				<Button variant='text' sx={{ mb: 1, cursor: 'pointer' }}>
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
 					<Typography>Back to Payment Methods</Typography>
-				</Stack>
+				</Button>
+
 				{/* Title and Subtitle */}
 				<Typography variant='h5' sx={{ mb: 0.5 }}>
 					Card Payment
