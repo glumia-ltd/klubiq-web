@@ -32,12 +32,12 @@ export const router = createBrowserRouter(
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
 					<Route path='/payments' element={<PaymentsPage />} />
-					<Route path='/payments/confirm' element={<ConfirmPayment />} />
-					<Route path='/payments/card' element={<CardPayment />} />
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/documents' element={<Documents />} />
 					<Route path='/profile' element={<Profile />} />
 				</Route>
+				<Route path='/payments/card' element={<CardPayment />} />
+				<Route path='/payments/confirm' element={<ConfirmPayment />} />
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
 		</Route>,

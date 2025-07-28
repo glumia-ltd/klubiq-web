@@ -123,14 +123,11 @@ const ConfirmPayment: React.FC = () => {
 	const alertBoxStyle = (theme: Theme) => ({
 		bgcolor: getAlertBg(theme),
 		borderRadius: 2,
-		mb: 3,
-		fontSize: 14,
+		fontSize: 13,
 		alignItems: 'flex-start',
-		padding: 3,
+		padding: 1.5,
 	});
 
-	const summaryTextColor = (theme: Theme) =>
-		(theme as any)?.palette?.textColors?.azureKlubiqPickedBluewood;
 	const summaryRowStyle = {
 		display: 'flex',
 		flexDirection: 'row',
@@ -143,7 +140,7 @@ const ConfirmPayment: React.FC = () => {
 			sx={{
 				minHeight: '100vh',
 				bgcolor: 'background.default',
-				py: { xs: 2, md: 6 },
+				py: { xs: 1, md: 2 },
 				px: { xs: 0, md: 2 },
 				display: 'flex',
 				flexDirection: 'column',
@@ -151,21 +148,18 @@ const ConfirmPayment: React.FC = () => {
 				width: '100%',
 			}}
 		>
-			<Box sx={{ width: '100%', maxWidth: 600 }}>
+			<Box sx={{ width: '100%', maxWidth: 500 }}>
 				{/* Back Button */}
-				<Stack
-					direction='row'
-					alignItems='center'
-					spacing={1}
-					sx={{ mb: 2, cursor: 'pointer' }}
-				>
+
+				<Button variant='text' sx={{ mb: 1, cursor: 'pointer' }}>
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
 					</IconButton>
 					<Typography variant='body1'>Back</Typography>
-				</Stack>
+				</Button>
+
 				{/* Confirm Payment Title */}
-				<Typography variant='h2' sx={{ mb: 3 }}>
+				<Typography variant='h4' sx={{ mb: 1 }}>
 					Confirm Payment
 				</Typography>
 				{/* Main Card */}
@@ -173,13 +167,13 @@ const ConfirmPayment: React.FC = () => {
 					sx={{
 						borderRadius: 3,
 						boxShadow: theme.shadows[1],
-						p: { xs: 2, md: 4 },
-						mb: 2,
+						p: { xs: 2, md: 2.5 },
+						mb: 1,
 					}}
 				>
 					{/* Payment Summary */}
-					<Box sx={{ mb: 3 }}>
-						<Typography variant='h4' sx={{ mb: 3 }}>
+					<Box sx={{ mb: 1.5 }}>
+						<Typography variant='h6' sx={{ mb: 1.5 }}>
 							Payment Summary
 						</Typography>
 						{loading ? (
@@ -192,7 +186,7 @@ const ConfirmPayment: React.FC = () => {
 							<Box>
 								{/* Details Grid  */}
 								<Box sx={{ width: '100%' }}>
-									<Stack spacing={3}>
+									<Stack spacing={1.5}>
 										{/* Details Rows */}
 										<Box sx={summaryRowStyle}>
 											<Typography>{paymentSummary.title}</Typography>
@@ -217,10 +211,10 @@ const ConfirmPayment: React.FC = () => {
 							</Box>
 						)}
 					</Box>
-					<Divider sx={{ my: 2 }} />
+					<Divider sx={{ my: 1.5 }} />
 					{/* Payment Method Section */}
-					<Box sx={{ mb: 3 }}>
-						<Typography variant='h4' sx={{ mb: 3 }}>
+					<Box sx={{ mb: 1.5 }}>
+						<Typography variant='h6' sx={{ mb: 1.5 }}>
 							Choose Payment Method
 						</Typography>
 						<FormControl component='fieldset' fullWidth>
@@ -250,7 +244,7 @@ const ConfirmPayment: React.FC = () => {
 					<Alert
 						icon={<LockOutlinedIcon color='inherit' />}
 						severity='info'
-						sx={alertBoxStyle(theme)}
+						sx={{ ...alertBoxStyle(theme), mb: 1.5 }}
 					>
 						<Typography
 							fontWeight={600}
@@ -270,7 +264,7 @@ const ConfirmPayment: React.FC = () => {
 						color='primary'
 						size='large'
 						fullWidth
-						sx={{ borderRadius: 2, fontWeight: 600, fontSize: 18, py: 1.5 }}
+						sx={{ borderRadius: 2, fontWeight: 600, fontSize: 16, py: 1.25 }}
 						disabled={loading}
 					>
 						Proceed

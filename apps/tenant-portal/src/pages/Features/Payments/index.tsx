@@ -15,12 +15,15 @@ import {
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
 import { getLocaleFormat } from '@/helpers/utils';
+import { useNavigate } from 'react-router-dom';
 // Dummy data for demonstration
 
 const PaymentsPage = () => {
 	const {
 		user: { uuid },
 	} = useSelector(getAuthState);
+
+	const navigate = useNavigate();
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery({ leaseTenantId: uuid });
@@ -47,6 +50,11 @@ const PaymentsPage = () => {
 		);
 	};
 
+	const handlePaymentButtonClick = () => {
+		console.log('Payment button clicked');
+		navigate('/payments/confirm');
+	};
+
 	return (
 		<Box
 			sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}
@@ -59,6 +67,7 @@ const PaymentsPage = () => {
 			>
 				<Typography variant='h5'>Rent Payments</Typography>
 				<Button
+					onClick={handlePaymentButtonClick}
 					variant='contained'
 					color='primary'
 					size='large'

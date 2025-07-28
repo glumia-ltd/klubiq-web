@@ -173,7 +173,7 @@ const CardPayment: React.FC = () => {
 			sx={{
 				minHeight: '100vh',
 				bgcolor: 'background.default',
-				py: { xs: 2, md: 6 },
+				py: { xs: 1, md: 2 },
 				px: { xs: 0, md: 2 },
 				display: 'flex',
 				flexDirection: 'column',
@@ -181,13 +181,13 @@ const CardPayment: React.FC = () => {
 				width: '100%',
 			}}
 		>
-			<Box sx={{ width: '100%', maxWidth: 600 }}>
+			<Box sx={{ width: '100%', maxWidth: 500 }}>
 				{/* Back Link */}
 				<Stack
 					direction='row'
 					alignItems='center'
 					spacing={1}
-					sx={{ mb: 2, cursor: 'pointer' }}
+					sx={{ mb: 1, cursor: 'pointer' }}
 				>
 					<IconButton size='small' sx={{ p: 0 }}>
 						<ArrowBackIcon fontSize='small' />
@@ -195,10 +195,10 @@ const CardPayment: React.FC = () => {
 					<Typography>Back to Payment Methods</Typography>
 				</Stack>
 				{/* Title and Subtitle */}
-				<Typography variant='h4' sx={{ mb: 1 }}>
+				<Typography variant='h5' sx={{ mb: 0.5 }}>
 					Card Payment
 				</Typography>
-				<Typography sx={{ mb: 3 }}>
+				<Typography sx={{ mb: 2 }}>
 					Choose your card or add a new one
 				</Typography>
 				{/* Main Card */}
@@ -206,13 +206,13 @@ const CardPayment: React.FC = () => {
 					sx={{
 						borderRadius: 3,
 						boxShadow: theme.shadows[1],
-						p: { xs: 2, md: 4 },
-						mb: 2,
+						p: { xs: 2, md: 2.5 },
+						mb: 1,
 					}}
 				>
 					{/* Payment Summary */}
-					<Box sx={{ mb: 3 }}>
-						<Typography variant='h6' fontWeight={600} sx={{ mb: 3 }}>
+					<Box sx={{ mb: 2 }}>
+						<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
 							Payment Summary
 						</Typography>
 						{loading ? (
@@ -227,7 +227,7 @@ const CardPayment: React.FC = () => {
 									display: 'flex',
 									justifyContent: 'space-between',
 									alignItems: 'center',
-									mb: 2,
+									mb: 1.5,
 								}}
 							>
 								<Typography variant='body1' fontWeight={600}>
@@ -241,8 +241,8 @@ const CardPayment: React.FC = () => {
 					</Box>
 					<Divider />
 					{/* Saved Cards */}
-					<Box sx={{ my: 3 }}>
-						<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
+					<Box sx={{ my: 2 }}>
+						<Typography variant='h6' fontWeight={600} sx={{ mb: 1.5 }}>
 							Saved Cards
 						</Typography>
 						{loading ? (
@@ -278,7 +278,7 @@ const CardPayment: React.FC = () => {
 						{/* Add New Card Button */}
 						{
 							<AddPaymentMethodCard
-								height={40}
+								height={36}
 								iconPosition='left'
 								content='Add New Card'
 								onClick={() => setShowAddCard((prev) => !prev)}
@@ -288,7 +288,7 @@ const CardPayment: React.FC = () => {
 					{/* Add New Card Form */}
 					{showAddCard && (
 						<Box>
-							<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
+							<Typography variant='h6' fontWeight={600} sx={{ mb: 1.5 }}>
 								Add New Card
 							</Typography>
 							<KlubiqFormV1
@@ -310,10 +310,10 @@ const CardPayment: React.FC = () => {
 						sx={{
 							bgcolor: (theme as any)?.palette?.textColors?.klubiqLightBlue,
 							borderRadius: 2,
-							mb: 3,
-							fontSize: 14,
+							mb: 2,
+							fontSize: 13,
 							alignItems: 'flex-start',
-							padding: 3,
+							padding: 2,
 						}}
 					>
 						<Typography
@@ -336,7 +336,7 @@ const CardPayment: React.FC = () => {
 						color='primary'
 						size='large'
 						fullWidth
-						sx={{ borderRadius: 2, fontWeight: 600, fontSize: 18, py: 1.5 }}
+						sx={{ borderRadius: 2, fontWeight: 600, fontSize: 16, py: 1.25 }}
 						disabled={loading}
 					>
 						Pay ${paymentSummary.amount.toLocaleString()}
