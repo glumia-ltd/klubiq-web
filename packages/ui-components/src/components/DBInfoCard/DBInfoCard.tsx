@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Card, Box, Stack, Typography, Chip, useTheme, SxProps, Theme, Skeleton } from '@mui/material';
+import { Card, Box, Stack, Typography, Chip, useTheme, SxProps, Theme, Skeleton, ChipProps } from '@mui/material';
 
 export type DBInfoCardVariant = 'default' | 'gradient' | 'primary' | 'secondary' | 'custom';
 
 export interface DBInfoCardProps {
   icon?: ReactNode;
   amount: string | number;
-  label: string;
+  label: string | ReactNode;
   badgeText?: string;
   badgeColor?: string;
   badgeBackground?: string;
@@ -16,6 +16,9 @@ export interface DBInfoCardProps {
   sx?: SxProps<Theme>;
   /** Show skeletons when loading */
   loading?: boolean;
+  badgeIcon?: React.ReactElement;
+  caption?: string;
+  chipVariant?: 'upTrend' | 'downTrend' | 'neutralTrend';
 }
 
 const getCardStyles = (variant: DBInfoCardVariant, theme: Theme, backgroundColor?: string): SxProps<Theme> | any => {
@@ -42,8 +45,8 @@ const getCardStyles = (variant: DBInfoCardVariant, theme: Theme, backgroundColor
       };
     default:
       return {
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
+        backgroundColor: theme.palette,
+        color: theme.palette,
       };
   }
 };
@@ -60,6 +63,9 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
   children,
   sx = {},
   loading = false,
+  badgeIcon,
+  caption,
+  chipVariant,
 }) => {
   const theme = useTheme();
   // Merge all styles into a single object
@@ -100,6 +106,7 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
               height: 44,
               borderRadius: 2,
               background: theme.palette.mode === 'dark' ? theme.palette.background.default : '#fff',
+              border: variant === 'default' ? `1px solid ${theme.palette.primary.main}` : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -114,9 +121,11 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
           <Chip
             label={badgeText}
             size="small"
+            icon={badgeIcon as React.ReactElement}
+            variant={chipVariant as ChipProps['variant']}
             sx={{
-              background: badgeBackground || '#E6F4EA',
-              color: badgeColor ? badgeColor :theme.palette.getContrastText(badgeBackground || '#E6F4EA'),
+              background: badgeBackground && '#E6F4EA',
+              color: badgeColor && badgeColor,
               fontWeight: 600,
               borderRadius: 2,
               px: 1.5,
@@ -134,7 +143,7 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
           {amount}
         </Typography>
       </Box>
-      <Typography
+     {typeof label === 'string' ? <Typography
         variant="subtitle1"
         sx={{
           color: theme.palette.text.secondary,
@@ -143,8 +152,9 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
         }}
       >
         {label}
-      </Typography>
+      </Typography> : label}
       {children && <Box mt={2}>{children}</Box>}
+      {caption && <Typography variant='caption'>{caption}</Typography>}
     </Card>
   );
 };

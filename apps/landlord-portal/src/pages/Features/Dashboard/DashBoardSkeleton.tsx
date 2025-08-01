@@ -1,10 +1,21 @@
-import { Grid, Skeleton, Box, Card, Stack } from '@mui/material';
+import {
+	Grid,
+	Skeleton,
+	Box,
+	Card,
+	Stack,
+	useTheme,
+	useMediaQuery,
+} from '@mui/material';
 import { styles } from './style';
 import { useContext } from 'react';
 import { ThemeMode } from '../../../context/ThemeContext/themeTypes';
 import { ThemeContext } from '../../../context/ThemeContext/ThemeContext';
+import { DBInfoCard } from '@klubiq/ui-components';
 const DashBoardSkeleton = () => {
 	const { mode } = useContext(ThemeContext);
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	return (
 		<>
@@ -125,56 +136,65 @@ const DashBoardSkeleton = () => {
 
 					<Grid item xs={12} sm={6} md={8} lg={8}>
 						<Card sx={styles.cardStyleThree}>
-						<Stack
-									direction={'row'}
-									spacing={2}
-									sx={{
-										width: '100%',
-										height: '100%',
-										justifyContent: 'space-between',
-									}}
+							<Stack
+								direction={'row'}
+								spacing={2}
+								sx={{
+									width: '100%',
+									height: '100%',
+									justifyContent: 'space-between',
+								}}
+							>
+								<Stack
+									direction={'column'}
+									width={'50%'}
+									justifyContent={'space-between'}
 								>
-									<Stack direction={'column'}  width={'50%'} justifyContent={'space-between'}>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-									</Stack>
-									<Stack direction={'column'} spacing={2} width={'50%'} justifyContent={'space-between'}>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-										<Skeleton
-											variant='text'
-											width='100%'
-											sx={styles.valueTextStyle}
-										/>
-									</Stack>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
 								</Stack>
+								<Stack
+									direction={'column'}
+									spacing={2}
+									width={'50%'}
+									justifyContent={'space-between'}
+								>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+									<Skeleton
+										variant='text'
+										width='100%'
+										sx={styles.valueTextStyle}
+									/>
+								</Stack>
+							</Stack>
 						</Card>
 					</Grid>
 
 					<Grid item xs={12} sm={6} md={4} lg={4}>
 						<Card sx={styles.cardStyleFour}>
-						<Stack
+							<Stack
 								direction={'column'}
 								spacing={2}
 								sx={{
@@ -226,36 +246,33 @@ const DashBoardSkeleton = () => {
 				}}
 			>
 				<Grid item xs={12} sm={12} md={12}>
-				<Skeleton
-									variant='text'
-									width='20%'
-									sx={styles.valueTextStyle}
-								/>
-					<Stack direction={'row'} sx={{ justifyContent: 'space-between'}}	>
-					<Skeleton
-									variant='text'
-									width='30%'
-									height={50}
-									sx={styles.valueTextStyle}
-								/>
-								<Stack direction={'row'} spacing={2} sx={{ width: '50%', justifyContent:'flex-end'}}>
-								<Skeleton
-									variant='text'
-									height={50}
-									width={'30%'}
-									sx={styles.valueTextStyle}
-								/>
-								<Skeleton
-									variant='text'
-									height={50}
-									width={'5%'}
-									sx={styles.valueTextStyle}
-								/>
-								</Stack>
-								
-					
+					<Skeleton variant='text' width='20%' sx={styles.valueTextStyle} />
+					<Stack direction={'row'} sx={{ justifyContent: 'space-between' }}>
+						<Skeleton
+							variant='text'
+							width='30%'
+							height={50}
+							sx={styles.valueTextStyle}
+						/>
+						<Stack
+							direction={'row'}
+							spacing={2}
+							sx={{ width: '50%', justifyContent: 'flex-end' }}
+						>
+							<Skeleton
+								variant='text'
+								height={50}
+								width={'30%'}
+								sx={styles.valueTextStyle}
+							/>
+							<Skeleton
+								variant='text'
+								height={50}
+								width={'5%'}
+								sx={styles.valueTextStyle}
+							/>
+						</Stack>
 					</Stack>
-				
 				</Grid>
 
 				<Grid
@@ -268,7 +285,16 @@ const DashBoardSkeleton = () => {
 					display={'flex'}
 					justifyContent={'center'}
 				>
-					<Stack direction={'row'} p={2} spacing={2} sx={{width: '80%', height: '100%', justifyContent: 'space-around'}}	>
+					<Stack
+						direction={'row'}
+						p={2}
+						spacing={2}
+						sx={{
+							width: '80%',
+							height: '100%',
+							justifyContent: 'space-around',
+						}}
+					>
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />
 						<Skeleton variant='rounded' height={400} width='3%' />
@@ -284,6 +310,41 @@ const DashBoardSkeleton = () => {
 					</Stack>
 				</Grid>
 			</Grid>
+
+			<Stack direction={'column'} gap={3}>
+				{/* Greeting Section */}
+				<Stack direction={'row'} gap={1} alignItems={'flex-start'}>
+					<Skeleton variant='text' width='15' />
+					<Skeleton variant='text' width='15' />
+				</Stack>
+				{/* Comparative Metrics Section will be here TODO: Add Comparative Metrics Section */}
+				<Stack
+					direction={{ sm: 'row', md: 'row', xs: 'column' }}
+					spacing={2}
+					width='100%'
+					useFlexGap
+					flexWrap='wrap'
+					justifyContent={'space-between'}
+				>
+					{Array.from({ length: 4 }).map((_, idx) => (
+						<DBInfoCard
+							key={idx}
+							loading={true}
+							amount={0}
+							label={''}
+							sx={{
+								maxWidth: {
+									xs: '100%',
+									sm: 'calc(50% - 8px)',
+									md: 'calc(33.333% - 10.667px)',
+								},
+								width: '100%',
+								height: '100%',
+							}}
+						/>
+					))}
+				</Stack>
+			</Stack>
 		</>
 	);
 };

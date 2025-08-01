@@ -7,6 +7,7 @@ import {
 	RevenueReportType,
 } from '../../shared/type';
 import { API_TAGS } from '../types';
+import { OrganizationMetrics } from '../../page-tytpes/dashboard/dashboard.types';
 //import { api, baseURL, accessToken } from '../../api';
 
 export const dashboardApiSlice = createApi({
@@ -16,6 +17,8 @@ export const dashboardApiSlice = createApi({
 		API_TAGS.DASHBOARD_METRICS,
 		API_TAGS.DASHBOARD_REVENUE_REPORT,
 		API_TAGS.ACTIVITY,
+		API_TAGS.ORGANIZATION_METRICS,
+		API_TAGS.ORGANIZATION_COMPARATIVE_METRICS,
 	],
 	endpoints: (builder) => ({
 		downloadReport: builder.mutation<
@@ -67,6 +70,24 @@ export const dashboardApiSlice = createApi({
 			},
 			providesTags: [API_TAGS.ACTIVITY],
 		}),
+		getOrganizationMetrics: builder.query<OrganizationMetrics, void>({
+			query: () => {
+				return {
+					url: dashboardEndpoints.getOrganizationMetrics(),
+					method: 'GET'
+				};
+			},
+			providesTags: [API_TAGS.ORGANIZATION_METRICS],
+		}),
+		getOrganizationComparativeMetrics: builder.query<any, string>({
+			query: (period) => {
+				return {
+					url: dashboardEndpoints.getOrganizationComparativeMetrics(period),
+					method: 'GET'
+				};
+			},
+			providesTags: [API_TAGS.ORGANIZATION_COMPARATIVE_METRICS],
+		}),
 	}),
 });
 
@@ -78,4 +99,8 @@ export const {
 	useDownloadReportMutation,
 	useGetOrganizationActivitiesQuery,
 	useLazyGetOrganizationActivitiesQuery,
+	useGetOrganizationMetricsQuery,
+	useGetOrganizationComparativeMetricsQuery,
+	useLazyGetOrganizationComparativeMetricsQuery,
+	useLazyGetOrganizationMetricsQuery,
 } = dashboardApiSlice;

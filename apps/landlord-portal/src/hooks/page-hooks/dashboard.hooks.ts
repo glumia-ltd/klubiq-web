@@ -6,6 +6,7 @@ import {
 	useLazyGetRevenueReportDataQuery,
 	useDownloadReportMutation,
 	useLazyGetOrganizationActivitiesQuery,
+	useLazyGetOrganizationMetricsQuery,
 } from '../../store/DashboardStore/dashboardApiSlice';
 import dayjs, { Dayjs } from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,9 +16,7 @@ export const useDashboardActions = () => {
 	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const [downloadReport] = useDownloadReportMutation();
-	
-	consoleDebug('Dashboard Hooks - User:', user);
-	
+
 	const [firstDay, setFirstDay] = useState<Dayjs>(
 		dayjs().subtract(11, 'months'),
 	);
@@ -43,6 +42,14 @@ export const useDashboardActions = () => {
 		return 'Good Morning';
 	}, []); // Empty dependency array since we only need this to calculate once per mount
 
+	const [
+		getOrganizationMetrics,
+		{
+			data: organizationMetrics,
+			isLoading: isOrganizationMetricsLoading,
+			error: organizationMetricsError,
+		},
+	] = useLazyGetOrganizationMetricsQuery();
 	const [
 		getDashboardMetrics,
 		{
@@ -112,8 +119,9 @@ export const useDashboardActions = () => {
 			getDashboardMetrics(user.uuid);
 			getRevenueReport(dateRange);
 			getOrganizationActivities({ orgId: user.organizationUuid, page: 1, limit: 10 });
+			getOrganizationMetrics();
 		}
-	}, [user?.uuid, user?.organizationUuid, dateRange, getDashboardMetrics, getRevenueReport, getOrganizationActivities]);
+	}, [user?.uuid, user?.organizationUuid, dateRange, getDashboardMetrics, getRevenueReport, getOrganizationActivities, getOrganizationMetrics]);
 
 	return {
 		dashboardMetrics,
@@ -132,5 +140,8 @@ export const useDashboardActions = () => {
 		organizationActivities,
 		isOrganizationActivitiesLoading,
 		organizationActivitiesError,
+		organizationMetrics,
+		isOrganizationMetricsLoading,
+		organizationMetricsError,
 	};
 };

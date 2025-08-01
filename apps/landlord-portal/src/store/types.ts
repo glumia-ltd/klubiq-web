@@ -13,5 +13,7 @@ export const API_TAGS = {
     DASHBOARD_REVENUE_REPORT: 'Dashboard-Revenue-Report',
     PROPERTIES_AND_TENANTS: 'Properties-And-Tenants',
     ACTIVITY: 'Activity',
+    ORGANIZATION_METRICS: 'Organization-Metrics',
+    ORGANIZATION_COMPARATIVE_METRICS: 'Organization-Comparative-Metrics',
   } as const;
 export const ALL_TAGS = Object.values(API_TAGS);

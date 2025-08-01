@@ -19,10 +19,10 @@ const updateSW = registerSW({
 	onOfflineReady() {
 		console.log('App ready to work offline');
 	},
-	immediate: true, // Register immediately
+	immediate: false, // Don't register immediately to prevent double initialization
 	onRegistered(registration) {
-		// Cleanup old service workers
-		if (registration) {
+		// Only update if there's a significant change
+		if (registration && registration.waiting) {
 			registration.update();
 		}
 	},
