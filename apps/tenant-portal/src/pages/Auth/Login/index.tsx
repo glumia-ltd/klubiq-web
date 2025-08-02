@@ -135,6 +135,9 @@ const Login = () => {
 		enableErrorAlert: true,
 		errorAlertTitle: 'Invalid credentials',
 		errorAlertMessage: 'Please check your email and password and try again.',
+		isTurnstileCaptchaRequired: true,
+		captchaAction: 'tenant-login',
+		captcheSiteKey: import.meta.env.VITE_TURNSTILE_SITEKEY,
 	};
 
 	return (

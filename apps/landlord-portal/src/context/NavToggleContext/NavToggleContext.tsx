@@ -24,10 +24,10 @@ export const Context = createContext<ContextValue>({
 	mobileSideBarOpen: false,
 	isClosing: false,
 	drawerWidth: {
-		smallOpen: 178,
+		smallOpen: 170,
 		smallClosed: 0,
-		largeOpen: 178,
-		largeClosed: 70,
+		largeOpen: 200,
+		largeClosed: 55,
 	},
 });
 
@@ -53,10 +53,10 @@ export const NavToggleProvider = ({ children }: NavToggleProviderProps) => {
 		setMobileSidebarState(!mobileSideBarOpen);
 	};
 	const drawerWidth = {
-		smallOpen: 200,
+		smallOpen: 170,
 		smallClosed: 0,
-		largeOpen: 178,
-		largeClosed: 70,
+		largeOpen: 200,
+		largeClosed: 55,
 	};
 
 	const value: ContextValue = {

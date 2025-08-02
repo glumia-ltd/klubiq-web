@@ -21,6 +21,7 @@ env:
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
   BUILD_NUMBER: ${{ github.run_number }}
+  VITE_TURNSTILE_SITEKEY: ${{ secrets.VITE_TURNSTILE_SITEKEY }}
 
   APP: klubiq-tenat-portal
 jobs:

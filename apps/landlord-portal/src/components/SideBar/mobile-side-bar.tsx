@@ -192,10 +192,10 @@ function MobileSideBar() {
 						sx={{
 							borderRadius: '10px',
 							background: '#ffffff',
-							padding: sidebarOpen ? '8px 8px' : '0.9px',
-							height: sidebarOpen ? '60px' : '96px',
-							width: sidebarOpen ? 'auto' : '60px',
-							gap: '8px',
+							padding: '2px 2px',
+							height: '60px',
+							width: '150px',
+							gap: 1,
 							alignItems: 'center',
 							justifyContent: 'space-around',
 						}}

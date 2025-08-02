@@ -237,6 +237,9 @@ export interface DynamicTanstackFormProps {
   errorAlertTitle?: string | (() => string);
   errorAlertMessage?: string | (() => string);
   hideSubmitButton?: boolean;
+  isTurnstileCaptchaRequired?: boolean;
+  captchaAction?: string;
+  captcheSiteKey?: string;
 }
 // For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
 export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };

@@ -21,53 +21,45 @@ const { Provider } = ThemeContext;
 export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 	children,
 }) => {
-	//check if the user selected a mode preference. If there is no mode, this returns NULL
+	const [muiTheme, setMuiTheme] = useState<Theme>(LightTheme);
+	const [mode, setMode] = useState<ThemeMode>(ThemeMode.LIGHT);
+	const [isInitialized, setIsInitialized] = useState(false);
 
-	const storedPreference = localStorage.getItem('mode');
-
-	//If the mode exists in localStorage, convert it to a boolean by checking if it is dark.
-	//otherwise return the result of fetching a non-existent value from local storage - NULL.
-
-	const STORED_USER_PREFERENCE = storedPreference
-		? storedPreference === 'dark'
-		: storedPreference;
-
-	// STORED_USER_PREFERENCE = true if LS is dark, false if LS is light or NULL if nothing in LS
-
-	//Get the system preference, this returns true if dark
-
+	// Get system preference
 	const USER_SYSTEM_PREFERENCE: boolean = useMediaQuery(
 		'(prefers-color-scheme: dark)',
 	);
 
-	//USER_SYSTEM_PREFERENCE = true if dark, false otherwise
+	// Initialize theme on mount only
+	useEffect(() => {
+		if (isInitialized) {
+			return;
+		}
 
-	// STORED_USER_PREFERENCE ? STORED_USER_PREFERENCE : USER_SYSTEM_PREFERENCE
+		const storedPreference = localStorage.getItem('mode');
+		const STORED_USER_PREFERENCE = storedPreference
+			? storedPreference === 'dark'
+			: storedPreference;
 
-	//Give precedence to the STORED_USER_PREFERENCE from the local storage.
-	//If it is null, then select USER_SYSTEM_PREFERENCE through nullish coalescing
+		const CURRENT_PREFERENCE = STORED_USER_PREFERENCE ?? USER_SYSTEM_PREFERENCE;
+		const defaultMode: ThemeMode = CURRENT_PREFERENCE
+			? ThemeMode.DARK
+			: ThemeMode.LIGHT;
 
-	const CURRENT_PREFERENCE = STORED_USER_PREFERENCE ?? USER_SYSTEM_PREFERENCE;
+		setMode(defaultMode);
+		setMuiTheme(CURRENT_PREFERENCE ? DarkTheme : LightTheme);
+		setBodyBackgroundColor(defaultMode);
+		setIsInitialized(true);
+	}, [USER_SYSTEM_PREFERENCE, isInitialized]);
 
-	//If either of the STORED_USER_PREFERENCE or USER_SYSTEM_PREFERENCE is true,
-	// then we are sure the user wants a dark theme
-
-	const defaultTheme: Theme = CURRENT_PREFERENCE ? DarkTheme : LightTheme;
-
-	const defaultMode: ThemeMode = CURRENT_PREFERENCE
-		? ThemeMode.DARK
-		: ThemeMode.LIGHT;
-
-	const [muiTheme, setMuiTheme] = useState<Theme>(defaultTheme);
-	const [mode, setMode] = useState<ThemeMode>(defaultMode);
-
-	const switchMode = (mode: ThemeMode) => {
-		localStorage.setItem('mode', mode);
-		setMode(mode);
-		setBodyBackgroundColor(mode);
+	const switchMode = (newMode: ThemeMode) => {
+		localStorage.setItem('mode', newMode);
+		setMode(newMode);
+		setBodyBackgroundColor(newMode);
 	};
+
 	const setBodyBackgroundColor = (themeMode: ThemeMode) => {
-		const {body} = document;
+		const { body } = document;
 		if (themeMode === ThemeMode.DARK) {
 			body.classList.add('dark');
 			body.classList.remove('light');
@@ -75,7 +67,8 @@ export const ThemeContextProvider: FunctionComponent<PropsWithChildren> = ({
 			body.classList.remove('dark');
 			body.classList.add('light');
 		}
-	}
+	};
+
 	useEffect(() => {
 		if (mode === ThemeMode.LIGHT) {
 			setMuiTheme(LightTheme);

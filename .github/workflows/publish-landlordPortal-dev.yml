@@ -37,6 +37,7 @@ env:
   REACT_LP_APP_VERSION: ${{ vars.REACT_LP_APP_VERSION }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   BUILD_NUMBER: ${{ github.run_number }}
+  VITE_TURNSTILE_SITEKEY: ${{ secrets.VITE_TURNSTILE_SITEKEY }}
   APP: klubiq-landlord-portal
 jobs:
   build:
