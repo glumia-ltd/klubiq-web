@@ -8,11 +8,10 @@ export const paymentsApiSlice = createApi({
 	baseQuery: customApiFunction,
 	tagTypes: [API_TAGS.PAYMENTS],
 	endpoints: (builder) => ({
-		getUpcomingPayments: builder.query<any, { leaseTenantId: string }>({
-			query: (params) => ({
-				url: paymentsEndpoints.getUpcomingPayments(params.leaseTenantId),
+		getUpcomingPayments: builder.query<any, string>({
+			query: (leaseTenantId) => ({
+				url: paymentsEndpoints.getUpcomingPayments(leaseTenantId),
 				method: 'GET',
-				params,
 			}),
 		}),
 		getPaymentMethods: builder.query<any, void>({
@@ -21,8 +20,25 @@ export const paymentsApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
+		getPaymentHistory: builder.query<any, string>({
+			query: (leaseTenantId) => ({
+				url: paymentsEndpoints.getPaymentHistory(leaseTenantId),
+				method: 'GET',
+			}),
+		}),
+		initializePayment: builder.mutation<any, any>({
+			query: (data) => ({
+				url: paymentsEndpoints.initializePayment(),
+				method: 'POST',
+				body: data,
+			}),
+		}),
 	}),
 });
 
-export const { useGetUpcomingPaymentsQuery, useGetPaymentMethodsQuery } =
-	paymentsApiSlice;
+export const {
+	useGetUpcomingPaymentsQuery,
+	useGetPaymentMethodsQuery,
+	useGetPaymentHistoryQuery,
+	useInitializePaymentMutation,
+} = paymentsApiSlice;

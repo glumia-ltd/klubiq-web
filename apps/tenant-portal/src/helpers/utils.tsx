@@ -133,3 +133,31 @@ export const formatNumberShort = (num: number): string => {
 	}
 	return num.toString();
 };
+
+export enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One-Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+	CUSTOM = 'Custom',
+}
+
+/**
+ * Formats payment status text based on days to due and payment status
+ * @param daysToDue - Number of days until due (can be negative for overdue)
+ * @param status - Payment status string
+ * @returns Formatted status text (e.g., "5 days remaining" or "3 days overdue")
+ */
+export const formatPaymentStatusText = (
+	daysToDue: number,
+	status: string,
+): string => {
+	const absDays = Math.abs(daysToDue);
+	const dayText = absDays > 1 ? 'days' : 'day';
+	const statusText = status.includes('Pending') ? 'remaining' : 'overdue';
+
+	return `${absDays} ${dayText} ${statusText}`;
+};

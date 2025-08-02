@@ -9,8 +9,7 @@ export const authEndpoints = {
 	validateInvitationToken: (token: string) =>
 		`/auth/is-invite-valid?token=${token}`,
 	sendResetPasswordEmail: () => `/auth/reset-password-link`,
-	validateResetPasswordToken: () =>
-		`/auth/reset-token-valid`,
+	validateResetPasswordToken: () => `/auth/reset-token-valid`,
 	resetPassword: () => `/auth/reset-password`,
 };
 
@@ -30,4 +29,6 @@ export const paymentsEndpoints = {
 	getUpcomingPayments: (leaseTenantId: string) =>
 		`/payments/upcoming-payments/${leaseTenantId}`,
 	getPaymentMethods: () => '/payment-methods',
+	getPaymentHistory: (tenantId: string) => `/payments/${tenantId}/history`,
+	initializePayment: () => `/payments/initialize`,
 };

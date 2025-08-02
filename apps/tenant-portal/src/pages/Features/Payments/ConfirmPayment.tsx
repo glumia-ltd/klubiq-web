@@ -19,6 +19,9 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { RadioCardGroup } from '@klubiq/ui-components';
+import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
+import { PaymentFrequency } from '@/helpers/utils';
+import { useNavigate } from 'react-router-dom';
 
 const iconBoxStyle = {
 	width: 48,
@@ -75,7 +78,7 @@ const paymentOptions = [
 		),
 	},
 	{
-		value: 'wallet',
+		value: 'directDebit',
 		label: (
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
 				<Box sx={iconBoxStyle}>
@@ -83,10 +86,10 @@ const paymentOptions = [
 				</Box>
 				<Box sx={labelColumnStyle}>
 					<Typography variant='h6' fontWeight={600}>
-						Klubiq Wallet
+						Direct Debit
 					</Typography>
 					<Typography variant='body1' sx={{ color: 'text.secondary', mt: 0.5 }}>
-						Use your Klubiq wallet balance
+						Pay directly from your bank account
 					</Typography>
 				</Box>
 			</Box>
@@ -103,9 +106,36 @@ const paymentSummary = {
 };
 
 const ConfirmPayment: React.FC = () => {
+	const navigate = useNavigate();
 	const theme = useTheme();
 	const [loading, setLoading] = useState(false); // Simulate loading state
 	const [paymentMethod, setPaymentMethod] = useState('card');
+	const { data: leaseInsights } = useGetLeaseInsightsQuery();
+
+	const PAYMENT_FREQUENCY = leaseInsights?.paymentFrequency;
+
+	const handleBackButtonClick = () => {
+		navigate('/payments');
+	};
+
+	// Function to filter payment options based on payment frequency
+	const getFilteredPaymentOptions = (paymentFrequency: string) => {
+		// Show Card and Wallet for all payment frequencies
+		// Only show Card when payment frequency is ONE_TIME
+		if (
+			paymentFrequency === PaymentFrequency.ONE_TIME ||
+			paymentFrequency === PaymentFrequency.CUSTOM
+		) {
+			return paymentOptions;
+		}
+
+		// For all other payment frequencies, show Card and Wallet
+		return paymentOptions.filter((option) => option.value !== 'card');
+	};
+
+	const displayCardByPaymentFrequency = getFilteredPaymentOptions(
+		PAYMENT_FREQUENCY || '',
+	);
 
 	// DRY: Extracted repeated colors and styles
 	const getCardBorderColor = (theme: Theme) =>
@@ -151,10 +181,12 @@ const ConfirmPayment: React.FC = () => {
 			<Box sx={{ width: '100%', maxWidth: 500 }}>
 				{/* Back Button */}
 
-				<Button variant='text' sx={{ mb: 1, cursor: 'pointer' }}>
-					<IconButton size='small' sx={{ p: 0 }}>
-						<ArrowBackIcon fontSize='small' />
-					</IconButton>
+				<Button
+					variant='text'
+					startIcon={<ArrowBackIcon fontSize='small' />}
+					sx={{ mb: 1, cursor: 'pointer' }}
+					onClick={handleBackButtonClick}
+				>
 					<Typography variant='body1'>Back</Typography>
 				</Button>
 
@@ -233,7 +265,7 @@ const ConfirmPayment: React.FC = () => {
 							>
 								<RadioCardGroup
 									value={paymentMethod}
-									options={paymentOptions}
+									options={displayCardByPaymentFrequency}
 									onChange={setPaymentMethod}
 									radioPosition='right'
 								/>

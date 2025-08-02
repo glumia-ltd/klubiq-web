@@ -11,10 +11,11 @@ import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistory
 import {
 	useGetUpcomingPaymentsQuery,
 	useGetPaymentMethodsQuery,
+	useInitializePaymentMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
-import { getLocaleFormat } from '@/helpers/utils';
+import { getLocaleFormat, formatPaymentStatusText } from '@/helpers/utils';
 import { useNavigate } from 'react-router-dom';
 // Dummy data for demonstration
 
@@ -26,16 +27,15 @@ const PaymentsPage = () => {
 	const navigate = useNavigate();
 
 	const { data: payments, isLoading: paymentsLoading } =
-		useGetUpcomingPaymentsQuery({ leaseTenantId: uuid });
+		useGetUpcomingPaymentsQuery(uuid);
 
 	const { data: paymentMethods, isLoading: paymentMethodsLoading } =
 		useGetPaymentMethodsQuery();
 
+	const [initializePayment, { isLoading: initializePaymentLoading }] =
+		useInitializePaymentMutation();
+
 	const [paymentsData] = payments || [];
-
-	// Table columns
-
-	// Pagination logic
 
 	const renderRightContent = () => {
 		return (
@@ -43,16 +43,29 @@ const PaymentsPage = () => {
 				<Typography variant='h4' sx={{ fontWeight: 'normal' }}>
 					{getLocaleFormat(paymentsData?.amount || 0, 'currency', 2)}
 				</Typography>
-				<Typography sx={{ fontSize: '12px', whiteSpace: 'nowrap' }}>
-					12 days remaining
+				<Typography variant='subtitle2' sx={{ whiteSpace: 'nowrap' }}>
+					{formatPaymentStatusText(
+						paymentsData?.daysToDue || 0,
+						paymentsData?.status || '',
+					)}
 				</Typography>
 			</Stack>
 		);
 	};
 
-	const handlePaymentButtonClick = () => {
-		console.log('Payment button clicked');
-		navigate('/payments/confirm');
+	const handlePaymentButtonClick = async () => {
+		try {
+			const result = await initializePayment({
+				invoiceId: paymentsData?.invoiceId,
+				amount: paymentsData?.amount,
+			});
+
+			console.log(result);
+
+			navigate('/payments/confirm');
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
@@ -80,11 +93,17 @@ const PaymentsPage = () => {
 			{/* Next Payment Due Banner */}
 
 			<PageHeader
+				sx={{
+					color: 'white',
+					background: paymentsData?.status.includes('Overdue')
+						? 'linear-gradient(45deg, #FF4D49,#E60E19)'
+						: 'linear-gradient(45deg, #00BC7D, #009689)',
+				}}
 				loading={paymentsLoading}
 				title={<Typography variant='h4'>Next Payment Due</Typography>}
 				subtitle={
 					<Stack direction='column' gap={1}>
-						<Typography variant='h7'>February 1, 2025</Typography>
+						<Typography variant='subtitle2'>{paymentsData?.dueDate}</Typography>
 						{/* <Stack direction='row' alignItems='center' gap={1}>
 							<CheckCircleOutlineIcon sx={{ fontSize: '12px' }} />
 
@@ -94,10 +113,6 @@ const PaymentsPage = () => {
 				}
 				variant='compact'
 				rightContent={renderRightContent()}
-				sx={{
-					color: 'white',
-					background: 'linear-gradient(45deg, #00BC7D, #009689)',
-				}}
 			/>
 
 			{/* Payment Methods */}

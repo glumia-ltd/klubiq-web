@@ -3,6 +3,18 @@ import { get } from 'lodash';
 import { consoleLog } from './debug-logger';
 import dayjs from 'dayjs';
 
+
+export enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One-Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+	CUSTOM = 'Custom',
+}
+
 export const MEASUREMENTS: any[] = [
 	{
 		unit: 'SqM',

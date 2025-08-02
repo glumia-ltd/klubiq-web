@@ -13,6 +13,7 @@ interface FilterProps {
 	label?: string;
 	placeholder?: string;
 	disabled?: boolean;
+	hiddenLabel?: boolean;
 }
 
 export const Filter = ({
@@ -22,6 +23,7 @@ export const Filter = ({
 	label = 'Filter',
 	placeholder = 'Select an option',
 	disabled = false,
+	hiddenLabel = false,
 }: FilterProps) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -43,7 +45,8 @@ export const Filter = ({
 	return (
 		<Box>
 			<TextField
-				label={label}
+				hiddenLabel={hiddenLabel}
+				label={hiddenLabel ? undefined : label}
 				value={selectedOption?.label || ''}
 				placeholder={placeholder}
 				disabled={disabled}
