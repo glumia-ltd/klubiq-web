@@ -3,7 +3,7 @@ import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
-import { dashboardEndpoints, fileEndpoints } from '../helpers/endpoints';
+import { fileEndpoints } from '../helpers/endpoints';
 const baseURL = (() => {
 	switch (import.meta.env.VITE_NODE_ENV) {
 		case 'local':
@@ -21,7 +21,7 @@ const baseURL = (() => {
 const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_lp_app-web';
 const DOWNLOAD_ENDPOINTS =[
-	dashboardEndpoints.downloadReport(),
+	'/api/dashboard/download-revenue-report',
 ]
 const UPLOAD_ENDPOINTS = [
 	fileEndpoints.uploadImages(),

@@ -19,10 +19,6 @@ export const authEndpoints = {
 };
 
 export const dashboardEndpoints = {
-	getDashboardMetrics: () => '/dashboard/metrics',
-	getRevenueReport: () => `/dashboard/revenue-report`,
-	downloadReport: () => '/dashboard/download-revenue-report',
-	propertyReportStream: () => `/events/sse/properties`, // eslint-disable-line(orgId)
 	getOrganizationMetrics: () => `/dashboard/organization-metrics`,
 	getOrganizationComparativeMetrics: (period: string) => `/dashboard/comparative-metrics?period=${period}`,
 	getActivities: (orgId: string) => `/activities/${orgId}`,

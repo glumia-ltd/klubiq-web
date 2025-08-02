@@ -74,7 +74,7 @@ export const generateLightnessVariants = (
   minLightness: number = 20,
   maxLightness: number = 90
 ): string[] => {
-  const [h, s, l] = hexToHsl(baseColor);
+  const [h, s, _l] = hexToHsl(baseColor);
   const variants: string[] = [];
   
   for (let i = 0; i < count; i++) {
@@ -94,7 +94,7 @@ export const generateSaturationVariants = (
   minSaturation: number = 10,
   maxSaturation: number = 100
 ): string[] => {
-  const [h, s, l] = hexToHsl(baseColor);
+  const [h, _s, l] = hexToHsl(baseColor);
   const variants: string[] = [];
   
   for (let i = 0; i < count; i++) {

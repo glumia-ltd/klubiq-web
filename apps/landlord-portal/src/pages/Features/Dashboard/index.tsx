@@ -31,7 +31,6 @@ import {
 	PaymentOutlined,
 } from '@mui/icons-material';
 import { MonthlySeries, PropertyCountByType, RevenueSeries } from '../../../page-tytpes/dashboard/dashboard.types';
-import { ChartsLabelCustomMarkProps } from '@mui/x-charts';
 import DashboardChartsCard from '../../../components/DashboardMetricsCard/DashboardChartsCard';
 
 // import { FileCopy, Home, } from '@mui/icons-material';
@@ -154,11 +153,6 @@ const DashBoard = () => {
 		}
 		return <TrendingFlatIcon color='inherit' />;
 	};
-	function HTMLCircle({ className }: ChartsLabelCustomMarkProps) {
-		return (
-		  <div className={className} style={{ borderRadius: '100%', background: 'inherit' }} />
-		);
-	  }
 	const getPropertyTypePieChartData = () => {
 
 		return organizationMetrics?.propertyCountByType?.map(
@@ -366,6 +360,7 @@ const DashBoard = () => {
 					/>
 
 				</Stack>
+				{renderActivities()}
 			</Stack>
 		</>
 	);
