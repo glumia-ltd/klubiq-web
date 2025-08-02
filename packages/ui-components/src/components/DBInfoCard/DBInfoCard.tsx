@@ -102,8 +102,8 @@ export const DBInfoCard: React.FC<DBInfoCardProps> = ({
         {icon && (
           <Box
             sx={{
-              width: 44,
-              height: 44,
+              width: 36,
+              height: 36,
               borderRadius: 2,
               background: theme.palette.mode === 'dark' ? theme.palette.background.default : '#fff',
               border: variant === 'default' ? `1px solid ${theme.palette.primary.main}` : 'none',

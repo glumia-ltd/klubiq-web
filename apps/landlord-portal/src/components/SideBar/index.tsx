@@ -59,7 +59,7 @@ const SideBar = () => {
 	const DrawerChildren = styled('div')(() => ({
 		display: 'flex',
 		flexDirection: 'column',
-		width: '90%',
+		width: '100%',
 		gap: 2,
 		padding: theme.spacing(1, 2),
 		alignItems: 'center',
@@ -167,7 +167,7 @@ const SideBar = () => {
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
-						alignItems: 'center',
+						alignItems: 'flex-start',
 						gap: 2,
 					}}
 				>
