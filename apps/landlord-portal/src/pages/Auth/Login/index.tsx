@@ -41,7 +41,6 @@ const Login = () => {
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
 	const [fetchCsrfTokenQuery] = useLazyFetchCsrfTokenQuery();
-
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
 	const [signIn] = useSignInMutation();
@@ -221,6 +220,9 @@ const Login = () => {
 			password: '',
 		},
 		enableErrorAlert: true,
+		isTurnstileCaptchaRequired: true,
+		captchaAction: 'signin',
+		captcheSiteKey: import.meta.env.VITE_TURNSTILE_SITEKEY,
 	};
 	return (
 		<>

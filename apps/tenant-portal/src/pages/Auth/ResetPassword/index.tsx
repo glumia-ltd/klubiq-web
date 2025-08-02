@@ -1,6 +1,13 @@
 import { z } from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Card, CardContent, CircularProgress, Stack, Typography } from '@mui/material';
+import {
+	Button,
+	Card,
+	CardContent,
+	CircularProgress,
+	Stack,
+	Typography,
+} from '@mui/material';
 import {
 	DynamicTanstackFormProps,
 	FormFieldV1,
@@ -15,7 +22,11 @@ import { authEndpoints } from '@/helpers/endpoints';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
 import { ArrowBack } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { useAcceptInvitationMutation, useResetPasswordMutation, useValidateResetPasswordTokenMutation } from '@/store/AuthStore/authApi.slice';
+import {
+	useAcceptInvitationMutation,
+	useResetPasswordMutation,
+	useValidateResetPasswordTokenMutation,
+} from '@/store/AuthStore/authApi.slice';
 
 type IPasswordType = {
 	password: string;
@@ -28,6 +39,7 @@ const ResetPassword = () => {
 	const [searchParams] = useSearchParams();
 	const [isInvitationValid, setIsInvitationValid] = useState(false);
 	const [isValidating, setIsValidating] = useState(false);
+	const [formReady, setFormReady] = useState(false);
 	const emailFromUrl = location.search.split('email=')[1]?.split('&')[0];
 	// searchParams.get('email');
 	const token = searchParams.get('token');
@@ -39,7 +51,10 @@ const ResetPassword = () => {
 		if (token) {
 			if (mode === 'resetPassword') {
 				(async () => {
-					const res = await validateResetPasswordToken({ token, email: emailFromUrl ?? undefined }).unwrap();
+					const res = await validateResetPasswordToken({
+						token,
+						email: emailFromUrl ?? undefined,
+					}).unwrap();
 					setIsInvitationValid(res);
 					setIsValidating(false);
 				})();
@@ -49,14 +64,16 @@ const ResetPassword = () => {
 					setIsValidating(false);
 				});
 			}
+			setFormReady(true);
 		} else {
 			navigate('/forgot-password', { replace: true });
+			setFormReady(false);
 		}
-	}, [searchParams]);	
-
+	}, [searchParams]);
 
 	const onSubmit = async (values: IPasswordType) => {
-		const oobCode = mode === 'resetPassword' ? token : searchParams.get('oobCode');
+		const oobCode =
+			mode === 'resetPassword' ? token : searchParams.get('oobCode');
 		const email = emailFromUrl ?? values.email;
 		if (!email) {
 			openSnackbar({
@@ -66,10 +83,9 @@ const ResetPassword = () => {
 			});
 			throw new Error('Email is required');
 		}
-		
 
 		try {
-			if(mode === 'resetPassword') {
+			if (mode === 'resetPassword') {
 				await resetPassword({
 					password: values.password,
 					email,
@@ -82,7 +98,7 @@ const ResetPassword = () => {
 						password: values.password,
 						email: email ?? '',
 						oobCode: oobCode ?? '',
-					}
+					},
 				});
 			}
 
@@ -197,11 +213,17 @@ const ResetPassword = () => {
 			startIcon: <ArrowBack />,
 		},
 	};
-
+	const renderResetContent = () => {
 		return isValidating ? (
-			<Stack sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+			<Stack
+				sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+			>
 				<CircularProgress />
-				{mode === 'resetPassword' ? <Typography>Verifying reset password link</Typography> : <Typography>Verifying invitation link</Typography>}
+				{mode === 'resetPassword' ? (
+					<Typography>Verifying reset password link</Typography>
+				) : (
+					<Typography>Verifying invitation link</Typography>
+				)}
 			</Stack>
 		) : isInvitationValid ? (
 			<Card
@@ -231,12 +253,38 @@ const ResetPassword = () => {
 				</CardContent>
 			</Card>
 		) : (
-			<Stack spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-				{mode === 'resetPassword' ? <Typography variant='h4'>Your reset password link has expired!</Typography> : <Typography variant='h4'>Your invitation has expired</Typography>}
-				{mode !== 'resetPassword' && <Typography variant='body1'>Please contact your landlord to get a new invitation</Typography>}
-				<Button variant='klubiqMainButton' onClick={() => navigate('/login')}>Back to Login</Button>
+			<Stack
+				spacing={2}
+				sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+			>
+				{mode === 'resetPassword' ? (
+					<Typography variant='h4'>
+						Your reset password link has expired!
+					</Typography>
+				) : (
+					<Typography variant='h4'>Your invitation has expired</Typography>
+				)}
+				{mode !== 'resetPassword' && (
+					<Typography variant='body1'>
+						Please contact your landlord to get a new invitation
+					</Typography>
+				)}
+				<Button variant='klubiqMainButton' onClick={() => navigate('/login')}>
+					Back to Login
+				</Button>
 			</Stack>
 		);
+	};
+
+	return formReady ? (
+		renderResetContent()
+	) : (
+		<Stack
+			sx={{ justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+		>
+			<CircularProgress />
+		</Stack>
+	);
 };
 
 export default ResetPassword;
