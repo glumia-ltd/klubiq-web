@@ -114,7 +114,7 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 		borderRadius: 3,
 		p: 3,
 		minWidth: 0,
-		width: fullWidth ? '100%' : '48.5%',
+		width: isMobile ? '100%' : fullWidth ? '100%' : '48.5%',
 		maxWidth: {
 			xs: '100%',
 			sm: '100%',

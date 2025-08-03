@@ -640,7 +640,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				if (filesWaitingForUpload > 0) {
 					setShowPreSubmitDialog(true);
 					setPreSubmitDialogMessage(
-						'Please upload all files before submitting',
+						'You have files waiting to be uploaded. Please finish uploading before submitting.',
 					);
 					setPreSubmitDialogTitle('Files not uploaded');
 					return 'Please wait for all files to upload';
@@ -1482,25 +1482,17 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 
 				{/* Turnstile Captcha */}
 				{!hideSubmitButton && isTurnstileCaptchaRequired && (
-					<Stack direction='row' flex={fullWidthButtons ? 1 : 0} 
-					justifyContent={horizontalAlignment === 'center' ? 'center' : horizontalAlignment === 'right' ? 'flex-end' : 'flex-start'} 
-					alignItems={verticalAlignment === 'center' ? 'center' : verticalAlignment === 'bottom' ? 'flex-end' : 'flex-start'}
-					mt={2}
-					>
-						<Turnstile
-							options={{
-								theme: theme.palette.mode,
-								appearance: 'always',
-								action: captchaAction,
-								language: 'en',
-								size: 'flexible',
-							}}
-							siteKey={captcheSiteKey}
-							onSuccess={() => setIsTurnstileCaptchaValid(true)}
-							onError={() => setIsTurnstileCaptchaValid(false)}
-							onExpire={() => setIsTurnstileCaptchaValid(false)}
-						/>
-					</Stack>
+					<Turnstile
+						options={{
+							action: captchaAction,
+							language: 'en',
+							size: 'invisible',
+						}}
+						siteKey={captcheSiteKey}
+						onSuccess={() => setIsTurnstileCaptchaValid(true)}
+						onError={() => setIsTurnstileCaptchaValid(false)}
+						onExpire={() => setIsTurnstileCaptchaValid(false)}
+					/>
 				)}
 
 				{/* Submit and Reset Buttons */}
@@ -1671,6 +1663,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															aria-describedby='next-action-dialog-description'
 															maxWidth={nextAction.maxWidth}
 															fullWidth={nextAction.fullWidth}
+															sx={{
+																'& .MuiDialog-paper': {
+																	borderRadius: 2,
+																},
+															}}
 														>
 															<DialogTitle id='next-action-dialog-title'>
 																{getDialogTitle()}
