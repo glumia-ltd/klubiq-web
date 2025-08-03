@@ -1634,7 +1634,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															type='submit'
 															variant='klubiqMainButton'
 															disabled={
-																!isFormValid || isSubmitting || isSubmitted
+																!isFormValid || isSubmitting || isSubmitted || !isTurnstileCaptchaValid
 															}
 															fullWidth={fullWidthButtons}
 															// onClick={handleNonMultiStepSubmit}
