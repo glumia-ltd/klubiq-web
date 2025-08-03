@@ -81,7 +81,7 @@ const CreateAccount: React.FC = () => {
 		if (!captchaStatus) {
 			dispatch(
 				openSnackbar({
-					message: 'Captcha verification failed. Please try again.',
+					message: 'We could not verify you are human. Please try again.',
 					severity: 'error',
 					isOpen: true,
 					duration: 5000,
@@ -338,29 +338,17 @@ const CreateAccount: React.FC = () => {
 							<span>.</span>
 						</Typography>
 
-						<Stack
-							direction='row'
-							justifyContent='center'
-							alignItems='stretch'
-							flex={1}
-							mt={2}
-						>
-							<Turnstile
-								siteKey={import.meta.env.VITE_TURNSTILE_SITEKEY}
-								options={{
-									theme: theme.palette.mode,
-									appearance: 'always',
-									action: 'signup',
-									language: 'en',
-									size: 'flexible',
-								}}
-								onLoad={() => setCaptchaStatus(false)}
-								onSuccess={() => setCaptchaStatus(true)}
-								onError={() => setCaptchaStatus(false)}
-								onExpire={() => setCaptchaStatus(false)}
-								
-							/>
-						</Stack>
+						<Turnstile
+							siteKey={import.meta.env.VITE_TURNSTILE_SITEKEY}
+							options={{
+								action: 'signup',
+								language: 'en',
+								size: 'invisible',
+							}}
+							onSuccess={() => setCaptchaStatus(true)}
+							onError={() => setCaptchaStatus(false)}
+							onExpire={() => setCaptchaStatus(false)}
+						/>
 
 						<Grid
 							item
@@ -387,7 +375,6 @@ const CreateAccount: React.FC = () => {
 									variant='klubiqMainButton'
 									type='submit'
 									disableRipple
-									disabled={!captchaStatus}
 								>
 									Sign Up
 								</Button>

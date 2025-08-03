@@ -233,7 +233,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 				>
 					<Box>
 						{typeof title === 'string' ? (
-							<Typography variant='h4' fontWeight={600} gutterBottom={!!subtitle}>
+							<Typography variant='h4' gutterBottom={!!subtitle}>
 								{title}
 							</Typography>
 						) : (

@@ -76,6 +76,7 @@ const TenantDashboard = () => {
 			title: amenity,
 			icon: getAmenityIcon(amenity),
 			available: true,
+			backgroundColor: '#F8FAFC',
 		})) || [];
 
 	const notificationCardItems: ActivityItem[] =
