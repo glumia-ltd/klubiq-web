@@ -379,9 +379,11 @@ const TenantDetails = () => {
 								image: tenantDetails.image,
 								id: '',
 								variant: 'square',
-								name: tenantDetails.name, // optional but helpful
+								name: tenantDetails.name,// optional but helpful
 							},
+							
 						],
+						avatarSize: 'medium',
 						companyName: tenantDetails.companyName,
 						name: tenantDetails.name,
 						email: tenantDetails.email,
