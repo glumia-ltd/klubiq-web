@@ -27,7 +27,7 @@ import logo from '../../../assets/images/logo-1.png';
 import logoText from '../../../assets/images/logo-text-2.png';
 import lightLogo from '../../../assets/images/logo-2.png';
 import lightLogoText from '../../../assets/images/logo-text-1.png';
-import { Turnstile } from '@marsidev/react-turnstile';
+// import { Turnstile } from '@marsidev/react-turnstile';
 
 const CreateAccount: React.FC = () => {
 	const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const CreateAccount: React.FC = () => {
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
 	const { data: rolesData } = useGetRolesQuery();
 	const theme = useTheme();
-	const [captchaStatus, setCaptchaStatus] = useState<boolean>(false);
+	// const [captchaStatus, setCaptchaStatus] = useState<boolean>(false);
 
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
@@ -78,17 +78,17 @@ const CreateAccount: React.FC = () => {
 		: null;
 
 	const onSubmit = async (values: IValuesType) => {
-		if (!captchaStatus) {
-			dispatch(
-				openSnackbar({
-					message: 'We could not verify you are human. Please try again.',
-					severity: 'error',
-					isOpen: true,
-					duration: 5000,
-				}),
-			);
-			return;
-		}
+		// if (!captchaStatus) {
+		// 	dispatch(
+		// 		openSnackbar({
+		// 			message: 'We could not verify you are human. Please try again.',
+		// 			severity: 'error',
+		// 			isOpen: true,
+		// 			duration: 5000,
+		// 		}),
+		// 	);
+		// 	return;
+		// }
 		const { email, password, firstName, lastName, companyName, country } =
 			values;
 		const selectedCountry = find(activeCountries, ['code', country]);
@@ -338,7 +338,7 @@ const CreateAccount: React.FC = () => {
 							<span>.</span>
 						</Typography>
 
-						<Turnstile
+						{/* <Turnstile
 							siteKey={import.meta.env.VITE_TURNSTILE_SITEKEY}
 							options={{
 								action: 'signup',
@@ -348,7 +348,7 @@ const CreateAccount: React.FC = () => {
 							onSuccess={() => setCaptchaStatus(true)}
 							onError={() => setCaptchaStatus(false)}
 							onExpire={() => setCaptchaStatus(false)}
-						/>
+						/> */}
 
 						<Grid
 							item
