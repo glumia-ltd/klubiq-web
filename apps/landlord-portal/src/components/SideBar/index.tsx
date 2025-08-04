@@ -48,7 +48,7 @@ const SideBar = () => {
 	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
 		alignItems: 'center',
-		alignSelf: 'flex-start',
+		alignSelf: 'center',
 	}));
 
 	const ThemeSwitcher = styled('div')(() => ({
@@ -167,7 +167,7 @@ const SideBar = () => {
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
-						alignItems: 'flex-start',
+						alignItems: 'center',
 						gap: 2,
 					}}
 				>

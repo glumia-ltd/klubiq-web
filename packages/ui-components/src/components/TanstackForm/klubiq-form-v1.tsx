@@ -49,7 +49,7 @@ import {
 	RadioButtonUnchecked,
 } from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Turnstile } from '@marsidev/react-turnstile';
+// import { Turnstile } from '@marsidev/react-turnstile';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { active?: boolean; completed?: boolean; error?: boolean };
@@ -250,8 +250,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	captchaAction = 'submit',
 	captcheSiteKey = '',
 }) => {
-	const [isTurnstileCaptchaValid, setIsTurnstileCaptchaValid] =
-		useState<boolean>(false);
+	// const [isTurnstileCaptchaValid, setIsTurnstileCaptchaValid] =
+	// 	useState<boolean>(false);
 	const theme = useTheme();
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
@@ -626,14 +626,18 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
 			try {
-				if (isTurnstileCaptchaRequired && !isTurnstileCaptchaValid) {
-					setShowErrorAlert(true);
-					setErrorAlertData({
-						title: 'Captcha verification failed',
-						message: 'We could not verify you are human. Please try again.',
-					});
-					return false;
-				}
+				// if (isTurnstileCaptchaRequired) {
+				// 	// Add a short delay before checking the captcha validity
+				// 	await new Promise((resolve) => setTimeout(resolve, 500));
+				// 	if (!isTurnstileCaptchaValid) {
+				// 		setShowErrorAlert(true);
+				// 		setErrorAlertData({
+				// 			title: '',
+				// 			message: 'We could not verify you are human. Please try again.',
+				// 		});
+				// 		return false;
+				// 	}
+				// }
 				const filesWaitingForUpload = form.getFieldValue(
 					'filesWaitingForUpload',
 				);
@@ -1481,7 +1485,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</LocalizationProvider>
 
 				{/* Turnstile Captcha */}
-				{!hideSubmitButton && isTurnstileCaptchaRequired && (
+				{/* {!hideSubmitButton && isTurnstileCaptchaRequired && (
 					<Turnstile
 						options={{
 							action: captchaAction,
@@ -1493,7 +1497,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						onError={() => setIsTurnstileCaptchaValid(false)}
 						onExpire={() => setIsTurnstileCaptchaValid(false)}
 					/>
-				)}
+				)} */}
 
 				{/* Submit and Reset Buttons */}
 				<Stack
@@ -1634,7 +1638,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															type='submit'
 															variant='klubiqMainButton'
 															disabled={
-																!isFormValid || isSubmitting || isSubmitted || !isTurnstileCaptchaValid
+																!isFormValid || isSubmitting || isSubmitted
 															}
 															fullWidth={fullWidthButtons}
 															// onClick={handleNonMultiStepSubmit}
