@@ -195,7 +195,7 @@ const PaymentHistorySection: React.FC = () => {
 	return (
 		<Box
 			sx={{
-				p: isMobile ? 1 : 4,
+				mt: isMobile ? 2 : 4,
 				bgcolor: '#fff',
 				borderRadius: 4,
 				boxShadow: 0,
