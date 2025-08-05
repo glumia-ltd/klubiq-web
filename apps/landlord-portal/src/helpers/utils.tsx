@@ -76,9 +76,24 @@ const getInfoFromUserSettings = (orgSettings: Record<string, unknown>) => {
 
 	return { currencyCode, countryCode, lang };
 };
-export const formatNumberShort = (num: number): string => {
+
+export const getCurrencySymbolFromSettings = (orgSettings: Record<string, unknown>) => {
+	const lang = (orgSettings?.language as string) || 'en';
+	const currencyCode = (orgSettings?.currency as string) || 'NGN';
+	return new Intl.NumberFormat(lang, {
+		style: 'currency',
+		currency: currencyCode,
+		currencyDisplay: 'narrowSymbol',
+	}).formatToParts().find((part) => part.type === 'currency')?.value;
+};
+
+export const formatCurrencyNumberShort = (num: number, orgSettings: Record<string, unknown>): string => {
+	let prefix = '';
+	if (orgSettings) {
+		prefix = getCurrencySymbolFromSettings(orgSettings) || '';
+	}
 	if (num < 1_000) {
-		return num.toString();
+		return `${prefix}${num.toString()}`;
 	}
 
 	const units = [
@@ -90,12 +105,11 @@ export const formatNumberShort = (num: number): string => {
 	for (const { value, symbol } of units) {
 		if (num >= value) {
 			const formatted = (num / value).toFixed(num % value === 0 ? 0 : 1);
-			return `${formatted}${symbol}`;
+			return `${prefix}${formatted}${symbol}`;
 		}
 	}
-	return num.toString();
+	return `${prefix}${num.toString()}`;
 };
-
 
 export const getLocaleFormat = (
 	orgSettings: Record<string, unknown>,

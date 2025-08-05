@@ -26,6 +26,32 @@ const transitionsTheme = {
 		sharp: 'cubic-bezier(0.4, 0, 0.6, 1)',
 	},
 };
+const cardTrendStyle = [
+	{
+		props: { variant: 'upTrend' },
+		style: {
+			border: '1px solid #17B26A',
+			color: '#17B26A',
+			backgroundColor: 'rgba(236,253,243)',
+		},
+	},
+	{
+		props: { variant: 'downTrend' },
+		style: {
+			border: '1px solid #FF0000',
+			color: '#FF0000',
+			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+		},
+	},
+	{
+		props: { variant: 'neutralTrend' },
+		style: {
+			border: '1px solid #49a0e3',
+			color: '#49a0e3',
+			backgroundColor: '#c2daed',
+		},
+	},
+] as const;
 const cardHeaderStyle = {
 	fontWeight: 600,
 	fontSize: '0.875rem',
@@ -399,6 +425,7 @@ export const LightTheme: Theme = createTheme({
 						color: '#92400E',
 					},
 				},
+				...cardTrendStyle,
 			],
 		},
 	},
@@ -889,6 +916,7 @@ export const DarkTheme: Theme = createTheme({
 						color: primaryColors.mainBlue,
 					},
 				},
+				...cardTrendStyle,
 			],
 		},
 	},

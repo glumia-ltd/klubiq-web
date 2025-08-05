@@ -26,3 +26,8 @@ export type Lease = {
 	lateFeeAmount: string | null;
 	securityDeposit: string;
   };
+
+  export const UnitTypeColors: Record<string, string> = {
+	Single: 'info',
+	Multi: 'secondary',
+};

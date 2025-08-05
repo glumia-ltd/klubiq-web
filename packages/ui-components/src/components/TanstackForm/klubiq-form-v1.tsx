@@ -29,6 +29,7 @@ import {
 	IconButton,
 	Alert,
 	AlertTitle,
+	useTheme,
 } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
@@ -48,6 +49,7 @@ import {
 	RadioButtonUnchecked,
 } from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { Turnstile } from '@marsidev/react-turnstile';
 
 const StepIconRoot = styled('div')<{
 	ownerState: { active?: boolean; completed?: boolean; error?: boolean };
@@ -244,7 +246,13 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	errorAlertTitle,
 	errorAlertMessage = 'Please check the form for errors. All required fields must be filled correctly.',
 	hideSubmitButton = false,
+	isTurnstileCaptchaRequired = false,
+	captchaAction = 'submit',
+	captcheSiteKey = '',
 }) => {
+	// const [isTurnstileCaptchaValid, setIsTurnstileCaptchaValid] =
+	// 	useState<boolean>(false);
+	const theme = useTheme();
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
 	const [stepValidations, setStepValidations] = useState<boolean[]>([]);
@@ -618,13 +626,25 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
 			try {
+				// if (isTurnstileCaptchaRequired) {
+				// 	// Add a short delay before checking the captcha validity
+				// 	await new Promise((resolve) => setTimeout(resolve, 500));
+				// 	if (!isTurnstileCaptchaValid) {
+				// 		setShowErrorAlert(true);
+				// 		setErrorAlertData({
+				// 			title: '',
+				// 			message: 'We could not verify you are human. Please try again.',
+				// 		});
+				// 		return false;
+				// 	}
+				// }
 				const filesWaitingForUpload = form.getFieldValue(
 					'filesWaitingForUpload',
 				);
 				if (filesWaitingForUpload > 0) {
 					setShowPreSubmitDialog(true);
 					setPreSubmitDialogMessage(
-						'Please upload all files before submitting',
+						'You have files waiting to be uploaded. Please finish uploading before submitting.',
 					);
 					setPreSubmitDialogTitle('Files not uploaded');
 					return 'Please wait for all files to upload';
@@ -1241,21 +1261,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		form.reset();
 		topBackButton?.onClick?.();
 	};
-	const handleNonMultiStepSubmit = async (
-		e: React.MouseEvent<HTMLButtonElement>,
-	) => {
-		if (!isMultiStep) {
-			e.preventDefault();
-			e.stopPropagation();
-			try {
-				setIsSubmitted(false);
-				await form.handleSubmit();
-			} catch (error) {
-				setShowErrorAlert(true);
-				setIsSubmitted(false);
-			}
-		}
-	};
 	const getErrorAlertTitle = () => {
 		if (typeof errorAlertTitle === 'function') {
 			return errorAlertTitle();
@@ -1407,6 +1412,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</Box>
 			)}
 
+			{/* Form */}
 			<form
 				key={`form`}
 				onSubmit={async (e) => {
@@ -1446,6 +1452,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					}
 				}}
 			>
+				{/* Error Alert */}
 				{enableErrorAlert && showErrorAlert && (
 					<Alert
 						severity='error'
@@ -1470,13 +1477,29 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						)}
 					</Alert>
 				)}
-
+				{/* Form Fields */}
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
 					<Stack spacing={3} key={`fields`}>
 						{renderFields(steps[currentStep].fields)}
 					</Stack>
 				</LocalizationProvider>
 
+				{/* Turnstile Captcha */}
+				{/* {!hideSubmitButton && isTurnstileCaptchaRequired && (
+					<Turnstile
+						options={{
+							action: captchaAction,
+							language: 'en',
+							size: 'invisible',
+						}}
+						siteKey={captcheSiteKey}
+						onSuccess={() => setIsTurnstileCaptchaValid(true)}
+						onError={() => setIsTurnstileCaptchaValid(false)}
+						onExpire={() => setIsTurnstileCaptchaValid(false)}
+					/>
+				)} */}
+
+				{/* Submit and Reset Buttons */}
 				<Stack
 					direction={'row'}
 					justifyContent={horizontalAlignment}
@@ -1644,6 +1667,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 															aria-describedby='next-action-dialog-description'
 															maxWidth={nextAction.maxWidth}
 															fullWidth={nextAction.fullWidth}
+															sx={{
+																'& .MuiDialog-paper': {
+																	borderRadius: 2,
+																},
+															}}
 														>
 															<DialogTitle id='next-action-dialog-title'>
 																{getDialogTitle()}
@@ -1708,6 +1736,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				</Stack>
 			</form>
 
+			{/* Under Submit Button Node */}
 			{underSubmitButtonNode && !isSubmitted && (
 				<Box sx={{ width: '100%' }}>{underSubmitButtonNode}</Box>
 			)}

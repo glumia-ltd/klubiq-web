@@ -78,30 +78,30 @@ const TableChart: FC<{
 			xAxis={[bandAxis]}
 			yAxis={[valueAxis]}
 			height={400}
-			bottomAxis={null}
-			topAxis={{
-				disableTicks: true,
-				disableLine: true,
-				labelStyle: {
-					fontSize: '12px',
-				},
-			}}
-			leftAxis={{
-				disableTicks: true,
-				disableLine: true,
-				labelStyle: {
-					fontSize: '12px',
-				},
-			}}
+			//bottomAxis={null}
+			//topAxis={{
+			//	disableTicks: true,
+			//	disableLine: true,
+			//	labelStyle: {
+			//		fontSize: '12px',
+			//	},
+			//}}
+			//leftAxis={{
+			//	disableTicks: true,
+			//	disableLine: true,
+			//	labelStyle: {
+			//		fontSize: '12px',
+			//	},
+			//}}
 			slotProps={{
 				legend: {
-					direction: 'row',
-					position: { vertical: 'bottom', horizontal: 'middle' },
-					padding: 10,
-					itemMarkWidth: 20,
-					itemMarkHeight: 11,
-					markGap: 5,
-					itemGap: 10,
+					direction: 'horizontal',
+					position: { vertical: 'bottom', horizontal: 'center' },
+					//padding: 10,
+					//itemMarkWidth: 20,
+					//itemMarkHeight: 11,
+					//markGap: 5,
+					//itemGap: 10,
 				},
 			}}
 		/>

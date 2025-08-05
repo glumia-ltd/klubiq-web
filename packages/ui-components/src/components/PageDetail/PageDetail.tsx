@@ -12,6 +12,7 @@ import {
 	useMediaQuery,
 	Card,
 	Divider,
+	Link,
 } from '@mui/material';
 import { Close, MailOutline, Phone, Place } from '@mui/icons-material';
 import { DynamicAvatar } from '../DynamicAvatar/DynamicAvatar';
@@ -207,7 +208,7 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				<DynamicAvatar
 					items={headerData.avatar}
 					showName={headerData.showAvatarNames}
-					size={headerData.avatarSize || 'large'}
+					size={headerData.avatarSize || 'medium'}
 				/>
 				<Stack
 					direction='column'
@@ -230,9 +231,9 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 					{headerData.email && (
 						<Stack direction='row' alignItems='center' spacing={1}>
 							<MailOutline fontSize='small' />
-							<Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+							<Link href={`mailto:${headerData.email}`} variant='subtitle2' sx={{ wordBreak: 'break-word' }}>
 								{headerData.email}
-							</Typography>
+							</Link>
 						</Stack>
 					)}
 					{headerData.phone && (
@@ -250,12 +251,15 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				>
 					<Chip
 						label={headerData.status}
-						color={headerData.status === 'Active' ? 'success' : 'primary'}
+						color={getStatusColor(
+							headerData.status,
+						)}
 						size='small'
-						// sx={{
-						// 	backgroundColor: theme.palette.success.light,
-						// 	color: headerData.status === 'Active' ? theme.palette.success.main : theme.palette.primary.main,
-						// }}
+						variant='outlined'
+						sx={{
+							backgroundColor: 'transparent',
+							...getStatusStyle(headerData.status),
+						}}
 					/>
 					{headerData.headerActions && headerData.headerActions.length > 0 && (
 						<Stack direction='row' spacing={1}>
@@ -289,10 +293,11 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 					direction='column'
 					spacing={1}
 					alignItems={'flex-start'}
+					justifyContent={isMobile ? 'flex-start' : 'space-between'}
 				>
 					<Chip
 						label={headerData.leaseDetailsHeaderData?.propertyType}
-						size='medium'
+						size='small'
 					/>
 					{headerData.leaseDetailsHeaderData && (
 						<Stack
@@ -333,7 +338,8 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 						color={getStatusColor(
 							headerData.leaseDetailsHeaderData?.leaseStatus,
 						)}
-						size='medium'
+						size='small'
+						variant='outlined'
 						sx={{
 							backgroundColor: 'transparent',
 							...getStatusStyle(headerData.leaseDetailsHeaderData?.leaseStatus),
@@ -342,7 +348,7 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 					<DynamicAvatar
 						items={headerData.avatar}
 						showName={headerData.showAvatarNames}
-						size={headerData.avatarSize || 'large'}
+						size={headerData.avatarSize || 'medium'}
 					/>
 				</Stack>
 
