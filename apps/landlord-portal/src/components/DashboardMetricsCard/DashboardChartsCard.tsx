@@ -16,6 +16,8 @@ import {
 	generateLightnessVariants,
 } from '../../helpers/colorUtils';
 import {
+	areaElementClasses,
+	axisClasses,
 	BarChart,
 	labelMarkClasses,
 	legendClasses,
@@ -24,6 +26,7 @@ import {
 } from '@mui/x-charts';
 import { blue } from '@mui/material/colors';
 import { formatCurrencyNumberShort } from '../../helpers/utils';
+
 
 export type DashboardChartsCardVariant =
 	| 'pie'
@@ -44,8 +47,8 @@ export interface DataPoint {
 	valuePct?: number;
 }
 
-const chartColors = (numberOfColors: number) => {
-	const baseColor = '#002147';
+const chartColors = (numberOfColors: number, theme: Theme) => {
+	const baseColor = `${theme.palette.primary.main}80`;
 
 	// Use the new color utility to generate better variants
 	if (numberOfColors <= 5) {
@@ -157,13 +160,15 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 		);
 	}
 	const getPieSeries = () => {
+		const total = data.reduce((acc, item) => acc + item.value, 0);
 		return [
 			{
 				innerRadius: 100,
 				outerRadius: 120,
 				id: 'propertyTypePieChart',
 				data: data as DataPoint[] | [],
-				valueFormatter: (item: { value: number }) => `${item.value}`,
+				valueFormatter: (item: { value: number }) =>
+					`${((item.value / total) * 100).toFixed(0)}%`,
 				cx: 150,
 				cy: 150,
 			},
@@ -193,13 +198,25 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 				{
 					label: label,
 					width: width,
+					valueFormatter: (value: number | null) =>
+						formatCurrencyNumberShort(value || 0.0, orgSettings),
 				},
 			],
 			height: height,
 			xAxis: [{ dataKey: 'label', tickSize: 7, scaleType: 'band' as const }],
 		};
 	};
-
+	const noStrokeStyles= {
+		[`.${axisClasses.root}`]: {
+			[`.${axisClasses.tick}, .${axisClasses.line}`]: {
+				stroke: 'text.primary',
+				strokeWidth: 0,
+			},
+			[`.${axisClasses.tickLabel}`]: {
+				fill: 'text.primary',
+			},
+		},
+	}
 	const renderChartByVariant = () => {
 		const width = isMobile ? 5 : 40;
 		const height = isMobile ? 400 : 300;
@@ -207,10 +224,11 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 			case 'pie':
 				return (
 					<PieChart
+						loading={loading}
 						series={getPieSeries()}
 						height={300}
 						width={300}
-						colors={chartColors(data.length)}
+						colors={chartColors(data.length, theme)}
 						slotProps={{
 							legend: {
 								direction: isMobile ? 'horizontal' : 'vertical',
@@ -242,26 +260,44 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 			case 'bar':
 				return (
 					<BarChart
+						loading={loading}
 						hideLegend={true}
 						dataset={getBarDataSet()}
-						series={[{ data: getBarSeries(), color: '#002147' }]}
-						{...getBarChartSettings('Property Count', width, height)}
+						series={[{ data: getBarSeries(), color: `${theme.palette.primary.main}` }]}
+						{...getBarChartSettings('', width, height)}
+						sx={noStrokeStyles}
 					/>
 				);
 			case 'line':
 				return (
 					<LineChart
+						loading={loading}
 						dataset={getBarDataSet()}
+						grid={{ horizontal: true }}
 						series={[
 							{
 								data: getBarSeries(),
-								color: '#002147',
+								color: `${theme.palette.success.main}`,
+								area: true,
 								valueFormatter: (value: number | null) =>
 									formatCurrencyNumberShort(value || 0.0, orgSettings),
 							},
 						]}
 						{...getBarChartSettings('', width, height)}
-					/>
+						sx={{...noStrokeStyles,
+							[`& .${areaElementClasses.root}`]: {
+								fill:`url('#myGradient')`,
+								filter: 'none', // Remove the default filtering
+							  },
+							}}
+					>
+						<defs>
+							<linearGradient id='myGradient' x1='0' y1='0' x2='0' y2='1'>
+								<stop offset='0%' stopColor={`${theme.palette.success.main}10`} />
+								<stop offset='100%' stopColor='#fff' />
+							</linearGradient>
+						</defs>
+					</LineChart>
 				);
 			default:
 				return null;
@@ -321,7 +357,12 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 						</Stack>
 					)}
 				</Stack>
-				<Stack direction={'row'} justifyContent={'flex-start'} alignItems={'center'} width={'100%'}>
+				<Stack
+					direction={'row'}
+					justifyContent={'flex-start'}
+					alignItems={'center'}
+					width={'100%'}
+				>
 					{subTitle && (
 						<Typography variant='subtitle2' width={'100%'}>
 							{subTitle}
