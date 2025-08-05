@@ -9,7 +9,7 @@ import {
 	Skeleton,
 	useTheme,
 	Alert,
-	IconButton,
+	// IconButton,
 	FormControl,
 	Theme,
 } from '@mui/material';
@@ -108,7 +108,10 @@ const paymentSummary = {
 const ConfirmPayment: React.FC = () => {
 	const navigate = useNavigate();
 	const theme = useTheme();
-	const [loading, setLoading] = useState(false); // Simulate loading state
+	const [
+		loading,
+		// setLoading
+	] = useState(false); // Simulate loading state
 	const [paymentMethod, setPaymentMethod] = useState('card');
 	const { data: leaseInsights } = useGetLeaseInsightsQuery();
 

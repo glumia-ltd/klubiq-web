@@ -76,7 +76,9 @@ const PaymentHistorySection: React.FC = () => {
 		user: { uuid },
 	} = useSelector(getAuthState);
 
-	const { data: paymentHistory, isLoading: isPaymentHistoryLoading } =
+	const { data: paymentHistory,
+		// isLoading: isPaymentHistoryLoading
+	} =
 		useGetPaymentHistoryQuery(uuid);
 
 	const paymentHistoryData =

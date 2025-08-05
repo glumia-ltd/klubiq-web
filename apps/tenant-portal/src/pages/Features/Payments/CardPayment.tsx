@@ -163,7 +163,10 @@ const addCardFields: FormFieldV1[] = [
 
 const CardPayment: React.FC = () => {
 	const theme = useTheme();
-	const [loading, setLoading] = useState(false); // Simulate loading state
+	const [
+		loading,
+		// setLoading
+	] = useState(false); // Simulate loading state
 	const [selectedCard, setSelectedCard] = useState('visa');
 	const [showAddCard, setShowAddCard] = useState(false);
 

@@ -32,8 +32,10 @@ const PaymentsPage = () => {
 	const { data: paymentMethods, isLoading: paymentMethodsLoading } =
 		useGetPaymentMethodsQuery();
 
-	const [initializePayment, { isLoading: initializePaymentLoading }] =
-		useInitializePaymentMutation();
+	const [
+		initializePayment,
+		// { isLoading: initializePaymentLoading }
+	] = useInitializePaymentMutation();
 
 	const [paymentsData] = payments || [];
 

@@ -5,7 +5,7 @@ import {
 	Box,
 	Chip,
 	useTheme,
-	Link,
+	// Link,
 	Button,
 } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -24,7 +24,7 @@ export const SavedPaymentCard: React.FC<SavedPaymentCardProps> = ({
 	brand,
 	isPrimary,
 	onEdit,
-	variant = 'default',
+	// variant = 'default',
 	children,
 }) => {
 	const theme = useTheme();
