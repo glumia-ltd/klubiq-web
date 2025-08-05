@@ -16,6 +16,7 @@ import { useTheme } from '@mui/material/styles';
 import { useGetPaymentHistoryQuery } from '@/store/PaymentsStore/paymentsApiSlice';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
+import { getLocaleFormat } from '@/helpers/utils';
 
 const propertyOptions = [
 	{ value: '', label: 'All Properties' },
@@ -76,10 +77,10 @@ const PaymentHistorySection: React.FC = () => {
 		user: { uuid },
 	} = useSelector(getAuthState);
 
-	const { data: paymentHistory,
+	const {
+		data: paymentHistory,
 		// isLoading: isPaymentHistoryLoading
-	} =
-		useGetPaymentHistoryQuery(uuid);
+	} = useGetPaymentHistoryQuery(uuid);
 
 	const paymentHistoryData =
 		paymentHistory?.map((item: any) => ({
@@ -87,14 +88,14 @@ const PaymentHistorySection: React.FC = () => {
 			amount: item?.amount,
 			paymentMethod: item?.paymentMetaData?.paymentMethod,
 			property: item?.propertyName,
-			status: item?.status.includes('Overdue') ? (
+			status: item?.status.includes('overdue') ? (
 				<Chip variant='pippinRedChip' label='Overdue' />
-			) : item?.status.includes('Pending') ? (
+			) : item?.status.includes('pending') ? (
 				<Chip variant='beesWaxYellowChip' label='Pending' />
-			) : item?.status.includes('Paid') ? (
+			) : item?.status.includes('paid') ? (
 				<Chip variant='greenChip' label='Paid' />
 			) : (
-				<Chip variant='pattensBlueChip' label='Failed' />
+				<Chip variant='pippinRedChip' label='Failed' />
 			),
 		})) || [];
 
@@ -115,7 +116,7 @@ const PaymentHistorySection: React.FC = () => {
 			}
 		});
 		return data;
-	}, [property, status, sortBy, sortOrder]);
+	}, [property, status, sortBy, sortOrder, paymentHistoryData]);
 
 	// Pagination logic
 	const paginatedData = useMemo(() => {
@@ -143,7 +144,9 @@ const PaymentHistorySection: React.FC = () => {
 			align: 'left',
 			sortable: true,
 			format: (value) => (
-				<Typography fontWeight={700}>${value.toLocaleString()}</Typography>
+				<Typography fontWeight={700}>
+					{getLocaleFormat(value || 0, 'currency', 2)}
+				</Typography>
 			),
 		},
 		{
@@ -168,20 +171,24 @@ const PaymentHistorySection: React.FC = () => {
 			id: 'receipt',
 			label: 'RECEIPT',
 			minWidth: 100,
-			format: () => (
-				<Button
-					startIcon={<DownloadIcon />}
-					sx={{
-						color: '#1A2746',
-						fontWeight: 700,
-						textTransform: 'none',
-						fontSize: 18,
-					}}
-					variant='text'
-				>
-					Download
-				</Button>
-			),
+			format: (value) => {
+				if (value?.includes('pending')) {
+					return;
+				} else {
+					<Button
+						startIcon={<DownloadIcon />}
+						sx={{
+							color: '#1A2746',
+							fontWeight: 700,
+							textTransform: 'none',
+							fontSize: 18,
+						}}
+						variant='text'
+					>
+						Download
+					</Button>;
+				}
+			},
 		},
 	];
 
