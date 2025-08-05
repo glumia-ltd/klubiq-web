@@ -6,7 +6,11 @@ import { API_TAGS } from '../store.types';
 export const paymentsApiSlice = createApi({
 	reducerPath: 'paymentsApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.PAYMENTS],
+	tagTypes: [API_TAGS.PAYMENTS, API_TAGS.CURRENT_PAYMENT],
+	// Enhanced cache configuration for better persistence
+	keepUnusedDataFor: 300, // 5 minutes default
+	refetchOnMountOrArgChange: true,
+	refetchOnFocus: false, // Don't refetch when window regains focus
 	endpoints: (builder) => ({
 		getUpcomingPayments: builder.query<any, string>({
 			query: (leaseTenantId) => ({

@@ -1,23 +1,19 @@
 import { Box, Card, Stack, Typography, Button } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { PageHeader } from '@klubiq/ui-components';
 import {
 	SavedPaymentCard,
 	SavedPaymentCardSkeleton,
 } from '@/components/SavedPaymentCard';
-// import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMethodCard';
 import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 import {
 	useGetUpcomingPaymentsQuery,
 	useGetPaymentMethodsQuery,
-	useInitializePaymentMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
 import { getLocaleFormat, formatPaymentStatusText } from '@/helpers/utils';
 import { useNavigate } from 'react-router-dom';
-// Dummy data for demonstration
 
 const PaymentsPage = () => {
 	const {
@@ -31,11 +27,6 @@ const PaymentsPage = () => {
 
 	const { data: paymentMethods, isLoading: paymentMethodsLoading } =
 		useGetPaymentMethodsQuery();
-
-	const [
-		initializePayment,
-		// { isLoading: initializePaymentLoading }
-	] = useInitializePaymentMutation();
 
 	const [paymentsData] = payments || [];
 
@@ -55,19 +46,8 @@ const PaymentsPage = () => {
 		);
 	};
 
-	const handlePaymentButtonClick = async () => {
-		try {
-			const result = await initializePayment({
-				invoiceId: paymentsData?.invoiceId,
-				amount: paymentsData?.amount,
-			});
-
-			console.log(result);
-
-			navigate('/payments/confirm');
-		} catch (error) {
-			console.log(error);
-		}
+	const handlePaymentButtonClick = () => {
+		navigate('/payments/confirm');
 	};
 
 	return (

@@ -11,8 +11,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
-import ConfirmPayment from '@/pages/Features/Payments/ConfirmPayment';
-import CardPayment from '@/pages/Features/Payments/CardPayment';
+import MonnifyPaymentPage from '@/pages/Features/Payments/MonnifyPaymentPage';
 import PaymentsPage from '@/pages/Features/Payments';
 import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';
@@ -36,8 +35,7 @@ export const router = createBrowserRouter(
 					<Route path='/documents' element={<Documents />} />
 					<Route path='/profile' element={<Profile />} />
 				</Route>
-				<Route path='/payments/card' element={<CardPayment />} />
-				<Route path='/payments/confirm' element={<ConfirmPayment />} />
+				<Route path='/payments/confirm' element={<MonnifyPaymentPage />} />
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
 		</Route>,
