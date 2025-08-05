@@ -105,7 +105,7 @@ const Tenant = () => {
 	const handleRowClick = (id: string) => {
 		navigate(`/tenants/${id}`);
 	};
-	
+
 	return (
 		<>
 			<Stack gap={2}>
