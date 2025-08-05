@@ -220,9 +220,6 @@ const Login = () => {
 			password: '',
 		},
 		enableErrorAlert: true,
-		isTurnstileCaptchaRequired: true,
-		captchaAction: 'signin',
-		captcheSiteKey: import.meta.env.VITE_TURNSTILE_SITEKEY,
 	};
 	return (
 		<>

@@ -524,7 +524,7 @@ const LeaseDetails = () => {
 							showAvatarNames: true,
 							leaseDetailsHeaderData: {
 								leaseStatus: leaseData?.status as LeaseStatus,
-								propertyName: `${leaseData?.propertyName} ${leaseData?.unitNumber ? `- ${leaseData?.unitNumber}` : ''}`,
+								propertyName: `${leaseData?.propertyName} ${leaseData?.isMultiUnitProperty && leaseData?.unitNumber ? `- ${leaseData?.unitNumber}` : ''}`,
 								unitType: leaseData?.isMultiUnitProperty
 									? 'Multi-Unit'
 									: 'Single-Unit',
