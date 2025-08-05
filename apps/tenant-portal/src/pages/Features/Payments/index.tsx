@@ -9,6 +9,7 @@ import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistory
 import {
 	useGetUpcomingPaymentsQuery,
 	useGetPaymentMethodsQuery,
+	useInitializePaymentMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
@@ -21,6 +22,8 @@ const PaymentsPage = () => {
 	} = useSelector(getAuthState);
 
 	const navigate = useNavigate();
+
+	const [initializePayment] = useInitializePaymentMutation();
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery(uuid);
@@ -46,8 +49,17 @@ const PaymentsPage = () => {
 		);
 	};
 
-	const handlePaymentButtonClick = () => {
-		navigate('/payments/confirm');
+	const handlePaymentButtonClick = async () => {
+		try {
+			await initializePayment({
+				invoiceId: paymentsData?.invoiceId || '',
+				amount: paymentsData?.amount || 0,
+			});
+
+			navigate('/payments/confirm');
+		} catch (e) {
+			// console.log(e)
+		}
 	};
 
 	return (
