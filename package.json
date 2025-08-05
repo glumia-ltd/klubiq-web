@@ -47,14 +47,11 @@
     "packages/*"
   ],
   "dependencies": {
-<<<<<<< HEAD
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.17.1",
-=======
     "@marsidev/react-turnstile": "^1.2.0",
     "@mui/x-charts": "^8.9.0",
->>>>>>> d2cd013bd5d6c0fb02f685e375a1d9df516c2784
     "@mui/x-data-grid": "^7.13.0",
     "@mui/x-date-pickers": "^7.29.1",
     "date-fns": "^3.6.0",
