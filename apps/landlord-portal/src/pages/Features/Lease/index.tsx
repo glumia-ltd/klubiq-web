@@ -241,7 +241,7 @@ const Lease = () => {
 						<InputBase
 							ref={inputRef}
 							sx={{ ml: 1, flex: 1 }}
-							placeholder='Search Properties'
+							placeholder='Search Lease'
 							inputProps={{ 'aria-label': 'search properties' }}
 							value={searchText}
 							onChange={handleLeaseSearch}
