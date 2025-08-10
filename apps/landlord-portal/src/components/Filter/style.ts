@@ -76,13 +76,17 @@ export const styles = {
 		padding: '8px 14px',
 	},
 	modalBackgroundStyle: {
-		position: 'absolute',
-		padding: 2,
-		minWidth: 300,
-		border: '1px solid primary.light',
-		borderRadius: 2,
-		backgroundColor: 'background.paper',
-		display: 'flex',
-		flexDirection: 'column',
-	},
+  position: 'absolute',
+  padding: 2,
+  minWidth: 300,
+  border: '1px solid primary.light',
+  borderRadius: 2,
+  backgroundColor: 'background.paper',
+  display: 'flex',
+  flexDirection: 'column',
+  maxHeight: 300,
+  overflowY: 'auto',
+  paddingRight: 8
+}
+
 };

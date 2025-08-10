@@ -222,7 +222,7 @@ const Filter: FC<FilterType> = ({ filterList, getFilterResult, disable }) => {
 												lineHeight: '28px',
 											}}
 										>
-											{title}
+											{title} 
 										</Typography>
 										<FormControl component='fieldset'>
 											<RadioGroup
