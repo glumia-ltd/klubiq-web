@@ -30,7 +30,7 @@ import { screenMessages } from '../../../helpers/screen-messages';
 const ITEMSCOUNTOPTIONS = [10, 20, 40, 60];
 
 const Tenant = () => {
-	const [filter, setFilter] = useState<Record<string, string | number>>({});
+	// const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [currentPage, setCurrentPage] = useState(1);
@@ -50,8 +50,8 @@ const Tenant = () => {
 	const { data: tenantData, isLoading: isTenantDataLoading } =
 		useGetTenantsQuery({
 			...defaultParams,
-			...filter,
-			// page: currentPage,
+			// ...filter,
+			// page: currentPage,:
 			// take: 20,
 			// sortBy: 'createdDate',
 			// order: 'ASC',
@@ -118,7 +118,7 @@ const Tenant = () => {
 
 			inputElement && inputElement.focus();
 		}
-	}, []);
+	}, []); 
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [getCurrentPage]);
