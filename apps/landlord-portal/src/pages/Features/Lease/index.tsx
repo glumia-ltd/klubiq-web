@@ -242,7 +242,7 @@ const Lease = () => {
 							ref={inputRef}
 							sx={{ ml: 1, flex: 1 }}
 							placeholder='Search Lease'
-							inputProps={{ 'aria-label': 'search properties' }}
+							inputProps={{ 'aria-label': 'search lease' }}
 							value={searchText}
 							onChange={handleLeaseSearch}
 						/>
