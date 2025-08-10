@@ -32,6 +32,9 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		upTrend: React.CSSProperties;
+		downTrend: React.CSSProperties;
+		neutralTrend: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
@@ -39,6 +42,9 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		upTrend: React.CSSProperties;
+		downTrend: React.CSSProperties;
+		neutralTrend: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -99,6 +105,9 @@ declare module '@mui/material/Chip' {
 		sale: true;
 		propertyType: true;
 		archived: true;
+		upTrend: true;
+		downTrend: true;
+		neutralTrend: true;
 	}
 }
 

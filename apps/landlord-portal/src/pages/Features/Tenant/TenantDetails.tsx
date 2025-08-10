@@ -10,20 +10,21 @@ import {
 	// useTheme,
 	// useMediaQuery,
 	CardContent,
+	Button,
 } from '@mui/material';
 // import dayjs from 'dayjs';
 import * as KlubiqIcons from '../../../components/Icons/CustomIcons';
 import { DynamicBreadcrumb, InfoCard, PageDetail } from '@klubiq/ui-components';
 // import { styles } from './styles';
-import ViewListOutlinedIcon from '@mui/icons-material/ViewListOutlined';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantApiSlice';
 // import { TenantInfo } from '../../../shared/type';
-import { BreadcrumbItem } from '../../../context/BreadcrumbContext/BreadcrumbContext';
 import { formatDate, getLocaleFormat } from '../../../helpers/utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { ViewList } from '@mui/icons-material';
+import { Cancel, Home, Refresh,ViewList } from '@mui/icons-material';
+import { useResendInvitationMutation } from '../../../store/AuthStore/authApiSlice';
+import { screenMessages } from '../../../helpers/screen-messages';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 interface TenantDetails {
 	name: string;
 	companyName: string;
@@ -65,39 +66,15 @@ const TenantDetails = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const [routeMap, setRouteMap] = useState({});
+	const [resendInvitation, { isLoading: isResendingInvitation }] = useResendInvitationMutation();
 	const currentTenantId = location.pathname.split('/')[2]!;
 	const { data: tenantData, isLoading } = useGetSingleTenantByIdQuery({
 		id: id || currentTenantId || '',
 	});
-	
+	const dispatch = useDispatch();
+
 	useEffect(() => {
-		const newBreadcrumbs: Record<string, BreadcrumbItem> = {
-			feature: {
-				label: 'Tenants',
-				icon: (
-					<ViewListOutlinedIcon
-						key={1}
-						aria-label='Tenant'
-						onClick={() => navigate(`/tenants`)}
-					/>
-				),
-				showIcon: true,
-				isSectionRoot: true,
-				path: '/tenants',
-			},
-		};
-		if (currentTenantId) {
-			newBreadcrumbs['feature-details'] = {
-				label: `Tenant Details${tenantData?.profile?.firstName ? `: ${tenantData?.profile?.firstName}` : ''}`, // Prefer a human-readable name if available
-				path: `/tenants/${currentTenantId}`,
-				icon: null,
-				showIcon: false,
-			};
-		}
-		newBreadcrumbs['feature-details-sub'] = {};
-		updateBreadcrumb(newBreadcrumbs);
 		setRouteMap({
 			'/tenants': {
 				path: '/tenants',
@@ -108,13 +85,51 @@ const TenantDetails = () => {
 				path: '/tenants/:id',
 				slug:
 					`${tenantData?.profile?.firstName} ${tenantData?.profile?.lastName}` +
-					(tenantData?.profile?.companyName ? ` (${tenantData?.profile?.companyName})` : ''),
+					(tenantData?.profile?.companyName
+						? ` (${tenantData?.profile?.companyName})`
+						: '') || 'tenant-details',
 				dynamic: true,
 			},
 		});
-	}, [tenantData?.profile?.firstName, tenantData?.profile?.lastName, tenantData?.profile?.companyName, currentTenantId, location.pathname]);
-	const tenantDetails: TenantDetails = useMemo(() => {
-		const { profile, activeLeases, documents } = tenantData || {};
+	}, [
+		tenantData?.profile?.firstName,
+		tenantData?.profile?.lastName,
+		tenantData?.profile?.companyName,
+		currentTenantId,
+		location.pathname,
+	]);
+	const handleResendInvitation = async () => {
+		if (tenantData?.accountInvitation?.id) {
+			try{
+				await resendInvitation({
+					invitationId: tenantData?.accountInvitation?.id,
+					email: tenantData?.profile?.email,
+					isTenant: true,
+				}).unwrap();
+				dispatch(
+					openSnackbar({
+						message: screenMessages.tenant.resendInvitation.success,
+						severity: 'success',
+						isOpen: true,
+						duration: 5000,
+					}),
+				);
+			} catch (error: any) {
+				console.error(error);
+				dispatch(
+					openSnackbar({
+						message: error.data.message || error.message || screenMessages.tenant.resendInvitation.error,
+						severity: 'error',
+						isOpen: true,
+						duration: 5000,
+					}),
+				);
+			}
+		}
+	};
+	const tenantDetails = useMemo(() => {
+		const { profile, activeLeases, documents, accountInvitation } =
+			tenantData || {};
 
 		const mapLeaseData = (lease: any) => ({
 			name: lease.propertyName,
@@ -129,16 +144,20 @@ const TenantDetails = () => {
 			endDate: lease.leaseEnd,
 			rentAmount: lease.rentAmount,
 			paymentFrequency: lease.paymentFrequency,
-			property: activeLeases.length > 1 ? lease.propertyName : '',
-			unit: activeLeases.length > 1 ? lease.unit?.unitNumber : '',
+			property:
+				activeLeases && activeLeases?.length > 1 ? lease.propertyName : '',
+			unit:
+				activeLeases && activeLeases?.length > 1 ? lease.unit?.unitNumber : '',
 		});
 
 		const mapPaymentStatus = (lease: any) => ({
 			leaseName: lease.propertyName,
 			status: lease.paymentStatus || null,
 			lastPaymentDate: lease.lastPaymentDate || null,
-			property: activeLeases.length > 1 ? lease.propertyName : '',
-			unit: activeLeases.length > 1 ? lease.unit?.unitNumber : '',
+			property:
+				activeLeases && activeLeases?.length > 1 ? lease.propertyName : '',
+			unit:
+				activeLeases && activeLeases?.length > 1 ? lease.unit?.unitNumber : '',
 		});
 
 		const mapDocuments = (document: any) => ({
@@ -152,12 +171,13 @@ const TenantDetails = () => {
 			companyName: profile?.companyName || '',
 			phone: profile?.phoneNumber || '',
 			email: profile?.email || '',
-			active: profile?.isActive ?? true,
+			active: profile?.active ?? true,
 			image: profile?.profilePicUrl || '',
 			properties: activeLeases?.map(mapLeaseData) || [],
 			leases: activeLeases?.map(mapLeaseInfo) || [],
 			paymentStatus: activeLeases?.map(mapPaymentStatus) || [],
 			documents: documents?.map(mapDocuments) || [],
+			accountInvitation: accountInvitation || null,
 		};
 	}, [tenantData]);
 	const renderPropertyInfo = (
@@ -178,6 +198,7 @@ const TenantDetails = () => {
 					<Stack spacing={2}>
 						{properties.map((property, index) => (
 							<Card
+								key={index}
 								elevation={0}
 								sx={{ borderRadius: 2, backgroundColor: 'background.default' }}
 							>
@@ -203,7 +224,7 @@ const TenantDetails = () => {
 											<Typography variant='body2'>{property.name}</Typography>
 										</Stack>
 										<Typography variant='body1' sx={{ textAlign: 'left' }}>
-											Unit {property.unitNumber}
+											Unit: <strong>{property.unitNumber}</strong>
 										</Typography>
 									</Stack>
 								</CardContent>
@@ -309,10 +330,15 @@ const TenantDetails = () => {
 												size='small'
 											/>
 										),
-										icon: (
+										icon: payment.status === 'Paid' ? (
 											<KlubiqIcons.RoundedCheckIcon
 												fontSize='small'
-												color={payment.status === 'Paid' ? 'success' : 'error'}
+												color='success'
+											/>
+										) : (
+											<Cancel
+												fontSize='small'
+												color='error'
 											/>
 										),
 									},
@@ -335,6 +361,7 @@ const TenantDetails = () => {
 			</Card>
 		);
 	};
+
 	return (
 		<Stack gap={2} justifyContent={'space-between'}>
 			<DynamicBreadcrumb
@@ -352,14 +379,23 @@ const TenantDetails = () => {
 								image: tenantDetails.image,
 								id: '',
 								variant: 'square',
-								name: tenantDetails.name, // optional but helpful
+								name: tenantDetails.name,// optional but helpful
 							},
+							
 						],
+						avatarSize: 'medium',
 						companyName: tenantDetails.companyName,
 						name: tenantDetails.name,
 						email: tenantDetails.email,
 						phone: tenantDetails.phone,
 						status: tenantDetails.active ? 'Active' : 'Inactive',
+						headerActions: [
+							tenantDetails.accountInvitation && tenantDetails.accountInvitation.status === 'Pending' && (
+								<Button variant='klubiqMainButton' size='small' startIcon={<Refresh />} onClick={handleResendInvitation} disabled={isResendingInvitation}>
+									Resend Invitation
+								</Button>
+							),
+						],
 					}}
 					showTabs={false}
 					displayMode='container'
@@ -370,7 +406,7 @@ const TenantDetails = () => {
 							content: renderPropertyInfo(
 								tenantDetails.properties,
 								'Property Information',
-								<KlubiqIcons.HomeIcon fontSize='small' color='action' />,
+								<Home fontSize='small' color='action' />,
 							),
 						},
 						{

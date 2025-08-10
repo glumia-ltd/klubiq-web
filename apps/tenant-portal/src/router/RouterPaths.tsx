@@ -16,6 +16,7 @@ import Payments from '@/pages/Features/payments';
 import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';
 import Profile from '@/pages/Auth/profile';
+import ForgotPassword from '@/pages/Auth/ForgotPassword';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
 				<Route path='/' element={<Login />} />
 				<Route path='/login' element={<Login />} />
 				<Route path='/reset-password' element={<ResetPassword />} />
+				<Route path='/forgot-password' element={<ForgotPassword />} />
 			</Route>
 			<Route element={<PrivateRoute />}>
 				<Route element={<AppContainer />}>

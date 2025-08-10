@@ -31,7 +31,7 @@ export interface ActivityItem {
 }
 
 export interface ActivityCardProps {
-	title?: string;
+	title?: string | ReactNode;
 	subtitle?: string;
 	items: ActivityItem[];
 	variant?: ActivityCardVariant;
@@ -232,9 +232,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 					spacing={2}
 				>
 					<Box>
-						<Typography variant='h4' fontWeight={600} gutterBottom={!!subtitle}>
-							{title}
-						</Typography>
+						{typeof title === 'string' ? (
+							<Typography variant='h4' gutterBottom={!!subtitle}>
+								{title}
+							</Typography>
+						) : (
+							title
+						)}
 						{subtitle && (
 							<Typography variant='body2' color='text.secondary'>
 								{subtitle}
@@ -260,9 +264,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 				) : (
 					<Box>
 						{' '}
-						<Typography variant='body2' color='text.secondary'>
-							No {title.toLowerCase()} found
-						</Typography>
+						{typeof title === 'string' ? (
+							<Typography variant='body2' color='text.secondary'>
+								No {title.toLowerCase()} found
+							</Typography>
+						) : (
+							title
+						)}
 					</Box>
 				)}
 			</Stack>

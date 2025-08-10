@@ -1,5 +1,5 @@
 import { TableColumn } from '@klubiq/ui-components';
-import { PropertyDataType } from '../../shared/type';
+import { PropertyDataType, PropertyMainType, UnitType } from '../../shared/type';
 
 export interface PropertyUnitComponentProps {
 	currentProperty: PropertyDataType;
@@ -51,3 +51,14 @@ export interface LeaseTableData {
 		}>;
 	}>;
 }
+
+  
+  export type Area = {
+	value: number | string;
+	unit: string;
+  };
+  
+  export type UnitWithProperty = UnitType & {
+	property: PropertyMainType;
+  };
+  

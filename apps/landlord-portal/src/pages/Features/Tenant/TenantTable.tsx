@@ -1,6 +1,5 @@
-import { Chip, Typography,Stack } from '@mui/material';
+import { Chip, Typography, Stack } from '@mui/material';
 import { FC } from 'react';
-import { styles } from './styles';
 import { TenantType } from '../../../shared/type';
 import {
 	DynamicTable,
@@ -8,17 +7,19 @@ import {
 	DynamicAvatar,
 } from '@klubiq/ui-components';
 import { useTenantActions } from '../../../hooks/page-hooks/tenant-hooks';
+import { TenantList } from '../../../page-tytpes/tenants/tenant-details';
+import { UnitTypeColors } from '../../../page-tytpes/leases/list-page.type';
 
 type TenantTableProps = {
 	title: string;
-	allTenant: TenantType[];
+	allTenant: TenantList[];
 	onRowClick?: (tenant: TenantType) => void;
 };
 
 const statusColors: Record<string, 'success' | 'warning' | 'error'> = {
 	Paid: 'success',
 	Pending: 'warning',
-	Overdue: 'error',
+	Unpaid: 'error',
 };
 
 export const TenantTable: FC<TenantTableProps> = ({
@@ -44,11 +45,13 @@ export const TenantTable: FC<TenantTableProps> = ({
 				};
 				return (
 					<Stack direction='row' alignItems='center' spacing={2}>
-							<DynamicAvatar
-								items={[{ id: tenant?.id ?? getDisplayName(), name: getDisplayName() }]}
-								size='medium'
-								showName={false}
-							/>
+						<DynamicAvatar
+							items={[
+								{ id: tenant?.id ?? getDisplayName(), name: getDisplayName() },
+							]}
+							size='medium'
+							showName={false}
+						/>
 						<Typography
 							variant='body2'
 							whiteSpace='nowrap'
@@ -57,7 +60,7 @@ export const TenantTable: FC<TenantTableProps> = ({
 						>
 							{getDisplayName()}{' '}
 						</Typography>
-					</Stack>  
+					</Stack>
 				);
 			},
 		},
@@ -70,25 +73,50 @@ export const TenantTable: FC<TenantTableProps> = ({
 			key: 'mostRecentUnitName',
 			label: 'Unit',
 			align: 'left',
+			render: (tenant: any) =>
+				tenant.mostRecentLeaseId && (
+					<Stack direction='column' alignItems='flex-start' spacing={1}>
+						{tenant.isMultiUnitProperty && (
+							<Typography variant='body2'>{tenant.unit}</Typography>
+						)}
+						<Chip
+							label={tenant.isMultiUnitProperty ? 'Multi' : 'Single'}
+							size='small'
+							variant='outlined'
+							color={
+								UnitTypeColors[
+									tenant.isMultiUnitProperty ? 'Multi' : 'Single'
+								] as any
+							}
+						/>
+					</Stack>
+				),
 		},
 		{
-			key: 'mostRecentUnitAddress',
+			key: 'mostRecentPropertyAddress',
 			label: 'Address',
 			align: 'left',
+			render: (tenant) => {
+				if (!tenant.mostRecentPropertyAddress) {
+					return null;
+				}
+				return <Typography variant='subtitle2'>{tenant.mostRecentPropertyAddress}</Typography>;
+			},
 		},
 		{
 			key: 'mostRecentPaymentStatus',
-			label: 'Status',
+			label: 'Payment Status',
 			align: 'left',
 			render: (tenant) => {
-				const status = tenant?.mostRecentPaymentStatus?.status;
-				if (!status) return null;
+				if (!tenant.mostRecentLeaseId || !tenant.mostRecentPaymentStatus) {
+					return null;
+				}
 				return (
 					<Chip
-						label={tenant?.leaseDetails?.status ?? ''}
-						color={statusColors[status]}
+						label={tenant.mostRecentPaymentStatus || ''}
+						color={statusColors[tenant.mostRecentPaymentStatus]}
 						variant='outlined'
-						sx={styles.chip}
+						size='small'
 					/>
 				);
 			},

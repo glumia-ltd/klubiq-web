@@ -48,7 +48,7 @@ const SideBar = () => {
 	const DrawerHeader = styled('div')(() => ({
 		display: 'flex',
 		alignItems: 'center',
-		alignSelf: 'flex-start',
+		alignSelf: 'center',
 	}));
 
 	const ThemeSwitcher = styled('div')(() => ({
@@ -59,8 +59,8 @@ const SideBar = () => {
 	const DrawerChildren = styled('div')(() => ({
 		display: 'flex',
 		flexDirection: 'column',
-		width: '80%',
-		gap: '20px',
+		width: '100%',
+		gap: 2,
 		padding: theme.spacing(1, 2),
 		alignItems: 'center',
 	}));
@@ -105,7 +105,7 @@ const SideBar = () => {
 
 	const openDrawerStyles = {
 		'& .MuiDrawer-paper': {
-			width: '178px',
+			width: '200px',
 			transition: 'none',
 			overflowX: 'hidden',
 			willChange: 'transform', // Optimize performance
@@ -113,11 +113,14 @@ const SideBar = () => {
 			WebkitBackfaceVisibility: 'hidden',
 			transform: 'translateZ(0)', // Force GPU acceleration
 			WebkitTransform: 'translateZ(0)',
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
 		},
 	};
 	const closedDrawerStyles = {
 		'& .MuiDrawer-paper': {
-			width: '70px',
+			width: '55px',
 			transition: 'none',
 			overflowX: 'hidden',
 			willChange: 'transform', // Optimize performance
@@ -125,6 +128,9 @@ const SideBar = () => {
 			WebkitBackfaceVisibility: 'hidden',
 			transform: 'translateZ(0)', // Force GPU acceleration
 			WebkitTransform: 'translateZ(0)',
+			display: 'flex',
+			flexDirection: 'column',
+			alignItems: 'center',
 		},
 	};
 	const handleSignOut = async () => {
@@ -162,7 +168,7 @@ const SideBar = () => {
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
-						gap: '20px',
+						gap: 2,
 					}}
 				>
 					<DrawerHeader>
@@ -271,8 +277,8 @@ const SideBar = () => {
 								background: '#ffffff',
 								padding: sidebarOpen ? '8px 8px' : '0.9px',
 								height: sidebarOpen ? '60px' : '96px',
-								width: sidebarOpen ? 'auto' : '60px',
-								gap: '8px',
+								width: sidebarOpen ? 'auto' : '55px',
+								gap: 1,
 								alignItems: 'center',
 								justifyContent: 'space-around',
 							}}

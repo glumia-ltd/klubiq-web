@@ -12,6 +12,7 @@ import {
 	useMediaQuery,
 	Card,
 	Divider,
+	Link,
 } from '@mui/material';
 import { Close, MailOutline, Phone, Place } from '@mui/icons-material';
 import { DynamicAvatar } from '../DynamicAvatar/DynamicAvatar';
@@ -79,27 +80,33 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				switch (section.type) {
 					case 'infoCard':
 						return (
-							<InfoCard
-								key={section.id}
-								title={section.title}
-								items={section.items}
-								elevation={1}
-							/>
+							section.items.length > 0 && (
+								<InfoCard
+									key={section.id}
+									title={section.title}
+									items={section.items}
+									elevation={1}
+								/>
+							)
 						);
 					case 'documentList':
 						return (
-							<DocumentList
-								key={section.id}
-								title={section.title}
-								items={section.items}
-								elevation={1}
-							/>
+							section.items.length > 0 && (
+								<DocumentList
+									key={section.id}
+									title={section.title}
+									items={section.items}
+									elevation={1}
+								/>
+							)
 						);
 					case 'custom':
 						return (
-							<Card elevation={1} key={section.id}>
-								{section.content}
-							</Card>
+							section.content && (
+								<Card elevation={1} key={section.id}>
+									{section.content}
+								</Card>
+							)
 						);
 					default:
 						return null;
@@ -117,58 +124,58 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 			),
 		},
 	];
-  const getStatusStyle = (status: LeaseStatus | undefined) => {
-    switch (status) {
-      case 'Active':
-        return {
-          color: theme.palette.success.main,
-          border: `1px solid ${theme.palette.success.main}`,
-        };
-      case 'In Active':
-        return {
-          color: theme.palette.secondary.main,
-          border: `1px solid ${theme.palette.secondary.main}`,
-        };
-      case 'Expired':
-        return {
-          color: theme.palette.error.main,
-          border: `1px solid ${theme.palette.error.main}`,
-        };
-      case 'Terminated':
-        return {
-          color: theme.palette.error.main,
-          border: `1px solid ${theme.palette.error.main}`,
-        };
-      case 'Archived':
-        return {
-          color: theme.palette.warning.main,
-          border: `1px solid ${theme.palette.warning.main}`,
-        };
-      case 'Expiring Soon':   
-        return {
-          color: theme.palette.warning.main,
-          border: `1px solid ${theme.palette.warning.main}`,
-        };
-      default:
-        return {
-          color: theme.palette.primary.main,
-          border: `1px solid ${theme.palette.primary.main}`,
-        };
-    }
-  }
+	const getStatusStyle = (status: LeaseStatus | undefined) => {
+		switch (status) {
+			case 'Active':
+				return {
+					color: theme.palette.success.main,
+					border: `1px solid ${theme.palette.success.main}`,
+				};
+			case 'In Active':
+				return {
+					color: theme.palette.secondary.main,
+					border: `1px solid ${theme.palette.secondary.main}`,
+				};
+			case 'Expired':
+				return {
+					color: theme.palette.error.main,
+					border: `1px solid ${theme.palette.error.main}`,
+				};
+			case 'Terminated':
+				return {
+					color: theme.palette.error.main,
+					border: `1px solid ${theme.palette.error.main}`,
+				};
+			case 'Archived':
+				return {
+					color: theme.palette.warning.main,
+					border: `1px solid ${theme.palette.warning.main}`,
+				};
+			case 'Expiring Soon':
+				return {
+					color: theme.palette.warning.main,
+					border: `1px solid ${theme.palette.warning.main}`,
+				};
+			default:
+				return {
+					color: theme.palette.primary.main,
+					border: `1px solid ${theme.palette.primary.main}`,
+				};
+		}
+	};
 
 	const getStatusColor = (status: LeaseStatus | undefined) => {
 		switch (status) {
 			case 'Active':
 				return 'success';
 			case 'In Active':
-				return 'secondary';
+				return 'info';
 			case 'Expired':
 				return 'error';
 			case 'Terminated':
 				return 'error';
 			case 'Archived':
-				return 'warning';
+				return 'default';
 			case 'Expiring Soon':
 				return 'warning';
 			default:
@@ -201,9 +208,14 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				<DynamicAvatar
 					items={headerData.avatar}
 					showName={headerData.showAvatarNames}
-					size={headerData.avatarSize || 'large'}
+					size={headerData.avatarSize || 'medium'}
 				/>
-				<Stack flex={1} spacing={0.5}>
+				<Stack
+					direction='column'
+					justifyContent='space-between'
+					flex={1}
+					spacing={0.5}
+				>
 					{headerData.name && (
 						<Typography
 							variant='h6'
@@ -219,9 +231,9 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 					{headerData.email && (
 						<Stack direction='row' alignItems='center' spacing={1}>
 							<MailOutline fontSize='small' />
-							<Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
+							<Link href={`mailto:${headerData.email}`} variant='subtitle2' sx={{ wordBreak: 'break-word' }}>
 								{headerData.email}
-							</Typography>
+							</Link>
 						</Stack>
 					)}
 					{headerData.phone && (
@@ -231,15 +243,31 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 						</Stack>
 					)}
 				</Stack>
-				<Chip
-					label={headerData.status}
-					color={headerData.status === 'Active' ? 'primary' : 'default'}
-					size='small'
-					sx={{
-						backgroundColor: '#e2eaf2',
-						color: '#005CFF',
-					}}
-				/>
+				<Stack
+					direction={'column'}
+					spacing={1}
+					alignItems={'flex-end'}
+					justifyContent={'space-between'}
+				>
+					<Chip
+						label={headerData.status}
+						color={getStatusColor(
+							headerData.status,
+						)}
+						size='small'
+						variant='outlined'
+						sx={{
+							backgroundColor: 'transparent',
+							...getStatusStyle(headerData.status),
+						}}
+					/>
+					{headerData.headerActions && headerData.headerActions.length > 0 && (
+						<Stack direction='row' spacing={1}>
+							{headerData.headerActions}
+						</Stack>
+					)}
+				</Stack>
+
 				{displayMode === 'modal' && onClose && (
 					<IconButton
 						onClick={onClose}
@@ -260,15 +288,25 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				justifyContent='space-between'
 				alignItems={isMobile ? 'flex-start' : 'center'}
 			>
-				<Stack flex={1} direction='column' spacing={1} alignItems={'flex-start'}>
+				<Stack
+					flex={1}
+					direction='column'
+					spacing={1}
+					alignItems={'flex-start'}
+					justifyContent={isMobile ? 'flex-start' : 'space-between'}
+				>
 					<Chip
 						label={headerData.leaseDetailsHeaderData?.propertyType}
-						size='medium'
+						size='small'
 					/>
 					{headerData.leaseDetailsHeaderData && (
 						<Stack
 							direction={isMobile ? 'column' : 'row'}
-							divider={isMobile ? undefined : <Divider orientation='vertical' flexItem />}
+							divider={
+								isMobile ? undefined : (
+									<Divider orientation='vertical' flexItem />
+								)
+							}
 							spacing={1}
 							alignItems={isMobile ? 'flex-start' : 'center'}
 						>
@@ -289,22 +327,28 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 						</Stack>
 					)}
 				</Stack>
-				<Stack direction= {isMobile ? 'row' : 'column'} justifyContent={'space-between'} spacing={isMobile ? 2 : 1} alignItems={isMobile ? 'center' : 'flex-end'}>
+				<Stack
+					direction={isMobile ? 'row' : 'column'}
+					justifyContent={'space-between'}
+					spacing={isMobile ? 2 : 1}
+					alignItems={isMobile ? 'center' : 'flex-end'}
+				>
 					<Chip
 						label={headerData.leaseDetailsHeaderData?.leaseStatus}
 						color={getStatusColor(
 							headerData.leaseDetailsHeaderData?.leaseStatus,
 						)}
-						size='medium'
+						size='small'
+						variant='outlined'
 						sx={{
 							backgroundColor: 'transparent',
-              ...getStatusStyle(headerData.leaseDetailsHeaderData?.leaseStatus),
+							...getStatusStyle(headerData.leaseDetailsHeaderData?.leaseStatus),
 						}}
 					/>
 					<DynamicAvatar
 						items={headerData.avatar}
 						showName={headerData.showAvatarNames}
-						size={headerData.avatarSize || 'large'}
+						size={headerData.avatarSize || 'medium'}
 					/>
 				</Stack>
 
@@ -355,7 +399,7 @@ export const PageDetail: React.FC<PageDetailProps> = ({
 				<Stack spacing={2}>
 					<Card elevation={1}>
 						<Box sx={{ p: 2 }}>
-              {renderHeaderByVariant(variant)}
+							{renderHeaderByVariant(variant)}
 							{/* <Stack direction='row' spacing={1} alignItems='flex-start'>
 								<DynamicAvatar
 									items={headerData.avatar}

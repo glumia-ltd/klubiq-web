@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { tenantEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
+import { TenantDetailsType, TenantList } from '../../page-tytpes/tenants/tenant-details';
 // import { screenMessages } from '../../helpers/screen-messages';
 // import { handleApiResponse } from '../../helpers/apiResponseHandler';
 export const tenantApiSlice = createApi({
@@ -35,7 +36,7 @@ export const tenantApiSlice = createApi({
 			}),
 			providesTags: [API_TAGS.TENANT],
 		}),
-		getSingleTenantById: builder.query<any, { id: string | number }>({
+		getSingleTenantById: builder.query<TenantDetailsType, { id: string | number }>({
 			query: (params) => ({
 				url: tenantEndpoints.getSingleTenant(String(params?.id)),
 				method: 'GET',
@@ -89,7 +90,7 @@ export const tenantApiSlice = createApi({
 });
 
 interface GetTenantsResponse {
-	pageData: any;
+	pageData: TenantList[];
 	meta: any;
 }
 

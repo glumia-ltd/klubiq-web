@@ -1,7 +1,6 @@
 'use client';
 /// <reference path="theme.d.ts" />
 // Export all components
-export * from './components/AlertBanner'
 export * from './components/DataPagination'
 export * from './components/ErrorComponent'
 export * from './components/FeedbackContent'

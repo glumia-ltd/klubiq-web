@@ -1,15 +1,11 @@
 import Snackbar from '@mui/material/Snackbar';
-import { Alert } from '@mui/material';
+import { Alert, useTheme, useMediaQuery } from '@mui/material';
 import { closeSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 
 type Props = {
 	message: string;
 	autoHideDuration: number;
-	anchorOrigin: {
-		vertical: 'top' | 'bottom';
-		horizontal: 'center' | 'left' | 'right';
-	};
 	severity: 'success' | 'info' | 'warning' | 'error';
 	open: boolean | undefined;
 };
@@ -17,12 +13,12 @@ type Props = {
 function ControlledSnackbar({
 	message,
 	autoHideDuration,
-	anchorOrigin,
 	severity,
 	open,
 }: Props): JSX.Element | null {
 	const dispatch = useDispatch();
-
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	if (!message) {
 		return null;
 	}
@@ -32,9 +28,13 @@ function ControlledSnackbar({
 			open={open}
 			autoHideDuration={autoHideDuration}
 			onClose={() => dispatch(closeSnackbar())}
-			anchorOrigin={anchorOrigin}
+			anchorOrigin={{
+				vertical: 'top',
+				horizontal: isMobile ? 'center' : 'right',
+			}}
 			sx={{
 				width: '100%',
+				maxWidth: isMobile ? '100%' : '600px',
 				fontFamily: 'Maven Pro, sans-serif',
 				fontSize: '16px',
 			}}

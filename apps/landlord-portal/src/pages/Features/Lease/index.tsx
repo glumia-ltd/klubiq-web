@@ -1,4 +1,11 @@
-import { Stack, Button, Chip, Typography, useTheme, useMediaQuery } from '@mui/material';
+import {
+	Stack,
+	Button,
+	Chip,
+	Typography,
+	useTheme,
+	useMediaQuery,
+} from '@mui/material';
 // import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
@@ -9,7 +16,6 @@ import {
 } from '../../../store/LeaseStore/leaseApiSlice';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
-import { useDynamicBreadcrumbs } from '../../../hooks/useDynamicBreadcrumbs';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { LeaseType } from '../../../shared/type';
 import {
@@ -17,7 +23,7 @@ import {
 	TableColumn,
 	DynamicAvatar,
 } from '@klubiq/ui-components';
-import { statusColors } from '../../../page-tytpes/leases/list-page.type';
+import { statusColors, UnitTypeColors } from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
 // 	import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
@@ -31,12 +37,11 @@ const Lease = () => {
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const [currentPage, setCurrentPage] = useState(1);
-	const { updateBreadcrumb } = useDynamicBreadcrumbs();
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
 		sortBy: 'createdDate',
-		order: 'ASC',
+		order: 'DESC',
 	});
 	const filterObjectLength = Object.keys(filter).length;
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
@@ -76,6 +81,7 @@ const Lease = () => {
 						label={rowData.status}
 						color={statusColors[rowData.status] as any}
 						variant='outlined'
+						size='small'
 					/>
 				),
 			},
@@ -115,7 +121,17 @@ const Lease = () => {
 				label: 'Unit',
 				align: 'left',
 				render: (rowData: any) => (
-					<Typography variant='body2'>{rowData.unit}</Typography>
+					<Stack direction='column' alignItems='flex-start' spacing={1}>
+						{rowData.isMultiUnitProperty && (
+							<Typography variant='body2'>{rowData.unit}</Typography>
+						)}
+						<Chip
+							label={rowData.isMultiUnitProperty ? 'Multi' : 'Single'}
+							size='small'
+							variant='outlined'
+							color={UnitTypeColors[rowData.isMultiUnitProperty ? 'Multi' : 'Single'] as any}
+						/>
+					</Stack>
 				),
 			},
 			{
@@ -145,6 +161,8 @@ const Lease = () => {
 				endDate: dayjs(lease.endDate).format('ll'),
 				id: lease.id,
 				unitId: lease.unitId,
+				isMultiUnitProperty:
+					lease.property.unitCount > 1 || lease.property.isMultiUnit,
 			})) ?? [];
 		return { tableColumns, rows };
 	};
@@ -156,7 +174,6 @@ const Lease = () => {
 
 	useEffect(() => {
 		getCurrentPage(1);
-		updateBreadcrumb({});
 	}, [filter, getCurrentPage]);
 
 	const handleRowClick = (id: number) => {
@@ -183,9 +200,7 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
-				<Stack
-					direction={'row'}
-				>
+				<Stack direction={'row'}>
 					<Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
@@ -212,15 +227,17 @@ const Lease = () => {
 				</Stack>
 			</Stack>
 
-			{allLease && allLease.length > 0 && <Stack mt={4}>
-				<DataPagination
-					getCurrentPage={getCurrentPage}
-					getItemsPerPageCount={getItemsPerPageCount}
-					pageCount={pageCount}
-					currentPage={currentPage}
-					itemsPerPageOptions={ITEMSCOUNTOPTIONS}
-				/>
-			</Stack>}
+			{allLease && allLease.length > 0 && (
+				<Stack mt={4}>
+					<DataPagination
+						getCurrentPage={getCurrentPage}
+						getItemsPerPageCount={getItemsPerPageCount}
+						pageCount={pageCount}
+						currentPage={currentPage}
+						itemsPerPageOptions={ITEMSCOUNTOPTIONS}
+					/>
+				</Stack>
+			)}
 		</>
 	);
 };

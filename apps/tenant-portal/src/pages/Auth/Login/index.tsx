@@ -62,11 +62,8 @@ const Login = () => {
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
 		} catch (error: any) {
-			openSnackbar({
-				message: error.response.data.message,
-				severity: 'error',
-				isOpen: true,
-			});
+			const errorMessage = error.data.message;
+			throw new Error(errorMessage);
 		}
 	};
 
@@ -122,7 +119,7 @@ const Login = () => {
 				component: (
 					<Typography
 						textAlign='left'
-						onClick={() => navigate('/reset-password')}
+						onClick={() => navigate('/forgot-password')}
 					>
 						<BoldTextLink>Forgot password</BoldTextLink>
 					</Typography>
@@ -138,6 +135,9 @@ const Login = () => {
 		enableErrorAlert: true,
 		errorAlertTitle: 'Invalid credentials',
 		errorAlertMessage: 'Please check your email and password and try again.',
+		// isTurnstileCaptchaRequired: true,
+		// captchaAction: 'tenant-login',
+		// captcheSiteKey: import.meta.env.VITE_TURNSTILE_SITEKEY,
 	};
 
 	return (
