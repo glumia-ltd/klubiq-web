@@ -4,7 +4,6 @@ import { propertiesEndpoints } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
 import { API_TAGS } from '../types';
 
-
 export const propertyApiSlice = createApi({
 	reducerPath: 'propertyApi',
 	baseQuery: customApiFunction,
@@ -182,7 +181,7 @@ export const propertyApiSlice = createApi({
 				method: 'DELETE',
 				body: unitIds,
 			}),
-			
+
 			invalidatesTags: (_result, _error, { propertyUuid }) => [
 				{ type: API_TAGS.PROPERTY, uuid: propertyUuid },
 				API_TAGS.PROPERTY,
