@@ -5,11 +5,14 @@ import {
 	Typography,
 	useTheme,
 	useMediaQuery,
+	Paper,
+	IconButton,
+	InputBase,
 } from '@mui/material';
 // import { styles } from './style';
 // import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
 	useGetLeaseMetaDataQuery,
 	useGetLeasesQuery,
@@ -18,6 +21,8 @@ import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { LeaseType } from '../../../shared/type';
+import { useDebounce } from '../../../hooks/useDebounce';
+import { styles } from "./style"
 import {
 	DynamicTable,
 	TableColumn,
@@ -29,7 +34,7 @@ import dayjs from 'dayjs';
 // 	import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 import { screenMessages } from '../../../helpers/screen-messages';
 // import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
-
+import SearchIcon from '@mui/icons-material/Search';
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
@@ -43,6 +48,7 @@ const Lease = () => {
 		sortBy: 'createdDate',
 		order: 'DESC',
 	});
+	const [searchText, setSearchText] = useState('');
 	const filterObjectLength = Object.keys(filter).length;
 	const { data: leaseMetaData } = useGetLeaseMetaDataQuery();
 	const { data: leaseData, isLoading: isLeaseDataLoading } = useGetLeasesQuery({
@@ -55,7 +61,24 @@ const Lease = () => {
 	const pageCount = leaseData?.meta?.pageCount;
 
 	const navigate = useNavigate();
+	const debouncedLeaseSearch = useDebounce(() => {
+		setDefaultParams((prev) => ({ ...prev, search: searchText }));
+	}, 500);
 
+	const handleLeaseSearch = (e: any) => {
+		setSearchText(e.target.value);
+
+		debouncedLeaseSearch();
+	};
+	const inputRef = useRef<HTMLElement>(null);
+	useEffect(() => {
+		if (inputRef.current) {
+			const inputElement: HTMLInputElement | null =
+				inputRef.current.querySelector('.MuiInputBase-input');
+
+			inputElement && inputElement.focus();
+		}
+	}, []);
 	const getCurrentPage = useCallback((value: any) => {
 		setCurrentPage(value);
 
@@ -200,6 +223,7 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
+
 				<Stack direction={'row'}>
 					<Filter
 						filterList={filterOptions}
@@ -208,6 +232,21 @@ const Lease = () => {
 						}}
 						disable={filterObjectLength ? false : !allLease}
 					/>
+				</Stack>
+				<Stack direction={'column'}>
+					<Paper component='form' sx={styles.inputStyle}  >
+						<IconButton aria-label='search'>
+							<SearchIcon />
+						</IconButton>
+						<InputBase
+							ref={inputRef}
+							sx={{ ml: 1, flex: 1 }}
+							placeholder='Search Properties'
+							inputProps={{ 'aria-label': 'search properties' }}
+							value={searchText}
+							onChange={handleLeaseSearch}
+						/>
+					</Paper>
 				</Stack>
 				<Stack sx={{ width: '100%' }}>
 					{isLeaseDataLoading ? (
