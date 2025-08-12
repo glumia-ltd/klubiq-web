@@ -20,6 +20,7 @@ import logo from '@/assets/images/icons.svg';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { DynamicAvatar } from '@klubiq/ui-components';
+import { useLocation } from 'react-router-dom';
 
 const DRAWER_WIDTH = 235;
 const COLLAPSED_WIDTH = 64;
@@ -33,12 +34,34 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	customBottomContent,
 }) => {
 	const theme = useTheme();
+	const location = useLocation();
 	const [isOpen, setIsOpen] = useState(true);
+
+	// Determine selected index based on current route
+	const getSelectedIndex = () => {
+		const currentPath = location.pathname;
+		const matchingIndex = navLinks.findIndex((link) => {
+			// Handle exact matches and nested routes
+			if (link.route === currentPath) return true;
+			// Handle cases where current path starts with the nav link route
+			// (e.g., /payments/confirm should highlight /payments)
+			if (link.route !== '/' && currentPath.startsWith(link.route)) return true;
+			return false;
+		});
+		return matchingIndex >= 0 ? matchingIndex : 0;
+	};
+
 	const [selectedIndex, setSelectedIndex] = useState(() => {
-		// Get the initial selected index from localStorage or default to 0
-		const savedIndex = localStorage.getItem('selectedNavIndex');
-		return savedIndex ? parseInt(savedIndex) : 0;
+		// Get the initial selected index from current route
+		return getSelectedIndex();
 	});
+
+	// Update selected index when route changes
+	useEffect(() => {
+		const newSelectedIndex = getSelectedIndex();
+		setSelectedIndex(newSelectedIndex);
+		localStorage.setItem('selectedNavIndex', newSelectedIndex.toString());
+	}, [location.pathname, navLinks]);
 
 	// Handle mouse enter - open the sidebar
 	const handleMouseEnter = () => {
