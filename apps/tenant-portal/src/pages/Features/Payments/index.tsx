@@ -29,9 +29,8 @@ const PaymentsPage = () => {
 	} = useSelector(getAuthState);
 
 	const navigate = useNavigate();
-	const isTablet = useMediaQuery('(max-width:1028px)');
-	const isMobile = useMediaQuery('(max-width:768px)');
 	const isVerySmall = useMediaQuery('(max-width:356px)');
+	const isSmall = useMediaQuery('(max-width:540px)');
 
 	const [initializePayment] = useInitializePaymentMutation();
 
@@ -45,11 +44,14 @@ const PaymentsPage = () => {
 
 	const renderRightContent = () => {
 		return (
-			<Stack direction='column' alignItems='end'>
+			<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
 				<Typography variant='h4' sx={{ fontWeight: 'normal' }}>
 					{getLocaleFormat(paymentsData?.amount || 0, 'currency', 2)}
 				</Typography>
-				<Typography variant='subtitle2' sx={{ whiteSpace: 'nowrap' }}>
+				<Typography
+					variant='subtitle2'
+					sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
+				>
 					{formatPaymentStatusText(
 						paymentsData?.daysToDue || 0,
 						paymentsData?.status || '',
