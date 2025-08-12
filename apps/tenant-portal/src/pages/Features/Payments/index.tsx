@@ -1,4 +1,11 @@
-import { Box, Card, Stack, Typography, Button } from '@mui/material';
+import {
+	Box,
+	Card,
+	Stack,
+	Typography,
+	Button,
+	useMediaQuery,
+} from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { PageHeader } from '@klubiq/ui-components';
 import {
@@ -22,6 +29,9 @@ const PaymentsPage = () => {
 	} = useSelector(getAuthState);
 
 	const navigate = useNavigate();
+	const isTablet = useMediaQuery('(max-width:1028px)');
+	const isMobile = useMediaQuery('(max-width:768px)');
+	const isVerySmall = useMediaQuery('(max-width:356px)');
 
 	const [initializePayment] = useInitializePaymentMutation();
 
@@ -70,15 +80,35 @@ const PaymentsPage = () => {
 				direction='row'
 				justifyContent='space-between'
 				alignItems='center'
-				sx={{ mb: 1, mt: 2 }}
+				sx={{
+					mb: 1,
+					mt: 2,
+					flexWrap: isVerySmall ? 'wrap' : 'nowrap',
+					gap: isVerySmall ? 2 : 0,
+				}}
 			>
-				<Typography variant='h5'>Rent Payments</Typography>
+				<Typography
+					variant='h5'
+					sx={{
+						flexShrink: 0,
+						minWidth: isVerySmall ? '100%' : 'auto',
+					}}
+				>
+					Rent Payments
+				</Typography>
 				<Button
 					onClick={handlePaymentButtonClick}
 					variant='contained'
 					color='primary'
 					size='large'
-					sx={{ borderRadius: 2, minWidth: 120, fontWeight: 600 }}
+					sx={{
+						borderRadius: 2,
+						minWidth: 120,
+						fontWeight: 600,
+						flexShrink: 0,
+						width: 'auto',
+						alignSelf: isVerySmall ? 'flex-start' : 'center',
+					}}
 				>
 					<CreditCardIcon sx={{ mr: 1 }} fontSize='small' /> Pay Now
 				</Button>
@@ -111,7 +141,14 @@ const PaymentsPage = () => {
 
 			{/* Payment Methods */}
 			{paymentMethods?.length > 0 && (
-				<Card sx={{ mb: 4, p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
+				<Card
+					sx={{
+						mb: 4,
+						p: { xs: 2, sm: 3 },
+						borderRadius: 3,
+						overflow: 'hidden',
+					}}
+				>
 					<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
 						Payment Methods
 					</Typography>

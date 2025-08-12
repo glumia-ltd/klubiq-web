@@ -31,13 +31,15 @@ const statusOptions = [
 ];
 
 type SortOrder = 'asc' | 'desc';
-// DRY: Extracted styles
-const filterInputWrapperSx = (isMobile: boolean) => ({
-	minWidth: isMobile ? '100%' : 140,
-	maxWidth: isMobile ? '100%' : 180,
+
+// DRY: Extracted styles with improved responsive breakpoints
+const filterInputWrapperSx = (isTablet: boolean, isMobile: boolean) => ({
+	minWidth: isMobile ? '100%' : isTablet ? 120 : 140,
+	maxWidth: isMobile ? '100%' : isTablet ? 150 : 180,
 	position: 'relative',
 	width: isMobile ? '100%' : 'auto',
 });
+
 const filterInputBoxSx = (isMobile: boolean) => ({
 	position: 'absolute',
 	inset: 0,
@@ -51,12 +53,13 @@ const filterInputBoxSx = (isMobile: boolean) => ({
 		width: isMobile ? '100%' : 'auto',
 	},
 });
-const sortButtonStyles = (isMobile: boolean) => ({
+
+const sortButtonStyles = (isTablet: boolean, isMobile: boolean) => ({
 	color: '#1A2746',
 	fontWeight: 700,
 	borderRadius: 8,
-	px: 1.5,
-	fontSize: 15,
+	px: isTablet ? 1 : 1.5,
+	fontSize: isTablet ? 14 : 15,
 	minWidth: 0,
 	height: 36,
 	boxShadow: 'none',
@@ -70,7 +73,11 @@ const PaymentHistorySection: React.FC = () => {
 	const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [itemsPerPage, setItemsPerPage] = useState(10);
-	const isMobile = useMediaQuery('(max-width:600px)');
+
+	const isTablet = useMediaQuery('(max-width:1028px)');
+	const isMobile = useMediaQuery('(max-width:768px)');
+	const isSmallTablet = useMediaQuery('(max-width:900px)');
+
 	const theme = useTheme();
 
 	const {
@@ -133,14 +140,14 @@ const PaymentHistorySection: React.FC = () => {
 		{
 			id: 'datePaid',
 			label: 'DATE PAID',
-			minWidth: 120,
+			minWidth: isTablet ? 100 : 120,
 			sortable: true,
 			format: (value) => <Typography fontWeight={500}>{value}</Typography>,
 		},
 		{
 			id: 'amount',
 			label: 'AMOUNT',
-			minWidth: 100,
+			minWidth: isTablet ? 80 : 100,
 			align: 'left',
 			sortable: true,
 			format: (value) => (
@@ -152,25 +159,25 @@ const PaymentHistorySection: React.FC = () => {
 		{
 			id: 'paymentMethod',
 			label: 'PAYMENT METHOD',
-			minWidth: 140,
+			minWidth: isTablet ? 120 : 140,
 			format: (value) => <Typography fontWeight={400}>{value}</Typography>,
 		},
 		{
 			id: 'property',
 			label: 'PROPERTY',
-			minWidth: 180,
+			minWidth: isTablet ? 150 : 180,
 			format: (value) => <Typography fontWeight={400}>{value}</Typography>,
 		},
 		{
 			id: 'status',
 			label: 'STATUS',
-			minWidth: 120,
+			minWidth: isTablet ? 100 : 120,
 			format: (value) => value,
 		},
 		{
 			id: 'receipt',
 			label: 'RECEIPT',
-			minWidth: 100,
+			minWidth: isTablet ? 80 : 100,
 			format: (value) => {
 				if (value?.includes('pending')) {
 					return;
@@ -181,7 +188,7 @@ const PaymentHistorySection: React.FC = () => {
 							color: '#1A2746',
 							fontWeight: 700,
 							textTransform: 'none',
-							fontSize: 18,
+							fontSize: isTablet ? 16 : 18,
 						}}
 						variant='text'
 					>
@@ -226,12 +233,12 @@ const PaymentHistorySection: React.FC = () => {
 				{/* Filters + Sort right */}
 				<Stack
 					direction={isMobile ? 'column' : 'row'}
-					spacing={isMobile ? 2 : 1.5}
+					spacing={isMobile ? 2 : isTablet ? 1 : 1.5}
 					sx={{ width: isMobile ? '100%' : 'auto' }}
 					alignItems={isMobile ? 'stretch' : 'center'}
 				>
 					{/* Filters */}
-					<Box sx={filterInputWrapperSx(isMobile)}>
+					<Box sx={filterInputWrapperSx(isTablet, isMobile)}>
 						<Filter
 							hiddenLabel
 							options={propertyOptions}
@@ -244,9 +251,9 @@ const PaymentHistorySection: React.FC = () => {
 					</Box>
 					<Box
 						sx={{
-							...filterInputWrapperSx(isMobile),
-							minWidth: isMobile ? '100%' : 110,
-							maxWidth: isMobile ? '100%' : 150,
+							...filterInputWrapperSx(isTablet, isMobile),
+							minWidth: isMobile ? '100%' : isTablet ? 100 : 110,
+							maxWidth: isMobile ? '100%' : isTablet ? 130 : 150,
 						}}
 					>
 						<Filter
@@ -262,7 +269,7 @@ const PaymentHistorySection: React.FC = () => {
 					{/* Sort Controls - just the two buttons side by side */}
 					<Stack
 						direction='row'
-						spacing={isMobile ? 1 : 0.5}
+						spacing={isMobile ? 1 : isTablet ? 0.5 : 0.5}
 						alignItems='center'
 						sx={{ width: isMobile ? '100%' : 'auto' }}
 						flexWrap='nowrap'
@@ -280,10 +287,10 @@ const PaymentHistorySection: React.FC = () => {
 										? theme.palette.background.default
 										: 'transparent',
 
-								...sortButtonStyles(isMobile),
+								...sortButtonStyles(isTablet, isMobile),
 							}}
 						>
-							Date Paid{' '}
+							{isSmallTablet ? 'Date' : 'Date Paid'}{' '}
 							{sortBy === 'datePaid' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
 						</Button>
 						<Button
@@ -299,7 +306,7 @@ const PaymentHistorySection: React.FC = () => {
 										? theme.palette.background.default
 										: 'transparent',
 
-								...sortButtonStyles(isMobile),
+								...sortButtonStyles(isTablet, isMobile),
 							}}
 						>
 							Amount{' '}
@@ -310,7 +317,12 @@ const PaymentHistorySection: React.FC = () => {
 			</Stack>
 			{/* Responsive Table Wrapper */}
 			<Box sx={{ width: '100%', overflowX: 'auto' }}>
-				<Box sx={{ minWidth: isMobile ? 700 : '100%' }}>
+				<Box
+					sx={{
+						minWidth: isMobile ? 700 : isTablet ? 800 : '100%',
+						maxWidth: '100%',
+					}}
+				>
 					<Table
 						columns={columns}
 						data={paginatedData}
@@ -334,14 +346,21 @@ const PaymentHistorySection: React.FC = () => {
 					sx={{
 						mt: 3,
 						display: 'flex',
+						flexDirection: isMobile ? 'column' : 'row',
 						justifyContent: 'space-between',
-						alignItems: 'center',
+						alignItems: isMobile ? 'stretch' : 'center',
+						gap: isMobile ? 2 : 0,
 					}}
 				>
 					<Typography variant='body2' color='text.secondary'>
 						Showing {startItem}-{endItem} of {filteredData.length} items
 					</Typography>
-					<Stack direction='row' spacing={1} alignItems='center'>
+					<Stack
+						direction='row'
+						spacing={1}
+						alignItems='center'
+						justifyContent={isMobile ? 'space-between' : 'flex-end'}
+					>
 						<Typography variant='body2' color='text.secondary'>
 							Items per page:
 						</Typography>
@@ -367,6 +386,7 @@ const PaymentHistorySection: React.FC = () => {
 						color='primary'
 						showFirstButton
 						showLastButton
+						size={isTablet ? 'small' : 'medium'}
 					/>
 				</Box>
 			)}
