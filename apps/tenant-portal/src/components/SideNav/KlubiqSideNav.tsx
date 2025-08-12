@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Drawer,
 	ListItemIcon,
@@ -20,7 +20,9 @@ import logo from '@/assets/images/icons.svg';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { DynamicAvatar } from '@klubiq/ui-components';
+
 const DRAWER_WIDTH = 235;
+const COLLAPSED_WIDTH = 64;
 
 export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	navLinks,
@@ -31,16 +33,29 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	customBottomContent,
 }) => {
 	const theme = useTheme();
+	const [isOpen, setIsOpen] = useState(true);
 	const [selectedIndex, setSelectedIndex] = useState(() => {
 		// Get the initial selected index from localStorage or default to 0
 		const savedIndex = localStorage.getItem('selectedNavIndex');
 		return savedIndex ? parseInt(savedIndex) : 0;
 	});
+
+	// Handle mouse enter - open the sidebar
+	const handleMouseEnter = () => {
+		setIsOpen(true);
+	};
+
+	// Handle mouse leave - close the sidebar
+	const handleMouseLeave = () => {
+		setIsOpen(false);
+	};
+
 	const handleNavClick = (index: number, route: string) => {
 		setSelectedIndex(index);
 		localStorage.setItem('selectedNavIndex', index.toString());
 		onNavClick(route);
 	};
+
 	const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		console.log('search');
@@ -49,72 +64,115 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	// Drawer content
 	const drawerContent = (
 		<Box
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
 			sx={{
 				height: '100%',
 				position: 'relative',
-				width: DRAWER_WIDTH,
-				px: 2,
+				width: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+				px: isOpen ? 2 : 1,
 				py: 4,
 				boxSizing: 'border-box',
 				display: 'flex',
 				flexDirection: 'column',
+				transition: theme.transitions.create('width', {
+					easing: theme.transitions.easing.sharp,
+					duration: theme.transitions.duration.enteringScreen,
+				}),
 			}}
 		>
 			{/* Main Content: Logo, Search, Nav Links */}
 			<Stack spacing={3} sx={{ flexGrow: 1 }}>
 				{/* Logo & Title */}
-				<Stack direction="row" alignItems="center" spacing={1}>
-					<img src={logo} alt="KLUBIQ Logo" width={32} height={32} />
-					<Typography
-						variant="h4"
-						sx={{ letterSpacing: 1, color: 'primary.contrastText', fontWeight: 700 }}
-					>
-						KLUBIQ
-					</Typography>
-				</Stack>
-				{/* Search */}
-				<Paper
-					component="form"
-					onSubmit={handleSearchSubmit}
+				<Stack
+					direction='row'
+					alignItems='center'
+					spacing={1}
 					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						bgcolor: 'primary.main',
-						borderRadius: 2,
-						px: 1,
-						height: 36,
-						border: '1px solid #fff',
-						width: '100%',
+						justifyContent: isOpen ? 'flex-start' : 'center',
+						px: isOpen ? 0 : 1,
 					}}
 				>
-					<IconButton sx={{ color: 'primary.contrastText' }} aria-label="search">
-						<SearchIcon />
-					</IconButton>
-					<InputBase
-						sx={{ ml: 1, flex: 1, color: 'primary.contrastText' }}
-						placeholder="Search Klubiq"
-						inputProps={{ 'aria-label': 'search klubiq' }}
-					/>
-				</Paper>
+					<img src={logo} alt='KLUBIQ Logo' width={32} height={32} />
+					{isOpen && (
+						<Typography
+							variant='h4'
+							sx={{
+								letterSpacing: 1,
+								color: 'primary.contrastText',
+								fontWeight: 700,
+								opacity: isOpen ? 1 : 0,
+								transition: theme.transitions.create('opacity', {
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								}),
+							}}
+						>
+							KLUBIQ
+						</Typography>
+					)}
+				</Stack>
+
+				{/* Search - only show when open */}
+				{isOpen && (
+					<Paper
+						component='form'
+						onSubmit={handleSearchSubmit}
+						sx={{
+							display: 'flex',
+							alignItems: 'center',
+							bgcolor: 'primary.main',
+							borderRadius: 2,
+							px: 1,
+							height: 36,
+							border: '1px solid #fff',
+							width: '100%',
+							opacity: isOpen ? 1 : 0,
+							transition: theme.transitions.create('opacity', {
+								easing: theme.transitions.easing.sharp,
+								duration: theme.transitions.duration.enteringScreen,
+							}),
+						}}
+					>
+						<IconButton
+							sx={{ color: 'primary.contrastText' }}
+							aria-label='search'
+						>
+							<SearchIcon />
+						</IconButton>
+						<InputBase
+							sx={{ ml: 1, flex: 1, color: 'primary.contrastText' }}
+							placeholder='Search Klubiq'
+							inputProps={{ 'aria-label': 'search klubiq' }}
+						/>
+					</Paper>
+				)}
+
 				{/* Nav Links */}
-				<Stack spacing={1} alignItems="flex-start">
+				<Stack spacing={1} alignItems='flex-start'>
 					{navLinks.map((link, index) =>
 						link.disabled ? null : (
 							<ListItemButton
 								key={link.label}
 								onClick={() => handleNavClick(index, link.route)}
 								sx={{
-									bgcolor: index === selectedIndex ? 'primary.contrastText' : 'transparent',
-									color: index === selectedIndex ? 'primary.main' : 'primary.contrastText',
+									bgcolor:
+										index === selectedIndex
+											? 'primary.contrastText'
+											: 'transparent',
+									color:
+										index === selectedIndex
+											? 'primary.main'
+											: 'primary.contrastText',
 									borderRadius: 2,
 									minHeight: 40,
-									px: 2,
+									px: isOpen ? 2 : 1,
 									width: '100%',
+									justifyContent: isOpen ? 'flex-start' : 'center',
 									'&:hover': {
 										bgcolor: 'primary.light',
 										color: 'primary.contrastText',
 									},
-									justifyContent: 'flex-start',
 								}}
 								aria-label={link.label}
 								tabIndex={0}
@@ -123,20 +181,30 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 									sx={{
 										color: 'inherit',
 										minWidth: 0,
-										mr: 2,
+										mr: isOpen ? 2 : 0,
 										justifyContent: 'center',
 									}}
 								>
 									{link.icon}
 								</ListItemIcon>
-								<ListItemText
-									primary={link.label}
-									sx={{
-										color: index === selectedIndex ? 'primary.main' : 'primary.contrastText',
-									}}
-								/>
+								{isOpen && (
+									<ListItemText
+										primary={link.label}
+										sx={{
+											color:
+												index === selectedIndex
+													? 'primary.main'
+													: 'primary.contrastText',
+											opacity: isOpen ? 1 : 0,
+											transition: theme.transitions.create('opacity', {
+												easing: theme.transitions.easing.sharp,
+												duration: theme.transitions.duration.enteringScreen,
+											}),
+										}}
+									/>
+								)}
 							</ListItemButton>
-						)
+						),
 					)}
 				</Stack>
 			</Stack>
@@ -144,35 +212,46 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 			{/* Bottom Section: Help & Settings and User Info */}
 			<Box sx={{ mt: 3, position: 'relative' }}>
 				{/* Help & Settings */}
-				<Stack spacing={1} alignItems="flex-start" sx={{ mb: 2 }}>
+				<Stack spacing={1} alignItems='flex-start' sx={{ mb: 2 }}>
 					<ListItemButton
 						onClick={() => onNavClick('/help')}
 						sx={{
 							color: 'primary.contrastText',
 							borderRadius: 2,
 							minHeight: 40,
-							px: 2,
+							px: isOpen ? 2 : 1,
 							width: '100%',
+							justifyContent: isOpen ? 'flex-start' : 'center',
 							'&:hover': {
 								bgcolor: 'primary.light',
 								color: 'primary.contrastText',
 							},
-							justifyContent: 'flex-start',
 						}}
-						aria-label="Help"
+						aria-label='Help'
 						tabIndex={0}
 					>
 						<ListItemIcon
 							sx={{
 								color: 'inherit',
 								minWidth: 0,
-								mr: 2,
+								mr: isOpen ? 2 : 0,
 								justifyContent: 'center',
 							}}
 						>
 							<HelpOutlineIcon />
 						</ListItemIcon>
-						<ListItemText primary="Help" />
+						{isOpen && (
+							<ListItemText
+								primary='Help'
+								sx={{
+									opacity: isOpen ? 1 : 0,
+									transition: theme.transitions.create('opacity', {
+										easing: theme.transitions.easing.sharp,
+										duration: theme.transitions.duration.enteringScreen,
+									}),
+								}}
+							/>
+						)}
 					</ListItemButton>
 					<ListItemButton
 						onClick={() => onNavClick('/settings')}
@@ -180,38 +259,73 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							color: 'primary.contrastText',
 							borderRadius: 2,
 							minHeight: 40,
-							px: 2,
+							px: isOpen ? 2 : 1,
 							width: '100%',
+							justifyContent: isOpen ? 'flex-start' : 'center',
 							'&:hover': {
 								bgcolor: 'primary.light',
 								color: 'primary.contrastText',
 							},
-							justifyContent: 'flex-start',
 						}}
-						aria-label="Settings"
+						aria-label='Settings'
 						tabIndex={0}
 					>
 						<ListItemIcon
 							sx={{
 								color: 'inherit',
 								minWidth: 0,
-								mr: 2,
+								mr: isOpen ? 2 : 0,
 								justifyContent: 'center',
 							}}
 						>
 							<SettingsIcon />
 						</ListItemIcon>
-						<ListItemText primary="Settings" />
+						{isOpen && (
+							<ListItemText
+								primary='Settings'
+								sx={{
+									opacity: isOpen ? 1 : 0,
+									transition: theme.transitions.create('opacity', {
+										easing: theme.transitions.easing.sharp,
+										duration: theme.transitions.duration.enteringScreen,
+									}),
+								}}
+							/>
+						)}
 					</ListItemButton>
 				</Stack>
+
 				{/* Divider above User Info */}
-				<Divider sx={{ bgcolor: 'primary.contrastText', my: 2 }} />
+				{isOpen && (
+					<Divider
+						sx={{
+							bgcolor: 'primary.contrastText',
+							my: 2,
+							opacity: isOpen ? 1 : 0,
+							transition: theme.transitions.create('opacity', {
+								easing: theme.transitions.easing.sharp,
+								duration: theme.transitions.duration.enteringScreen,
+							}),
+						}}
+					/>
+				)}
+
 				{/* User Info sticky to bottom */}
-				<Box sx={{ position: 'sticky', bottom: 0, bgcolor: 'primary.main', pb: 0 }}>
+				<Box
+					sx={{ position: 'sticky', bottom: 0, bgcolor: 'primary.main', pb: 0 }}
+				>
 					{customBottomContent ? (
 						customBottomContent
 					) : (
-						<Stack direction="row" alignItems="center" spacing={1}>
+						<Stack
+							direction='row'
+							alignItems='center'
+							spacing={1}
+							sx={{
+								justifyContent: isOpen ? 'space-between' : 'center',
+								px: isOpen ? 0 : 1,
+							}}
+						>
 							<DynamicAvatar
 								items={[
 									{
@@ -224,24 +338,42 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								]}
 								showName={false}
 							/>
-							<Box sx={{ flexGrow: 1, textAlign: 'left', direction: 'column', width: '100%' }}>
-								<Typography
-									variant="subtitle2"
-									sx={{ color: 'primary.contrastText' }}
+							{isOpen && (
+								<Box
+									sx={{
+										flexGrow: 1,
+										textAlign: 'left',
+										direction: 'column',
+										width: '100%',
+										opacity: isOpen ? 1 : 0,
+										transition: theme.transitions.create('opacity', {
+											easing: theme.transitions.easing.sharp,
+											duration: theme.transitions.duration.enteringScreen,
+										}),
+									}}
 								>
-									{user.firstname} {user.lastname}
-								</Typography>
-								<Typography
-									variant="subtitle1"
-									sx={{ color: 'primary.contrastText' }}
-								>
-									{user.role}
-								</Typography>
-							</Box>
+									<Typography
+										variant='subtitle2'
+										sx={{ color: 'primary.contrastText' }}
+									>
+										{user.firstname} {user.lastname}
+									</Typography>
+									<Typography
+										variant='subtitle1'
+										sx={{ color: 'primary.contrastText' }}
+									>
+										{user.role}
+									</Typography>
+								</Box>
+							)}
 							<IconButton
-								aria-label="sign out"
+								aria-label='sign out'
 								onClick={onSignOut}
-								sx={{ color: 'primary.contrastText' }}
+								sx={{
+									color: 'primary.contrastText',
+									ml: isOpen ? 0 : 'auto',
+									mr: isOpen ? 0 : 'auto',
+								}}
 							>
 								<LogoutIcon />
 							</IconButton>
@@ -262,10 +394,10 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 					keepMounted: true, // Better open performance on mobile.
 				}}
 				sx={{
-					width: DRAWER_WIDTH,
+					width: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
 					flexShrink: 0,
 					[`& .MuiDrawer-paper`]: {
-						width: DRAWER_WIDTH,
+						width: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
 						boxSizing: 'border-box',
 						bgcolor: 'primary.main',
 						color: 'primary.contrastText',
