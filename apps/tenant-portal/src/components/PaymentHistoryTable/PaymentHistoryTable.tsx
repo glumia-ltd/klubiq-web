@@ -77,6 +77,7 @@ const PaymentHistorySection: React.FC = () => {
 	const isTablet = useMediaQuery('(max-width:1028px)');
 	const isMobile = useMediaQuery('(max-width:768px)');
 	const isSmallTablet = useMediaQuery('(max-width:900px)');
+	const isVerySmall = useMediaQuery('(max-width:691px)');
 
 	const theme = useTheme();
 
@@ -379,15 +380,24 @@ const PaymentHistorySection: React.FC = () => {
 							<MenuItem value={50}>50</MenuItem>
 						</Select>
 					</Stack>
-					<Pagination
-						count={totalPages}
-						page={currentPage}
-						onChange={(_, page) => setCurrentPage(page)}
-						color='primary'
-						showFirstButton
-						showLastButton
-						size={isTablet ? 'small' : 'medium'}
-					/>
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'center',
+							width: isVerySmall ? '100%' : 'auto',
+							mt: isVerySmall ? 2 : 0,
+						}}
+					>
+						<Pagination
+							count={totalPages}
+							page={currentPage}
+							onChange={(_, page) => setCurrentPage(page)}
+							color='primary'
+							showFirstButton
+							showLastButton
+							size={isTablet ? 'small' : 'medium'}
+						/>
+					</Box>
 				</Box>
 			)}
 		</Box>
