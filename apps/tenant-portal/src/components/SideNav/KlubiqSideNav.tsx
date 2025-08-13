@@ -354,7 +354,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				</Stack>
 
 				{/* Divider above User Info */}
-				{isOpen && (
+				{
 					<Divider
 						sx={{
 							bgcolor: 'primary.contrastText',
@@ -366,7 +366,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							}),
 						}}
 					/>
-				)}
+				}
 
 				{/* User Info sticky to bottom */}
 				<Box
@@ -388,20 +388,35 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							sx={{
 								justifyContent: isOpen ? 'space-between' : 'center',
 								px: isOpen ? 0 : 1,
+								// Center content perfectly when collapsed
+								position: 'relative',
 							}}
 						>
-							<DynamicAvatar
-								items={[
-									{
-										label: user.firstname,
-										id: user.email,
-										name: user.firstname,
-										variant: 'square',
-										background: 'light',
-									},
-								]}
-								showName={false}
-							/>
+							<Box
+								sx={{
+									// Center avatar when collapsed
+									...(isOpen
+										? {}
+										: {
+												position: 'absolute',
+												left: '10%',
+												transform: 'translateX(-50%)',
+											}),
+								}}
+							>
+								<DynamicAvatar
+									items={[
+										{
+											label: user.firstname,
+											id: user.email,
+											name: user.firstname,
+											variant: 'square',
+											background: 'light',
+										},
+									]}
+									showName={false}
+								/>
+							</Box>
 							{isOpen && (
 								<Box
 									sx={{
@@ -437,6 +452,14 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 									color: 'primary.contrastText',
 									ml: isOpen ? 0 : 'auto',
 									mr: isOpen ? 0 : 'auto',
+									// Center logout button when collapsed
+									...(isOpen
+										? {}
+										: {
+												position: 'absolute',
+												right: '10%',
+												transform: 'translateX(50%)',
+											}),
 								}}
 							>
 								<LogoutIcon />
