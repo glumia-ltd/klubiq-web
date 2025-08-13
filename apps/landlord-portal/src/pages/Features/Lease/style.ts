@@ -1,4 +1,3 @@
-
 export const styles = {
 	container: {
 		overflow: 'auto',
@@ -13,6 +12,15 @@ export const styles = {
 		},
 		alignItems: 'center',
 	},
+	inputStyle: {
+		p: '2px 4px',
+		display: 'flex',
+		alignItems: 'center',
+		border: '1px solid',
+		borderColor: 'primary.contrastText',
+		borderRadius: '10px',
+		marginBottom: '10px',
+	},
 	infoimg: {
 		width: '32px',
 		height: '32px',
@@ -23,9 +31,9 @@ export const styles = {
 		maxWidth: '814px',
 	},
 	rowButton: {
-		fontSize: "14px",
-		fontWeight: "500",
-		textAlign: "center",
+		fontSize: '14px',
+		fontWeight: '500',
+		textAlign: 'center',
 	},
 	detailsCard: {
 		width: '100%',

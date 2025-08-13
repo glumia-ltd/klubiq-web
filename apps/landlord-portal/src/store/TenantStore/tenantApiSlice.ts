@@ -8,8 +8,17 @@ import { TenantDetailsType, TenantList } from '../../page-tytpes/tenants/tenant-
 export const tenantApiSlice = createApi({
 	reducerPath: 'tenantApi',
 	baseQuery: customApiFunction,
-	tagTypes: [API_TAGS.TENANT, API_TAGS.TENANT_FILTER_METADATA, API_TAGS.LEASE, API_TAGS.LEASE_METADATA, 
-		API_TAGS.DASHBOARD_METRICS, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.PROPERTY, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+	tagTypes: [
+		API_TAGS.TENANT,
+		API_TAGS.TENANT_FILTER_METADATA,
+		API_TAGS.LEASE,
+		API_TAGS.LEASE_METADATA,
+		API_TAGS.DASHBOARD_METRICS,
+		API_TAGS.DASHBOARD_REVENUE_REPORT,
+		API_TAGS.PROPERTY,
+		API_TAGS.PROPERTIES_AND_TENANTS,
+		API_TAGS.NOTIFICATION,
+	],
 	endpoints: (builder) => ({
 		getTenantFilterMetaData: builder.query<any, void>({
 			query: () => ({
@@ -40,8 +49,16 @@ export const tenantApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.TENANT, API_TAGS.PROPERTY, API_TAGS.LEASE_METADATA, API_TAGS.LEASE,
-				 API_TAGS.DASHBOARD_METRICS, API_TAGS.DASHBOARD_REVENUE_REPORT, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+			invalidatesTags: [
+				API_TAGS.TENANT,
+				API_TAGS.PROPERTY,
+				API_TAGS.LEASE_METADATA,
+				API_TAGS.LEASE,
+				API_TAGS.DASHBOARD_METRICS,
+				API_TAGS.DASHBOARD_REVENUE_REPORT,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
 			// async onQueryStarted({ propertyId }, { dispatch, queryFulfilled }) {
 			// 	await handleApiResponse(queryFulfilled, dispatch, {
 			// 		successMessage: screenMessages.tenant.add.success,
@@ -62,7 +79,12 @@ export const tenantApiSlice = createApi({
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: [API_TAGS.TENANT, API_TAGS.LEASE_METADATA, API_TAGS.PROPERTIES_AND_TENANTS, API_TAGS.NOTIFICATION],
+			invalidatesTags: [
+				API_TAGS.TENANT,
+				API_TAGS.LEASE_METADATA,
+				API_TAGS.PROPERTIES_AND_TENANTS,
+				API_TAGS.NOTIFICATION,
+			],
 		}),
 	}),
 });
@@ -72,5 +94,10 @@ interface GetTenantsResponse {
 	meta: any;
 }
 
-export const { useOnboardTenantMutation, useAddNewTenantWithoutLeaseMutation,useGetTenantFilterMetaDataQuery,
-	useGetTenantsQuery,useGetSingleTenantByIdQuery } = tenantApiSlice;
+export const {
+	useOnboardTenantMutation,
+	useAddNewTenantWithoutLeaseMutation,
+	useGetTenantFilterMetaDataQuery,
+	useGetTenantsQuery,
+	useGetSingleTenantByIdQuery,
+} = tenantApiSlice;

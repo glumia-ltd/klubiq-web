@@ -19,9 +19,9 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import {
 	// useGetTenantFilterMetaDataQuery,
-	// useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
+import { useDebounce } from '../../../hooks/useDebounce';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { screenMessages } from '../../../helpers/screen-messages';
 // import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
@@ -38,26 +38,28 @@ const Tenant = () => {
 	const [defaultParams, setDefaultParams] = useState({
 		page: 1,
 		take: 20,
-		// sortBy: 'createdDate',
-		// order: 'ASC',
+		sortBy: 'createdDate',
+		order: 'ASC',
 	});
 	const inputRef = useRef<HTMLElement>(null);
 	// const filterObjectLength = Object.keys(filter).length;
 	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
-	// const filterObjectLength = Object.keys(filter).length;
-	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	const debouncedTenantSearch = useDebounce(() => {
+		setDefaultParams((prev) => ({ ...prev, search: searchText }));
+	}, 500);
 	const { data: tenantData, isLoading: isTenantDataLoading } =
 		useGetTenantsQuery({
 			...defaultParams,
-			page: currentPage,
-			take: 20,
-			sortBy: 'createdDate',
-			order: 'ASC',
+			// ...filter,
+			// page: currentPage,:
+			// take: 20,
+			// sortBy: 'createdDate',
+			// order: 'ASC',
+			search: searchText.trim(),
 			// ...filter,
 		});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
-	// const filterOptions = tenantMetaData?.filterOptions;
 	// const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
@@ -72,8 +74,20 @@ const Tenant = () => {
 		setDefaultParams((prev) => ({ ...prev, take: value, page: 1 }));
 	};
 	const handleTenantSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchText(e.target.value);
+		const inputValue = e.target.value;
+		setSearchText(inputValue);
+
+		// Reset to first page for every new search
+		setDefaultParams((prev) => ({
+			...prev,
+			search: inputValue.trim(),
+			page: 1,
+		}));
+
+		// Execute search with debounce
+		debouncedTenantSearch();
 	};
+	console.log(defaultParams, "defaultParams");
 
 	const navigateToAddTenant = () => {
 		navigate('/tenants/add-tenant', {
@@ -97,7 +111,14 @@ const Tenant = () => {
 			</Box>
 		);
 	};
+	useEffect(() => {
+		if (inputRef.current) {
+			const inputElement: HTMLInputElement | null =
+				inputRef.current.querySelector('.MuiInputBase-input');
 
+			inputElement && inputElement.focus();
+		}
+	}, []); 
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [getCurrentPage]);
@@ -150,7 +171,13 @@ const Tenant = () => {
 							setFilter(options);
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
+						
 					/> */}
+					{!isTenantDataLoading && allTenants.length === 0 && (
+						<Typography variant='body2' color='textSecondary' mt={2}>
+							No tenants matched your search for "{searchText}"
+						</Typography>
+					)}
 				</Stack>
 				<Stack>
 					{isTenantDataLoading ? (
