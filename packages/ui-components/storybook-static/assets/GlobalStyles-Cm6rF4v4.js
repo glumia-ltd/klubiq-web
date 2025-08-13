@@ -1,0 +1,1 @@
+import{u as n,G as r,a as u,T as m,d as p}from"./defaultTheme-D4_KWPKg.js";import"./index-CoXXcpNP.js";import{j as s}from"./jsx-runtime-CiKstLBL.js";function f({styles:e,themeId:o,defaultTheme:a={}}){const t=n(a),l=typeof e=="function"?e(o&&t[o]||t):e;return s.jsx(r,{styles:l})}function G(e){return s.jsx(f,u({},e,{defaultTheme:p,themeId:m}))}export{G};

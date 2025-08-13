@@ -229,7 +229,7 @@ export default ({ mode }: { mode: any }) => {
 		],
 		optimizeDeps: {
 			include: [
-				'@klubiq/ui-components',
+				// '@klubiq/ui-components',
 				'react',
 				'react-dom',
 				'material-ui',

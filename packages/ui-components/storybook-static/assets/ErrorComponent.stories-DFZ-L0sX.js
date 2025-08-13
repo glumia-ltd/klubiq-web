@@ -1,0 +1,17 @@
+import{j as e}from"./jsx-runtime-CiKstLBL.js";import{B as f}from"./Box-DKMDc44o.js";import{c as v}from"./createSvgIcon-RFZQnbNo.js";import{T as i}from"./Typography-DXOq44QA.js";import{B as C}from"./Button-9rKXOvmp.js";import"./index-CoXXcpNP.js";import"./defaultTheme-D4_KWPKg.js";import"./generateUtilityClasses-C1n5gl2S.js";import"./styled-S1aw2zqw.js";import"./DefaultPropsProvider-CBQ9sw5y.js";import"./ButtonBase-zdw2Te-A.js";import"./TransitionGroupContext-tOqp5AMi.js";import"./useEnhancedEffect-Dze88C9b.js";import"./useForkRef-DnFApgto.js";const T=v(e.jsx("path",{d:"M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8"}),"ErrorOutline"),s=({message:r="Something went wrong",onRetry:n,retryText:h="Try again"})=>e.jsxs(f,{sx:{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",p:4,textAlign:"center"},children:[e.jsx(T,{color:"error",sx:{fontSize:48,mb:2}}),e.jsx(i,{variant:"h6",color:"error",gutterBottom:!0,children:"Error"}),e.jsx(i,{variant:"body1",color:"text.secondary",paragraph:!0,children:r}),n&&e.jsx(C,{variant:"contained",color:"primary",onClick:n,children:h})]});s.__docgenInfo={description:"",methods:[],displayName:"ErrorComponent",props:{message:{required:!1,tsType:{name:"string"},description:"",defaultValue:{value:"'Something went wrong'",computed:!1}},onRetry:{required:!1,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""},retryText:{required:!1,tsType:{name:"string"},description:"",defaultValue:{value:"'Try again'",computed:!1}}}};const A={title:"Components/ErrorComponent",component:s,parameters:{layout:"centered"},tags:["autodocs"],argTypes:{message:{control:"text"},retryText:{control:"text"}}},t={args:{message:"An unexpected error occurred. Please try again later."}},a={args:{message:"Failed to load data. Please try again.",retryText:"Retry"},render:r=>e.jsx(s,{...r,onRetry:()=>alert("Retrying...")})},o={args:{message:"The service is currently unavailable. We are working on fixing the issue.",retryText:"Check Status"},render:r=>e.jsx(s,{...r,onRetry:()=>alert("Checking service status...")})};var c,m,p;t.parameters={...t.parameters,docs:{...(c=t.parameters)==null?void 0:c.docs,source:{originalSource:`{
+  args: {
+    message: 'An unexpected error occurred. Please try again later.'
+  }
+}`,...(p=(m=t.parameters)==null?void 0:m.docs)==null?void 0:p.source}}};var l,u,g;a.parameters={...a.parameters,docs:{...(l=a.parameters)==null?void 0:l.docs,source:{originalSource:`{
+  args: {
+    message: 'Failed to load data. Please try again.',
+    retryText: 'Retry'
+  },
+  render: args => <ErrorComponent {...args} onRetry={() => alert('Retrying...')} />
+}`,...(g=(u=a.parameters)==null?void 0:u.docs)==null?void 0:g.source}}};var d,y,x;o.parameters={...o.parameters,docs:{...(d=o.parameters)==null?void 0:d.docs,source:{originalSource:`{
+  args: {
+    message: 'The service is currently unavailable. We are working on fixing the issue.',
+    retryText: 'Check Status'
+  },
+  render: args => <ErrorComponent {...args} onRetry={() => alert('Checking service status...')} />
+}`,...(x=(y=o.parameters)==null?void 0:y.docs)==null?void 0:x.source}}};const D=["Default","WithRetry","CustomMessage"];export{o as CustomMessage,t as Default,a as WithRetry,D as __namedExportsOrder,A as default};

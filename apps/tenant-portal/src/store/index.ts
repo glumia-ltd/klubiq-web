@@ -2,6 +2,7 @@ import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
 import authReducer, { resetAuth } from './AuthStore/auth.slice';
 import snackbarReducer from './GlobalStore/snackbar.slice';
 import loaderReducer from './GlobalStore/LoaderSlice';
+import { paymentsApiSlice } from './PaymentsStore/paymentsApiSlice';
 
 import storageSession from 'redux-persist/lib/storage/session';
 import { persistReducer, persistStore } from 'redux-persist';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
 	[authApiSlice.reducerPath]: authApiSlice.reducer,
 	[insightsApiSlice.reducerPath]: insightsApiSlice.reducer,
 	[notificationsApiSlice.reducerPath]: notificationsApiSlice.reducer,
+	[paymentsApiSlice.reducerPath]: paymentsApiSlice.reducer,
 });
 const persistConfig = {
 	key: 'root',
@@ -38,12 +40,17 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store: Store = configureStore({
 	reducer: persistedReducer,
-	middleware: (getDefaultMiddleware) => 
+	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: {
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
-		}).concat(authApiSlice.middleware, insightsApiSlice.middleware, notificationsApiSlice.middleware),
+		}).concat(
+			authApiSlice.middleware,
+			insightsApiSlice.middleware,
+			notificationsApiSlice.middleware,
+			paymentsApiSlice.middleware,
+		),
 });
 
 const persistor = persistStore(store);
@@ -51,6 +58,7 @@ const persistor = persistStore(store);
 setupListeners(store.dispatch);
 export const resetStore = () => {
 	store.dispatch(resetAuth());
+	store.dispatch(paymentsApiSlice.util.resetApiState());
 	store.dispatch(authApiSlice.util.resetApiState());
 	store.dispatch(insightsApiSlice.util.resetApiState());
 	store.dispatch(notificationsApiSlice.util.resetApiState());

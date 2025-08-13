@@ -225,7 +225,8 @@ const TenantDashboard = () => {
 								You have {leaseInsights?.missedPayments} missed payments.
 							</Typography>
 							<Typography variant='subtitle2' sx={{ fontWeight: 'normal' }}>
-								Your rent is overdue by {leaseInsights?.rentDueInDays} days.
+								Your rent is overdue by{' '}
+								{Math.abs(leaseInsights?.rentDueInDays || 0)} days.
 							</Typography>
 						</>
 					) : (

@@ -54,16 +54,16 @@ const primaryColors = {
 	lightBlue: '#005CFF',
 	white: '#FFFFFF',
 	black: '#000000',
-}
+};
 const secondaryColors = {
 	yellow: '#FFD700',
 	blue: '#6699CC',
 	lightBlue: '#E2EAF2',
-}
+};
 const backgroundColors = {
 	light: '#F3F6F8',
 	dark: '#1B1B1B',
-}
+};
 export const LightTheme: Theme = createTheme({
 	breakpoints: {
 		values: {
@@ -81,7 +81,7 @@ export const LightTheme: Theme = createTheme({
 			main: primaryColors.mainBlue,
 			light: primaryColors.lightBlue,
 			dark: primaryColors.mainBlue,
-			contrastText: primaryColors.white, 
+			contrastText: primaryColors.white,
 		},
 		secondary: {
 			main: secondaryColors.yellow,
@@ -101,10 +101,10 @@ export const LightTheme: Theme = createTheme({
 				// color:
 			},
 		},
-		error:{},
-		warning:{},
-		info:{},
-		success:{},
+		error: {},
+		warning: {},
+		info: {},
+		success: {},
 	},
 	components: {
 		MuiCssBaseline: {
@@ -160,19 +160,18 @@ export const LightTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqSecondaryButton' },
 					style: {
-						background:secondaryColors.blue, 
+						background: secondaryColors.blue,
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
-							background:primaryColors.mainBlue,
+							background: primaryColors.mainBlue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -180,20 +179,19 @@ export const LightTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqTertiaryButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: secondaryColors.lightBlue,
-							background:backgroundColors.dark,
+							background: backgroundColors.dark,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -201,20 +199,19 @@ export const LightTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqAccentButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:backgroundColors.dark,
+							background: backgroundColors.dark,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -222,7 +219,6 @@ export const LightTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -233,14 +229,13 @@ export const LightTheme: Theme = createTheme({
 						'&:hover': {
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
-
 						},
 					},
 				},
@@ -253,7 +248,7 @@ export const LightTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -261,7 +256,6 @@ export const LightTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -434,6 +428,27 @@ export const LightTheme: Theme = createTheme({
 						color: '#0C36A0',
 					},
 				},
+				{
+					props: { variant: 'pattensBlueChip' },
+					style: {
+						backgroundColor: '#E0E7FF',
+						color: '#272179',
+					},
+				},
+				{
+					props: { variant: 'pippinRedChip' },
+					style: {
+						backgroundColor: '#FDF2F4',
+						color: '#9F1239',
+					},
+				},
+				{
+					props: { variant: 'beesWaxYellowChip' },
+					style: {
+						backgroundColor: '#FEF3C7',
+						color: '#92400E',
+					},
+				},
 			],
 		},
 	},
@@ -584,7 +599,6 @@ export const LightTheme: Theme = createTheme({
 			border: '1px solid #FF0000',
 			color: '#FF0000',
 			backgroundColor: 'rgba(255, 0, 0, 0.1)',
-
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
@@ -645,7 +659,7 @@ export const DarkTheme: Theme = createTheme({
 		MuiCssBaseline: {
 			styleOverrides: {
 				body: {
-					background:'#0D0D0D',
+					background: '#0D0D0D',
 					height: '100%',
 				},
 			},
@@ -760,19 +774,19 @@ export const DarkTheme: Theme = createTheme({
 						color: primaryColors.white,
 						border: '1.6px solid #FFFFFF',
 					},
-				}
+				},
 			},
 			variants: [
 				{
 					props: { variant: 'klubiqMainButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -780,20 +794,19 @@ export const DarkTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqSecondaryButton' },
 					style: {
-						background:secondaryColors.blue, 
+						background: secondaryColors.blue,
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:secondaryColors.lightBlue,
+							background: secondaryColors.lightBlue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -801,20 +814,19 @@ export const DarkTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
 				{
 					props: { variant: 'klubiqTertiaryButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						'&:hover': {
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -822,7 +834,6 @@ export const DarkTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -830,7 +841,7 @@ export const DarkTheme: Theme = createTheme({
 				{
 					props: { variant: 'klubiqAccentButton' },
 					style: {
-						background:'#0088F0', 
+						background: '#0088F0',
 						color: primaryColors.white,
 						opacity: '1',
 						display: 'flex',
@@ -843,7 +854,7 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: '#0D0D0D',
-							background:secondaryColors.blue,
+							background: secondaryColors.blue,
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -851,7 +862,6 @@ export const DarkTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -863,14 +873,13 @@ export const DarkTheme: Theme = createTheme({
 							//opacity: '0.5',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
 							cursor: 'not-allowed',
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
-
 						},
 					},
 				},
@@ -883,7 +892,7 @@ export const DarkTheme: Theme = createTheme({
 							opacity: '1',
 							cursor: 'pointer',
 							color: backgroundColors.dark,
-							background:'rgba(226, 234, 242, 0.6)',
+							background: 'rgba(226, 234, 242, 0.6)',
 						},
 						'&:disabled': {
 							opacity: '0.5',
@@ -891,7 +900,6 @@ export const DarkTheme: Theme = createTheme({
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
 							backgroundColor: 'rgba(255, 255, 255, 0.12)',
-
 						},
 					},
 				},
@@ -971,6 +979,13 @@ export const DarkTheme: Theme = createTheme({
 					style: {
 						backgroundColor: primaryColors.white,
 						color: primaryColors.mainBlue,
+					},
+				},
+				{
+					props: { variant: 'greenChip' },
+					style: {
+						backgroundColor: '#D1FADF',
+						color: '#027A48',
 					},
 				},
 			],
@@ -1126,7 +1141,6 @@ export const DarkTheme: Theme = createTheme({
 			border: '1px solid #FF0000',
 			color: '#FF0000',
 			backgroundColor: 'rgba(255, 0, 0, 0.1)',
-
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',

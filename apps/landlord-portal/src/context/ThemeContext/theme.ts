@@ -404,6 +404,27 @@ export const LightTheme: Theme = createTheme({
 					props: { variant: 'archived' },
 					style: { backgroundColor: secondaryColors.grey },
 				},
+				{
+					props: { variant: 'pattensBlueChip' },
+					style: {
+						backgroundColor: '#E0E7FF',
+						color: '#272179',
+					},
+				},
+				{
+					props: { variant: 'pippinRedChip' },
+					style: {
+						backgroundColor: '#FDF2F4',
+						color: '#9F1239',
+					},
+				},
+				{
+					props: { variant: 'beesWaxYellowChip' },
+					style: {
+						backgroundColor: '#FEF3C7',
+						color: '#92400E',
+					},
+				},
 				...cardTrendStyle,
 			],
 		},

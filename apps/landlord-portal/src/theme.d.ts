@@ -32,6 +32,10 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 		upTrend: React.CSSProperties;
 		downTrend: React.CSSProperties;
 		neutralTrend: React.CSSProperties;
@@ -42,6 +46,10 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 		upTrend: React.CSSProperties;
 		downTrend: React.CSSProperties;
 		neutralTrend: React.CSSProperties;
@@ -105,6 +113,10 @@ declare module '@mui/material/Chip' {
 		sale: true;
 		propertyType: true;
 		archived: true;
+		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
 		upTrend: true;
 		downTrend: true;
 		neutralTrend: true;

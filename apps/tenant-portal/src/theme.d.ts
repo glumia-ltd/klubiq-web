@@ -26,6 +26,10 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
@@ -33,6 +37,10 @@ declare module '@mui/material/styles' {
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
 		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -51,6 +59,16 @@ declare module '@mui/material/styles' {
 			light?: string;
 			dark?: string;
 		};
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
+		};
 	}
 
 	interface PaletteOptions {
@@ -60,6 +78,16 @@ declare module '@mui/material/styles' {
 		notification?: {
 			light?: string;
 			dark?: string;
+		};
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
 		};
 	}
 }
@@ -98,6 +126,10 @@ declare module '@mui/material/Chip' {
 		sale: true;
 		propertyType: true;
 		archived: true;
+		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
 	}
 }
 

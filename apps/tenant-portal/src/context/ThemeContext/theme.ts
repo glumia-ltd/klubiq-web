@@ -17,17 +17,26 @@ const filterResultCountStyle = {
 	fontWeight: 700,
 	lineHeight: '2.375rem',
 };
-const primaryColors = {
+export const primaryColors = {
 	mainBlue: '#002147',
 	lightBlue: '#005CFF',
 	white: '#FFFFFF',
 	black: '#000000',
 };
-const secondaryColors = {
+export const secondaryColors = {
 	yellow: '#FFD700',
 	blue: '#6699CC',
 	lightBlue: '#E2EAF2',
 	grey: '#BOBOBO',
+	klubiqFiord: '#475569',
+	azureKlubiqText: '#1E293B',
+	azureKlubiqTextLight: '#475569',
+	azureKlubiqPickedBluewood: '#334155',
+	klubiqMysticGrey: '#E2E8F0',
+	klubiqRoyalBlue: '#002147',
+	klubiqLightBlue: '#EEF2FF',
+	alertLightBlue: '#1447E6',
+	alertDeepBlue: '#1C398E',
 };
 const backgroundColors = { light: '#FFFFFF', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
@@ -50,6 +59,16 @@ export const LightTheme: Theme = createTheme({
 		background: {
 			default: backgroundColors.light,
 			paper: backgroundColors.light,
+		},
+		textColors: {
+			azureKlubiqText: secondaryColors.azureKlubiqText,
+			azureKlubiqTextLight: secondaryColors.azureKlubiqTextLight,
+			azureKlubiqPickedBluewood: secondaryColors.azureKlubiqPickedBluewood,
+			klubiqMysticGrey: secondaryColors.klubiqMysticGrey,
+			klubiqRoyalBlue: secondaryColors.klubiqRoyalBlue,
+			klubiqLightBlue: secondaryColors.klubiqLightBlue,
+			alertLightBlue: secondaryColors.alertLightBlue,
+			alertDeepBlue: secondaryColors.alertDeepBlue,
 		},
 		error: {
 			main: 'rgba(255, 0, 0, 0.5)',
@@ -349,6 +368,34 @@ export const LightTheme: Theme = createTheme({
 				{
 					props: { variant: 'archived' },
 					style: { backgroundColor: secondaryColors.grey, color: '#0C36A0' },
+				},
+				{
+					props: { variant: 'greenChip' },
+					style: {
+						backgroundColor: '#D1FADF',
+						color: '#027A48',
+					},
+				},
+				{
+					props: { variant: 'pattensBlueChip' },
+					style: {
+						backgroundColor: '#E0E7FF',
+						color: '#272179',
+					},
+				},
+				{
+					props: { variant: 'pippinRedChip' },
+					style: {
+						backgroundColor: '#FDF2F4',
+						color: '#9F1239',
+					},
+				},
+				{
+					props: { variant: 'beesWaxYellowChip' },
+					style: {
+						backgroundColor: '#FEF3C7',
+						color: '#92400E',
+					},
 				},
 			],
 		},

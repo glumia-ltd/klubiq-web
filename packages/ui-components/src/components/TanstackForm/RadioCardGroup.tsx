@@ -3,8 +3,9 @@ import { Stack, Typography, Radio, Card, Box, Skeleton } from '@mui/material';
 
 export type RadioCardOption = {
 	value: string;
-	label: string;
+	label: React.ReactNode;
 	description?: string;
+	tag?: React.ReactNode; // Add tag property
 };
 
 interface RadioCardGroupProps {
@@ -13,6 +14,7 @@ interface RadioCardGroupProps {
 	onChange: (value: string) => void;
 	isLoading?: boolean;
 	skeletonCount?: number;
+	radioPosition?: 'left' | 'right';
 }
 
 export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
@@ -21,6 +23,7 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 	onChange,
 	isLoading = false,
 	skeletonCount = 3,
+	radioPosition = 'left',
 }) => {
 	if (isLoading) {
 		return (
@@ -87,11 +90,13 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 					aria-checked={value === option.value}
 					role='radio'
 				>
-					<Radio
-						checked={value === option.value}
-						tabIndex={-1}
-						value={option.value}
-					/>
+					{radioPosition === 'left' && (
+						<Radio
+							checked={value === option.value}
+							tabIndex={-1}
+							value={option.value}
+						/>
+					)}
 					<Stack direction='column' sx={{ flex: 1, justifyContent: 'center' }}>
 						<Typography variant='h6' fontWeight={600}>
 							{option.label}
@@ -102,6 +107,19 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 							</Typography>
 						)}
 					</Stack>
+					{/* Render tag if provided, always as a Chip */}
+					{option.tag && (
+						<Box ml={2} display='flex' alignItems='center'>
+							{option.tag}
+						</Box>
+					)}
+					{radioPosition === 'right' && (
+						<Radio
+							checked={value === option.value}
+							tabIndex={-1}
+							value={option.value}
+						/>
+					)}
 				</Card>
 			))}
 		</Stack>
