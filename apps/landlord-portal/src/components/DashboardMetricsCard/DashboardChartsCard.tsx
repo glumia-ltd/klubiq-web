@@ -218,7 +218,7 @@ export const DashboardChartsCard: React.FC<DashboardChartsCardProps> = ({
 		},
 	}
 	const renderChartByVariant = () => {
-		const width = isMobile ? 5 : 40;
+		const width = isMobile ? 25 : 40;
 		const height = isMobile ? 400 : 300;
 		switch (variant) {
 			case 'pie':
