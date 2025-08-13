@@ -19,9 +19,13 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { RadioCardGroup } from '@klubiq/ui-components';
-import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
-import { PaymentFrequency } from '@/helpers/utils';
+// import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
+// import { PaymentFrequency } from '@/helpers/utils';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getAuthState } from '@/store/AuthStore/auth.slice';
+import { useGetUpcomingPaymentsQuery } from '@/store/PaymentsStore/paymentsApiSlice';
+import { getLocaleFormat, formatDate, getFullName } from '@/helpers/utils';
 
 const iconBoxStyle = {
 	width: 48,
@@ -97,48 +101,49 @@ const paymentOptions = [
 	},
 ];
 
-const paymentSummary = {
-	title: 'Rent Payment - February 2025',
-	amount: 1200,
-	dueDate: 'February 1, 2025',
-	property: '123 Main St, Apt 4B',
-	payee: 'Property Management Co.',
-};
-
 const ConfirmPayment: React.FC = () => {
 	const navigate = useNavigate();
 	const theme = useTheme();
+
+	const {
+		user: { uuid, firstname, lastname, companyname },
+	} = useSelector(getAuthState);
+
+	const { data: payments } = useGetUpcomingPaymentsQuery(uuid);
+
+	const [paymentsData] = payments || [];
+
 	const [
 		loading,
 		// setLoading
 	] = useState(false); // Simulate loading state
 	const [paymentMethod, setPaymentMethod] = useState('card');
-	const { data: leaseInsights } = useGetLeaseInsightsQuery();
+	// const { data: leaseInsights } = useGetLeaseInsightsQuery();
 
-	const PAYMENT_FREQUENCY = leaseInsights?.paymentFrequency;
+	// const PAYMENT_FREQUENCY = leaseInsights?.paymentFrequency;
 
 	const handleBackButtonClick = () => {
 		navigate('/payments');
 	};
 
 	// Function to filter payment options based on payment frequency
-	const getFilteredPaymentOptions = (paymentFrequency: string) => {
-		// Show Card and Wallet for all payment frequencies
-		// Only show Card when payment frequency is ONE_TIME
-		if (
-			paymentFrequency === PaymentFrequency.ONE_TIME ||
-			paymentFrequency === PaymentFrequency.CUSTOM
-		) {
-			return paymentOptions;
-		}
+	// const getFilteredPaymentOptions = (paymentFrequency: string) => {
+	// 	// Show Card and Wallet for all payment frequencies
+	// 	// Only show Card when payment frequency is ONE_TIME
+	// 	if (
+	// 		paymentFrequency === PaymentFrequency.ONE_TIME ||
+	// 		paymentFrequency === PaymentFrequency.CUSTOM
+	// 	) {
+	// 		return paymentOptions;
+	// 	}
 
-		// For all other payment frequencies, show Card and Wallet
-		return paymentOptions.filter((option) => option.value !== 'card');
-	};
+	// 	// For all other payment frequencies, show Card and Wallet
+	// 	return paymentOptions.filter((option) => option.value !== 'card');
+	// };
 
-	const displayCardByPaymentFrequency = getFilteredPaymentOptions(
-		PAYMENT_FREQUENCY || '',
-	);
+	// const displayCardByPaymentFrequency = getFilteredPaymentOptions(
+	// 	PAYMENT_FREQUENCY || '',
+	// );
 
 	// DRY: Extracted repeated colors and styles
 	const getCardBorderColor = (theme: Theme) =>
@@ -224,22 +229,32 @@ const ConfirmPayment: React.FC = () => {
 									<Stack spacing={1.5}>
 										{/* Details Rows */}
 										<Box sx={summaryRowStyle}>
-											<Typography>{paymentSummary.title}</Typography>
+											<Typography>
+												{`Rent Payment - ${formatDate(paymentsData?.dueDate || '', 'MMMM, YYYY')}`}
+											</Typography>
 											<Typography variant='h4' color='text.primary'>
-												${paymentSummary.amount.toLocaleString()}
+												{getLocaleFormat(
+													paymentsData?.amount || 0,
+													'currency',
+													2,
+												)}
 											</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
 											<Typography>Due Date</Typography>
-											<Typography>{paymentSummary.dueDate}</Typography>
+											<Typography>
+												{formatDate(paymentsData?.dueDate || '')}
+											</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
 											<Typography>Property</Typography>
-											<Typography>{paymentSummary.property}</Typography>
+											<Typography>{paymentsData?.propertyName}</Typography>
 										</Box>
 										<Box sx={summaryRowStyle}>
 											<Typography>Payee</Typography>
-											<Typography>{paymentSummary.payee}</Typography>
+											<Typography>
+												{getFullName(firstname, lastname, companyname)}
+											</Typography>
 										</Box>
 									</Stack>
 								</Box>
@@ -268,7 +283,7 @@ const ConfirmPayment: React.FC = () => {
 							>
 								<RadioCardGroup
 									value={paymentMethod}
-									options={displayCardByPaymentFrequency}
+									options={paymentOptions}
 									onChange={setPaymentMethod}
 									radioPosition='right'
 								/>

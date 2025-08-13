@@ -30,9 +30,9 @@ const PaymentsPage = () => {
 
 	const navigate = useNavigate();
 	const isVerySmall = useMediaQuery('(max-width:356px)');
-	const isSmall = useMediaQuery('(max-width:540px)');
+	// const isSmall = useMediaQuery('(max-width:540px)');
 
-	const [initializePayment] = useInitializePaymentMutation();
+	// const [initializePayment] = useInitializePaymentMutation();
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery(uuid);
@@ -61,17 +61,16 @@ const PaymentsPage = () => {
 		);
 	};
 
-	const handlePaymentButtonClick = async () => {
-		try {
-			await initializePayment({
-				invoiceId: paymentsData?.invoiceId || '',
-				amount: paymentsData?.amount || 0,
-			});
-
-			navigate('/payments/confirm');
-		} catch (e) {
-			// console.log(e)
-		}
+	const handlePaymentButtonClick = () => {
+		navigate('/payments/confirm');
+		// try {
+		// 	// await initializePayment({
+		// 	// 	invoiceId: paymentsData?.invoiceId || '',
+		// 	// 	amount: paymentsData?.amount || 0,
+		// 	// });
+		// } catch (e) {
+		// 	// console.log(e)
+		// }
 	};
 
 	return (

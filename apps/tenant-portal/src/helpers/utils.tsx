@@ -161,3 +161,11 @@ export const formatPaymentStatusText = (
 
 	return `${absDays} ${dayText} ${statusText}`;
 };
+
+export const getFullName = (
+	firstName: string,
+	lastName: string,
+	companyName: string,
+) => {
+	return `${firstName || ''} ${lastName || ''} ${companyName ? '-' : ''} ${companyName || ''}`;
+};

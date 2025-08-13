@@ -17,6 +17,7 @@ import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';
 import Profile from '@/pages/Auth/profile';
 import ForgotPassword from '@/pages/Auth/ForgotPassword';
+import ConfirmPayment from '@/pages/Features/Payments/ConfirmPayment';
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -35,7 +36,7 @@ export const router = createBrowserRouter(
 					<Route path='/documents' element={<Documents />} />
 					<Route path='/profile' element={<Profile />} />
 				</Route>
-				<Route path='/payments/confirm' element={<MonnifyPaymentPage />} />
+				<Route path='/payments/confirm' element={<ConfirmPayment />} />
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
 		</Route>,
