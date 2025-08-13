@@ -118,26 +118,31 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						justifyContent: isOpen ? 'flex-start' : 'center',
 						px: isOpen ? 0 : 1,
 						minHeight: 48, // Ensure consistent height
+						position: 'relative',
 					}}
 				>
 					<img src={logo} alt='KLUBIQ Logo' width={32} height={32} />
-					{isOpen && (
-						<Typography
-							variant='h4'
-							sx={{
-								letterSpacing: 1,
-								color: 'primary.contrastText',
-								fontWeight: 700,
-								opacity: isOpen ? 1 : 0,
-								transition: theme.transitions.create('opacity', {
-									easing: theme.transitions.easing.sharp,
-									duration: theme.transitions.duration.enteringScreen,
-								}),
-							}}
-						>
-							KLUBIQ
-						</Typography>
-					)}
+					<Typography
+						variant='h4'
+						sx={{
+							letterSpacing: 1,
+							color: 'primary.contrastText',
+							fontWeight: 700,
+							opacity: isOpen ? 1 : 0,
+							transition: theme.transitions.create('opacity', {
+								easing: theme.transitions.easing.sharp,
+								duration: theme.transitions.duration.enteringScreen,
+							}),
+							// Ensure text doesn't affect layout when collapsed
+							position: isOpen ? 'static' : 'absolute',
+							left: isOpen ? 'auto' : '100%',
+							ml: isOpen ? 0 : 1,
+							whiteSpace: 'nowrap',
+							pointerEvents: isOpen ? 'auto' : 'none',
+						}}
+					>
+						KLUBIQ
+					</Typography>
 				</Stack>
 
 				{/* Search - maintain height when collapsed */}
@@ -183,22 +188,29 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						>
 							<SearchIcon />
 						</IconButton>
-						{isOpen && (
-							<InputBase
-								sx={{
-									ml: 1,
-									flex: 1,
-									color: 'primary.contrastText',
+						<InputBase
+							sx={{
+								ml: 1,
+								flex: 1,
+								color: 'primary.contrastText',
+								height: '100%',
+								opacity: isOpen ? 1 : 0,
+								transition: theme.transitions.create('opacity', {
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								}),
+								'& input': {
 									height: '100%',
-									'& input': {
-										height: '100%',
-										padding: 0,
-									},
-								}}
-								placeholder='Search Klubiq'
-								inputProps={{ 'aria-label': 'search klubiq' }}
-							/>
-						)}
+									padding: 0,
+								},
+								// Ensure input doesn't affect layout when collapsed
+								position: isOpen ? 'static' : 'absolute',
+								left: isOpen ? 'auto' : '100%',
+								pointerEvents: isOpen ? 'auto' : 'none',
+							}}
+							placeholder='Search Klubiq'
+							inputProps={{ 'aria-label': 'search klubiq' }}
+						/>
 					</Paper>
 				</Box>
 
@@ -227,6 +239,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 										bgcolor: 'primary.light',
 										color: 'primary.contrastText',
 									},
+									// Ensure consistent positioning
+									position: 'relative',
 								}}
 								aria-label={link.label}
 								tabIndex={0}
@@ -241,22 +255,26 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								>
 									{link.icon}
 								</ListItemIcon>
-								{isOpen && (
-									<ListItemText
-										primary={link.label}
-										sx={{
-											color:
-												index === selectedIndex
-													? 'primary.main'
-													: 'primary.contrastText',
-											opacity: isOpen ? 1 : 0,
-											transition: theme.transitions.create('opacity', {
-												easing: theme.transitions.easing.sharp,
-												duration: theme.transitions.duration.enteringScreen,
-											}),
-										}}
-									/>
-								)}
+								<ListItemText
+									primary={link.label}
+									sx={{
+										color:
+											index === selectedIndex
+												? 'primary.main'
+												: 'primary.contrastText',
+										opacity: isOpen ? 1 : 0,
+										transition: theme.transitions.create('opacity', {
+											easing: theme.transitions.easing.sharp,
+											duration: theme.transitions.duration.enteringScreen,
+										}),
+										// Ensure text doesn't affect layout when collapsed
+										position: isOpen ? 'static' : 'absolute',
+										left: isOpen ? 'auto' : '100%',
+										ml: isOpen ? 0 : 1,
+										whiteSpace: 'nowrap',
+										pointerEvents: isOpen ? 'auto' : 'none',
+									}}
+								/>
 							</ListItemButton>
 						),
 					)}
@@ -284,6 +302,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								bgcolor: 'primary.light',
 								color: 'primary.contrastText',
 							},
+							// Ensure consistent positioning
+							position: 'relative',
 						}}
 						aria-label='Help'
 						tabIndex={0}
@@ -298,18 +318,22 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						>
 							<HelpOutlineIcon />
 						</ListItemIcon>
-						{isOpen && (
-							<ListItemText
-								primary='Help'
-								sx={{
-									opacity: isOpen ? 1 : 0,
-									transition: theme.transitions.create('opacity', {
-										easing: theme.transitions.easing.sharp,
-										duration: theme.transitions.duration.enteringScreen,
-									}),
-								}}
-							/>
-						)}
+						<ListItemText
+							primary='Help'
+							sx={{
+								opacity: isOpen ? 1 : 0,
+								transition: theme.transitions.create('opacity', {
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								}),
+								// Ensure text doesn't affect layout when collapsed
+								position: isOpen ? 'static' : 'absolute',
+								left: isOpen ? 'auto' : '100%',
+								ml: isOpen ? 0 : 1,
+								whiteSpace: 'nowrap',
+								pointerEvents: isOpen ? 'auto' : 'none',
+							}}
+						/>
 					</ListItemButton>
 					<ListItemButton
 						onClick={() => onNavClick('/settings')}
@@ -324,6 +348,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 								bgcolor: 'primary.light',
 								color: 'primary.contrastText',
 							},
+							// Ensure consistent positioning
+							position: 'relative',
 						}}
 						aria-label='Settings'
 						tabIndex={0}
@@ -338,27 +364,38 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						>
 							<SettingsIcon />
 						</ListItemIcon>
-						{isOpen && (
-							<ListItemText
-								primary='Settings'
-								sx={{
-									opacity: isOpen ? 1 : 0,
-									transition: theme.transitions.create('opacity', {
-										easing: theme.transitions.easing.sharp,
-										duration: theme.transitions.duration.enteringScreen,
-									}),
-								}}
-							/>
-						)}
+						<ListItemText
+							primary='Settings'
+							sx={{
+								opacity: isOpen ? 1 : 0,
+								transition: theme.transitions.create('opacity', {
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								}),
+								// Ensure text doesn't affect layout when collapsed
+								position: isOpen ? 'static' : 'absolute',
+								left: isOpen ? 'auto' : '100%',
+								ml: isOpen ? 0 : 1,
+								whiteSpace: 'nowrap',
+								pointerEvents: isOpen ? 'auto' : 'none',
+							}}
+						/>
 					</ListItemButton>
 				</Stack>
 
 				{/* Divider above User Info */}
-				{
+				<Box
+					sx={{
+						height: 16, // Consistent height whether divider is visible or not
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
 					<Divider
 						sx={{
 							bgcolor: 'primary.contrastText',
-							my: 2,
+							width: '100%',
 							opacity: isOpen ? 1 : 0,
 							transition: theme.transitions.create('opacity', {
 								easing: theme.transitions.easing.sharp,
@@ -366,7 +403,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							}),
 						}}
 					/>
-				}
+				</Box>
 
 				{/* User Info sticky to bottom */}
 				<Box
@@ -417,34 +454,38 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 									showName={false}
 								/>
 							</Box>
-							{isOpen && (
-								<Box
-									sx={{
-										flexGrow: 1,
-										textAlign: 'left',
-										direction: 'column',
-										width: '100%',
-										opacity: isOpen ? 1 : 0,
-										transition: theme.transitions.create('opacity', {
-											easing: theme.transitions.easing.sharp,
-											duration: theme.transitions.duration.enteringScreen,
-										}),
-									}}
+							<Box
+								sx={{
+									flexGrow: 1,
+									textAlign: 'left',
+									direction: 'column',
+									width: '100%',
+									opacity: isOpen ? 1 : 0,
+									transition: theme.transitions.create('opacity', {
+										easing: theme.transitions.easing.sharp,
+										duration: theme.transitions.duration.enteringScreen,
+									}),
+									// Ensure text doesn't affect layout when collapsed
+									position: isOpen ? 'static' : 'absolute',
+									left: isOpen ? 'auto' : '100%',
+									ml: isOpen ? 0 : 1,
+									whiteSpace: 'nowrap',
+									pointerEvents: isOpen ? 'auto' : 'none',
+								}}
+							>
+								<Typography
+									variant='subtitle2'
+									sx={{ color: 'primary.contrastText' }}
 								>
-									<Typography
-										variant='subtitle2'
-										sx={{ color: 'primary.contrastText' }}
-									>
-										{user.firstname} {user.lastname}
-									</Typography>
-									<Typography
-										variant='subtitle1'
-										sx={{ color: 'primary.contrastText' }}
-									>
-										{user.role}
-									</Typography>
-								</Box>
-							)}
+									{user.firstname} {user.lastname}
+								</Typography>
+								<Typography
+									variant='subtitle1'
+									sx={{ color: 'primary.contrastText' }}
+								>
+									{user.role}
+								</Typography>
+							</Box>
 							<IconButton
 								aria-label='sign out'
 								onClick={onSignOut}
