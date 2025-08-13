@@ -11,7 +11,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
-import MonnifyPaymentPage from '@/pages/Features/Payments/MonnifyPaymentPage';
+// import MonnifyPaymentPage from '@/pages/Features/Payments/MonnifyPaymentPage';
 import PaymentsPage from '@/pages/Features/Payments';
 import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';

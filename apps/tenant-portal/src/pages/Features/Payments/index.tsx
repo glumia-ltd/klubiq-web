@@ -16,7 +16,7 @@ import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistory
 import {
 	useGetUpcomingPaymentsQuery,
 	useGetPaymentMethodsQuery,
-	useInitializePaymentMutation,
+	// useInitializePaymentMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
