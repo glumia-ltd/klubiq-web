@@ -36,7 +36,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 }) => {
 	const theme = useTheme();
 	const location = useLocation();
-	const [isOpen, setIsOpen] = useState(true);
+	const [isOpen] = useState(true);
 
 	// Determine selected index based on current route
 	const getSelectedIndex = () => {
@@ -64,17 +64,21 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 		localStorage.setItem('selectedNavIndex', newSelectedIndex.toString());
 	}, [location.pathname, navLinks]);
 
-	// Handle mouse enter - open the sidebar
-	const handleMouseEnter = () => {
-		setIsOpen(true);
+	// Notify parent component that sidebar is always open
+	useEffect(() => {
 		onSidebarStateChange?.(true);
-	};
+	}, [onSidebarStateChange]);
 
-	// Handle mouse leave - close the sidebar
-	const handleMouseLeave = () => {
-		setIsOpen(false);
-		onSidebarStateChange?.(false);
-	};
+	// Remove mouse hover handlers - sidebar will always stay open
+	// const handleMouseEnter = () => {
+	// 	setIsOpen(true);
+	// 	onSidebarStateChange?.(true);
+	// };
+
+	// const handleMouseLeave = () => {
+	// 	setIsOpen(false);
+	// 	onSidebarStateChange?.(false);
+	// };
 
 	const handleNavClick = (index: number, route: string) => {
 		setSelectedIndex(index);
@@ -90,8 +94,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	// Drawer content
 	const drawerContent = (
 		<Box
-			onMouseEnter={handleMouseEnter}
-			onMouseLeave={handleMouseLeave}
+			// onMouseEnter={handleMouseEnter}
+			// onMouseLeave={handleMouseLeave}
 			sx={{
 				height: '100%',
 				position: 'relative',
@@ -521,6 +525,9 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				ModalProps={{
 					keepMounted: true, // Better open performance on mobile.
 				}}
+				// Remove mouse hover handlers
+				// onMouseEnter={handleMouseEnter}
+				// onMouseLeave={handleMouseLeave}
 				sx={{
 					width: isOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH,
 					flexShrink: 0,
