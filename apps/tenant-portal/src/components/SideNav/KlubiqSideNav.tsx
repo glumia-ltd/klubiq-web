@@ -30,6 +30,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	user,
 	onNavClick,
 	onSignOut,
+	onSidebarStateChange,
 	// logoUrl = '/assets/images/icons.svg',
 	customBottomContent,
 }) => {
@@ -66,11 +67,13 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	// Handle mouse enter - open the sidebar
 	const handleMouseEnter = () => {
 		setIsOpen(true);
+		onSidebarStateChange?.(true);
 	};
 
 	// Handle mouse leave - close the sidebar
 	const handleMouseLeave = () => {
 		setIsOpen(false);
+		onSidebarStateChange?.(false);
 	};
 
 	const handleNavClick = (index: number, route: string) => {
@@ -114,6 +117,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 					sx={{
 						justifyContent: isOpen ? 'flex-start' : 'center',
 						px: isOpen ? 0 : 1,
+						minHeight: 48, // Ensure consistent height
 					}}
 				>
 					<img src={logo} alt='KLUBIQ Logo' width={32} height={32} />
@@ -136,8 +140,8 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 					)}
 				</Stack>
 
-				{/* Search - only show when open */}
-				{isOpen && (
+				{/* Search - maintain height when collapsed */}
+				<Box sx={{ minHeight: 36, display: 'flex', alignItems: 'center' }}>
 					<Paper
 						component='form'
 						onSubmit={handleSearchSubmit}
@@ -146,33 +150,60 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 							alignItems: 'center',
 							bgcolor: 'primary.main',
 							borderRadius: 2,
-							px: 1,
+							px: isOpen ? 1 : 0.5,
 							height: 36,
 							border: '1px solid #fff',
 							width: '100%',
-							opacity: isOpen ? 1 : 0,
-							transition: theme.transitions.create('opacity', {
-								easing: theme.transitions.easing.sharp,
-								duration: theme.transitions.duration.enteringScreen,
-							}),
+							opacity: isOpen ? 1 : 0.7,
+							transition: theme.transitions.create(
+								['opacity', 'padding', 'width'],
+								{
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								},
+							),
+							// Ensure consistent height and prevent layout shift
+							minHeight: 36,
+							maxHeight: 36,
+							overflow: 'hidden',
 						}}
 					>
 						<IconButton
-							sx={{ color: 'primary.contrastText' }}
+							sx={{
+								color: 'primary.contrastText',
+								minWidth: isOpen ? 'auto' : 36,
+								width: isOpen ? 'auto' : 36,
+								height: 36,
+								transition: theme.transitions.create(['min-width', 'width'], {
+									easing: theme.transitions.easing.sharp,
+									duration: theme.transitions.duration.enteringScreen,
+								}),
+							}}
 							aria-label='search'
 						>
 							<SearchIcon />
 						</IconButton>
-						<InputBase
-							sx={{ ml: 1, flex: 1, color: 'primary.contrastText' }}
-							placeholder='Search Klubiq'
-							inputProps={{ 'aria-label': 'search klubiq' }}
-						/>
+						{isOpen && (
+							<InputBase
+								sx={{
+									ml: 1,
+									flex: 1,
+									color: 'primary.contrastText',
+									height: '100%',
+									'& input': {
+										height: '100%',
+										padding: 0,
+									},
+								}}
+								placeholder='Search Klubiq'
+								inputProps={{ 'aria-label': 'search klubiq' }}
+							/>
+						)}
 					</Paper>
-				)}
+				</Box>
 
 				{/* Nav Links */}
-				<Stack spacing={1} alignItems='flex-start'>
+				<Stack spacing={1} alignItems='flex-start' sx={{ minHeight: 200 }}>
 					{navLinks.map((link, index) =>
 						link.disabled ? null : (
 							<ListItemButton
@@ -233,9 +264,13 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 			</Stack>
 
 			{/* Bottom Section: Help & Settings and User Info */}
-			<Box sx={{ mt: 3, position: 'relative' }}>
+			<Box sx={{ mt: 3, position: 'relative', minHeight: 120 }}>
 				{/* Help & Settings */}
-				<Stack spacing={1} alignItems='flex-start' sx={{ mb: 2 }}>
+				<Stack
+					spacing={1}
+					alignItems='flex-start'
+					sx={{ mb: 2, minHeight: 80 }}
+				>
 					<ListItemButton
 						onClick={() => onNavClick('/help')}
 						sx={{
@@ -335,7 +370,13 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 
 				{/* User Info sticky to bottom */}
 				<Box
-					sx={{ position: 'sticky', bottom: 0, bgcolor: 'primary.main', pb: 0 }}
+					sx={{
+						position: 'sticky',
+						bottom: 0,
+						bgcolor: 'primary.main',
+						pb: 0,
+						minHeight: 60,
+					}}
 				>
 					{customBottomContent ? (
 						customBottomContent
