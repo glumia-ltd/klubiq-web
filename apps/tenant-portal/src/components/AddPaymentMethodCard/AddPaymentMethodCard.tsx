@@ -20,8 +20,7 @@ const AddPaymentMethodCard = ({
 			sx={{
 				border: `1.5px dashed ${theme.palette.divider}`,
 				borderRadius: 2,
-				mt: 2,
-				p: { xs: 3, sm: 3.5 },
+				p: 1,
 				display: 'flex',
 				flexDirection: iconPosition === 'top' ? 'column' : 'row',
 				alignItems: 'center',
@@ -29,11 +28,11 @@ const AddPaymentMethodCard = ({
 				cursor: 'pointer',
 				color: theme.palette.text.secondary,
 				transition: 'background 0.2s',
-				minHeight: height || 80,
 				outline: 'none',
 				'&:hover, &:focus': {
 					background: theme.palette.action.hover,
 				},
+				height: height || 50,
 				borderStyle: 'dashed',
 				borderWidth: '1.5px',
 				borderColor: theme.palette.divider,
@@ -42,8 +41,8 @@ const AddPaymentMethodCard = ({
 			role='button'
 			aria-label={content}
 		>
-			<AddIcon sx={{ fontSize: 32, mb: 0.5 }} />
-			<Typography variant='body1' fontWeight={500}>
+			<AddIcon />
+			<Typography variant='body1' >
 				{content}
 			</Typography>
 		</Box>

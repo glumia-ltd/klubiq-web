@@ -30,5 +30,10 @@ export const paymentsEndpoints = {
 		`/payments/upcoming-payments/${leaseTenantId}`,
 	getPaymentMethods: () => '/payment-methods',
 	getPaymentHistory: (tenantId: string) => `/payments/${tenantId}/history`,
-	initializePayment: () => `/payments/initialize`,
+	initializeCardPayment: () => `/payments/initialize-card-payment`,
+	intializeBankTransferPayment: () => `/payments/initialize-bank-transfer`,
+	confirmCardPayment: () => `/payments/confirm-card-payment`,
+	confirmBankTransferPayment: () => `/payments/confirm-bank-transfer-payment`,
+	getPublicKey: () => `/payments/public-key`,
+	secureChargeCard: () => `/payments/secure-charge-card`,
 };

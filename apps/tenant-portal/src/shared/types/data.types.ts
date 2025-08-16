@@ -41,3 +41,9 @@ export type UserProfile = {
 	phoneNumber?: string | null;
 	companyName?: string;
 };
+
+export type PublicKeyType = {
+	algorithm: string;
+	hash: string;
+	publicKey: string;
+}

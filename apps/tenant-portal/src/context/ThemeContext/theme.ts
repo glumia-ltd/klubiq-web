@@ -37,11 +37,12 @@ export const secondaryColors = {
 	klubiqLightBlue: '#EEF2FF',
 	alertLightBlue: '#1447E6',
 	alertDeepBlue: '#1C398E',
+	klubiqLightGrey: '#F8FAFC',
 };
 const backgroundColors = { light: '#FFFFFF', dark: '#1B1B1B' };
 export const LightTheme: Theme = createTheme({
 	breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
-
+	spacing: 8,
 	palette: {
 		mode: 'light',
 		primary: {
@@ -69,6 +70,7 @@ export const LightTheme: Theme = createTheme({
 			klubiqLightBlue: secondaryColors.klubiqLightBlue,
 			alertLightBlue: secondaryColors.alertLightBlue,
 			alertDeepBlue: secondaryColors.alertDeepBlue,
+			klubiqLightGrey: secondaryColors.klubiqLightGrey,
 		},
 		error: {
 			main: 'rgba(255, 0, 0, 0.5)',
@@ -139,11 +141,11 @@ export const LightTheme: Theme = createTheme({
 							background: secondaryColors.blue,
 						},
 						'&:disabled': {
-							opacity: '0.5',
+							opacity: '0.6',
 							cursor: 'not-allowed',
 							color: 'rgba(255, 255, 255, 0.3)',
 							boxShadow: 'none',
-							backgroundColor: 'rgba(255, 255, 255, 0.12)',
+							backgroundColor: secondaryColors.blue,
 						},
 					},
 				},
@@ -330,7 +332,7 @@ export const LightTheme: Theme = createTheme({
 			variants: [
 				{
 					props: { variant: 'expired' },
-					style: { backgroundColor: '#D9D9D9B2' },
+					style: { backgroundColor: '#F8FAFC' },
 				},
 				{
 					props: { variant: 'overdue' },
@@ -404,7 +406,7 @@ export const LightTheme: Theme = createTheme({
 		fontFamily: 'Maven Pro, sans-serif',
 		h1: {
 			fontWeight: 600,
-			fontSize: '3rem',
+			fontSize: '2.5rem',
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
@@ -422,25 +424,19 @@ export const LightTheme: Theme = createTheme({
 		},
 		h4: {
 			fontWeight: 600,
-			fontSize: '1.5rem',
+			fontSize: '1.75rem',
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h5: {
-			fontWeight: 500,
-			fontSize: '2rem',
+			fontWeight: 600,
+			fontSize: '1.5rem',
 			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		h6: {
 			fontWeight: 600,
-			fontSize: '1rem',
-			lineHeight: 1,
-			fontFamily: 'Maven Pro, sans-serif',
-		},
-		h7: {
-			fontWeight: 500,
-			fontSize: '1.1rem',
+			fontSize: '1.25rem',
 			lineHeight: 1,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
@@ -451,22 +447,22 @@ export const LightTheme: Theme = createTheme({
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		body2: {
-			fontWeight: 600,
-			fontSize: '14px',
-			lineHeight: '20px',
+			fontWeight: 500,
+			fontSize: '1rem',
+			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 		},
 		subtitle1: {
 			fontWeight: 500,
 			fontSize: '1rem',
-			lineHeight: 1.75,
+			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		subtitle2: {
 			fontWeight: 500,
 			fontSize: '0.875rem',
-			lineHeight: 1.75,
+			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
@@ -474,14 +470,14 @@ export const LightTheme: Theme = createTheme({
 		caption: {
 			fontWeight: 400,
 			fontSize: '0.75rem',
-			lineHeight: 1.6,
+			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: 0,
 		},
 		overline: {
 			fontWeight: 600,
 			fontSize: '0.75rem',
-			lineHeight: 2.46,
+			lineHeight: 1.5,
 			fontFamily: 'Maven Pro, sans-serif',
 			letterSpacing: '1px',
 			textTransform: 'uppercase',

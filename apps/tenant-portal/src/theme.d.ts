@@ -68,6 +68,7 @@ declare module '@mui/material/styles' {
 			klubiqLightBlue?: string;
 			alertLightBlue?: string;
 			alertDeepBlue?: string;
+			klubiqLightGrey?: string;
 		};
 	}
 
@@ -88,6 +89,7 @@ declare module '@mui/material/styles' {
 			klubiqLightBlue?: string;
 			alertLightBlue?: string;
 			alertDeepBlue?: string;
+			klubiqLightGrey?: string;
 		};
 	}
 }

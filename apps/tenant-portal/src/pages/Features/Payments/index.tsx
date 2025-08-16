@@ -22,6 +22,7 @@ import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useSelector } from 'react-redux';
 import { getLocaleFormat, formatPaymentStatusText } from '@/helpers/utils';
 import { useNavigate } from 'react-router-dom';
+import { CardPaymentMethod } from '@/shared/types/payment.types';
 
 const PaymentsPage = () => {
 	const {
@@ -45,7 +46,7 @@ const PaymentsPage = () => {
 	const renderRightContent = () => {
 		return (
 			<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
-				<Typography variant='h4' sx={{ fontWeight: 'normal' }}>
+				<Typography variant='h4'>
 					{getLocaleFormat(paymentsData?.amount || 0, 'currency', 2)}
 				</Typography>
 				<Typography
@@ -62,7 +63,7 @@ const PaymentsPage = () => {
 	};
 
 	const handlePaymentButtonClick = () => {
-		navigate('/payments/confirm');
+		navigate('/payments/method');
 		// try {
 		// 	// await initializePayment({
 		// 	// 	invoiceId: paymentsData?.invoiceId || '',
@@ -88,15 +89,8 @@ const PaymentsPage = () => {
 					gap: isVerySmall ? 2 : 0,
 				}}
 			>
-				<Typography
-					variant='h5'
-					sx={{
-						flexShrink: 0,
-						minWidth: isVerySmall ? '100%' : 'auto',
-					}}
-				>
-					Rent Payments
-				</Typography>
+				<Typography variant='h4'>Rent Payments</Typography>
+
 				<Button
 					onClick={handlePaymentButtonClick}
 					variant='contained'
@@ -125,7 +119,7 @@ const PaymentsPage = () => {
 						: 'linear-gradient(45deg, #00BC7D, #009689)',
 				}}
 				loading={paymentsLoading}
-				title={<Typography variant='h4'>Next Payment Due</Typography>}
+				title={<Typography variant='h5'>Next Payment Due</Typography>}
 				subtitle={
 					<Stack direction='column' gap={1}>
 						<Typography variant='subtitle2'>{paymentsData?.dueDate}</Typography>
@@ -141,7 +135,7 @@ const PaymentsPage = () => {
 			/>
 
 			{/* Payment Methods */}
-			{paymentMethods?.length > 0 && (
+			{paymentMethods && paymentMethods.length > 0 && (
 				<Card
 					sx={{
 						mb: 4,
@@ -150,7 +144,7 @@ const PaymentsPage = () => {
 						overflow: 'hidden',
 					}}
 				>
-					<Typography variant='h6' fontWeight={600} sx={{ mb: 2 }}>
+					<Typography variant='h6' sx={{ mb: 2 }}>
 						Payment Methods
 					</Typography>
 					{paymentMethodsLoading ? (
@@ -158,9 +152,17 @@ const PaymentsPage = () => {
 					) : paymentMethods.length > 0 ? (
 						<>
 							<SavedPaymentCard
-								last4={paymentMethods[0].last4}
-								brand={paymentMethods[0].brand}
-								isPrimary={paymentMethods[0].isPrimary}
+								last4={
+									paymentMethods[0].type === 'CARD'
+										? (paymentMethods[0] as CardPaymentMethod).last4
+										: ''
+								}
+								brand={
+									paymentMethods[0].type === 'CARD'
+										? (paymentMethods[0] as CardPaymentMethod).cardType
+										: ''
+								}
+								isPrimary={paymentMethods[0].isPrimary || false}
 								onEdit={() => {}}
 							/>
 
@@ -179,7 +181,9 @@ const PaymentsPage = () => {
 				</Card>
 			)}
 			{/* Payment History */}
-			<PaymentHistoryTable />
+			<Card elevation={1} sx={{ p: 2, borderRadius: 3, overflow: 'hidden' }}>
+				<PaymentHistoryTable />
+			</Card>
 		</Box>
 	);
 };
