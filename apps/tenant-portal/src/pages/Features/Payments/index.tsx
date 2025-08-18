@@ -64,6 +64,7 @@ const paymentOptions = [
 		sx: {
 			border: '1px solid',
 			borderColor: 'primary.main',
+			p:1
 		},
 	},
 	{
@@ -89,6 +90,7 @@ const paymentOptions = [
 		sx: {
 			border: '1px solid',
 			borderColor: 'primary.main',
+			p:1
 		},
 	},
 ] as RadioCardOption[];
@@ -97,6 +99,7 @@ const PaymentsPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const theme = useTheme();
+	const paymentTestMode = import.meta.env.VITE_NODE_ENV === 'local';
 
 	// State management
 	const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
@@ -259,15 +262,22 @@ const PaymentsPage = () => {
 			amount: paymentsData?.amount,
 			providerName: provider,
 			metadata: {
-				redirectUrl: 'http://localhost:3002/payments',
+				redirectUrl: `${window.location.origin}/payments`,
 				description: `Rent payment for ${paymentsData?.propertyName}-${paymentsData?.unitNumber}`,
 			},
 		};
 
 		try {
-			const response = await initializePayment(body).unwrap();
+			dispatch(
+				openSnackbar({
+					message: 'Initializing payment session...',
+					severity: 'info',
+					isOpen: true,
+					duration: 5000,
+				}),
+			);
+			const response = await initializePayment({body, testMode: paymentTestMode}).unwrap();
 			const { providerTxnId, ledgerId, ledgerReference } = response;
-
 			setTransactionData({
 				providerTxnId,
 				ledgerId,
@@ -282,7 +292,6 @@ const PaymentsPage = () => {
 					const { session_id, isOTP } = response.metadata;
 					if ((window as any).vitalswapCheckout) {
 						setIsPaymentProcessing(true);
-						// @ts-ignore
 						(window as any).vitalswapCheckout.init({
 							session: session_id,
 							isOtp: isOTP,
@@ -337,7 +346,6 @@ const PaymentsPage = () => {
 						setOpenPaymentMethodDialog(false);
 					}
 					break;
-
 				case PaymentProviders.monnify:
 					const { checkoutUrl } = response.metadata;
 					openPayment(checkoutUrl);
