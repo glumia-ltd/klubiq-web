@@ -251,6 +251,10 @@ const PaymentsPage = () => {
 				invoiceId: paymentsData?.invoiceId,
 				amount: paymentsData?.amount,
 				providerName: provider,
+				metadata: {
+					redirectUrl: 'http://localhost:3002/payments',
+					description: `Rent payment for ${paymentsData?.propertyName}-${paymentsData?.unitNumber}`,
+				},
 			};
 
 			try {
