@@ -246,6 +246,7 @@ const PaymentsPage = () => {
 	const initializePaymentSession = useCallback(
 		async (provider: PaymentProvider) => {
 			setSelectedProvider(provider);
+
 			const body = {
 				invoiceId: paymentsData?.invoiceId,
 				amount: paymentsData?.amount,
