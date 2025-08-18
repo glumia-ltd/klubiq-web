@@ -1,58 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-	Box,
-	Card,
-	Stack,
-	Typography,
-	Divider,
-	Button,
-	Skeleton,
-	useTheme,
-	Alert,
-	// IconButton,
-	FormControl,
-	Theme,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { RadioCardGroup } from '@klubiq/ui-components';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import { MonnifyPaymentData, PaymentData, PaymentProviders } from '@/shared/types/data.types';
 // import { useGetLeaseInsightsQuery } from '@/store/GlobalStore/insightsApi.slice';
 // import { PaymentFrequency } from '@/helpers/utils';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { getAuthState } from '@/store/AuthStore/auth.slice';
-import {
-	useGetUpcomingPaymentsQuery,
-	useIntializeBankTransferPaymentMutation,
-	useInitializeCardPaymentMutation,
-	useGetPublicKeyQuery,
-} from '@/store/PaymentsStore/paymentsApiSlice';
-import { getLocaleFormat, formatDate, getFullName } from '@/helpers/utils';
-import CardPayment from './CardPayment';
+
 
 const ConfirmPayment: React.FC = () => {
-	const navigate = useNavigate();
-	const location = useLocation();
-	const theme = useTheme();
-	const { transactionData, paymentMethod, paymentSummary } = location.state || {};
-	const {data: encryption} = useGetPublicKeyQuery();
+	const [iframeLoading, setIframeLoading] = useState(true);
+	const { paymentData } = useLocation().state as { paymentData: PaymentData };
 
-	// const {
-	// 	user: { uuid, firstname, lastname, companyname },
-	// } = useSelector(getAuthState);
-
-
-	const [
-		loading,
-		setLoading
-	] = useState(false); // Simulate loading state
-
-
-	
+	console.log('Payment data: ', paymentData);
 
 	return (
 		<Box
@@ -60,21 +18,54 @@ const ConfirmPayment: React.FC = () => {
 				bgcolor: 'background.default',
 				display: 'flex',
 				flexDirection: 'column',
+				minHeight: '100vh',
 				alignItems: 'center',
 				justifyContent: 'center',
-				width: '100%',
-				height: '100vh',
 			}}
 		>
-			{loading ? (
-				<Skeleton variant='rectangular' width='100%' height='100%' />
-			) : (
-				paymentMethod === 'CARD' ? (
-					<CardPayment paymentSummary={paymentSummary} publicKey={encryption?.publicKey || ''} />
-				) : (
-					<></>
-				)
-			)}
+			{/* Header */}
+			<Box sx={{ mb: 3, textAlign: 'center' }}>
+				<Typography variant='h5' sx={{ mb: 1 }}>
+					Confirm Payment
+				</Typography>
+				<Typography variant='body2' color='text.secondary'>
+					Complete your payment securely
+				</Typography>
+			</Box>
+
+			{/* iframe Container */}
+			<Box
+				// elevation={0}
+				sx={{
+					width: '100%',
+					maxWidth: 800,
+					margin: '0 auto',
+					overflow: 'hidden',
+					borderRadius: 0,
+				}}
+			>
+				{iframeLoading && (
+					<CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%' }} />
+				)}
+				{paymentData?.providerData?.provider === PaymentProviders.monnify && (
+				<iframe
+					src={(paymentData.providerData as MonnifyPaymentData).checkoutUrl}
+					title='Payment Confirmation'
+					width='100%'
+					height='650'
+					id='monnify-iframe'
+					
+					// style={{
+					// 	border: 'none',
+					// 	borderRadius: theme.shape.borderRadius,
+					// 	backgroundColor: 'background.paper',
+					// }}
+					onLoad={() => setIframeLoading(false)}
+					allow='payment'
+						sandbox='allow-forms allow-scripts allow-same-origin allow-top-navigation'
+					/>
+				)}
+			</Box>
 		</Box>
 	);
 };

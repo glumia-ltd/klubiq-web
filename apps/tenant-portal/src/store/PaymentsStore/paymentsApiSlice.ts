@@ -3,7 +3,6 @@ import { customApiFunction } from '../customApiFunction';
 import { paymentsEndpoints } from '@/helpers/endpoints';
 import { API_TAGS } from '../store.types';
 import { PaymentMethodType } from '@/shared/types/payment.types';
-import { PublicKeyType } from '@/shared/types/data.types';
 
 export const paymentsApiSlice = createApi({
 	reducerPath: 'paymentsApi',
@@ -34,34 +33,25 @@ export const paymentsApiSlice = createApi({
 				providesTags: [API_TAGS.PAYMENT_HISTORY],
 			}),
 		}),
-		initializeCardPayment: builder.mutation<any, any>({
+		initialize: builder.mutation<any, any>({
 			query: (data) => ({
-				url: paymentsEndpoints.initializeCardPayment(),
+				url: paymentsEndpoints.initialize(),
 				method: 'POST',
 				body: data,
 			}),
 		}),
-		intializeBankTransferPayment: builder.mutation<any, any>({
-			query: (data) => ({
-				url: paymentsEndpoints.intializeBankTransferPayment(),
-				method: 'POST',
-				body: data,
-			}),
-		}),
-		getPublicKey: builder.query<PublicKeyType, void>({
-			query: () => ({
-				url: paymentsEndpoints.getPublicKey(),
+		getTransactionStatus: builder.query<string, { provider: string; reference: string }>({
+			query: ({ provider, reference }) => ({
+				url: paymentsEndpoints.getTransactionStatus(provider, reference),
 				method: 'GET',
-				providesTags: [API_TAGS.PUBLIC_KEY],
 			}),
 		}),
-		processCardPayment: builder.mutation<any, any>({
+		updateTransactionStatus: builder.mutation<any, any>({	
 			query: (data) => ({
-				url: paymentsEndpoints.secureChargeCard(),
-				method: 'POST',
+				url: paymentsEndpoints.updateTransactionStatus(),
+				method: 'PUT',
 				body: data,
 			}),
-			invalidatesTags: [API_TAGS.CURRENT_PAYMENT, API_TAGS.PAYMENT_HISTORY],
 		}),
 	}),
 });
@@ -70,8 +60,7 @@ export const {
 	useGetUpcomingPaymentsQuery,
 	useGetPaymentMethodsQuery,
 	useGetPaymentHistoryQuery,
-	useInitializeCardPaymentMutation,
-	useIntializeBankTransferPaymentMutation,
-	useGetPublicKeyQuery,
-	useProcessCardPaymentMutation,
+	useInitializeMutation,
+	useGetTransactionStatusQuery,
+	useUpdateTransactionStatusMutation,
 } = paymentsApiSlice;

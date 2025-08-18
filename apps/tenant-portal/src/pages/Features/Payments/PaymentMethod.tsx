@@ -26,8 +26,6 @@ import { useSelector } from 'react-redux';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import {
 	useGetUpcomingPaymentsQuery,
-	useIntializeBankTransferPaymentMutation,
-	useInitializeCardPaymentMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getLocaleFormat, formatDate, getFullName } from '@/helpers/utils';
 
@@ -114,9 +112,6 @@ const PaymentMethod: React.FC = () => {
 	} = useSelector(getAuthState);
 
 	const { data: payments } = useGetUpcomingPaymentsQuery(uuid);
-	const [intializeCardPayment] = useInitializeCardPaymentMutation();
-	const [intializeBankTransferPayment] =
-		useIntializeBankTransferPaymentMutation();
 
 	const [paymentsData] = payments || [];
 
@@ -159,18 +154,8 @@ const PaymentMethod: React.FC = () => {
 			let response;
 			switch (paymentMethod) {
 				case 'CARD':
-					response = await intializeCardPayment({
-						invoiceId: paymentsData?.invoiceId,
-						amount: paymentsData?.amount,
-						paymentMethod: paymentMethod,
-					}).unwrap();
 					break;
 				case 'ACCOUNT_TRANSFER':
-					response = await intializeBankTransferPayment({
-						invoiceId: paymentsData?.invoiceId,
-						amount: paymentsData?.amount,
-						paymentMethod: paymentMethod,
-					}).unwrap();
 					break;
 				case 'DIRECT_DEBIT':
 					break;
@@ -179,21 +164,7 @@ const PaymentMethod: React.FC = () => {
 			}
 			console.log('response: ', response);
 			if (response) {
-				navigate('/payments/confirm', {
-					state: {
-						paymentMethod: paymentMethod,
-						transactionData: response,
-						paymentSummary: {
-							amount: paymentsData?.amount,
-							dueDate: paymentsData?.dueDate,
-							propertyName: paymentsData?.propertyName,
-							payee: getFullName(firstname, lastname, companyname),
-							invoiceId: paymentsData?.invoiceId,
-							ledgerId: response?.ledgerId,
-                            transactionReference: response?.providerTxnId,
-						},
-					},
-				});
+				navigate('/payments/confirm');
 			}
 		} catch (error) {
 			console.log('error: ', error);

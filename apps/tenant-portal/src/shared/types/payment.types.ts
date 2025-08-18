@@ -30,3 +30,9 @@ export interface SavedPaymentMethod {
   
   // Union type for all payment methods
   export type PaymentMethodType = CardPaymentMethod | BankPaymentMethod;
+
+  export type UpdateTransactionStatus = {
+    ledgerId: string;
+    txnStatus: 'success' | 'failed';
+    metadata: Record<string, any>
+  }

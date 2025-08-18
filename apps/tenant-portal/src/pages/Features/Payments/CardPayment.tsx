@@ -8,7 +8,6 @@ import {
 	Skeleton,
 	useTheme,
 	Alert,
-	IconButton,
 	FormControl,
 	Chip,
 	Stack,
@@ -19,16 +18,13 @@ import AddPaymentMethodCard from '@/components/AddPaymentMethodCard/AddPaymentMe
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { RadioCardGroup } from '@klubiq/ui-components';
-import {
-	useGetPaymentMethodsQuery,
-	useProcessCardPaymentMutation,
-} from '@/store/PaymentsStore/paymentsApiSlice';
+import { useGetPaymentMethodsQuery } from '@/store/PaymentsStore/paymentsApiSlice';
 import { CardPaymentMethod } from '@/shared/types/payment.types';
 import { formatDate, getLocaleFormat } from '@/helpers/utils';
 import { useNavigate } from 'react-router-dom';
 import { CardPaymentForm, CardPaymentFormRef } from '@klubiq/ui-components';
 import { ClientEncryptionUtil } from '@/helpers/encryption.util';
-import { CheckCircle, Download, TaskAltRounded } from '@mui/icons-material';
+import { Download, TaskAltRounded } from '@mui/icons-material';
 
 const iconBoxStyle = {
 	width: 40,
@@ -114,11 +110,15 @@ const CardPayment: React.FC<{
 	publicKey: string;
 }> = ({ paymentSummary, publicKey }) => {
 	const formRef = useRef<CardPaymentFormRef>(null);
-	const [
-		processCardPayment,
-		{ isLoading: isPaymentProcessing, isSuccess: isPaymentSuccess },
-	] = useProcessCardPaymentMutation();
-	const [formData, setFormData] = useState<CardPaymentFormData>(initialFormData);
+	const [isPaymentProcessing] = useState(false);
+	const [isPaymentSuccess] = useState(false);
+
+	// const [
+	// 	processCardPayment,
+	// 	{ isLoading: isPaymentProcessing, isSuccess: isPaymentSuccess },
+	// ] = useProcessCardPaymentMutation();
+	const [formData, setFormData] =
+		useState<CardPaymentFormData>(initialFormData);
 	const [isFormValid, setIsFormValid] = useState(false);
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -145,9 +145,9 @@ const CardPayment: React.FC<{
 	}, [cardPaymentMethods]);
 
 	// Or if you need to find a specific card by some criteria
-	const specificCard = cardPaymentMethods.find(
-		(method) => method.last4 === '1234',
-	);
+	// const specificCard = cardPaymentMethods.find(
+	// 	(method) => method.last4 === '1234',
+	// );
 	const handlePay = async () => {
 		try {
 			if (selectedCard) {
@@ -189,11 +189,9 @@ const CardPayment: React.FC<{
 					},
 				};
 				console.log(requestData);
-				const paymentResponse = await processCardPayment(requestData).unwrap();
 				setFormData({
 					...initialFormData,
 				});
-				console.log(paymentResponse);
 			}
 		} catch (error) {
 			console.log(error);
@@ -201,7 +199,6 @@ const CardPayment: React.FC<{
 				...initialFormData,
 			});
 		}
-
 	};
 
 	return !isPaymentProcessing && !isPaymentSuccess ? (
@@ -412,7 +409,12 @@ const CardPayment: React.FC<{
 					maxWidth: 450,
 				}}
 			>
-				<Stack direction='column' spacing={3} alignItems='center' justifyContent='center'>
+				<Stack
+					direction='column'
+					spacing={3}
+					alignItems='center'
+					justifyContent='center'
+				>
 					<CircularProgress color='primary' />
 					<Typography variant='h6'>Processing Your Payment</Typography>
 					<Typography variant='body1'>Processing payment...</Typography>
@@ -478,12 +480,28 @@ const CardPayment: React.FC<{
 					maxWidth: 480,
 				}}
 			>
-				<Stack direction='column' alignItems='center' justifyContent='space-between' spacing={2}>
-					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'info.light', borderRadius: '50%', p: 1 }}>
+				<Stack
+					direction='column'
+					alignItems='center'
+					justifyContent='space-between'
+					spacing={2}
+				>
+					<Box
+						sx={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							bgcolor: 'info.light',
+							borderRadius: '50%',
+							p: 1,
+						}}
+					>
 						<TaskAltRounded color='info' sx={{ fontSize: 30 }} />
 					</Box>
 					<Typography variant='h6'>Payment Successful</Typography>
-					<Typography variant='body1'>Your payment has been processed successfully</Typography>
+					<Typography variant='body1'>
+						Your payment has been processed successfully
+					</Typography>
 					<Card
 						sx={{
 							borderRadius: 3,
@@ -532,14 +550,24 @@ const CardPayment: React.FC<{
 								justifyContent='space-between'
 							>
 								<Typography variant='body1'>Property</Typography>
-								<Typography variant='body2'>{paymentSummary?.propertyName}</Typography>
+								<Typography variant='body2'>
+									{paymentSummary?.propertyName}
+								</Typography>
 							</Stack>
 						</Stack>
 					</Card>
-					<Button variant='klubiqMainButton' fullWidth onClick={() => navigate('/dashboard')}>
+					<Button
+						variant='klubiqMainButton'
+						fullWidth
+						onClick={() => navigate('/dashboard')}
+					>
 						Back to Dashboard
 					</Button>
-					<Button variant='klubiqOutlinedButton' fullWidth startIcon={<Download />}>
+					<Button
+						variant='klubiqOutlinedButton'
+						fullWidth
+						startIcon={<Download />}
+					>
 						Download Receipt
 					</Button>
 				</Stack>
