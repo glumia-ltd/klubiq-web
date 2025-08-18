@@ -43,7 +43,12 @@ const paymentOptions = [
 	{
 		value: PaymentProviders.vitalswap,
 		label: (
-			<Box sx={{ width: '100%', border: '1px solid primary.main' }}>
+			<Box
+				sx={{
+					width: '100%',
+					boxSizing: 'border-box',
+				}}
+			>
 				<Stack
 					direction='row'
 					alignItems='center'
@@ -60,9 +65,13 @@ const paymentOptions = [
 	{
 		value: PaymentProviders.monnify,
 		label: (
-			<Box sx={{ width: '100%', border: '1px solid primary.main' }}>
+			<Box
+				sx={{
+					width: '100%',
+					boxSizing: 'border-box',
+				}}
+			>
 				<Stack
-					sx={{ width: '100%', border: '1px solid primary.main' }}
 					direction='row'
 					alignItems='center'
 					justifyContent='space-between'
@@ -87,9 +96,8 @@ const PaymentsPage = () => {
 	const [monnifyPolling, setMonnifyPolling] = useState(false);
 	const [pollingInterval, setPollingInterval] = useState<number | null>(null);
 	const [openPaymentMethodDialog, setOpenPaymentMethodDialog] = useState(false);
-	const [selectedProvider, setSelectedProvider] = useState<PaymentProvider | null>(
-		null,
-	);
+	const [selectedProvider, setSelectedProvider] =
+		useState<PaymentProvider | null>(null);
 	const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
 	const [transactionData, setTransactionData] = useState<PaymentData | null>(
 		null,
@@ -154,7 +162,6 @@ const PaymentsPage = () => {
 	);
 
 	const handleProviderChange = (value: string) => {
-		console.log('value selected: ', value);
 		setSelectedProvider(
 			PaymentProviders[value as keyof typeof PaymentProviders],
 		);
@@ -429,14 +436,22 @@ const PaymentsPage = () => {
 			<Stack direction='row' justifyContent='center' spacing={2} width='100%'>
 				<Button
 					variant='klubiqOutlinedButton'
-					onClick={() => initializePaymentSession(PaymentProviders.vitalswap)}
+					onClick={() => initializePaymentSession(selectedProvider)}
 					size='small'
 				>
 					Proceed to{' '}
 					<img
 						width={100}
-						src={selectedProvider === PaymentProviders.vitalswap ? VitalSwapLogo : MonnifyLogo}
-						alt={selectedProvider === PaymentProviders.vitalswap ? 'Vitalswap' : 'Monnify'}
+						src={
+							selectedProvider === PaymentProviders.vitalswap
+								? VitalSwapLogo
+								: MonnifyLogo
+						}
+						alt={
+							selectedProvider === PaymentProviders.vitalswap
+								? 'Vitalswap'
+								: 'Monnify'
+						}
 					/>
 				</Button>
 				<Backdrop

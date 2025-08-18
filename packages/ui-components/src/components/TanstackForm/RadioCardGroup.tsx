@@ -66,8 +66,9 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 						(e.key === 'Enter' || e.key === ' ') && onChange(option.value)
 					}
 					sx={{
+						boxSizing: 'border-box',
 						cursor: 'pointer',
-						border: value === option.value ? '2.5px solid' : '1px solid',
+						border: '2.5px solid',
 						boxShadow: 'none',
 						borderColor:
 							value === option.value ? 'primary.light' : 'primary.contrastText',
@@ -82,10 +83,10 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 								backgroundColor: 'action.hover',
 							},
 						},
-						outline:
-							value === option.value
-								? '2px solid primary.light'
-								: '1px solid primary.contrastText',
+						// outline:
+						// 	value === option.value
+						// 		? '2.5px solid primary.light'
+						// 		: '2.5px solid primary.contrastText',
 					}}
 					aria-checked={value === option.value}
 					role='radio'
