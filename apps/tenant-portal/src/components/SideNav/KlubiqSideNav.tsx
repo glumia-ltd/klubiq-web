@@ -417,6 +417,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						bgcolor: 'primary.main',
 						pb: 0,
 						minHeight: 60,
+						mt:4
 					}}
 				>
 					{customBottomContent ? (

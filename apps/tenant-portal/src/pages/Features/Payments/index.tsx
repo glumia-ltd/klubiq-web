@@ -17,7 +17,7 @@ import {
 	DynamicModalProps,
 	PageHeader,
 	RadioCardGroup,
-	RadioCardOption
+	RadioCardOption,
 } from '@klubiq/ui-components';
 import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 import {
@@ -64,7 +64,7 @@ const paymentOptions = [
 		sx: {
 			border: '1px solid',
 			borderColor: 'primary.main',
-			p:1
+			p: 1,
 		},
 	},
 	{
@@ -90,7 +90,7 @@ const paymentOptions = [
 		sx: {
 			border: '1px solid',
 			borderColor: 'primary.main',
-			p:1
+			p: 1,
 		},
 	},
 ] as RadioCardOption[];
@@ -276,7 +276,10 @@ const PaymentsPage = () => {
 					duration: 5000,
 				}),
 			);
-			const response = await initializePayment({body, testMode: paymentTestMode}).unwrap();
+			const response = await initializePayment({
+				body,
+				testMode: paymentTestMode,
+			}).unwrap();
 			const { providerTxnId, ledgerId, ledgerReference } = response;
 			setTransactionData({
 				providerTxnId,
@@ -581,7 +584,9 @@ const PaymentsPage = () => {
 				<PageHeader
 					sx={{
 						color: 'white',
-						background: paymentsLoading ? theme.palette.primary.light : backgroundGradient,
+						background: paymentsLoading
+							? theme.palette.primary.light
+							: backgroundGradient,
 					}}
 					loading={paymentsLoading}
 					title={<Typography variant='h5'>Next Payment Due</Typography>}
