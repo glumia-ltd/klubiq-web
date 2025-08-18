@@ -46,7 +46,6 @@ const paymentOptions = [
 			<Box
 				sx={{
 					width: '100%',
-					boxSizing: 'border-box',
 				}}
 			>
 				<Stack
@@ -68,7 +67,6 @@ const paymentOptions = [
 			<Box
 				sx={{
 					width: '100%',
-					boxSizing: 'border-box',
 				}}
 			>
 				<Stack
