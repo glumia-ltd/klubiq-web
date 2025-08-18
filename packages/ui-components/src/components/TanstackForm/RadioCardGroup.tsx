@@ -1,11 +1,12 @@
 import React from 'react';
-import { Stack, Typography, Radio, Card, Box, Skeleton } from '@mui/material';
+import { Stack, Typography, Radio, Card, Box, Skeleton, SxProps } from '@mui/material';
 
 export type RadioCardOption = {
 	value: string;
 	label: React.ReactNode;
 	description?: string;
 	tag?: React.ReactNode; // Add tag property
+	sx?: SxProps;
 };
 
 interface RadioCardGroupProps {
@@ -83,10 +84,7 @@ export const RadioCardGroup: React.FC<RadioCardGroupProps> = ({
 								backgroundColor: 'action.hover',
 							},
 						},
-						// outline:
-						// 	value === option.value
-						// 		? '2.5px solid primary.light'
-						// 		: '2.5px solid primary.contrastText',
+						...option.sx,
 					}}
 					aria-checked={value === option.value}
 					role='radio'

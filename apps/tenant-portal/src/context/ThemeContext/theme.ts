@@ -39,7 +39,7 @@ export const secondaryColors = {
 	alertDeepBlue: '#1C398E',
 	klubiqLightGrey: '#F8FAFC',
 };
-const backgroundColors = { light: '#FFFFFF', dark: '#1B1B1B' };
+const backgroundColors = { light: '#FFFFFF', dark: '#1B1B1B', default: '#F8FAFC' };
 export const LightTheme: Theme = createTheme({
 	breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
 	spacing: 8,
@@ -58,7 +58,7 @@ export const LightTheme: Theme = createTheme({
 			contrastText: primaryColors.white,
 		},
 		background: {
-			default: backgroundColors.light,
+			default: backgroundColors.default,
 			paper: backgroundColors.light,
 		},
 		textColors: {
