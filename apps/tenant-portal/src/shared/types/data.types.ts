@@ -41,3 +41,38 @@ export type UserProfile = {
 	phoneNumber?: string | null;
 	companyName?: string;
 };
+
+export type PublicKeyType = {
+	algorithm: string;
+	hash: string;
+	publicKey: string;
+}
+export const PaymentProviders = {
+	vitalswap: 'vitalswap',
+	monnify: 'monnify',
+} as const;
+
+export type PaymentProvider = (typeof PaymentProviders)[keyof typeof PaymentProviders];
+
+export type MonnifyPaymentData = {
+	provider: PaymentProvider;
+	checkoutUrl: string;
+	merchantName: string;
+}
+
+export type VitalSwapPaymentData = {
+	provider: PaymentProvider;
+	sessionId: string;
+	isOtp: boolean;
+	otpStatus: string;
+	businessName: string;
+	businessDescription: string;
+}
+
+export type PaymentData = {
+	providerData?: MonnifyPaymentData | VitalSwapPaymentData;
+	amount: number;
+	providerTxnId: string;
+	ledgerId: string;
+	ledgerReference: string;
+}

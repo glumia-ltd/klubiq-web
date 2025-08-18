@@ -22,6 +22,7 @@ env:
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
   BUILD_NUMBER: ${{ github.run_number }}
   VITE_TURNSTILE_SITEKEY: ${{ secrets.VITE_TURNSTILE_SITEKEY }}
+  VITE_HMAC_SECRET: ${{ secrets.VITE_HMAC_SECRET }}
 
   APP: klubiq-tenat-portal
 jobs:

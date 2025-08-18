@@ -14,5 +14,10 @@ export const API_TAGS = {
 	INSIGHTS: 'Insights',
 	PAYMENTS: 'Payments',
 	CURRENT_PAYMENT: 'CurrentPayment',
+	PUBLIC_KEY: 'PublicKey',
+	SAVED_PAYMENT_METHODS: 'SavedPaymentMethods',
+	PAYMENT_HISTORY: 'PaymentHistory',
 } as const;
 export const ALL_TAGS = Object.values(API_TAGS);
+
+

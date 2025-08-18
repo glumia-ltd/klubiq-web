@@ -203,7 +203,7 @@ const PaymentHistorySection: React.FC = () => {
 	return (
 		<Box
 			sx={{
-				mt: isMobile ? 2 : 4,
+				// mt: isMobile ? 2 : 4,
 				bgcolor: '#fff',
 				borderRadius: 4,
 				boxShadow: 0,
@@ -220,14 +220,7 @@ const PaymentHistorySection: React.FC = () => {
 			>
 				{/* Header left */}
 				<Box flex={1} minWidth={isMobile ? '100%' : 0} mb={isMobile ? 2 : 0}>
-					<Typography
-						variant='h5'
-						fontWeight={300}
-						sx={{
-							mb: isMobile ? 1 : 0,
-							textAlign: 'left',
-						}}
-					>
+					<Typography variant='h6' textAlign='left'>
 						Payment History
 					</Typography>
 				</Box>
