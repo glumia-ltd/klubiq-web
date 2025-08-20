@@ -38,7 +38,6 @@ import {
 	PaymentProviders,
 } from '@/shared/types/data.types';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
-import { RootState } from '@/store/store.types';
 
 const paymentOptions = [
 	{
@@ -110,7 +109,7 @@ const PaymentsPage = () => {
 	const [_transactionData, setTransactionData] = useState<PaymentData | null>(
 		null,
 	);
-	const [paymentRef, setPaymentRef] = useState<string | null>(null);
+	const [_paymentRef, setPaymentRef] = useState<string | null>(null);
 
 	// Media queries
 	const isVerySmall = useMediaQuery('(max-width:356px)');
@@ -170,7 +169,7 @@ const PaymentsPage = () => {
 			setPaymentRef(paymentReference);
 			getTransactionStatus({
 				provider: 'monnify',
-				reference: paymentReference,
+				reference: paymentReference || _paymentRef || '',
 			});
 			clearAllUrlParams();
 		}
