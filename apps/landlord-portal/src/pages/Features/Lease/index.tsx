@@ -223,17 +223,7 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
-
-				<Stack direction={'row'}>
-					<Filter
-						filterList={filterOptions}
-						getFilterResult={(options) => {
-							setFilter(options);
-						}}
-						disable={filterObjectLength ? false : !allLease}
-					/>
-				</Stack>
-				<Stack direction={'column'}>
+<Stack direction={'column'}>
 					<Paper component='form' sx={styles.inputStyle}  >
 						<IconButton aria-label='search'>
 							<SearchIcon />
@@ -248,6 +238,16 @@ const Lease = () => {
 						/>
 					</Paper>
 				</Stack>
+				<Stack direction={'row'}>
+					<Filter
+						filterList={filterOptions}
+						getFilterResult={(options) => {
+							setFilter(options);
+						}}
+						disable={filterObjectLength ? false : !allLease}
+					/>
+				</Stack>
+				
 				<Stack sx={{ width: '100%' }}>
 					{isLeaseDataLoading ? (
 						<TableSkeleton />
