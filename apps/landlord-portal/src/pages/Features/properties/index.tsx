@@ -55,7 +55,6 @@ const Properties = () => {
 		...defaultParams,
 		...filter,
 	});
-console.log(propertyData,"prop")
 	const {
 		data: metaData,
 		// isLoading: isMetaDataLoading,

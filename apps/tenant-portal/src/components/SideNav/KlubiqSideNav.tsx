@@ -88,7 +88,6 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 
 	const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log('search');
 	};
 
 	// Drawer content
@@ -416,8 +415,6 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 						bottom: 0,
 						bgcolor: 'primary.main',
 						pb: 0,
-						minHeight: 60,
-						mt:4
 					}}
 				>
 					{customBottomContent ? (

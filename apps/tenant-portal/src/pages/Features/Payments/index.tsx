@@ -21,9 +21,9 @@ import {
 } from '@klubiq/ui-components';
 import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 import {
-	useGetTransactionStatusQuery,
 	useGetUpcomingPaymentsQuery,
 	useInitializeMutation,
+	useLazyGetTransactionStatusQuery,
 	useUpdateTransactionStatusMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
@@ -38,7 +38,7 @@ import {
 	PaymentProviders,
 } from '@/shared/types/data.types';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
-import { useNavigate } from 'react-router-dom';
+import { RootState } from '@/store/store.types';
 
 const paymentOptions = [
 	{
@@ -95,52 +95,34 @@ const paymentOptions = [
 	},
 ] as RadioCardOption[];
 const PaymentsPage = () => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const paymentReference = urlParams.get('paymentReference');
 	const environment = import.meta.env.VITE_NODE_ENV;
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const theme = useTheme();
 	const paymentTestMode = import.meta.env.VITE_NODE_ENV === 'local';
-
 	// State management
 	const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-	const [monnifyPolling, setMonnifyPolling] = useState(false);
-	const [pollingInterval, setPollingInterval] = useState<number | null>(null);
 	const [openPaymentMethodDialog, setOpenPaymentMethodDialog] = useState(false);
 	const [selectedProvider, setSelectedProvider] =
 		useState<PaymentProvider | null>(null);
 	const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
-	const [transactionData, setTransactionData] = useState<PaymentData | null>(
+	const [_transactionData, setTransactionData] = useState<PaymentData | null>(
 		null,
 	);
+	const [paymentRef, setPaymentRef] = useState<string | null>(null);
 
 	// Media queries
 	const isVerySmall = useMediaQuery('(max-width:356px)');
 
 	// Redux selectors
-	const {
-		user: { uuid, email },
-	} = useSelector(getAuthState);
+	const  { user: { profileuuid, uuid, email, firstname, lastname, companyname } } = useSelector(getAuthState);
 
 	// API hooks
 	const [initializePayment, { isLoading: isInitializingPayment }] =
 		useInitializeMutation();
 	const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
-
-	// Query conditions
-	const shouldFetchTransactionStatus = useMemo(
-		() =>
-			selectedProvider === PaymentProviders.monnify &&
-			!!transactionData?.providerTxnId,
-		[selectedProvider, transactionData?.providerTxnId],
-	);
-
-	const { data: _transactionStatus, refetch } = useGetTransactionStatusQuery(
-		{
-			provider: 'monnify',
-			reference: transactionData?.providerTxnId || '',
-		},
-		{ skip: !shouldFetchTransactionStatus },
-	);
+	const [getTransactionStatus] = useLazyGetTransactionStatusQuery();
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery(uuid);
@@ -177,81 +159,28 @@ const PaymentsPage = () => {
 		);
 	};
 
-	// Monnify polling effect
+	const clearAllUrlParams = () => {
+		const url = new URL(window.location.href);
+		url.search = '';
+		window.history.replaceState({}, '', url.toString());
+	};
+
 	useEffect(() => {
-		if (monnifyPolling && transactionData?.providerTxnId) {
-			const interval = setInterval(async () => {
-				try {
-					const result = await refetch();
-					console.log('Monnify polling result:', result);
-
-					if (result.data === 'success' || result.data === 'failed') {
-						setMonnifyPolling(false);
-						setPollingInterval(null);
-						clearInterval(interval);
-
-						dispatch(
-							openSnackbar({
-								message:
-									result.data === 'success'
-										? 'Payment completed successfully!'
-										: 'Payment failed or was cancelled',
-								severity: result.data === 'success' ? 'success' : 'error',
-								isOpen: true,
-								duration: 5000,
-							}),
-						);
-					}
-				} catch (error) {
-					console.error('Error polling Monnify status:', error);
-				}
-			}, 5000);
-
-			setPollingInterval(interval);
-
-			return () => {
-				clearInterval(interval);
-				setPollingInterval(null);
-			};
+		if (!paymentWindow && paymentReference) {
+			setPaymentRef(paymentReference);
+			getTransactionStatus({
+				provider: 'monnify',
+				reference: paymentReference,
+			});
+			clearAllUrlParams();
 		}
-	}, [monnifyPolling, transactionData?.providerTxnId, refetch, dispatch]);
-
-	// Cleanup effect
-	useEffect(() => {
-		return () => {
-			if (pollingInterval) {
-				clearInterval(pollingInterval);
-			}
-		};
-	}, [pollingInterval]);
+	}, [paymentWindow]);
 
 	// Callback functions
 	const openPayment = (checkoutUrl: string) => {
 		setIsPaymentProcessing(true);
 		const newWindow = window.open(checkoutUrl, '_self');
 		setPaymentWindow(newWindow);
-		if (selectedProvider === PaymentProviders.monnify) {
-			setMonnifyPolling(true);
-		} else {
-			setIsPaymentProcessing(false);
-		}
-	};
-
-	const returnToApp = () => {
-		setIsPaymentProcessing(false);
-		if (paymentWindow) {
-			paymentWindow.close();
-			setPaymentWindow(null);
-
-			if (monnifyPolling) {
-				setMonnifyPolling(false);
-				if (pollingInterval) {
-					clearInterval(pollingInterval);
-					setPollingInterval(null);
-				}
-			}
-		}
-		navigate('/payments');
 	};
 
 	const initializePaymentSession = async (provider: PaymentProvider) => {
@@ -264,6 +193,12 @@ const PaymentsPage = () => {
 			metadata: {
 				redirectUrl: `${window.location.origin}/payments`,
 				description: `Rent payment for ${paymentsData?.propertyName}-${paymentsData?.unitNumber}`,
+				formattedAmount: getLocaleFormat(paymentsData?.amount, 'currency', 2),
+				propertyName: paymentsData?.propertyName,
+				unitNumber: paymentsData?.unitNumber,
+				tenantProfileId: profileuuid,
+				payeeName: `${firstname} ${lastname} ${companyname ? `(${companyname})` : ''}`,
+				payeeEmail: email,
 			},
 		};
 
@@ -303,17 +238,15 @@ const PaymentsPage = () => {
 							environment: vswapenv,
 							onLoad: () => console.log('onLoad VitalSwap'),
 							onsuccess: (data: any) => {
-								console.log('onsuccess', data);
 								updateTransactionStatus({
 									ledgerId,
 									txnStatus: 'success',
 									metadata: data,
 								});
-								setIsPaymentProcessing(false);
-								setOpenPaymentMethodDialog(false);
+								closePaymentMethodDialog();
 							},
 							onclose: () => {
-								console.log('Payment window closed');
+								closePaymentMethodDialog();
 								dispatch(
 									openSnackbar({
 										message:
@@ -323,16 +256,14 @@ const PaymentsPage = () => {
 										duration: 5000,
 									}),
 								);
-								setIsPaymentProcessing(false);
 							},
 							onerror: (error: any) => {
-								console.log('onerror', error);
 								updateTransactionStatus({
 									ledgerId,
 									txnStatus: 'failed',
 									metadata: { message: 'Payment failed', ...error },
 								});
-								setIsPaymentProcessing(false);
+								closePaymentMethodDialog();
 							},
 						});
 					} else {
@@ -380,19 +311,20 @@ const PaymentsPage = () => {
 
 	// Memoized components
 	const renderRightContent = useMemo(
-		() => (
-			<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
-				<Typography variant='h4'>
-					{getLocaleFormat(paymentAmount, 'currency', 2)}
-				</Typography>
-				<Typography
-					variant='subtitle2'
-					sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
-				>
-					{formatPaymentStatusText(daysToDue, paymentStatus)}
-				</Typography>
-			</Stack>
-		),
+		() =>
+			paymentsData && (
+				<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
+					<Typography variant='h4'>
+						{getLocaleFormat(paymentAmount, 'currency', 2)}
+					</Typography>
+					<Typography
+						variant='subtitle2'
+						sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
+					>
+						{formatPaymentStatusText(daysToDue, paymentStatus)}
+					</Typography>
+				</Stack>
+			),
 		[paymentAmount, daysToDue, paymentStatus],
 	);
 
@@ -565,19 +497,13 @@ const PaymentsPage = () => {
 
 					<Button
 						onClick={handlePaymentButtonClick}
-						variant='contained'
+						variant='klubiqMainButton'
 						color='primary'
 						size='large'
-						sx={{
-							borderRadius: 2,
-							minWidth: 120,
-							fontWeight: 600,
-							flexShrink: 0,
-							width: 'auto',
-							alignSelf: isVerySmall ? 'flex-start' : 'center',
-						}}
+						disabled={!paymentsData}
+						startIcon={<CreditCardIcon />}
 					>
-						<CreditCardIcon sx={{ mr: 1 }} fontSize='small' /> Pay Now
+						Pay Now
 					</Button>
 				</Stack>
 
@@ -589,7 +515,13 @@ const PaymentsPage = () => {
 							: backgroundGradient,
 					}}
 					loading={paymentsLoading}
-					title={<Typography variant='h5'>Next Payment Due</Typography>}
+					title={
+						!paymentsLoading && !paymentsData ? (
+							<Typography variant='h5'>No upcoming payments</Typography>
+						) : (
+							<Typography variant='h5'>Next Payment Due</Typography>
+						)
+					}
 					subtitle={
 						<Stack direction='column' gap={1}>
 							<Typography variant='subtitle2'>
@@ -604,12 +536,6 @@ const PaymentsPage = () => {
 				<Card elevation={1} sx={{ p: 2, borderRadius: 3, overflow: 'hidden' }}>
 					<PaymentHistoryTable />
 				</Card>
-
-				{paymentWindow && (
-					<Button onClick={returnToApp} variant='klubiqOutlinedButton'>
-						Return to Klubiq
-					</Button>
-				)}
 			</Box>
 			<DynamicModal {...paymentMethodModalConfig} />
 		</>

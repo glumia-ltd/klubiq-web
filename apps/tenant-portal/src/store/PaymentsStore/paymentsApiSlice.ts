@@ -40,7 +40,7 @@ export const paymentsApiSlice = createApi({
 				body: data.body,
 			}),
 		}),
-		getTransactionStatus: builder.query<string, { provider: string; reference: string }>({
+		getTransactionStatus: builder.query<any, { provider: string; reference: string }>({
 			query: ({ provider, reference }) => ({
 				url: paymentsEndpoints.getTransactionStatus(provider, reference),
 				method: 'GET',
@@ -62,5 +62,6 @@ export const {
 	useGetPaymentHistoryQuery,
 	useInitializeMutation,
 	useGetTransactionStatusQuery,
+	useLazyGetTransactionStatusQuery,
 	useUpdateTransactionStatusMutation,
 } = paymentsApiSlice;

@@ -106,7 +106,6 @@ export const CardPaymentForm = forwardRef<
 			},
 			onSubmit: async ({ value }) => {
 				// Form submission handled by parent
-				console.log('Form submitted:', value);
 			},
 		});
 

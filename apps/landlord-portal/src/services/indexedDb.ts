@@ -32,8 +32,7 @@ export const initDB = async () => {
 			});
 		},
 	});
-	db.onversionchange = (event) => {
-		console.log('Database version change:', event);
+	db.onversionchange = (_event) => {
 		db.close();
 		//initDB(event.newVersion);
 	};

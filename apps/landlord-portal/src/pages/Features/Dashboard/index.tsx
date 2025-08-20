@@ -166,7 +166,7 @@ const DashBoard = () => {
 	};
 	const getPropertyCountBarChartData = () => {
 		return organizationMetrics?.monthlyPropertiesSeries?.map((property:MonthlySeries) => ({
-			label: `${dayjs().month(property.month).format('MMM')}`,
+			label: `${dayjs(`${property.year}-${property.month}-01`).format('MMM')}`,
 			value: property.count,
 		})) || [];
 	};
@@ -179,7 +179,7 @@ const DashBoard = () => {
 		const overallIndicator = averagePercentage > 0 ? IndicatorOptions.POSITIVE : averagePercentage < 0 ? IndicatorOptions.NEGATIVE : IndicatorOptions.NEUTRAL;
 
 		const seriesData = monthlyRevenueSeries.map((revenue:RevenueSeries) => ({
-			label: `${dayjs().month(revenue.month).format('MMM')}`,
+			label: `${dayjs(`${revenue.year}-${revenue.month}-01`).format('MMM')}`,
 			value: revenue.revenue,
 			valuePct: revenue.pctChange,
 		}));
