@@ -84,8 +84,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       <Box
         sx={{
           ...getVariantStyles(variant, theme),
-          backgroundColor: backgroundColor || theme.palette.background.paper,
-          color: theme.palette.text.primary,
+          // backgroundColor: theme.palette.background.paper,
+          // color: theme.palette.text.primary,
           width: '100%',
           minWidth: 0,
           ...sx,

@@ -1,4 +1,4 @@
-import { UserProfile } from "@/shared/types/data.types";
+import { UserProfile } from '@/shared/types/data.types';
 
 export type AuthType = {
 	user: UserProfile;
@@ -10,7 +10,14 @@ export type RootState = {
 };
 
 export const API_TAGS = {
-    USER: 'User',
+	USER: 'User',
 	INSIGHTS: 'Insights',
-  } as const;
+	PAYMENTS: 'Payments',
+	CURRENT_PAYMENT: 'CurrentPayment',
+	PUBLIC_KEY: 'PublicKey',
+	SAVED_PAYMENT_METHODS: 'SavedPaymentMethods',
+	PAYMENT_HISTORY: 'PaymentHistory',
+} as const;
 export const ALL_TAGS = Object.values(API_TAGS);
+
+

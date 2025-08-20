@@ -34,7 +34,6 @@ const TenantDashboard = () => {
 		useGetNotificationsQuery(
 			user.uuid ? { userId: user.uuid, isRead: false } : skipToken,
 		);
-	console.log(notifications);
 	const tenantRentMetrics: DBInfoCardProps[] = [
 		{
 			icon: <MonetizationOn />,
@@ -89,102 +88,6 @@ const TenantDashboard = () => {
 			timestamp: notification.createdAt,
 			PaletteColor: 'primary',
 		})) || [];
-	// const RecentActivityCardItems: ActivityItem[] = [
-	// 	{
-	// 		id: 1,
-	// 		title: 'Rent Payment Processed',
-	// 		content: (
-	// 			<Stack
-	// 				direction='row'
-	// 				spacing={2}
-	// 				sx={{
-	// 					border: '1px solid #E2E8F0',
-	// 					backgroundColor: 'white',
-	// 					borderRadius: '8px',
-	// 					boxShadow: '0 1px 1px 0 rgba(0, 0, 0, 0.05)',
-	// 					p: {
-	// 						md: '17px',
-	// 					},
-	// 				}}
-	// 			>
-	// 				<Stack
-	// 					sx={{
-	// 						backgroundColor: 'white',
-	// 						borderRadius: '8px',
-	// 						border: '1px solid #F1F5F9',
-	// 						p: '9px',
-	// 						boxShadow: '0 1px 2px 2px rgba(0, 0, 0, 0.05)',
-	// 					}}
-	// 				>
-	// 					<AttachMoney sx={{ color: '#637DF1' }} />
-	// 				</Stack>
-	// 				<Stack direction='column'>
-	// 					<Typography
-	// 						variant='h4'
-	// 						sx={{ fontSize: '14px', fontWeight: '500' }}
-	// 					>
-	// 						Rent Payment Processed
-	// 					</Typography>
-
-	// 					<Typography
-	// 						variant='subtitle2'
-	// 						sx={{ fontSize: '12px', fontWeight: 'normal', color: '#64748B' }}
-	// 					>
-	// 						Pool maintenance schedule • Aug 15, 2023
-	// 					</Typography>
-	// 				</Stack>
-	// 			</Stack>
-	// 		),
-	// 		subtitle: '₦450,000',
-	// 		key: 'Hello',
-	// 		icon: <MonetizationOn />,
-	// 		timestamp: 'Aug 1, 2023',
-	// 		PaletteColor: 'primary',
-	// 	},
-	// ];
-
-	// const PaymentUpdatesActivityCardItems: ActivityItem[] = [
-	// 	{
-	// 		id: 1,
-	// 		title: 'Rent Payment Processed',
-	// 		content: (
-	// 			<Stack
-	// 				direction='row'
-	// 				spacing={2}
-	// 				sx={{
-	// 					border: '1px solid #FEE685',
-	// 					backgroundColor: '#FFFBEB',
-	// 					borderRadius: '8px',
-	// 					p: {
-	// 						md: '17px',
-	// 					},
-	// 				}}
-	// 			>
-	// 				<WarningAmber sx={{ color: '#E17100' }} />
-	// 				<Stack direction='column'>
-	// 					<Typography
-	// 						variant='h4'
-	// 						sx={{ fontSize: '14px', fontWeight: '500', color: '#7B3306' }}
-	// 					>
-	// 						Rent Payment Processed
-	// 					</Typography>
-
-	// 					<Typography
-	// 						variant='subtitle2'
-	// 						sx={{ fontSize: '12px', fontWeight: 'normal', color: '#BB4D00' }}
-	// 					>
-	// 						Pool maintenance schedule • Aug 15, 2023
-	// 					</Typography>
-	// 				</Stack>
-	// 			</Stack>
-	// 		),
-	// 		subtitle: '₦450,000',
-	// 		key: 'Hello',
-	// 		icon: <MonetizationOn />,
-	// 		timestamp: 'Aug 1, 2023',
-	// 		PaletteColor: 'warning',
-	// 	},
-	// ];
 
 	const renderRightContent = () => {
 		return (
@@ -225,7 +128,8 @@ const TenantDashboard = () => {
 								You have {leaseInsights?.missedPayments} missed payments.
 							</Typography>
 							<Typography variant='subtitle2' sx={{ fontWeight: 'normal' }}>
-								Your rent is overdue by {leaseInsights?.rentDueInDays} days.
+								Your rent is overdue by{' '}
+								{Math.abs(leaseInsights?.rentDueInDays || 0)} days.
 							</Typography>
 						</>
 					) : (

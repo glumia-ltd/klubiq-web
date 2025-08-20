@@ -73,7 +73,7 @@ export interface FormField {
 
 export interface DynamicFormProps {
   fields: FormField[];
-  onSubmit: (values: any) => Promise<any>;
+  onSubmit: (values: any) => Promise<any> | void;
   initialValues?: Record<string, any>;
   submitButtonText?: string;
   enableReset?: boolean;

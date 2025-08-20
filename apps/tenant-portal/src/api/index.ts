@@ -84,7 +84,6 @@ api.interceptors.response.use(
 		) {
 			try {
 				const newToken = await fetchNewCsrfToken();
-				console.log('newToken', newToken);
 				if (newToken) {
 					originalRequest.headers['x-csrf-token'] = newToken;
 					return api(originalRequest);

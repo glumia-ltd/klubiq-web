@@ -461,6 +461,7 @@ const MFASetUp = () => {
 													style={styles.qr}
 													value={qrCodeUrl}
 													viewBox={`0 0 256 256`}
+													title='QR Code'
 												/>
 											</Box>
 										</Stack>

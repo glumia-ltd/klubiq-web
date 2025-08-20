@@ -11,7 +11,7 @@ type snackbarType = {
 const initialState: snackbarType = {
 	message: '',
 	severity: 'success',
-	isOpen: true,
+	isOpen: false,
 	duration: 2000,
 };
 

@@ -10,27 +10,25 @@ import {
 	useTheme,
 } from '@mui/material';
 import { styles } from './styles';
-// import Filter from '../../../components/Filter/Filter';
-// import Filter from '../../../components/Filter/Filter';
+import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
 import { DataPagination } from '../../../components/DataPagination';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import {
-	// useGetTenantFilterMetaDataQuery,
+	useGetTenantFilterMetaDataQuery,
 	useGetTenantsQuery,
 } from '../../../store/TenantStore/tenantApiSlice';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { screenMessages } from '../../../helpers/screen-messages';
 // import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
-// import { Filter } from '@mui/icons-material';
 
 const ITEMSCOUNTOPTIONS = [10, 20, 40, 60];
 
 const Tenant = () => {
-	// const [filter, setFilter] = useState<Record<string, string | number>>({});
+	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [currentPage, setCurrentPage] = useState(1);
@@ -42,15 +40,15 @@ const Tenant = () => {
 		order: 'ASC',
 	});
 	const inputRef = useRef<HTMLElement>(null);
-	// const filterObjectLength = Object.keys(filter).length;
-	// const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
+	const filterObjectLength = Object.keys(filter).length;
+	const { data: tenantMetaData } = useGetTenantFilterMetaDataQuery();
 	const debouncedTenantSearch = useDebounce(() => {
 		setDefaultParams((prev) => ({ ...prev, search: searchText }));
 	}, 500);
 	const { data: tenantData, isLoading: isTenantDataLoading } =
 		useGetTenantsQuery({
 			...defaultParams,
-			// ...filter,
+			...filter,
 			// page: currentPage,:
 			// take: 20,
 			// sortBy: 'createdDate',
@@ -60,7 +58,7 @@ const Tenant = () => {
 		});
 	const allTenants = tenantData?.pageData || [];
 	const pageCount = tenantData?.meta?.pageCount || 0;
-	// const filterOptions = tenantMetaData?.filterOptions;
+	const filterOptions = tenantMetaData?.filterOptions;
 
 	const navigate = useNavigate();
 
@@ -87,7 +85,6 @@ const Tenant = () => {
 		// Execute search with debounce
 		debouncedTenantSearch();
 	};
-	console.log(defaultParams, "defaultParams");
 
 	const navigateToAddTenant = () => {
 		navigate('/tenants/add-tenant', {
@@ -165,14 +162,14 @@ const Tenant = () => {
 					</Paper>
 				</Stack>
 				<Stack direction={'row'} spacing={{ xs: 1, sm: 2, md: 4 }}>
-					{/* <Filter
+					<Filter
 						filterList={filterOptions}
 						getFilterResult={(options) => {
 							setFilter(options);
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
 						
-					/> */}
+					/>
 					{!isTenantDataLoading && allTenants.length === 0 && (
 						<Typography variant='body2' color='textSecondary' mt={2}>
 							No tenants matched your search for "{searchText}"
@@ -187,7 +184,6 @@ const Tenant = () => {
 							title='Tenant'
 							allTenant={allTenants}
 							onRowClick={(tenant) => {
-								console.log('here');
 								handleRowClick(tenant.id);
 							}}
 						/>

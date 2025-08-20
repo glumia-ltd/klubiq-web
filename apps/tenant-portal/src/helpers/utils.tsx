@@ -2,6 +2,12 @@ import { get } from 'lodash';
 
 import dayjs from 'dayjs';
 
+const DEFAULT_USER_LOCATION_PREFERENCE = {
+	currency: 'NGN',
+	countryCode: 'NG',
+	language: 'en',
+};
+
 export const formatDate = (dateString: string, format = 'MMMM D, YYYY') => {
 	if (!dateString) {
 		return '';
@@ -27,10 +33,10 @@ export const getLocaleFormat = (
 	numberVal: number,
 	style: 'currency' | 'percent' | 'unit' | 'decimal',
 	decimals: number = 2,
-	userLocationPreference: Record<string, unknown> = {},
+	userLocationPreference?: Record<string, unknown> | undefined,
 ) => {
 	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(
-		userLocationPreference,
+		userLocationPreference || DEFAULT_USER_LOCATION_PREFERENCE,
 	);
 	if (lang && countryCode && currencyCode) {
 		return new Intl.NumberFormat(`${lang}-${countryCode}`, {
@@ -126,4 +132,40 @@ export const formatNumberShort = (num: number): string => {
 		}
 	}
 	return num.toString();
+};
+
+export enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One-Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+	CUSTOM = 'Custom',
+}
+
+/**
+ * Formats payment status text based on days to due and payment status
+ * @param daysToDue - Number of days until due (can be negative for overdue)
+ * @param status - Payment status string
+ * @returns Formatted status text (e.g., "5 days remaining" or "3 days overdue")
+ */
+export const formatPaymentStatusText = (
+	daysToDue: number,
+	status: string,
+): string => {
+	const absDays = Math.abs(daysToDue);
+	const dayText = absDays > 1 ? 'days' : 'day';
+	const statusText = status.includes('Pending') ? 'remaining' : 'overdue';
+
+	return `${absDays} ${dayText} ${statusText}`;
+};
+
+export const getFullName = (
+	firstName: string,
+	lastName: string,
+	companyName: string,
+) => {
+	return `${firstName || ''} ${lastName || ''} ${companyName ? '-' : ''} ${companyName || ''}`;
 };

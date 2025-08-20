@@ -1,32 +1,40 @@
 'use client';
 /// <reference path="theme.d.ts" />
 // Export all components
-export * from './components/DataPagination'
-export * from './components/ErrorComponent'
-export * from './components/FeedbackContent'
-export * from './components/Filter'
-export * from './components/GroupedAvatar'
-export * from './components/LoaderComponent'
-export * from './components/PageHeader/PageHeader'
-export * from './components/PasswordStrengthBar'
-export * from './components/TabsComponent'
-export * from './components/ViewPort'
-export * from './components/Table'
-export * from './components/ActivityCard'
-export * from './components/AmenityCard'
-export * from './components/PageDetail'
-export * from './components/DocumentList'
-export * from './components/InfoCard'
+export * from './components/DataPagination';
+export * from './components/ErrorComponent';
+export * from './components/FeedbackContent';
+export * from './components/Filter';
+export * from './components/GroupedAvatar';
+export * from './components/LoaderComponent';
+export * from './components/PageHeader/PageHeader';
+export * from './components/PasswordStrengthBar';
+export * from './components/TabsComponent';
+export * from './components/ViewPort';
+export * from './components/Table';
+export * from './components/ActivityCard';
+export * from './components/AmenityCard';
+export * from './components/PageDetail';
+export * from './components/DocumentList';
+export * from './components/InfoCard';
+export { default as KlubiqSnackbar } from './components/ControlledComponents/KlubiqSnackbar';
 
 // Export DynamicForm components and types
 export { KlubiqForm } from './components/DynamicForm/klubiq-form';
 export { KlubiqFormFields } from './components/DynamicForm/klubiq-formfields';
-export type { FormField, FormGroup, InputAdornment } from './components/DynamicForm/types';
+export type {
+	FormField,
+	FormGroup,
+	InputAdornment,
+} from './components/DynamicForm/types';
 
 // Re-export everything from DynamicSideNav
 export { KlubiqSideNav } from './components/DynamicSideNav/KlubiqSideNav';
-export type { NavLink, User, KlubiqSideNavProps } from './components/DynamicSideNav/SideNavTypes';
-
+export type {
+	NavLink,
+	User,
+	KlubiqSideNavProps,
+} from './components/DynamicSideNav/SideNavTypes';
 
 // Re-export everything from DynamicForm
 export * from './components/DynamicForm/klubiq-form';
@@ -49,7 +57,7 @@ export * from './components/Errors/ErrorBoundary';
 // Re-export everything from DynamicModal
 export * from './components/DynamicModal';
 
-export * from './components/AppFooter'; 
+export * from './components/AppFooter';
 
 // Re-export everything from TanstackForm
 export * from './components/TanstackForm';
@@ -59,3 +67,4 @@ export * from './components/AmenityIconMap';
 
 export * from './components/DynamicBreadcrumb';
 export * from './components/DynamicCarousel';
+export * from './components/Payment';

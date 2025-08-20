@@ -50,7 +50,6 @@ registerRoute(
   // Handle push notifications
   self.addEventListener('push', (event) => {
     if(event.data){
-        console.log('Push received', event);
         const data = event.data.json();
         event.waitUntil(self.registration.showNotification(data.title, {
             body: data.body,

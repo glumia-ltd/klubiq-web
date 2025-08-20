@@ -23,6 +23,7 @@ export type KlubiqSideNavProps = {
 	user: User;
 	onNavClick: (route: string) => void;
 	onSignOut: () => void;
+	onSidebarStateChange?: (isOpen: boolean) => void;
 	logoUrl?: string;
 	customBottomContent?: ReactNode;
 };

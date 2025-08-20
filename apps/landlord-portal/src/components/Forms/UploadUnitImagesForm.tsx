@@ -125,7 +125,6 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 
 	const onSubmit = async (values: any) => {
 		try {
-			console.log('values', values);
 			if(values.images.length > 0){
 				const body = values.images.map((image: any) => {
 					return {

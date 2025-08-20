@@ -50,7 +50,6 @@ export const Overview: FC<OverviewType> = ({ initialText, propertyUuid }) => {
 				description: values.overview,
 			},
 		}).unwrap();
-		console.log(result);
 		if (result) {
 			dispatch(
 				openSnackbar({

@@ -113,7 +113,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		if (field.dependsOn?.length) {
 			// Collect dependency field names
 			const dependencyFields = field.dependsOn.map((dep) => dep.field);
-			console.log(dependencyFields);
+	
 
 			// Use Yup's .when() with array of dependencies
 			return Yup.string().when(dependencyFields, (...args) => {
@@ -121,7 +121,6 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 				const schema = args[args.length - 1];
 				// The dependency values are in order
 				const dependencyValues = args.slice(0, -1);
-				console.log(dependencyValues);
 
 				// Check if all dependencies match their required values
 				const allMatch = field.dependsOn!.every(

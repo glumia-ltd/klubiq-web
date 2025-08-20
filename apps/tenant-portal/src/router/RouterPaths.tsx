@@ -5,14 +5,14 @@ import {
 	createRoutesFromElements,
 } from 'react-router-dom';
 
-
 import Login from '@/pages/Auth/Login';
 import TenantDashboard from '@/pages/Features/Dashboard';
 import AuthLayout from '@/layouts/AuthLayout';
 import ResetPassword from '@/pages/Auth/ResetPassword';
 import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
-import Payments from '@/pages/Features/payments';
+// import MonnifyPaymentPage from '@/pages/Features/Payments/MonnifyPaymentPage';
+import PaymentsPage from '@/pages/Features/Payments';
 import Maintenance from '@/pages/Features/maintenance';
 import Documents from '@/pages/Features/documents';
 import Profile from '@/pages/Auth/profile';
@@ -30,13 +30,15 @@ export const router = createBrowserRouter(
 			<Route element={<PrivateRoute />}>
 				<Route element={<AppContainer />}>
 					<Route path='/dashboard' element={<TenantDashboard />} />
-					<Route path='/payments' element={<Payments />} />
+					<Route path='/payments' element={<PaymentsPage />} />
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/documents' element={<Documents />} />
 					<Route path='/profile' element={<Profile />} />
 				</Route>
+				{/* <Route path='/payments/confirm' element={<ConfirmPayment />} />
+				<Route path='/payments/method' element={<PaymentMethod />} /> */}
 			</Route>
 			{/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
-		</Route>,
+		</Route>
 	),
 );

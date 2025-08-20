@@ -112,7 +112,6 @@ api.interceptors.response.use(
 		 if (error.response?.status === 401 && error.response?.data?.message?.includes('CSRF')) {
             try {
                 const newToken = await fetchNewCsrfToken();
-				console.log('newToken', newToken);
                 if (newToken) {
                     originalRequest.headers['x-csrf-token'] = newToken;
                     return api(originalRequest);
