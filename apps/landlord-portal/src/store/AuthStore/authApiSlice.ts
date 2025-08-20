@@ -85,8 +85,6 @@ export const authApiSlice = createApi({
 					// Clear sessionStorage
 					sessionStorage.clear();
 					//window.location.reload();
-
-					console.log('Service worker cache and storage cleared successfully');
 				} catch (error) {
 					consoleError('Error during sign out:', error);
 				}

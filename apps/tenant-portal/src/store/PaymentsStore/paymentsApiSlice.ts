@@ -33,14 +33,14 @@ export const paymentsApiSlice = createApi({
 				providesTags: [API_TAGS.PAYMENT_HISTORY],
 			}),
 		}),
-		initialize: builder.mutation<any, any>({
+		initialize: builder.mutation<any, {body: any, testMode: boolean}>({
 			query: (data) => ({
-				url: paymentsEndpoints.initialize(),
+				url: data.testMode ? `${paymentsEndpoints.initialize()}?testMode=${data.testMode}` : paymentsEndpoints.initialize(),
 				method: 'POST',
-				body: data,
+				body: data.body,
 			}),
 		}),
-		getTransactionStatus: builder.query<string, { provider: string; reference: string }>({
+		getTransactionStatus: builder.query<any, { provider: string; reference: string }>({
 			query: ({ provider, reference }) => ({
 				url: paymentsEndpoints.getTransactionStatus(provider, reference),
 				method: 'GET',
@@ -62,5 +62,6 @@ export const {
 	useGetPaymentHistoryQuery,
 	useInitializeMutation,
 	useGetTransactionStatusQuery,
+	useLazyGetTransactionStatusQuery,
 	useUpdateTransactionStatusMutation,
 } = paymentsApiSlice;

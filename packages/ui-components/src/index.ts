@@ -1,22 +1,23 @@
 'use client';
 /// <reference path="theme.d.ts" />
 // Export all components
-export * from './components/DataPagination'
-export * from './components/ErrorComponent'
-export * from './components/FeedbackContent'
-export * from './components/Filter'
-export * from './components/GroupedAvatar'
-export * from './components/LoaderComponent'
-export * from './components/PageHeader/PageHeader'
-export * from './components/PasswordStrengthBar'
-export * from './components/TabsComponent'
-export * from './components/ViewPort'
-export * from './components/Table'
-export * from './components/ActivityCard'
-export * from './components/AmenityCard'
-export * from './components/PageDetail'
-export * from './components/DocumentList'
-export * from './components/InfoCard'
+export * from './components/DataPagination';
+export * from './components/ErrorComponent';
+export * from './components/FeedbackContent';
+export * from './components/Filter';
+export * from './components/GroupedAvatar';
+export * from './components/LoaderComponent';
+export * from './components/PageHeader/PageHeader';
+export * from './components/PasswordStrengthBar';
+export * from './components/TabsComponent';
+export * from './components/ViewPort';
+export * from './components/Table';
+export * from './components/ActivityCard';
+export * from './components/AmenityCard';
+export * from './components/PageDetail';
+export * from './components/DocumentList';
+export * from './components/InfoCard';
+export { default as KlubiqSnackbar } from './components/ControlledComponents/KlubiqSnackbar';
 
 // Export DynamicForm components and types
 export { KlubiqForm } from './components/DynamicForm/klubiq-form';

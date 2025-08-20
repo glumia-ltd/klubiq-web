@@ -36,8 +36,7 @@ export const BottomNav: React.FC<{ navLinks: NavLink[], onNavClick: (route: stri
 				<BottomNavigation
 					showLabels
 					value={selectedIndex}
-					onChange={(event, newValue) => {
-						console.log(`${event} newValue`, newValue);``
+					onChange={(_event, newValue) => {
 						handleNavClick(newValue, navLinks[newValue].route);
 					}}
 					sx={{

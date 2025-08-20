@@ -17,12 +17,13 @@ import {
 	DynamicModalProps,
 	PageHeader,
 	RadioCardGroup,
+	RadioCardOption,
 } from '@klubiq/ui-components';
 import PaymentHistoryTable from '@/components/PaymentHistoryTable/PaymentHistoryTable';
 import {
-	useGetTransactionStatusQuery,
 	useGetUpcomingPaymentsQuery,
 	useInitializeMutation,
+	useLazyGetTransactionStatusQuery,
 	useUpdateTransactionStatusMutation,
 } from '@/store/PaymentsStore/paymentsApiSlice';
 import { getAuthState } from '@/store/AuthStore/auth.slice';
@@ -37,13 +38,16 @@ import {
 	PaymentProviders,
 } from '@/shared/types/data.types';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
-import { useNavigate } from 'react-router-dom';
 
 const paymentOptions = [
 	{
 		value: PaymentProviders.vitalswap,
 		label: (
-			<Box sx={{ width: '100%', border: '1px solid primary.main' }}>
+			<Box
+				sx={{
+					width: '100%',
+				}}
+			>
 				<Stack
 					direction='row'
 					alignItems='center'
@@ -56,13 +60,21 @@ const paymentOptions = [
 				</Stack>
 			</Box>
 		),
+		sx: {
+			border: '1px solid',
+			borderColor: 'primary.main',
+			p: 1,
+		},
 	},
 	{
 		value: PaymentProviders.monnify,
 		label: (
-			<Box sx={{ width: '100%', border: '1px solid primary.main' }}>
+			<Box
+				sx={{
+					width: '100%',
+				}}
+			>
 				<Stack
-					sx={{ width: '100%', border: '1px solid primary.main' }}
 					direction='row'
 					alignItems='center'
 					justifyContent='space-between'
@@ -74,55 +86,42 @@ const paymentOptions = [
 				</Stack>
 			</Box>
 		),
+		sx: {
+			border: '1px solid',
+			borderColor: 'primary.main',
+			p: 1,
+		},
 	},
-];
+] as RadioCardOption[];
 const PaymentsPage = () => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const paymentReference = urlParams.get('paymentReference');
 	const environment = import.meta.env.VITE_NODE_ENV;
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const theme = useTheme();
-
+	const paymentTestMode = import.meta.env.VITE_NODE_ENV === 'local';
 	// State management
 	const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-	const [monnifyPolling, setMonnifyPolling] = useState(false);
-	const [pollingInterval, setPollingInterval] = useState<number | null>(null);
 	const [openPaymentMethodDialog, setOpenPaymentMethodDialog] = useState(false);
-	const [selectedProvider, setSelectedProvider] = useState<PaymentProvider | null>(
-		null,
-	);
+	const [selectedProvider, setSelectedProvider] =
+		useState<PaymentProvider | null>(null);
 	const [paymentWindow, setPaymentWindow] = useState<Window | null>(null);
-	const [transactionData, setTransactionData] = useState<PaymentData | null>(
+	const [_transactionData, setTransactionData] = useState<PaymentData | null>(
 		null,
 	);
+	const [_paymentRef, setPaymentRef] = useState<string | null>(null);
 
 	// Media queries
 	const isVerySmall = useMediaQuery('(max-width:356px)');
 
 	// Redux selectors
-	const {
-		user: { uuid, email },
-	} = useSelector(getAuthState);
+	const  { user: { profileuuid, uuid, email, firstname, lastname, companyname } } = useSelector(getAuthState);
 
 	// API hooks
 	const [initializePayment, { isLoading: isInitializingPayment }] =
 		useInitializeMutation();
 	const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
-
-	// Query conditions
-	const shouldFetchTransactionStatus = useMemo(
-		() =>
-			selectedProvider === PaymentProviders.monnify &&
-			!!transactionData?.providerTxnId,
-		[selectedProvider, transactionData?.providerTxnId],
-	);
-
-	const { data: _transactionStatus, refetch } = useGetTransactionStatusQuery(
-		{
-			provider: 'monnify',
-			reference: transactionData?.providerTxnId || '',
-		},
-		{ skip: !shouldFetchTransactionStatus },
-	);
+	const [getTransactionStatus] = useLazyGetTransactionStatusQuery();
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery(uuid);
@@ -154,222 +153,177 @@ const PaymentsPage = () => {
 	);
 
 	const handleProviderChange = (value: string) => {
-		console.log('value selected: ', value);
 		setSelectedProvider(
 			PaymentProviders[value as keyof typeof PaymentProviders],
 		);
 	};
 
-	// Monnify polling effect
+	const clearAllUrlParams = () => {
+		const url = new URL(window.location.href);
+		url.search = '';
+		window.history.replaceState({}, '', url.toString());
+	};
+
 	useEffect(() => {
-		if (monnifyPolling && transactionData?.providerTxnId) {
-			const interval = setInterval(async () => {
-				try {
-					const result = await refetch();
-					console.log('Monnify polling result:', result);
+		if (!paymentWindow && paymentReference) {
+			setPaymentRef(paymentReference);
+			getTransactionStatus({
+				provider: 'monnify',
+				reference: paymentReference || _paymentRef || '',
+			});
+			clearAllUrlParams();
+		}
+	}, [paymentWindow]);
 
-					if (result.data === 'success' || result.data === 'failed') {
-						setMonnifyPolling(false);
-						setPollingInterval(null);
-						clearInterval(interval);
+	// Callback functions
+	const openPayment = (checkoutUrl: string) => {
+		setIsPaymentProcessing(true);
+		const newWindow = window.open(checkoutUrl, '_self');
+		setPaymentWindow(newWindow);
+	};
 
+	const initializePaymentSession = async (provider: PaymentProvider) => {
+		setSelectedProvider(provider);
+
+		const body = {
+			invoiceId: paymentsData?.invoiceId,
+			amount: paymentsData?.amount,
+			providerName: provider,
+			metadata: {
+				redirectUrl: `${window.location.origin}/payments`,
+				description: `Rent payment for ${paymentsData?.propertyName}-${paymentsData?.unitNumber}`,
+				formattedAmount: getLocaleFormat(paymentsData?.amount, 'currency', 2),
+				propertyName: paymentsData?.propertyName,
+				unitNumber: paymentsData?.unitNumber,
+				tenantProfileId: profileuuid,
+				payeeName: `${firstname} ${lastname} ${companyname ? `(${companyname})` : ''}`,
+				payeeEmail: email,
+			},
+		};
+
+		try {
+			dispatch(
+				openSnackbar({
+					message: 'Initializing payment session...',
+					severity: 'info',
+					isOpen: true,
+					duration: 5000,
+				}),
+			);
+			const response = await initializePayment({
+				body,
+				testMode: paymentTestMode,
+			}).unwrap();
+			const { providerTxnId, ledgerId, ledgerReference } = response;
+			setTransactionData({
+				providerTxnId,
+				ledgerId,
+				ledgerReference,
+				amount: paymentsData?.amount,
+			});
+
+			switch (provider) {
+				case PaymentProviders.vitalswap:
+					const vswapenv =
+						environment === 'production' ? 'production' : 'sandbox';
+					const { session_id, isOTP } = response.metadata;
+					if ((window as any).vitalswapCheckout) {
+						setIsPaymentProcessing(true);
+						(window as any).vitalswapCheckout.init({
+							session: session_id,
+							isOtp: isOTP,
+							email: email,
+							callback: window.location.origin + '/payments',
+							environment: vswapenv,
+							onLoad: () => console.log('onLoad VitalSwap'),
+							onsuccess: (data: any) => {
+								updateTransactionStatus({
+									ledgerId,
+									txnStatus: 'success',
+									metadata: data,
+								});
+								closePaymentMethodDialog();
+							},
+							onclose: () => {
+								closePaymentMethodDialog();
+								dispatch(
+									openSnackbar({
+										message:
+											'You have closed the payment window. Please try again.',
+										severity: 'warning',
+										isOpen: true,
+										duration: 5000,
+									}),
+								);
+							},
+							onerror: (error: any) => {
+								updateTransactionStatus({
+									ledgerId,
+									txnStatus: 'failed',
+									metadata: { message: 'Payment failed', ...error },
+								});
+								closePaymentMethodDialog();
+							},
+						});
+					} else {
 						dispatch(
 							openSnackbar({
 								message:
-									result.data === 'success'
-										? 'Payment completed successfully!'
-										: 'Payment failed or was cancelled',
-								severity: result.data === 'success' ? 'success' : 'error',
+									'Payment system is not available, please try again later or try a different payment provider.',
+								severity: 'warning',
 								isOpen: true,
 								duration: 5000,
 							}),
 						);
+						setIsPaymentProcessing(false);
+						setOpenPaymentMethodDialog(false);
 					}
-				} catch (error) {
-					console.error('Error polling Monnify status:', error);
-				}
-			}, 5000);
-
-			setPollingInterval(interval);
-
-			return () => {
-				clearInterval(interval);
-				setPollingInterval(null);
-			};
+					break;
+				case PaymentProviders.monnify:
+					const { checkoutUrl } = response.metadata;
+					openPayment(checkoutUrl);
+					break;
+			}
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: 'Error initializing payment session',
+					severity: 'error',
+					isOpen: true,
+					duration: 5000,
+				}),
+			);
+			console.error(error);
 		}
-	}, [monnifyPolling, transactionData?.providerTxnId, refetch, dispatch]);
+	};
 
-	// Cleanup effect
-	useEffect(() => {
-		return () => {
-			if (pollingInterval) {
-				clearInterval(pollingInterval);
-			}
-		};
-	}, [pollingInterval]);
-
-	// Callback functions
-	const openPayment = useCallback(
-		(checkoutUrl: string) => {
-			const newWindow = window.open(checkoutUrl, '_self');
-			setPaymentWindow(newWindow);
-			if (selectedProvider === PaymentProviders.monnify) {
-				setMonnifyPolling(true);
-			}
-		},
-		[selectedProvider],
-	);
-
-	const returnToApp = useCallback(() => {
-		if (paymentWindow) {
-			paymentWindow.close();
-			setPaymentWindow(null);
-
-			if (monnifyPolling) {
-				setMonnifyPolling(false);
-				if (pollingInterval) {
-					clearInterval(pollingInterval);
-					setPollingInterval(null);
-				}
-			}
-		}
-		navigate('/payments');
-	}, [paymentWindow, monnifyPolling, pollingInterval, navigate]);
-
-	const initializePaymentSession = useCallback(
-		async (provider: PaymentProvider) => {
-			setSelectedProvider(provider);
-			const body = {
-				invoiceId: paymentsData?.invoiceId,
-				amount: paymentsData?.amount,
-				providerName: provider,
-			};
-
-			try {
-				const response = await initializePayment(body).unwrap();
-				const { providerTxnId, ledgerId, ledgerReference } = response;
-
-				setTransactionData({
-					providerTxnId,
-					ledgerId,
-					ledgerReference,
-					amount: paymentsData?.amount,
-				});
-
-				switch (provider) {
-					case PaymentProviders.vitalswap:
-						const vswapenv =
-							environment === 'production' ? 'production' : 'sandbox';
-						const { session_id, isOTP } = response.metadata;
-						if ((window as any).vitalswapCheckout) {
-							setIsPaymentProcessing(true);
-							// @ts-ignore
-							(window as any).vitalswapCheckout.init({
-								session: session_id,
-								isOtp: isOTP,
-								email: email,
-								callback: window.location.origin + '/payments',
-								environment: vswapenv,
-								onLoad: () => console.log('onLoad VitalSwap'),
-								onsuccess: (data: any) => {
-									console.log('onsuccess', data);
-									updateTransactionStatus({
-										ledgerId,
-										txnStatus: 'success',
-										metadata: data,
-									});
-									setIsPaymentProcessing(false);
-									setOpenPaymentMethodDialog(false);
-								},
-								onclose: () => {
-									console.log('Payment window closed');
-									dispatch(
-										openSnackbar({
-											message:
-												'You have closed the payment window. Please try again.',
-											severity: 'warning',
-											isOpen: true,
-											duration: 5000,
-										}),
-									);
-									setIsPaymentProcessing(false);
-								},
-								onerror: (error: any) => {
-									console.log('onerror', error);
-									updateTransactionStatus({
-										ledgerId,
-										txnStatus: 'failed',
-										metadata: { message: 'Payment failed', ...error },
-									});
-									setIsPaymentProcessing(false);
-								},
-							});
-						} else {
-							dispatch(
-								openSnackbar({
-									message:
-										'Payment system is not available, please try again later or try a different payment provider.',
-									severity: 'warning',
-									isOpen: true,
-									duration: 5000,
-								}),
-							);
-							setIsPaymentProcessing(false);
-							setOpenPaymentMethodDialog(false);
-						}
-						break;
-
-					case PaymentProviders.monnify:
-						const { checkoutUrl } = response.metadata;
-						openPayment(checkoutUrl);
-						break;
-				}
-			} catch (error) {
-				dispatch(
-					openSnackbar({
-						message: 'Error initializing payment session',
-						severity: 'error',
-						isOpen: true,
-						duration: 5000,
-					}),
-				);
-				console.error(error);
-			}
-		},
-		[
-			paymentsData,
-			environment,
-			email,
-			initializePayment,
-			updateTransactionStatus,
-			dispatch,
-			openPayment,
-		],
-	);
-
-	const handlePaymentButtonClick = useCallback(() => {
+	const handlePaymentButtonClick = () => {
 		setOpenPaymentMethodDialog(true);
-	}, []);
+	};
 
-	const closePaymentMethodDialog = useCallback(() => {
+	const closePaymentMethodDialog = () => {
 		setOpenPaymentMethodDialog(false);
-	}, []);
+		setSelectedProvider(null);
+		setTransactionData(null);
+		setIsPaymentProcessing(false);
+	};
 
 	// Memoized components
 	const renderRightContent = useMemo(
-		() => (
-			<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
-				<Typography variant='h4'>
-					{getLocaleFormat(paymentAmount, 'currency', 2)}
-				</Typography>
-				<Typography
-					variant='subtitle2'
-					sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
-				>
-					{formatPaymentStatusText(daysToDue, paymentStatus)}
-				</Typography>
-			</Stack>
-		),
+		() =>
+			paymentsData && (
+				<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
+					<Typography variant='h4'>
+						{getLocaleFormat(paymentAmount, 'currency', 2)}
+					</Typography>
+					<Typography
+						variant='subtitle2'
+						sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
+					>
+						{formatPaymentStatusText(daysToDue, paymentStatus)}
+					</Typography>
+				</Stack>
+			),
 		[paymentAmount, daysToDue, paymentStatus],
 	);
 
@@ -424,19 +378,27 @@ const PaymentsPage = () => {
 	};
 
 	const paymentMethodModalFooter = () => {
-		if (!selectedProvider) return <></>;
+		if (!selectedProvider) return undefined;
 		return (
 			<Stack direction='row' justifyContent='center' spacing={2} width='100%'>
 				<Button
 					variant='klubiqOutlinedButton'
-					onClick={() => initializePaymentSession(PaymentProviders.vitalswap)}
+					onClick={() => initializePaymentSession(selectedProvider)}
 					size='small'
 				>
 					Proceed to{' '}
 					<img
 						width={100}
-						src={selectedProvider === PaymentProviders.vitalswap ? VitalSwapLogo : MonnifyLogo}
-						alt={selectedProvider === PaymentProviders.vitalswap ? 'Vitalswap' : 'Monnify'}
+						src={
+							selectedProvider === PaymentProviders.vitalswap
+								? VitalSwapLogo
+								: MonnifyLogo
+						}
+						alt={
+							selectedProvider === PaymentProviders.vitalswap
+								? 'Vitalswap'
+								: 'Monnify'
+						}
 					/>
 				</Button>
 				<Backdrop
@@ -471,7 +433,7 @@ const PaymentsPage = () => {
 			subHeaderText?: string,
 		): DynamicModalProps => ({
 			open,
-			onClose,
+			onClose: () => onClose(),
 			headerText: headerText || undefined,
 			subHeader: subHeaderText || undefined,
 			headerAlign: 'center',
@@ -490,7 +452,7 @@ const PaymentsPage = () => {
 				...sx,
 			},
 			children: children || undefined,
-			footer,
+			footer: footer || undefined,
 		}),
 		[theme.palette.mode, theme.palette.divider, theme.palette.background.paper],
 	);
@@ -534,29 +496,31 @@ const PaymentsPage = () => {
 
 					<Button
 						onClick={handlePaymentButtonClick}
-						variant='contained'
+						variant='klubiqMainButton'
 						color='primary'
 						size='large'
-						sx={{
-							borderRadius: 2,
-							minWidth: 120,
-							fontWeight: 600,
-							flexShrink: 0,
-							width: 'auto',
-							alignSelf: isVerySmall ? 'flex-start' : 'center',
-						}}
+						disabled={!paymentsData}
+						startIcon={<CreditCardIcon />}
 					>
-						<CreditCardIcon sx={{ mr: 1 }} fontSize='small' /> Pay Now
+						Pay Now
 					</Button>
 				</Stack>
 
 				<PageHeader
 					sx={{
 						color: 'white',
-						background: backgroundGradient,
+						background: paymentsLoading
+							? theme.palette.primary.light
+							: backgroundGradient,
 					}}
 					loading={paymentsLoading}
-					title={<Typography variant='h5'>Next Payment Due</Typography>}
+					title={
+						!paymentsLoading && !paymentsData ? (
+							<Typography variant='h5'>No upcoming payments</Typography>
+						) : (
+							<Typography variant='h5'>Next Payment Due</Typography>
+						)
+					}
 					subtitle={
 						<Stack direction='column' gap={1}>
 							<Typography variant='subtitle2'>
@@ -571,12 +535,6 @@ const PaymentsPage = () => {
 				<Card elevation={1} sx={{ p: 2, borderRadius: 3, overflow: 'hidden' }}>
 					<PaymentHistoryTable />
 				</Card>
-
-				{paymentWindow && (
-					<Button onClick={returnToApp} variant='klubiqOutlinedButton'>
-						Return to Klubiq
-					</Button>
-				)}
 			</Box>
 			<DynamicModal {...paymentMethodModalConfig} />
 		</>

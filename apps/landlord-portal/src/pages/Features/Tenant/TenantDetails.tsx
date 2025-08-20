@@ -21,7 +21,7 @@ import { useGetSingleTenantByIdQuery } from '../../../store/TenantStore/tenantAp
 import { formatDate, getLocaleFormat } from '../../../helpers/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
-import { Cancel, Home, Refresh,ViewList } from '@mui/icons-material';
+import { Cancel, Home, Pending, Refresh,TaskAlt,ViewList } from '@mui/icons-material';
 import { useResendInvitationMutation } from '../../../store/AuthStore/authApiSlice';
 import { screenMessages } from '../../../helpers/screen-messages';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
@@ -325,20 +325,25 @@ const TenantDetails = () => {
 										label: 'Status',
 										value: (
 											<Chip
-												label={payment.status === 'Paid' ? 'Paid' : 'Unpaid'}
-												color={payment.status === 'Paid' ? 'success' : 'error'}
+												label={payment.status}
+												color={payment.status === 'Paid' ? 'success' : payment.status === 'Failed' ? 'error' : 'warning'}
 												size='small'
 											/>
 										),
 										icon: payment.status === 'Paid' ? (
-											<KlubiqIcons.RoundedCheckIcon
+											<TaskAlt
 												fontSize='small'
 												color='success'
 											/>
-										) : (
+										) : payment.status === 'Failed' ? (
 											<Cancel
 												fontSize='small'
 												color='error'
+											/>
+										): (
+											<Pending
+												fontSize='small'
+												color='warning'
 											/>
 										),
 									},

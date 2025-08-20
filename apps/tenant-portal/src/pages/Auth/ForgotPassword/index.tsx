@@ -31,7 +31,6 @@ const ForgotPassword = () => {
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	const onSubmit = async (values: IValuesType) => {
-		console.log(values);
 		try {
 			await api.post(authEndpoints.sendResetPasswordEmail(), values);
 		} catch (e) {

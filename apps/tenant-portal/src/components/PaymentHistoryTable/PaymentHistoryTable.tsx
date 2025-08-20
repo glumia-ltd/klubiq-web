@@ -96,11 +96,9 @@ const PaymentHistorySection: React.FC = () => {
 			amount: item?.amount,
 			paymentMethod: item?.paymentMetaData?.paymentMethod,
 			property: item?.propertyName,
-			status: item?.status.includes('overdue') ? (
-				<Chip variant='pippinRedChip' label='Overdue' />
-			) : item?.status.includes('pending') ? (
+			status: item?.status.includes('pending') ? (
 				<Chip variant='beesWaxYellowChip' label='Pending' />
-			) : item?.status.includes('paid') ? (
+			) : item?.status.includes('success') ? (
 				<Chip variant='greenChip' label='Paid' />
 			) : (
 				<Chip variant='pippinRedChip' label='Failed' />

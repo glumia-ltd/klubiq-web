@@ -10,8 +10,6 @@ const ConfirmPayment: React.FC = () => {
 	const [iframeLoading, setIframeLoading] = useState(true);
 	const { paymentData } = useLocation().state as { paymentData: PaymentData };
 
-	console.log('Payment data: ', paymentData);
-
 	return (
 		<Box
 			sx={{
@@ -54,12 +52,6 @@ const ConfirmPayment: React.FC = () => {
 					width='100%'
 					height='650'
 					id='monnify-iframe'
-					
-					// style={{
-					// 	border: 'none',
-					// 	borderRadius: theme.shape.borderRadius,
-					// 	backgroundColor: 'background.paper',
-					// }}
 					onLoad={() => setIframeLoading(false)}
 					allow='payment'
 						sandbox='allow-forms allow-scripts allow-same-origin allow-top-navigation'

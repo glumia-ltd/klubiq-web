@@ -102,8 +102,6 @@ export class ClientEncryptionUtil {
 				);
 			}
 
-			console.log(`Encrypting data: "${data}" (${encodedData.length} bytes)`);
-
 			const key = await this.importPublicKey(publicKey);
 			const encrypted = await crypto.subtle.encrypt(
 				{
@@ -115,7 +113,6 @@ export class ClientEncryptionUtil {
 			);
 
 			const result = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
-			console.log(`Encrypted result length: ${result.length}`);
 
 			return result;
 		} catch (error) {
@@ -156,8 +153,6 @@ export class ClientEncryptionUtil {
 
 	private static async importPublicKey(pemKey: string): Promise<CryptoKey> {
 		try {
-			console.log(`Original PEM key length: ${pemKey.length}`);
-			console.log(`PEM starts with: ${pemKey.substring(0, 50)}...`);
 
 			const base64 = pemKey
 				.replace(/-----BEGIN PUBLIC KEY-----\s*/, '')
@@ -174,8 +169,6 @@ export class ClientEncryptionUtil {
 				bytes[i] = binaryString.charCodeAt(i);
 			}
 
-			console.log(`Importing key with ${bytes.length} bytes`);
-
 			const key = await crypto.subtle.importKey(
 				'spki',
 				bytes,
@@ -186,8 +179,6 @@ export class ClientEncryptionUtil {
 				false,
 				['encrypt'],
 			);
-
-			console.log('✅ Public key imported successfully');
 			return key;
 		} catch (error) {
 			console.error('❌ Public key import failed:', error);

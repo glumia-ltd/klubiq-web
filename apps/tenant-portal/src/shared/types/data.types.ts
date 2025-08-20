@@ -12,34 +12,30 @@ export type UserProfile = {
 	entitlements?: {
 		[key: string]: string;
 	};
-	firebaseId?: string;
-	firstName?: string;
-	lastName?: string;
+	isactive?: boolean;
+	firebaseid?: string;
+	firstname?: string;
+	lastname?: string;
 	formOfIdentity?: string | null;
 	gender?: string | null;
 	isAccountVerified?: boolean;
-	isPrivacyPolicyAgreed?: boolean;
-	isTermsAndConditionAccepted?: boolean;
-	organizationUserId?: number;
+	isprivacypolicyagreed?: boolean;
+	istermsandconditionaccepted?: boolean;
 	uuid?: string;
 	phone?: string | null;
 	postalCode?: string | null;
-	profileId?: number;
-	profilePicUrl?: string | null;
-	profileUuid?: string;
+	profilepicurl?: string | null;
+	profileuuid?: string;
 	state?: string | null;
 	street?: string | null;
 	roleName?: string | null;
-	organizationUuid?: string;
 	notificationSubscription?: {
 		[key: string]: boolean;
 	};
-	tenantId?: string;
 	role?: string;
-	orgSettings?: Record<string, any> | null;
-	orgSubscription?: Record<string, any> | null;
-	phoneNumber?: string | null;
-	companyName?: string;
+	companyname?: string;
+	userpreferences?: Record<string, any> | null;
+	preferences?: Record<string, any> | null;
 };
 
 export type PublicKeyType = {

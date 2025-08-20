@@ -85,7 +85,6 @@ const Tenant = () => {
 		// Execute search with debounce
 		debouncedTenantSearch();
 	};
-	console.log(defaultParams, "defaultParams");
 
 	const navigateToAddTenant = () => {
 		navigate('/tenants/add-tenant', {
@@ -185,7 +184,6 @@ const Tenant = () => {
 							title='Tenant'
 							allTenant={allTenants}
 							onRowClick={(tenant) => {
-								console.log('here');
 								handleRowClick(tenant.id);
 							}}
 						/>

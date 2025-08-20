@@ -62,7 +62,6 @@ export const resetStore = () => {
 	store.dispatch(authApiSlice.util.resetApiState());
 	store.dispatch(insightsApiSlice.util.resetApiState());
 	store.dispatch(notificationsApiSlice.util.resetApiState());
-	console.log('resetStore completed');
 };
 export default store;
 export { persistor };

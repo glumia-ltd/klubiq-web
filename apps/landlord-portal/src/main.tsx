@@ -17,7 +17,6 @@ const updateSW = registerSW({
 		}
 	},
 	onOfflineReady() {
-		console.log('App ready to work offline');
 	},
 	immediate: false, // Don't register immediately to prevent double initialization
 	onRegistered(registration) {
