@@ -13,10 +13,11 @@ import AppContainer from '@/layouts/AppContainer';
 import PrivateRoute from './PrivateRoute';
 // import MonnifyPaymentPage from '@/pages/Features/Payments/MonnifyPaymentPage';
 import PaymentsPage from '@/pages/Features/Payments';
-import Maintenance from '@/pages/Features/maintenance';
-import Documents from '@/pages/Features/documents';
+import Maintenance from '@/pages/Features/Maintenance';
+import Documents from '@/pages/Features/Documents';
 import Profile from '@/pages/Auth/profile';
 import ForgotPassword from '@/pages/Auth/ForgotPassword';
+import Settings from '@/pages/Features/Settings'
 
 export const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -34,6 +35,7 @@ export const router = createBrowserRouter(
 					<Route path='/maintenance' element={<Maintenance />} />
 					<Route path='/documents' element={<Documents />} />
 					<Route path='/profile' element={<Profile />} />
+					<Route path='/settings' element={<Settings />} />
 				</Route>
 				{/* <Route path='/payments/confirm' element={<ConfirmPayment />} />
 				<Route path='/payments/method' element={<PaymentMethod />} /> */}

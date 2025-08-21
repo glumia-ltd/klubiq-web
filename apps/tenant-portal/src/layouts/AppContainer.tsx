@@ -12,7 +12,7 @@ import { RootState } from '@/store';
 import { BottomNav } from '@/components/BottomNav/BottomNav';
 import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
-import { Build, Description, Person } from '@mui/icons-material';
+import { Build, Description, Settings } from '@mui/icons-material';
 // Example for tenant portal
 // const tenantFooterConfig = {
 // 	appName: 'Tenant Portal',
@@ -61,9 +61,9 @@ const AppContainer = () => {
 			// disabled: true,
 		},
 		{
-			label: 'Profile',
-			icon: <Person />,
-			route: '/profile',
+			label: 'Settings',
+			icon: <Settings />,
+			route: '/settings',
 			index: 4,
 			disabled: !isMobile,
 		},

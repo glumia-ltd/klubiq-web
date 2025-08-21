@@ -68,3 +68,4 @@ export * from './components/AmenityIconMap';
 export * from './components/DynamicBreadcrumb';
 export * from './components/DynamicCarousel';
 export * from './components/Payment';
+export * from './components/DynamicTabs';
