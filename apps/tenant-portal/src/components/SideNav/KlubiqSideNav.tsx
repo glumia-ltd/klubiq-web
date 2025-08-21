@@ -69,17 +69,6 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 		onSidebarStateChange?.(true);
 	}, [onSidebarStateChange]);
 
-	// Remove mouse hover handlers - sidebar will always stay open
-	// const handleMouseEnter = () => {
-	// 	setIsOpen(true);
-	// 	onSidebarStateChange?.(true);
-	// };
-
-	// const handleMouseLeave = () => {
-	// 	setIsOpen(false);
-	// 	onSidebarStateChange?.(false);
-	// };
-
 	const handleNavClick = (index: number, route: string) => {
 		setSelectedIndex(index);
 		localStorage.setItem('selectedNavIndex', index.toString());

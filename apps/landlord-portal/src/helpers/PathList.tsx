@@ -6,6 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 // import HelpIcon from '@mui/icons-material/Help';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import PeopleIcon from '@mui/icons-material/People';
+import { Settings } from '@mui/icons-material';
 const userPathList = [
 	{
 		title: 'Dashboard',
@@ -26,6 +27,11 @@ const userPathList = [
 		title: 'Tenants',
 		icon: PeopleIcon,
 		path: '/tenants',
+	},
+	{
+		title: 'Settings',
+		icon: Settings,
+		path: '/settings',
 	},
 	
 	{
