@@ -28,7 +28,7 @@ const SetPassword = () => {
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
 	const [openConfirmationModal, setOpenConfirmationModal] =
-		useState<boolean>(true);
+		useState<boolean>(false);
 
 	const email = location.search.split('email=')[1]?.split('&')[0];
 	const token = searchParams.get('token');
