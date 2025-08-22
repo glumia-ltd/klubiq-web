@@ -150,8 +150,8 @@ const CreateAccount: React.FC = () => {
 	const getNextActionDescription = () => {
 		if (emailVerified) {
 			return `
-			Looks like you've already verified your email.<br />
-			You can now login to your account with your email and password. 
+			Looks like you've already createad an account and verified your email.<br />
+			You can now login to your account with your existing email and password. 
 			If you don't remember your password, you can reset it by clicking on the "Forgot password" link.`;
 		}
 			return `<strong>Congratulations! Your account has been created successfully.</strong> <br />
