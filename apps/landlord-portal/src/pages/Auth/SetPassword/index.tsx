@@ -1,9 +1,21 @@
-import { Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+	Grid,
+	Stack,
+	Typography,
+	useMediaQuery,
+	useTheme,
+} from '@mui/material';
 import LoginLayout from '../../../Layouts/LoginLayout';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
+import {
+	DynamicModal,
+	DynamicTanstackFormProps,
+	KlubiqFormV1,
+} from '@klubiq/ui-components';
 import { useResetPasswordMutation } from '../../../store/AuthStore/authApiSlice';
 import { z } from 'zod';
+import { TaskAlt } from '@mui/icons-material';
+import { useState } from 'react';
 
 type IValuesType = {
 	password: string;
@@ -12,13 +24,26 @@ type IValuesType = {
 
 const SetPassword = () => {
 	const theme = useTheme();
-	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
+	const [openConfirmationModal, setOpenConfirmationModal] =
+		useState<boolean>(true);
 
-	const email = searchParams.get('email');
-	const oobCode = searchParams.get('oobCode');
+	const email = location.search.split('email=')[1]?.split('&')[0];
+	const token = searchParams.get('token');
 	const [resetPassword] = useResetPasswordMutation();
+
+	const routeToLogin = () => {
+		setOpenConfirmationModal(false);
+		navigate('/login', { replace: true });
+	};
+
+	const scheduleGoToLogin = () => {
+		window.setTimeout(() => {
+			routeToLogin();
+		}, 7000);
+	};
 
 	const onSubmit = async (values: IValuesType) => {
 		const { password } = values;
@@ -26,28 +51,37 @@ const SetPassword = () => {
 		const body = {
 			email,
 			password,
-			oobCode,
+			oobCode: token,
 		};
 
 		try {
 			await resetPassword(body).unwrap();
-			navigate('/login', { replace: true });
+			setOpenConfirmationModal(true);
+			scheduleGoToLogin();
 		} catch (e) {
+			setOpenConfirmationModal(false);
 			console.error(e);
 			throw e;
 		}
 	};
 
-
 	const resetPasswordFormConfig: DynamicTanstackFormProps = {
 		formWidth: '100%',
 		header: (
-			<Typography variant={'h1'} fontSize={isMobile ? '1.75rem' : '2.25rem'} textAlign='left'>
+			<Typography
+				variant={'h1'}
+				fontSize={isMobile ? '1.75rem' : '2.25rem'}
+				textAlign='left'
+			>
 				Time for a Fresh Start!
 			</Typography>
 		),
 		subHeader: (
-			<Typography variant={'h2'} fontSize={isMobile ? '1.25rem' : '1.75rem'} textAlign='left'>
+			<Typography
+				variant={'h2'}
+				fontSize={isMobile ? '1.25rem' : '1.75rem'}
+				textAlign='left'
+			>
 				Let's Secure Your Klubiq Account with a New Password.
 			</Typography>
 		),
@@ -63,13 +97,18 @@ const SetPassword = () => {
 				placeholder: 'Enter your password',
 				validation: {
 					schema: z
-						.string({required_error: 'Password is required'})
+						.string({ required_error: 'Password is required' })
 						.min(8, { message: 'Password must be at least 8 characters long' })
-						.refine((data: any) => /[A-Z]/.test(data) && /[0-9]/.test(data) && /[!@#$%^&*]/.test(data), {
-							message: 'Password must contain at least one uppercase letter, one number, and one special character',
-						})
-					
-						
+						.refine(
+							(data: any) =>
+								/[A-Z]/.test(data) &&
+								/[0-9]/.test(data) &&
+								/[!@#$%^&*]/.test(data),
+							{
+								message:
+									'Password must contain at least one uppercase letter, one number, and one special character',
+							},
+						),
 				},
 			},
 			{
@@ -79,7 +118,7 @@ const SetPassword = () => {
 				placeholder: 'Confirm your password',
 				validation: {
 					schema: z
-						.string({required_error: 'Confirm password is required'})
+						.string({ required_error: 'Confirm password is required' })
 						.min(8, { message: 'Password must be at least 8 characters long' }),
 					dependencies: [
 						{
@@ -104,7 +143,14 @@ const SetPassword = () => {
 
 	return (
 		<LoginLayout>
-			<Grid item xs={12} sm={6} md={6} lg={6} sx={{ width: isMobile ? '100%' : '33rem' }}>
+			<Grid
+				item
+				xs={12}
+				sm={6}
+				md={6}
+				lg={6}
+				sx={{ width: isMobile ? '100%' : '33rem' }}
+			>
 				<Grid
 					container
 					sx={{
@@ -123,93 +169,51 @@ const SetPassword = () => {
 					>
 						<KlubiqFormV1 {...resetPasswordFormConfig} />
 					</Stack>
-					{/* <Grid
-						container
-						sx={{
-							width: '33rem',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
-						<Grid
-							container
-							mt={-10}
-							sx={{
-								height: '25rem',
-							}}
-						>
-							<Grid
-								item
-								xs={12}
-								sm={12}
-								md={12}
-								lg={12}
-								sx={{
-									textAlign: 'left',
-								}}
-							>
-								
-							</Grid>
-							<Grid
-								item
-								xs={12}
-								sm={12}
-								md={12}
-								lg={12}
-								mb={5}
-								sx={{
-									textAlign: 'left',
-								}}
-							>
-							</Grid>
-
-							<Grid item sm={12} xs={12} lg={12}>
-								<ControlledPasswordField
-									name='password'
-									label='Password'
-									type='password'
-									formik={formik}
-									inputProps={{
-										sx: {
-											height: '40px',
-										},
-									}}
-								/>
-							</Grid>
-
-							<Grid item sm={12} xs={12} lg={12}>
-								<ControlledPasswordField
-									name='confirmPassword'
-									label='Confirm password'
-									type='password'
-									formik={formik}
-									inputProps={{
-										sx: {
-											height: '40px',
-										},
-									}}
-								/>
-							</Grid>
-
-							<Grid
-								item
-								sm={12}
-								xs={12}
-								lg={12}
-								// m={0.5}
-								sx={{
-									alignItems: 'center',
-									textAlign: 'center',
-									marginTop: '1rem',
-								}}
-							>
-								<Button fullWidth variant='klubiqMainButton' type='submit'>
-									Set Password
-								</Button>
-							</Grid>
-						</Grid>
-					</Grid> */}
 				</Grid>
+				<DynamicModal
+					open={openConfirmationModal}
+					onClose={routeToLogin}
+					header={
+						<Stack direction='row' spacing={2} alignItems='center' width='100%'>
+							<TaskAlt
+								color='success'
+								fontSize='large'
+								sx={{ fontSize: '3rem' }}
+							/>
+							<Typography variant='h4'>Password set successfully!</Typography>
+						</Stack>
+					}
+					children={
+						<Stack
+							direction='column'
+							spacing={2}
+							alignItems='center'
+							justifyContent='center'
+							width='100%'
+						>
+							<Typography variant='body1' lineHeight={1.2} textAlign='center'>
+								You can now login to your account with your email and password. <br />
+								If you don't remember your password, you can reset it by
+								clicking on the 'Forgot password' link.
+							</Typography>
+							<Typography variant='body1' lineHeight={1.2} textAlign='center'>
+								You will be redirected to the login page shortly.
+							</Typography>
+						</Stack>
+					}
+					borderRadius={2}
+					contentAlign='center'
+					maxWidth='xs'
+					fullScreenOnMobile={false}
+					sx={{
+						maxHeight: '300px',
+						justifyContent: 'center',
+						alignItems: 'space-between',
+						alignContent: 'center',
+						maxWidth: '700px',
+						width: '100%',
+					}}
+				/>
 			</Grid>
 		</LoginLayout>
 	);

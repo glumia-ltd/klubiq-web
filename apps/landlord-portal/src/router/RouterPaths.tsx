@@ -39,7 +39,8 @@ export const router = createBrowserRouter(
 		<Route>
 			<Route path='/login' element={<Login />} />
 			<Route path='/404' element={<NotFound />} />
-			<Route path='signup/createaccount' element={<SignUpPage />} />
+			<Route path='/signup' element={<SignUpPage />} />
+			<Route path='signup/createaccount' element={<Navigate to='/signup' replace />} />
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />

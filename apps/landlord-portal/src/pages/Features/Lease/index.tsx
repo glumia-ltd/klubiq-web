@@ -9,8 +9,6 @@ import {
 	IconButton,
 	InputBase,
 } from '@mui/material';
-// import { styles } from './style';
-// import { LeftArrowIcon } from '../../components/Icons/LeftArrowIcon';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
@@ -22,18 +20,19 @@ import { useNavigate } from 'react-router-dom';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { LeaseType } from '../../../shared/type';
 import { useDebounce } from '../../../hooks/useDebounce';
-import { styles } from "./style"
+import { styles } from './style';
 import {
 	DynamicTable,
 	TableColumn,
 	DynamicAvatar,
 } from '@klubiq/ui-components';
-import { statusColors, UnitTypeColors } from '../../../page-tytpes/leases/list-page.type';
+import {
+	statusColors,
+	UnitTypeColors,
+} from '../../../page-tytpes/leases/list-page.type';
 import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
-// 	import { LeftArrowIcon } from '../../../components/Icons/LeftArrowIcon';
 import { screenMessages } from '../../../helpers/screen-messages';
-// import { useGetPropertiesNamesQuery } from '../../store/PropertyPageStore/propertyApiSlice';
 import SearchIcon from '@mui/icons-material/Search';
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
@@ -152,7 +151,11 @@ const Lease = () => {
 							label={rowData.isMultiUnitProperty ? 'Multi' : 'Single'}
 							size='small'
 							variant='outlined'
-							color={UnitTypeColors[rowData.isMultiUnitProperty ? 'Multi' : 'Single'] as any}
+							color={
+								UnitTypeColors[
+									rowData.isMultiUnitProperty ? 'Multi' : 'Single'
+								] as any
+							}
 						/>
 					</Stack>
 				),
@@ -223,8 +226,8 @@ const Lease = () => {
 						Add New Lease
 					</Button>
 				</Stack>
-<Stack direction={'column'}>
-					<Paper component='form' sx={styles.inputStyle}  >
+				<Stack direction={'column'}>
+					<Paper elevation={0} component='form' sx={styles.inputStyle}>
 						<IconButton aria-label='search'>
 							<SearchIcon />
 						</IconButton>
@@ -247,7 +250,7 @@ const Lease = () => {
 						disable={filterObjectLength ? false : !allLease}
 					/>
 				</Stack>
-				
+
 				<Stack sx={{ width: '100%' }}>
 					{isLeaseDataLoading ? (
 						<TableSkeleton />
