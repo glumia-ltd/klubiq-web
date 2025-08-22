@@ -18,8 +18,7 @@ export const styles = {
 		alignItems: 'center',
 		border: '1px solid',
 		borderColor: 'primary.contrastText',
-		borderRadius: '10px',
-		marginBottom: '10px',
+		borderRadius: 2.5,
 	},
 	infoimg: {
 		width: '32px',

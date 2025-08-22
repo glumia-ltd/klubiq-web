@@ -9,15 +9,17 @@ export const styles = {
 			lg: 0,
 		},
 	},
-	title: {
-		textAlign: 'left',
+	subTitle: {
 		fontSize: {
-			xs: '1.25rem',
+			xs: '1rem',
 			sm: '1.25rem',
 			md: '1.5rem',
 			lg: '1.75rem',
 		},
-		marginBottom: {
+	},
+	title: {
+		textAlign: 'left',
+		fontSize: {
 			xs: '1.25rem',
 			sm: '1.25rem',
 			md: '1.5rem',

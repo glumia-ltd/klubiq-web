@@ -126,7 +126,7 @@ const Tenant = () => {
 
 	return (
 		<>
-			<Stack gap={2}>
+			<Stack gap={1}>
 				<Stack
 					direction={'row'}
 					gap={1}
@@ -145,7 +145,7 @@ const Tenant = () => {
 							...styles.inputStyle,
 							border: '1px solid',
 							borderColor: 'primary.contrastText',
-							borderRadius: '10px',
+							borderRadius: 2.5,
 						}}
 					>
 						<IconButton aria-label='search'>
@@ -168,13 +168,7 @@ const Tenant = () => {
 							setFilter(options);
 						}}
 						disable={filterObjectLength ? false : !allTenants.length}
-						
 					/>
-					{!isTenantDataLoading && allTenants.length === 0 && (
-						<Typography variant='body2' color='textSecondary' mt={2}>
-							No tenants matched your search for "{searchText}"
-						</Typography>
-					)}
 				</Stack>
 				<Stack>
 					{isTenantDataLoading ? (

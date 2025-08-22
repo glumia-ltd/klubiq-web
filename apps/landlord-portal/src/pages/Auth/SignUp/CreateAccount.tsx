@@ -1,19 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Grid, Stack, Typography, useTheme } from '@mui/material';
-import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
-import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import ControlledPasswordField from '../../../components/ControlledComponents/ControlledPasswordField';
-import { LoadingSubmitButton } from '../../../styles/button';
+import {
+	Button,
+	Grid,
+	Stack,
+	Typography,
+	useMediaQuery,
+	useTheme,
+} from '@mui/material';
 import { BoldTextLink } from '../../../styles/links';
 import { useNavigate } from 'react-router-dom';
-import { signInWithCustomToken } from 'firebase/auth';
-import { auth } from '../../../firebase';
-import { saveUser } from '../../../store/AuthStore/AuthSlice';
 import { useDispatch } from 'react-redux';
-import { api } from '../../../api';
-import { authEndpoints } from '../../../helpers/endpoints';
 import { useState } from 'react';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { filter, find, orderBy } from 'lodash';
@@ -27,16 +23,21 @@ import logo from '../../../assets/images/logo-1.png';
 import logoText from '../../../assets/images/logo-text-2.png';
 import lightLogo from '../../../assets/images/logo-2.png';
 import lightLogoText from '../../../assets/images/logo-text-1.png';
-// import { Turnstile } from '@marsidev/react-turnstile';
+import { useSignUpMutation } from '../../../store/AuthStore/authApiSlice';
+import { DynamicModal, DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
+import { z } from 'zod';
+import { TaskAlt } from '@mui/icons-material';
 
 const CreateAccount: React.FC = () => {
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState<boolean>(false);
 	const [passwordMessage, setPasswordMessage] = useState<string>('');
 	const { data: rolesData } = useGetRolesQuery();
-	const theme = useTheme();
-	// const [captchaStatus, setCaptchaStatus] = useState<boolean>(false);
+	const [signUpMutation] = useSignUpMutation();
+	const [accountCreated, setAccountCreated] = useState<boolean>(false);
+	const [emailVerified, setEmailVerified] = useState<boolean>(false);
 
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
@@ -54,23 +55,16 @@ const CreateAccount: React.FC = () => {
 		'priority',
 		'asc',
 	) as CountryType[];
-	const validationSchema = yup.object({
-		firstName: yup.string().required('This field is required'),
-		companyName: yup.string(),
-		lastName: yup.string().required('This field is required'),
-		password: yup.string().required('Please enter your password'),
-		email: yup.string().email().required('Please enter your email'),
-		country: yup.string().required('This field is required'),
-	});
 
 	type IValuesType = {
-		firstName: string;
+		name: {
+			firstName: string;
+			lastName: string;
+		};
 		companyName: string;
-		lastName: string;
 		password: string;
 		email: string;
-		mailCheck: boolean;
-		country: string | undefined;
+		country: string;
 	};
 	// Add error handling for role
 	const role = rolesData
@@ -78,19 +72,9 @@ const CreateAccount: React.FC = () => {
 		: null;
 
 	const onSubmit = async (values: IValuesType) => {
-		// if (!captchaStatus) {
-		// 	dispatch(
-		// 		openSnackbar({
-		// 			message: 'We could not verify you are human. Please try again.',
-		// 			severity: 'error',
-		// 			isOpen: true,
-		// 			duration: 5000,
-		// 		}),
-		// 	);
-		// 	return;
-		// }
-		const { email, password, firstName, lastName, companyName, country } =
-			values;
+		console.log('values entered:', values);
+		const { email, password, name, companyName, country } = values;
+		const { firstName, lastName } = name;
 		const selectedCountry = find(activeCountries, ['code', country]);
 
 		try {
@@ -106,7 +90,6 @@ const CreateAccount: React.FC = () => {
 				);
 				return;
 			}
-			setLoading(true);
 			const userDetails = {
 				email,
 				password,
@@ -126,41 +109,16 @@ const CreateAccount: React.FC = () => {
 						duration: 5000,
 					}),
 				);
-
-				setLoading(false);
-
+				setAccountCreated(false);
 				return;
 			}
 
-			const {
-				data: { data: token },
-			} = await api.post(authEndpoints.signup(), userDetails);
-
-			const userCredential = await signInWithCustomToken(auth, token);
-			dispatch(
-				openSnackbar({
-					message: 'Please verify your email!',
-					severity: 'info',
-					isOpen: true,
-					duration: 5000,
-				}),
-			);
-
-			setLoading(false);
-
-			const user: any = userCredential.user;
-
-			const userInfo = { email: user.email };
-
-			dispatch(
-				saveUser({
-					user: userInfo,
-					isSignedIn: true,
-				}),
-			);
-			navigate('/verify-email?is_pending=true', { replace: true });
+			const { emailVerified } = await signUpMutation(userDetails).unwrap();
+			setAccountCreated(true);
+			setEmailVerified(emailVerified);
 		} catch (error) {
-			setLoading(false);
+			setAccountCreated(false);
+			setEmailVerified(false);
 			const errorMessage = (error as Error).message.includes('code 424')
 				? 'Your credentials are invalid. Please try again with new credentials.'
 				: (error as Error).message;
@@ -172,38 +130,210 @@ const CreateAccount: React.FC = () => {
 					duration: 7000,
 				}),
 			);
+			throw error;
 		}
+	};
+	const handleCloseModal = () => {
+		setAccountCreated(false);
+		routeToLogin();
 	};
 
 	const routeToLogin = () => {
 		navigate('/login', { replace: true });
 	};
-	const formik = useFormik({
+	const getNextActionTitle = () => {
+		if (emailVerified) {
+			return `Your email is verified and you can login now!`;
+		}
+		return `Account Created!`;
+	};
+	const getNextActionDescription = () => {
+		if (emailVerified) {
+			return `
+			Looks like you've already createad an account and verified your email.<br />
+			You can now login to your account with your existing email and password. 
+			If you don't remember your password, you can reset it by clicking on the "Forgot password" link.`;
+		}
+			return `<strong>Congratulations! Your account has been created successfully.</strong> <br />
+			We've sent you an email. Please confirm your email address by clicking on the link in your inbox.
+			If you don't receive an email, please check your spam folder or contact us -
+			 <a href='mailto:support@klubiq.com'>support@klubiq.com</a>.`;
+	};
+		const signUpFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		header: (
+			<Stack
+				direction='row'
+				justifyContent='flex-start'
+				alignItems='center'
+				gap={2}
+				sx={{ width: '100%' }}
+			>
+				<img
+					src={theme.palette.mode === 'dark' ? logo : lightLogo}
+					alt='logo'
+					style={{ width: '10%', height: 'auto' }}
+				/>
+				<img
+					src={theme.palette.mode === 'dark' ? logoText : lightLogoText}
+					alt='logo'
+					style={{ width: '25%', height: 'auto' }}
+				/>
+			</Stack>
+		),
+		subHeader: (
+			<Typography variant='h2' sx={styles.subTitle} textAlign='left'>
+				Create your Klubiq account.
+			</Typography>
+		),
+		submitButtonText: 'Sign up',
+		underSubmitButtonNode: (
+			<Typography textAlign='left'>
+				Already have an account?{' '}
+				<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
+			</Typography>
+		),
+		showBackdrop: false,
+		fullWidthButtons: true,
+		verticalAlignment: 'center',
+		horizontalAlignment: 'center',
+		fields: [
+			{
+				name: 'name',
+				type: 'group',
+				label: '',
+				width: '100%',
+				layout: 'row',
+				groupFields: [
+					{
+						name: 'firstName',
+						type: 'text',
+						label: 'First Name',
+						placeholder: 'Enter your first name',
+						width: isMobile ? '100%' : '47.5%',
+						validation: {
+							schema: z
+								.string({ required_error: 'First name is required' })
+								.min(2, {
+									message:
+										'First name is too short. Please enter at least 2 characters.',
+								}),
+						},
+					},
+					{
+						name: 'lastName',
+						type: 'text',
+						label: 'Last Name',
+						placeholder: 'Enter your last name',
+						width: isMobile ? '100%' : '47.5%',
+						validation: {
+							schema: z
+								.string({ required_error: 'Last name is required' })
+								.min(2, {
+									message:
+										'Last name is too short. Please enter at least 2 characters.',
+								}),
+						},
+					},
+				],
+			},
+			{
+				name: 'companyName',
+				type: 'text',
+				label: 'Company Name',
+				placeholder: 'Enter your company name',
+				width: '100%',
+			},
+			{
+				name: 'country',
+				type: 'hidden',
+				label: 'Country',
+				placeholder: 'Select your country',
+				required: true,
+				width: '100%',
+				hidden: !isGloballyAvailable,
+				options: activeCountries?.map((country) => ({
+					value: country.code,
+					label: country.name,
+				})),
+			},
+			{
+				name: 'email',
+				type: 'email',
+				label: 'Email',
+				placeholder: 'Enter your email address',
+				validation: {
+					schema: z
+						.string({ required_error: 'Email is required' })
+						.email({ message: 'Enter a valid email address' }),
+				},
+			},
+			{
+				name: 'password',
+				type: 'password',
+				label: 'Password',
+				placeholder: 'Enter your password',
+				validation: {
+					schema: z
+						.string({ required_error: 'Password is required' })
+						.min(8, { message: 'Password must be at least 8 characters long' })
+						.refine(
+							(data: any) =>
+								/[A-Z]/.test(data) &&
+								/[0-9]/.test(data) &&
+								/[!@#$%^&*]/.test(data),
+							{
+								message:
+									'Password must contain at least one uppercase letter, one number, and one special character',
+							},
+						),
+				},
+			},
+			{
+				name: 'passwordMeter',
+				type: 'custom',
+				label: '',
+				showIf: (values) => !!values.password,
+				component: (_, __, form: any) => {
+					return (
+						<PasswordStrengthBar
+							password={form.getFieldValue('password')}
+							handlePasswordChange={setPasswordMessage}
+						/>
+					);
+				},
+			},
+			{
+				name: 'termsAndConditions',
+				type: 'custom',
+				label: '',
+				component: (
+					<Typography variant='body1' textAlign='left' sx={{ width: '100%' }}>
+						<span>By creating an account you are agreeing to our </span>
+						<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
+						<span> and </span>
+						<BoldTextLink href='/privacy-policy'>Privacy Policy</BoldTextLink>
+						<span>.</span>
+					</Typography>
+				),
+			},
+		],
+		onSubmit: onSubmit,
 		initialValues: {
-			firstName: '',
+			name: {
+				firstName: '',
+				lastName: '',
+			},
 			companyName: '',
-			lastName: '',
-			password: '',
-			email: '',
-			mailCheck: false,
 			country: activeCountries[0]?.code,
+			email: '',
+			password: '',
 		},
-		enableReinitialize: false,
-		validateOnChange: true,
-		validateOnBlur: true,
-		validateOnMount: true,
-		validationSchema,
-		onSubmit,
-	});
+		enableErrorAlert: true,
+	};
 
 	return (
-		<Grid
-			container
-			component='form'
-			sx={styles.container}
-			onSubmit={formik.handleSubmit}
-			columnSpacing={{ xs: 1, sm: 1, md: 1 }}
-		>
+		<Grid container sx={styles.container}>
 			<Grid
 				item
 				xs={12}
@@ -214,190 +344,22 @@ const CreateAccount: React.FC = () => {
 				// spacing={0}
 				sx={{
 					alignContent: 'center',
+					width: isMobile ? '100%' : '33rem',
 				}}
 			>
 				<Grid container sx={styles.mainContainer} spacing={0.5}>
-					<Grid container sx={styles.formContainer}>
-						<Grid item xs={12} sm={12} md={12} lg={12} sx={styles.headerGrid}>
-							<Stack
-								direction='row'
-								justifyContent='flex-start'
-								alignItems='center'
-								gap={2}
-								mb={2}
-								sx={{ width: '100%' }}
-							>
-								<img
-									src={theme.palette.mode === 'dark' ? logo : lightLogo}
-									alt='logo'
-									style={{ width: '10%', height: 'auto' }}
-								/>
-								<img
-									src={theme.palette.mode === 'dark' ? logoText : lightLogoText}
-									alt='logo'
-									style={{ width: '25%', height: 'auto' }}
-								/>
-							</Stack>
-							<Typography variant='h2' sx={styles.title}>
-								Create your Klubiq account
-							</Typography>
-							<Typography
-								mt='-3rem'
-								mb='2rem'
-								sx={{
-									fontWeight: 500,
-									lineHeight: '30px',
-									textAlign: 'center',
-									fontSize: '18px',
-									display: 'none',
-								}}
-							>
-								Sign up and get 30 days free trial.
-							</Typography>
-						</Grid>
-						<Grid item sm={12} xs={12} lg={12} mb={1}>
-							<Stack direction={'row'} sx={styles.nameStack}>
-								<ControlledTextField
-									sx={styles.inputStyle}
-									name='firstName'
-									label='First Name'
-									type='text'
-									placeholder='Enter your first name'
-									autoComplete='given-name'
-									formik={formik}
-								/>
-								<ControlledTextField
-									sx={styles.inputStyle}
-									name='lastName'
-									label='Last Name'
-									placeholder='Enter your last name'
-									formik={formik}
-									type='text'
-									autoComplete='family-name'
-								/>
-							</Stack>
-						</Grid>
-						<Grid item sm={12} xs={12} lg={12} mb={1}>
-							<ControlledTextField
-								name='companyName'
-								label='Company Name'
-								placeholder='Enter your company name'
-								type='text'
-								formik={formik}
-								autoComplete='organization'
-							/>
-						</Grid>
-						{isGloballyAvailable && (
-							<Grid item sm={12} xs={12} lg={12} mb={1}>
-								<ControlledSelect
-									name='country'
-									label='Select Country'
-									placeholder='Select Country'
-									formik={formik}
-									options={activeCountries?.map((country) => ({
-										id: country.code,
-										name: country.name,
-									}))}
-								/>
-							</Grid>
-						)}
-						<Grid item sm={12} xs={12} lg={12} mb={1}>
-							<ControlledTextField
-								name='email'
-								label='Email '
-								placeholder='Enter your email address'
-								formik={formik}
-								type='email'
-								autoComplete='email'
-							/>
-						</Grid>
-
-						<Grid item sm={12} xs={12} lg={12} mb={1}>
-							<ControlledPasswordField
-								name='password'
-								label='Password'
-								type='password'
-								placeholder='Enter your password'
-								formik={formik}
-								autoComplete='new-password'
-							/>
-						</Grid>
-
-						<Grid item sm={12} xs={12} lg={12} mt={-2} mb={1}>
-							<PasswordStrengthBar
-								password={formik.values.password}
-								handlePasswordChange={setPasswordMessage}
-							/>
-						</Grid>
-
-						<Typography variant='body1' textAlign='left' sx={{ width: '100%' }}>
-							<span>By creating an account you are agreeing to our </span>
-							<BoldTextLink href='/terms-of-use'>Terms of Use</BoldTextLink>
-							<span> and </span>
-							<BoldTextLink href='/privacy-policy'>Privacy Policy</BoldTextLink>
-							<span>.</span>
-						</Typography>
-
-						{/* <Turnstile
-							siteKey={import.meta.env.VITE_TURNSTILE_SITEKEY}
-							options={{
-								action: 'signup',
-								language: 'en',
-								size: 'invisible',
-							}}
-							onSuccess={() => setCaptchaStatus(true)}
-							onError={() => setCaptchaStatus(false)}
-							onExpire={() => setCaptchaStatus(false)}
-						/> */}
-
-						<Grid
-							item
-							sm={12}
-							xs={12}
-							lg={12}
-							sx={{
-								alignItems: 'center',
-								textAlign: 'center',
-								marginTop: '1rem',
-							}}
-						>
-							{loading ? (
-								<LoadingSubmitButton
-									loading
-									loadingPosition='center'
-									variant='outlined'
-								>
-									Sign Up
-								</LoadingSubmitButton>
-							) : (
-								<Button
-									fullWidth
-									variant='klubiqMainButton'
-									type='submit'
-									disableRipple
-								>
-									Sign Up
-								</Button>
-							)}
-						</Grid>
-						<Grid
-							item
-							sm={12}
-							xs={12}
-							lg={12}
-							sx={{
-								alignItems: 'center',
-								textAlign: 'center',
-								cursor: 'pointer',
-								marginTop: '1.2rem',
-							}}
-						>
-							<Typography textAlign='left'>
-								Already have an account?{' '}
-								<BoldTextLink onClick={routeToLogin}>Sign in</BoldTextLink>
-							</Typography>
-						</Grid>
-					</Grid>
+					<Stack
+						justifyContent='center'
+						direction='column'
+						width={isMobile ? '90%' : '50%'}
+						// p={isMobile ? 5: 10}
+						gap={1}
+						sx={{
+							height: '100vh',
+						}}
+					>
+						<KlubiqFormV1 {...signUpFormConfig} />
+					</Stack>
 				</Grid>
 			</Grid>
 
@@ -436,6 +398,38 @@ const CreateAccount: React.FC = () => {
 					</Typography>
 				</Stack>
 			</Grid>
+			<DynamicModal
+					open={accountCreated}
+					onClose={handleCloseModal}
+					header={
+						<Stack direction='row' spacing={2} alignItems='center' width='100%'>
+							<TaskAlt color='success' fontSize='large' sx={{ fontSize: '3rem' }} />
+							<Typography variant='h4'>
+								{getNextActionTitle()}
+							</Typography>
+						</Stack>
+					}
+					children={<Stack direction='column' spacing={2} alignItems='center' justifyContent='center' width='100%'>
+						<Typography variant='body1' lineHeight={1.2} textAlign='center' dangerouslySetInnerHTML={{ __html: getNextActionDescription() }} />
+					</Stack>}
+					footer={
+						<Stack direction='row' spacing={2} alignItems='center' justifyContent='center' width='100%'>
+							<Button variant='klubiqMainButton' onClick={handleCloseModal}>Login</Button>
+						</Stack>
+					}
+					borderRadius={2}
+					contentAlign='center'
+					maxWidth='xs'
+					fullScreenOnMobile={false}
+					sx={{
+						maxHeight: '300px',
+						justifyContent: 'center',
+						alignItems: 'space-between',
+						alignContent: 'center',
+						maxWidth: '700px',
+						width: '100%',
+					}}
+				/>
 		</Grid>
 	);
 };
