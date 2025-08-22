@@ -51,14 +51,14 @@ const AppContainer = () => {
 			icon: <Build />,
 			route: '/maintenance',
 			index: 2,
-			//disabled: true,
+			disabled: true,
 		},
 		{
 			label: 'Documents',
 			icon: <Description />,
 			route: '/documents',
 			index: 3,
-			// disabled: true,
+			disabled: true,
 		},
 		{
 			label: 'Settings',
