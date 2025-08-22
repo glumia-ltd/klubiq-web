@@ -1,4 +1,3 @@
-const Maintenance = () => {
+export default function Maintenance() {
 	return <div>Maintenance</div>;
-};
-export default Maintenance;
+}
