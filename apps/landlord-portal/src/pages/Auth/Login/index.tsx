@@ -152,7 +152,7 @@ const Login = () => {
 	};
 
 	const routeToSignUp = () => {
-		navigate('/signup/createaccount', { replace: true });
+		navigate('/signup', { replace: true });
 	};
 	const routeToForgotPassword = () => {
 		navigate('/forgot-password', { replace: true });
@@ -200,7 +200,6 @@ const Login = () => {
 				validation: {
 					schema: z
 						.string({required_error: 'Password is required'})
-						.min(8, { message: 'Password must be at least 8 characters long' }),
 				},
 			},
 			{

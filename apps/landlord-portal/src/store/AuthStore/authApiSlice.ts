@@ -7,6 +7,7 @@ import { consoleError } from '../../helpers/debug-logger';
 import { handleApiResponse } from '../../helpers/apiResponseHandler';
 import { screenMessages } from '../../helpers/screen-messages';
 import { resetStore } from '..';
+import { SignUpResponseType } from '../../page-tytpes/auths/signup.type';
 
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
@@ -103,18 +104,12 @@ export const authApiSlice = createApi({
 				method: 'GET',
 			}),
 		}),
-		signUp: builder.mutation({
+		signUp: builder.mutation<SignUpResponseType, any>({
 			query: (body) => ({
 				url: authEndpoints.signup(),
 				method: 'POST',
 				body,
-			}),
-			async onQueryStarted(_, { dispatch, queryFulfilled }) {
-				await handleApiResponse(queryFulfilled, dispatch, {
-					successMessage: screenMessages.auth.signUp.success,
-					errorMessage: screenMessages.auth.signUp.error,
-				});
-			},
+			})
 		}),
 		resetPassword: builder.mutation({
 			query: (body) => ({

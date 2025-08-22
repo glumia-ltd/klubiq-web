@@ -1,5 +1,13 @@
 import { LoadingSubmitButton } from '../../../styles/button';
-import { Box, Button, Modal, Stack, Typography, useTheme, useMediaQuery } from '@mui/material';
+import {
+	Box,
+	Button,
+	Stack,
+	Typography,
+	useTheme,
+	useMediaQuery,
+	Link,
+} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -10,8 +18,9 @@ import { api } from '../../../api';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import successImage from '../../../assets/images/circle-ok.svg';
-import cancelImage from '../../../assets/images/cancel.svg';
+
+import { CheckCircle } from '@mui/icons-material';
+import { DynamicModal } from '@klubiq/ui-components';
 
 const validationSchema = yup.object({
 	email: yup.string().email().required('Please enter your email'),
@@ -68,27 +77,46 @@ const ForgotPassword = () => {
 	});
 
 	return (
-		<Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} component="form" onSubmit={formik.handleSubmit}>
-			<Stack 
-				width={isMobile ? '100%' : '33rem'} 
-				height="100vh" 
-				justifyContent="center" 
-				alignItems="center"
+		<Box
+			sx={{
+				height: '100vh',
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+			component='form'
+			onSubmit={formik.handleSubmit}
+		>
+			<Stack
+				width={isMobile ? '100%' : '33rem'}
+				height='100vh'
+				justifyContent='center'
+				alignItems='center'
 			>
 				<Stack width={isMobile ? '90%' : '30rem'} spacing={3}>
-					<Stack 
-						direction="row" 
-						alignItems="center" 
-					>
-						<Button variant='klubiqTextButton' startIcon={<ArrowBackIosIcon />}  onClick={routeToLogin}>Back to login</Button>
+					<Stack direction='row' alignItems='center'>
+						<Button
+							variant='klubiqTextButton'
+							startIcon={<ArrowBackIosIcon />}
+							onClick={routeToLogin}
+						>
+							Back to login
+						</Button>
 					</Stack>
 
 					<Stack spacing={3}>
-						<Typography variant='h3' textAlign='left' fontSize={isMobile ? '1.25rem' : '1.75rem'}>
+						<Typography
+							variant='h3'
+							textAlign='left'
+							fontSize={isMobile ? '1.25rem' : '1.75rem'}
+						>
 							Forgot your password?
 						</Typography>
 
-						<Typography variant='body2' fontSize={isMobile ? '1rem' : '1.25rem'}>
+						<Typography
+							variant='body2'
+							fontSize={isMobile ? '1rem' : '1.25rem'}
+						>
 							Don't worry, happens to all of us. Enter your email below to
 							recover your password.
 						</Typography>
@@ -111,96 +139,43 @@ const ForgotPassword = () => {
 									Set Password
 								</LoadingSubmitButton>
 							) : (
-								<Button fullWidth variant='klubiqMainButton' type='submit'> Set Password </Button>
+								<Button fullWidth variant='klubiqMainButton' type='submit'>
+									{' '}
+									Set Password{' '}
+								</Button>
 							)}
 						</Box>
 					</Stack>
 				</Stack>
-
-				<Modal
+				<DynamicModal
 					open={openModal}
 					onClose={handleClose}
-					aria-labelledby='modal-modal-title'
-					aria-describedby='modal-modal-description'
-				>
-					<Box
-						sx={{
-							position: 'absolute',
-							top: '50%',
-							left: '50%',
-							transform: 'translate(-50%, -50%)',
-							width: '90%',
-							maxWidth: '788px',
-							bgcolor: 'background.paper',
-							borderRadius: '10px',
-							p: 4,
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'flex-start',
-							textAlign: 'left',
-							gap: '1rem',
-						}}
-					>
-						<img
-							onClick={handleClose}
-							src={cancelImage}
-							alt='cancel'
-							style={{
-								position: 'absolute',
-								right: '20px',
-								top: '20px',
-								cursor: 'pointer',
-								width: '23px',
-								height: '23px',
-							}}
-						/>
-
-						<Stack direction="row" alignItems="center" width="100%">
-							<img
-								src={successImage}
-								alt='success'
-								style={{
-									width: '32px',
-									height: '32px',
-									marginRight: '1rem',
-								}}
-							/>
-
-							<Typography variant='h3' sx={{ fontWeight: '700' }}>
+					header={
+						<Stack direction='row' spacing={2} alignItems='center' width='100%'>
+							<CheckCircle color='success' fontSize='large' sx={{ fontSize: '3rem' }} />
+							<Typography variant='h4'>
 								Password Reset Instructions Sent
 							</Typography>
 						</Stack>
-
-						<Typography
-							sx={{
-								fontWeight: '400',
-								fontSize: '18px',
-								lineHeight: '28px',
-								opacity: '0.75',
-								color: '#1B1B1B',
-							}}
-						>
-							Instructions to reset your password have been sent to the email
-							provided. <br />
-							If you did not receive it, please contact us at{' '}
-							<a
-								href='mailto:support@glumia.com'
-								style={{
-									color: '#2573C1',
-									cursor: 'pointer',
-									textDecoration: 'none',
-								}}
-							>
-								support@glumia.com
-							</a>
-							.
-						</Typography>
-
-						<Button variant='klubiqTextButton' onClick={handleClose}>
-							Close
-						</Button>
-					</Box>
-				</Modal>
+					}
+					children={
+						<Stack direction='column' mt={2} spacing={2} alignItems='center' width='100%'>
+							<Typography variant='subtitle1'>
+								Instructions to reset your password have been sent to the email
+								provided. <br />
+								If you did not receive it, please contact us at{' '}
+								<Link href='mailto:support@glumia.com'>support@glumia.com</Link>.
+							</Typography>
+						</Stack>
+					}
+					borderRadius={2}
+					contentAlign='center'
+					maxWidth='xs'
+					fullScreenOnMobile={false}
+					sx={{
+						maxHeight: '250px',
+					}}
+				/>
 			</Stack>
 		</Box>
 	);

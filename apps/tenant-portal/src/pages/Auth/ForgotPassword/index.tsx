@@ -143,7 +143,7 @@ const ForgotPassword = () => {
 			}}
 		>
 			<Stack
-				width={isMobile ? '100%' : '33rem'}
+				width={isMobile ? '90%' : '33rem'}
 				height='100vh'
 				justifyContent='center'
 				alignItems='center'
