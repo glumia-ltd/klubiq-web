@@ -134,17 +134,9 @@ const NavBar = () => {
 				]
 			: []),
 		{
-			label: 'Profile',
-			onClick: () => {
-				consoleDebug('redirect to profile page later');
-			},
-			icon: <PersonOutlineOutlinedIcon sx={{ color: 'text.primary' }} />,
-			sx: { padding: '10px' },
-		},
-		{
 			label: 'Settings',
 			onClick: () => {
-				consoleDebug('redirect to settings page later');
+				navigate('/settings');
 			},
 			icon: <SettingsOutlinedIcon sx={{ color: 'text.primary' }} />,
 			sx: { padding: '10px' },

@@ -32,7 +32,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 	onSignOut,
 	onSidebarStateChange,
 	// logoUrl = '/assets/images/icons.svg',
-	customBottomContent,
+	customBottomContent
 }) => {
 	const theme = useTheme();
 	const location = useLocation();
@@ -207,7 +207,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				</Box>
 
 				{/* Nav Links */}
-				<Stack spacing={1} alignItems='flex-start' sx={{ minHeight: 200 }}>
+				<Stack spacing={1} alignItems='flex-start' sx={{ minHeight: 100 }}>
 					{navLinks.map((link, index) =>
 						link.disabled ? null : (
 							<ListItemButton

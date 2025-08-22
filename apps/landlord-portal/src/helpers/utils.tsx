@@ -2,6 +2,10 @@ import { getData } from '../../src/services/indexedDb';
 import { get } from 'lodash';
 import { consoleLog } from './debug-logger';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 
 export enum PaymentFrequency {
@@ -145,15 +149,17 @@ export const getLocaleDateFormat = (
 		dateStyle?: 'full' | 'short' | 'long' | 'medium';
 		timeStyle?: 'full' | 'short' | 'long' | 'medium';
 		hour12?: boolean;
+		timeZone?: string;
 	},
 ) => {
 	const { countryCode, lang } = getInfoFromUserSettings(orgSettings);
 	if (lang && countryCode) {
-		const newDate = dayjs(date).toDate() || dayjs().toDate();
-
 		const locale = `${lang}-${countryCode}`;
-
-		return new Intl.DateTimeFormat(locale, options).format(newDate);
+		const timeZone =
+			options?.timeZone || (get(orgSettings, 'timeZone', '') as string) || 'UTC';
+		const source = date || dayjs().toISOString();
+		const newDate = dayjs.tz(source, timeZone).toDate();
+		return new Intl.DateTimeFormat(locale, { ...options, timeZone }).format(newDate);
 	}
 	return '';
 };
