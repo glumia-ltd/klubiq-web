@@ -5,17 +5,125 @@ import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { DynamicAvatar } from '@klubiq/ui-components';
 import { Upload } from '@mui/icons-material';
+import {
+	FormFieldV1,
+	DynamicTanstackFormProps,
+	KlubiqFormV1,
+} from '@klubiq/ui-components';
+import { z } from 'zod';
 
 export const Profile = () => {
 	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	console.log(user);
+	interface InitialFormValues {
+
+		firstName: string;
+		lastName: string;
+		address: string;
+		email: string;
+		phoneNumber: string;
+
+
+	}
+	const initialValues: InitialFormValues = {
+
+		firstName: '',
+		lastName: '',
+		address: '',
+		email: '',
+		phoneNumber: '',
+
+	};
+	const onSubmit = async (values: InitialFormValues) => {
+		console.log('Form submitted with values:', values);
+	}
+	const profileFormFields: FormFieldV1[] = [
+		{
+			name: 'firstName',
+			label: 'First Name',
+			type: 'text',
+			width: isMobile ? '100%' : '100%',
+		},
+		{
+			name: 'lastName',
+			label: 'Last Name',
+			type: 'text',
+			width: isMobile ? '100%' : '100%',
+		},
+		{
+			name: 'email',
+			label: 'Email',
+			type: 'email',
+			width: isMobile ? '100%' : '100%',
+			validation: {
+				schema: z
+					.string({ message: 'Email is required' })
+					.email('Please enter a valid email address')
+					.min(1, { message: 'Email is required' }),
+			},
+		},
+		
+
+
+		{
+			name: 'phoneNumber',
+			label: 'Phone Number',
+			type: 'text',
+			width: isMobile ? '100%' : '100%',
+			validation: {
+				schema: z
+					.string()
+					.refine(
+						(value) => {
+							if (value.length === 0) {
+								return true;
+							}
+							return value.match(/^[0-9]+$/);
+						},
+						{
+							message: 'Invalid phone number',
+						},
+					)
+					.optional()
+					.nullable(),
+			},
+		},
+		{
+			name: 'address',
+			label: 'Address',
+			type: 'text',
+			width: isMobile ? '100%' : '100%',
+			validation: {
+				schema: z
+					.string({ message: 'Email is required' })
+					.email('Please enter a valid email address')
+					.min(1, { message: 'Email is required' }),
+			},
+		},
+
+	];
+
+	const profileFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		submitButtonText: 'Save Changes',
+		fields: profileFormFields,
+		initialValues,
+		isMultiStep: false,
+		onSubmit,
+		showBackdrop: true,
+		backdropText: 'Please wait while we save details...',
+		fullWidthButtons: false,
+		horizontalAlignment: 'right',
+		verticalAlignment: 'top',
+	};
+
 	return (
 		<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
 			<Stack
 				direction='column'
-				gap={3}
+				gap={2}
 				alignItems='flex-start'
 				justifyContent='space-between'
 			>
@@ -39,26 +147,26 @@ export const Profile = () => {
 								background: 'dark',
 							},
 						]}
-                        showName={false}
+						showName={false}
 						size='large'
 					/>
 					<Stack
 						direction='column'
 						// spacing={1}
-                        gap={1}
+						gap={1}
 						alignItems='flex-start'
 						justifyContent='flex-start'
 					>
 						<Typography variant='h6'>Profile Photo</Typography>
 						<Typography variant='body1'>Upload a new photo.</Typography>
 
-                        
+
 						<Stack
 							direction='row'
 							spacing={2}
 							alignItems='center'
 							justifyContent='flex-start'
-                            sx={{mt: 2}}
+							sx={{ mt: 2 }}
 						>
 							<Button variant='klubiqOutlinedButton' startIcon={<Upload />}>
 								Upload Photo
@@ -69,9 +177,8 @@ export const Profile = () => {
 						</Stack>
 					</Stack>
 				</Stack>
-                <Box>
-                    {/* Dynamic Form goes here @Feyi */}
-                </Box>
+					<KlubiqFormV1 {...profileFormConfig} />
+					{/* Dynamic Form goes here @Feyi */}
 			</Stack>
 		</Box>
 	);
