@@ -6,16 +6,18 @@ import {
 	DynamicTable
 } from '@klubiq/ui-components';
 import { DynamicTableColors, DynamicTableStyles } from "@klubiq/ui-components";
+import ProgressWithWarning from './ProgressBar';
+import { primaryColors } from '../../../../tenant-portal/src/context/ThemeContext/theme';
 
 export const Subscription = () => {
 	const renderActionChip = (action: string) => {
 		switch (action) {
 			case "Renewal":
 				return <Chip label={action} color="success" variant="filled" />;
-			case "Payment Reminder":
-				return <Chip label={action} color="warning" variant="outlined" />;
+			case "Upgrade":
+				return <Chip label={action} color="info" variant="filled" />;
 			default:
-				return <Chip label={action} color="default" variant="outlined" />;
+				return <Chip label={action} color="default" variant="filled" />;
 		}
 	};
 	const theme = useTheme();
@@ -88,7 +90,6 @@ export const Subscription = () => {
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
 	};
-	// Define the table columns
 	const tableColumns = [
 		{
 			key: 'date',
@@ -98,7 +99,7 @@ export const Subscription = () => {
 			key: 'action',
 			label: 'Action',
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			render: (row: any) => renderActionChip(row.action), // 👈 render chip
+			render: (row: any) => renderActionChip(row.action), 
 
 		},
 		{
@@ -111,7 +112,6 @@ export const Subscription = () => {
 		},
 	];
 
-	// Example rows for the table
 	const tableRows = [
 		{
 			id: 1,
@@ -160,7 +160,7 @@ export const Subscription = () => {
 					</Stack>
 					<Box>
 						<Box sx={{ display: 'flex', alignItems: "center", gap: 1, mt: 2 }}><Typography variant='subtitle1' sx={{}} color="#666666">Plan:</Typography>
-							<Typography variant="subtitle1" color="#002147">Proffesional</Typography></Box>
+							<Typography variant="subtitle1" color={primaryColors.mainBlue}>Proffesional</Typography></Box>
 						<Box>
 						</Box>
 						<Box sx={{ display: 'flex', alignItems: "center", gap: 1, mt: 2 }}><Typography variant='subtitle1' sx={{}} color="#666666">Price:</Typography>
@@ -187,7 +187,9 @@ export const Subscription = () => {
 
 					/>
 				</Stack>
-
+				<Stack direction='column' spacing={2} width={'100%'}>
+					<ProgressWithWarning />
+				</Stack>
 
 			</Stack>
 		</Box>

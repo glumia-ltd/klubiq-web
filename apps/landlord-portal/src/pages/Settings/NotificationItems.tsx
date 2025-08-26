@@ -1,7 +1,7 @@
 import { Typography, Switch, Box } from '@mui/material';
 
 type NotificationItemProps = {
-  id: string; // 👈 added
+  id: string; 
   title: string;
   description: string;
   icon?: React.ReactNode;
@@ -10,7 +10,7 @@ type NotificationItemProps = {
 };
 
 const NotificationItem = ({
-  id, // 👈 destructure it
+  id, 
   title,
   description,
   icon,
