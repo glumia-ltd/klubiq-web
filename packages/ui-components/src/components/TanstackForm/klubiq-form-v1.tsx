@@ -30,6 +30,8 @@ import {
 	Alert,
 	AlertTitle,
 	useTheme,
+	Snackbar,
+	useMediaQuery,
 } from '@mui/material';
 import {
 	DynamicTanstackFormProps,
@@ -251,9 +253,8 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	captcheSiteKey = '',
 	formSpacing = 4,
 }) => {
-	// const [isTurnstileCaptchaValid, setIsTurnstileCaptchaValid] =
-	// 	useState<boolean>(false);
 	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const [currentStep, setCurrentStep] = useState(0);
 	const [stepErrors, setStepErrors] = useState<boolean[]>([]);
 	const [stepValidations, setStepValidations] = useState<boolean[]>([]);
@@ -267,6 +268,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	const [nextActionDialogOpen, setNextActionDialogOpen] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [showErrorAlert, setShowErrorAlert] = useState(false);
+	const [showErrorAlertSnackbar, setShowErrorAlertSnackbar] = useState(false);
 	const [errorAlertData, setErrorAlertData] = useState<{
 		title: string;
 		message: string;
@@ -643,6 +645,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				setSubmissionResult(result);
 				setIsSubmitted(true);
 				setShowErrorAlert(false);
+				setShowErrorAlertSnackbar(false);
 				// Only show next action if configured
 				if (nextAction?.showAfterSubmit) {
 					form.reset();
@@ -664,6 +667,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 						'An error occurred while submitting the form. Please try again.',
 				});
 				setShowErrorAlert(true);
+				setShowErrorAlertSnackbar(true);
 				// Restore previous values so the form doesn't clear on error
 				Object.entries(value || {}).forEach(([key, val]) => {
 					form.setFieldValue(key, val);
@@ -692,9 +696,11 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				try {
 					stepSchema.parse(value);
 					setShowErrorAlert(false);
+					setShowErrorAlertSnackbar(false);
 					return undefined;
 				} catch (error) {
 					setShowErrorAlert(true);
+					setShowErrorAlertSnackbar(true);
 					if (error instanceof z.ZodError) {
 						return error.errors[0].message;
 					}
@@ -1440,34 +1446,60 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 					} catch (error) {
 						console.error('Form handleSubmit error:', error);
 						setShowErrorAlert(true);
+						setShowErrorAlertSnackbar(true);
 						setIsSubmitted(false);
 					}
 				}}
 			>
 				{/* Error Alert */}
 				{enableErrorAlert && showErrorAlert && (
-					<Alert
-						severity='error'
-						sx={{
-							mb: 3,
-							backgroundColor: 'error.main',
-							color: 'error.contrastText',
-							'& .MuiAlert-icon': {
+					<>
+						<Alert
+							severity='error'
+							sx={{
+								mb: 3,
+								backgroundColor: 'error.main',
 								color: 'error.contrastText',
-							},
-							'& .MuiAlert-message': {
-								color: 'error.contrastText',
-							},
-						}}
-						onClose={() => setShowErrorAlert(false)}
-					>
-						{getErrorAlertTitle() && (
-							<AlertTitle>{getErrorAlertTitle()}</AlertTitle>
-						)}
-						{getErrorAlertMessage() && (
-							<Typography variant='body1'>{getErrorAlertMessage()}</Typography>
-						)}
-					</Alert>
+								'& .MuiAlert-icon': {
+									color: 'error.contrastText',
+								},
+								'& .MuiAlert-message': {
+									color: 'error.contrastText',
+								},
+							}}
+							onClose={() => setShowErrorAlert(false)}
+						>
+							{getErrorAlertTitle() && (
+								<AlertTitle>{getErrorAlertTitle()}</AlertTitle>
+							)}
+							{getErrorAlertMessage() && (
+								<Typography variant='body1'>
+									{getErrorAlertMessage()}
+								</Typography>
+							)}
+						</Alert>
+							<Snackbar
+							open={showErrorAlertSnackbar}
+							autoHideDuration={6000}
+							onClose={() => setShowErrorAlertSnackbar(false)}
+							anchorOrigin={{
+								vertical: 'bottom',
+								horizontal: isMobile ? 'center' : 'left',
+							}}
+							sx={{
+								width: '100%',
+								maxWidth: isMobile ? '90%' : '600px',
+							}}
+						>
+							<Alert
+								onClose={() => setShowErrorAlertSnackbar(false)}
+								severity='error'
+								variant='filled'
+							>
+								{getErrorAlertMessage()}
+							</Alert>
+						</Snackbar>
+					</>
 				)}
 				{/* Form Fields */}
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
