@@ -27,7 +27,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 // import SearchIcon from '@mui/icons-material/Search';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import CustomPopper from '../Shared/CustomPopper';
@@ -38,7 +37,6 @@ import {
 } from '../../store/NotificationStore/NotificationApiSlice';
 import { styles } from './style';
 import { stringAvatar } from '../../helpers/utils';
-import { consoleDebug } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { NotificationData } from '../../shared/global-types';
 import { useNavigate } from 'react-router-dom';

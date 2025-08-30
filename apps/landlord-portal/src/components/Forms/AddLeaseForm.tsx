@@ -9,9 +9,8 @@ import {
 	useAddLeaseMutation,
 } from '../../store/LeaseStore/leaseApiSlice';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../helpers/utils';
@@ -245,7 +244,6 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const { user } = useSelector(getAuthState);
-	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [addLease] = useAddLeaseMutation();
 	const queryResult = useGetOrgPropertiesViewListQuery(
