@@ -136,7 +136,7 @@ jobs:
             git fetch origin
 
             echo "Resetting local repository to match remote branch..."
-            git reset --hard origin/qa
+            git reset --hard origin/staging
 
             echo "Creating .env file from GitHub Secrets..."
             cat <<EOF > .apps/landlord-portal/.env
