@@ -19,7 +19,7 @@ import {
 	PropertyDetailsIcon,
 	UnitTypeIcon,
 } from '../../../components/Icons/CustomIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
 import { AmenitiesDialog } from '../../../components/CustomFormComponents/AmenitiesDialog';
 import {
@@ -44,7 +44,7 @@ import { useDeleteFileMutation } from '../../../store/GlobalStore/globalApiSlice
 import { consoleError, consoleInfo, consoleLog } from '../../../helpers/debug-logger';
 import { Property } from '../../../page-tytpes/properties/request.types';
 import { FileUpload } from '@klubiq/ui-components';
-import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 
 interface AddressValue {
@@ -371,7 +371,6 @@ export const CreateProperty = () => {
 	const [addProperty] = useAddPropertyMutation();
 	const [uploadImages] = useUploadImagesMutation();
 	const [deleteFile] = useDeleteFileMutation();
-	const dispatch = useDispatch();
 	const icons: Record<string, any> = {
 		HouseIcon,
 		EmojiOneHomeIcon,
@@ -945,16 +944,13 @@ export const CreateProperty = () => {
 			return;
 		}
 		try {	
-			return await addProperty(newPropertyData).unwrap();
-		} catch (error) {
-			const errorMessage = (error as any).error?.message;
-			dispatch(openSnackbar({
-				message: errorMessage,
-				severity: 'error',
-				isOpen: true,
-				duration: 7000
-			}));
-			throw error;
+			const result = await addProperty(newPropertyData).unwrap();
+			return result;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.property.create.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const handleAddTenantClick = (formData: any, result: any) => {

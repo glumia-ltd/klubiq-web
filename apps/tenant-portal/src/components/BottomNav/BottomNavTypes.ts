@@ -8,4 +8,6 @@ export type NavLink = {
 	subLinks?: NavLink[];
 	showSubLinks?: boolean;
 	disabled?: boolean;
+	settingsDrawerListNavLinks?: NavLink[];
+	onClick?: () => void;
 };

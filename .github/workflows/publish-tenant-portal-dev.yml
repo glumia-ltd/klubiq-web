@@ -14,10 +14,6 @@ env:
   VITE_APPLICATION_NAME: klubiq-tenant-portal
   VITE_NODE_ENV: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/prod' && 'production' || github.ref == 'refs/heads/qa' && 'staging' ||'development'}}
   VITE_IDB_VERSION: ${{ vars.VITE_IDB_VERSION }}
-  REACT_APP_DATA_CACHE: ${{ vars.REACT_APP_DATA_CACHE }}
-  REACT_APP_ALLOWED_ORIGINS: ${{ vars.REACT_APP_ALLOWED_ORIGINS }}
-  REACT_APP_PUBLIC_CACHED_PATHS: ${{ vars.REACT_APP_PUBLIC_CACHED_PATHS }}
-  REACT_APP_CACHE_EXPIRATION_TIME: ${{ vars.REACT_APP_CACHE_EXPIRATION_TIME }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
   BUILD_NUMBER: ${{ github.run_number }}

@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { styles } from '../styles';
 import Logo from '@/assets/images/icons.svg';
 import { BoldTextLink } from '@/styles/links';
+import { screenMessages } from '@/helpers/screen-messages';
 
 type IValuesType = {
 	password: string;
@@ -61,8 +62,10 @@ const Login = () => {
 		try {
 			await signIn({ email, password }).unwrap();
 			loadUserAfterSignIn();
-		} catch (error: any) {
-			const errorMessage = error.data.message;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.auth.signIn.error);
 			throw new Error(errorMessage);
 		}
 	};
