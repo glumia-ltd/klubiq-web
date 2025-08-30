@@ -4,17 +4,7 @@ export const styles = {
 		paddingBottom: { xs: '0.5rem', sm: '0.5rem', md: '1rem', lg: '1rem' },
 		// color: 'primary.main',
 	},
-	breadCrumbStyle: {
-		paddingLeft: '18px',
-		'& .css-4pdmu4-MuiBreadcrumbs-ol': {
-			gap: '10px',
-		},
-	},
-	iconStyle: {
-		width: '16px',
-		height: '16px',
-		cursor: 'pointer',
-	},
+	
 	subheadText: {
 		fontWeight: '400',
 		fontSize: '12px',
@@ -56,25 +46,10 @@ export const styles = {
 		justifyContent: 'flex-end',
 	},
 
-	actionButtonStyle: {
-		color: 'primary.main',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: '40px',
-		padding: '8px 12px',
-		gap: '8px',
-		borderRadius: '10px',
-		minWidth: '160px',
-	},
-
 	firstCardContainer: {
 		borderRadius: '8px',
 	},
 
-	unitInfoCardStyle: {
-		marginTop: '32px',
-	},
 
 	addfieldStyle: {
 		marginTop: '32px',
@@ -95,15 +70,7 @@ export const styles = {
 		fontSize: '24px',
 		fontWeight: '700',
 	},
-	// tableButton: {
-	// 	background: '#fff',
-	// 	width: '144px',
-	// 	height: '32px',
-	// 	padding: '6px 8px, 6px 8px',
-	// 	borderRadius: '8px',
-	// 	textAlign: 'center',
-	// },
-
+	
 	tableHeaderCellStyle: {
 		background: 'transparent',
 		borderTop: '1px solid primary.main',
@@ -231,5 +198,8 @@ export const styles = {
 	tableContainer: {
 		padding: '16px 32px 24px 32px',
 		gap: '24px',
+	},
+	primaryTenantStyle: {
+		alignItems: 'center',
 	},
 };

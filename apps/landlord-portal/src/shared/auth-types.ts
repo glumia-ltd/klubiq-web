@@ -2,10 +2,7 @@ export type UserProfile = {
 	addressLine2?: string | null;
 	bio?: string | null;
 	city?: string | null;
-	company?: string;
-	companyId?: number;
-	companyRole?: string;
-	companyUuid?: string;
+	organization?: string;
 	country?: string | null;
 	countryPhoneCode?: string | null;
 	dateOfBirth?: string | null;
@@ -13,7 +10,7 @@ export type UserProfile = {
 	entitlements?: {
 		[key: string]: string;
 	};
-	fbId?: string;
+	firebaseId?: string;
 	firstName?: string;
 	lastName?: string;
 	formOfIdentity?: string | null;
@@ -22,19 +19,25 @@ export type UserProfile = {
 	isPrivacyPolicyAgreed?: boolean;
 	isTermsAndConditionAccepted?: boolean;
 	organizationUserId?: number;
-	organizationUserUuid?: string;
-	phoneNumber?: string | null;
+	uuid?: string;
+	phone?: string | null;
 	postalCode?: string | null;
 	profileId?: number;
 	profilePicUrl?: string | null;
 	profileUuid?: string;
 	state?: string | null;
 	street?: string | null;
-	systemRole?: string | null;
+	roleName?: string | null;
 	organizationUuid?: string;
 	notificationSubscription?: {
 		[key: string]: boolean;
 	};
+	tenantId?: string;
+	role?: string;
+	orgSettings?: Record<string, any> | null;
+	orgSubscription?: Record<string, any> | null;
+	phoneNumber?: string | null;
+	companyName?: string;
 };
 
 export type Organization = {
@@ -95,3 +98,31 @@ export interface SubscriptionPlan {
 	automated_rent_collection: boolean;
 	multi_currency_support: boolean;
 }
+export type TenantProfileType = {
+	id: string;
+	fullName: string;
+	firstName: string;
+	lastName: string;
+	companyName: string | null;
+	email: string;
+	phoneNumber: string;
+	title: string;
+	profilePicUrl: string | null;
+	countryPhoneCode: string | null;
+	street: string | null;
+	addressLine2: string | null;
+	state: string | null;
+	city: string | null;
+	country: string | null;
+	postalCode: string | null;
+	formOfIdentity: string | null;
+	dateOfBirth: string | null;
+	gender: string | null;
+	bio: string | null;
+	isTermsAndConditionAccepted: boolean;
+	isPrivacyPolicyAgreed: boolean;
+	createdDate: string;
+	updatedDate: string;
+	isKYCVerified: boolean;
+	active: boolean;
+  };

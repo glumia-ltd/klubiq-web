@@ -35,7 +35,7 @@ const initialState: AddPropertyType = {
 			bathrooms: null,
 			toilets: null,
 			area: {
-				value: null,
+				value: '',
 				unit: '',
 			},
 			status: '',

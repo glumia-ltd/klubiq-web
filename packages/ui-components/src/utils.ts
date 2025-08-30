@@ -12,9 +12,10 @@ import { get } from "react-hook-form";
 
   
   export const getLocaleFormat = (
-    numberVal: number,
-    style:  'percent' | 'unit' | 'decimal',
-    decimals: number = 2,
+	numberVal: number,
+	style: 'percent' | 'unit' | 'decimal' | 'currency',
+	decimals: number = 2,
+  currencyCode: string = 'NGN',
   ) => {
     const locale = navigator.language;
     if (locale) {
@@ -22,6 +23,8 @@ import { get } from "react-hook-form";
           style: `${style}`,
           minimumFractionDigits: style === 'percent' ? 0 : decimals,
           maximumFractionDigits: style === 'percent' ? 0 : decimals,
+          currency: currencyCode,
+          currencyDisplay: 'symbol',
         }).format(style === 'percent' ? numberVal / 100 : numberVal);
     }
     return '';

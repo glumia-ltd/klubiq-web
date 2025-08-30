@@ -1,7 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import { useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Logo2 from '../../assets/images/icons.svg';
 import { SectionContext } from '../../context/SectionContext/SectionContext';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -21,12 +21,10 @@ import {
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
-import { auth } from '../../firebase';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 function MobileSideBar() {
 	const theme = useTheme();
-
+	const navigate = useNavigate();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
@@ -72,9 +70,7 @@ function MobileSideBar() {
 	
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
+		navigate('/login');
 	};
 
 	const handleLinkClick = (title: string) => {
@@ -101,7 +97,7 @@ function MobileSideBar() {
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
-						alignItems: 'center',
+						alignItems: 'flex-start',
 						gap: '20px',
 					}}
 				>
@@ -115,7 +111,7 @@ function MobileSideBar() {
 					</DrawerHeader>
 					<List>
 						{pathList.map((props, index) => {
-							const path = props.path;
+							const {path} = props;
 							return (
 								<ListItem
 									disablePadding
@@ -196,10 +192,10 @@ function MobileSideBar() {
 						sx={{
 							borderRadius: '10px',
 							background: '#ffffff',
-							padding: sidebarOpen ? '8px 8px' : '0.9px',
-							height: sidebarOpen ? '60px' : '96px',
-							width: sidebarOpen ? 'auto' : '60px',
-							gap: '8px',
+							padding: '2px 2px',
+							height: '60px',
+							width: '150px',
+							gap: 1,
 							alignItems: 'center',
 							justifyContent: 'space-around',
 						}}

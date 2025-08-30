@@ -2,14 +2,14 @@ export const styles = {
 	overviewStyle: {
 		display: 'flex',
 		flexDirection: 'column',
-		marginTop: '32px',
-		padding: '0px 24px',
+		borderRadius: 2,
+		// marginTop: '32px',
+		// padding: '0px 24px',
 	},
-	overviewHeader: {
-		display: 'flex',
-		alignItems: 'center',
-		gap: '8px',
-	},
+	// overviewHeader: {
+	// 	alignItems: 'center',
+	// 	gap: '8px',
+	// },
 	editImageStyle: {
 		cursor: 'pointer',
 	},
@@ -46,14 +46,19 @@ export const styles = {
 		},
 	},
 	saveTextButton: {
-		marginTop: '16px',
-		color: 'primary.main',
+		//color: 'primary.main',
 		height: '40px',
 		padding: '8px 12px',
 		borderRadius: '10px',
 		maxWidth: '144px',
 		alignSelf: 'flex-end',
 	},
+	saveTextButtonStack: {
+		alignSelf: 'flex-end',
+		gap: '8px',
+		marginTop: '16px',
+	},
+
 
 	showHideTextStyle: {
 		// background: '#fff',

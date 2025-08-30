@@ -55,7 +55,8 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 			textTransform: 'capitalize',
 			fontWeight: '600',
 			fontSize: '30px',
-			paddingLeft: '1rem',
+			paddingLeft: isSmallScreen ? 1 : 4,
+
 		},
 		searchInput: {
 			width: { xs: '50px', sm: '250px', md: '320px' },
@@ -133,12 +134,12 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 			height: '30px',
 		},
 		seeMoreLink: {
-			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'secondary.main' : 'secondary.light' },
 
 		},
 		listItem: {
 			alignItems: 'start',
-			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'primary.contrastText' : 'secondary.light' },
+			'&:hover': { backgroundColor: theme?.palette.mode === 'light' ? 'secondary.main' : 'secondary.light' },
 		},
 	};
 };

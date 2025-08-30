@@ -1,52 +1,50 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-	Button,
-	Card,
-	Grid,
-	Stack,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-} from '@mui/material';
-import { styles } from './style';
-import { FC } from 'react';
+import { Typography, Stack } from '@mui/material';
+import { FC, useMemo } from 'react';
 import {
 	Bedroom,
 	Bathroom,
 	FloorPlan,
 	ShowerIcon,
 	EmojiOneBuildingIcon,
+
 } from '../Icons/CustomIcons';
-import bukky from '../../assets/images/bukky.png';
 import { UnitType } from '../../shared/type';
 import { useNavigate } from 'react-router-dom';
-
+import {
+	DynamicTable,
+	TableColumn,
+	DynamicAvatar,
+} from '@klubiq/ui-components';
+import { usePropertyActions } from '../../hooks/page-hooks/properties.hooks';
 type UnitsTableType = {
 	title: string;
 	handleAdd?: (path?: string) => void;
 	buttonText: string;
-	// tableBodyRows: UnitsTableRowType[];
 	tableBodyRows: any;
 };
-
-// type LeaseType = {
-// 	id: number;
-// 	name: string;
-// 	paymentFrequency: string;
-// 	status: string;
-// 	rentAmount: string;
-// 	startDate: string;
-// 	endDate: string;
-// 	rentDueDay: number;
-// 	securityDeposit: string;
-// 	tenants: [];
-// 	isDraft: boolean;
-// 	isArchived: boolean;
-// };
+interface UnitsTableData {
+	tableColumns: TableColumn[];
+	rows: Array<{
+		unitUuid: string;
+		unitNumber: string;
+		tenants: Array<{
+			name?: string;
+			image?: string;
+		}>;
+		floorPlan?: {
+			value: number;
+			unit: string;
+		};
+		details?: {
+			offices: number;
+			bedrooms: number;
+			rooms: number;
+			bathrooms: number;
+			toilets: number;
+		};
+	}>;
+}
 
 export const UnitsTable: FC<UnitsTableType> = ({
 	handleAdd,
@@ -55,105 +53,151 @@ export const UnitsTable: FC<UnitsTableType> = ({
 	title,
 }) => {
 	const navigate = useNavigate();
+	const getUnitTableData = (units: UnitType[]): UnitsTableData => {
+		const tableColumns: TableColumn[] = [
+			{
+				key: 'unitNumber',
+				label: 'Unit',
+				align: 'left',
+				render: (rowData: any) => (
+					<Typography variant='body2'>{rowData.unitNumber}</Typography>
+				),
+			},
+			{
+				key: 'tenant',
+				label: 'Tenants',
+				align: 'left',
+				render: (rowData: any) => (
+					<Stack direction='row' alignItems='center' spacing={2}>
+						{rowData.tenants.length > 0 && (
+							<>
+								<DynamicAvatar
+									items={rowData.tenants}
+									size='medium'
+									showName={false}
+								/>
+								{rowData.tenants.length === 1 && (
+									<Typography variant='body2'>
+										{rowData.tenants[0].name}
+									</Typography>
+								)}
+							</>
+						)}
+					</Stack>
+				),
+			},
+			{
+				key: 'floorPlan',
+				label: 'Floor Plan',
+				align: 'left',
+				render: (rowData: any) => (
+					<Stack direction={'row'} alignItems={'center'}>
+						<FloorPlan sx={{ marginRight: '0.5rem', fontSize: '1.6rem' }} />
+						<Typography variant='subtitle2'>
+							{rowData?.floorPlan?.value} {rowData?.floorPlan?.unit}
+						</Typography>
+					</Stack>
+				),
+			},
 
-	const handleUnitClick = (id: string | number) => {
-		navigate(`unit/${id}`);
+			{
+				key: 'details',
+				label: 'Details',
+				align: 'left',
+				render: (rowData: any) => (
+					<Stack direction={'row'} alignItems={'center'} spacing={2}>
+						{rowData?.details?.offices > 0 && (
+							<Stack direction={'row'} alignItems={'center'}>
+								<EmojiOneBuildingIcon sx={{ marginRight: '0.5rem', fontSize: '1rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.offices}</Typography>
+							</Stack>
+						)}
+						{rowData?.details?.bedrooms > 0 && (
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bedroom sx={{ marginRight: '0.5rem', fontSize: '1.25rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.bedrooms}</Typography>
+							</Stack>
+						)}
+						{rowData?.details?.rooms > 0 && (
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bedroom sx={{ marginRight: '0.5rem', fontSize: '1.25rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.rooms}</Typography>
+							</Stack>
+						)}
+						{rowData?.details?.bathrooms > 0 && (
+							<Stack direction={'row'} alignItems={'center'}>
+								<ShowerIcon sx={{ marginRight: '0.5rem', fontSize: '1.15rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.bathrooms}</Typography>
+							</Stack>
+						)}
+						{rowData?.details?.toilets > 0 && (
+							<Stack direction={'row'} alignItems={'center'}>
+								<Bathroom sx={{ marginRight: '0.5rem', fontSize: '1.6rem' }} />
+								<Typography variant='subtitle2'>{rowData?.details?.toilets}</Typography>
+							</Stack>	
+						)}
+					</Stack>
+				),
+			},
+		];
+		const rows =
+			units?.map((unit) => ({
+				unitUuid: unit.id ?? '',
+				unitNumber: unit.unitNumber ?? '',
+				tenants:
+					unit?.tenants?.map((tenant) => ({
+						name:
+							`${tenant.profile.firstName} ${tenant.profile.lastName}` ||
+							'Tenant',
+						image: tenant.profile?.profilePicUrl ?? '',
+					})) || [],
+				floorPlan: {
+					value: Number(unit?.area?.value) ?? 0,
+					unit: unit?.area?.unit ?? '',
+				},
+				details: {
+					offices: Number(unit?.offices) || 0,
+					bedrooms: Number(unit?.bedrooms) || 0,
+					rooms: Number(unit?.rooms) || 0,
+					bathrooms: Number(unit?.bathrooms) || 0,
+					toilets: Number(unit?.toilets) || 0,
+				},
+			})) ?? [];
+		return { tableColumns, rows };
+	};
+	const { tableSx, tableStyles } = usePropertyActions();
+	const unitTableData = useMemo(
+		() => getUnitTableData(tableBodyRows),
+		[tableBodyRows],
+	);
+
+	const handleUnitClick = (id: string | number, unitNumber: string) => {
+		navigate(`unit/${id}`, {
+			state: {
+				mode: 'multi-unit',
+				unitUuid: id,
+				returnPath: `/properties`,
+				multiUnitNumber: unitNumber,
+			},
+		});
 	};
 	const handleButtonClick = () => {
 		handleAdd && handleAdd('');
 	};
+
 	return (
-		<Card sx={styles.tenantTableContainer}>
-			<TableContainer>
-				<Table aria-label='sticky table'>
-					<TableHead>
-						<TableRow>
-							<TableCell align='left' colSpan={2} sx={{ ...styles.tableCell }}>
-								{title}
-							</TableCell>
-							<TableCell align='right' colSpan={3} sx={styles.tableCell}>
-								<Grid item xs={6} sm={6} md={9} lg={9}>
-									<Button
-										variant='propertyButton'
-										onClick={handleButtonClick}
-										sx={styles.tableButton}
-									>
-										{buttonText}
-									</Button>
-								</Grid>
-							</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{tableBodyRows?.map((row: UnitType) => (
-							<TableRow
-								hover
-								onClick={() => row?.id !== undefined && handleUnitClick(row.id)}
-								tabIndex={-1}
-								key={row.id}
-								sx={{
-									cursor: 'pointer',
-									borderBottom: '1px solid primary.main',
-								}}
-							>
-								<TableCell align={'left'} sx={styles.tableBodyStyle}>
-									Unit {row?.unitNumber}
-								</TableCell>
-								{
-									<TableCell align={'center'} sx={styles.tableBodyStyle}>
-										<span style={styles.tenantInfoStyle}>
-											<img src={bukky} alt='tenant picture' />{' '}
-											{'No tenant added yet'}
-										</span>
-									</TableCell>
-								}
-								<TableCell align={'center'} sx={styles.tableBodyStyle}>
-									<Stack direction={'row'} alignItems={'center'}>
-										<FloorPlan />
-										<Typography>
-											{row?.area?.value} {row?.area?.unit}
-										</Typography>
-									</Stack>
-								</TableCell>
-								<TableCell sx={styles.tableBodyStyle}>
-									<Stack direction={'row'} spacing={2}>
-										{row?.offices && Number(row?.offices) > 0 && (
-											<>
-												<EmojiOneBuildingIcon />
-												{row?.offices}
-											</>
-										)}
-										{row?.bedrooms && Number(row?.bedrooms) > 0 && (
-											<>
-												<Bedroom />
-												{row?.bedrooms}
-											</>
-										)}
-										{row?.rooms && Number(row?.rooms) > 0 && (
-											<>
-												<Bedroom />
-												{row?.rooms}
-											</>
-										)}
-										{row?.bathrooms && Number(row?.bathrooms) > 0 && (
-											<>
-												<ShowerIcon />
-												{row?.bathrooms}
-											</>
-										)}
-										{row?.toilets && Number(row?.toilets) > 0 && (
-											<>
-												<Bathroom />
-												{row?.toilets}
-											</>
-										)}
-									</Stack>
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
-		</Card>
+		<DynamicTable
+			showHeader={false}
+			columns={unitTableData.tableColumns}
+			rows={unitTableData.rows || []}
+			colors={tableSx}
+			styles={tableStyles}
+			header={title}
+			buttonLabel={buttonText}
+			onButtonClick={handleButtonClick}
+			onRowClick={(rowData: any) =>
+				handleUnitClick(rowData?.unitUuid, rowData?.unitNumber)
+			}
+		/>
 	);
 };

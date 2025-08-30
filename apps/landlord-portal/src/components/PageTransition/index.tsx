@@ -8,7 +8,7 @@ interface PageTransitionProps {
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 20
+    y: 5
   },
   animate: {
     opacity: 1,
@@ -22,7 +22,7 @@ const pageVariants = {
   },
   exit: {
     opacity: 0,
-    y: -20,
+    y: -5,
     transition: {
       duration: 0.5
     }
@@ -35,7 +35,7 @@ export const PageTransition = ({ children }: PageTransitionProps) => {
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageVariants}
+      variants={pageVariants as any}
     >
       {children}
     </motion.div>

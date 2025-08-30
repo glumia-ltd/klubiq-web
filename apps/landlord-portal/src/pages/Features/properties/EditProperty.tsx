@@ -1,0 +1,421 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Stack, Card, Button } from '@mui/material';
+import ControlledSelect from '../../../components/ControlledComponents/ControlledSelect';
+import ControlledTextField from '../../../components/ControlledComponents/ControlledTextField';
+
+import {
+	useEditPropertyMutation,
+	useGetPropertiesMetaDataQuery,
+	useGetSinglePropertyByUUIDQuery,
+} from '../../../store/PropertyPageStore/propertyApiSlice';
+
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { AddPropertyType, CategoryMetaDataType } from '../../../shared/type';
+import { consoleLog } from '../../../helpers/debug-logger';
+import GeneralInfo from '../../../components/Forms/GeneralInfo';
+import { GeneralFormStyle } from '../../../components/Forms/style';
+import addPropertyStyles from '../../../Layouts/AddPropertiesLayout/AddPropertiesStyle';
+import { ArrowLeftIcon } from '../../../components/Icons/CustomIcons';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { forEach, isEqual, omit, transform } from 'lodash';
+import { useEffect } from 'react';
+import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { useDispatch } from 'react-redux';
+import { InputSkeleton } from '../../../components/skeletons/InputSkeleton';
+import { screenMessages } from '../../../helpers/screen-messages';
+
+const validationSchema = yup.object({
+	name: yup.string().required('Please enter the property name'),
+	description: yup.string(),
+	typeId: yup.string().required('Select an option'),
+	categoryId: yup.string().required('Select an option'),
+	images: yup.array(),
+	unitType: yup.string().required('This field is required'),
+	purposeId: yup.number().required('This field is required'),
+
+	address: yup.object({
+		addressLine1: yup.string().required('Address Line 1 is required'),
+		addressLine2: yup.string(),
+		city: yup.string(),
+		state: yup.string(),
+		postalCode: yup.string(),
+		country: yup.string().required('Country is required'),
+		isManualAddress: yup.boolean(),
+	}),
+
+	units: yup.array().of(
+		yup.object({
+			id: yup.number().nullable(),
+			unitNumber: yup.string().when('unitType', {
+				is: 'multi',
+				then: (schema) => schema.required('Unit number is required'),
+			}),
+			rentAmount: yup.number().nullable(),
+			floor: yup.number().nullable(),
+			bedrooms: yup.number().nullable(),
+			bathrooms: yup.number().nullable(),
+			toilets: yup.number().nullable(),
+			area: yup.object({
+				value: yup.number().nullable(),
+				unit: yup.string().required('Area unit is required'),
+			}),
+			status: yup.string(),
+			rooms: yup.number().nullable(),
+			offices: yup.number().nullable(),
+			// amenities: yup.array().of(yup.string()),
+		}),
+	),
+});
+
+interface IunitType extends AddPropertyType {
+	unitType?: string;
+	isMultiUnit?: boolean;
+	categoryMetaData: CategoryMetaDataType | null;
+	propertyImages?: [];
+}
+
+type EditPropertyState = {
+	returnPath: string;
+}
+
+const EditProperty = () => {
+	const location = useLocation();
+	const dispatch = useDispatch();
+	const {returnPath} = location.state as EditPropertyState;
+	const currentUUId = location.pathname.split('/')[2]!;
+
+	const { data: currentProperty, isLoading: isCurrentPropertyLoading } =
+		useGetSinglePropertyByUUIDQuery({
+			uuid: currentUUId || '',
+		});
+
+	const {
+		data: propertyMetaData,
+		// isLoading: isPropertyMetaDataLoading
+	} = useGetPropertiesMetaDataQuery();
+
+	const [editProperty] = useEditPropertyMutation();
+
+	const navigate = useNavigate();
+
+	const onSubmit = async (values: any) => {
+		consoleLog(values, 'val');
+	};
+
+	const formik = useFormik<IunitType>({
+		initialValues: {
+			categoryMetaData: null,
+			newAmenity: '',
+			customAmenities: [],
+			categoryId: 1,
+			description: '',
+			name: '',
+			typeId: '',
+			images: [],
+			propertyImages: [],
+			unitType: '',
+			isMultiUnit: false,
+			purposeId: null,
+			address: {
+				addressLine1: '',
+				addressLine2: '',
+				city: '', 
+				state: '',
+				postalCode: '',
+				latitude: 0,
+				longitude: 0,
+				country: '',
+				isManualAddress: true,
+				unit: '',
+			},
+
+			units: [
+				{
+					id: null,
+					unitNumber: '',
+					rentAmount: null,
+					floor: null,
+					bedrooms: null,
+					bathrooms: null,
+					toilets: null,
+					area: {
+						value: '',
+						unit: 'SqM',
+					},
+					status: '',
+					rooms: null,
+					offices: null,
+					amenities: [],
+				},
+			],
+		},
+		validationSchema,
+		onSubmit,
+		
+	});
+
+
+	const handleReturnToPropertyClick = () => {
+		navigate(returnPath);
+	};
+
+	const transformedProperties = transform(
+		currentProperty?.units,
+		(result, unit) => {
+			const newUnit = omit(unit, 'leases', 'images', 'totalTenants', 'tenants', 'lease', 'totalLeases');
+			result.units.push(newUnit);
+		},
+		{ units: [] as any[] },
+	)?.units;
+
+	const initialData = {
+		categoryId: currentProperty?.category?.id || '',
+		typeId: currentProperty?.type?.id || '',
+		name: currentProperty?.name || '',
+		address: {
+			addressLine1: currentProperty?.address.addressLine1 || '',
+			addressLine2: currentProperty?.address.addressLine2 || '',
+			city: currentProperty?.address?.city || '',
+			state: currentProperty?.address?.state || '',
+			postalCode: currentProperty?.address?.postalCode || '',
+			latitude: currentProperty?.address?.latitude || 0,
+			longitude: currentProperty?.address?.longitude || 0,
+			country: currentProperty?.address?.country || '',
+			isManualAddress: true,
+			unit: currentProperty?.address?.unit || '',
+		},
+		units: transformedProperties,
+	};
+
+	const editedData = {
+		categoryId: formik.values?.categoryId,
+		typeId: formik.values?.typeId,
+		name: formik.values?.name,
+		address: {
+			addressLine1: formik.values.address?.addressLine1,
+			addressLine2: formik.values.address?.addressLine2,
+			city: formik.values.address?.city,
+			state: formik.values.address?.state,
+			postalCode: formik.values.address?.postalCode,
+			latitude: formik.values.address?.latitude || 0,
+			longitude: formik.values.address?.longitude || 0,
+			country: formik.values.address?.country,
+			isManualAddress: true,
+			unit: formik.values.address?.unit,
+		},
+		units: formik.values.units,
+	};
+	const getCategoryMetaData = (categoryId: number) => {
+		const categoryMetaData = propertyMetaData?.categories?.find(
+			(category: any) =>
+				Number(category.id) === Number(categoryId),
+		);
+
+		return categoryMetaData?.metaData;
+	};
+	const categoryFieldMap = [
+		{ from: 'offices', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'bedrooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasBedrooms && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasBedrooms },
+		{ from: 'offices', to: 'rooms', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasRooms && oldMeta?.hasOffices },
+		{ from: 'rooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasRooms },
+		{ from: 'bedrooms', to: 'offices', condition: (oldMeta: CategoryMetaDataType, newMeta: CategoryMetaDataType) => newMeta?.hasOffices && oldMeta?.hasBedrooms },
+	  ];
+
+	useEffect(() => {
+		
+		const categoryMetaData = getCategoryMetaData(initialData.categoryId);
+
+		formik.setValues({
+			...formik.values,
+			categoryMetaData,
+			unitType: currentProperty?.isMultiUnit ? 'multi' : 'single',
+			...initialData,
+		});
+	}, [currentProperty, propertyMetaData]);
+
+	const handleEditProperty = async () => {
+		try {
+			const response = await editProperty({
+				uuid: currentUUId,
+				data: { ...editedData },
+			});
+			consoleLog(response, 'Edit Property Response');
+			
+			if (response.error) {
+				throw new Error(screenMessages.property.edit.error);
+			} else {
+				dispatch(
+					openSnackbar({
+						message: screenMessages.property.edit.success,
+						severity: 'info',
+						isOpen: true,
+						duration: 2000,
+					}),
+				);
+				consoleLog('Property edited successfully... navigating to property page');
+				navigate(returnPath);
+			}
+		} catch (e) {
+			dispatch(
+				openSnackbar({
+					message: `There was an error editing the property. 
+					\n${screenMessages.property.edit.error}`,
+					severity: 'error',
+					isOpen: true,
+					duration: 7000,
+				}),
+			);
+		}
+	};
+
+	const getSpecValueByCategory = (oldMetadata: CategoryMetaDataType, newMetadata: CategoryMetaDataType) => {
+		forEach(formik.values.units, (unit) => {
+		  for (const { from, to, condition } of categoryFieldMap) {
+			if (condition(oldMetadata, newMetadata)) {
+				(unit as any)[to] = (unit as any)[from] || 0;
+			}
+		  }
+		});
+	  };
+	const transformPropertyCategoryType = (e: React.ChangeEvent<any>) => {
+		const oldCategoryMetadata = getCategoryMetaData(formik?.values?.categoryId || 0);
+		const categoryMetaData = getCategoryMetaData(e.target.value);
+		if (!isEqual(oldCategoryMetadata, categoryMetaData)) {
+			getSpecValueByCategory(oldCategoryMetadata, categoryMetaData);
+		}
+		formik.setValues({
+			...formik.values,
+			categoryMetaData,
+		});
+		formik.handleChange(e);
+	};
+
+	return (
+		<>
+			<Stack spacing={2}>
+				<Stack
+					direction='row'
+					alignItems='center'
+					// sx={{
+					// 	...addPropertyStyles.addPropertiesContainer,
+					// 	margin: '30px -10px 30px',
+					// }}
+				>
+					<Stack
+						direction='row'
+						alignItems='center'
+					>
+						<Button variant='text' onClick={handleReturnToPropertyClick} startIcon={<ArrowLeftIcon />}>
+						{currentProperty?.name}
+						</Button>
+						
+					</Stack>
+				</Stack>
+
+				<Stack component='form' onSubmit={formik.handleSubmit} spacing={2}>
+					<Stack spacing={1}>
+						<Card sx={GeneralFormStyle.card}>
+							<Stack spacing={2}>
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledSelect
+										required
+										name='categoryId'
+										label='PROPERTY CATEGORY '
+										placeholder='Property Category'
+										type='text'
+										formik={formik}
+										disableOnChange={true}
+										value={formik?.values?.categoryId}
+										options={propertyMetaData?.categories}
+										onChange={transformPropertyCategoryType}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledSelect
+										required
+										name='typeId'
+										label='PROPERTY TYPE '
+										placeholder='Property Type'
+										type='text'
+										formik={formik}
+										value={formik?.values?.typeId}
+										options={propertyMetaData?.types}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+
+								{isCurrentPropertyLoading ? (
+									<InputSkeleton />
+								) : (
+									<ControlledTextField
+										required
+										name='name'
+										label='PROPERTY NAME'
+										value={formik?.values?.name}
+										formik={formik}
+										inputprops={{
+											sx: {
+												height: '40px',
+											},
+										}}
+									/>
+								)}
+							</Stack>
+						</Card>
+					</Stack>
+
+					{isCurrentPropertyLoading ? (
+						<Stack spacing={1}>
+							<Card sx={GeneralFormStyle.card}>
+								<Stack spacing={2}>
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+									<InputSkeleton />
+								</Stack>
+							</Card>
+						</Stack>
+					) : (
+						<GeneralInfo
+							formik={formik}
+							amenities={propertyMetaData?.amenities}
+						/>
+					)}
+				</Stack>
+
+				<Stack
+					direction='row'
+					justifyContent='flex-end'
+					sx={addPropertyStyles.buttonContainer}
+				>
+					<Button
+						variant='klubiqMainButton'
+						onClick={handleEditProperty}
+						disabled={isCurrentPropertyLoading}
+					>
+						Save
+					</Button>
+				</Stack>
+			</Stack>
+		</>
+	);
+};
+
+export default EditProperty;

@@ -1,0 +1,34 @@
+import{j as a}from"./jsx-runtime-CiKstLBL.js";import{T as _,a as k,b as E,c as y,d as g,e as O}from"./TableRow-7Vl7p0qN.js";import{P as U}from"./Paper-BmMWkbbD.js";import{_ as $,a as h,e as N}from"./defaultTheme-D4_KWPKg.js";import{a as H,g as P,c as C}from"./generateUtilityClasses-C1n5gl2S.js";import{r as S}from"./index-CoXXcpNP.js";import{c as z}from"./createSvgIcon-RFZQnbNo.js";import{s as M,c as J}from"./styled-S1aw2zqw.js";import{u as F}from"./DefaultPropsProvider-CBQ9sw5y.js";import{B as G}from"./ButtonBase-zdw2Te-A.js";import{B as K}from"./Box-DKMDc44o.js";import{v as Q}from"./visuallyHidden-Dan1xhjv.js";import{T as X}from"./Typography-DXOq44QA.js";import"./TransitionGroupContext-tOqp5AMi.js";import"./useEnhancedEffect-Dze88C9b.js";import"./useForkRef-DnFApgto.js";const Y=z(a.jsx("path",{d:"M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"}),"ArrowDownward");function Z(e){return P("MuiTableSortLabel",e)}const x=H("MuiTableSortLabel",["root","active","icon","iconDirectionDesc","iconDirectionAsc"]),ee=["active","children","className","direction","hideSortIcon","IconComponent"],te=e=>{const{classes:r,direction:s,active:o}=e,i={root:["root",o&&"active"],icon:["icon",`iconDirection${N(s)}`]};return J(i,Z,r)},re=M(G,{name:"MuiTableSortLabel",slot:"Root",overridesResolver:(e,r)=>{const{ownerState:s}=e;return[r.root,s.active&&r.active]}})(({theme:e})=>({cursor:"pointer",display:"inline-flex",justifyContent:"flex-start",flexDirection:"inherit",alignItems:"center","&:focus":{color:(e.vars||e).palette.text.secondary},"&:hover":{color:(e.vars||e).palette.text.secondary,[`& .${x.icon}`]:{opacity:.5}},[`&.${x.active}`]:{color:(e.vars||e).palette.text.primary,[`& .${x.icon}`]:{opacity:1,color:(e.vars||e).palette.text.secondary}}})),ae=M("span",{name:"MuiTableSortLabel",slot:"Icon",overridesResolver:(e,r)=>{const{ownerState:s}=e;return[r.icon,r[`iconDirection${N(s.direction)}`]]}})(({theme:e,ownerState:r})=>h({fontSize:18,marginRight:4,marginLeft:4,opacity:0,transition:e.transitions.create(["opacity","transform"],{duration:e.transitions.duration.shorter}),userSelect:"none"},r.direction==="desc"&&{transform:"rotate(0deg)"},r.direction==="asc"&&{transform:"rotate(180deg)"})),se=S.forwardRef(function(r,s){const o=F({props:r,name:"MuiTableSortLabel"}),{active:i=!1,children:d,className:c,direction:t="asc",hideSortIcon:l=!1,IconComponent:n=Y}=o,m=$(o,ee),f=h({},o,{active:i,direction:t,hideSortIcon:l,IconComponent:n}),j=te(f);return a.jsxs(re,h({className:C(j.root,c),component:"span",disableRipple:!0,ownerState:f,ref:s},m,{children:[d,l&&!i?null:a.jsx(ae,{as:n,className:C(j.icon),ownerState:f})]}))});function T({columns:e,data:r,order:s="asc",orderBy:o,onRequestSort:i,emptyMessage:d="No data available"}){const c=t=>()=>{i&&i(t)};return a.jsx(_,{component:U,children:a.jsxs(k,{stickyHeader:!0,"aria-label":"sticky table",children:[a.jsx(E,{children:a.jsx(y,{children:e.map(t=>a.jsx(g,{align:t.align,style:{minWidth:t.minWidth},sortDirection:o===t.id?s:!1,children:t.sortable?a.jsxs(se,{active:o===t.id,direction:o===t.id?s:"asc",onClick:c(t.id),children:[t.label,o===t.id?a.jsx(K,{component:"span",sx:Q,children:s==="desc"?"sorted descending":"sorted ascending"}):null]}):t.label},t.id))})}),a.jsx(O,{children:r.length>0?r.map((t,l)=>a.jsx(y,{hover:!0,role:"checkbox",tabIndex:-1,children:e.map(n=>{const m=t[n.id];return a.jsx(g,{align:n.align,children:n.format?n.format(m):String(m)},n.id)})},l)):a.jsx(y,{children:a.jsx(g,{colSpan:e.length,align:"center",children:a.jsx(X,{variant:"body2",color:"text.secondary",children:d})})})})]})})}T.__docgenInfo={description:"",methods:[],displayName:"Table",props:{columns:{required:!0,tsType:{name:"Array",elements:[{name:"Column",elements:[{name:"T"}],raw:"Column<T>"}],raw:"Column<T>[]"},description:""},data:{required:!0,tsType:{name:"Array",elements:[{name:"T"}],raw:"T[]"},description:""},order:{required:!1,tsType:{name:"union",raw:"'asc' | 'desc'",elements:[{name:"literal",value:"'asc'"},{name:"literal",value:"'desc'"}]},description:"",defaultValue:{value:"'asc'",computed:!1}},orderBy:{required:!1,tsType:{name:"T"},description:""},onRequestSort:{required:!1,tsType:{name:"signature",type:"function",raw:"(property: keyof T) => void",signature:{arguments:[{type:{name:"T"},name:"property"}],return:{name:"void"}}},description:""},emptyMessage:{required:!1,tsType:{name:"string"},description:"",defaultValue:{value:"'No data available'",computed:!1}}}};const Te={title:"Components/Table",component:T,parameters:{layout:"centered"},tags:["autodocs"]},v=[{id:"name",label:"Name",minWidth:170,sortable:!0},{id:"email",label:"Email",minWidth:170,sortable:!0},{id:"role",label:"Role",minWidth:100,sortable:!0},{id:"status",label:"Status",minWidth:100,sortable:!0}],W=[{id:1,name:"John Doe",email:"john@example.com",role:"Admin",status:"Active"},{id:2,name:"Jane Smith",email:"jane@example.com",role:"User",status:"Inactive"},{id:3,name:"Bob Johnson",email:"bob@example.com",role:"Editor",status:"Active"}],p={args:{columns:v,data:W}},u={args:{columns:v,data:[],emptyMessage:"No users found"}},b={render:()=>{const[e,r]=S.useState("asc"),[s,o]=S.useState("name"),i=c=>{r(s===c&&e==="asc"?"desc":"asc"),o(c)},d=[...W].sort((c,t)=>{const l=c[s],n=t[s];return l<n?e==="asc"?-1:1:l>n?e==="asc"?1:-1:0});return a.jsx(T,{columns:v,data:d,order:e,orderBy:s,onRequestSort:i})}};var D,w,B;p.parameters={...p.parameters,docs:{...(D=p.parameters)==null?void 0:D.docs,source:{originalSource:`{
+  args: {
+    columns,
+    data
+  }
+}`,...(B=(w=p.parameters)==null?void 0:w.docs)==null?void 0:B.source}}};var L,R,A;u.parameters={...u.parameters,docs:{...(L=u.parameters)==null?void 0:L.docs,source:{originalSource:`{
+  args: {
+    columns,
+    data: [],
+    emptyMessage: 'No users found'
+  }
+}`,...(A=(R=u.parameters)==null?void 0:R.docs)==null?void 0:A.source}}};var I,q,V;b.parameters={...b.parameters,docs:{...(I=b.parameters)==null?void 0:I.docs,source:{originalSource:`{
+  render: () => {
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+    const [orderBy, setOrderBy] = useState<keyof User>('name');
+    const handleRequestSort = (property: keyof User) => {
+      const isAsc = orderBy === property && order === 'asc';
+      setOrder(isAsc ? 'desc' : 'asc');
+      setOrderBy(property);
+    };
+    const sortedData = [...data].sort((a, b) => {
+      const aValue = a[orderBy];
+      const bValue = b[orderBy];
+      if (aValue < bValue) {
+        return order === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return order === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+    return <Table columns={columns} data={sortedData} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />;
+  }
+}`,...(V=(q=b.parameters)==null?void 0:q.docs)==null?void 0:V.source}}};const ve=["Default","Empty","WithSorting"];export{p as Default,u as Empty,b as WithSorting,ve as __namedExportsOrder,Te as default};

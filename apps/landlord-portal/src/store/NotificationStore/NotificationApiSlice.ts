@@ -13,11 +13,12 @@ import { each } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { API_TAGS } from '../types';
 
 export const notificationApiSlice = createApi({
 	reducerPath: 'notificationApi',
 	baseQuery: customApiFunction,
-	tagTypes: ['Notification'],
+	tagTypes: [API_TAGS.NOTIFICATION, API_TAGS.NOTIFICATION_COUNT],
 	endpoints: (builder) => ({
 		getGroupedNotifications: builder.query<GroupedNotifications[], void>({
 			query: () => ({
@@ -27,14 +28,14 @@ export const notificationApiSlice = createApi({
 			transformResponse: (response: NotificationData[]) => {
 				return groupNotificationsByDate(response);
 			},
-			providesTags: ['Notification'],
+			providesTags: [API_TAGS.NOTIFICATION],
 		}),
 		getNotifications: builder.query<NotificationData[], void>({
 			query: () => ({
 				url: notificationEndpoints.notifications(),
 				method: 'GET',
 			}),
-			providesTags: ['Notification'],
+			providesTags: [API_TAGS.NOTIFICATION],
 		}),
 		// getNotifications: builder.query<GroupedNotifications[], void>({
 		//     query: () => ({
@@ -52,6 +53,7 @@ export const notificationApiSlice = createApi({
 				method: 'PATCH',
 				body: data,
 			}),
+			invalidatesTags: [API_TAGS.NOTIFICATION, API_TAGS.NOTIFICATION_COUNT],
 			onQueryStarted: async (readData, { dispatch, queryFulfilled }) => {
 				// Optimistic Update
 				const patchResult = dispatch(
@@ -83,35 +85,37 @@ export const notificationApiSlice = createApi({
 				method: 'DELETE',
 				body: data,
 			}),
-			onQueryStarted: async (readData, { dispatch, queryFulfilled }) => {
-				// Optimistic Update
-				const patchResult = dispatch(
-					notificationApiSlice.util.updateQueryData(
-						'getGroupedNotifications',
-						undefined,
-						(draft) => {
-							draft.forEach((group) => {
-								group.notifications = group.notifications.filter(
-									(notification) =>
-										!readData.notificationIds.includes(notification.id),
-								);
-							});
-						},
-					),
-				);
+			invalidatesTags: [API_TAGS.NOTIFICATION_COUNT],
+			// onQueryStarted: async (readData, { dispatch, queryFulfilled }) => {
+			// 	// Optimistic Update
+			// 	const patchResult = dispatch(
+			// 		notificationApiSlice.util.updateQueryData(
+			// 			'getGroupedNotifications',
+			// 			undefined,
+			// 			(draft) => {
+			// 				draft.forEach((group) => {
+			// 					group.notifications = group.notifications.filter(
+			// 						(notification) =>
+			// 							!readData.notificationIds.includes(notification.id),
+			// 					);
+			// 				});
+			// 			},
+			// 		),
+			// 	);
 
-				try {
-					await queryFulfilled;
-				} catch {
-					patchResult.undo();
-				}
-			},
+			// 	try {
+			// 		await queryFulfilled;
+			// 	} catch {
+			// 		patchResult.undo();
+			// 	}
+			// },
 		}),
 		countNotifications: builder.query<number, void>({
 			query: () => ({
 				url: notificationEndpoints.countNotifications(),
 				method: 'GET',
 			}),
+			providesTags: [API_TAGS.NOTIFICATION_COUNT],
 		}),
 	}),
 });

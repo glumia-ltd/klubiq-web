@@ -1,28 +1,207 @@
-/* eslint-disable no-unused-vars */
-import FormLayout from '../../Layouts/FormLayout';
-import { Grid, Typography, Button, Link } from '@mui/material';
-import { LeaseFormStyle } from './style';
-import ControlledTextField from '../ControlledComponents/ControlledTextField';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import ControlledSelect from '../ControlledComponents/ControlledSelect';
-import Logo from '../../assets/images/info.svg';
-import { useEffect, useMemo, useState, FC } from 'react';
-import { consoleLog } from '../../helpers/debug-logger';
-import { Stack } from '@mui/system';
-import { useGetOrgPropertiesViewListQuery } from '../../store/LeaseStore/leaseApiSlice';
+import {
+	DynamicTanstackFormProps,
+	InputAdornment as InputAdornmentType,
+	FormFieldV1,
+	KlubiqFormV1,
+} from '@klubiq/ui-components';
+import {
+	useGetOrgPropertiesViewListQuery,
+	useAddLeaseMutation,
+} from '../../store/LeaseStore/leaseApiSlice';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { find } from 'lodash';
 import dayjs from 'dayjs';
 import { getCurrencySymbol } from '../../helpers/utils';
-import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { useDispatch } from 'react-redux';
-import { useAddLeaseMutation } from '../../store/LeaseStore/leaseApiSlice';
-import { useNavigate } from 'react-router-dom';
+import { FC, useMemo } from 'react';
+
+import FormLayout from '../../Layouts/FormLayout';
 import FormSkeleton from '../skeletons/FormSkeleton';
 
-enum PaymentFrequency {
+import { consoleLog } from '../../helpers/debug-logger';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/system/useMediaQuery';
+import { z } from 'zod';
+import { Box, MenuItem, Select, Typography } from '@mui/material';
+import { TenantDialog } from '../CustomFormComponents/TenantDialog';
+import { Close, Info } from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { screenMessages } from '../../helpers/screen-messages';
+
+
+function renderPropertySelectField(fieldApi: any, fieldConfig: any, form: any) {
+	const options = Array.isArray(fieldConfig.options)
+		? fieldConfig.options
+		: typeof fieldConfig.options === 'function'
+			? fieldConfig.options(form.state.values)
+			: [];
+	return (
+		<Box>
+			<Select
+				value={fieldApi.state.value || ''}
+				placeholder={fieldConfig.placeholder}
+				fullWidth
+				onChange={(e) => {
+					const selectedProperty = find(options, { value: e.target.value });
+					form.setFieldValue('selectedProperty', selectedProperty);
+					form.setFieldValue('property.name', selectedProperty.label);
+					form.setFieldValue(
+						'property.unitId',
+						selectedProperty?.units?.[0]?.id,
+					);
+					form.setFieldValue(
+						'property.unitNumber',
+						selectedProperty?.units?.[0]?.unitNumber,
+					);
+					form.setFieldValue('selectedUnit', selectedProperty?.units?.[0]);
+					fieldApi.handleChange(e.target.value);
+				}}
+				onBlur={fieldApi.handleBlur}
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				multiple={!!fieldConfig.multiple}
+				disabled={fieldConfig.disabled}
+			>
+				{options.map((option: any) => (
+					<MenuItem key={option.value} value={option.value}>
+						{option.label}
+					</MenuItem>
+				))}
+			</Select>
+		</Box>
+	);
+}
+
+function renderUnitSelectField(fieldApi: any, fieldConfig: any, form: any) {
+	const options = Array.isArray(fieldConfig.options)
+		? fieldConfig.options
+		: typeof fieldConfig.options === 'function'
+			? fieldConfig.options(form.state.values)
+			: [];
+	return (
+		<Box>
+			<Select
+				value={fieldApi.state.value || ''}
+				placeholder={fieldConfig.placeholder}
+				fullWidth
+				onChange={(e) => {
+					const selectedUnit = find(options, { value: e.target.value });
+					form.setFieldValue('property.unitNumber', selectedUnit.label);
+					form.setFieldValue('selectedUnit', selectedUnit);
+					fieldApi.handleChange(e.target.value);
+				}}
+				onBlur={fieldApi.handleBlur}
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				multiple={!!fieldConfig.multiple}
+				disabled={fieldConfig.disabled}
+			>
+				{options.map((option: any) => (
+					<MenuItem key={option.value} value={option.value}>
+						{option.label}
+					</MenuItem>
+				))}
+			</Select>
+		</Box>
+	);
+}
+
+function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
+	return (
+		<TenantDialog
+			field={{
+				fieldConfig: {
+					...fieldConfig,
+					options: Array.isArray(fieldConfig.options)
+						? fieldConfig.options.map(
+								(opt: {
+									value: string | number;
+									label: string;
+									email: string;
+								}) => ({
+									...opt,
+									value: String(opt.value),
+									label: `${opt.label}`,
+								}),
+							)
+						: typeof fieldConfig.options === 'function'
+							? fieldConfig
+									.options(form.getValues())
+									.map(
+										(opt: {
+											value: string | number;
+											label: string;
+											email: string;
+										}) => ({
+											...opt,
+											value: String(opt.value),
+											label: `${opt.label}`,
+										}),
+									)
+							: [],
+				},
+				state: fieldApi.state,
+				handleChange: fieldApi.handleChange,
+			}}
+			form={form}
+		/>
+	);
+}
+function renderLeaseDatesField(
+	fieldApi: any,
+	fieldConfig: any,
+	form: any,
+	dependencyField: string,
+) {
+	const dependencyFieldValue = form.getFieldValue(dependencyField);
+	const handleChange = (newValue: any) => {
+		fieldApi.handleChange(newValue);
+		if ((fieldConfig.required || newValue !== null) && dependencyFieldValue) {
+			form.validateField(dependencyField);
+		}
+	};
+	return (
+		<Box>
+			<DatePicker
+				label={fieldConfig.isInFieldLabel ? fieldConfig.label : undefined}
+				value={
+					fieldConfig.readonly
+						? fieldConfig.predefinedValue
+						: fieldApi.state.value
+							? dayjs(fieldApi.state.value)
+							: null
+				}
+				onChange={(newValue) => {
+					if (newValue && dayjs.isDayjs(newValue)) {
+						handleChange(newValue.toDate());
+					} else {
+						handleChange(null);
+					}
+				}}
+				slotProps={{
+					textField: {
+						sx: {
+							borderRadius: '0.5rem',
+							height: '2.7rem',
+							color: 'inherit',
+						},
+						size: 'small',
+						fullWidth: true,
+						error: !!form.state.errors[fieldConfig.name],
+						helperText:
+							form.state.errors[fieldConfig.name] || fieldConfig.helperText,
+						disabled: fieldConfig.disabled || fieldConfig.readonly,
+						inputProps: {
+							readOnly: fieldConfig.readonly,
+						},
+					},
+				}}
+				disabled={fieldConfig.disabled || fieldConfig.readonly}
+			/>
+		</Box>
+	);
+}
+
+export enum PaymentFrequency {
 	ANNUALLY = 'Annually',
 	BI_MONTHLY = 'Bi-Monthly',
 	BI_WEEKLY = 'Bi-Weekly',
@@ -30,454 +209,513 @@ enum PaymentFrequency {
 	ONE_TIME = 'One-Time',
 	QUARTERLY = 'Quarterly',
 	WEEKLY = 'Weekly',
-	// CUSTOM = 'Custom',
+	CUSTOM = 'Custom',
 }
 
-const days = [
-	'Sunday',
-	'Monday',
-	'Tuesday',
-	'Wednesday',
-	'Thursday',
-	'Friday',
-	'Saturday',
-];
-
-const frequencyOptions = Object.values(PaymentFrequency).map((freq) => ({
-	id: freq,
-	name: freq,
-}));
-
 interface AddLeaseFormProps {
-	propertyId: string | null;
-	unitId: string | null;
+	propertyId: string;
+	unitId: string;
+}
+interface Property {
+	uuid: string;
+	name: string;
+	units?: Array<{ id: string; unitNumber: string }>;
+}
+interface LeaseFormValues {
+	name: string;
+	startDate: string;
+	endDate?: string;
+	//newTenants?: NewTenant[];
+	tenantsIds: string[];
+	unitId: string;
+	rentDueDay: number;
+	rentAmount: number;
+	lateFeeAmount?: number;
+	securityDeposit?: number;
+	paymentFrequency: PaymentFrequency;
+	customPaymentFrequency: number;
+	propertyName: string;
+	firstPaymentDate?: string;
+	unitNumber: string;
+	leaseConfig: Record<string, any>;
 }
 
 const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
-	const { user, orgSettings } = useSelector(getAuthState);
-
-	const dispatch = useDispatch();
-
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+	const { user } = useSelector(getAuthState);
 	const navigate = useNavigate();
-
-	const [disabledButton, setDisabledButton] = useState(true);
-
 	const [addLease] = useAddLeaseMutation();
-	const { data: orgPropertiesViewList, isLoading: isLoadingOrgPropertiesView } =
-		useGetOrgPropertiesViewListQuery({ orgId: user?.organizationUuid });
-
-	const propertyNameOptions = orgPropertiesViewList?.properties?.map(
-		(property: { uuid: string; name: string }) => ({
-			id: property?.uuid,
-			name: property?.name,
-		}),
-	);
-
-	// const tenantOptions = orgPropertiesViewList?.tenants?.map(
-	// 	(tenant: { id: string; firstName: string; lastName: string }) => ({
-	// 		id: tenant.id,
-	// 		name: `${tenant.firstName} ${tenant.lastName}`,
-	// 	}),
-	// );
-
-	const validationSchema = yup.object({
-		name: yup.string().required('field is required'),
-		propertyName: yup.string().required('Select an option'),
-		unitId: yup.string().required('Select an option'),
-		tenantsIds: yup.array(),
-		rentAmount: yup.number().required('field is required'),
-		depositAmount: yup.number().required('field is required'),
-		startDate: yup.string().required('field is required'),
-		endDate: yup.string(),
-		frequency: yup.string().required('field is required'),
-		rentDueDay: yup.string(),
-	});
-
-	type formValues = {
-		endDate: string;
-		startDate: string;
-		frequency: string;
-		rentAmount: number | string;
-		depositAmount: number | string;
-		name: string;
-		propertyName: string;
-		unitId: number | string;
-		unitName: string;
-		tenantsIds: number[];
-		rentDueDay: number | string;
-	};
-
-	const onSubmit = async (values: formValues) => {
-		consoleLog(values, 'val');
-	};
-
-	const formik = useFormik({
-		initialValues: {
-			endDate: '',
-			startDate: '',
-			frequency: '',
-			rentAmount: '',
-			depositAmount: '',
-			name: '',
-			propertyName: '',
-			unitId: '',
-			unitName: '',
-			tenantsIds: [],
-			rentDueDay: '0',
+	const queryResult = useGetOrgPropertiesViewListQuery(
+		{ orgId: user?.organizationUuid },
+		{
+			selectFromResult: ({ data, isLoading: loading }) => ({
+				properties: data?.properties ? [...data.properties] : [],
+				tenants: data?.tenants ? [...data.tenants] : [],
+				isLoading: loading,
+			}),
 		},
-		validationSchema,
-		onSubmit,
-	});
+	);
 
 	const propertyData = useMemo(
-		() =>
-			find(orgPropertiesViewList?.properties, {
-				uuid: formik?.values?.propertyName,
-			}),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[formik?.values?.propertyName],
+		() => find(queryResult.properties, { uuid: propertyId }),
+		[queryResult.properties, propertyId],
 	);
-
-	const unitsInProperty = propertyData?.units?.map(
-		(unit: { id: string; unitNumber: string }) => ({
-			id: unit?.id,
-			name: unit?.unitNumber,
-		}),
+	const unitData = useMemo(
+		() => find(propertyData?.units, { id: unitId }),
+		[propertyData?.units, unitId],
 	);
+	consoleLog(propertyData);
+	const { properties, tenants, isLoading } = queryResult;
 
-	const getUnitNumber = find(unitsInProperty, {
-		id: formik.values.unitId,
-	});
-
-	const rentDueDayOptions = Array.from({ length: 31 }, (_, index) => index).map(
-		(value) => ({
-			id: `${value}`,
-			name: `${value === 0 ? 'select due day' : value} `,
-		}),
-	);
-
-	useEffect(() => {
-		formik.resetForm({ values: { ...formik.values, unitId: unitId ?? '' } });
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [formik.values.propertyName]);
-
-	useEffect(() => {	
-		const {startDate, endDate} = formik.values;
-		if (dayjs(startDate).isAfter(endDate)) {
-			formik.setFieldValue('endDate', '');
-			dispatch(
-				openSnackbar({
-					message: 'The lease end date cannot be before the start date',
-					severity: 'warning',
-					isOpen: true,
-					duration: 2000,
+	const getPropertyUnits = (values: Record<string, any>) => {
+		const selectedProperty = find(queryResult.properties, {
+			uuid: values.property.uuid,
+		});
+		return (
+			selectedProperty?.units.map(
+				(unit: { id: string; unitNumber: string }) => ({
+					label: unit.unitNumber,
+					value: unit.id,
 				}),
-			);
-		}
-	}, [formik.values.startDate, formik.values.endDate]);
-
-	useEffect(() => {
-		if (unitsInProperty?.length <= 1) {
-			const unit = unitsInProperty[0];
-			formik.setFieldValue('unitId', unit.id);
-			formik.setFieldValue('unitName', unit.name);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [formik?.values?.propertyName]);
-
-	useEffect(() => {
-		if (propertyId && orgPropertiesViewList) {
-			consoleLog('propertyId', propertyId);
-			const property = find(orgPropertiesViewList.properties, { uuid: propertyId });
-			if (property) {
-				formik.setFieldValue('propertyName', property.uuid);
-				if (unitId) {
-					consoleLog('unitId', unitId);
-					const unit = find(property?.units, { id: unitId });
-					consoleLog('unit', unit);
-					formik.setFieldValue('unitId', unit?.id);
-					formik.setFieldValue('unitName', unit?.unitNumber);
-				}
-			}
-		}
-	}, [propertyId, orgPropertiesViewList]);
-
-
-	const rentDueOn = (
-		endDate: string,
-		startDate: string,
-	): Record<string, string> => {
-		consoleLog(dayjs(endDate).get('date'), 'end date');
-		// const rentDueDay = dayjs(endDate).get('date');
-		const startDayAndMonth = dayjs(startDate).format('MMMM DD');
-
-		const quaterFromStartDay = dayjs(startDate).add(3, 'months');
-		const quaterFromStartDayDate = quaterFromStartDay.format('MMMM DD, YYYY');
-		const getQuarterDay = days[quaterFromStartDay.get('day')];
-
-		const biMonthlyFromStartDay = dayjs(startDate).add(2, 'months');
-		const biMonthlyDate = biMonthlyFromStartDay.format('MMMM DD, YYYY');
-		const getBiMonthlyDay = days[biMonthlyFromStartDay.get('day')];
-
-		const monthlyFromStartDay = dayjs(startDate).add(1, 'months');
-		const monthlyDate = monthlyFromStartDay.format('MMMM DD, YYYY');
-		const getMonthlyDay = days[monthlyFromStartDay.get('day')];
-
-		const weeklyFromStartDay = dayjs(startDate).add(1, 'week');
-		const weekDate = weeklyFromStartDay.format('MMMM DD, YYYY');
-		const getWeekDay = days[weeklyFromStartDay.get('day')];
-
-		const biWeeklyFromStartDay = dayjs(startDate).add(2, 'week');
-		const biWeekDate = biWeeklyFromStartDay.format('MMMM DD, YYYY');
-		const getBiWeekDay = days[biWeeklyFromStartDay.get('day')];
-
-		return {
-			[PaymentFrequency.WEEKLY]: `${getWeekDay}, ${weekDate}.`,
-			[PaymentFrequency.BI_WEEKLY]: `${getBiWeekDay}, ${biWeekDate}.`,
-			[PaymentFrequency.MONTHLY]: `${getMonthlyDay}, ${monthlyDate}.`,
-			[PaymentFrequency.ANNUALLY]: `${startDayAndMonth}`,
-			[PaymentFrequency.ONE_TIME]: `Once on ${startDayAndMonth}`,
-			[PaymentFrequency.BI_MONTHLY]: `${getBiMonthlyDay}, ${biMonthlyDate}.`,
-			[PaymentFrequency.QUARTERLY]: `${getQuarterDay}, ${quaterFromStartDayDate}.`,
-			// [PaymentFrequency.CUSTOM]: `See lease agreement`,
-		};
+			) || []
+		);
 	};
 
-	useEffect(() => {
-		const {
-			name,
-			propertyName,
-			rentAmount,
-			startDate,
-			frequency,
-			depositAmount,
-			unitId,
-		} = formik.values;
-
-		if (
-			!name ||
-			!propertyName ||
-			!rentAmount ||
-			!startDate ||
-			!frequency ||
-			!depositAmount ||
-			!unitId
-		) {
-			setDisabledButton(true);
-		} else {
-			setDisabledButton(false);
+	const initialValues = {
+		property: {
+			uuid: propertyData?.uuid || '',
+			name: propertyData?.name || '',
+			unitId: unitData?.id || '',
+			unitNumber: unitData?.unitNumber || '',
+		},
+		name: '',
+		tenantsIds: [],
+		newTenants: [],
+		fees: {
+			rent: null,
+			securityDeposit: null,
+			lateFeeAmount: null,
+		},
+		leaseDates: {
+			start: null,
+			end: null,
+		},
+		paymentFrequency: PaymentFrequency.ANNUALLY,
+		customPaymentFrequency: 0,
+		rentDueDay: 0,
+		firstPaymentDate: '',
+		selectedProperty: propertyData || null,
+		selectedUnit: unitData || null,
+	};
+	const calculateFirstPaymentDate = (values: any) => {
+		if (!values?.paymentFrequency || !values?.leaseDates?.start) {
+			return '';
 		}
-	}, [formik.values]);
+		return dayjs(values?.leaseDates?.start).format('MMMM DD, YYYY');
+	};
+	const calculateDueDate = (values: any) => {
+		if (!values?.paymentFrequency || !values?.leaseDates?.start) {
+			return '';
+		}
 
-	const handleAddLease = async () => {
-		const requestBody: any = {
-			name: formik.values.name,
-			startDate: formik.values.startDate,
-			// endDate: formik.values.endDate,
-			newTenants: null,
-			tenantsIds: formik.values.tenantsIds,
-			unitId: formik.values.unitId,
-			rentDueDay: formik.values?.rentDueDay && Number(formik.values.rentDueDay),
-			rentAmount: formik.values.rentAmount && Number(formik.values.rentAmount),
-			securityDeposit:
-				formik.values.depositAmount && Number(formik.values.depositAmount),
-			isDraft: false,
-			paymentFrequency: formik.values.frequency,
-			status: null,
-			propertyName: propertyData?.name,
-			firstPaymentDate: rentDueOn(
-				formik.values?.endDate,
-				formik.values?.startDate,
-			)[formik.values?.frequency],
-			unitNumber: getUnitNumber?.name,
+		const startDayAndMonthPlusYear = dayjs(values?.leaseDates?.start).add(365, 'day').format(
+			'MMMM DD, YYYY',
+		);
+		const monthDueDate = dayjs(values?.leaseDates?.start)
+			.add(1, 'month')
+			.set('date', values?.rentDueDay || 1);
+		const biMonthlyDueDate = dayjs(values?.leaseDates?.start)
+			.add(2, 'month')
+			.set('date', values?.rentDueDay || 1);
+		const days = [
+			'Sunday',
+			'Monday',
+			'Tuesday',
+			'Wednesday',
+			'Thursday',
+			'Friday',
+			'Saturday',
+		];
+		const leaseDateDiffs = dayjs(values?.leaseDates?.end).diff(dayjs(values?.leaseDates?.start), 'day');
+
+		const dueDates = {
+			[PaymentFrequency.WEEKLY]:  leaseDateDiffs > 7 ? `${days[dayjs(values?.leaseDates?.start).add(1, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(1, 'week').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.BI_WEEKLY]: leaseDateDiffs > 14 ? `${days[dayjs(values?.leaseDates?.start).add(2, 'week').get('day')]}, ${dayjs(values?.leaseDates?.start).add(2, 'week').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.MONTHLY]: leaseDateDiffs > 30 ? `${days[monthDueDate.get('day')]}, ${monthDueDate.format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.ANNUALLY]: leaseDateDiffs > 365 ? startDayAndMonthPlusYear : null,
+			[PaymentFrequency.ONE_TIME]: null,
+			[PaymentFrequency.BI_MONTHLY]: leaseDateDiffs > 60 ? `${days[biMonthlyDueDate.get('day')]}, ${biMonthlyDueDate.format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.QUARTERLY]: leaseDateDiffs > 90 ? `${days[dayjs(values?.leaseDates?.start).add(3, 'month').get('day')]}, ${dayjs(values?.leaseDates?.start).add(3, 'month').format('MMMM DD, YYYY')}` : null,
+			[PaymentFrequency.CUSTOM]: null,
 		};
 
-		if (formik.values.endDate) {
-			requestBody['endDate'] = formik.values.endDate;
+		return dueDates[values?.paymentFrequency as PaymentFrequency] || '';
+	};
+	const leaseFormFields: FormFieldV1[] = [
+		{
+			name: 'name',
+			label: 'Lease Name',
+			type: 'text',
+			required: true,
+			placeholder: "Enter a lease name",
+			validation: {
+				schema: z.string({ message: 'Lease name is required' }).min(1, { message: 'Lease name is required' }),
+			},
+		},
+		{
+			name: 'property',
+			label: 'Property Details',
+			type: 'group',
+			width: '100%',
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'uuid',
+					label: 'Property Name',
+					type: 'select',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					options: properties.map((property: Property) => ({
+						label: property.name,
+						value: property.uuid,
+						units: property.units,
+					})),
+					validation: {
+						schema: z.string().min(1, { message: 'Property name is required' }),
+					},
+					customComponent: renderPropertySelectField,
+				},
+				{
+					name: 'unitId',
+					label: 'Unit',
+					type: 'select',
+					width: isMobile ? '100%' : '48%',
+					options: getPropertyUnits,
+					customComponent: renderUnitSelectField,
+				},
+			],
+		},
+		{
+			name: 'tenantsIds',
+			label: 'Tenants',
+			type: 'checkbox-group',
+			options: tenants.map(
+				(tenant: {
+					firstName: string;
+					lastName: string;
+					email: string;
+					id: string;
+					companyName?: string;
+				}) => ({
+					label: `${tenant.companyName || ''} ${tenant.companyName && (tenant.firstName || tenant.lastName) ? ' - ' : ''}${tenant.firstName} ${tenant.lastName}`,
+					value: tenant.id,
+					email: tenant.email,
+				}),
+			),
+			customComponent: renderTenantSelectField,
+		},
+		{
+			name: 'fees',
+			label: 'Fees',
+			type: 'group',
+			width: '100%',
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'rent',
+					type: 'decimal',
+					label: 'Rent',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					required: true,
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
+					validation: {
+						schema: z.string().min(1, { message: 'Rent is required' }),
+					},
+				},
+				{
+					name: 'securityDeposit',
+					type: 'decimal',
+					label: 'Security Deposit',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
+				},
+				{
+					name: 'lateFeeAmount',
+					type: 'decimal',
+					label: 'Late Fee',
+					width: isMobile ? '100%' : '48%',
+					formatType: 'decimal',
+					decimals: 2,
+					placeholder: "0.00",
+					adornment: {
+						prefix: getCurrencySymbol(user.orgSettings?.settings),
+					} as InputAdornmentType,
+				},
+			],
+		},
+		{
+			name: 'leaseDates',
+			label: 'Lease Dates',
+			type: 'group',
+			width: '100%',
+			layout: 'row',
+			groupFields: [
+				{
+					name: 'start',
+					label: 'Start Date',
+					type: 'date',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					customComponent: (fieldApi, fieldConfig, form) =>
+						renderLeaseDatesField(
+							fieldApi,
+							fieldConfig,
+							form,
+							'leaseDates.end',
+						),
+					validation: {
+						schema: z.any().refine((val) => {
+							if (!val) {
+								return false;
+							}
+							const date = dayjs(val);
+							return date.isValid();
+						}, 'Lease start date is required'),
+						dependencies: [
+							{
+								field: 'leaseDates.end',
+								type: 'max',
+								message: 'Lease start date must be before end date',
+							},
+						],
+					},
+				},
+				{
+					name: 'end',
+					label: 'End Date',
+					type: 'date',
+					required: true,
+					width: isMobile ? '100%' : '48%',
+					customComponent: (fieldApi, fieldConfig, form) =>
+						renderLeaseDatesField(
+							fieldApi,
+							fieldConfig,
+							form,
+							'leaseDates.start',
+						),
+					validation: {
+						schema: z.any().refine((val) => {
+							if (!val) {
+								return false;
+							} // Optional field
+							const date = dayjs(val);
+							return date.isValid();
+						}, 'Lease end date is required'),
+						dependencies: [
+							{
+								field: 'leaseDates.start',
+								type: 'min',
+								message: 'Lease end date must be after start date',
+							},
+						],
+					},
+				},
+			],
+		},
+
+		{
+			name: 'paymentFrequency',
+			label: 'Payment Frequency',
+			type: 'select',
+			required: true,
+			options: Object.values(PaymentFrequency).map((freq) => ({
+				label: freq === PaymentFrequency.CUSTOM ? 'Custom (shortlets/daily rentals)' : freq,
+				value: freq,
+			})),
+			width: isMobile ? '100%' : '48%',
+			validation: {
+				schema: z.string({ required_error: 'Payment frequency is required' }),
+			},
+		},
+		{
+			name: 'customPaymentFrequency',
+			label: 'Select a custom payment interval',
+			type: 'select',
+			options: Array.from({ length: 6 }, (_, i) => ({
+				label: i === 0 ? 'select interval' : `${i}`,
+				value: `${i}`,
+			})),
+			width: '50%',
+			required: (values) =>
+				values.paymentFrequency === PaymentFrequency.CUSTOM,
+			showIf: (values) =>
+				values.paymentFrequency === PaymentFrequency.CUSTOM,
+		},
+		{
+			name: 'rentDueDay',
+			label: 'Payment Day',
+			type: 'select',
+			options: Array.from({ length: 30 }, (_, i) => ({
+				label: i === 0 ? 'select due day' : `${i}`,
+				value: `${i}`,
+			})),
+			width: '50%',
+			showIf: (values) =>
+				values.paymentFrequency === PaymentFrequency.MONTHLY ||
+				values.paymentFrequency === PaymentFrequency.BI_MONTHLY,
+		},
+		{
+			name: 'firstPaymentDate',
+			showIf: (values) => !!values.leaseDates?.start,
+			type: 'custom',
+			label: '',
+			component: (_, __, form: any) => {
+				return (
+					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+						<Info sx={{ fontSize: 16, color: theme.palette.primary.main }} />
+						<Typography variant='body2' textAlign='left'>
+							First payment due on {calculateFirstPaymentDate(form.state.values)} {calculateDueDate(form.state.values) && `and next payment due on ${calculateDueDate(form.state.values)}`}
+						</Typography>
+					</Box>
+				);
+			},
+		},
+	];
+	const validateLeaseDatesWithPaymentFrequency = (values: Record<string, any>): boolean => {
+		const { leaseDates, paymentFrequency, customPaymentFrequency } = values;
+		const { start, end } = leaseDates || {};
+
+		if (!start || !end || !paymentFrequency) {
+			return false;
 		}
 
+		const startDate = dayjs(start);
+		const endDate = dayjs(end);
+
+		const diffInDays = endDate.diff(startDate, 'day');
+		const diffInMonths = endDate.diff(startDate, 'month');
+		const diffInYears = endDate.diff(startDate, 'year');
+
+		const frequencyChecks: Record<string, boolean> = {
+			[PaymentFrequency.ANNUALLY]: diffInYears > 0,
+			[PaymentFrequency.MONTHLY]: diffInMonths > 0,
+			[PaymentFrequency.WEEKLY]: diffInDays > 7,
+			[PaymentFrequency.BI_WEEKLY]: diffInDays > 14,
+			[PaymentFrequency.QUARTERLY]: diffInDays > 90,
+			[PaymentFrequency.BI_MONTHLY]: diffInDays > 60,
+			[PaymentFrequency.CUSTOM]: !!customPaymentFrequency && customPaymentFrequency > 0 && diffInDays > customPaymentFrequency,
+		};
+
+		return paymentFrequency in frequencyChecks
+			? !!frequencyChecks[paymentFrequency]
+			: true;
+	};
+	const onSubmit = async (values: any) => {
 		try {
-			await addLease(requestBody).unwrap();
-
-			dispatch(
-				openSnackbar({
-					message: 'Lease successfully added',
-					severity: 'success',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
-
-			navigate(-1);
-		} catch (e) {
-			consoleLog(e as any);
-
-			dispatch(
-				openSnackbar({
-					message: 'Error saving lease.Please try again',
-					severity: 'error',
-					isOpen: true,
-					duration: 2000,
-				}),
-			);
+			if (!validateLeaseDatesWithPaymentFrequency(values)) {
+				throw new Error('Lease dates are not valid for the selected payment frequency');
+			}
+			const requestBody: LeaseFormValues = {
+				name: values.name,
+				startDate: values.leaseDates.start,
+				endDate: values.leaseDates.end,
+				tenantsIds: values.tenantsIds,
+				unitId: values.property.unitId,
+				rentDueDay: values.rentDueDay !== 0 ? Number(values.rentDueDay) : 0,
+				rentAmount: Number(values.fees.rent),
+				securityDeposit: Number(values.fees.securityDeposit),
+				paymentFrequency: values.paymentFrequency,
+				propertyName: values.property.name,
+				customPaymentFrequency: values.customPaymentFrequency,
+				lateFeeAmount: Number(values.fees.lateFeeAmount),
+				firstPaymentDate: calculateDueDate(values),
+				unitNumber: values.property.unitNumber,
+				leaseConfig: {
+					currency: user.orgSettings?.settings?.currency || 'NGN',
+					currencySymbol: user.orgSettings?.settings?.currencySymbol || '₦',
+				}
+			};
+			return await addLease(requestBody).unwrap();
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.lease.create.error);
+			throw new Error(errorMessage);
 		}
+	};
 
+	const handleAllLeasesClick = () => {
+		navigate('/leases');
+	};
+	const handleViewLeaseClick = (_: any, result: any) => {
+		navigate(`/leases/${result?.id}`);
+	};
+	const handleViewTenantsClick = () => {
+		navigate(`/tenants`);
+	};
+	const leaseFormConfig: DynamicTanstackFormProps = {
+		formWidth: '100%',
+		submitButtonText: 'Add Lease',
+		enableReset: true,
+		resetButtonText: 'Cancel',
+		fields: leaseFormFields,
+		initialValues,
+		isMultiStep: false,
+		onSubmit,
+		showBackdrop: true,
+		backdropText: 'Please wait while we add your lease...',
+		fullWidthButtons: false,
+		horizontalAlignment: 'right',
+		verticalAlignment: 'top',
+		// header: renderHeader(),
+		nextAction: {
+			title: 'Lease Created',
+			description: 'Your new lease was created successfully and ready for use',
+			closeIcon: <Close />,
+			onClose: handleAllLeasesClick,
+			buttons: [
+				{
+					text: 'View Lease Details',
+					onClick: handleViewLeaseClick,
+					variant: 'klubiqOutlinedButton',
+					autoFocus: true,
+				},
+				{
+					text: 'View Tenants',
+					onClick: handleViewTenantsClick,
+					variant: 'klubiqMainButton',
+					autoFocus: false,
+				},
+			],
+			maxWidth: 'md',
+			fullWidth: true,
+			showAfterSubmit: true,
+		},
 	};
 
 	return (
-		<FormLayout Header='LEASE INFORMATION' sx={LeaseFormStyle.card}>
-			{isLoadingOrgPropertiesView ? (
-				<FormSkeleton rows={8} columns={[1, 1, 1, 1, 1, 1, 1, 1]} sx={LeaseFormStyle.content} />
+		<FormLayout Header={'Add Lease'}>
+			{isLoading ? (
+				<FormSkeleton
+					rows={leaseFormFields.length}
+					columns={[1, 1, 1]}
+					sx={{ width: '100%', p: 2 }}
+				/>
 			) : (
-				<Grid container spacing={0} sx={LeaseFormStyle.content}>
-					<Grid item xs={12}>
-						<ControlledTextField
-							name='name'
-							label='Lease Name'
-							formik={formik}
-							type='text'
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledSelect
-							name='propertyName'
-							label='Property Name'
-							type='text'
-							formik={formik}
-							options={propertyNameOptions}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledSelect
-							name='unitId'
-							label='Unit'
-							type='text'
-							formik={formik}
-							options={unitsInProperty}
-							disabled={!unitsInProperty || unitsInProperty?.length <= 1}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<Link
-							component='button'
-							variant='body2'
-							sx={{
-								position: 'absolute',
-								right: '25px',
-							}}
-							onClick={() => {
-								navigate(`/tenants/add-tenant?property=${propertyData?.uuid}`, {
-									state: {
-										currentProperty: propertyData,
-									},
-								});
-							}}
-						>
-							Add tenant
-						</Link>
-						<ControlledSelect
-							multiple={true}
-							name='tenantsIds'
-							label='Tenant'
-							type='text'
-							formik={formik}
-							options={[]}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledTextField
-							name='rentAmount'
-							label='Rent Amount'
-							formik={formik}
-							type='number'
-							showCurrency
-							currencySymbol={getCurrencySymbol(orgSettings) as string}
-						/>
-					</Grid>
-					<Grid item xs={12}>
-						<ControlledTextField
-							name='depositAmount'
-							label='Deposit Amount'
-							type='number'
-							formik={formik}
-							showCurrency
-							currencySymbol={getCurrencySymbol(orgSettings) as string}
-						/>
-					</Grid>
-
-					<Grid container>
-						<Grid item xs={6} sm={6} md={6} lg={6}>
-							<ControlledTextField
-								name='startDate'
-								label='Lease Start Date'
-								formik={formik}
-								type='date'
-							/>
-						</Grid>
-						<Grid item xs={6} sm={6} md={6} lg={6}>
-							<ControlledTextField
-								name='endDate'
-								label='Lease End Date'
-								formik={formik}
-								type='date'
-							/>
-						</Grid>
-					</Grid>
-
-					<Grid item xs={6}>
-						<ControlledSelect
-							name='frequency'
-							label='Payment Frequency *'
-							type='text'
-							formik={formik}
-							options={frequencyOptions}
-						/>
-					</Grid>
-					<Grid item xs={6}>
-						{formik.values.frequency === 'Monthly' ||
-						formik.values.frequency === 'Bi-Monthly' ? (
-							<ControlledSelect
-								name='rentDueDay'
-								label='Payment Day'
-								type='number'
-								formik={formik}
-								options={rentDueDayOptions}
-							/>
-						) : null}
-					</Grid>
-
-					<Grid item xs={12} sx={LeaseFormStyle.infobox}>
-						<img src={Logo} alt='logo' style={LeaseFormStyle.infoimg} />
-
-						<Typography variant='subtitle2' sx={LeaseFormStyle.infotypo}>
-							{formik.values.endDate &&
-							formik.values.startDate &&
-							formik.values.frequency
-								? `The first rent payment will be due on ${rentDueOn(formik.values.endDate, formik.values.startDate)[formik.values.frequency]}`
-								: 'Your payment due date will be determined'}
-						</Typography>
-					</Grid>
-
-					<Stack
-						direction={'row'}
-						gap={3}
-						justifyContent={'flex-end'}
-						width={'100%'}
-						mt={10}
-					>
-						<Button variant='text' sx={LeaseFormStyle.button}>
-							Cancel
-						</Button>
-						<Button
-							variant='contained'
-							sx={LeaseFormStyle.button}
-							onClick={handleAddLease}
-							disabled={disabledButton}
-						>
-							Add Lease
-						</Button>
-					</Stack>
-				</Grid>
+				<Box sx={{ width: '100%', p: 2 }}>
+					<KlubiqFormV1 {...leaseFormConfig} />
+				</Box>
 			)}
 		</FormLayout>
 	);

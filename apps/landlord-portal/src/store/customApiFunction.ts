@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { api as axiosInstance } from '../api';
 
 export const customApiFunction = async (args: any) => {
@@ -10,8 +11,22 @@ export const customApiFunction = async (args: any) => {
 			params: args.params,
 		});
 
-		return { data: result.data.data };
-	} catch (error) {
-		return { error: (error as any).response?.data } as any;
+		 // Check if result.data exists and has the expected structure
+		 if (result.data && result.data.data !== undefined) {
+			return { data: result.data.data, status: result.status };
+		  }
+		  
+		  // If result.data exists but doesn't have the expected structure, return it as is
+		  if (result.data) {
+			return { data: result.data, status: result.status };
+		  }
+	  
+		  // If no data, return empty object
+		  return { data: {}, status: result.status };
+	} catch (error: any) {
+		return {
+			error:  (error as any).response?.data  as FetchBaseQueryError,
+		  };
+		// return { error: (error as any).response?.data } as any;
 	}
 };

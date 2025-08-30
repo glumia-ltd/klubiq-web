@@ -11,7 +11,7 @@ type PaginationType = {
 	currentPage?: number;
 };
 
-const DEFAULTITEMSPERPAGE = [12, 24, 36];
+const DEFAULTITEMSPERPAGE = [10, 20, 30];
 
 export const DataPagination: FC<PaginationType> = ({
 	getCurrentPage,
@@ -53,6 +53,7 @@ export const DataPagination: FC<PaginationType> = ({
 					<Select
 						labelId='demo-simple-select-label'
 						id='demo-simple-select'
+						sx={{ pl: '16px' }}
 						defaultValue={
 							itemsPerPageOptions
 								? itemsPerPageOptions[0]
