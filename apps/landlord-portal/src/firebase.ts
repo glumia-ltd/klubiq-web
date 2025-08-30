@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { browserSessionPersistence, getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-	apiKey: import.meta.env.VITE_APIKEY,
+	apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
 	authDomain: import.meta.env.VITE_AUTHDOMAIN,
 	projectId: import.meta.env.VITE_PROJECTID,
 	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
