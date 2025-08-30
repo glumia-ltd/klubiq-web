@@ -83,6 +83,7 @@ export const publicEndpoints = {
 	getRoles: () => '/public/organization-roles',
 	getFeatures: () => '/public/features',
 	getPermissions: () => '/public/permissions',
+	globalSearch: () => '/search',
 };
 
 export const fileEndpoints = {

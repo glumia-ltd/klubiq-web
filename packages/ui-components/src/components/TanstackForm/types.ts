@@ -240,6 +240,7 @@ export interface DynamicTanstackFormProps {
   isTurnstileCaptchaRequired?: boolean;
   captchaAction?: string;
   captcheSiteKey?: string;
+  formSpacing?: number;
 }
 // For internal use in KlubiqTSFormFields to allow the _isArraySubField flag
 export type FormFieldV1WithArrayFlag = FormFieldV1 & { _isArraySubField?: boolean; _arrayFieldName?: string; _arrayIndex?: number };

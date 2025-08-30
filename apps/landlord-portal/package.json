@@ -12,6 +12,7 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "dependencies": {
+    "@klubiq/ui-components": "^0.0.1",
     "@mui/icons-material": "^5.15.15",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.15",
@@ -38,7 +39,7 @@
     "react-router-dom": "^6.22.3",
     "yup": "^1.4.0"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/babel__core": "^7.20.5",

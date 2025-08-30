@@ -27,6 +27,7 @@ import {
 	useResetPasswordMutation,
 	useValidateResetPasswordTokenMutation,
 } from '@/store/AuthStore/authApi.slice';
+import { screenMessages } from '@/helpers/screen-messages';
 
 type IPasswordType = {
 	password: string;
@@ -108,13 +109,11 @@ const ResetPassword = () => {
 				isOpen: true,
 			});
 			navigate('/', { replace: true });
-		} catch (error: any) {
-			console.error(error);
-			openSnackbar({
-				message: error.response.data.message,
-				severity: 'error',
-				isOpen: true,
-			});
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.auth.resetPassword.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const emailField: FormFieldV1 = {
