@@ -150,8 +150,8 @@ jobs:
             VITE_MEASUREMENTID= ${{ secrets.FIREBASE_MEASUREMENT_ID }}
             VITE_BASE_URL_DEV= ${{ vars.VITE_BASE_URL_DEV }}
             VITE_BASE_URL_STAGING= ${{ vars.VITE_BASE_URL_STAGING }}
-            VITE_BASE_URL_PROD: ${{ vars.VITE_BASE_URL_PROD }}
-            VITE_APPLICATION_NAME= landlordportal
+            VITE_BASE_URL_PROD=${{ vars.VITE_BASE_URL_PROD }}
+            VITE_APPLICATION_NAME=landlordportal
             VITE_NODE_ENV= ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' ||'development'}}
             VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY= ${{ secrets.WEB_PUSH_NOTIFICATION_PUBLIC_KEY }}
             VITE_GOOGLE_PLACES_API_KEY= ${{ secrets.VITE_GOOGLE_PLACES_API_KEY }}
