@@ -28,6 +28,7 @@ import { Box, MenuItem, Select, Typography } from '@mui/material';
 import { TenantDialog } from '../CustomFormComponents/TenantDialog';
 import { Close, Info } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { screenMessages } from '../../helpers/screen-messages';
 
 
 function renderPropertySelectField(fieldApi: any, fieldConfig: any, form: any) {
@@ -221,13 +222,6 @@ interface Property {
 	name: string;
 	units?: Array<{ id: string; unitNumber: string }>;
 }
-// interface NewTenant {
-// 	firstName: string;
-// 	lastName: string;
-// 	email: string;
-// 	phone: string;
-// 	companyName: string;
-// }
 interface LeaseFormValues {
 	name: string;
 	startDate: string;
@@ -655,17 +649,11 @@ const AddLeaseForm: FC<AddLeaseFormProps> = ({ propertyId, unitId }) => {
 				}
 			};
 			return await addLease(requestBody).unwrap();
-		} catch (error) {
-			const errorMessage = (error as any)?.message;
-			dispatch(
-				openSnackbar({
-					message: errorMessage,
-					severity: 'error',
-					isOpen: true,
-					duration: 7000,
-				}),
-			);
-			throw error;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.lease.create.error);
+			throw new Error(errorMessage);
 		}
 	};
 

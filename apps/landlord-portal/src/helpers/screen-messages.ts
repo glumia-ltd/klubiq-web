@@ -18,6 +18,13 @@ export const screenMessages = {
 			loading: 'Deleting unit...',
 			confirm: 'Are you sure you want to delete this unit?',
 		},
+		uploadImages: {
+			success: 'Images uploaded successfully',
+			error: 'Failed to upload images',
+			loading: 'Uploading images...',
+			confirm: 'Are you sure you want to upload these images?',
+		},
+
 	},
 	tenant: {
 		invite: {

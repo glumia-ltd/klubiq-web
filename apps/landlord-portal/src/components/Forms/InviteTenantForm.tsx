@@ -131,17 +131,11 @@ const InviteTenantForm = ({
 				})
 			);
 			navigate(returnPath);
-		} catch (error) {
-			const errorMessage = (error as any)?.message || screenMessages.tenant.invite.error;
-			dispatch(
-				openSnackbar({
-					message: errorMessage,
-					severity: 'error',
-					isOpen: true,
-					duration: 7000,
-				})
-			);
-			throw error;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.tenant.invite.error);
+			throw new Error(errorMessage);
 		}
 	};
 

@@ -114,16 +114,11 @@ const TenantDetails = () => {
 						duration: 5000,
 					}),
 				);
-			} catch (error: any) {
-				console.error(error);
-				dispatch(
-					openSnackbar({
-						message: error.data.message || error.message || screenMessages.tenant.resendInvitation.error,
-						severity: 'error',
-						isOpen: true,
-						duration: 5000,
-					}),
-				);
+			} catch (error: unknown) {
+				const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.tenant.resendInvitation.error);
+				throw new Error(errorMessage);
 			}
 		}
 	};

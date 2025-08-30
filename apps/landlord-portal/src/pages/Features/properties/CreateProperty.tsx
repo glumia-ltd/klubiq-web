@@ -45,6 +45,7 @@ import { consoleError, consoleInfo, consoleLog } from '../../../helpers/debug-lo
 import { Property } from '../../../page-tytpes/properties/request.types';
 import { FileUpload } from '@klubiq/ui-components';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 
 interface AddressValue {
@@ -945,16 +946,13 @@ export const CreateProperty = () => {
 			return;
 		}
 		try {	
-			return await addProperty(newPropertyData).unwrap();
-		} catch (error) {
-			const errorMessage = (error as any).error?.message;
-			dispatch(openSnackbar({
-				message: errorMessage,
-				severity: 'error',
-				isOpen: true,
-				duration: 7000
-			}));
-			throw error;
+			const result = await addProperty(newPropertyData).unwrap();
+			return result;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.property.create.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const handleAddTenantClick = (formData: any, result: any) => {

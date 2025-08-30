@@ -249,6 +249,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 	isTurnstileCaptchaRequired = false,
 	captchaAction = 'submit',
 	captcheSiteKey = '',
+	formSpacing = 4,
 }) => {
 	// const [isTurnstileCaptchaValid, setIsTurnstileCaptchaValid] =
 	// 	useState<boolean>(false);
@@ -626,18 +627,6 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 		defaultValues: initialValues,
 		onSubmit: async ({ value }) => {
 			try {
-				// if (isTurnstileCaptchaRequired) {
-				// 	// Add a short delay before checking the captcha validity
-				// 	await new Promise((resolve) => setTimeout(resolve, 500));
-				// 	if (!isTurnstileCaptchaValid) {
-				// 		setShowErrorAlert(true);
-				// 		setErrorAlertData({
-				// 			title: '',
-				// 			message: 'We could not verify you are human. Please try again.',
-				// 		});
-				// 		return false;
-				// 	}
-				// }
 				const filesWaitingForUpload = form.getFieldValue(
 					'filesWaitingForUpload',
 				);
@@ -654,28 +643,31 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				setSubmissionResult(result);
 				setIsSubmitted(true);
 				setShowErrorAlert(false);
-				form.reset();
 				// Only show next action if configured
 				if (nextAction?.showAfterSubmit) {
+					form.reset();
 					setShowNextAction(true);
 					if ('buttons' in nextAction) {
 						setNextActionDialogOpen(true);
 					}
 				} else {
 					// Only reset form if there's no next action
+					form.reset();
 					return result;
 				}
 			} catch (error: any) {
-				console.error('Form submission error:', error);
 				setIsSubmitted(false);
 				setErrorAlertData({
 					title: '',
 					message:
-						error.message ||
+						error?.message ||
 						'An error occurred while submitting the form. Please try again.',
 				});
 				setShowErrorAlert(true);
-				throw error;
+				// Restore previous values so the form doesn't clear on error
+				Object.entries(value || {}).forEach(([key, val]) => {
+					form.setFieldValue(key, val);
+				});
 			}
 		},
 		validators: {
@@ -1296,7 +1288,7 @@ export const KlubiqFormV1: React.FC<DynamicTanstackFormProps> = ({
 				minHeight: verticalAlignment === 'center' ? '100vh' : 'auto',
 				position: 'relative',
 			}}
-			spacing={4}
+			spacing={formSpacing}
 		>
 			{/* Add submission overlay */}
 			{!showBackdrop &&

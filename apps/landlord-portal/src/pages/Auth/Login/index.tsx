@@ -23,6 +23,7 @@ import logo from '../../../assets/images/logo-1.png';
 import logoText from '../../../assets/images/logo-text-2.png';
 import lightLogo from '../../../assets/images/logo-2.png';
 import lightLogoText from '../../../assets/images/logo-text-1.png';
+import { screenMessages } from '../../../helpers/screen-messages';
 
 type IValuesType = {
 	password: string;
@@ -59,14 +60,15 @@ const Login = () => {
 				setOtpError('');
 				loadUserAfterSignIn();
 			}
-		} catch (error: any) {
-			dispatch(
-				openSnackbar({
-					message: error.message || 'An error occurred',
-					severity: 'error',
-					isOpen: true,
-				}),
-			);
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.auth.otp.error);
+			dispatch(openSnackbar({
+				message: errorMessage,
+				severity: 'error',
+				isOpen: true,
+			}));
 			set2FARequired(false);
 		}
 		setIsVerifying(false);
@@ -146,7 +148,10 @@ const Login = () => {
 				set2FARequired(true);
 			} else {
 				set2FARequired(false);
-				throw error;
+				const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.auth.signIn.error);
+				throw new Error(errorMessage);
 			}
 		}
 	};

@@ -450,17 +450,11 @@ const UnitForm: FC<UnitFormProps> = ({
 				onClose?.();
 				return response;
 			}
-		} catch (error) {
-			const errorMessage = (error as any)?.message;
-			dispatch(
-				openSnackbar({
-					message: errorMessage,
-					severity: 'error',
-					isOpen: true,
-					duration: 7000,
-				}),
-			);
-			throw error;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : unitData?.id ? screenMessages.unit.edit.error : screenMessages.unit.add.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const onReset = () => {
