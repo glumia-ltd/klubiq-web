@@ -21,7 +21,7 @@ ARG VITE_THEME_SWITCH_ENABLED
 ARG BUILD_NUMBER
 ARG VITE_TURNSTILE_SITEKEY
 
-COPY package.json package-lock.json turbo.json nx.json tsconfig.json ./
+COPY package.json package-lock.json turbo.json tsconfig.json ./
 COPY packages ./packages
 COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
 RUN npm install
