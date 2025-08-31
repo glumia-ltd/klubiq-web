@@ -9,7 +9,7 @@ ARG VITE_HMAC_SECRET
 
 
 
-COPY package.json package-lock.json turbo.json nx.json tsconfig.json ./
+COPY package.json package-lock.json turbo.json tsconfig.json ./
 COPY packages ./packages
 COPY apps/tenant-portal/package.json ./apps/tenant-portal/package.json
 RUN npm install
