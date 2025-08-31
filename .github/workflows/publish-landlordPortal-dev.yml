@@ -5,6 +5,12 @@ on:
     paths:
       - "apps/landlord-portal/**"
       - "packages/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The branch to deploy'
+        required: true
+        default: 'dev'
 permissions:
   contents: read
   packages: write
@@ -109,7 +115,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: .apps/landlord-portal/Dockerfile.staging
+          file: apps/landlord-portal/Dockerfile.staging
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
