@@ -1,27 +1,43 @@
-# apps/tenant-portal/Dockerfile.staging
+# apps/landlord-portal/Dockerfile
+# builder
 FROM node:22-alpine AS builder
 WORKDIR /repo
-ENV CI=true
+
+ARG VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY
+ARG VITE_TURNSTILE_SITEKEY
+ARG VITE_HMAC_SECRET
+
+
+
 COPY package.json package-lock.json turbo.json nx.json tsconfig.json ./
 COPY packages ./packages
 COPY apps/tenant-portal/package.json ./apps/tenant-portal/package.json
-RUN npm ci
+RUN npm install
+
+
 COPY . .
 WORKDIR /repo/apps/tenant-portal
-ENV VITE_NODE_ENV=staging
-RUN cp .env.staging .env || true
-RUN npx turbo run build --filter=./apps/tenant-portal
+
+RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
+    VITE_BASE_URL_LOCAL=http://localhost:3000\
+    VITE_BASE_URL_DEV=https://devapi.klubiq.com\
+    VITE_BASE_URL_STAGING=https://staging.api.klubiq.com\
+    VITE_BASE_URL_PROD=https://api.klubiq.com\
+    NODE_ENV=staging\
+    VITE_NODE_ENV=staging\
+    VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY=$VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY\
+    VITE_IDB_VERSION=1\ 
+    VITE_THEME_SWITCH_ENABLED=false\
+    REACT_TP_APP_VERSION=0.0.1\ 
+    BUILD_NUMBER=dev-1\
+    VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\
+    VITE_HMAC_SECRET=$VITE_HMAC_SECRET\    
+    npx turbo run build --filter=./apps/tenant-portal
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
+# runtime
 FROM nginx:1.27-alpine AS runtime
-RUN addgroup klubiq && \
-    adduser -D staging && \
-    addgroup staging klubiq && \
-    mkdir -p /repo/logs && \
-    chown -R staging:klubiq /repo
-COPY --chown=staging:klubiq apps/tenant-portal/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder --chown=staging:klubiq /repo/apps/tenant-portal/dist /usr/share/nginx/html
-USER staging
 
+COPY apps/tenant-portal/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /repo/apps/tenant-portal/dist /usr/share/nginx/html
 EXPOSE 80
-HEALTHCHECK CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
