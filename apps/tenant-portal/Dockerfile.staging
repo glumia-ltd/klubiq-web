@@ -32,7 +32,7 @@ RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
     BUILD_NUMBER=dev-1\
     VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\
     VITE_HMAC_SECRET=$VITE_HMAC_SECRET\    
-    npm run buildUIC
+    npm run buildUIC\
     npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
