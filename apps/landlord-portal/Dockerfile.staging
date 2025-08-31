@@ -50,9 +50,9 @@ RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_BASE_URL_STAGING=https://staging.api.klubiq.com\
     VITE_BASE_URL_PROD=https://api.klubiq.com\
     VITE_NODE_ENV=staging \
-    NODE_ENV=staging \
-    npm run buildUIC \
-    npm run buildLP 
+    NODE_ENV=staging 
+RUN npm run buildUIC
+RUN npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
