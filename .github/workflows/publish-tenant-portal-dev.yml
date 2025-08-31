@@ -5,6 +5,7 @@ on:
       - dev
     paths:
       - "apps/tenant-portal/**"
+      - '.github/workflows/publish-tenant-portal-dev.yml'
       - "packages/**"
   workflow_dispatch:
     inputs:
