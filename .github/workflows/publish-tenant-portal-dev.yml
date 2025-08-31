@@ -96,69 +96,19 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=sha,prefix={{branch}}-
-            type=raw,value=staging-latest
+            type=raw,value=tp-staging-latest
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile.staging
+          file: .apps/tenant-portal/Dockerfile.staging
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  deploy-staging:
-    if: github.ref == 'refs/heads/staging'
-    runs-on: ubuntu-latest
-    needs: build-and-push-image
-    environment: staging
-    steps:
-      - name: Remote compose build/up
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            set -e # Exit immediately if a command exits with a non-zero status.
-            cd ${{ secrets.TARGET_DIR }}
-
-            echo "Pulling latest infrastructure changes (docker-compose.yml, nginx config)..."
-            git fetch origin
-
-            echo "Resetting local repository to match remote branch..."
-            git reset --hard origin/staging
-
-            echo "Creating .env file from GitHub Secrets..."
-            cat <<EOF > .apps/tenant-portal/.env
-            NODE_ENV=${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' ||'development'}}
-            VITE_BASE_URL_DEV=${{ vars.VITE_BASE_URL_DEV }}
-            VITE_BASE_URL_STAGING=${{ vars.VITE_BASE_URL_STAGING }}
-            VITE_BASE_URL_PROD=${{ vars.VITE_BASE_URL_PROD }}
-            VITE_APPLICATION_NAME=klubiq-tenant-portal
-            VITE_NODE_ENV=${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' ||'development'}}
-            VITE_IDB_VERSION=${{ vars.VITE_IDB_VERSION }}
-            VITE_THEME_SWITCH_ENABLED=${{ vars.VITE_THEME_SWITCH_ENABLED }}
-            REACT_TP_APP_VERSION=${{ vars.REACT_TP_APP_VERSION }}
-            BUILD_NUMBER=${{ github.run_number }}
-            VITE_TURNSTILE_SITEKEY=${{ secrets.VITE_TURNSTILE_SITEKEY }}
-            VITE_HMAC_SECRET=${{ secrets.VITE_HMAC_SECRET }}
-            EOF
-
-            echo "Logging into GitHub Container Registry..."
-            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-
-            echo "Stopping old services..."
-            sudo docker-compose -f docker-compose.staging.yml down || true
-
-            echo "Starting new services. Docker Compose will pull the latest image automatically."
-            sudo docker-compose -f docker-compose.staging.yml up -d --force-recreate
-
-            echo "Cleaning up old, unused Docker images..."
-            sudo docker image prune -f
-
-            echo "Deployment to staging completed successfully!"
-          
-
-# #npm ci --omit=dev && npm cache clean --force
+          build-args: |
+            VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY= ${{ secrets.WEB_PUSH_NOTIFICATION_PUBLIC_KEY }}
+            VITE_TURNSTILE_SITEKEY= ${{ secrets.VITE_TURNSTILE_SITEKEY }}
+            VITE_HMAC_SECRET= ${{ secrets.VITE_HMAC_SECRET }}
+ 
