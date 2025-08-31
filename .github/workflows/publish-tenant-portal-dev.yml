@@ -1,8 +1,7 @@
 name: Deploy Tenant Portal
 on:
   push:
-    branches:
-      - dev
+    branches: [dev, staging]
     paths:
       - "apps/tenant-portal/**"
       - '.github/workflows/publish-tenant-portal-dev.yml'
