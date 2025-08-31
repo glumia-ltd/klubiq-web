@@ -2,6 +2,7 @@
 # builder
 FROM node:22-alpine AS builder
 WORKDIR /repo
+ENV CI=true HUSKY=0 NPM_CONFIG_FUND=false NPM_CONFIG_AUDIT=false
 
 # Declare all your build-time arguments
 ARG VITE_FIREBASE_APIKEY
@@ -21,14 +22,12 @@ ARG VITE_THEME_SWITCH_ENABLED
 ARG BUILD_NUMBER
 ARG VITE_TURNSTILE_SITEKEY
 
-COPY package.json package-lock.json turbo.json nx.json tsconfig.json ./
+COPY package.json package-lock.json turbo.json tsconfig.json ./
 COPY packages ./packages
 COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
-RUN npm install
-
+RUN npm ci --ignore-scripts
 
 COPY . .
-WORKDIR /repo/apps/landlord-portal
 RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_AUTHDOMAIN=$VITE_AUTHDOMAIN \
     VITE_PROJECTID=$VITE_PROJECTID \
@@ -51,8 +50,9 @@ RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_BASE_URL_STAGING=https://staging.api.klubiq.com\
     VITE_BASE_URL_PROD=https://api.klubiq.com\
     VITE_NODE_ENV=staging \
-    NODE_ENV=staging \
-    npx turbo run build --filter=./apps/landlord-portal
+    NODE_ENV=staging 
+RUN npm run buildUIC
+RUN npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
