@@ -21,7 +21,7 @@ COPY . .
 RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
     VITE_BASE_URL_LOCAL=http://localhost:3000\
     VITE_BASE_URL_DEV=https://devapi.klubiq.com\
-    VITE_BASE_URL_STAGING=https://staging.api.klubiq.com\
+    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com\
     VITE_BASE_URL_PROD=https://api.klubiq.com\
     NODE_ENV=staging\
     VITE_NODE_ENV=staging\
