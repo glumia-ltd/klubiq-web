@@ -21,7 +21,9 @@ export default defineConfig({
     'react-hook-form',
     '@hookform/resolvers',
     'yup',
-    '@zxcvbn-ts/core'
+    '@zxcvbn-ts/core',
+    '@mui/lab',
+    '@mui/lab/*',
   ],
   esbuildOptions(options) {
     options.banner = {
