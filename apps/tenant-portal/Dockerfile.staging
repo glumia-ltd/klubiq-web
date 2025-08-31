@@ -17,7 +17,6 @@ RUN npm ci --ignore-scripts
 
 
 COPY . .
-WORKDIR /repo/apps/tenant-portal
 
 RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
     VITE_BASE_URL_LOCAL=http://localhost:3000\
@@ -33,7 +32,8 @@ RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
     BUILD_NUMBER=dev-1\
     VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\
     VITE_HMAC_SECRET=$VITE_HMAC_SECRET\    
-    npx turbo run build --filter=./apps/tenant-portal
+    npm run buildUIC
+    npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
