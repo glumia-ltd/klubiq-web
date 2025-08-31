@@ -8,10 +8,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
-import { auth } from '../../firebase';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
-import { resetStore } from '../../store';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -45,9 +43,7 @@ export const SessionTimeoutProvider = ({
 
 	const handleSignOut = async () => {
 		await userSignOut({}).unwrap();
-		resetStore();
-		sessionStorage.clear();
-		auth.signOut();
+
 	};
 
 	// Function to check whether the user has been inactive for too long
@@ -156,7 +152,7 @@ export const SessionTimeoutProvider = ({
 				</DialogContent>
 				<DialogActions>
 					<Button
-						variant='contained'
+						variant='klubiqMainButton'
 						sx={{
 							backgroundColor: 'primary.main',
 						}}
@@ -165,7 +161,7 @@ export const SessionTimeoutProvider = ({
 						Stay Logged In
 					</Button>
 					<Button
-						variant='outlined'
+						variant='klubiqOutlinedButton'
 						onClick={() => {
 							handleSignOut();
 						}}

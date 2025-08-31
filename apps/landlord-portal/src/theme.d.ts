@@ -10,6 +10,9 @@ declare module '@mui/material/styles' {
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
+		upTrendIndicator: React.CSSProperties;
+		downTrendIndicator: React.CSSProperties;
+		neutralTrendIndicator: React.CSSProperties;
 	}
 	interface TypographyVariantsOptions {
 		dashboardTypography?: React.CSSProperties;
@@ -19,18 +22,37 @@ declare module '@mui/material/styles' {
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
+		upTrendIndicator: React.CSSProperties;
+		downTrendIndicator: React.CSSProperties;
+		neutralTrendIndicator: React.CSSProperties;
 	}
 
 	interface ChipVariants {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
+		upTrend: React.CSSProperties;
+		downTrend: React.CSSProperties;
+		neutralTrend: React.CSSProperties;
 	}
 
 	interface ChipVariantsOptions {
 		rent: React.CSSProperties;
 		sale: React.CSSProperties;
 		propertyType: React.CSSProperties;
+		archived: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
+		upTrend: React.CSSProperties;
+		downTrend: React.CSSProperties;
+		neutralTrend: React.CSSProperties;
 	}
 
 	interface TypographyVariants {
@@ -42,23 +64,13 @@ declare module '@mui/material/styles' {
 	}
 
 	interface Palette {
-		buttonColors?: {
-			common: React.CSSProperties;
-		};
-		notification?: {
-			light?: string;
-			dark?: string;
-		};
+		buttonColors?: { common: React.CSSProperties };
+		notification?: { light?: string; dark?: string };
 	}
 
 	interface PaletteOptions {
-		buttonColors?: {
-			common: React.CSSProperties;
-		};
-		notification?: {
-			light?: string;
-			dark?: string;
-		};
+		buttonColors?: { common: React.CSSProperties };
+		notification?: { light?: string; dark?: string };
 	}
 }
 
@@ -72,6 +84,9 @@ declare module '@mui/material/Typography' {
 		cardTitle: true;
 		filterResultText: true;
 		filterResultNumber: true;
+		upTrendIndicator: true;
+		downTrendIndicator: true;
+		neutralTrendIndicator: true;
 	}
 
 	interface TypographyPropsVariantOverrides {
@@ -81,9 +96,14 @@ declare module '@mui/material/Typography' {
 
 declare module '@mui/material/Button' {
 	interface ButtonPropsVariantOverrides {
-		propertyButton: true;
 		filterButton: true;
 		borderlessFilterButton: true;
+		klubiqMainButton: true;
+		klubiqSecondaryButton: true;
+		klubiqTertiaryButton: true;
+		klubiqAccentButton: true;
+		klubiqTextButton: true;
+		klubiqOutlinedButton: true;
 	}
 }
 
@@ -92,6 +112,14 @@ declare module '@mui/material/Chip' {
 		rent: true;
 		sale: true;
 		propertyType: true;
+		archived: true;
+		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
+		upTrend: true;
+		downTrend: true;
+		neutralTrend: true;
 	}
 }
 

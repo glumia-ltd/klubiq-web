@@ -9,7 +9,13 @@ export const styles = {
 		borderRadius: '8px',
 		padding: '8px',
 		width: { xs: '100%', sm: '48%', md: '32%' },
-		height: '80px',
+		height: {
+			xs: '80px',
+			sm: '120px',
+			md: '120px',
+			lg: '80px',
+			xl: '80px',
+		},
 	},
 	chip: {
 		padding: '5px',

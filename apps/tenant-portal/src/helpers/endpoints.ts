@@ -1,0 +1,44 @@
+export const authEndpoints = {
+	login: () => '/auth/signin',
+	signOut: () => '/auth/signout',
+	refreshToken: () => '/auth/exchange-refresh-token',
+	getUserByFbid: () => `/auth/tenant/user`,
+	acceptInvitation: (token: string) =>
+		`/auth/accept-tenant-invitation?token=${token}`,
+	csrf: () => '/security/csrf-token',
+	validateInvitationToken: (token: string) =>
+		`/auth/is-invite-valid?token=${token}`,
+	sendResetPasswordEmail: () => `/auth/reset-password-link`,
+	validateResetPasswordToken: () => `/auth/reset-token-valid`,
+	resetPassword: () => `/auth/reset-password`,
+};
+
+export const tenantEndpoints = {
+	leaseInsights: () => '/tenants/lease-insights',
+	paymentHistory: () => '/tenants/payment-history',
+	maintenanceRequests: () => '/tenants/maintenance-requests',
+	documents: () => '/tenants/documents',
+	profile: () => '/tenants/profile',
+};
+export const publicEndpoints = {
+	notifications: (userId: string, isRead: boolean) =>
+		`/notifications?userId=${userId}&isRead=${isRead}`,
+};
+
+export const paymentsEndpoints = {
+	getUpcomingPayments: (leaseTenantId: string) =>
+		`/payments/upcoming-payments/${leaseTenantId}`,
+	getPaymentMethods: () => '/payment-methods',
+	getPaymentHistory: (tenantId: string) => `/payments/${tenantId}/history`,
+	initialize: () => `/payments/initialize`,
+	getTransactionStatus: (provider: string, reference: string) =>
+		`/payments/transaction-status/${provider}/${reference}`,
+	updateTransactionStatus: () =>
+		`/payments/update-transaction-status`,
+	//initializeCardPayment: () => `/payments/initialize-card-payment`,
+	//intializeBankTransferPayment: () => `/payments/initialize-bank-transfer`,
+	//confirmCardPayment: () => `/payments/confirm-card-payment`,
+	//confirmBankTransferPayment: () => `/payments/confirm-bank-transfer-payment`,
+	// getPublicKey: () => `/payments/public-key`,
+	// secureChargeCard: () => `/payments/secure-charge-card`,
+};

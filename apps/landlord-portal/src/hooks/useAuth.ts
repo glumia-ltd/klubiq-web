@@ -1,36 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
-import { multiFactor, MultiFactorUser, onAuthStateChanged, User } from 'firebase/auth';
-import { getAuthState, saveUser } from '../store/AuthStore/AuthSlice';
+import { getAuthState, removeUser } from '../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 import {
 	useUpdateUserPreferencesMutation,
 	useUpdateNotificationSubscriptionMutation,
-	useLazyGetOrgSettingsQuery,
-	useLazyGetOrgSubscriptionQuery,
-	useLazyGetUserByFbidQuery,
+	// useLazyGetUserByFbidQuery,
+	useSignOutMutation,
 } from '../store/AuthStore/authApiSlice';
 import { subscribeUserToPush } from '../services/pushNotification';
-import { consoleLog } from '../helpers/debug-logger';
+import {  consoleError, consoleLog } from '../helpers/debug-logger';
 import { addData, getData } from '../services/indexedDb';
 import { UserProfile } from '../shared/auth-types';
 import { DialogProps } from '../components/Dialogs/AlertDialog';
+import { MultiFactorUser } from 'firebase/auth';
 
 const useAuth = () => {
 	const configStoreName = 'client-config';
-	const { user, orgSettings, orgSubscription, isSignedIn } = useSelector(getAuthState);
+	const { user, isSignedIn } = useSelector(getAuthState);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [alertDialogs, setAlertDialogs] = useState<DialogProps[]>([]);
 	const [showMFAPrompt, setShowMFAPrompt] = useState(false);
-	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
-	const [triggerGetOrgSettingsQuery] = useLazyGetOrgSettingsQuery();
-	const [triggerGetOrgSubscriptionQuery] = useLazyGetOrgSubscriptionQuery();
+	// const [triggerGetUserByFbid, { data: userData }] = useLazyGetUserByFbidQuery();
 	const [updateUserPreferences] = useUpdateUserPreferencesMutation();
 	const [updateNotificationSubscription] =
 		useUpdateNotificationSubscriptionMutation();
+	const [signOut] = useSignOutMutation();
 	const silentNotificationPermissionRequest = localStorage.getItem(
 		'kbq-silent-browser-notification',
 	);
@@ -87,35 +84,22 @@ const useAuth = () => {
 		}
 		sessionStorage.setItem(objectName, JSON.stringify(data));
 	};
-	const handleAuthStateChange = async (currentUser:User, userProfile: UserProfile, userMfa?: MultiFactorUser) => {
-		let orgSettingsData = null;
-		let orgSubscriptionData = null;
+	const handleAuthStateChange = async (userProfile: UserProfile, userMfa?: MultiFactorUser | null) => {
+		consoleLog('handleAuthStateChange called with:', { 
+			hasUserProfile: !isEmpty(userProfile),
+			currentPath: window.location.pathname
+		  });
+		// if(isEmpty(userProfile)) {
+		// 	consoleLog('Empty user profile, signing out');
+		// 	dispatch(removeUser());
+		// 	handleSignOutUser();
+		// 	return;
+		// }
+
+		// dispatch(saveUser({ user: userProfile, isSignedIn: true }));
 		const securityPreferences: { twoFactor?: { optOut?: boolean } } = get(userProfile, 'preferences.security', {});
-		if ( isEmpty(orgSettings) && userProfile.organizationUuid) {
-			orgSettingsData = await triggerGetOrgSettingsQuery(
-				{ orgId: userProfile?.organizationUuid },
-			).unwrap();
-			await updateConfigStoreIdb(orgSettingsData, 'org-settings');
-		} else if(userProfile.organizationUuid) {
-			await updateConfigStoreIdb(orgSettings, 'org-settings');
-		}
-		if (isEmpty(orgSubscription) && userProfile.organizationUuid) {
-			orgSubscriptionData = await triggerGetOrgSubscriptionQuery(
-				{ orgId: userProfile.organizationUuid },
-			).unwrap();
-			await updateConfigStoreIdb(orgSubscriptionData, 'org-subscription');
-			
-		} else if(userProfile.organizationUuid)  {
-			await updateConfigStoreIdb(orgSubscription, 'org-subscription');
-		}
-		const payload = {
-			token: await currentUser.getIdToken(),
-			user: userProfile,
-			isSignedIn: true,
-			orgSettings: isEmpty(orgSettings) ? orgSettingsData : orgSettings,
-			orgSubscription: isEmpty(orgSubscription) ? orgSubscriptionData : orgSubscription,
-		};
-		dispatch(saveUser(payload));
+		await updateConfigStoreIdb(userProfile?.orgSettings || {}, 'org-settings');
+		await updateConfigStoreIdb(userProfile?.orgSubscription || {}, 'org-subscription');
 		if (
 			userMfa?.enrolledFactors.length === 0 &&
 			silentMfaRequest !== 'true'
@@ -162,29 +146,30 @@ const useAuth = () => {
 		}
 
 	}
-
-	useEffect(() => {
-		const invTime = Date.now();
-		consoleLog('useAuth mounted at', invTime);
-    	consoleLog('auth:', auth);
-    	consoleLog('user:', user);
-
-		const listen = onAuthStateChanged(auth, async (currentUser) => {
-			if (currentUser && !isEmpty(user)) {
-				consoleLog('User is signed in');
-				const userMfa = multiFactor(currentUser);
-				await handleAuthStateChange(currentUser, user as UserProfile, userMfa);
-			} else if (currentUser && isEmpty(user)) {
-				consoleLog('User is signed in but not in store');
-				const userMfa = multiFactor(currentUser);
-				const userProfileData = await triggerGetUserByFbid().unwrap();
-				await handleAuthStateChange(currentUser, userProfileData, userMfa);
-			}
-		});
-		if(!isSignedIn) {
-			return () => listen();
+	const handleSignOutUser = async () => {
+		try {
+			await signOut({}).unwrap();
+		} catch (error) {
+			consoleError('Error during sign out:', error);
 		}
-	}, []);
+	};
+	useEffect(() => {
+
+		const checkAuthState = async () => {
+			try{
+				if (!isEmpty(user) && isSignedIn) {
+					consoleLog('User is signed in');
+					await handleAuthStateChange(user as UserProfile);
+				}
+
+			} catch(error){
+				console.error('Error checking auth state', error);
+				dispatch(removeUser());
+				handleSignOutUser();
+			}
+		};
+		checkAuthState();
+	}, [user, isSignedIn]);
 	const requestNotificationPermission = async (orgUuid?: string) => {
 		try {
 			if ('Notification' in window) {
@@ -242,6 +227,8 @@ const useAuth = () => {
 		alertDialogs,
 		handleCloseAlertDialog,
 		handleCloseMFAPrompt,
+		isSignedIn,
+		handleSignOutUser,
 	};
 };
 export default useAuth;

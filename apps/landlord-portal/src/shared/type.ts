@@ -1,12 +1,66 @@
-import { UserProfile } from "./auth-types";
+import { Area } from '../page-tytpes/properties/detail-page.types';
+import { UserProfile } from './auth-types';
 
-export interface RouteObjectType {
-	'Property Category': { label: string; icon: React.ReactNode };
-	'Property Details': { label: string; icon: React.ReactNode };
-	'Unit Type': { label: string; icon: React.ReactNode };
-	[key: string]: { label: string; icon: React.ReactNode };
+export type LeaseDetail = {
+	name: string;
+	amount: string;
 }
+export type ActiveLeaseDetail = {
+	name: string;
+	amount: string;
+	leaseStart: string;
+	leaseEnd: string;
+	latePaymentDate: string;
+	leaseId: string;
+	rentAmount: string;
+	id: string;
 
+
+
+}
+export type TenantCardProps = {
+	tenant: TenantInfo;
+};
+export type TenantDocumentRow = {
+	name: string;
+	dueDate: string;
+};
+export type TenantLocationState = {
+	selectedRow?: TenantType;
+	tenantId?: string;
+	tenantName?: string;
+};
+
+export type TenantInfo = {
+	name?: string;
+	phone?: string;
+	email?: string;
+	since?: string;
+	image?: string;
+	active?: boolean;
+	tenant?: {
+		id?: string;
+		fullName?: string;
+		email?: string;
+		phone?: string;
+	};
+	leases?: {
+		id?: string;
+		leaseStart?: string;
+		leaseEnd?: string;
+		rentAmount?: string;
+		paymentFrequency?: string;
+		lastPaymentDate?: string | null;
+		nextDueDate?: string | null;
+		lateFeeAmount?: string | null;
+		securityDeposit?: string | null;
+	}[];
+};
+export type LeaseDetailsCardProps = {
+	unit: string;
+	address: string;
+	details: LeaseDetail[];
+};
 export type PropertyAddressType = {
 	id: number;
 	addressLine1: string;
@@ -34,10 +88,18 @@ export type TenantType = {
 	id: string;
 	profile: UserProfile;
 	leaseDetails: LeaseType;
-	propertyDetails: PropertyDataType;
+	propertyDetails: TenantTablePropertyDetailsType;
 	isPrimaryTenant: boolean;
+	profileUuid?: string;
+
 }
 
+
+export type TenantTablePropertyDetailsType = {
+	name: string;
+	address: string;
+	unitNumber: string | number;
+};
 export type LeaseType = {
 	endDate: string;
 	id: number;
@@ -51,30 +113,64 @@ export type LeaseType = {
 	startDate: string;
 	status: string;
 	tenants: TenantType[];
+	property: PropertyDataType;
+	unitNumber?: string;
+	unitId?: string;
 };
+
+export type LeaseDetailsType = {
+	endDate: string;
+	id: number;
+	isArchived: boolean;
+	isDraft: boolean;
+	name: string;
+	paymentFrequency: string;
+	rentAmount: string;
+	rentDueDay: number;
+	securityDeposit: string;
+	startDate: string;
+	status: string;
+	tenants: TenantType[];
+	propertyName: string;
+	propertyAddress: string;
+	propertyType: string;
+	unitNumber?: string;
+	isMultiUnitProperty: boolean;
+	rentDueOn: string;
+	daysToLeaseExpires: number;
+	nextPaymentDate: string;
+	unitId?: string;
+};
+
 export type UnitType = {
-	area?: { value: number; unit: string };
+	area?: Area;
 	bathrooms?: number;
 	bedrooms?: number;
 	floor?: number | null;
 	id?: string;
-	images?: string[];
+	images?: UnitImageType[];
 	lease?: LeaseType;
 	offices?: number | string | null;
 	rentAmount?: string;
 	rooms?: null;
 	toilets?: 4;
 	unitNumber?: string;
+	totalTenants?: number;
+	tenants?: TenantType[];
+	amenities?: string[];
+	status: string;
 };
 
-export type PropertyDataType = {
+export type PropertyMainType = {
+	marketValue: any;
+	sellingPrice: any;
 	uuid: string;
 	id: number;
 	name: string;
 	description: string;
 	note: string | null;
 	isMultiUnit: boolean;
-	bedrooms:  number;
+	bedrooms: number;
 	bathrooms: number;
 	toilets: number;
 	isArchived: boolean;
@@ -89,20 +185,28 @@ export type PropertyDataType = {
 	category: PropertyMetaData;
 	type: PropertyMetaData;
 	tags: string[];
-	area: {
-		value: number | string;
-		unit: string;
-	};
-	units?: UnitType[];
+	area: Area;
 	amenities?: Record<string, string>[];
 	status?: string | null;
 	owner?: string | null;
 	vacantUnitCount?: number;
 	totalRent: string;
-	images?: { isMain: boolean; url: string }[] | null;
+	images?: UnitImageType[] | null;
 	totalTenants: number;
 	offices: number;
 	rooms: number;
+};
+
+export type PropertyDataType = PropertyMainType & {
+	units?: UnitType[];
+};
+
+export type UnitImageType = {
+	isMain: boolean;
+	url: string;
+	externalId: string;
+	fileName: string;
+	fileSize?: number;
 };
 
 // export type PropertyType = {
@@ -187,6 +291,22 @@ export type DashboardMetricsType = {
 	rentsOverDueSummary?: RentOverdueLeaseType;
 };
 
+export type ActivityType = {
+	activities: Activity[];
+	totalCount: number;
+};
+
+export type Activity = {
+	id: string;
+	organizationUuid: string;
+	userId: string;
+	action: string;
+	targetType: string;
+	targetId: string;
+	metadata: any;
+	createdAt: Date;
+}
+
 export type RevenueReportType = {
 	maxRevenue: number;
 	monthlyRevenues: {
@@ -250,10 +370,7 @@ export type AddPropertyType = {
 		bedrooms: number | null;
 		bathrooms: number | null;
 		toilets: number | null;
-		area: {
-			value: number | null;
-			unit: string;
-		};
+		area: Area;
 		status: string;
 		rooms: number | null;
 		offices: number | null;
@@ -284,20 +401,45 @@ export type InviteTenantPropertyDetailsType = {
 	propertyName: string;
 	unitId: string;
 	unitNumber: string;
+	propertyId: string;
+};
+export type AddTenantToLeaseDetailsType = {
+	leaseId: string;
+	unitId: string;
+	unitNumber: string;
+	propertyId: string;
+	propertyName: string;
+};
+
+
+export type AddTenantFormValues = {
+	title?: string;
+	firstName?: string;
+	lastName?: string;
+	email: string;
+	phoneNumber?: string;
+	companyName?: string;
+	dateOfBirth?: string;
+	notes?: string;
+	leaseId?: string;
+	unitId?: string;
+	tenantType?: string;
 };
 
 export type InviteTenantFormValues = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber?: string;
-    leaseDetails: {
-        name?: string;
-        startDate?: string;
-        endDate?: string;
-        unitId?: string;
-        rentAmount?: number | string;
-        propertyName?: string;
-        unitNumber?: string;
-    };
+	title: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phoneNumber?: string;
+	companyName?: string;
+	leaseDetails: {
+		name?: string;
+		startDate?: string;
+		endDate?: string;
+		unitId?: string;
+		rentAmount?: number | string;
+		propertyName?: string;
+		unitNumber?: string;
+	};
 };

@@ -1,54 +1,80 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { authEndpoints } from '../helpers/endpoints';
-import { firebaseResponseObject } from '../helpers/FirebaseResponse';
 import { get } from 'lodash';
 import { consoleDebug } from '../helpers/debug-logger';
-
-const baseURL =
-	import.meta.env.VITE_NODE_ENV !== 'local'
-		? `${import.meta.env.VITE_BASE_URL_DEV}/api`
-		: '/api';
-const api = axios.create({baseURL});
-
-const skippedEndpoints = [
+import { fileEndpoints } from '../helpers/endpoints';
+const baseURL = (() => {
+	switch (import.meta.env.VITE_NODE_ENV) {
+		case 'local':
+			return '/api';
+		case 'development':
+			return `${import.meta.env.VITE_BASE_URL_DEV}/api`;
+		case 'staging':
+			return `${import.meta.env.VITE_BASE_URL_STAGING}/api`;
+		case 'production':
+			return `${import.meta.env.VITE_BASE_URL_PROD}/api`;
+		default:
+			return `${import.meta.env.VITE_BASE_URL_LOCAL}/api`;
+	}
+})();
+const api = axios.create({ baseURL, withCredentials: true });
+const CLIENT_ID = 'kbq_lp_app-web';
+const DOWNLOAD_ENDPOINTS = ['/api/dashboard/download-revenue-report'];
+const UPLOAD_ENDPOINTS = [fileEndpoints.uploadImages()];
+const CSRF_IGNORE_ENDPOINTS = [
+	authEndpoints.refreshToken(),
 	authEndpoints.login(),
+	authEndpoints.signOut(),
 	authEndpoints.signup(),
+	authEndpoints.sendResetPasswordEmail(),
+	authEndpoints.resetPassword(),
+	authEndpoints.verifyOobCode(),
 	authEndpoints.emailVerification(),
+	authEndpoints.csrf(),
 ];
 
-const getSessionToken = () => {
-	const storedSession = sessionStorage.getItem(
-		firebaseResponseObject.sessionStorage || '',
-	);
-	return storedSession && JSON.parse(storedSession);
+// CSRF token management
+const getCsrfToken = () => sessionStorage.getItem('csrf_token');
+const setCsrfToken = (token: string) =>
+	sessionStorage.setItem('csrf_token', token);
+
+const fetchNewCsrfToken = async () => {
+	try {
+		const response = await api.get(authEndpoints.csrf());
+		const { data } = response.data;
+		setCsrfToken(data.token);
+		return data.token;
+	} catch (error) {
+		console.error('Failed to fetch CSRF token:', error);
+		return null;
+	}
 };
-const accessToken = getSessionToken()?.stsTokenManager?.accessToken;
-// request config
 
 function AxiosConfig(config: any) {
-	const token = getSessionToken()?.stsTokenManager?.accessToken;
-
+	// const token = getSessionToken()?.stsTokenManager?.accessToken;
 	config.headers = {};
-
-	config.headers['content-type'] = 'application/json';
-
+	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
+		config.headers['content-type'] = 'application/json';
+	}
+	// Add CSRF token for non-GET requests
+	if (
+		config.method !== 'get' &&
+		!CSRF_IGNORE_ENDPOINTS.includes(config.url as string)
+	) {
+		const csrfToken = getCsrfToken();
+		if (csrfToken) {
+			config.headers['x-csrf-token'] = csrfToken;
+		}
+	}
 	config.headers['x-correlation-id'] = crypto.randomUUID();
-
 	config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 	config.headers['x-client-tz-name'] =
 		Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-	config.headers['x-client-id'] = 'app-web';
+	config.headers['x-client-id'] = CLIENT_ID;
 	const orgSettingString = sessionStorage.getItem('org-settings');
 	const tenant_id = sessionStorage.getItem('tenant_id');
-	if (
-		token &&
-		token.length > 0 &&
-		orgSettingString &&
-		orgSettingString.length > 0
-	) {
-		//getData('org-settings', 'client-config');
+	if (orgSettingString && orgSettingString.length > 0) {
 		const orgSettings = JSON.parse(orgSettingString as string);
 		consoleDebug('orgSettings: ', orgSettings);
 		config.headers['x-client-lang'] = get(orgSettings, 'language', '');
@@ -56,74 +82,76 @@ function AxiosConfig(config: any) {
 		config.headers['x-client-currency'] = get(orgSettings, 'currency', '');
 		config.headers['x-tenant-id'] = tenant_id ?? '';
 	}
-	const csrfToken = document.cookie
-		.split('; ')
-		.find(row => row.startsWith('_kbq_csrf'))
-		?.split('=')[1] ?? '';
 
-	if (!skippedEndpoints.includes(config.url)) {
-		config.headers.Authorization = `Bearer ${token}`;
+	if (DOWNLOAD_ENDPOINTS.includes(config.url as string)) {
+		config.responseType = 'arraybuffer';
+		config.headers['content-type'] = 'blob';
 	}
-	if (csrfToken && config.method !== 'GET') {
-		config.headers['x-csrf-token'] = csrfToken;
-	}
+	config.withCredentials = true;
 
 	return config;
 }
 
 api.interceptors.request.use(AxiosConfig, (error) => Promise.reject(error));
 
-// response config
-
 api.interceptors.response.use(
-	(response) => response,
+	async (response) => {
+		return response;
+	},
 	async (error) => {
 		const originalRequest = error.config;
-		const {
-			status,
-			data: { message },
-		} = error.response;
-
+		// Don't retry if we're already on the login page
+		if (window.location.pathname === '/login') {
+			return Promise.reject(error);
+		}
+		// Handle CSRF token errors
 		if (
-			status &&
-			status > 400 &&
-			message?.includes('expired token') &&
-			!originalRequest._retry
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('CSRF')
 		) {
-			originalRequest._retry = true;
-
 			try {
-				const {refreshToken} = getSessionToken()?.stsTokenManager;
-				const {
-					data: {
-						data: {
-							access_token,
-							// refresh_token
-						},
-					},
-				} = await axios.post(
-					`${baseURL}${authEndpoints.refreshToken()}`,
-					{
-						refreshToken,
-					},
-				);
-
-				// if (access_token && refresh_token) {
-				//  localStorage.setItem('token', access_token);
-				//  localStorage.setItem('refreshToken', refresh_token);
-				// }
-
-				// Retry the original request with the new token
-
-				originalRequest.headers.Authorization = `Bearer ${access_token}`;
-
-				return axios(originalRequest);
-			} catch (error) {
-				return error;
+				const newToken = await fetchNewCsrfToken();
+				if (newToken) {
+					originalRequest.headers['x-csrf-token'] = newToken;
+					return api(originalRequest);
+				}
+			} catch (csrfError) {
+				console.error('Failed to refresh CSRF token:', csrfError);
 			}
 		}
+
+		// Handle token revoked errors
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('Token has been revoked.')
+		) {
+			if (window.location.pathname !== '/login') {
+				window.location.href = '/login';
+			}
+			return Promise.reject(error);
+		}
+
+		// Only retry if it's a 401 and we haven't retried yet
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('expired token') &&
+			!originalRequest._retry
+		) {
+			// Check if we're already on the refresh token endpoint
+			originalRequest._retry = true;
+			try {
+				await api.post(authEndpoints.refreshToken());
+				return api(originalRequest);
+			} catch (refreshError) {
+				// If refresh fails, redirect to login only if not already there
+				if (window.location.pathname !== '/login') {
+					window.location.href = '/login';
+				}
+				return Promise.reject(refreshError);
+			}
+		}
+
 		return Promise.reject(error);
 	},
 );
-
-export { api, baseURL, accessToken };
+export { api, baseURL };

@@ -7,88 +7,92 @@ import NavBar from '../NavBar/NavBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
-import { useLocation } from 'react-router-dom';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { AppBar, useMediaQuery, useTheme } from '@mui/material';
 import MobileSideBar from '../SideBar/mobile-side-bar';
-import { motion } from 'framer-motion';
+import { AppFooter } from '@klubiq/ui-components';
+import pkg from '../../../package.json';
 
 type ViewPortProp = {
 	children: React.ReactNode;
 	Container?: boolean;
+	pathname?: string;
+};
+// Example for landlord portal
+const landlordFooterConfig = {
+	appName: 'Landlord Portal',
+	version: pkg.version,
+	environment: import.meta.env.VITE_NODE_ENV as
+		| 'development'
+		| 'staging'
+		| 'production',
+	// ... other props
 };
 
-const ViewPort = ({ children }: ViewPortProp) => {
+const ViewPort = ({ children, pathname }: ViewPortProp) => {
 	const theme = useTheme();
 	const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-
 	const { mode } = useContext(ThemeContext);
-
-	const { pathname } = useLocation();
-
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [pathname]);
 
-	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.5 }}
-		>
-			<NavToggleProvider>
-				<CssBaseline />
-				{isMediumScreen && <MobileSideBar  />}
+	const content = (
+		<>
+			<CssBaseline />
+			{isMediumScreen && <MobileSideBar />}
+			<Box
+				sx={{
+					display: 'flex',
+					flexDirection: 'row',
+					flexGrow: 1,
+					overflow: 'hidden',
+					'&.MuiBox-root': {
+						backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
+					},
+				}}
+			>
+				{!isMediumScreen && <Sidebar />}
 				<Box
+					display='flex'
+					flexGrow={1}
+					flexDirection='column'
+					width={'100%'}
 					sx={{
 						display: 'flex',
-						flexDirection: 'row',
-						flexGrow: 1,
-						overflow: 'hidden',
-						'&.MuiBox-root': {
-							backgroundColor: mode === ThemeMode.LIGHT ? '#F3F6F8' : '#0D0D0D',
-						},
+						flexDirection: 'column',
+						alignItems: 'center',
+						justifyContent: 'space-between',
 					}}
 				>
-					{!isMediumScreen && <Sidebar />}
-					<Box
-						display='flex'
-						flexGrow={1}
-						flexDirection='column'
-						width={'100%'}
-					>
-						<NavBar />
+					<NavBar />
 
-						<Box
-							width={'100%'}
-							mt={'80px'}
-							mb={'20px'}
-							ml={'24px'}
-							pr={'32px'}
-							sx={{
-								marginLeft: {
-									xs: '0px',
-									sm: '1rem',
-									md: '1.5rem',
-									lg: '1.5rem',
-								},
-								paddingRight: {
-									xs: '0px',
-									sm: '1.5rem',
-									md: '2rem',
-									lg: '2rem',
-								},
-							}}
-						>
-							{' '}
-							{children}
-						</Box>
+					<Box
+						width={'100%'}
+						mt={13}
+						mb={5}
+						sx={{
+							minHeight: 'calc(100vh - 100px)',
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'center',
+							px: {
+								sm: 2,
+								md: 4,
+							},
+						}}
+					>
+						{children}
 					</Box>
+					<AppBar position='static' sx={{ top: 'auto', bottom: 0, width: '100%', backgroundColor: 'background.default' }}>
+						<AppFooter {...landlordFooterConfig} />
+					</AppBar>
 				</Box>
-			</NavToggleProvider>
-		</motion.div>
+			</Box>
+		</>
 	);
+
+	return <NavToggleProvider>{content}</NavToggleProvider>;
 };
 
 export default ViewPort;

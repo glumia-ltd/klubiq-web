@@ -1,70 +1,67 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customApiFunction } from '../customApiFunction';
 import { dashboardEndpoints } from '../../helpers/endpoints';
-import { DashboardMetricsType, RevenueReportType } from '../../shared/type';
+import {
+	ActivityType,
+} from '../../shared/type';
+import { API_TAGS } from '../types';
+import { OrganizationMetrics } from '../../page-tytpes/dashboard/dashboard.types';
 //import { api, baseURL, accessToken } from '../../api';
 
 export const dashboardApiSlice = createApi({
 	reducerPath: 'dashboardApi',
 	baseQuery: customApiFunction,
+	tagTypes: [
+		API_TAGS.DASHBOARD_METRICS,
+		API_TAGS.DASHBOARD_REVENUE_REPORT,
+		API_TAGS.ACTIVITY,
+		API_TAGS.ORGANIZATION_METRICS,
+		API_TAGS.ORGANIZATION_COMPARATIVE_METRICS,
+	],
 	endpoints: (builder) => ({
-		getDashboardMetrics: builder.query<DashboardMetricsType, void>({
-			query: () => ({
-				url: dashboardEndpoints.getDashboardMetrics(),
-				method: 'GET',
-			}),
-			// comment SSE out for now
-			// async onCacheEntryAdded(
-			// 	arg,
-			// 	{ updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-			// ) {
-			// 	try {
-			// 		await cacheDataLoaded;
-			// 		const eventSource = new EventSource(
-			// 			`${baseURL}${dashboardEndpoints.propertyReportStream()}?token=${accessToken}`,
-			// 		);
-			// 		eventSource.onopen = () => {
-			// 			console.log('Connection opened');
-			// 			console.log('starting streaming');
-			// 		};
-			// 		eventSource.onerror = (error) => {
-			// 			console.error('EventSource failed! Error occurred:', error);
-			// 		};
-			// 		eventSource.onmessage = (event) => {
-			// 			const result = JSON.parse(event.data);
-			// 			console.log('Message from SSE:', result.data);
-			// 			if (!result || result.type !== 'dashboard') {
-			// 				console.log('not dashboard');
-			// 				return;
-			// 			}
-			// 			updateCachedData((draft) => {
-			// 				console.log('updating cache', result);
-			// 				draft.propertyMetrics = result.data;
-			// 			});
-			// 		};
 
-			// 		await cacheEntryRemoved;
-			// 		//eventSource.close();
-			// 	} catch (error) {
-			// 		console.error('Error fetching dashboard metrics:', error);
-			// 	}
-			// },
-		}),
-		getRevenueReportData: builder.query<
-			RevenueReportType,
-			{ startDate: string; endDate: string }
+		getOrganizationActivities: builder.query<
+			ActivityType,
+			{ orgId: string; page?: number; limit?: number }
 		>({
-			query: (params) => ({
-				url: dashboardEndpoints.getRevenueReport(),
-				method: 'GET',
-				params,
-			}),
+			query: (params) => {
+				return {
+					url: dashboardEndpoints.getActivities(params.orgId),
+					method: 'GET',
+					params: {
+						page: params.page,
+						limit: params.limit,
+					},
+				};
+			},
+			providesTags: [API_TAGS.ACTIVITY],
+		}),
+		getOrganizationMetrics: builder.query<OrganizationMetrics, void>({
+			query: () => {
+				return {
+					url: dashboardEndpoints.getOrganizationMetrics(),
+					method: 'GET'
+				};
+			},
+			providesTags: [API_TAGS.ORGANIZATION_METRICS],
+		}),
+		getOrganizationComparativeMetrics: builder.query<any, string>({
+			query: (period) => {
+				return {
+					url: dashboardEndpoints.getOrganizationComparativeMetrics(period),
+					method: 'GET'
+				};
+			},
+			providesTags: [API_TAGS.ORGANIZATION_COMPARATIVE_METRICS],
 		}),
 	}),
 });
 
 export const {
-	useGetDashboardMetricsQuery,
-	useGetRevenueReportDataQuery,
-	useLazyGetRevenueReportDataQuery,
+	useGetOrganizationActivitiesQuery,
+	useLazyGetOrganizationActivitiesQuery,
+	useGetOrganizationMetricsQuery,
+	useGetOrganizationComparativeMetricsQuery,
+	useLazyGetOrganizationComparativeMetricsQuery,
+	useLazyGetOrganizationMetricsQuery,
 } = dashboardApiSlice;

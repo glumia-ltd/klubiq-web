@@ -9,25 +9,39 @@
     "storybook": "turbo storybook --filter=./packages/ui-components",
     "devUIC": "turbo dev --filter=./packages/ui-components",
     "buildLP": "turbo build --filter=./apps/landlord-portal",
-    "buildAP": "turbo build --filter=./apps/admin-portal",
     "buildTP": "turbo build --filter=./apps/tenant-portal",
     "devLP": "turbo dev --filter=./apps/landlord-portal",
-    "startAP": "turbo start --filter=./apps/admin-portal",
     "devTP": "turbo dev --filter=./apps/tenant-portal",
-    "resetAP": "turbo reset --filter=./apps/admin-portal",
-    "lintAP": "turbo lint --filter=./apps/admin-portal",
     "lintLP": "turbo lint --filter=./apps/landlord-portal",
     "lintTP": "turbo lint --filter=./apps/tenant-portal",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "node .husky/install.mjs"
+    "prepare": "node .husky/install.mjs",
+    "version:tenant": "node scripts/generate-version.js tenant-portal",
+    "version:landlord": "node scripts/generate-version.js landlord-portal",
+    "version:admin": "node scripts/generate-version.js admin-portal",
+    "version:all": "node scripts/update-all-versions.js",
+    "clean": "turbo run clean",
+		"clean:cache": "turbo clean",
+    "clean:lp": "turbo clean --filter=./apps/landlord-portal",
+    "clean:tp": "turbo clean --filter=./apps/tenant-portal",
+    "clean:ui": "turbo clean --filter=./packages/ui-components",
+		"build:all": "turbo build",
+		"lint:all": "turbo lint"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@types/redux-persist": "^4.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "dotenv": "^16.5.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
-    "turbo": "^2.4.4"
+    "rollup-plugin-visualizer": "^5.14.0",
+    "terser": "^5.42.0",
+    "turbo": "^2.4.4",
+    "vite": "^5.1.0",
+    "vite-plugin-pwa": "^0.19.0"
   },
   "engines": {
     "node": ">=18"
@@ -40,9 +54,19 @@
     "packages/*"
   ],
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.17.1",
+    "@marsidev/react-turnstile": "^1.2.0",
+    "@mui/x-charts": "^8.9.0",
     "@mui/x-data-grid": "^7.13.0",
+    "@mui/x-date-pickers": "^7.29.1",
     "date-fns": "^3.6.0",
     "framer-motion": "^12.9.2",
-    "react-qr-code": "^2.0.15"
+    "react-qr-code": "^2.0.15",
+    "redux-persist": "^6.0.0"
+  },
+  "peerDependencies": {
+    "vite": "^6.3.5"
   }
 }

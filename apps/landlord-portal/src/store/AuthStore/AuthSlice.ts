@@ -6,10 +6,7 @@ import { UserProfile } from '../../shared/auth-types';
 
 const initialState: AuthType = {
 	user: {} as UserProfile,
-	token: null,
 	isSignedIn: false,
-	orgSettings: {},
-	orgSubscription: {},
 };
 
 const options = {
@@ -17,17 +14,12 @@ const options = {
 	initialState,
 	reducers: {
 		saveUser: (state: AuthType, action: PayloadAction<AuthType>) => {
-			return {
-				...state,
-				token: action.payload.token,
-				user: action.payload.user,
-				isSignedIn: action.payload.isSignedIn,
-				orgSettings: action.payload.orgSettings,
-				orgSubscription: action.payload.orgSubscription,
-			};
+			state.user = action.payload.user;
+			state.isSignedIn = action.payload.isSignedIn;
 		},
 		removeUser: (state: AuthType) => {
-			return { ...state, user: {}, token: null, isSignedIn: false, orgSettings: {}, orgSubscription: {} };
+			state.user = {} as UserProfile;
+			state.isSignedIn = false;
 		},
 		resetAuth: () => initialState,
 	},

@@ -38,9 +38,8 @@ const AddFieldCard: FC<CardProps> = ({
 				</Grid>
 				<Grid item xs={6} sm={6} md={9} lg={9} sx={style.lastBox}>
 					<Button
-						variant='contained'
+						variant='klubiqMainButton'
 						onClick={handleButtonClick}
-						sx={style.button}
 					>
 						{description}
 					</Button>

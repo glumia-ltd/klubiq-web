@@ -1,15 +1,19 @@
 import { Card, Stack, Chip, Typography, Divider } from '@mui/material';
 import { styles } from './style';
-import bukky from '../../assets/images/bukky.png';
 import * as KlubiqIcons from '../Icons/CustomIcons';
 import { FC } from 'react';
+import { TenantType } from '../../shared/type';
+import {
+	AvatarItem,
+	DynamicAvatar,
+} from '@klubiq/ui-components';
 
 type LeasePropertyCardType = {
 	propertyName: string;
 	isMultiUnitProperty: boolean;
 	propertyAddress: string;
 	propertyType: string;
-	tenants?: any[];
+	tenants?: TenantType[];
 };
 
 const LeasePropertyCard: FC<LeasePropertyCardType> = ({
@@ -17,7 +21,17 @@ const LeasePropertyCard: FC<LeasePropertyCardType> = ({
 	isMultiUnitProperty,
 	propertyAddress,
 	propertyType,
+	tenants
+
 }) => {
+	const tenantsMap: AvatarItem[] = tenants?.map((tenant) => ({
+		name: `${tenant.profile.firstName || ``} ${tenant.profile.lastName || ``}`,
+		image: tenant.profile.profilePicUrl,
+		id: tenant.id,
+		label: `${tenant.profile.companyName || ``} ${tenant.profile.firstName || ``} ${tenant.profile.lastName || ``}`,
+
+
+	})) ?? [];
 	return (
 		<Stack spacing='2' width='100%'>
 			<Card sx={styles.container}>
@@ -43,8 +57,8 @@ const LeasePropertyCard: FC<LeasePropertyCardType> = ({
 							divider={<Divider orientation='vertical' flexItem />}
 							spacing={2.5}
 						>
-							<Typography sx={styles.typoText}>{propertyName}</Typography>
-							<Typography sx={styles.typoText}>
+							<Typography variant='h4' >{propertyName}</Typography>
+							<Typography variant='h4'>
 								{isMultiUnitProperty ? 'Multi Unit' : 'Single Unit'}
 							</Typography>
 						</Stack>{' '}
@@ -62,13 +76,10 @@ const LeasePropertyCard: FC<LeasePropertyCardType> = ({
 						spacing={{ xs: 1, sm: 2, md: 2 }}
 						sx={styles.addressDiv}
 					>
-						<img
-							src={bukky}
-							alt='tenant picture'
-							width={'64px'}
-							height={'64px'}
+						<DynamicAvatar
+							items={tenantsMap}
+							size='large'
 						/>
-						<Typography sx={styles.nameText}>TODO</Typography>
 					</Stack>
 				</Stack>
 			</Card>

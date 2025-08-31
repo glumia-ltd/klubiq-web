@@ -1,0 +1,117 @@
+// packages/ui-components/src/theme.d.ts
+import { Theme } from '@mui/material/styles';
+declare module '@mui/material/styles' {
+	interface TypographyVariants {
+		dashboardTypography: React.CSSProperties;
+		link: React.CSSProperties;
+		cardHeader: React.CSSProperties;
+		cardContentText: React.CSSProperties;
+		cardTitle: React.CSSProperties;
+		filterResultText: React.CSSProperties;
+		filterResultNumber: React.CSSProperties;
+		h7: React.CSSProperties;
+	}
+	interface TypographyVariantsOptions {
+		dashboardTypography?: React.CSSProperties;
+		link?: React.CSSProperties;
+		cardHeader?: React.CSSProperties;
+		cardContentText?: React.CSSProperties;
+		cardTitle?: React.CSSProperties;
+		filterResultText?: React.CSSProperties;
+		filterResultNumber?: React.CSSProperties;
+		h7?: React.CSSProperties;
+	}
+
+	interface ChipVariants {
+		rent: React.CSSProperties;
+		sale: React.CSSProperties;
+		propertyType: React.CSSProperties;
+		greenChip: React.CSSProperties;
+		pattensBlueChip: React.CSSProperties;
+		pippinRedChip: React.CSSProperties;
+		beesWaxYellowChip: React.CSSProperties;
+	}
+
+	interface ChipVariantsOptions {
+		rent?: React.CSSProperties;
+		sale?: React.CSSProperties;
+		propertyType?: React.CSSProperties;
+		greenChip?: React.CSSProperties;
+		pattensBlueChip?: React.CSSProperties;
+		pippinRedChip?: React.CSSProperties;
+		beesWaxYellowChip?: React.CSSProperties;
+	}
+
+	interface Palette {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+		notification?: {
+			light?: string;
+			dark?: string;
+		};
+		textColors?: {
+			greyText?: string;
+		};
+	}
+
+	interface PaletteOptions {
+		buttonColors?: {
+			common: React.CSSProperties;
+		};
+		notification?: {
+			light?: string;
+			dark?: string;
+		};
+		textColors?: {
+			greyText?: string;
+		};
+	}
+}
+
+// Update the Typography's variant prop options
+declare module '@mui/material/Typography' {
+	interface TypographyPropsVariantOverrides {
+		dashboardTypography: true;
+		link: true;
+		cardHeader: true;
+		cardContentText: true;
+		cardTitle: true;
+		filterResultText: true;
+		filterResultNumber: true;
+		h7: true;
+	}
+}
+
+declare module '@mui/material/Button' {
+	interface ButtonPropsVariantOverrides {
+		filterButton: true;
+		borderlessFilterButton: true;
+		klubiqMainButton: true;
+		klubiqSecondaryButton: true;
+		klubiqTertiaryButton: true;
+		klubiqAccentButton: true;
+		klubiqTextButton: true;
+		klubiqOutlinedButton: true;
+	}
+}
+
+declare module '@mui/material/Chip' {
+	interface ChipPropsVariantOverrides {
+		rent: true;
+		sale: true;
+		propertyType: true;
+		greenChip: true;
+		pattensBlueChip: true;
+		pippinRedChip: true;
+		beesWaxYellowChip: true;
+	}
+}
+
+declare module '@mui/material/Paper' {
+	interface PaperPropsVariantOverrides {
+		expired: true;
+		overdue: true;
+		active: true;
+	}
+}

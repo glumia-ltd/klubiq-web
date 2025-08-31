@@ -1,4 +1,4 @@
-import { configureStore, Store } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
 import authReducer, { resetAuth } from './AuthStore/AuthSlice';
 import snackbarReducer from './SnackbarStore/SnackbarSlice';
 import navReducer from './NavStore/NavSlice';
@@ -15,10 +15,20 @@ import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
 import loaderReducer from './GlobalStore/LoaderSlice';
 import { globalApiSlice } from './GlobalStore/globalApiSlice';
 import { tenantApiSlice } from './TenantStore/tenantApiSlice';
+import storageSession from 'redux-persist/lib/storage/session';
+import { persistReducer, persistStore } from 'redux-persist';
+import {
+	FLUSH,
+	REHYDRATE,
+	PAUSE,
+	PERSIST,
+	PURGE,
+	REGISTER,
+  } from 'redux-persist';
+
 export type RootState = ReturnType<typeof store.getState>;
 
-const store: Store = configureStore({
-	reducer: {
+const rootReducer = combineReducers({
 		auth: authReducer,
 		snack: snackbarReducer,
 		nav: navReducer,
@@ -34,9 +44,23 @@ const store: Store = configureStore({
 		[notificationApiSlice.reducerPath]: notificationApiSlice.reducer,
 		[globalApiSlice.reducerPath]: globalApiSlice.reducer,
 		[tenantApiSlice.reducerPath]: tenantApiSlice.reducer,
-	},
+});
+const persistConfig = {
+	key: 'root',
+	storage: storageSession,
+	whitelist: ['auth'], // only persist auth slice
+  };
+  
+  const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store: Store = configureStore({
+	reducer: persistedReducer,
 	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(
+		getDefaultMiddleware({
+			serializableCheck: {
+				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+			},
+		}).concat(
 			propertyApiSlice.middleware,
 			dashboardApiSlice.middleware,
 			authApiSlice.middleware,
@@ -47,6 +71,8 @@ const store: Store = configureStore({
 			tenantApiSlice.middleware,
 		),
 });
+
+const persistor = persistStore(store);
 
 setupListeners(store.dispatch);
 export const resetStore = () => {
@@ -59,5 +85,7 @@ export const resetStore = () => {
 	store.dispatch(notificationApiSlice.util.resetApiState());
 	store.dispatch(globalApiSlice.util.resetApiState());
 	store.dispatch(tenantApiSlice.util.resetApiState());
+	
 };
 export default store;
+export { persistor };

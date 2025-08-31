@@ -1,237 +1,8 @@
-// // src/components/DynamicForm/DynamicForm.tsx
-// 'use client';
-
-// import { Formik, Form } from 'formik';
-// import * as Yup from 'yup';
-// import { Button, Stack, Box, Tooltip } from '@mui/material';
-// import { DynamicFormProps, FormGroup, FormField } from './types';
-// import { KlubiqFormFields } from './klubiq-formfields';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { style } from './style';
-// import dayjs from 'dayjs';
-
-// export interface KlubiqFormProps extends DynamicFormProps {
-// 	// ... any additional props ...
-// }
-
-// export const KlubiqForm: React.FC<KlubiqFormProps> = ({
-// 	fields,
-// 	onSubmit,
-// 	initialValues = {},
-// 	submitButtonText = 'Submit',
-// 	enableReset = false,
-// 	resetButtonText = 'Reset',
-// }) => {
-// 	// Generate validation schema based on fields
-// 	const validationSchema = Yup.object().shape(
-// 		fields.reduce(
-// 			(acc, field) => {
-// 				if (field.validation) {
-// 					if (field.type === 'date') {
-// 						acc[field.name] = Yup.date()
-// 							.transform((value) => (value ? dayjs(value).toDate() : null))
-// 							.nullable()
-// 							.test('date-validation', 'Invalid date', function (value) {
-// 								const { path, parent, createError } = this;
-// 								if (field.minDate) {
-// 									const minDateValue = parent[field.minDate];
-// 									if (
-// 										value &&
-// 										minDateValue &&
-// 										dayjs(value).isBefore(dayjs(minDateValue))
-// 									) {
-// 										return createError({
-// 											path,
-// 											message: `Date must be greater than or equal to ${dayjs(minDateValue).format('DD/MM/YYYY')}`,
-
-// 										});
-// 									}
-// 								}
-// 								if (field.maxDate) {
-// 									const maxDateValue = parent[field.maxDate];
-// 									if (
-// 										value &&
-// 										maxDateValue &&
-// 										dayjs(value).isAfter(dayjs(maxDateValue))
-// 									) {
-// 										return createError({
-// 											path,
-// 											message: `Date must be less than or equal to ${dayjs(maxDateValue).format('DD/MM/YYYY')}`,
-// 										});
-// 									}
-// 								}
-// 								return true;
-// 							})
-// 							.when('*', (values: any, schema: any) => {
-// 								// Access other field values through the parent object
-// 								field.dependsOn?.forEach((dependsOn) => {
-// 									const parentField = dependsOn.field;
-//                   const parentFieldValue = dependsOn.value || values[parentField];
-// 									if (parentField && parentFieldValue) {
-// 										return schema.min(
-// 											Yup.ref(parentField),
-// 											`Must be after ${parentFieldValue}`,
-// 										);
-// 									}
-// 								});
-// 								return schema;
-// 							});
-// 					}
-// 					acc[field.name] = field.validation;
-// 				} else if (field.required) {
-// 					switch (field.type) {
-// 						case 'date':
-// 							acc[field.name] = Yup.date()
-// 								.transform((value) => (value ? dayjs(value).toDate() : null))
-// 								.nullable()
-// 								.required(`${field.label} is required`)
-// 								.test('date-validation', 'Invalid date', function (value) {
-// 									const { path, parent, createError } = this;
-// 									if (field.minDate) {
-// 										const minDateValue = parent[field.minDate];
-// 										if (
-// 											value &&
-// 											minDateValue &&
-// 											dayjs(value).isBefore(dayjs(minDateValue))
-// 										) {
-// 											return createError({
-// 												path,
-// 												message: `Date must be greater than or equal to ${dayjs(minDateValue).format('DD/MM/YYYY')}`,
-// 											});
-// 										}
-// 									}
-// 									if (field.maxDate) {
-// 										const maxDateValue = parent[field.maxDate];
-// 										if (
-// 											value &&
-// 											maxDateValue &&
-// 											dayjs(value).isAfter(dayjs(maxDateValue))
-// 										) {
-// 											return createError({
-// 												path,
-// 												message: `Date must be less than or equal to ${dayjs(maxDateValue).format('DD/MM/YYYY')}`,
-// 											});
-// 										}
-// 									}
-// 									return true;
-// 								})
-// 								.when('*', (values: any, schema: any) => {
-// 									// Access other field values through the parent object
-// 									field.dependsOn?.forEach((dependsOn) => {
-// 										const parentField = dependsOn.field;
-//                     const parentFieldValue = dependsOn.value || values[parentField];
-// 										if (parentField && parentFieldValue) {
-// 											return schema.min(
-// 												Yup.ref(parentField),
-// 												`Must be after ${parentFieldValue}`,
-// 											);
-// 										}
-// 									});
-// 									return schema;
-// 								});
-// 							break;
-// 						case 'number':
-// 						case 'decimal':
-// 							acc[field.name] = Yup.number()
-// 								.nullable()
-// 								.transform((value) => (isNaN(value) ? null : value))
-// 								.required(`${field.label} is required`)
-// 								.min(field.min || -Infinity)
-// 								.max(field.max || Infinity);
-// 							break;
-// 						case 'email':
-// 							acc[field.name] = Yup.string()
-// 								.email('Invalid email format')
-// 								.required(`${field.label} is required`);
-// 							break;
-// 						default:
-// 							acc[field.name] = Yup.string().required(
-// 								`${field.label} is required`,
-// 							);
-// 					}
-// 				}
-
-// 				return acc;
-// 			},
-// 			{} as Record<string, Yup.AnySchema>,
-// 		),
-// 	);
-
-// 	// Generate initial values based on fields
-// 	const generateInitialValues = () => {
-// 		return fields.reduce(
-// 			(acc, field) => {
-// 				acc[field.name] = initialValues[field.name] || field.defaultValue || '';
-// 				return acc;
-// 			},
-// 			{} as Record<string, any>,
-// 		);
-// 	};
-
-// 	return (
-// 		<Formik
-// 			initialValues={generateInitialValues()}
-// 			validationSchema={validationSchema}
-// 			onSubmit={onSubmit}
-// 			validateOnMount={true} // Add this to validate on initial render
-// 			validateOnChange={true} // Validate on every change
-// 		>
-// 			{({ handleReset, isSubmitting, isValid, dirty, errors }) => (
-// 				<Box sx={style.container}>
-// 					<Form>
-// 						<Stack spacing={2}>
-// 							{fields.map((field) => (
-// 								<Box key={field.name}>
-// 									{field.customComponent || (
-// 										<LocalizationProvider dateAdapter={AdapterDayjs}>
-// 											<KlubiqFormFields field={field} />
-// 										</LocalizationProvider>
-// 									)}
-// 								</Box>
-// 							))}
-
-// 							<Stack direction='row' spacing={2} justifyContent='flex-end'>
-// 								{enableReset && (
-// 									<Button
-// 										type='button'
-// 										variant='text'
-// 										onClick={handleReset}
-// 										disabled={isSubmitting || !dirty}
-// 									>
-// 										{resetButtonText}
-// 									</Button>
-// 								)}
-// 								<Tooltip
-// 									title={isValid ? '' : Object.values(errors).join(', ')}
-// 									open={!isValid && dirty}
-// 								>
-// 									<span>
-// 										<Button
-// 											type='submit'
-// 											variant='contained'
-// 											disabled={isSubmitting || !isValid || !dirty}
-// 										>
-// 											{submitButtonText}
-// 										</Button>
-// 									</span>
-// 								</Tooltip>
-// 							</Stack>
-// 						</Stack>
-// 					</Form>
-// 				</Box>
-// 			)}
-// 		</Formik>
-// 	);
-// };
-
-// src/components/DynamicForm/DynamicForm.tsx
 
 /// DO NOT UNCOMMENT THE CODE ABOVE //
 /// IT IS THE OLD CODE THAT IS NOT WORKING //
 /// THE CODE BELOW IS THE NEW CODE THAT IS WORKING //
 /// WE WILL DELETE THE CODE ABOVE AFTER WE HAVE TESTED THE NEW CODE //
-
 
 'use client';
 
@@ -254,8 +25,8 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 	submitButtonText = 'Submit',
 	enableReset = false,
 	resetButtonText = 'Reset',
+	formWidth = '100%',
 }) => {
-
 	const createDateValidation = (field: FormField, isRequired: boolean) => {
 		const getFieldValue = (fieldPath: string, parent: any) => {
 			const parts = fieldPath.split('.');
@@ -337,6 +108,37 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		return schema;
 	};
 
+	const createDependentValidation = (field: FormField, isRequired: boolean) => {
+		// If there are dependencies
+		if (field.dependsOn?.length) {
+			// Collect dependency field names
+			const dependencyFields = field.dependsOn.map((dep) => dep.field);
+	
+
+			// Use Yup's .when() with array of dependencies
+			return Yup.string().when(dependencyFields, (...args) => {
+				// The last argument is the schema
+				const schema = args[args.length - 1];
+				// The dependency values are in order
+				const dependencyValues = args.slice(0, -1);
+
+				// Check if all dependencies match their required values
+				const allMatch = field.dependsOn!.every(
+					(dep, idx) => dependencyValues[idx] === dep.value,
+				);
+
+				if (allMatch) {
+					return Yup.string().required(`${field.label} is required`);
+				}
+				return Yup.string().notRequired();
+			});
+		}
+
+		// If no dependencies, just required or not
+		return isRequired
+			? Yup.string().required(`${field.label} is required`)
+			: Yup.string();
+	};
 	const createFieldValidation = (field: FormField) => {
 		if (field.validation) {
 			if (field.type === 'date') {
@@ -345,7 +147,9 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			return field.validation;
 		}
 
-		if (!field.required) return Yup.mixed().nullable();
+		if (!field.required) {
+			return Yup.mixed().nullable();
+		}
 
 		switch (field.type) {
 			case 'date':
@@ -363,7 +167,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 					.email('Invalid email format')
 					.required(`${field.label} is required`);
 			default:
-				return Yup.string().required(`${field.label} is required`);
+				return createDependentValidation(field, field.required ?? false);
 		}
 	};
 
@@ -425,11 +229,14 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		switch (type) {
 			case 'number':
 			case 'decimal':
-				return null;
+				return ''; // Changed from null to empty string
 			case 'date':
-				return null;
+				return null; // Keep null for date fields as they handle null differently
 			case 'boolean':
 				return false;
+			case 'select':
+			case 'multiselect':
+				return ''; // Added handling for select inputs
 			default:
 				return '';
 		}
@@ -447,7 +254,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 			{enableReset && (
 				<Button
 					type='button'
-					variant='text'
+					variant='klubiqTextButton'
 					onClick={handleReset}
 					disabled={isSubmitting || !dirty}
 				>
@@ -461,7 +268,7 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 				<span>
 					<Button
 						type='submit'
-						variant='contained'
+						variant='klubiqMainButton'
 						disabled={isSubmitting || !isValid || !dirty}
 					>
 						{submitButtonText}
@@ -475,23 +282,42 @@ export const KlubiqForm: React.FC<KlubiqFormProps> = ({
 		<Formik
 			initialValues={generateInitialValues()}
 			validationSchema={validationSchema}
-			onSubmit={onSubmit}
+			// onSubmit={onSubmit}
+			onSubmit={async (values, { setSubmitting, setErrors }) => {
+				try {
+					await onSubmit(values);
+				} catch (error) {
+					// Preserve form values on error
+					setSubmitting(false);
+					// Optionally set form-level errors
+					if (error instanceof Error) {
+						setErrors({ submit: error.message });
+					}
+				}
+			}}
 			validateOnMount={true}
 			validateOnChange={true}
+			enableReinitialize={false}
 		>
-			{({ handleReset, isSubmitting, isValid, dirty, errors }) => (
-				<Box sx={style.container}>
+			{({ handleReset, isSubmitting, isValid, dirty, errors, values }) => (
+				<Box sx={{ ...style.container, width: formWidth }}>
 					<Form>
 						<Stack spacing={2}>
-							{fields.map((field) => (
-								<Box key={field.name}>
-									{field.customComponent || (
-										<LocalizationProvider dateAdapter={AdapterDayjs}>
-											<KlubiqFormFields field={field} />
-										</LocalizationProvider>
-									)}
-								</Box>
-							))}
+							{fields.map((field) => {
+								const shouldShowField = !field.showIf || field.showIf(values);
+								if (!shouldShowField) {
+									return null;
+								}
+								return (
+									<Box key={field.name}>
+										{field.customComponent || (
+											<LocalizationProvider dateAdapter={AdapterDayjs}>
+												<KlubiqFormFields field={field} />
+											</LocalizationProvider>
+										)}
+									</Box>
+								);
+							})}
 							<FormButtons
 								isSubmitting={isSubmitting}
 								isValid={isValid}

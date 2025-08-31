@@ -1,0 +1,171 @@
+import { get } from 'lodash';
+
+import dayjs from 'dayjs';
+
+const DEFAULT_USER_LOCATION_PREFERENCE = {
+	currency: 'NGN',
+	countryCode: 'NG',
+	language: 'en',
+};
+
+export const formatDate = (dateString: string, format = 'MMMM D, YYYY') => {
+	if (!dateString) {
+		return '';
+	}
+	return dayjs(dateString).format(format);
+};
+
+const getInfoFromUserSettings = (
+	userLocationPreference: Record<string, unknown>,
+) => {
+	let currencyCode = '';
+	let countryCode = '';
+	let lang = '';
+
+	currencyCode = get(userLocationPreference, 'currency', 'NGN') as string;
+	countryCode = get(userLocationPreference, 'countryCode', 'NG') as string;
+	lang = get(userLocationPreference, 'language', 'en') as string;
+
+	return { currencyCode, countryCode, lang };
+};
+
+export const getLocaleFormat = (
+	numberVal: number,
+	style: 'currency' | 'percent' | 'unit' | 'decimal',
+	decimals: number = 2,
+	userLocationPreference?: Record<string, unknown> | undefined,
+) => {
+	const { countryCode, currencyCode, lang } = getInfoFromUserSettings(
+		userLocationPreference || DEFAULT_USER_LOCATION_PREFERENCE,
+	);
+	if (lang && countryCode && currencyCode) {
+		return new Intl.NumberFormat(`${lang}-${countryCode}`, {
+			style: `${style}`,
+			currency: `${currencyCode}`,
+			currencyDisplay: 'symbol',
+			minimumFractionDigits: style === 'percent' ? 0 : decimals,
+			maximumFractionDigits: style === 'percent' ? 0 : decimals,
+		}).format(numberVal);
+	}
+	return '';
+};
+
+export const enum DateStyle {
+	FULL = 'full',
+	SHORT = 'short',
+	LONG = 'long',
+	MEDIUM = 'medium',
+}
+
+export const getLocaleDateFormat = (
+	userLocationPreference: Record<string, unknown>,
+	date: string,
+	options?: {
+		dateStyle?: 'full' | 'short' | 'long' | 'medium';
+		timeStyle?: 'full' | 'short' | 'long' | 'medium';
+		hour12?: boolean;
+	},
+) => {
+	const { countryCode, lang } = getInfoFromUserSettings(userLocationPreference);
+	if (lang && countryCode) {
+		const newDate = dayjs(date).toDate() || dayjs().toDate();
+
+		const locale = `${lang}-${countryCode}`;
+
+		return new Intl.DateTimeFormat(locale, options).format(newDate);
+	}
+	return '';
+};
+
+// Parse formatted values back to numbers
+export const parseCurrency = (value: string): number => {
+	return Number(value.replace(/[^0-9.-]+/g, ''));
+};
+
+export const parsePercentage = (value: string): number => {
+	return Number(value.replace(/[^0-9.-]+/g, ''));
+};
+export const getLocaleFormat1 = (
+	numberVal: number,
+	style: 'percent' | 'unit' | 'decimal',
+	decimals: number = 2,
+) => {
+	const locale = navigator.language;
+	if (locale) {
+		return new Intl.NumberFormat(locale, {
+			style: `${style}`,
+			minimumFractionDigits: style === 'percent' ? 0 : decimals,
+			maximumFractionDigits: style === 'percent' ? 0 : decimals,
+		}).format(style === 'percent' ? numberVal / 100 : numberVal);
+	}
+	return '';
+};
+
+/**
+ * Returns the current line number by inspecting the Error stack trace.
+ */
+// function getCurrentLine(): number | null {
+// 	const err = new Error();
+// 	if (!err.stack) return null;
+// 	const stackLines = err.stack.split('\n');
+// 	// Caller is typically at index 2 in the stack trace
+// 	const callerLine = stackLines[2] || '';
+// 	const match = callerLine.match(/:(\d+):\d+\)?$/);
+// 	return match?.[1] ? parseInt(match[1], 10) : null;
+//   }
+// utils/formatNumberShort.ts
+export const formatNumberShort = (num: number): string => {
+	if (num < 1_000) {
+		return num.toString();
+	}
+
+	const units = [
+		{ value: 1_000_000_000, symbol: 'B' },
+		{ value: 1_000_000, symbol: 'M' },
+		{ value: 1_000, symbol: 'k' },
+	];
+
+	for (const { value, symbol } of units) {
+		if (num >= value) {
+			const formatted = (num / value).toFixed(num % value === 0 ? 0 : 1);
+			return `${formatted}${symbol}`;
+		}
+	}
+	return num.toString();
+};
+
+export enum PaymentFrequency {
+	ANNUALLY = 'Annually',
+	BI_MONTHLY = 'Bi-Monthly',
+	BI_WEEKLY = 'Bi-Weekly',
+	MONTHLY = 'Monthly',
+	ONE_TIME = 'One-Time',
+	QUARTERLY = 'Quarterly',
+	WEEKLY = 'Weekly',
+	CUSTOM = 'Custom',
+}
+
+/**
+ * Formats payment status text based on days to due and payment status
+ * @param daysToDue - Number of days until due (can be negative for overdue)
+ * @param status - Payment status string
+ * @returns Formatted status text (e.g., "5 days remaining" or "3 days overdue")
+ */
+export const formatPaymentStatusText = (
+	daysToDue: number,
+	status: string,
+): string => {
+	const absDays = Math.abs(daysToDue);
+	const dayText = absDays > 1 ? 'days' : 'day';
+	const statusText = status.includes('Pending') ? 'remaining' : 'overdue';
+
+	return `${absDays} ${dayText} ${statusText}`;
+};
+
+export const getFullName = (
+	firstName: string,
+	lastName: string,
+	companyName: string,
+) => {
+	return `${firstName || ''} ${lastName || ''} ${companyName ? '-' : ''} ${companyName || ''}`;
+};
