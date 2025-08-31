@@ -4,6 +4,7 @@ on:
     branches: [dev, staging]
     paths:
       - "apps/landlord-portal/**"
+      - '.github/workflows/publish-landlordPortal-dev.yml'
       - "packages/**"
   workflow_dispatch:
     inputs:
