@@ -52,7 +52,7 @@ RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_BASE_URL_PROD=https://api.klubiq.com\
     VITE_NODE_ENV=staging \
     NODE_ENV=staging \
-    npx turbo run build --filter=./apps/landlord-portal
+    npm run build
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
