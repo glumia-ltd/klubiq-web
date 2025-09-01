@@ -28,6 +28,7 @@ COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
 RUN npm ci --ignore-scripts
 
 COPY . .
+RUN npm run buildUIC
 RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_AUTHDOMAIN=$VITE_AUTHDOMAIN \
     VITE_PROJECTID=$VITE_PROJECTID \
@@ -44,14 +45,13 @@ RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_THEME_SWITCH_ENABLED=$VITE_THEME_SWITCH_ENABLED \
     BUILD_NUMBER=$BUILD_NUMBER \
     VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY \
-    VITE_APPLICATION_NAME=klubiq-landlord-portal\
-    VITE_BASE_URL_LOCAL=http://localhost:3000\
-    VITE_BASE_URL_DEV=https://devapi.klubiq.com\
-    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com\
-    VITE_BASE_URL_PROD=https://api.klubiq.com\
+    VITE_APPLICATION_NAME=klubiq-landlord-portal \
+    VITE_BASE_URL_LOCAL=http://localhost:3000 \
+    VITE_BASE_URL_DEV=https://devapi.klubiq.com \
+    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com \
+    VITE_BASE_URL_PROD=https://api.klubiq.com \
     VITE_NODE_ENV=staging \
     NODE_ENV=staging 
-RUN npm run buildUIC
 RUN npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
