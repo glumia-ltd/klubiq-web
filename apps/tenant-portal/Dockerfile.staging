@@ -27,14 +27,16 @@ ENV VITE_APPLICATION_NAME=klubiq-tenant-portal \
 
 COPY package.json package-lock.json turbo.json tsconfig.json ./
 COPY packages ./packages
+COPY scripts ./scripts
 COPY apps/tenant-portal/package.json ./apps/tenant-portal/package.json
 RUN npm ci --ignore-scripts
 
 
 COPY . .
 
+RUN npm run version:tenant || exit 1
 RUN npm run buildUIC
-RUN npm run buildTP --mode staging
+RUN npm run buildTP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
