@@ -53,7 +53,7 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 RUN npm run buildUIC
-RUN npm run buildLP --mode staging
+RUN npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
