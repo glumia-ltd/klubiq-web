@@ -48,10 +48,12 @@ ENV VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
 
 COPY package.json package-lock.json turbo.json tsconfig.json ./
 COPY packages ./packages
+COPY scripts ./scripts
 COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
 RUN npm ci --ignore-scripts
 
 COPY . .
+RUN npm run version:landlord || exit 1
 RUN npm run buildUIC
 RUN npm run buildLP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
