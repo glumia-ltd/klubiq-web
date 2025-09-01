@@ -18,22 +18,21 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
-RUN VITE_APPLICATION_NAME=klubiq-tenant-portal\
-    VITE_BASE_URL_LOCAL=http://localhost:3000\
-    VITE_BASE_URL_DEV=https://devapi.klubiq.com\
-    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com\
-    VITE_BASE_URL_PROD=https://api.klubiq.com\
-    NODE_ENV=staging\
-    VITE_NODE_ENV=staging\
-    VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY=$VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY\
-    VITE_IDB_VERSION=1\ 
-    VITE_THEME_SWITCH_ENABLED=false\
-    REACT_TP_APP_VERSION=0.0.1\ 
-    BUILD_NUMBER=dev-1\
-    VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\
-    VITE_HMAC_SECRET=$VITE_HMAC_SECRET
-
 RUN npm run buildUIC
+RUN VITE_APPLICATION_NAME=klubiq-tenant-portal \
+    VITE_BASE_URL_LOCAL=http://localhost:3000 \
+    VITE_BASE_URL_DEV=https://devapi.klubiq.com \
+    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com \
+    VITE_BASE_URL_PROD=https://api.klubiq.com \
+    NODE_ENV=staging \
+    VITE_NODE_ENV=staging \
+    VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY=$VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY \
+    VITE_IDB_VERSION=1 \ 
+    VITE_THEME_SWITCH_ENABLED=false \
+    REACT_TP_APP_VERSION=0.0.1 \ 
+    BUILD_NUMBER=dev-1 \
+    VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY \
+    VITE_HMAC_SECRET=$VITE_HMAC_SECRET
 RUN npm run buildTP
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
