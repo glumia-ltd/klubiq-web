@@ -22,14 +22,7 @@ ARG VITE_THEME_SWITCH_ENABLED
 ARG BUILD_NUMBER
 ARG VITE_TURNSTILE_SITEKEY
 
-COPY package.json package-lock.json turbo.json tsconfig.json ./
-COPY packages ./packages
-COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
-RUN npm ci --ignore-scripts
-
-COPY . .
-RUN npm run buildUIC
-RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
+ENV VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_AUTHDOMAIN=$VITE_AUTHDOMAIN \
     VITE_PROJECTID=$VITE_PROJECTID \
     VITE_STORAGEBUCKET=$VITE_STORAGEBUCKET \
@@ -52,7 +45,15 @@ RUN VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
     VITE_BASE_URL_PROD=https://api.klubiq.com \
     VITE_NODE_ENV=staging \
     NODE_ENV=staging 
-RUN npm run buildLP
+
+COPY package.json package-lock.json turbo.json tsconfig.json ./
+COPY packages ./packages
+COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
+RUN npm ci --ignore-scripts
+
+COPY . .
+RUN npm run buildUIC
+RUN npm run buildLP --mode staging
 RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
 
 # runtime
