@@ -8,7 +8,8 @@ import { handleApiResponse } from '../../helpers/apiResponseHandler';
 import { screenMessages } from '../../helpers/screen-messages';
 import { resetStore } from '..';
 import { SignUpResponseType } from '../../page-tytpes/auths/signup.type';
-
+import { PermissionType, PermissionVersionType } from './authType';
+type GetPermsArgs = { orgId: string; roleName: string };
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
 	baseQuery: customApiFunction,
@@ -135,6 +136,30 @@ export const authApiSlice = createApi({
 				},
 			}),
 		}),
+		getPermissions: builder.query<PermissionVersionType, GetPermsArgs>({
+			query: (params) => ({
+				url: authEndpoints.getPermissions(params.orgId, params.roleName),
+				method: 'GET',
+			}),
+			transformResponse: (response: {permissions: string[], version: string}) => ({
+				permissions: response.permissions as PermissionType[],
+				version: response.version,
+				set: new Set(response.permissions as PermissionType[]),
+			}),
+			serializeQueryArgs: ({ endpointName, queryArgs }) =>
+				`${endpointName}|${queryArgs.orgId}|${queryArgs.roleName}`,
+
+			// allow external invalidation (e.g., after admin role change)
+			providesTags: (_res, _err, { orgId, roleName }) => [
+				{ type: API_TAGS.PERMISSIONS, id: `${orgId}:${roleName}` },
+			  ],
+		}),
+		invalidatePermissions: builder.mutation<void, GetPermsArgs>({
+			queryFn: () => ({data: undefined}),
+			invalidatesTags: (_result, _error, { orgId, roleName }) => [
+				{ type: API_TAGS.PERMISSIONS, id: `${orgId}:${roleName}` },
+			],
+		}),
 	}),
 });
 
@@ -155,4 +180,6 @@ export const {
 	useLazyFetchCsrfTokenQuery,
 	useFetchCsrfTokenQuery,
 	useResendInvitationMutation,
+	useGetPermissionsQuery,
+	useInvalidatePermissionsMutation,
 } = authApiSlice;

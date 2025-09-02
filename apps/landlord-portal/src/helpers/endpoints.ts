@@ -16,6 +16,7 @@ export const authEndpoints = {
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 	csrf: () => '/security/csrf-token',
 	resendInvitation: (invitationId: string) => `/auth/resend-invitation/${invitationId}`,
+	getPermissions: (orgId: string, roleName: string) => `/auth/${orgId}/permissions/${roleName}`,
 };
 
 export const dashboardEndpoints = {

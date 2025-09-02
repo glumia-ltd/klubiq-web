@@ -28,8 +28,14 @@ import {
 import { DataPagination } from '../../../components/DataPagination';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { screenMessages } from '../../../helpers/screen-messages';
+import { PermissionGate } from '../../../authz/permission-gate';
+import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { useSelector } from 'react-redux';
+import { PERMISSIONS } from '../../../authz/constants';
 
 const Properties = () => {
+	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
 	const isMobile = useMediaQuery('(max-width: 500px)');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [defaultParams, setDefaultParams] = useState({
@@ -155,13 +161,14 @@ const Properties = () => {
 										)}
 									</div>
 								)}
-								<Button
-									variant='klubiqMainButton'
-									onClick={handleAddProperties}
-								>
-									{/* <LeftArrowIcon /> */}
-									Add New Property
-								</Button>
+								<PermissionGate orgId={organizationUuid} roleName={role} all={[PERMISSIONS.PROPERTY.CREATE]} fallback={<></>}>
+									<Button
+										variant='klubiqMainButton'
+										onClick={handleAddProperties}
+									>
+										Add New Property
+									</Button>
+								</PermissionGate>
 							</Stack>
 						</Grid>
 
@@ -250,7 +257,13 @@ const Properties = () => {
 									)}
 								</Grid>
 							) : (
-								<Grid xs={12} display={'flex'} justifyContent={'center'} alignItems={'center'} height={'100%'}>
+								<Grid
+									xs={12}
+									display={'flex'}
+									justifyContent={'center'}
+									alignItems={'center'}
+									height={'100%'}
+								>
 									<Typography variant='body1'>
 										{screenMessages.property.list.noMatches}
 									</Typography>

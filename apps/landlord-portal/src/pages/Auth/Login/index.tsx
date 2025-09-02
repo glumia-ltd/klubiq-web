@@ -72,8 +72,6 @@ const Login = () => {
 			set2FARequired(false);
 		}
 		setIsVerifying(false);
-
-		//
 	};
 	const cancelOtpVerification = () => {
 		set2FARequired(false);
