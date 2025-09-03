@@ -1,11 +1,20 @@
 name: Deploy Tenant Portal
 on:
   push:
-    branches:
-      - dev
+    branches: [dev, staging]
     paths:
       - "apps/tenant-portal/**"
+      - '.github/workflows/publish-tenant-portal-dev.yml'
       - "packages/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The branch to deploy'
+        required: true
+        default: 'dev'
+permissions:
+  contents: read
+  packages: write
 env:
   NODE_ENV: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/prod' && 'production' || github.ref == 'refs/heads/qa' && 'staging' ||'development'}}
   VITE_BASE_URL_DEV: ${{ vars.VITE_BASE_URL_DEV }}
@@ -14,10 +23,6 @@ env:
   VITE_APPLICATION_NAME: klubiq-tenant-portal
   VITE_NODE_ENV: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/prod' && 'production' || github.ref == 'refs/heads/qa' && 'staging' ||'development'}}
   VITE_IDB_VERSION: ${{ vars.VITE_IDB_VERSION }}
-  REACT_APP_DATA_CACHE: ${{ vars.REACT_APP_DATA_CACHE }}
-  REACT_APP_ALLOWED_ORIGINS: ${{ vars.REACT_APP_ALLOWED_ORIGINS }}
-  REACT_APP_PUBLIC_CACHED_PATHS: ${{ vars.REACT_APP_PUBLIC_CACHED_PATHS }}
-  REACT_APP_CACHE_EXPIRATION_TIME: ${{ vars.REACT_APP_CACHE_EXPIRATION_TIME }}
   VITE_THEME_SWITCH_ENABLED: ${{ vars.VITE_THEME_SWITCH_ENABLED }}
   REACT_TP_APP_VERSION: ${{ vars.REACT_TP_APP_VERSION }}
   BUILD_NUMBER: ${{ github.run_number }}
@@ -33,7 +38,7 @@ jobs:
       - name: Build Project
         run: |
           npm install --include=optional
-          npm run buildUIC || exit 1
+          # npm run buildUIC || exit 1
           npm run buildTP || exit 1
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
@@ -41,7 +46,8 @@ jobs:
           name: artifacts
           path: |
             apps/tenant-portal/dist/
-  deploy:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     needs: build
     environment: ${{ github.ref == 'refs/heads/dev' && 'development' || github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/qa' && 'staging' || 'development'}}
@@ -63,6 +69,52 @@ jobs:
           SCRIPT_BEFORE: |
             sudo chown $USER ${{ secrets.TENANT_TARGET_DIR }}
             cd ${{ secrets.TENANT_TARGET_DIR }}
-
-
-# #npm ci --omit=dev && npm cache clean --force
+        
+  build-and-push-image:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check GitHub Token Permissions
+        run: |
+          echo "GitHub Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Organization: glumia-ltd"
+          echo "Token permissions check..."
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=tp-staging-latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/tenant-portal/Dockerfile.staging
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY= ${{ secrets.WEB_PUSH_NOTIFICATION_PUBLIC_KEY }}
+            VITE_TURNSTILE_SITEKEY= ${{ secrets.VITE_TURNSTILE_SITEKEY }}
+            VITE_HMAC_SECRET= ${{ secrets.VITE_HMAC_SECRET }}
+ 

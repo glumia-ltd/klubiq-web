@@ -8,6 +8,7 @@ export type NavLink = {
 	subLinks?: NavLink[];
 	showSubLinks?: boolean;
 	disabled?: boolean;
+	onClick?: () => void;
 };
 
 export type User = {

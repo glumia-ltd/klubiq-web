@@ -101,17 +101,11 @@ const AddTenantForm = ({
 			if (returnPath) {
 				navigate(returnPath);
 			}
-		} catch (error) {
-			const errorMessage = (error as any)?.message;
-			dispatch(
-				openSnackbar({
-					message: errorMessage,
-					severity: 'error',
-					isOpen: true,
-					duration: 7000,
-				}),
-			);
-			throw error;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.tenant.add.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const initialValues: InitialFormValues = {

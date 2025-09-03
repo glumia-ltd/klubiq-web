@@ -12,7 +12,7 @@ import { RootState } from '@/store';
 import { BottomNav } from '@/components/BottomNav/BottomNav';
 import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
-import { Build, Description, Settings } from '@mui/icons-material';
+import { AccountCircle, Build, Description, Logout, PersonOutlineOutlined, Settings } from '@mui/icons-material';
 // Example for tenant portal
 // const tenantFooterConfig = {
 // 	appName: 'Tenant Portal',
@@ -68,7 +68,30 @@ const AppContainer = () => {
 			disabled: !isMobile,
 		},
 	];
-
+	const settingsDrawerList: NavLink[] = [
+		{
+			label: 'Profile',
+			icon: <PersonOutlineOutlined />,
+			route: '/profile',
+			index: 0,
+		},
+		{
+			label: 'Account',
+			icon: <AccountCircle />,
+			route: '/account',
+			index: 1,
+			// disabled: true,
+		},
+		{
+			label: 'Logout',
+			icon: <Logout />,
+			route: '/logout',
+			index: 2,
+			onClick: () => {
+				handleSignOut();
+			},
+		}
+	];
 	// Mock user data (replace with your actual user data
 	// Navigation handler
 	const handleNavClick = (route: string) => {
@@ -137,7 +160,7 @@ const AppContainer = () => {
 			</Box>
 
 			{isMobile && (
-				<BottomNav navLinks={navLinks} onNavClick={handleNavClick} />
+				<BottomNav navLinks={navLinks} onNavClick={handleNavClick} settingsDrawerListNavLinks={settingsDrawerList} />
 			)}
 		</Box>
 	);

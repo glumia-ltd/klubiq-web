@@ -144,7 +144,7 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 				}).unwrap();
 				dispatch(
 					openSnackbar({
-						message: screenMessages.unit.edit.success,
+						message: screenMessages.unit.uploadImages.success,
 						severity: 'success',
 						isOpen: true,
 						duration: 5000,
@@ -154,17 +154,11 @@ const UploadUnitImagesForm: FC<UnitFormProps> = ({
 				return response;
 			}
 			throw new Error('No images uploaded');
-		} catch (error) {
-			const errorMessage = (error as any)?.message;
-			dispatch(
-				openSnackbar({
-					message: errorMessage,
-					severity: 'error',
-					isOpen: true,
-					duration: 7000,
-				}),
-			);
-			throw error;
+		} catch (error: unknown) {
+			const errorMessage =
+				(error as any)?.message || 
+				(error instanceof Error ? error.message : screenMessages.unit.uploadImages.error);
+			throw new Error(errorMessage);
 		}
 	};
 	const onReset = () => {

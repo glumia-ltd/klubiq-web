@@ -92,6 +92,16 @@ api.interceptors.response.use(
 				console.error('Failed to refresh CSRF token:', csrfError);
 			}
 		}
+		// Handle token revoked errors
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('Token has been revoked.')
+		) {
+			if (window.location.pathname !== '/login') {
+				window.location.href = '/login';
+			}
+			return Promise.reject(error);
+		}
 
 		// Only retry if it's a 401 and we haven't retried yet
 		if (

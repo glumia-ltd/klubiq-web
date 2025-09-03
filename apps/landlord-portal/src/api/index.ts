@@ -20,12 +20,8 @@ const baseURL = (() => {
 })();
 const api = axios.create({ baseURL, withCredentials: true });
 const CLIENT_ID = 'kbq_lp_app-web';
-const DOWNLOAD_ENDPOINTS =[
-	'/api/dashboard/download-revenue-report',
-]
-const UPLOAD_ENDPOINTS = [
-	fileEndpoints.uploadImages(),
-]
+const DOWNLOAD_ENDPOINTS = ['/api/dashboard/download-revenue-report'];
+const UPLOAD_ENDPOINTS = [fileEndpoints.uploadImages()];
 const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.refreshToken(),
 	authEndpoints.login(),
@@ -36,22 +32,23 @@ const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.verifyOobCode(),
 	authEndpoints.emailVerification(),
 	authEndpoints.csrf(),
-]
+];
 
 // CSRF token management
 const getCsrfToken = () => sessionStorage.getItem('csrf_token');
-const setCsrfToken = (token: string) => sessionStorage.setItem('csrf_token', token);
+const setCsrfToken = (token: string) =>
+	sessionStorage.setItem('csrf_token', token);
 
 const fetchNewCsrfToken = async () => {
-    try {
-        const response = await api.get(authEndpoints.csrf());
-        const { data } = response.data;
-        setCsrfToken(data.token);
-        return data.token;
-    } catch (error) {
-        console.error('Failed to fetch CSRF token:', error);
-        return null;
-    }
+	try {
+		const response = await api.get(authEndpoints.csrf());
+		const { data } = response.data;
+		setCsrfToken(data.token);
+		return data.token;
+	} catch (error) {
+		console.error('Failed to fetch CSRF token:', error);
+		return null;
+	}
 };
 
 function AxiosConfig(config: any) {
@@ -60,13 +57,16 @@ function AxiosConfig(config: any) {
 	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
 		config.headers['content-type'] = 'application/json';
 	}
-	 // Add CSRF token for non-GET requests
-	 if (config.method !== 'get' && !CSRF_IGNORE_ENDPOINTS.includes(config.url as string)) {
-        const csrfToken = getCsrfToken();
-        if (csrfToken) {
-            config.headers['x-csrf-token'] = csrfToken;
-        }
-    }
+	// Add CSRF token for non-GET requests
+	if (
+		config.method !== 'get' &&
+		!CSRF_IGNORE_ENDPOINTS.includes(config.url as string)
+	) {
+		const csrfToken = getCsrfToken();
+		if (csrfToken) {
+			config.headers['x-csrf-token'] = csrfToken;
+		}
+	}
 	config.headers['x-correlation-id'] = crypto.randomUUID();
 	config.headers['x-client-tzo'] = new Date().getTimezoneOffset();
 	config.headers['x-client-tz-name'] =
@@ -74,10 +74,7 @@ function AxiosConfig(config: any) {
 	config.headers['x-client-id'] = CLIENT_ID;
 	const orgSettingString = sessionStorage.getItem('org-settings');
 	const tenant_id = sessionStorage.getItem('tenant_id');
-	if (
-		orgSettingString &&
-		orgSettingString.length > 0
-	) {
+	if (orgSettingString && orgSettingString.length > 0) {
 		const orgSettings = JSON.parse(orgSettingString as string);
 		consoleDebug('orgSettings: ', orgSettings);
 		config.headers['x-client-lang'] = get(orgSettings, 'language', '');
@@ -102,27 +99,44 @@ api.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		
 		const originalRequest = error.config;
 		// Don't retry if we're already on the login page
 		if (window.location.pathname === '/login') {
 			return Promise.reject(error);
 		}
-		 // Handle CSRF token errors
-		 if (error.response?.status === 401 && error.response?.data?.message?.includes('CSRF')) {
-            try {
-                const newToken = await fetchNewCsrfToken();
-                if (newToken) {
-                    originalRequest.headers['x-csrf-token'] = newToken;
-                    return api(originalRequest);
-                }
-            } catch (csrfError) {
-                console.error('Failed to refresh CSRF token:', csrfError);
-            }
-        }
+		// Handle CSRF token errors
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('CSRF')
+		) {
+			try {
+				const newToken = await fetchNewCsrfToken();
+				if (newToken) {
+					originalRequest.headers['x-csrf-token'] = newToken;
+					return api(originalRequest);
+				}
+			} catch (csrfError) {
+				console.error('Failed to refresh CSRF token:', csrfError);
+			}
+		}
+
+		// Handle token revoked errors
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('Token has been revoked.')
+		) {
+			if (window.location.pathname !== '/login') {
+				window.location.href = '/login';
+			}
+			return Promise.reject(error);
+		}
 
 		// Only retry if it's a 401 and we haven't retried yet
-		if (error.response?.status === 401 && error.response?.data?.message?.includes('expired token') && !originalRequest._retry) {
+		if (
+			error.response?.status === 401 &&
+			error.response?.data?.message?.includes('expired token') &&
+			!originalRequest._retry
+		) {
 			// Check if we're already on the refresh token endpoint
 			originalRequest._retry = true;
 			try {

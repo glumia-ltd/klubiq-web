@@ -1,0 +1,66 @@
+# apps/landlord-portal/Dockerfile
+# builder
+FROM node:22-alpine AS builder
+WORKDIR /repo
+ENV CI=true HUSKY=0 NPM_CONFIG_FUND=false NPM_CONFIG_AUDIT=false
+
+# Declare all your build-time arguments
+ARG VITE_FIREBASE_APIKEY
+ARG VITE_AUTHDOMAIN
+ARG VITE_PROJECTID
+ARG VITE_STORAGEBUCKET
+ARG VITE_MESSAGINGSENDERID
+ARG VITE_APPID
+ARG VITE_MEASUREMENTID
+ARG VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY
+ARG VITE_GOOGLE_PLACES_API_KEY
+ARG VITE_IDB_VERSION
+ARG VITE_IS_GLOBALLY_AVAILABLE
+ARG VITE_MOBILE_INVITATION_ENABLED
+ARG REACT_LP_APP_VERSION
+ARG VITE_THEME_SWITCH_ENABLED
+ARG BUILD_NUMBER
+ARG VITE_TURNSTILE_SITEKEY
+
+ENV VITE_FIREBASE_APIKEY=$VITE_FIREBASE_APIKEY \
+    VITE_AUTHDOMAIN=$VITE_AUTHDOMAIN \
+    VITE_PROJECTID=$VITE_PROJECTID \
+    VITE_STORAGEBUCKET=$VITE_STORAGEBUCKET \
+    VITE_MESSAGINGSENDERID=$VITE_MESSAGINGSENDERID \
+    VITE_APPID=$VITE_APPID \
+    VITE_MEASUREMENTID=$VITE_MEASUREMENTID \
+    VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY=$VITE_WEB_PUSH_NOTIFICATION_PUBLIC_KEY \
+    VITE_GOOGLE_PLACES_API_KEY=$VITE_GOOGLE_PLACES_API_KEY \
+    VITE_IDB_VERSION=$VITE_IDB_VERSION \
+    VITE_IS_GLOBALLY_AVAILABLE=$VITE_IS_GLOBALLY_AVAILABLE \
+    VITE_MOBILE_INVITATION_ENABLED=$VITE_MOBILE_INVITATION_ENABLED \
+    REACT_LP_APP_VERSION=$REACT_LP_APP_VERSION \
+    VITE_THEME_SWITCH_ENABLED=$VITE_THEME_SWITCH_ENABLED \
+    BUILD_NUMBER=$BUILD_NUMBER \
+    VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY \
+    VITE_APPLICATION_NAME=klubiq-landlord-portal \
+    VITE_BASE_URL_LOCAL=http://localhost:3000 \
+    VITE_BASE_URL_DEV=https://devapi.klubiq.com \
+    VITE_BASE_URL_STAGING=https://stagingapi.klubiq.com \
+    VITE_BASE_URL_PROD=https://api.klubiq.com \
+    VITE_NODE_ENV=staging \
+    NODE_ENV=staging 
+
+COPY package.json package-lock.json turbo.json tsconfig.json ./
+COPY packages ./packages
+COPY scripts ./scripts
+COPY apps/landlord-portal/package.json ./apps/landlord-portal/package.json
+RUN npm ci --ignore-scripts
+
+COPY . .
+RUN npm run version:landlord || exit 1
+RUN npm run buildUIC
+RUN npm run buildLP
+RUN npm prune --omit=dev --ignore-scripts --no-audit --no-fund
+
+# runtime
+FROM nginx:1.27-alpine AS runtime
+
+COPY apps/landlord-portal/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /repo/apps/landlord-portal/dist /usr/share/nginx/html
+EXPOSE 80

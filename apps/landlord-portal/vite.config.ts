@@ -128,6 +128,23 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 				},
 			},
 			{
+				urlPattern: /^https:\/\/stagingapi\.klubiq\.com\/api\/.*/i,
+				handler: 'NetworkFirst',
+				options: {
+					cacheName: 'staging-api-cache',
+					expiration: {
+						maxEntries: 100,
+						maxAgeSeconds: 72 * 60 * 60,
+					},
+					cacheableResponse: {
+						statuses: [0, 200],
+					},
+					matchOptions: {
+						ignoreVary: true,
+					},
+				},
+			},
+			{
 				urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
 				handler: 'CacheFirst',
 				options: {
@@ -246,8 +263,8 @@ export default ({ mode }: { mode: any }) => {
 			minify: 'terser',
 			terserOptions: {
 				compress: {
-					drop_console: mode === 'development',
-					drop_debugger: mode === 'development',
+					drop_console: mode === 'development' || mode === 'staging' || mode === 'production',
+					drop_debugger: mode === 'development' || mode === 'staging' || mode === 'production',
 				},
 			},
 			rollupOptions: {
