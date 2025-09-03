@@ -2,8 +2,10 @@ import { Typography, useMediaQuery, useTheme, Card } from '@mui/material';
 import { useState } from 'react';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
-import * as KlubiqIcons from '../../components/Icons/CustomIcons';
+import SmsIcon from '@mui/icons-material/Sms';
 import NotificationItem from './NotificationItems';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 export const Notifications = () => {
 	const [switchStates, setSwitchStates] = useState<Record<string, boolean>>({
 		leaseRenewals: true,
@@ -30,19 +32,19 @@ export const Notifications = () => {
 			id: 'email',
 			title: 'Email Notification',
 			description: 'Get notified about upcoming lease renewals',
-			icon: <KlubiqIcons.EmailIcon sx={{ color: theme.palette.primary.main }} />,
+			icon: <MailIcon sx={{ color: theme.palette.primary.main }} />,
 		},
 		{
 			id: 'push',
 			title: 'Push Notification',
 			description: 'Receive reminders for upcoming payments',
-			icon: <KlubiqIcons.NotificationOutlined sx={{ color: theme.palette.success.main }} />,
+			icon: <NotificationsIcon sx={{ color: theme.palette.success.main }} />,
 		},
 		{
 			id: 'sms',
 			title: 'SMS Notification',
 			description: 'Get notified about new maintenance requests',
-			icon: <KlubiqIcons.SmsIcon sx={{ color: theme.palette.secondary.main }} />,
+			icon: <SmsIcon sx={{ color: theme.palette.secondary.main }} />,
 		},
 	];
 	const handleToggle = (id: string, value: boolean) => {
