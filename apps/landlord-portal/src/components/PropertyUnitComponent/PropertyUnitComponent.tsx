@@ -34,7 +34,7 @@ import {
 	VacantHomeIcon,
 	WarningIcon,
 } from '../Icons/CustomIcons';
-import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -1207,8 +1207,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				{propertyType === 'Multi' &&
 					multiUnitMode &&
 					renderTabsContent(tabValue)}
-
-				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Stack>
 
 			<DynamicModal {...unitModalConfig} />
