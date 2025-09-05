@@ -9,7 +9,6 @@ import {
 	useMediaQuery,
 	useTheme,
 } from '@mui/material';
-import { styles } from './styles';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TenantTable } from './TenantTable';
@@ -23,11 +22,16 @@ import {
 import { useDebounce } from '../../../hooks/useDebounce';
 import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
 import { screenMessages } from '../../../helpers/screen-messages';
-// import { TableSkeleton } from '../../../components/skeletons/TableSkeleton';
+import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { useSelector } from 'react-redux';
+import { PermissionGate } from '../../../authz/permission-gate';
+import { PERMISSIONS } from '../../../authz/constants';
 
 const ITEMSCOUNTOPTIONS = [10, 20, 40, 60];
 
 const Tenant = () => {
+	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -115,7 +119,7 @@ const Tenant = () => {
 
 			inputElement && inputElement.focus();
 		}
-	}, []); 
+	}, []);
 	useEffect(() => {
 		getCurrentPage(1);
 	}, [getCurrentPage]);
@@ -132,20 +136,29 @@ const Tenant = () => {
 					gap={1}
 					justifyContent={isMobile ? 'flex-start' : 'flex-end'}
 				>
-					<Button variant='klubiqMainButton' onClick={navigateToAddTenant}>
-						{/* <LeftArrowIcon /> */}
-						Add New Tenant
-					</Button>
+					<PermissionGate
+						orgId={organizationUuid}
+						roleName={role}
+						all={[PERMISSIONS.TENANT.CREATE]}
+						fallback={<></>}
+					>
+						<Button variant='klubiqMainButton' onClick={navigateToAddTenant}>
+							{/* <LeftArrowIcon /> */}
+							Add New Tenant
+						</Button>
+					</PermissionGate>
 				</Stack>
 				<Stack>
 					<Paper
 						component='form'
 						elevation={0}
 						sx={{
-							...styles.inputStyle,
 							border: '1px solid',
 							borderColor: 'primary.contrastText',
 							borderRadius: 2.5,
+							p: '2px 4px',
+							display: 'flex',
+							alignItems: 'center',
 						}}
 					>
 						<IconButton aria-label='search'>

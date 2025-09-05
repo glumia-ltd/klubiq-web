@@ -9,7 +9,7 @@ import {
 	Paper,
 	Box,
 } from '@mui/material';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
 	useAddTenantsMutation,
@@ -54,6 +54,9 @@ import { screenMessages } from '../../../helpers/screen-messages';
 import { consoleLog } from '../../../helpers/debug-logger';
 import LeaseActionsPrompts from '../../../components/Dialogs/LeaseActionPrompt';
 import EditLeaseForm from './EditLeaseForm';
+import { useCan } from '../../../authz/use-can';
+import { PERMISSIONS } from '../../../authz/constants';
+import { PermissionGate } from '../../../authz/permission-gate';
 function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
 	return (
 		<TenantDialog
@@ -107,9 +110,18 @@ const useMenuStatus = (status?: string, isArchived?: boolean) => ({
 });
 
 const LeaseDetails = () => {
+	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
+	const { can } = useCan(organizationUuid, role);
+	const canEditLease = useMemo(() => can([PERMISSIONS.LEASE.UPDATE]), [can]);
+	const canCreateTenant = useMemo(
+		() => can([PERMISSIONS.TENANT.CREATE]),
+		[can],
+	);
+	const canDeleteLease = useMemo(() => can([PERMISSIONS.LEASE.DELETE]), [can]);
+
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { user } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	const [archiveLease] = useArchiveLeaseMutation();
 	const [deleteLease] = useDeleteLeaseMutation();
@@ -418,14 +430,26 @@ const LeaseDetails = () => {
 					/>
 
 					<Stack>
-						<Button
-							ref={anchorRef}
-							variant='klubiqMainButton'
-							onClick={handleToggle}
-							endIcon={<MoreVertIcon />}
+						<PermissionGate
+							orgId={organizationUuid}
+							roleName={role}
+							any={[
+								PERMISSIONS.LEASE.UPDATE,
+								PERMISSIONS.LEASE.DELETE,
+								PERMISSIONS.LEASE.CREATE,
+								PERMISSIONS.TENANT.CREATE,
+							]}
+							fallback={<></>}
 						>
-							Action
-						</Button>
+							<Button
+								ref={anchorRef}
+								variant='klubiqMainButton'
+								onClick={handleToggle}
+								endIcon={<MoreVertIcon />}
+							>
+								Action
+							</Button>
+						</PermissionGate>
 						<Popper
 							open={open}
 							anchorEl={anchorRef.current}
@@ -450,59 +474,93 @@ const LeaseDetails = () => {
 												// onKeyDown={handleListKeyDown}
 											>
 												{canAddTenant && (
-													<MenuItem
-														onClick={handleAddTenants}
-														sx={{ padding: '10px' }}
-														divider
+													<PermissionGate
+														orgId={organizationUuid}
+														roleName={role}
+														all={[PERMISSIONS.TENANT.CREATE]}
+														fallback={<></>}
 													>
-														Add Tenant(s)
-													</MenuItem>
+														<MenuItem
+															onClick={handleAddTenants}
+															sx={{ padding: '10px' }}
+															divider
+														>
+															Add Tenant(s)
+														</MenuItem>
+													</PermissionGate>
 												)}
 												{canArchive && (
-													<MenuItem
-														onClick={() => {
-															setOpen(false);
-															setOpenArchiveLeaseDialog(true);
-														}}
-														sx={{ padding: '10px' }}
-														divider
+													<PermissionGate
+														orgId={organizationUuid}
+														roleName={role}
+														all={[PERMISSIONS.LEASE.UPDATE]}
+														fallback={<></>}
 													>
-														Archive Lease
-													</MenuItem>
+														<MenuItem
+															onClick={() => {
+																setOpen(false);
+																setOpenArchiveLeaseDialog(true);
+															}}
+															sx={{ padding: '10px' }}
+															divider
+														>
+															Archive Lease
+														</MenuItem>
+													</PermissionGate>
 												)}
 												{canTerminate && (
-													<MenuItem
-														onClick={() => {
-															setOpen(false);
-															setOpenDeleteLeaseDialog(true);
-														}}
-														sx={{ padding: '10px' }}
-														divider
+													<PermissionGate
+														orgId={organizationUuid}
+														roleName={role}
+														all={[PERMISSIONS.LEASE.DELETE]}
+														fallback={<></>}
 													>
-														Delete Lease
-													</MenuItem>
+														<MenuItem
+															onClick={() => {
+																setOpen(false);
+																setOpenDeleteLeaseDialog(true);
+															}}
+															sx={{ padding: '10px' }}
+															divider
+														>
+															Delete Lease
+														</MenuItem>
+													</PermissionGate>
 												)}
 												{canEdit && (
-													<MenuItem
-														onClick={handleEditLease}
-														sx={{ padding: '10px' }}
-														divider
+													<PermissionGate
+														orgId={organizationUuid}
+														roleName={role}
+														all={[PERMISSIONS.LEASE.UPDATE]}
+														fallback={<></>}
 													>
-														Edit Lease
-													</MenuItem>
+														<MenuItem
+															onClick={handleEditLease}
+															sx={{ padding: '10px' }}
+															divider
+														>
+															Edit Lease
+														</MenuItem>
+													</PermissionGate>
 												)}
 												{canDelete && (
-													<MenuItem
-														onClick={() => {
-															setOpen(false);
-															setOpenTerminateLeaseDialog(true);
-														}}
-														sx={{ padding: '10px' }}
+													<PermissionGate
+														orgId={organizationUuid}
+														roleName={role}
+														all={[PERMISSIONS.LEASE.UPDATE]}
+														fallback={<></>}
 													>
-														Terminate Lease
-													</MenuItem>
+														<MenuItem
+															onClick={() => {
+																setOpen(false);
+																setOpenTerminateLeaseDialog(true);
+															}}
+															sx={{ padding: '10px' }}
+														>
+															Terminate Lease
+														</MenuItem>
+													</PermissionGate>
 												)}
-												
 											</MenuList>
 										</ClickAwayListener>
 									</Paper>

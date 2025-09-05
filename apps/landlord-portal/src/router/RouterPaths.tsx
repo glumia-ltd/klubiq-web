@@ -83,7 +83,9 @@ export const router = createBrowserRouter(
 							errorElement={<ErrorComponent />}
 						/>
 						{/* Create Property */}
-						<Route element={<PrivateRoute all={[PERMISSIONS.PROPERTY.CREATE]} />}>
+						<Route
+							element={<PrivateRoute all={[PERMISSIONS.PROPERTY.CREATE]} />}
+						>
 							<Route
 								path='/properties/create'
 								element={<CreateProperty />}
@@ -93,10 +95,14 @@ export const router = createBrowserRouter(
 						{/* Property Detail AND Edit Property */}
 						<Route path='/properties/:slug' element={<NestedRoutesLayout />}>
 							<Route index element={<PropertyPage />} />
-							<Route element={<PrivateRoute all={[PERMISSIONS.PROPERTY.UPDATE]} />}>
+							<Route
+								element={<PrivateRoute all={[PERMISSIONS.PROPERTY.UPDATE]} />}
+							>
 								<Route path='edit' element={<EditPropertyPage />} />
 							</Route>
-							<Route element={<PrivateRoute all={[PERMISSIONS.PROPERTY.READ]} />}>
+							<Route
+								element={<PrivateRoute all={[PERMISSIONS.PROPERTY.READ]} />}
+							>
 								<Route path='unit/:id' element={<UnitInMultiUnitPage />} />
 							</Route>
 						</Route>
@@ -122,7 +128,9 @@ export const router = createBrowserRouter(
 						/>
 						<Route path='/leases' element={<NestedRoutesLayout />}>
 							<Route index element={<Lease />} />
-							<Route element={<PrivateRoute all={[PERMISSIONS.LEASE.CREATE]} />}>
+							<Route
+								element={<PrivateRoute all={[PERMISSIONS.LEASE.CREATE]} />}
+							>
 								<Route path='add-lease' element={<AddLeasePage />} />
 							</Route>
 						</Route>
@@ -131,14 +139,34 @@ export const router = createBrowserRouter(
 						</Route>
 					</Route>
 
-					<Route path='/tenants' element={<NestedRoutesLayout />}>
-						<Route index element={<Tenant />} />
-						<Route path='add-tenant' element={<AddTenant />} />
-						<Route path='invite-tenant' element={<AddTenant />} />
+					{/* Tenants */}
+					<Route
+						element={
+							<PrivateRoute
+								any={[
+									PERMISSIONS.TENANT.READ,
+									PERMISSIONS.TENANT.CREATE,
+									PERMISSIONS.TENANT.UPDATE,
+									PERMISSIONS.TENANT.DELETE,
+								]}
+							/>
+						}
+					>
+						<Route path='/tenants' element={<NestedRoutesLayout />}>
+							<Route index element={<Tenant />} />
+							<Route element={<PrivateRoute all={[PERMISSIONS.TENANT.CREATE]} />}>
+								<Route path='add-tenant' element={<AddTenant />} />
+								<Route path='invite-tenant' element={<AddTenant />} />
+							</Route>
+						</Route>
+						<Route element={<PrivateRoute all={[PERMISSIONS.TENANT.READ]} />}>
+							<Route path='tenants/:id' element={<TenantDetails />} />
+						</Route>
 					</Route>
-					<Route path='tenants/:id' element={<TenantDetails />} />
-
-					<Route path='/settings' element={<Setting />} />
+					{/* Settings */}
+					<Route element={<PrivateRoute all={[PERMISSIONS.SETTINGS.READ]} />}>
+						<Route path='/settings' element={<Setting />} />
+					</Route>
 				</Route>
 			</Route>
 		</Route>,
