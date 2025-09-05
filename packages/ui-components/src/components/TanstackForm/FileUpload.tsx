@@ -74,6 +74,8 @@ interface FileUploadProps {
 	subtitle?: string;
 	caption?: string;
 	maxFavorites?: number;
+	// New: variant selection
+	variant?: 'card' | 'button';
 	tooltipMessages?: {
 		favorite?: string;
 		unfavorite?: string;
@@ -82,7 +84,12 @@ interface FileUploadProps {
 		upload?: string;
 		maxFavoritesReached?: string;
 	};
+	// Base upload API
 	onUpload?: (formData: FormData) => Promise<StorageUploadResult[]>;
+	// New: upload API variants
+	onUploadLogo?: (formData: FormData) => Promise<StorageUploadResult>;
+	onUploadProfile?: (formData: FormData) => Promise<StorageUploadResult>;
+	uploadContext?: 'logo' | 'profile';
 	onDelete?: (publicId: string) => Promise<boolean>;
 	uploadButtonText?: string;
 	onUploadComplete?: (
@@ -91,6 +98,17 @@ interface FileUploadProps {
 	onValidationError?: (message: string) => void;
 	form?: any; // Add form prop for TanStack Form
 	fieldName?: string; // Add fieldName prop for the form field to update
+	// New: external preview renderer for button variant
+	renderExternalPreview?: (
+		results: (StorageUploadResult & { isFavorite: boolean })[],
+	) => React.ReactNode;
+	// New: auto upload immediately after selection (defaults true for button variant)
+	autoUploadOnSelect?: boolean;
+	uploadButtonVariant?:
+		| 'klubiqMainButton'
+		| 'klubiqSecondaryButton'
+		| 'klubiqOutlinedButton'
+		| 'klubiqTextButton';
 }
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -105,6 +123,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	subtitle = 'UPLOAD FILES',
 	caption = 'Upload your files here',
 	maxFavorites = 3,
+	variant = 'card',
 	tooltipMessages = {
 		favorite: 'Click to mark as favorite',
 		unfavorite: 'Click to remove from favorites',
@@ -114,12 +133,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		maxFavoritesReached: 'Maximum number of favorites reached',
 	},
 	onUpload,
+	onUploadLogo,
+	onUploadProfile,
+	uploadContext,
 	onDelete,
 	onUploadComplete,
 	onValidationError,
 	uploadButtonText = 'Upload Files',
 	form,
 	fieldName = 'uploadedFiles',
+	renderExternalPreview,
+	autoUploadOnSelect,
+	uploadButtonVariant = 'klubiqMainButton',
 }): JSX.Element => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -142,6 +167,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	});
 	const [hasUploadedFiles, setHasUploadedFiles] = useState<boolean>(false);
 	const [isError, setIsError] = useState<boolean>(false);
+	// New: hold last upload results for external preview rendering
+	const [lastUploadResults, setLastUploadResults] = useState<
+		(StorageUploadResult & { isFavorite: boolean })[]
+	>([]);
 	const isFile = (file: any): file is File => {
 		return (
 			typeof window !== 'undefined' &&
@@ -198,7 +227,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 						original_filename: formFile.fileName,
 					};
 					return fileWithPreview;
-				} else if (formFile && !isFile(file) && 'externalId' in file && 'url' in file) {
+				} else if (
+					formFile &&
+					!isFile(file) &&
+					'externalId' in file &&
+					'url' in file
+				) {
 					return {
 						preview: formFile.url,
 						isFavorite: formFile.isMain,
@@ -374,6 +408,18 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
 		onChange(dataTransfer.files);
 		onBlur();
+
+		// For button variant, auto-upload immediately after selection
+		const shouldAutoUpload =
+			autoUploadOnSelect !== undefined
+				? autoUploadOnSelect
+				: variant === 'button';
+		if (shouldAutoUpload) {
+			// Defer to allow local state to sync from value
+			setTimeout(() => {
+				void handleUpload();
+			}, 0);
+		}
 	};
 
 	const handleServerFavorite = async (index: number) => {
@@ -463,6 +509,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				//console.log('updatedServerFiles: ', updatedServerFiles);
 				form?.setFieldValue(fieldName, updatedServerFiles);
 				setDeleteProgress(40);
+				// If server-side files are now empty, also clear external previews
+				if (updatedServerFiles.length === 0) {
+					setHasUploadedFiles(false);
+					setLastUploadResults([]);
+				}
 			} else {
 				throw new Error('Failed to delete file from server');
 			}
@@ -478,7 +529,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			setIsDeleting(true);
 			setDeleteProgress(0);
 			const uploadedVersion = (form?.getFieldValue(fieldName) || []).find(
-				(file: any) => file.externalId.includes(fileToDelete.name) || file.externalId === fileToDelete.storageResult?.public_id,
+				(file: any) =>
+					file.externalId.includes(fileToDelete.name) ||
+					file.externalId === fileToDelete.storageResult?.public_id,
 			);
 			//console.log('uploadedVersion: ', uploadedVersion);
 			if (uploadedVersion) {
@@ -498,12 +551,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			const dataTransfer = new DataTransfer();
 			const newFiles = [...localFiles];
 			//console.log('newFiles: ', newFiles);
-			// Clean up the blob URL before removing the file
-			if (newFiles[index].preview) {
-				URL.revokeObjectURL(newFiles[index].preview);
+			// Clean up the blob URL before removing the file (only revoke blob URLs)
+			const previewUrl = newFiles[index].preview;
+			if (previewUrl && previewUrl.startsWith('blob:')) {
+				URL.revokeObjectURL(previewUrl);
 			}
 
 			newFiles.splice(index, 1);
+			// After removing, ensure remaining previews are valid; if none remain, clear uploaded flag
+			if (newFiles.length === 0) {
+				setHasUploadedFiles(false);
+			}
 
 			newFiles.forEach((file) => {
 				if (isFile(file)) {
@@ -512,10 +570,17 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 			});
 			const localFilesCount = newFiles.length;
 			// Update form value
-			if(dataTransfer.files?.length > 0){
+			if (dataTransfer.files?.length > 0) {
 				onChange(dataTransfer.files);
+			} else {
+				// Clear input selection when no files remain
+				onChange(null);
 			}
 			setLocalFiles(newFiles);
+			if (newFiles.length === 0) {
+				// Clear any external previews when nothing is left
+				setLastUploadResults([]);
+			}
 			// If we have storage results, always preserve the files
 			//console.log('form?.getFieldValue(fieldName) after delete: ', form?.getFieldValue(fieldName));
 			//console.log('localFiles: ', localFiles);
@@ -545,14 +610,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	};
 
 	const getTooltipMessage = (file: FileWithPreview, index: number) => {
-		const messages = [];
 		if (file.isFavorite) {
-			messages.push(tooltipMessages.unfavorite);
-		} else {
-			messages.push(tooltipMessages.favorite);
+			return tooltipMessages.unfavorite;
+			} else {
+			return tooltipMessages.favorite;
 		}
-		messages.push(tooltipMessages.delete);
-		return messages.join('\n');
 	};
 
 	// Add validation function
@@ -582,7 +644,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 	}, [hasUploadedFiles, localFiles.length]);
 
 	const handleUpload = async () => {
-		if (!onUpload || localFiles.length === 0) {
+		const resolvedUpload =
+			uploadContext === 'logo' && onUploadLogo
+				? onUploadLogo
+				: uploadContext === 'profile' && onUploadProfile
+					? onUploadProfile
+					: onUpload;
+
+		if (!resolvedUpload || localFiles.length === 0) {
 			return;
 		}
 
@@ -616,7 +685,10 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				formData.append('files', file);
 			});
 
-			const storageResults = await onUpload(formData);
+			const uploadResponse = await resolvedUpload(formData);
+			const storageResults = Array.isArray(uploadResponse)
+				? uploadResponse
+				: [uploadResponse];
 			const uploadedFilesCount = storageResults.length;
 			// Update local files with storage results while preserving existing state
 			const updatedFiles = localFiles.map((file, index) => {
@@ -654,11 +726,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 				fileName: file.storageResult?.original_filename || file.name,
 			}));
 
+			const resultsWithFavorite = storageResults.map((result, index) => ({
+				...result,
+				isFavorite: updatedFiles[index].isFavorite || false,
+			}));
+			setLastUploadResults(resultsWithFavorite);
 			if (onUploadComplete) {
-				const resultsWithFavorite = storageResults.map((result, index) => ({
-					...result,
-					isFavorite: updatedFiles[index].isFavorite || false,
-				}));
 				onUploadComplete(resultsWithFavorite);
 			}
 
@@ -741,6 +814,70 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 		onChange(dataTransfer.files);
 		onBlur();
 	};
+
+	// Button-only variant rendering
+	if (variant === 'button') {
+		return (
+			<Box>
+				<Button
+					variant={uploadButtonVariant}
+					onClick={handleClick}
+					startIcon={<Upload />}
+				>
+					{isUploading ? 'Uploading...' : uploadButtonText}
+				</Button>
+				<VisuallyHiddenInput
+					ref={inputRef}
+					type='file'
+					accept={accept}
+					multiple={multiple}
+					style={{ display: 'none' }}
+					onChange={handleFileChange}
+					onBlur={onBlur}
+					aria-label='File input'
+				/>
+				{renderExternalPreview && lastUploadResults?.length > 0 && (
+					<Box sx={{ mt: 2 }}>{renderExternalPreview(lastUploadResults)}</Box>
+				)}
+				{isUploading && (
+					<Box sx={{ width: '100%', mt: 1 }}>
+						<LinearProgress variant='determinate' value={uploadProgress} />
+						<Typography
+							variant='caption'
+							color='textSecondary'
+							align='center'
+							display='block'
+						>
+							{uploadProgress}% Complete
+						</Typography>
+					</Box>
+				)}
+				<Snackbar
+					open={snackbar.open}
+					autoHideDuration={6000}
+					onClose={handleCloseSnackbar}
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: isMobile ? 'center' : 'right',
+					}}
+					sx={{
+						width: '100%',
+						maxWidth: isMobile ? '100%' : '600px',
+						fontFamily: 'Maven Pro, sans-serif',
+						fontSize: '16px',
+					}}
+				>
+					<Alert
+						onClose={handleCloseSnackbar}
+						severity={snackbar.severity}
+						variant='filled'
+					>
+						{snackbar.message}
+					</Alert>
+				</Snackbar>
+			</Box>
+		);
+	}
 
 	return (
 		<Card variant='outlined'>
@@ -840,7 +977,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 						<Grid container spacing={2} sx={{ mt: 2 }}>
 							{localFiles.map((file, index) => (
 								<Grid item xs={12} sm={6} md={4} key={index}>
-									<Tooltip title={getTooltipMessage(file, index)} arrow>
+									<Tooltip title={file.name} arrow>
 										<ThumbnailContainer>
 											{file.preview ? (
 												<img
@@ -875,26 +1012,34 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 													p: 0.5,
 												}}
 											>
-												<IconButton
-													size='small'
-													onClick={(e) => {
-														e.stopPropagation();
-														handleFavorite(index);
-													}}
-													sx={{ color: 'white' }}
-												>
-													{file.isFavorite ? <Favorite /> : <FavoriteBorder />}
-												</IconButton>
-												<IconButton
-													size='small'
-													onClick={(e) => {
-														e.stopPropagation();
-														handleDelete(index);
-													}}
-													sx={{ color: 'white' }}
-												>
-													<Delete />
-												</IconButton>
+												<Tooltip title={getTooltipMessage(file, index)} arrow>
+													<IconButton
+														size='small'
+														onClick={(e) => {
+															e.stopPropagation();
+															handleFavorite(index);
+														}}
+														sx={{ color: 'white' }}
+													>
+														{file.isFavorite ? (
+															<Favorite />
+														) : (
+															<FavoriteBorder />
+														)}
+													</IconButton>
+												</Tooltip>
+												<Tooltip title={tooltipMessages.delete} arrow>
+													<IconButton
+														size='small'
+														onClick={(e) => {
+															e.stopPropagation();
+															handleDelete(index);
+														}}
+														sx={{ color: 'white' }}
+													>
+														<Delete />
+													</IconButton>
+												</Tooltip>
 											</Stack>
 										</ThumbnailContainer>
 									</Tooltip>

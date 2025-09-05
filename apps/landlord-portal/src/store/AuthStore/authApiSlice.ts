@@ -144,7 +144,6 @@ export const authApiSlice = createApi({
 			transformResponse: (response: {permissions: string[], version: string}) => ({
 				permissions: response.permissions as PermissionType[],
 				version: response.version,
-				set: new Set(response.permissions as PermissionType[]),
 			}),
 			serializeQueryArgs: ({ endpointName, queryArgs }) =>
 				`${endpointName}|${queryArgs.orgId}|${queryArgs.roleName}`,

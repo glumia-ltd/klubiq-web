@@ -9,5 +9,4 @@ export type PermissionType = `${string}:${'Read'|'Create'|'Update'|'Delete'}`;
 export type PermissionVersionType = {
 	permissions: PermissionType[];
 	version: string;
-	set: Set<PermissionType>;
 };
