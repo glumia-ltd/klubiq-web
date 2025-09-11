@@ -29,7 +29,7 @@ const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.signup(),
 	authEndpoints.sendResetPasswordEmail(),
 	authEndpoints.resetPassword(),
-	authEndpoints.verifyOobCode(),
+	authEndpoints.verifyEmail(),
 	authEndpoints.emailVerification(),
 	authEndpoints.csrf(),
 ];
@@ -149,6 +149,12 @@ api.interceptors.response.use(
 				}
 				return Promise.reject(refreshError);
 			}
+		}
+		if (error.response?.status === 403) {
+			if (window.location.pathname !== '/unauthorized') {
+				window.location.href = '/unauthorized';
+			}
+			return Promise.reject(error);
 		}
 
 		return Promise.reject(error);

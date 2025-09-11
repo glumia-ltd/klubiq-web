@@ -10,6 +10,7 @@ import OTPPrompt from '../../../components/Dialogs/OtpPrompt';
 import { styles } from './style';
 import {
 	useLazyFetchCsrfTokenQuery,
+	useLazyGetPermissionsQuery,
 	useLazyGetUserByFbidQuery,
 	useSignInMutation,
 	useVerifyMFAOtpMutation,
@@ -24,6 +25,7 @@ import logoText from '../../../assets/images/logo-text-2.png';
 import lightLogo from '../../../assets/images/logo-2.png';
 import lightLogoText from '../../../assets/images/logo-text-1.png';
 import { screenMessages } from '../../../helpers/screen-messages';
+import { UserProfile } from '../../../shared/auth-types';
 
 type IValuesType = {
 	password: string;
@@ -41,6 +43,7 @@ const Login = () => {
 	const [otpError, setOtpError] = useState('');
 	const dispatch = useDispatch();
 	const [triggerGetUserByFbid] = useLazyGetUserByFbidQuery();
+	const [triggerGetPermissions] = useLazyGetPermissionsQuery();
 	const [fetchCsrfTokenQuery] = useLazyFetchCsrfTokenQuery();
 	const setupMFA = searchParams.get('enroll2fa');
 	const continuePath = searchParams.get('continue');
@@ -90,6 +93,7 @@ const Login = () => {
 			consoleDebug(`Setting ${item.key} in session storage:`, value);
 		});
 	};
+
 	const fetchCsrfToken = async () => {
 		try {
 			const { token } = await fetchCsrfTokenQuery().unwrap();
@@ -119,7 +123,6 @@ const Login = () => {
 				isSignedIn: true,
 			};
 			dispatch(saveUser(payload));
-
 			openSnackbar({
 				message: 'That was easy',
 				severity: 'success',

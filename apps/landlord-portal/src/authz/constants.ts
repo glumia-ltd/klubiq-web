@@ -23,8 +23,10 @@ export const PERMISSIONS = {
         READ: 'Dashboard:Read' as PermissionType,
     },
     SETTINGS: {
-        READ: 'Settings:Read' as PermissionType,
-        UPDATE: 'Settings:Update' as PermissionType,
+        READ: 'Setting:Read' as PermissionType,
+        UPDATE: 'Setting:Update' as PermissionType,
+        DELETE: 'Setting:Delete' as PermissionType,
+        CREATE: 'Setting:Create' as PermissionType,
     },
     TEST: {
         READ: 'Test:Read' as PermissionType,

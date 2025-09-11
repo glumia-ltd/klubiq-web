@@ -48,13 +48,14 @@ const FeedbackContent = ({
 						>
 							Sign In
 						</Button>
-						<Button
+						{/* TODO: Disable for now so we can remove firebase from client side. Add 2FA setup button later */}
+						{/* <Button
 							onClick={onMFASetupClick}
 							fullWidth
 							variant='klubiqMainButton'
 						>
 							Setup 2FA
-						</Button>
+						</Button> */}
 					</Stack>
 				)}
 			</>

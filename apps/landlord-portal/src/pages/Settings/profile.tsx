@@ -33,7 +33,7 @@ export const Profile = () => {
 			console.log('blur');
 		},
 		autoUploadOnSelect: true,
-		uploadButtonText: 'Upload Profile Photo',
+		uploadButtonText: 'Upload Photo',
 		helperText: 'Upload a new profile photo.',
 		uploadButtonVariant: 'klubiqOutlinedButton' as const,
 	};

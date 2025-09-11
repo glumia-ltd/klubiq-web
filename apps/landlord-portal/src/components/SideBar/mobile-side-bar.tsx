@@ -161,15 +161,16 @@ function MobileSideBar() {
 													pointerEvents: 'none',
 												}}
 											>
-												<SvgIcon
+												{/* <SvgIcon
 													sx={{
 														fontSize: '20px',
 														width: '20px',
 														height: '20px',
 													}}
-													component={props.icon}
+													component={props.icon as ElementType}
 													inheritViewBox
-												/>
+												/> */}
+												{props.icon}
 											</ListItemIcon>
 											<ListItemText
 												sx={{

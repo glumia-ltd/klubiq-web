@@ -55,7 +55,7 @@ export const styles = (isSmallScreen: boolean, theme?: Theme) => {
 			textTransform: 'capitalize',
 			fontWeight: '600',
 			fontSize: '30px',
-			paddingLeft: isSmallScreen ? 1 : 4,
+			// paddingLeft: isSmallScreen ? 1 : 4,
 
 		},
 		searchInput: {

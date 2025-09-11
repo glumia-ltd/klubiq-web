@@ -12,26 +12,19 @@ import {
 	Avatar,
 	Badge,
 	Divider,
-	// TextField,
-	// InputAdornment,
 	Skeleton,
-	List,
-	ListItem,
-	ListItemText,
-	Box,
-	ListItemButton,
 	Stack,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-// import SearchIcon from '@mui/icons-material/Search';
 import KlbMenuList, { menuItem } from '../Shared/CustomMenuList';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import CustomPopper from '../Shared/CustomPopper';
 import {
 	useCountNotificationsQuery,
+	useDeleteNotificationsMutation,
 	useGetNotificationsQuery,
 	useReadNotificationsMutation,
 } from '../../store/NotificationStore/NotificationApiSlice';
@@ -40,7 +33,12 @@ import { stringAvatar } from '../../helpers/utils';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { NotificationData } from '../../shared/global-types';
 import { useNavigate } from 'react-router-dom';
-
+import {
+	FormatIndentDecrease,
+	FormatIndentIncrease,
+} from '@mui/icons-material';
+import { NavToolTips } from '../../styles/tooltips';
+import { NotificationDrawer } from '../NotificationDrawer';
 const NavBar = () => {
 	const { user } = useSelector(getAuthState);
 	const { data: notificationData } = useGetNotificationsQuery();
@@ -49,11 +47,12 @@ const NavBar = () => {
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const [userSignOut] = useSignOutMutation();
 	const [readNotifications] = useReadNotificationsMutation();
-
+	const [deleteNotifications] = useDeleteNotificationsMutation();
 	const {
 		toggleMobileSidebar,
 		mobileSideBarOpen,
 		setIsclosing,
+		setSidebarOpen,
 		drawerWidth,
 		sidebarOpen,
 	} = useContext(Context);
@@ -85,9 +84,17 @@ const NavBar = () => {
 		setOpenAvatarPopper((prevOpen) => !prevOpen);
 	};
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const handleOpenSidebar = () => {
+	const handleOpenSidebarMobile = () => {
 		setIsclosing && setIsclosing(false);
 		toggleMobileSidebar && toggleMobileSidebar();
+	};
+	const handleOpenSidebar = () => {
+		setIsclosing && setIsclosing(false);
+		setSidebarOpen && setSidebarOpen(true);
+	};
+	const handleCloseSidebar = () => {
+		setIsclosing && setIsclosing(true);
+		setSidebarOpen && setSidebarOpen(false);
 	};
 	const handleListKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === 'Tab') {
@@ -102,14 +109,16 @@ const NavBar = () => {
 
 	const handleNotificationPopperToggle = () => {
 		setNotificationPopperOpen((prevOpen) => !prevOpen);
-		const unreadNotifications = notificationData?.filter((item) => !item.isRead);
-		if (unreadNotifications && unreadNotifications.length > 0) {
-			readNotifications({
-				notificationIds: unreadNotifications.map((item) => item.id),
-				isDelivered: false,
-				isRead: true,
-			}).unwrap();
-		}
+	};
+	const deletAllNotifications = async () => {
+		await deleteNotifications({
+			notificationIds: (notificationData ?? []).map((item) => item.id),
+		  }).unwrap();
+	};
+	const deleteNotification = async (data: NotificationData) => {
+		await deleteNotifications({
+			notificationIds: [data.id],
+		}).unwrap();
 	};
 
 	const handleNotificationPopperClose = () => {
@@ -152,14 +161,18 @@ const NavBar = () => {
 	useEffect(() => {}, [notificationData]);
 
 	const handleNotificationAction = async (item: NotificationData) => {
-		if (
-			item?.type.toLowerCase().includes('deleted') ||
-			item?.title.toLowerCase().includes('deleted') ||
-			!item.actionLink
-		) {
-			return;
+		try {
+			await readNotifications({
+				notificationIds: [item.id],
+				isDelivered: false,
+				isRead: true,
+			});
+		} catch {}
+		finally {
+			if (item.actionLink) {
+				window.location.href = item.actionLink;
+			}
 		}
-		window.location.href = item.actionLink;
 	};
 
 	return (
@@ -181,7 +194,7 @@ const NavBar = () => {
 							{isSmallScreen && !mobileSideBarOpen && (
 								<IconButton
 									// sx={{ marginRight: '1rem' }}
-									onClick={handleOpenSidebar}
+									onClick={handleOpenSidebarMobile}
 									size={'large'}
 									edge='end'
 									color='inherit'
@@ -200,9 +213,34 @@ const NavBar = () => {
 										: `${drawerWidth.largeClosed}px`,
 								}}
 							>
-								<Typography sx={styles(isSmallScreen).appSectionTitle}>
-									{getFormattedSection()}
-								</Typography>
+								<Stack
+									direction='row'
+									alignItems='center'
+									gap={1}
+									pl={isSmallScreen ? 1 : 4}
+								>
+									{!isSmallScreen && (
+										<>
+											{sidebarOpen && (
+												<NavToolTips title='Collapse Menu'>
+													<IconButton onClick={handleCloseSidebar}>
+														<FormatIndentDecrease />
+													</IconButton>
+												</NavToolTips>
+											)}
+											{!sidebarOpen && (
+												<NavToolTips title='Expand Menu'>
+													<IconButton onClick={handleOpenSidebar}>
+														<FormatIndentIncrease />
+													</IconButton>
+												</NavToolTips>
+											)}
+										</>
+									)}
+									<Typography sx={styles(isSmallScreen).appSectionTitle}>
+										{getFormattedSection()}
+									</Typography>
+								</Stack>
 							</Grid>
 						</Grid>
 
@@ -248,55 +286,6 @@ const NavBar = () => {
 									/>
 								</Badge>
 							</IconButton>
-							{notificationData && notificationData.length > 0 && (
-								<CustomPopper
-									open={isNotificationPopperOpen}
-									anchorEl={notificationAnchorRef.current}
-									onClose={handleNotificationPopperClose}
-								>
-									<Box sx={{ width: 300, maxHeight: 400, overflowY: 'auto' }}>
-										<List>
-											{notificationData?.map((item) => (
-												<Box key={`notification-${item.id}`}>
-													<ListItem
-														key={`notification-${item.id}`}
-														sx={styles(isSmallScreen, theme).listItem}
-														onClick={() => handleNotificationAction(item)}
-													>
-														<ListItemText
-															primary={item.title}
-															secondary={item.message}
-															primaryTypographyProps={{
-																color: 'text.primary',
-																marginBottom: '2px',
-																variant: 'body2',
-																fontWeight: item.isRead ? 'normal' : 'bold',
-															}}
-															secondaryTypographyProps={{
-																color: 'text.secondary',
-																variant: 'caption',
-																fontWeight: item.isRead ? 'normal' : 'bold',
-															}}
-														/>
-													</ListItem>
-													<Divider />
-												</Box>
-											))}
-											<ListItemButton
-												key={'see-more-link'}
-												alignItems='center'
-												component='a'
-												sx={styles(isSmallScreen, theme).seeMoreLink}
-											>
-												<ListItemText
-													primary='See more'
-													sx={{ color: 'text.primary', textAlign: 'center' }}
-												></ListItemText>
-											</ListItemButton>
-										</List>
-									</Box>
-								</CustomPopper>
-							)}
 							<Divider
 								orientation='vertical'
 								variant='middle'
@@ -361,6 +350,14 @@ const NavBar = () => {
 						</Grid>
 					</Grid>
 				</Toolbar>
+				<NotificationDrawer
+					notifications={notificationData}
+					open={isNotificationPopperOpen}
+					onClose={handleNotificationPopperClose}
+					onDeleteAll={() => deletAllNotifications()}
+					onRead={(data) => handleNotificationAction(data)}
+					onDismiss={(data) => deleteNotification(data)}
+				/>
 			</AppBar>
 		</>
 	);
