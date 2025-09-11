@@ -1,24 +1,32 @@
 import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
-import { DynamicAvatar } from '@klubiq/ui-components';
-import { Upload } from '@mui/icons-material';
+import {
+	DynamicAvatar, FileUpload,
+	StorageUploadResult,
+} from '@klubiq/ui-components';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import {
 	FormFieldV1,
 	DynamicTanstackFormProps,
 	KlubiqFormV1,
 } from '@klubiq/ui-components';
 import { z } from 'zod';
-
+import { useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useDispatch } from 'react-redux';
+import { screenMessages } from '../../helpers/screen-messages';
 export const Profile = () => {
 	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
+	const dispatch = useDispatch();
+	const [updateProfile] = useUpdateProfileMutation()
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	console.log(user);
-	interface InitialFormValues {
+	console.log(user, "userInfoo",);
 
+	interface InitialFormValues {
 		firstName: string;
 		lastName: string;
 		address: string;
@@ -28,17 +36,59 @@ export const Profile = () => {
 
 	}
 	const initialValues: InitialFormValues = {
-
-		firstName: '',
-		lastName: '',
+		firstName: user?.firstName,
+		lastName: user?.lastName,
 		address: '',
-		email: '',
-		phoneNumber: '',
+		email: user?.email,
+		phoneNumber: user?.phone,
+
 
 	};
-	const onSubmit = async (values: InitialFormValues) => {
-		console.log('Form submitted with values:', values);
-	}
+	const onSubmit = async (values: any) => {
+		if (!user?.profileUuid
+) return;
+
+		try {
+			const payload = {
+				profileId: String(user.profileUuid
+				),
+				body: {
+					firstName: values.firstName,
+					lastName: values.lastName,
+					phoneNumber: values.phoneNumber,
+					address: values.address,
+					// dateOfBirth: "1990-01-01",
+					// gender: "male",
+					// bio: "Hello world",
+					// state: "Lagos",
+					// city: "Ikeja",
+					// country: "Nigeria",
+					profilePicUrl: ""
+				}
+			};
+
+			await updateProfile(payload).unwrap();
+
+			dispatch(
+				openSnackbar({
+					message: screenMessages.settings.profileUpdate.success,
+					severity: 'success',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: `There was an error updating the profile.\n${screenMessages.settings.profileUpdate.error}`,
+					severity: 'error',
+					isOpen: true,
+					duration: 7000,
+				}),
+			);
+		}
+	};
+
 	const profileFormFields: FormFieldV1[] = [
 		{
 			name: 'firstName',
@@ -64,7 +114,7 @@ export const Profile = () => {
 					.min(1, { message: 'Email is required' }),
 			},
 		},
-		
+
 
 
 		{
@@ -95,12 +145,7 @@ export const Profile = () => {
 			label: 'Address',
 			type: 'text',
 			width: isMobile ? '100%' : '100%',
-			validation: {
-				schema: z
-					.string({ message: 'Email is required' })
-					.email('Please enter a valid email address')
-					.min(1, { message: 'Email is required' }),
-			},
+
 		},
 
 	];
@@ -119,6 +164,30 @@ export const Profile = () => {
 		verticalAlignment: 'top',
 	};
 
+	const onUploadProfile = (formData: FormData) => {
+		console.log(formData);
+		return Promise.resolve({} as StorageUploadResult);
+	};
+	const fileUploadConfig = {
+		accept: 'image/*',
+		variant: 'button' as const,
+		uploadContext: 'profile' as const,
+		maxSize: 2 * 1024 * 1024, // 2MB
+		multiple: false,
+		onUploadProfile: onUploadProfile,
+		value: user?.profilePicUrl,
+		onChange: (value: FileList | null) => {
+			console.log(value);
+		},
+		onBlur: () => {
+			console.log('blur');
+		},
+		autoUploadOnSelect: true,
+		uploadButtonText: 'Upload Photo',
+		helperText: 'Upload a new profile photo.',
+		uploadButtonVariant: 'klubiqOutlinedButton' as const,
+	};
+
 	return (
 		<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
 			<Stack
@@ -127,58 +196,59 @@ export const Profile = () => {
 				alignItems='flex-start'
 				justifyContent='space-between'
 			>
-				<Typography variant='h3'>Profile</Typography>
-				<Typography variant='body1'>
-					Update your personal information and profile picture
-				</Typography>
-				<Stack
-					direction='row'
-					gap={3}
-					alignItems={isMobile ? 'flex-start' : 'center'}
-					justifyContent={isMobile ? 'center' : 'flex-start'}
-				>
-					<DynamicAvatar
-						items={[
-							{
-								image: user?.profilePicUrl,
-								name: user?.firstName + ' ' + user?.lastName,
-								label: user?.email,
-								variant: 'circle',
-								background: 'dark',
-							},
-						]}
-						showName={false}
-						size='large'
-					/>
+				<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
+
+					<Typography variant='h3'>Profile</Typography>
+					<Typography variant='body1'>
+						Update your personal information and profile picture
+					</Typography>
 					<Stack
-						direction='column'
-						// spacing={1}
-						gap={1}
-						alignItems='flex-start'
-						justifyContent='flex-start'
+						direction='row'
+						gap={3}
+						alignItems={isMobile ? 'flex-start' : 'center'}
+						justifyContent={isMobile ? 'center' : 'flex-start'}
 					>
-						<Typography variant='h6'>Profile Photo</Typography>
-						<Typography variant='body1'>Upload a new photo.</Typography>
-
-
+						<DynamicAvatar
+							items={[
+								{
+									image: user?.profilePicUrl,
+									name: user?.firstName + ' ' + user?.lastName,
+									label: user?.email,
+									variant: 'circle',
+									background: 'dark',
+								},
+							]}
+							showName={false}
+							size='large'
+						/>
 						<Stack
-							direction='row'
-							spacing={2}
-							alignItems='center'
+							direction='column'
+							// spacing={1}
+							gap={1}
+							alignItems='flex-start'
 							justifyContent='flex-start'
-							sx={{ mt: 2 }}
 						>
-							<Button variant='klubiqOutlinedButton' startIcon={<Upload />}>
-								Upload Photo
-							</Button>
-							<Button variant='klubiqTextButton' color='error'>
-								Remove
-							</Button>
+							<Typography variant='h6'>Profile Photo</Typography>
+							<Typography variant='body1'>Upload a new photo.</Typography>
+
+							<Stack
+								direction='row'
+								spacing={2}
+								alignItems='center'
+								justifyContent='flex-start'
+								sx={{ mt: 2 }}
+							>
+								{/* <FileUpload {...fileUploadConfig} /> */}
+								<Button variant='klubiqTextButton' color='error'>
+									Remove
+								</Button>
+							</Stack>
 						</Stack>
 					</Stack>
-				</Stack>
-					<KlubiqFormV1 {...profileFormConfig} />
-					{/* Dynamic Form goes here @Feyi */}
+				</Box>
+				<Box>{/* Dynamic Form goes here @Feyi */}</Box>
+				<KlubiqFormV1 {...profileFormConfig} />
+				{/* Dynamic Form goes here @Feyi */}
 			</Stack>
 		</Box>
 	);

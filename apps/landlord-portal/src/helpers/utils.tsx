@@ -217,7 +217,22 @@ export const getLocaleFormat1 = (
 	}
 	return '';
 };
+const today = dayjs(); // current date
 
+export const dateFormatOptions = [
+  { value: "MM/DD/YYYY", label: today.format("MM/DD/YYYY") },
+  { value: "DD/MM/YYYY", label: today.format("DD/MM/YYYY") },
+  { value: "YYYY-MM-DD", label: today.format("YYYY-MM-DD") },
+  { value: "MMM D, YYYY", label: today.format("MMM D, YYYY") },
+  { value: "D MMM YYYY", label: today.format("D MMM YYYY") },
+  { value: "dddd, MMMM D, YYYY", label: today.format("dddd, MMMM D, YYYY") },
+  { value: "DD.MM.YYYY", label: today.format("DD.MM.YYYY") },
+  { value: "YYYY/MM/DD", label: today.format("YYYY/MM/DD") },
+];
+export const timeFormatOptions = [
+  { value: "12H", label: today.format("hh:mm A") + " (12-Hour)" }, 
+  { value: "24H", label: today.format("HH:mm") + " (24-Hour)" },   
+];
 /**
  * Returns the current line number by inspecting the Error stack trace.
  */

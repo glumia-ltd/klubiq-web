@@ -9,6 +9,7 @@ export const API_TAGS = {
     NOTIFICATION: 'Notification',
     NOTIFICATION_COUNT: 'Notification-Count',
     USER: 'User',
+    SETTINGS:"settings",
     DASHBOARD_METRICS: 'Dashboard-Metrics',
     DASHBOARD_REVENUE_REPORT: 'Dashboard-Revenue-Report',
     PROPERTIES_AND_TENANTS: 'Properties-And-Tenants',

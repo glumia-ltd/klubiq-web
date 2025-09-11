@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Typography, useMediaQuery, useTheme } from '@mui/material';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
@@ -7,13 +8,54 @@ import {
 	KlubiqFormV1,
 } from '@klubiq/ui-components';
 import { z } from 'zod';
+import countries from '../../helpers/countries-meta.json';
+import { filter, find, orderBy } from 'lodash';
+import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { useUpdateOrganizationMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { screenMessages } from '../../helpers/screen-messages';
+import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { dateFormatOptions, timeFormatOptions } from '../../helpers/utils';
 export const Account = () => {
 	const theme = useTheme();
+	const { user } = useSelector(getAuthState);
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	interface InitialFormValues {
+	console.log(user, "userInfoo",);
+	const [updateCompany] = useUpdateOrganizationMutation()
+	const dispatch = useDispatch();
+	const isGloballyAvailable =
+		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
 
-		companyName: string;
-		companyAddress: string;
+	type CountryType = {
+		name: string;
+		code: string;
+		dialCode: string;
+		currency: string;
+		currencySymbol: string;
+		language: string;
+	};
+	type LanguageOption = {
+  value: string;
+  label: string;
+};
+	const activeCountries: CountryType[] = orderBy(
+		filter(countries, ['active', true]),
+		'priority',
+		'asc',
+	) as CountryType[];
+	const currencyOptions = activeCountries.map((country) => ({
+		value: country.currency,
+		label: `${country.currency} - ${country.name} (${country.currencySymbol})`,
+	}));
+const languageOptions: LanguageOption[] = Array.from(
+  new Set(activeCountries.map((c) => c.language))
+).map((lang) => ({
+  value: lang,
+  label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
+}));
+	interface InitialFormValues {
+		name: string;
+		addressLine2: string;
 		phoneNumber: string;
 		companyLogo: string;
 		language: string;
@@ -22,35 +64,70 @@ export const Account = () => {
 		timeZone: string;
 		dateFormat: string;
 		timeFormat: string;
-
-
 	}
 	const initialValues: InitialFormValues = {
+  name: user?.organization ?? '',
+  addressLine2: user?.organizationAddressLine2 ?? '',
+  phoneNumber: user?.organizationPhone ?? '',
+  companyLogo: user?.organizationLogoUrl ?? '',
+  timeFormat: user?.organizationSettings?.settings?.timeFormat ?? '24H',
+  dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
+  timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
+  currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
+  country: user?.country ?? '',
+  language: user?.organizationSettings?.settings?.language ?? 'en',
+};
 
-		companyName: '',
-		companyAddress: '',
-		phoneNumber: '',
-		companyLogo: '',
-		timeFormat: '',
-		dateFormat: '',
-		timeZone: '',
-		currency: '',
-		country: '',
-		language: '',
-
+	const onSubmit = async (values: any) => {
+if (!user?.uuid || !user?.organizationUuid) {
+    return;
+  }
+		try {
+			const payload = {
+				profileUuid: user.uuid,
+				uuid:user.organizationUuid,
+				body: {
+        name: values.name ?? '',
+        addressLine2: values.addressLine2 ?? '',
+        phoneNumber: values.phoneNumber ?? '',
+        // companyLogo: values.companyLogo ?? '',
+        // timeFormat: values.timeFormat ?? '24H',
+        // dateFormat: values.dateFormat ?? 'DD/MM/YYYY',
+        // timeZone: values.timeZone ?? 'Africa/Lagos',
+        // currency: values.currency ?? 'NGN',
+        country: values.country ?? '',
+        // language: values.language ?? 'en',
+      },
+			};
+			await updateCompany(payload).unwrap();
+			dispatch(
+				openSnackbar({
+					message: screenMessages.settings.companyUpdate.success,
+					severity: 'success',
+					isOpen: true,
+					duration: 2000,
+				}),
+			);
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: `There was an error updating the profile.\n${screenMessages.settings.companyUpdate.error}`,
+					severity: 'error',
+					isOpen: true,
+					duration: 7000,
+				}),
+			);
+		}
 	};
-	const onSubmit = async (values: InitialFormValues) => {
-		console.log('Form submitted with values:', values);
-	}
 	const accountFormFields: FormFieldV1[] = [
 		{
-			name: 'companyName',
+			name: 'name',
 			label: 'Company Name',
 			type: 'text',
 			width: isMobile ? '100%' : '100%',
 		},
 		{
-			name: 'companyAddress',
+			name: 'addressLine2',
 			label: 'Company Address',
 			type: 'text',
 			width: isMobile ? '100%' : '100%',
@@ -98,11 +175,7 @@ export const Account = () => {
 			label: 'Language',
 			type: 'select',
 			radioGroupDirection: 'row',
-			options: [
-				{ value: 'individual', label: 'Individual' },
-				{ value: 'company', label: 'Company' },
-
-			],
+			options:languageOptions
 		},
 
 
@@ -110,41 +183,38 @@ export const Account = () => {
 			name: 'country',
 			label: 'Country/Region',
 			type: 'select',
-			radioGroupDirection: 'row',
-			options: [
-				{ value: 'individual', label: 'Individual' },
-				{ value: 'company', label: 'Company' },
+			placeholder: 'Select your country',
+			width: '100%',
+			hidden: !isGloballyAvailable,
+			options: activeCountries?.map((country) => ({
+				value: country.code,
+				label: country.name,
+			})),
 
-			],
 		}, {
 			name: 'currency',
 			label: 'Currency',
 			type: 'select',
 			radioGroupDirection: 'row',
-			options: [
-				{ value: 'individual', label: 'Individual' },
-				{ value: 'company', label: 'Company' },
+			options: currencyOptions,
 
-			],
 		}, {
 			name: 'timeZone',
 			label: 'Time Zone',
 			type: 'select',
-			radioGroupDirection: 'row',
 			options: [
-				{ value: 'individual', label: 'Individual' },
-				{ value: 'company', label: 'Company' },
-
+				{ value: 'Africa/Lagos', label: 'WAT (West Africa Time)' },
 			],
 		}, {
-			name: 'dateFormat',
-			label: 'Date Format',
-			type: 'text'
-
+			name: "dateFormat",
+			label: "Date Format",
+			type: "select",
+			options: dateFormatOptions,
 		}, {
 			name: 'timeFormat',
 			label: 'Time Format',
-			type: 'text',
+			type: 'select',
+			options: timeFormatOptions,
 
 		},
 	];
