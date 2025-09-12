@@ -2,18 +2,12 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { settingsEndpoint } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-import { API_TAGS } from '../types';
-import { LeaseDetailsType, LeaseType } from '../../shared/type';
+import { ALL_TAGS } from '../types';
 
 export const settingsApiSlice = createApi({
     reducerPath: 'settingsApi',
     baseQuery: customApiFunction,
-    tagTypes: [
-        // API_TAGS.SETTINGS,
-        // API_TAGS.SETTINGS.METADATA,
-        // API_TAGS.ORGANIZATIONS,
-
-    ],
+    tagTypes: ALL_TAGS,
     endpoints: (builder) => ({
         updateProfile: builder.mutation<any, { profileId: string; body: any }>({
             query: ({ profileId, body }) => ({
@@ -43,11 +37,12 @@ export const settingsApiSlice = createApi({
 
             // ],
         }),
-        getOrganizationSettings: builder.query<any, { uuid: string,profileUuid:string }>({
-            query: ({ uuid }) => ({
+        getOrganizationSettings: builder.query<any, { uuid: string; profileUuid: string }>({
+            query: ({ uuid, profileUuid }) => ({
                 url: settingsEndpoint.getUserOrganizationSettings(uuid),
                 method: 'GET',
-            }),
+                params: { profileUuid },
+            })
         }),
     }),
 });

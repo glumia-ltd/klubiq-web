@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Typography, Switch, Box } from '@mui/material';
 
 type NotificationItemProps = {

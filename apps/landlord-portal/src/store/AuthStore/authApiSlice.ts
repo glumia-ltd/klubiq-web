@@ -61,7 +61,7 @@ export const authApiSlice = createApi({
 				body,
 			}), 
 		}),
-		getNotificationPrefernce: builder.query<any, void>({
+		getNotificationPreference: builder.query<any, void>({
 			query: () => ({
 				url: authEndpoints.getNotificationPreferences(),
 				method: 'GET',
@@ -175,6 +175,6 @@ export const {
 	useLazyFetchCsrfTokenQuery,
 	useFetchCsrfTokenQuery,
 	useResendInvitationMutation,
-	useGetNotificationPrefernceQuery,
+	useGetNotificationPreferenceQuery,
 	useUpdateNotificationPreferenceMutation,
 } = authApiSlice;

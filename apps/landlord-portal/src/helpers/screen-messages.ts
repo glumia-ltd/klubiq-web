@@ -164,5 +164,11 @@ export const screenMessages = {
 			loading: 'Updating Account...',
 			confirm: 'Are you sure you want to update this Account?',
 		},
+		notificationPreference: {
+			success: 'Updated successfully',
+			error: 'Failed to update notification',
+			loading: 'Updating Notification...',
+			
+		},
 	},
 };

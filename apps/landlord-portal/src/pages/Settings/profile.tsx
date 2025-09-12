@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ import {
 	KlubiqFormV1,
 } from '@klubiq/ui-components';
 import { z } from 'zod';
-import { useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useGetOrganizationSettingsQuery, useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
 export const Profile = () => {
@@ -23,13 +23,19 @@ export const Profile = () => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
 	const [updateProfile] = useUpdateProfileMutation()
+	const {
+			data: userData,
+		} = useGetOrganizationSettingsQuery({
+			uuid:  String(user.uuid) || '',
+			profileUuid: String(user.profileUuid)
+		});
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	console.log(user, "userInfoo",);
+	console.log(user, "userInfoo",userData);
 
 	interface InitialFormValues {
 		firstName: string;
 		lastName: string;
-		address: string;
+		addressLine2: string;
 		email: string;
 		phoneNumber: string;
 
@@ -38,7 +44,7 @@ export const Profile = () => {
 	const initialValues: InitialFormValues = {
 		firstName: user?.firstName,
 		lastName: user?.lastName,
-		address: '',
+		addressLine2: '',
 		email: user?.email,
 		phoneNumber: user?.phone,
 
@@ -46,7 +52,7 @@ export const Profile = () => {
 	};
 	const onSubmit = async (values: any) => {
 		if (!user?.profileUuid
-) return;
+		) return;
 
 		try {
 			const payload = {
@@ -56,18 +62,12 @@ export const Profile = () => {
 					firstName: values.firstName,
 					lastName: values.lastName,
 					phoneNumber: values.phoneNumber,
-					address: values.address,
-					// dateOfBirth: "1990-01-01",
-					// gender: "male",
-					// bio: "Hello world",
-					// state: "Lagos",
-					// city: "Ikeja",
-					// country: "Nigeria",
+					addressLine2: values.address,
 					profilePicUrl: ""
 				}
 			};
 
-			await updateProfile(payload).unwrap();
+			const result = await updateProfile(payload).unwrap();
 
 			dispatch(
 				openSnackbar({
@@ -141,7 +141,7 @@ export const Profile = () => {
 			},
 		},
 		{
-			name: 'address',
+			name: 'addressLine2',
 			label: 'Address',
 			type: 'text',
 			width: isMobile ? '100%' : '100%',
