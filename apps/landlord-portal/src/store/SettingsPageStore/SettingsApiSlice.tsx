@@ -2,12 +2,12 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { settingsEndpoint } from '../../helpers/endpoints';
 import { customApiFunction } from '../customApiFunction';
-import { ALL_TAGS } from '../types';
+import { API_TAGS } from '../types';
 
 export const settingsApiSlice = createApi({
     reducerPath: 'settingsApi',
     baseQuery: customApiFunction,
-    tagTypes: ALL_TAGS,
+    tagTypes:[API_TAGS.SETTINGS],
     endpoints: (builder) => ({
         updateProfile: builder.mutation<any, { profileId: string; body: any }>({
             query: ({ profileId, body }) => ({
@@ -23,9 +23,9 @@ export const settingsApiSlice = createApi({
                 method: 'PATCH',
                 body,
             }),
-            // invalidatesTags: [
-
-            // ],
+             invalidatesTags: [
+                API_TAGS.SETTINGS
+            ],
         }),
         updateOrganizationSettings: builder.mutation<any, { organizationId: string; profileUuid: string; body: any }>({
             query: ({ organizationId, profileUuid, body }) => ({
@@ -33,16 +33,18 @@ export const settingsApiSlice = createApi({
                 method: 'POST',
                 body,
             }),
-            // invalidatesTags: [
-
-            // ],
+            invalidatesTags: [
+                API_TAGS.SETTINGS
+            ],
         }),
         getOrganizationSettings: builder.query<any, { uuid: string; profileUuid: string }>({
             query: ({ uuid, profileUuid }) => ({
                 url: settingsEndpoint.getUserOrganizationSettings(uuid),
                 method: 'GET',
                 params: { profileUuid },
-            })
+            }),
+         providesTags: [API_TAGS.SETTINGS],
+
         }),
     }),
 });
