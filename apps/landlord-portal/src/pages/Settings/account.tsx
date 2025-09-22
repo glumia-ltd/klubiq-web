@@ -9,7 +9,7 @@ import {
 } from '@klubiq/ui-components';
 import { z } from 'zod';
 import countries from '../../helpers/countries-meta.json';
-import { filter, find, orderBy } from 'lodash';
+import { filter, orderBy } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useUpdateOrganizationMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -90,13 +90,7 @@ if (!user?.uuid || !user?.organizationUuid) {
         name: values.name ?? '',
         addressLine2: values.addressLine2 ?? '',
         phoneNumber: values.phoneNumber ?? '',
-        // companyLogo: values.companyLogo ?? '',
-        // timeFormat: values.timeFormat ?? '24H',
-        // dateFormat: values.dateFormat ?? 'DD/MM/YYYY',
-        // timeZone: values.timeZone ?? 'Africa/Lagos',
-        // currency: values.currency ?? 'NGN',
         country: values.country ?? '',
-        // language: values.language ?? 'en',
       },
 			};
 			await updateCompany(payload).unwrap();
@@ -164,7 +158,7 @@ if (!user?.uuid || !user?.organizationUuid) {
 		{
 			name: "",
 			label: "",
-			type: "text", // still needs a type, but ignored
+			type: "text",
 			customComponent: (
 				<Typography variant='h4'>Localization</Typography>
 
@@ -248,7 +242,6 @@ if (!user?.uuid || !user?.organizationUuid) {
 				</Typography>
 				<KlubiqFormV1 {...accountFormConfig} />
 
-				{/* Dynamic Form goes here @Feyi */}
 			</Stack>
 		</Box>
 	);

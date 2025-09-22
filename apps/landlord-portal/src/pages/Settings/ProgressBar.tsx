@@ -1,7 +1,7 @@
 // ProgressWithWarning.tsx
 import React from "react";
-import { Card, LinearProgress, Typography, Alert, Box } from "@mui/material";
-import * as KlubiqIcons from '../../components/Icons/CustomIcons';
+import { Card, LinearProgress, Typography,Box } from "@mui/material";
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 interface ProgressBarProps {
     label: string;
     value: number;
@@ -58,7 +58,7 @@ const ProgressWithWarning: React.FC = () => {
                     p:0.5
                 }}
             >
-                <KlubiqIcons.CautionIconCustom sx={{ color: "#B42318 ",fontSize:15 }} />
+                <ReportProblemIcon sx={{ color: "#B42318 ",fontSize:15 }} />
                 <Typography variant="caption" color="#B42318">
                     You are nearing your limits. Consider upgrading.
                 </Typography>

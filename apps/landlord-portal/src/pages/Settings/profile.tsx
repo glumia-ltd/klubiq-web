@@ -24,13 +24,13 @@ export const Profile = () => {
 	const dispatch = useDispatch();
 	const [updateProfile] = useUpdateProfileMutation()
 	const {
-			data: userData,
-		} = useGetOrganizationSettingsQuery({
-			uuid:  String(user.uuid) || '',
-			profileUuid: String(user.profileUuid)
-		});
+		data: userData,
+	} = useGetOrganizationSettingsQuery({
+		uuid: String(user.uuid) || '',
+		profileUuid: String(user.profileUuid)
+	});
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	console.log(user, "userInfoo",userData);
+	console.log(user, "userInfoo", userData);
 
 	interface InitialFormValues {
 		firstName: string;
@@ -66,8 +66,7 @@ export const Profile = () => {
 					profilePicUrl: ""
 				}
 			};
-
-			const result = await updateProfile(payload).unwrap();
+			await updateProfile(payload).unwrap();
 
 			dispatch(
 				openSnackbar({
@@ -238,7 +237,7 @@ export const Profile = () => {
 								justifyContent='flex-start'
 								sx={{ mt: 2 }}
 							>
-								{/* <FileUpload {...fileUploadConfig} /> */}
+								<FileUpload {...fileUploadConfig} />
 								<Button variant='klubiqTextButton' color='error'>
 									Remove
 								</Button>
