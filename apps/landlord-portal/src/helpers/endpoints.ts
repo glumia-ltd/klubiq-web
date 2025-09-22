@@ -17,8 +17,7 @@ export const authEndpoints = {
 	csrf: () => '/security/csrf-token',
 	resendInvitation: (invitationId: string) =>
 		`/auth/resend-invitation/${invitationId}`,
-	getNotificationPreferences: () => '/auth/notification-preferences',
-	updateNotificationPreferences: () => '/auth/notification-preferences',
+	
 };
 
 export const dashboardEndpoints = {
@@ -106,4 +105,6 @@ export const settingsEndpoint = {
 	getUserOrganizationSettings: (
 		uuid: string,
 	) => `/organizations/${uuid}/settings`,
+	getNotificationPreferences: () => '/auth/notification-preferences',
+	updateNotificationPreferences: () => '/auth/notification-preferences',
 };

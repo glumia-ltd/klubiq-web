@@ -54,20 +54,6 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
-		updateNotificationPreference: builder.mutation({
-			query: (body) => ({
-				url: authEndpoints.updateNotificationPreferences(),
-				method: 'PATCH', 
-				body,
-			}), 
-		}),
-		getNotificationPreference: builder.query<any, void>({
-			query: () => ({
-				url: authEndpoints.getNotificationPreferences(),
-				method: 'GET',
-			}),
-			providesTags: [API_TAGS.USER],
-		}),
 		signOut: builder.mutation({
 			query: () => ({
 				url: authEndpoints.signOut(),
@@ -175,6 +161,5 @@ export const {
 	useLazyFetchCsrfTokenQuery,
 	useFetchCsrfTokenQuery,
 	useResendInvitationMutation,
-	useGetNotificationPreferenceQuery,
-	useUpdateNotificationPreferenceMutation,
+	
 } = authApiSlice;

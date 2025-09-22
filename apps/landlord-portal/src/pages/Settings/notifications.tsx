@@ -10,7 +10,7 @@ import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import {
 	useGetNotificationPreferenceQuery,
 	useUpdateNotificationPreferenceMutation,
-} from '../../store/AuthStore/authApiSlice';
+} from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
 export const Notifications = () => {

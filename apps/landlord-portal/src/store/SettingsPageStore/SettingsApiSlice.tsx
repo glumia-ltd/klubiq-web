@@ -7,7 +7,7 @@ import { API_TAGS } from '../types';
 export const settingsApiSlice = createApi({
     reducerPath: 'settingsApi',
     baseQuery: customApiFunction,
-    tagTypes:[API_TAGS.SETTINGS],
+    tagTypes: [API_TAGS.SETTINGS],
     endpoints: (builder) => ({
         updateProfile: builder.mutation<any, { profileId: string; body: any }>({
             query: ({ profileId, body }) => ({
@@ -23,7 +23,7 @@ export const settingsApiSlice = createApi({
                 method: 'PATCH',
                 body,
             }),
-             invalidatesTags: [
+            invalidatesTags: [
                 API_TAGS.SETTINGS
             ],
         }),
@@ -37,13 +37,27 @@ export const settingsApiSlice = createApi({
                 API_TAGS.SETTINGS
             ],
         }),
+        updateNotificationPreference: builder.mutation({
+            query: (body) => ({
+                url: settingsEndpoint.updateNotificationPreferences(),
+                method: 'PATCH',
+                body,
+            }),
+        }),
+        getNotificationPreference: builder.query<any, void>({
+            query: () => ({
+                url: settingsEndpoint.getNotificationPreferences(),
+                method: 'GET',
+            }),
+            providesTags: [API_TAGS.SETTINGS],
+        }),
         getOrganizationSettings: builder.query<any, { uuid: string; profileUuid: string }>({
             query: ({ uuid, profileUuid }) => ({
                 url: settingsEndpoint.getUserOrganizationSettings(uuid),
                 method: 'GET',
                 params: { profileUuid },
             }),
-         providesTags: [API_TAGS.SETTINGS],
+            providesTags: [API_TAGS.SETTINGS],
 
         }),
     }),
@@ -54,6 +68,7 @@ export const {
     useUpdateProfileMutation,
     useUpdateOrganizationMutation,
     useUpdateOrganizationSettingsMutation,
-    useGetOrganizationSettingsQuery
-
+    useGetOrganizationSettingsQuery,
+useGetNotificationPreferenceQuery,
+    useUpdateNotificationPreferenceMutation,
 } = settingsApiSlice;
