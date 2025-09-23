@@ -56,7 +56,6 @@ export const Subscription = () => {
 		billingAddress: "",
 	};
 	const onSubmit = async (values: InitialFormValues) => {
-		console.log('Form submitted with values:', values);
 	}
 	const subscriptionFormFields: FormFieldV1[] = [
 		{

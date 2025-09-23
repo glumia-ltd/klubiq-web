@@ -23,14 +23,8 @@ export const Profile = () => {
 	const theme = useTheme();
 	const dispatch = useDispatch();
 	const [updateProfile] = useUpdateProfileMutation()
-	const {
-		data: userData,
-	} = useGetOrganizationSettingsQuery({
-		uuid: String(user.uuid) || '',
-		profileUuid: String(user.profileUuid)
-	});
+	
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	console.log(user, "userInfoo", userData);
 
 	interface InitialFormValues {
 		firstName: string;
@@ -164,7 +158,6 @@ export const Profile = () => {
 	};
 
 	const onUploadProfile = (formData: FormData) => {
-		console.log(formData);
 		return Promise.resolve({} as StorageUploadResult);
 	};
 	const fileUploadConfig = {
@@ -176,10 +169,8 @@ export const Profile = () => {
 		onUploadProfile: onUploadProfile,
 		value: user?.profilePicUrl,
 		onChange: (value: FileList | null) => {
-			console.log(value);
 		},
 		onBlur: () => {
-			console.log('blur');
 		},
 		autoUploadOnSelect: true,
 		uploadButtonText: 'Upload Photo',

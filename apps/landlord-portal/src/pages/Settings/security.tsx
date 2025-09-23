@@ -28,7 +28,6 @@ export const Security = () => {
 
 	};
 	const onSubmit = async (values: InitialFormValues) => {
-		console.log('Form submitted with values:', values);
 	}
 	const securityFormFields: FormFieldV1[] = [
 		{

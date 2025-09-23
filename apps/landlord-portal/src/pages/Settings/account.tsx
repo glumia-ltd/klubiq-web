@@ -20,7 +20,6 @@ export const Account = () => {
 	const theme = useTheme();
 	const { user } = useSelector(getAuthState);
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-	console.log(user, "userInfoo",);
 	const [updateCompany] = useUpdateOrganizationMutation()
 	const dispatch = useDispatch();
 	const isGloballyAvailable =
