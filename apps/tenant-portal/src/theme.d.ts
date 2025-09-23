@@ -10,6 +10,9 @@ declare module '@mui/material/styles' {
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
+		upTrendIndicator: React.CSSProperties;
+		downTrendIndicator: React.CSSProperties;
+		neutralTrendIndicator: React.CSSProperties;
 	}
 	interface TypographyVariantsOptions {
 		dashboardTypography?: React.CSSProperties;
@@ -19,6 +22,9 @@ declare module '@mui/material/styles' {
 		cardTitle: React.CSSProperties;
 		filterResultText: React.CSSProperties;
 		filterResultNumber: React.CSSProperties;
+		upTrendIndicator: React.CSSProperties;
+		downTrendIndicator: React.CSSProperties;
+		neutralTrendIndicator: React.CSSProperties;
 	}
 
 	interface ChipVariants {
@@ -104,6 +110,9 @@ declare module '@mui/material/Typography' {
 		cardTitle: true;
 		filterResultText: true;
 		filterResultNumber: true;
+		upTrendIndicator: true;
+		downTrendIndicator: true;
+		neutralTrendIndicator: true;
 	}
 
 	interface TypographyPropsVariantOverrides {
