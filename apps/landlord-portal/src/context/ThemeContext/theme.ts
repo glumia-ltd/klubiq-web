@@ -528,6 +528,7 @@ export const LightTheme: Theme = createTheme({
 			border: '1px solid #17B26A',
 			color: '#17B26A',
 			backgroundColor: 'rgba(236,253,243)',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
@@ -542,6 +543,7 @@ export const LightTheme: Theme = createTheme({
 			border: '1px solid #FF0000',
 			color: '#FF0000',
 			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
@@ -556,6 +558,7 @@ export const LightTheme: Theme = createTheme({
 			border: '1px solid #49a0e3',
 			color: '#49a0e3',
 			backgroundColor: '#c2daed',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		dashboardTypography: {
 			fontWeight: 800,
@@ -578,6 +581,7 @@ export const LightTheme: Theme = createTheme({
 			textDecoration: 'underline',
 			cursor: 'pointer',
 			pointerEvents: 'auto',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		cardHeader: { ...cardHeaderStyle },
 		cardContentText: { ...cardContentTextStyle },
@@ -1022,6 +1026,7 @@ export const DarkTheme: Theme = createTheme({
 			border: '1px solid #17B26A',
 			color: '#17B26A',
 			backgroundColor: 'rgba(236,253,243)',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		downTrendIndicator: {
 			fontSize: '14px',
@@ -1036,6 +1041,7 @@ export const DarkTheme: Theme = createTheme({
 			border: '1px solid #FF0000',
 			color: '#FF0000',
 			backgroundColor: 'rgba(255, 0, 0, 0.1)',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		neutralTrendIndicator: {
 			fontSize: '14px',
@@ -1050,6 +1056,7 @@ export const DarkTheme: Theme = createTheme({
 			border: '1px solid #49a0e3',
 			color: '#49a0e3',
 			backgroundColor: '#c2daed',
+			fontFamily: 'Maven Pro, sans-serif',
 		},
 		dashboardTypography: {
 			fontWeight: 800,

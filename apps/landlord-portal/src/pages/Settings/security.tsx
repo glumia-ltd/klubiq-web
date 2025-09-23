@@ -27,7 +27,7 @@ export const Security = () => {
 		newPassword: "",
 
 	};
-	const onSubmit = async (values: InitialFormValues) => {
+	const onSubmit = async (_values: InitialFormValues) => {
 	}
 	const securityFormFields: FormFieldV1[] = [
 		{

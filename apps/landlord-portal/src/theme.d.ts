@@ -66,11 +66,33 @@ declare module '@mui/material/styles' {
 	interface Palette {
 		buttonColors?: { common: React.CSSProperties };
 		notification?: { light?: string; dark?: string };
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
+			klubiqLightGrey?: string;
+		};
 	}
 
 	interface PaletteOptions {
 		buttonColors?: { common: React.CSSProperties };
 		notification?: { light?: string; dark?: string };
+		textColors?: {
+			azureKlubiqText?: string;
+			azureKlubiqTextLight?: string;
+			azureKlubiqPickedBluewood?: string;
+			klubiqMysticGrey?: string;
+			klubiqRoyalBlue?: string;
+			klubiqLightBlue?: string;
+			alertLightBlue?: string;
+			alertDeepBlue?: string;
+			klubiqLightGrey?: string;
+		};
 	}
 }
 
