@@ -9,28 +9,33 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import {
 	ListItemButton,
 	ListItemIcon,
-	SvgIcon,
 	ListItemText,
 	ListItem,
 	List,
 	Button,
 	Stack,
 	Typography,
-	Drawer,
+	Drawer
 } from '@mui/material';
 import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { motion } from 'framer-motion';
+import { useVisibleNav } from './useVisibleNav';
+import { NavToolTips } from '../../styles/tooltips';
+import { endSession } from '../../store/AuthStore/AuthSlice';
+import { useDispatch } from 'react-redux';
+
 
 const SideBar = () => {
 	const theme = useTheme();
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
 	const allContexts = useContext(Context);
-	const pathList = getPathList();
+	const { visible: pathList } = useVisibleNav(getPathList());
 	const { pathname } = useLocation();
 	const [userSignOut] = useSignOutMutation();
 	const { sidebarOpen, setSidebarOpen, setIsclosing, drawerWidth } =
@@ -96,7 +101,7 @@ const SideBar = () => {
 			},
 		},
 		collapsed: {
-			opacity: 0.5,
+			// opacity: 0.5,
 			transition: {
 				duration: 0.2,
 			},
@@ -142,6 +147,7 @@ const SideBar = () => {
 		if (title !== 'Logout') {
 			return;
 		}
+		dispatch(endSession());
 		handleSignOut();
 	};
 
@@ -152,8 +158,8 @@ const SideBar = () => {
 			animate={sidebarOpen ? 'expanded' : 'collapsed'}
 			variants={drawerVariants as any}
 			open={sidebarOpen}
-			onMouseEnter={() => setSidebarOpen(true)}
-			onMouseLeave={() => setSidebarOpen(false)}
+			// onMouseEnter={() => setSidebarOpen(true)}
+			// onMouseLeave={() => setSidebarOpen(false)}
 			onTransitionEnd={handleDrawerTransitionEnd}
 			onClose={handleDrawerClose}
 			sx={sidebarOpen ? openDrawerStyles : closedDrawerStyles}
@@ -183,58 +189,66 @@ const SideBar = () => {
 						{pathList.map((props, index) => {
 							const { path } = props;
 							return (
-								<ListItem
-									disablePadding
+								<NavToolTips
 									key={index}
-									onClick={() => {
-										handleLinkClick(props.title);
-									}}
+									placement='right'
+									title={props.title}
+									disableHoverListener={sidebarOpen}
+									disableFocusListener={sidebarOpen}
+									disableTouchListener={sidebarOpen}
 								>
-									<Link
-										to={props.path || ''}
-										relative='path'
-										style={{
-											textDecoration: 'none',
-											width: sidebarOpen ? 'inherit' : '40px',
+									<ListItem
+										disablePadding
+										key={index}
+										onClick={() => {
+											handleLinkClick(props.title);
 										}}
 									>
-										<ListItemButton
-											selected={pathname.includes(path) && path !== '/'}
-											sx={{
-												minHeight: 20,
-												justifyContent: sidebarOpen ? 'initial' : 'center',
-												alignItems: 'center',
-												my: 0.8,
-												borderRadius: '10px',
-												'&:hover': {
-													bgcolor: 'secondary.light',
-													opacity: '0.9',
-												},
-												'&.Mui-selected': {
-													bgcolor: 'white',
-													'& .MuiListItemIcon-root': {
-														// color: 'primary.main',
-														color: 'secondary.light',
-													},
-													'& .MuiListItemText-root': {
-														// color: 'primary.main',
-														color: 'secondary.dark',
-													},
-													'&:hover': {
-														bgcolor: 'white',
-													},
-												},
+										<Link
+											to={props.path || ''}
+											relative='path'
+											style={{
+												textDecoration: 'none',
+												width: sidebarOpen ? 'inherit' : '40px',
 											}}
 										>
-											<ListItemIcon
+											<ListItemButton
+												selected={pathname.includes(path || '') && path !== '/'}
 												sx={{
-													minWidth: 0,
-													mr: sidebarOpen ? 1 : 'auto',
-													justifyContent: 'center',
-													pointerEvents: 'none',
+													minHeight: 20,
+													justifyContent: sidebarOpen ? 'initial' : 'center',
+													alignItems: 'center',
+													my: 0.8,
+													borderRadius: '10px',
+													'&:hover': {
+														bgcolor: 'secondary.light',
+														opacity: '0.9',
+													},
+													'&.Mui-selected': {
+														bgcolor: 'white',
+														'& .MuiListItemIcon-root': {
+															// color: 'primary.main',
+															color: 'secondary.light',
+														},
+														'& .MuiListItemText-root': {
+															// color: 'primary.main',
+															color: 'secondary.dark',
+														},
+														'&:hover': {
+															bgcolor: 'white',
+														},
+													},
 												}}
 											>
-												<SvgIcon
+												<ListItemIcon
+													sx={{
+														minWidth: 0,
+														mr: sidebarOpen ? 1 : 'auto',
+														justifyContent: 'center',
+														pointerEvents: 'none',
+													}}
+												>
+													{/* <SvgIcon
 													sx={{
 														fontSize: '20px',
 														width: '20px',
@@ -242,24 +256,26 @@ const SideBar = () => {
 													}}
 													component={props.icon}
 													inheritViewBox
-												/>
-											</ListItemIcon>
-											<ListItemText
-												sx={{
-													opacity: sidebarOpen ? 1 : 0,
-													pointerEvents: 'none',
-													justifyContent: 'center',
-													'& .MuiListItemText-primary': {
-														fontWeight: 600,
-														fontSize: '1.1rem',
-													},
-												}}
-											>
-												{props.title}
-											</ListItemText>
-										</ListItemButton>
-									</Link>
-								</ListItem>
+												/> */}
+													{props.icon}
+												</ListItemIcon>
+												<ListItemText
+													sx={{
+														opacity: sidebarOpen ? 1 : 0,
+														pointerEvents: 'none',
+														justifyContent: 'center',
+														'& .MuiListItemText-primary': {
+															fontWeight: 600,
+															fontSize: '1.1rem',
+														},
+													}}
+												>
+													{props.title}
+												</ListItemText>
+											</ListItemButton>
+										</Link>
+									</ListItem>
+								</NavToolTips>
 							);
 						})}
 					</List>
@@ -283,6 +299,7 @@ const SideBar = () => {
 								justifyContent: 'space-around',
 							}}
 						>
+							<NavToolTips title='Light Mode' placement='right' disableHoverListener={sidebarOpen} disableFocusListener={sidebarOpen} disableTouchListener={sidebarOpen}>
 							<Button
 								onClick={() => switchMode(ThemeMode.LIGHT)}
 								sx={{
@@ -312,6 +329,8 @@ const SideBar = () => {
 									<LightModeIcon />
 								)}
 							</Button>
+							</NavToolTips>
+							<NavToolTips title='Dark Mode' placement='right' disableHoverListener={sidebarOpen} disableFocusListener={sidebarOpen} disableTouchListener={sidebarOpen}>
 							<Button
 								onClick={() => switchMode(ThemeMode.DARK)}
 								sx={{
@@ -343,6 +362,7 @@ const SideBar = () => {
 									<DarkModeIcon sx={{ fontSize: 20 }} />
 								)}
 							</Button>
+							</NavToolTips>
 						</Stack>
 					</motion.div>
 				</ThemeSwitcher>

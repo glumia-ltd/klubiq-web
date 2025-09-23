@@ -12,9 +12,10 @@ import type { RootState } from './store';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 import { initDB } from './services/indexedDb';
-import { AnimatePresence } from 'framer-motion';
-import { PageTransition } from './components/PageTransition';
+// import { AnimatePresence } from 'framer-motion';
+// import { PageTransition } from './components/PageTransition';
 import { AuthProvider } from './context/AuthContext/AuthProvider';
+import AppRootGuard from './authz/app-root-guard';
 // import { useMediaQuery, useTheme } from '@mui/material';
 
 function App() {
@@ -41,8 +42,9 @@ function App() {
 		<LocalizationProvider dateAdapter={AdapterDayjs}>
 			<ThemeContextProvider>
 				<AuthProvider>
-					<AnimatePresence mode='wait'>
-						<PageTransition key={window.location.pathname}>
+					<AppRootGuard>
+					{/* <AnimatePresence mode='wait'> */}
+						{/* <PageTransition key={window.location.pathname}> */}
 							<RouterProvider router={router} />
 							<ControlledSnackbar
 								autoHideDuration={duration || 2000}
@@ -52,8 +54,9 @@ function App() {
 								open={isOpen}
 								
 							/>
-						</PageTransition>
-					</AnimatePresence>
+						{/* </PageTransition> */}
+					{/* </AnimatePresence> */}
+					</AppRootGuard>
 				</AuthProvider>
 			</ThemeContextProvider>
 		</LocalizationProvider>

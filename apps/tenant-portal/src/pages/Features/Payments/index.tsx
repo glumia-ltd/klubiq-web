@@ -1,16 +1,23 @@
 import {
-	Box,
-	Card,
-	Stack,
-	Typography,
-	Button,
-	useMediaQuery,
-	Theme,
-	SxProps,
-	useTheme,
-	Backdrop,
-	CircularProgress,
+    Box,
+    Card,
+    Stack,
+    Typography,
+    Button,
+    useMediaQuery,
+    Theme,
+    SxProps,
+    useTheme,
+    Backdrop,
+    CircularProgress,
+    MenuItem,
 } from '@mui/material';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuList from '@mui/material/MenuList';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import {
 	DynamicModal,
@@ -29,7 +36,7 @@ import {
 import { getAuthState } from '@/store/AuthStore/auth.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLocaleFormat, formatPaymentStatusText } from '@/helpers/utils';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import VitalSwapLogo from '@/assets/images/vitalswap-logo.svg';
 import MonnifyLogo from '@/assets/images/monnify-logo.svg';
 import {
@@ -38,6 +45,11 @@ import {
 	PaymentProviders,
 } from '@/shared/types/data.types';
 import { openSnackbar } from '@/store/GlobalStore/snackbar.slice';
+import { UpcomingPayment } from '@/shared/types/payment.types';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const paymentOptions = [
 	{
@@ -101,6 +113,7 @@ const PaymentsPage = () => {
 	const theme = useTheme();
 	const paymentTestMode = import.meta.env.VITE_NODE_ENV === 'local';
 	// State management
+	const [selectedPayment, setSelectedPayment] = useState<UpcomingPayment | null>(null);
 	const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 	const [openPaymentMethodDialog, setOpenPaymentMethodDialog] = useState(false);
 	const [selectedProvider, setSelectedProvider] =
@@ -110,7 +123,20 @@ const PaymentsPage = () => {
 		null,
 	);
 	const [_paymentRef, setPaymentRef] = useState<string | null>(null);
-
+    const anchorRef = useRef<HTMLDivElement>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const handlePrimaryClick = () => {
+        handlePaymentButtonClick();
+    };
+    const handleToggle = () => setMenuOpen((p) => !p);
+    const handleMenuClose = (event: Event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) return;
+        setMenuOpen(false);
+    };
+    const handleSelectPayment = (payment: UpcomingPayment) => {
+        setSelectedPayment(payment);
+        setMenuOpen(false);
+    };
 	// Media queries
 	const isVerySmall = useMediaQuery('(max-width:356px)');
 
@@ -125,20 +151,19 @@ const PaymentsPage = () => {
 
 	const { data: payments, isLoading: paymentsLoading } =
 		useGetUpcomingPaymentsQuery(uuid);
-	const [paymentsData] = payments || [];
 
 	// Memoized values
 	const paymentAmount = useMemo(
-		() => paymentsData?.amount || 0,
-		[paymentsData?.amount],
+		() => selectedPayment?.amount || 0,
+		[selectedPayment?.amount],
 	);
 	const paymentStatus = useMemo(
-		() => paymentsData?.status || '',
-		[paymentsData?.status],
+		() => selectedPayment?.status || '',
+		[selectedPayment?.status],
 	);
 	const daysToDue = useMemo(
-		() => paymentsData?.daysToDue || 0,
-		[paymentsData?.daysToDue],
+		() => selectedPayment?.daysToDue || 0,
+		[selectedPayment?.daysToDue],
 	);
 	const isOverdue = useMemo(
 		() => paymentStatus.includes('Overdue'),
@@ -163,6 +188,11 @@ const PaymentsPage = () => {
 		url.search = '';
 		window.history.replaceState({}, '', url.toString());
 	};
+	useEffect(() => {
+		if (payments) {
+			setSelectedPayment(payments[0]);
+		}
+	}, [payments]);
 
 	useEffect(() => {
 		if (!paymentWindow && paymentReference) {
@@ -186,15 +216,19 @@ const PaymentsPage = () => {
 		setSelectedProvider(provider);
 
 		const body = {
-			invoiceId: paymentsData?.invoiceId,
-			amount: paymentsData?.amount,
+			invoiceId: selectedPayment?.invoiceId,
+			amount: selectedPayment?.amount,
 			providerName: provider,
+			leaseId: selectedPayment?.leaseId,
+			dueDate: selectedPayment?.dueDate
+				? dayjs(selectedPayment.dueDate).toISOString()
+				: dayjs.utc().toISOString(),
 			metadata: {
 				redirectUrl: `${window.location.origin}/payments`,
-				description: `Rent payment for ${paymentsData?.propertyName}-${paymentsData?.unitNumber}`,
-				formattedAmount: getLocaleFormat(paymentsData?.amount, 'currency', 2),
-				propertyName: paymentsData?.propertyName,
-				unitNumber: paymentsData?.unitNumber,
+				description: `Rent payment for ${selectedPayment?.propertyName}-${selectedPayment?.unitNumber}`,
+				formattedAmount: getLocaleFormat(selectedPayment?.amount || 0, 'currency', 2),
+				propertyName: selectedPayment?.propertyName,
+				unitNumber: selectedPayment?.unitNumber,
 				tenantProfileId: profileuuid,
 				payeeName: `${firstname} ${lastname} ${companyname ? `(${companyname})` : ''}`,
 				payeeEmail: email,
@@ -219,7 +253,7 @@ const PaymentsPage = () => {
 				providerTxnId,
 				ledgerId,
 				ledgerReference,
-				amount: paymentsData?.amount,
+				amount: selectedPayment?.amount || 0,
 			});
 
 			switch (provider) {
@@ -280,7 +314,7 @@ const PaymentsPage = () => {
 					}
 					break;
 				case PaymentProviders.monnify:
-					const { checkoutUrl } = response.metadata;
+					const { checkoutUrl } = response;
 					openPayment(checkoutUrl);
 					break;
 			}
@@ -311,8 +345,18 @@ const PaymentsPage = () => {
 	// Memoized components
 	const renderRightContent = useMemo(
 		() =>
-			paymentsData && (
+			payments && payments.length > 0 && (
 				<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }}>
+					{
+						payments.length > 1 && (
+							<Stack direction='column' alignItems={{ xs: 'start', sm: 'end' }} spacing={1}>
+								<Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>{payments.length} Payments due</Typography>
+								
+							</Stack>
+						)
+					}
+					{selectedPayment && (
+						<>
 					<Typography variant='h4'>
 						{getLocaleFormat(paymentAmount, 'currency', 2)}
 					</Typography>
@@ -321,10 +365,11 @@ const PaymentsPage = () => {
 						sx={{ textWrap: 'wrap', wordBreak: 'break-word' }}
 					>
 						{formatPaymentStatusText(daysToDue, paymentStatus)}
-					</Typography>
+					</Typography></>
+					)}
 				</Stack>
 			),
-		[paymentAmount, daysToDue, paymentStatus],
+		[paymentAmount, daysToDue, paymentStatus, selectedPayment],
 	);
 
 	const paymentMethodModalContent = () => {
@@ -354,7 +399,7 @@ const PaymentsPage = () => {
 					width='100%'
 				>
 					<Typography variant='body2'>Property</Typography>
-					<Typography variant='body1'>{paymentsData?.propertyName}</Typography>
+					<Typography variant='body1'>{selectedPayment?.propertyName}</Typography>
 				</Stack>
 				<Stack
 					direction='row'
@@ -363,7 +408,7 @@ const PaymentsPage = () => {
 					width='100%'
 				>
 					<Typography variant='body2'>Due Date</Typography>
-					<Typography variant='body1'>{paymentsData?.dueDate}</Typography>
+					<Typography variant='body1'>{selectedPayment?.dueDate}</Typography>
 				</Stack>
 				<Box sx={{ width: '100%' }}>
 					<RadioCardGroup
@@ -482,9 +527,10 @@ const PaymentsPage = () => {
 				sx={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}
 			>
 				<Stack
-					direction='row'
+					direction={{ xs: 'column', sm: 'row' }}
 					justifyContent='space-between'
-					alignItems='center'
+					spacing={1}
+					alignItems={{ xs: 'start', sm: 'center' }}
 					sx={{
 						mb: 1,
 						mt: 2,
@@ -492,18 +538,85 @@ const PaymentsPage = () => {
 						gap: isVerySmall ? 2 : 0,
 					}}
 				>
-					<Typography variant='h4'>Rent Payments</Typography>
-
-					<Button
-						onClick={handlePaymentButtonClick}
-						variant='klubiqMainButton'
-						color='primary'
-						size='large'
-						disabled={!paymentsData}
-						startIcon={<CreditCardIcon />}
-					>
-						Pay Now
-					</Button>
+                <Typography variant='h4'>Rent Payments</Typography>
+                {((payments?.length ?? 0) > 1) ? (
+                    <>
+                        <ButtonGroup
+                            ref={anchorRef as any}
+                            aria-label='Pay actions'
+                        >
+                            <Button
+								variant='klubiqMainButton'
+                                onClick={handlePrimaryClick}
+                                color='primary'
+                                size='large'
+                                disabled={!selectedPayment}
+                                startIcon={<CreditCardIcon />}
+                            >
+                                Pay {getLocaleFormat(selectedPayment?.amount!, 'currency', 2)} Now
+                            </Button>
+                            <Button
+								variant='klubiqOutlinedButton'
+                                size='small'
+                                aria-controls={menuOpen ? 'payments-menu' : undefined}
+                                aria-expanded={menuOpen ? 'true' : undefined}
+                                aria-haspopup='menu'
+                                onClick={handleToggle}
+								endIcon={<ArrowDropDownIcon />}
+                            >
+                               Select Payment 
+                            </Button>
+                        </ButtonGroup>
+                        <Popper
+                            sx={{ zIndex: 3}}
+                            open={menuOpen}
+                            anchorEl={(anchorRef as any).current}
+                            role={undefined}
+                            transition
+                            disablePortal
+							placement='bottom-end'
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin: placement === 'bottom-end' ? 'right top' : 'right bottom',
+                                    }}
+                                >
+                                    <Paper sx={{  maxHeight: '500px', overflow: 'auto'  }}>
+                                        <ClickAwayListener onClickAway={handleMenuClose}>
+                                            <MenuList id='payments-menu' autoFocusItem>
+                                                {payments?.map((payment, idx) => (
+                                                    <MenuItem
+                                                        key={idx}
+														sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'start' }}
+                                                        selected={selectedPayment?.invoiceId === payment.invoiceId}
+                                                        onClick={() => handleSelectPayment(payment)}
+                                                    >
+														<Typography variant='body2'>{payment.propertyName} - {payment.unitNumber}</Typography>	
+														<Typography variant='caption'>{payment.dueDate}</Typography>
+														<Typography variant='caption'>{getLocaleFormat(payment.amount, 'currency', 2)}</Typography>
+                                                    </MenuItem>
+                                                ))}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
+                    </>
+                ) : (
+                    <Button
+                        onClick={handlePaymentButtonClick}
+                        variant='klubiqMainButton'
+                        color='primary'
+                        size='large'
+                        disabled={!selectedPayment}
+                        startIcon={<CreditCardIcon />}
+                    >
+                        Pay Now
+                    </Button>
+                )}
 				</Stack>
 
 				<PageHeader
@@ -515,16 +628,16 @@ const PaymentsPage = () => {
 					}}
 					loading={paymentsLoading}
 					title={
-						!paymentsLoading && !paymentsData ? (
+						!paymentsLoading && !selectedPayment ? (
 							<Typography variant='h5'>No upcoming payments</Typography>
 						) : (
-							<Typography variant='h5'>Next Payment Due</Typography>
+							selectedPayment?.daysToDue && selectedPayment.daysToDue > 0 ? <Typography variant='h5'>Next Payment Due</Typography> : <Typography variant='h5'>Payment Overdue</Typography>
 						)
 					}
 					subtitle={
 						<Stack direction='column' gap={1}>
 							<Typography variant='subtitle2'>
-								{paymentsData?.dueDate}
+								{selectedPayment?.dueDate}
 							</Typography>
 						</Stack>
 					}

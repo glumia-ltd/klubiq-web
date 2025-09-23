@@ -11,7 +11,7 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 	registerType: 'autoUpdate',
 	injectRegister: 'auto',
 	includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-	injectManifest:{
+	injectManifest: {
 		maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 5MB
 	},
 	manifest: {
@@ -52,10 +52,10 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		orientation: 'portrait',
 		display_override: ['window-controls-overlay'],
 		edge_side_panel: {
-			preferred_width: 400
+			preferred_width: 400,
 		},
 		launch_handler: {
-			client_mode: ['auto', 'focus-existing']
+			client_mode: ['auto', 'focus-existing'],
 		},
 		prefer_related_applications: false,
 		related_applications: [],
@@ -74,7 +74,15 @@ const manifestForPlugin: Partial<VitePWAOptions> = {
 		disableDevLogs: true,
 		navigateFallback: '/index.html',
 		navigateFallbackAllowlist: [/^(?!\/__).*/],
-		navigateFallbackDenylist: [/\.(?:png|jpg|jpeg|svg|gif)$/],
+		navigateFallbackDenylist: [
+			/\.(?:png|jpg|jpeg|svg|gif)$/,
+			/\/api\/.*/,
+			/^\/@vite/,
+			/^\/@react-refresh/,
+			/^\/node_modules\//,
+			/^\/src\//,
+			/^\/@fs\//,
+		],
 		runtimeCaching: [
 			{
 				urlPattern: /^https:\/\/api\.klubiq\.com\/.*/i,
@@ -231,7 +239,11 @@ export default ({ mode }: { mode: any }) => {
 					type: 'module',
 					navigateFallback: 'index.html',
 				},
-				includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+				includeAssets: [
+					'favicon.ico',
+					'apple-touch-icon.png',
+					'masked-icon.svg',
+				],
 				// manifest: {
 				// 	...manifestForPlugin.manifest,
 				// 	start_url: '/',
@@ -263,8 +275,14 @@ export default ({ mode }: { mode: any }) => {
 			minify: 'terser',
 			terserOptions: {
 				compress: {
-					drop_console: mode === 'development' || mode === 'staging' || mode === 'production',
-					drop_debugger: mode === 'development' || mode === 'staging' || mode === 'production',
+					drop_console:
+						mode === 'development' ||
+						mode === 'staging' ||
+						mode === 'production',
+					drop_debugger:
+						mode === 'development' ||
+						mode === 'staging' ||
+						mode === 'production',
 				},
 			},
 			rollupOptions: {
@@ -301,7 +319,11 @@ export default ({ mode }: { mode: any }) => {
 				},
 			},
 			warmup: {
-				clientFiles: ['./src/helpers/*.ts', './src/helpers/countries-meta.json', './src/helpers/utils.tsx'],
+				clientFiles: [
+					'./src/helpers/*.ts',
+					'./src/helpers/countries-meta.json',
+					'./src/helpers/utils.tsx',
+				],
 			},
 		},
 	});

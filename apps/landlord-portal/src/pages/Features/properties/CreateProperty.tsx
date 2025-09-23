@@ -149,14 +149,14 @@ const getGeneralUnitFields = (z: any, isMobile: boolean = false): FormFieldV1[] 
 	{
 		name: 'area',
 		type: 'number',
-		label: 'Floor Plan',
+		label: 'Land/Unit Size',
 		required: true,
 		width: isMobile ? '100%' : 	'48%',
 		validation: {
 			schema: z
-				.any({ message: 'Floor plan is required' })
+				.any({ message: 'Land/Unit Size is required' })
 				.refine((data: any) => data.value !== null && data.value !== 0, {
-					message: 'Floor plan is required',
+					message: 'Land/Unit size is required',
 				}),
 		},
 		customComponent: renderAreaField,

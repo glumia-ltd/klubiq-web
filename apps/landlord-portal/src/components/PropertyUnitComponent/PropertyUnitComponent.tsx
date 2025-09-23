@@ -34,7 +34,7 @@ import {
 	VacantHomeIcon,
 	WarningIcon,
 } from '../Icons/CustomIcons';
-import { DocumentTableComponent } from '../DocumentTableComponent/DocumentTableComponent';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,12 +68,17 @@ import { useDeleteUnitMutation } from '../../store/PropertyPageStore/propertyApi
 import UploadUnitImagesForm from '../Forms/UploadUnitImagesForm';
 import { screenMessages } from '../../helpers/screen-messages';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
+import { PermissionGate } from '../../authz/permission-gate';
+import { PermissionType } from '../../store/AuthStore/authType';
+import { PERMISSIONS } from '../../authz/constants';
+import { useCan } from '../../authz/use-can';
 
 type MenuItemType = {
 	label: string;
 	onClick: () => void;
 	divider?: boolean;
 	disabled?: boolean;
+	permission?: PermissionType[];
 };
 
 export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
@@ -85,11 +90,20 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	if (!currentProperty) {
 		return null;
 	}
+	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
+	const { can } = useCan(organizationUuid, role);
+	const canReadTenant = useMemo(() => can([PERMISSIONS.TENANT.READ]), [can]);
+	const canCreateTenant = useMemo(
+		() => can([PERMISSIONS.TENANT.CREATE]),
+		[can],
+	);
+	const canReadLease = useMemo(() => can([PERMISSIONS.LEASE.READ]), [can]);
 
 	const location = useLocation();
 	const navigate = useNavigate();
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const { user } = useSelector(getAuthState);
+
 	const theme = useTheme();
 	const currentUUId = location.pathname.split('/')[2]!;
 	const propertyType = currentProperty?.isMultiUnit ? 'Multi' : 'Single';
@@ -127,7 +141,9 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 	}, [currentProperty?.address]);
 
 	const mainImage = useMemo(() => {
-		if (!currentProperty?.images?.length) return null;
+		if (!currentProperty?.images?.length) {
+			return null;
+		}
 		return currentProperty.images.length > 1
 			? currentProperty.images.find((image) => image.isMain)
 			: currentProperty.images[0];
@@ -863,43 +879,68 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					)}
 					<Stack spacing={2} direction={'column'}>
 						{currentProperty?.units?.[0]?.tenants?.length ? (
-							<DynamicTable
-								colors={tableSx}
-								styles={tableStyles}
-								header='Tenant'
-								buttonLabel='Add Tenant'
-								columns={tenantTableData.tableColumns}
-								rows={tenantTableData.rows}
-								onButtonClick={() => handleInviteTenant('Add Tenant')}
-								onRowClick={(rowData) => viewTenant(rowData.id)}
-							/>
+							<PermissionGate
+								orgId={organizationUuid}
+								roleName={role}
+								any={[PERMISSIONS.TENANT.READ, PERMISSIONS.TENANT.CREATE]}
+								fallback={<></>}
+							>
+								<DynamicTable
+									colors={tableSx}
+									styles={tableStyles}
+									header='Tenant'
+									buttonLabel={canCreateTenant ? 'Add Tenant' : undefined}
+									columns={tenantTableData.tableColumns}
+									rows={tenantTableData.rows}
+									onButtonClick={() =>
+										canCreateTenant ? handleInviteTenant('Add Tenant') : null
+									}
+									onRowClick={(rowData) =>
+										canReadTenant ? viewTenant(rowData.id) : null
+									}
+								/>
+							</PermissionGate>
 						) : (
-							<AddFieldCard
-								heading={
-									currentProperty?.units?.[0]?.lease
-										? 'Add Tenant'
-										: 'Invite Tenant'
-								}
-								subtext={'Add tenant to your property'}
-								description={
-									currentProperty?.units?.[0]?.lease
-										? 'Add Tenant'
-										: 'Invite Tenant'
-								}
-								handleAdd={
-									currentProperty?.units?.[0]?.lease
-										? () => handleAddTenant(currentProperty)
-										: () => handleInviteTenant('Invite Tenant')
-								}
-							/>
+							<PermissionGate
+								orgId={organizationUuid}
+								roleName={role}
+								any={[PERMISSIONS.TENANT.CREATE]}
+								fallback={<></>}
+							>
+								<AddFieldCard
+									heading={
+										currentProperty?.units?.[0]?.lease
+											? 'Add Tenant'
+											: 'Invite Tenant'
+									}
+									subtext={'Add tenant to your property'}
+									description={
+										currentProperty?.units?.[0]?.lease
+											? 'Add Tenant'
+											: 'Invite Tenant'
+									}
+									handleAdd={
+										currentProperty?.units?.[0]?.lease
+											? () => handleAddTenant(currentProperty)
+											: () => handleInviteTenant('Invite Tenant')
+									}
+								/>
+							</PermissionGate>
 						)}
 						{!currentProperty?.units?.[0]?.lease && (
-							<AddFieldCard
-								heading='Add Lease'
-								subtext='Create a lease for your property'
-								description='Add Lease'
-								handleAdd={handleAddLease}
-							/>
+							<PermissionGate
+								orgId={organizationUuid}
+								roleName={role}
+								any={[PERMISSIONS.LEASE.CREATE]}
+								fallback={<></>}
+							>
+								<AddFieldCard
+									heading='Add Lease'
+									subtext='Create a lease for your property'
+									description='Add Lease'
+									handleAdd={handleAddLease}
+								/>
+							</PermissionGate>
 						)}
 					</Stack>
 				</Stack>
@@ -913,21 +954,37 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 					justifyContent={'center'}
 				>
 					{leaseTableBodyRows?.length > 0 ? (
-						<DynamicTable
-							colors={tableSx}
-							styles={tableStyles}
-							header='Leases'
-							columns={leaseTableData.tableColumns}
-							rows={leaseTableData.rows}
-							onRowClick={(rowData) => handleLeaseDetailClick(rowData)}
-						/>
+						<PermissionGate
+							orgId={organizationUuid}
+							roleName={role}
+							any={[PERMISSIONS.LEASE.READ]}
+							fallback={<></>}
+						>
+							<DynamicTable
+								colors={tableSx}
+								styles={tableStyles}
+								header='Leases'
+								columns={leaseTableData.tableColumns}
+								rows={leaseTableData.rows}
+								onRowClick={(rowData) =>
+									canReadLease ? handleLeaseDetailClick(rowData) : null
+								}
+							/>
+						</PermissionGate>
 					) : (
-						<AddFieldCard
-							heading='Add Lease'
-							subtext='Create a lease for your property'
-							description='Add Lease'
-							handleAdd={handleAddLease}
-						/>
+						<PermissionGate
+							orgId={organizationUuid}
+							roleName={role}
+							any={[PERMISSIONS.LEASE.CREATE]}
+							fallback={<></>}
+						>
+							<AddFieldCard
+								heading='Add Lease'
+								subtext='Create a lease for your property'
+								description='Add Lease'
+								handleAdd={handleAddLease}
+							/>
+						</PermissionGate>
 					)}
 				</Stack>
 			)}
@@ -941,43 +998,64 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 						label: 'Add / Delete Images',
 						onClick: handleAddImages,
 						divider: true,
+						permission: [PERMISSIONS.PROPERTY.UPDATE],
 					},
-					{ label: 'Edit Unit', onClick: handleEditUnit, divider: true },
-					{ label: 'Delete Unit', onClick: handleDeleteUnit },
+					{
+						label: 'Edit Unit',
+						onClick: handleEditUnit,
+						divider: true,
+						permission: [PERMISSIONS.PROPERTY.UPDATE],
+					},
+					{
+						label: 'Delete Unit',
+						onClick: handleDeleteUnit,
+						permission: [PERMISSIONS.PROPERTY.DELETE],
+					},
 				]
 			: [
 					{
 						label: 'Add Unit',
 						onClick: handleAddUnit,
 						divider: true,
+						permission: [PERMISSIONS.PROPERTY.CREATE],
 					},
 					canArchiveProperty && {
 						label: 'Archive Property',
 						onClick: handleArchiveProperty,
 						divider: true,
 						disabled: currentProperty?.isArchived,
+						permission: [PERMISSIONS.PROPERTY.UPDATE],
 					},
 					canDeleteProperty && {
 						label: 'Delete Property',
 						onClick: handleDeleteProperty,
 						divider: true,
+						permission: [PERMISSIONS.PROPERTY.DELETE],
 					},
 					{
 						label: 'Edit Property',
 						onClick: handleEditProperty,
+						permission: [PERMISSIONS.PROPERTY.UPDATE],
 					},
 				];
 
 		return (
 			<Grid item xs={12} sx={styles.actionButtonContainerStyle}>
-				<Button
-					ref={anchorRef}
-					variant='klubiqMainButton'
-					onClick={isMultiUnit ? handleToggleUnitAction : handleToggle}
-					endIcon={<MoreVertIcon />}
+				<PermissionGate
+					orgId={organizationUuid}
+					roleName={role}
+					any={[PERMISSIONS.PROPERTY.UPDATE, PERMISSIONS.PROPERTY.DELETE]}
+					fallback={<></>}
 				>
-					Action
-				</Button>
+					<Button
+						ref={anchorRef}
+						variant='klubiqMainButton'
+						onClick={isMultiUnit ? handleToggleUnitAction : handleToggle}
+						endIcon={<MoreVertIcon />}
+					>
+						Action
+					</Button>
+				</PermissionGate>
 				<Popper
 					open={isMultiUnit ? openUnitAction : open}
 					anchorEl={anchorRef.current}
@@ -1010,15 +1088,22 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 													'onClick' in item,
 											)
 											.map((item, index) => (
-												<MenuItem
-													key={index}
-													onClick={item.onClick}
-													sx={{ padding: '10px' }}
-													divider={!!item.divider}
-													disabled={!!item.disabled}
+												<PermissionGate
+													orgId={organizationUuid}
+													roleName={role}
+													any={item.permission}
+													fallback={<></>}
 												>
-													{item.label}
-												</MenuItem>
+													<MenuItem
+														key={index}
+														onClick={item.onClick}
+														sx={{ padding: '10px' }}
+														divider={!!item.divider}
+														disabled={!!item.disabled}
+													>
+														{item.label}
+													</MenuItem>
+												</PermissionGate>
 											))}
 									</MenuList>
 								</ClickAwayListener>
@@ -1122,8 +1207,6 @@ export const PropertyUnitComponent: FC<PropertyUnitComponentProps> = ({
 				{propertyType === 'Multi' &&
 					multiUnitMode &&
 					renderTabsContent(tabValue)}
-
-				{tabValue === 2 && <DocumentTableComponent documentTableData={[]} />}
 			</Stack>
 
 			<DynamicModal {...unitModalConfig} />

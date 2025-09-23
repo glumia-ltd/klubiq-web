@@ -11,7 +11,6 @@ import {
 	Pagination,
 } from '@mui/material';
 import { Table, Column, Filter } from '@klubiq/ui-components';
-import DownloadIcon from '@mui/icons-material/Download';
 import { useTheme } from '@mui/material/styles';
 import { useGetPaymentHistoryQuery } from '@/store/PaymentsStore/paymentsApiSlice';
 import { useSelector } from 'react-redux';
@@ -94,8 +93,8 @@ const PaymentHistorySection: React.FC = () => {
 		paymentHistory?.map((item: any) => ({
 			datePaid: item?.paidAt,
 			amount: item?.amount,
-			paymentMethod: item?.paymentMetaData?.paymentMethod,
 			property: item?.propertyName,
+			paymentMethod: item?.paymentMethod,
 			status: item?.status.includes('pending') ? (
 				<Chip variant='beesWaxYellowChip' label='Pending' />
 			) : item?.status.includes('success') ? (
@@ -103,6 +102,7 @@ const PaymentHistorySection: React.FC = () => {
 			) : (
 				<Chip variant='pippinRedChip' label='Failed' />
 			),
+			receipt: item?.ledgerReference,
 		})) || [];
 
 	// Filtering and sorting logic
@@ -178,22 +178,23 @@ const PaymentHistorySection: React.FC = () => {
 			label: 'RECEIPT',
 			minWidth: isTablet ? 80 : 100,
 			format: (value) => {
-				if (value?.includes('pending')) {
-					return;
-				} else {
-					<Button
-						startIcon={<DownloadIcon />}
-						sx={{
-							color: '#1A2746',
-							fontWeight: 700,
-							textTransform: 'none',
-							fontSize: isTablet ? 16 : 18,
-						}}
-						variant='text'
-					>
-						Download
-					</Button>;
-				}
+				return <Typography variant='caption' fontWeight={400}>{value}</Typography>;
+				// if (value?.includes('pending')) {
+				// 	return;
+				// } else {
+				// 	<Button
+				// 		startIcon={<DownloadIcon />}
+				// 		sx={{
+				// 			color: '#1A2746',
+				// 			fontWeight: 700,
+				// 			textTransform: 'none',
+				// 			fontSize: isTablet ? 16 : 18,
+				// 		}}
+				// 		variant='text'
+				// 	>
+				// 		Download 
+				// 	</Button>;
+				// }
 			},
 		},
 	];
