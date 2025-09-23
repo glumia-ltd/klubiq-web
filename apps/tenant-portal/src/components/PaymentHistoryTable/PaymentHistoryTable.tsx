@@ -11,7 +11,6 @@ import {
 	Pagination,
 } from '@mui/material';
 import { Table, Column, Filter } from '@klubiq/ui-components';
-import DownloadIcon from '@mui/icons-material/Download';
 import { useTheme } from '@mui/material/styles';
 import { useGetPaymentHistoryQuery } from '@/store/PaymentsStore/paymentsApiSlice';
 import { useSelector } from 'react-redux';

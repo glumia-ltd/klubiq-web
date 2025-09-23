@@ -9,7 +9,7 @@ import {
 	Paper,
 	Box,
 } from '@mui/material';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
 	useAddTenantsMutation,
@@ -54,7 +54,6 @@ import { screenMessages } from '../../../helpers/screen-messages';
 import { consoleLog } from '../../../helpers/debug-logger';
 import LeaseActionsPrompts from '../../../components/Dialogs/LeaseActionPrompt';
 import EditLeaseForm from './EditLeaseForm';
-import { useCan } from '../../../authz/use-can';
 import { PERMISSIONS } from '../../../authz/constants';
 import { PermissionGate } from '../../../authz/permission-gate';
 function renderTenantSelectField(fieldApi: any, fieldConfig: any, form: any) {
