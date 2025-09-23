@@ -625,74 +625,11 @@ const DescriptionIconCustom = createSvgIcon(
   'DescriptionIconCustom'
 );
 
-const NotificationIcon = createSvgIcon(
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"
-      fill="currentColor"
-    />
-  </svg>,
-  "Notification"
-);
-const NotificationOutlined = createSvgIcon(
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16ZM16 17H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V17Z"
-      fill="currentColor"
-    />
-  </svg>,
-  "NotificationOutlined"
-);
-const SmsIcon = createSvgIcon(
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16ZM7 9H9V11H7V9ZM11 9H13V11H11V9ZM15 9H17V11H15V9Z"
-      fill="currentColor"
-    />
-  </svg>,
-  "SmsIcon"
-);
-const CautionIconCustom = createSvgIcon(
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 2L2 22H22L12 2Z"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M12 9V13"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <circle cx="12" cy="17" r="1" fill="currentColor" />
-  </svg>,
-  'CautionIconCustom'
-);
+
+
 export {
 	Place,
-	SmsIcon,
-	NotificationOutlined,
 	DownloadIconCustom,
-	NotificationIcon,
 	DescriptionIconCustom,
 	CalendarIcon,
 	RoundedCheckIcon,
@@ -712,7 +649,6 @@ export {
 	VacantHomeIcon,
 	TenantIcon,
 	HomeMaintenanceIcon,
-	CautionIconCustom,
 	EditIcon,
 	HomeIcon,
 	PropertyDetailsIcon,
