@@ -10,7 +10,6 @@ import {
 	KlubiqFormV1,
 	InputAdornment as InputAdornmentType,
 } from '@klubiq/ui-components';
-
 import FormSkeleton from '../../../components/skeletons/FormSkeleton';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
 import { getAuthState } from '../../../store/AuthStore/AuthSlice';
