@@ -138,7 +138,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 				</Stack>
 
 				{/* Search - maintain height when collapsed */}
-				<Box sx={{ minHeight: 36, display: 'flex', alignItems: 'center' }}>
+				<Box  sx={{ minHeight: 36, alignItems: 'center', display:'none' }}>
 					<Paper
 						component='form'
 						onSubmit={handleSearchSubmit}
@@ -437,7 +437,7 @@ export const SideNav: React.FC<KlubiqSideNavProps> = ({
 										{
 											label: user.firstname,
 											id: user.email,
-											name: user.firstname,
+											name: `${user.firstname} ${user.lastname}`,
 											variant: 'square',
 											background: 'light',
 										},

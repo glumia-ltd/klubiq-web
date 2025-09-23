@@ -87,7 +87,6 @@ export const authApiSlice = createApi({
 
 					// Clear sessionStorage
 					sessionStorage.clear();
-					//window.location.reload();
 				} catch (error) {
 					consoleError('Error during sign out:', error);
 				}
@@ -145,13 +144,17 @@ export const authApiSlice = createApi({
 		}),
 		getPermissions: builder.query<PermissionVersionType, GetPermsArgs>({
 			async queryFn(params, queryApi, _extra, fetchWithBQ) {
-				console.log('fetching permissions from queryFn');
 				const state = queryApi.getState() as RootState;
-				const { user } = state.auth;
+				const { hasBeginSession } = state.auth;
+				if (!hasBeginSession) {
+					return {
+						error: 'Session not found',
+					};
+				}
 				// get from cookie
 				const snap = readPermCookie('_kbq_pt');
 				if (snap) {
-					console.log('fetching permissions from cookie');
+					console.log('fetching permissions from cookie. Snapshot found: ', snap);
 					const permissions = snap.permissions as PermissionType[];
 					return {
 						data: {

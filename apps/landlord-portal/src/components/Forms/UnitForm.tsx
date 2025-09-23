@@ -74,7 +74,7 @@ const getGeneralUnitFields = (
 	{
 		name: 'area',
 		type: 'number',
-		label: 'Floor Plan',
+		label: 'Land/Unit Size',
 		width: isMobile ? '100%' : '48%',
 		// validation: {
 		// 	schema: z

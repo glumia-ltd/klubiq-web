@@ -112,13 +112,7 @@ const useMenuStatus = (status?: string, isArchived?: boolean) => ({
 const LeaseDetails = () => {
 	const { user } = useSelector(getAuthState);
 	const { organizationUuid, role } = user;
-	const { can } = useCan(organizationUuid, role);
-	const canEditLease = useMemo(() => can([PERMISSIONS.LEASE.UPDATE]), [can]);
-	const canCreateTenant = useMemo(
-		() => can([PERMISSIONS.TENANT.CREATE]),
-		[can],
-	);
-	const canDeleteLease = useMemo(() => can([PERMISSIONS.LEASE.DELETE]), [can]);
+
 
 	const location = useLocation();
 	const navigate = useNavigate();

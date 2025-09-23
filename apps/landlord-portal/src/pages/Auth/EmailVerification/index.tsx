@@ -54,9 +54,9 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 	});
 
 
-	const navigateToMFASetUp = () => {
-		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
-	};
+	// const navigateToMFASetUp = () => {
+	// 		navigate(`/2fa-enroll?continueUrl=${continueUrl}`, { replace: true });
+	// 	};
 	const navigateToLogin = () => {
 		navigate('/login', { replace: true });
 	};
@@ -72,7 +72,6 @@ const EmailVerification: FC<EmailVerificationProps> = () => {
 							: 'Your Email Address has been verified. You can continue using the application.'
 					}
 					continueUrl={continueUrl}
-					onMFASetupClick={navigateToMFASetUp}
 					showButton={loading ? false : true}
 					header={loading ? 'Please be patient' : 'Email Verified'}
 					imageLink={loading ? '' : successImage}

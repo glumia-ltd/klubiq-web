@@ -43,8 +43,8 @@ function App() {
 			<ThemeContextProvider>
 				<AuthProvider>
 					<AppRootGuard>
-					<AnimatePresence mode='wait'>
-						<PageTransition key={window.location.pathname}>
+					{/* <AnimatePresence mode='wait'> */}
+						{/* <PageTransition key={window.location.pathname}> */}
 							<RouterProvider router={router} />
 							<ControlledSnackbar
 								autoHideDuration={duration || 2000}
@@ -54,8 +54,8 @@ function App() {
 								open={isOpen}
 								
 							/>
-						</PageTransition>
-					</AnimatePresence>
+						{/* </PageTransition> */}
+					{/* </AnimatePresence> */}
 					</AppRootGuard>
 				</AuthProvider>
 			</ThemeContextProvider>

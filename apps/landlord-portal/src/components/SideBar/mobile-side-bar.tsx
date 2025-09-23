@@ -9,7 +9,6 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import {
 	ListItemButton,
 	ListItemIcon,
-	SvgIcon,
 	ListItemText,
 	ListItem,
 	List,
@@ -22,8 +21,11 @@ import { ThemeContext } from '../../context/ThemeContext/ThemeContext';
 import { ThemeMode } from '../../context/ThemeContext/themeTypes';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
+import { endSession } from '../../store/AuthStore/AuthSlice';
+import { useDispatch } from 'react-redux';
 function MobileSideBar() {
 	const theme = useTheme();
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
@@ -78,6 +80,7 @@ function MobileSideBar() {
 		if (title !== 'Logout') {
 			return;
 		}
+		dispatch(endSession());
 		handleSignOut();
 	};
 

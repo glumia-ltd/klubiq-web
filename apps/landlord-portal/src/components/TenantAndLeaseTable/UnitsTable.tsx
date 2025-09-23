@@ -88,7 +88,7 @@ export const UnitsTable: FC<UnitsTableType> = ({
 			},
 			{
 				key: 'floorPlan',
-				label: 'Floor Plan',
+				label: 'Land/Unit Size',
 				align: 'left',
 				render: (rowData: any) => (
 					<Stack direction={'row'} alignItems={'center'}>

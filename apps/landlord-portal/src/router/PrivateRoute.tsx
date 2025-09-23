@@ -1,58 +1,3 @@
-// import { Outlet, Navigate } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-// import { getAuthState } from '../store/AuthStore/AuthSlice';
-// // import useAuth from '../hooks/useAuth';
-// // import MFAPrompt from '../components/Dialogs/MfaPrompts';
-// // import { SessionTimeoutProvider } from '../context/SessionContext/SessionTimeoutContext';
-// // import AlertDialog from '../components/Dialogs/AlertDialog';
-// import { useCan } from '../authz/use-can';
-// import { consoleDebug } from '../helpers/debug-logger';
-// import { PermissionType } from '../store/AuthStore/authType';
-
-// const PrivateRoute = () => {
-// 	const {isSignedIn } = useSelector(getAuthState);
-
-
-// 	const loginUrl = 'login';
-// 	if (!isSignedIn) {
-// 		return <Navigate to={loginUrl} replace={true} />;
-// 	}
-
-// 	return (
-// 		<Outlet />
-// 		// <SessionTimeoutProvider>
-// 		// 	{showMFAPrompt && (
-// 		// 		<MFAPrompt
-// 		// 			open={showMFAPrompt}
-// 		// 			onClose={() => {
-// 		// 				handleCloseMFAPrompt();
-// 		// 			}}
-// 		// 			onMFASetupClick={goToMFASetup}
-// 		// 			onOptOutClick={optOutOf2fa}
-// 		// 		></MFAPrompt>
-// 		// 	)}
-// 		// 	{alertDialogs.length > 0 &&
-// 		// 		alertDialogs.map((alert) => (
-// 		// 			<AlertDialog
-// 		// 				key={alert.id}
-// 		// 				open={alert.open}
-// 		// 				title={alert.title}
-// 		// 				message={alert.message}
-// 		// 				onClose={alert.onClose}
-// 		// 				onConfirmClick={alert.onConfirmClick}
-// 		// 				onCancelClick={alert.onCancelClick}
-// 		// 				id={alert.id}
-// 		// 				cancelButtonText={alert.cancelButtonText}
-// 		// 				confirmButtonText={alert.confirmButtonText}
-// 		// 			></AlertDialog>
-// 		// 		))}
-// 		// 	<Outlet />
-// 		// </SessionTimeoutProvider>
-// 	);
-// };
-
-// export default PrivateRoute;
-
 
 import React from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
@@ -87,22 +32,38 @@ const PrivateRoute: React.FC<Props> = ({
   loader = null,
 }) => {
   const location = useLocation();
-  const { isSignedIn, user } = useSelector(getAuthState);
+  const { isSignedIn, user, hasBeginSession } = useSelector(getAuthState);
   const { organizationUuid, role } = user;
-
-  if (!isSignedIn) {
-    return <Navigate to="login" replace state={{ from: location }} />;
-  }
 
   // Resolve org/role (props override store if provided)
   const orgId = orgIdProp ?? organizationUuid;
   const roleName = roleNameProp ?? role;
-
   // If route doesn't require perms, just allow signed-in users
   const routeHasPerms = Boolean((any && any.length) || (all && all.length));
-  if (!routeHasPerms) return <Outlet />;
+  const shouldCheckPerms = isSignedIn && hasBeginSession && routeHasPerms && Boolean(orgId && roleName);
 
-  const { can, loading, error } = useCan(orgId, roleName);
+
+  const { can, loading, error } = useCan(orgId || '', roleName || '', { enabled: shouldCheckPerms });
+  
+  if (!isSignedIn) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (!routeHasPerms) {
+    return <Outlet />;
+  }
+
+  if (!shouldCheckPerms) {
+    return <Outlet />;
+  }
+
+  if (!hasBeginSession) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  if (!orgId || !roleName) {
+    return <Outlet />;
+  }
 
   if (loading && showLoader) return <>{loader}</> // plug your spinner here if you like
 

@@ -5,13 +5,11 @@ interface FeedbackProps {
 	header: string;
 	content: string;
 	continueUrl: string;
-	onMFASetupClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 }
 const FeedbackContent = ({
 	header,
 	content,
 	continueUrl,
-	onMFASetupClick,
 	imageLink,
 	showButton = false,
 }: FeedbackProps) => {

@@ -34,6 +34,15 @@ const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.csrf(),
 ];
 
+const unauthorized_endpoints = [
+	authEndpoints.signin(),
+	authEndpoints.signup(),
+	authEndpoints.verifyEmail(),
+	authEndpoints.emailVerification(),
+	authEndpoints.sendResetPasswordEmail(),
+	authEndpoints.verifyMFAOtp(),
+];
+
 // CSRF token management
 const getCsrfToken = () => sessionStorage.getItem('csrf_token');
 const setCsrfToken = (token: string) =>
@@ -52,7 +61,6 @@ const fetchNewCsrfToken = async () => {
 };
 
 function AxiosConfig(config: any) {
-	// const token = getSessionToken()?.stsTokenManager?.accessToken;
 	config.headers = {};
 	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
 		config.headers['content-type'] = 'application/json';

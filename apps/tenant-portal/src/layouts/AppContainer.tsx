@@ -129,8 +129,6 @@ const AppContainer = () => {
 					flexDirection: 'column',
 					height: '100%',
 					width: '100%',
-					// Dynamic margin adjustment based on sidebar state
-					// ml: !isMobile ? (sidebarOpen ? '0px' : '0px') : 0,
 					transition: theme.transitions.create('margin-left', {
 						easing: theme.transitions.easing.sharp,
 						duration: theme.transitions.duration.enteringScreen,
@@ -140,23 +138,10 @@ const AppContainer = () => {
 				<Box
 					sx={AppContainerStyle(isMobile).content}
 					p={isMobile ? 2 : 5}
-					mb={isMobile ? 2 : 0}
+					mb={isMobile ? 5 : 0}
 				>
 					<Outlet />
 				</Box>
-				{/* {!isMobile && (
-					<AppBar
-						position='static'
-						sx={{
-							top: 'auto',
-							bottom: 0,
-							width: '100%',
-							backgroundColor: 'background.default',
-						}}
-					>
-						<AppFooter {...tenantFooterConfig} />
-					</AppBar>
-				)} */}
 			</Box>
 
 			{isMobile && (

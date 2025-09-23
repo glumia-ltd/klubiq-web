@@ -24,10 +24,13 @@ import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
 import { motion } from 'framer-motion';
 import { useVisibleNav } from './useVisibleNav';
 import { NavToolTips } from '../../styles/tooltips';
+import { endSession } from '../../store/AuthStore/AuthSlice';
+import { useDispatch } from 'react-redux';
 
 
 const SideBar = () => {
 	const theme = useTheme();
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { getPathList } = useContext(SectionContext);
 	const { switchMode, mode } = useContext(ThemeContext);
@@ -144,6 +147,7 @@ const SideBar = () => {
 		if (title !== 'Logout') {
 			return;
 		}
+		dispatch(endSession());
 		handleSignOut();
 	};
 

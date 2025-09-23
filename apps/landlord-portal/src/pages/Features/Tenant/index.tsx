@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import { PermissionGate } from '../../../authz/permission-gate';
 import { PERMISSIONS } from '../../../authz/constants';
 
-const ITEMSCOUNTOPTIONS = [10, 20, 40, 60];
+const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Tenant = () => {
 	const { user } = useSelector(getAuthState);

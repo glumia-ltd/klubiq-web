@@ -230,7 +230,7 @@ const Properties = () => {
 
 							{/* Properties List */}
 							{allProperties && allProperties.length > 0 ? (
-								<Grid xs={12} container spacing={2}>
+								<Grid xs={12} container spacing={3}>
 									{allProperties?.map(
 										(
 											property: PropertyDataType,

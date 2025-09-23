@@ -13,7 +13,6 @@ import EmailVerification from '../pages/Auth/EmailVerification';
 import DashBoard from '../pages/Features/Dashboard';
 import Setting from '../pages/Settings';
 import Lease from '../pages/Features/Lease';
-import MFASetUp from '../pages/Auth/MFAPage';
 import PropertyPage from '../pages/Features/properties/PropertyDetail';
 import AddLeasePage from '../pages/Features/Lease/AddLeasePage';
 // import TenantDetails from '../pages/Features/Tenant/TenantDetails';
@@ -50,7 +49,7 @@ export const router = createBrowserRouter(
 			<Route path='/reset-password' element={<SetPassword />} />
 			<Route path='/forgot-password' element={<ForgotPassword />} />
 			<Route path='/verify-email' element={<EmailVerification />} />
-			<Route path='/2fa-enroll' element={<MFASetUp />} />
+			{/* <Route path='/2fa-enroll' element={<MFASetUp />} /> */}
 			<Route path='*' element={<Navigate to='/not-found' replace />} />
 			<Route path='/' element={<Navigate to='/login' replace />} />
 

@@ -2,8 +2,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { endSession, getAuthState } from '../../store/AuthStore/AuthSlice';
 import { Context } from '../../context/NavToggleContext/NavToggleContext';
 import {
 	Grid,
@@ -40,9 +40,10 @@ import {
 import { NavToolTips } from '../../styles/tooltips';
 import { NotificationDrawer } from '../NotificationDrawer';
 const NavBar = () => {
-	const { user } = useSelector(getAuthState);
-	const { data: notificationData } = useGetNotificationsQuery();
-	const { data: notificationCount } = useCountNotificationsQuery();
+	const dispatch = useDispatch();
+	const { user, hasBeginSession } = useSelector(getAuthState);
+	const { data: notificationData } = useGetNotificationsQuery(undefined, { skip: !hasBeginSession });
+	const { data: notificationCount } = useCountNotificationsQuery(undefined, { skip: !hasBeginSession });
 	const theme = useTheme();
 	const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 	const [userSignOut] = useSignOutMutation();
@@ -125,6 +126,7 @@ const NavBar = () => {
 		setNotificationPopperOpen(false);
 	};
 	const handleSignOut = async () => {
+		dispatch(endSession());
 		await userSignOut({}).unwrap();
 		navigate('/login');
 	};
