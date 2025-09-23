@@ -47,10 +47,6 @@ export const PropertiesSkeleton = () => {
 						spacing={2}
 						alignItems={'center'}
 					>
-						{/* <Button variant='contained' sx={styles.addPropertyButton}>
-							<LeftArrowIcon />
-							Add New Property
-						</Button> */}
 						<Skeleton width='50%' height={5} />
 					</Stack>
 				</Grid>

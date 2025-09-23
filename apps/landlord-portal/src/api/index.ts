@@ -29,10 +29,11 @@ const CSRF_IGNORE_ENDPOINTS = [
 	authEndpoints.signup(),
 	authEndpoints.sendResetPasswordEmail(),
 	authEndpoints.resetPassword(),
-	authEndpoints.verifyOobCode(),
+	authEndpoints.verifyEmail(),
 	authEndpoints.emailVerification(),
 	authEndpoints.csrf(),
 ];
+
 
 // CSRF token management
 const getCsrfToken = () => sessionStorage.getItem('csrf_token');
@@ -52,7 +53,6 @@ const fetchNewCsrfToken = async () => {
 };
 
 function AxiosConfig(config: any) {
-	// const token = getSessionToken()?.stsTokenManager?.accessToken;
 	config.headers = {};
 	if (config.url && !UPLOAD_ENDPOINTS.includes(config.url as string)) {
 		config.headers['content-type'] = 'application/json';
@@ -149,6 +149,12 @@ api.interceptors.response.use(
 				}
 				return Promise.reject(refreshError);
 			}
+		}
+		if (error.response?.status === 403) {
+			if (window.location.pathname !== '/unauthorized') {
+				window.location.href = '/unauthorized';
+			}
+			return Promise.reject(error);
 		}
 
 		return Promise.reject(error);

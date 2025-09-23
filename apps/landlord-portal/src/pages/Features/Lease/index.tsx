@@ -7,8 +7,9 @@ import {
 	useMediaQuery,
 	Paper,
 	IconButton,
-	InputBase,
+	InputBase,	
 } from '@mui/material';
+import { useSelector } from 'react-redux';
 import Filter from '../../../components/Filter/Filter';
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import {
@@ -34,9 +35,14 @@ import { useLeaseActions } from '../../../hooks/page-hooks/leases.hooks';
 import dayjs from 'dayjs';
 import { screenMessages } from '../../../helpers/screen-messages';
 import SearchIcon from '@mui/icons-material/Search';
+import { getAuthState } from '../../../store/AuthStore/AuthSlice';
+import { PermissionGate } from '../../../authz/permission-gate';
+import { PERMISSIONS } from '../../../authz/constants';
 const ITEMSCOUNTOPTIONS = [20, 40, 60];
 
 const Lease = () => {
+	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 	const [filter, setFilter] = useState<Record<string, string | number>>({});
@@ -222,9 +228,11 @@ const Lease = () => {
 					gap={1}
 					justifyContent={isMobile ? 'flex-start' : 'flex-end'}
 				>
-					<Button variant='klubiqMainButton' onClick={navigateToAddLease}>
+					<PermissionGate orgId={organizationUuid} roleName={role} all={[PERMISSIONS.LEASE.CREATE]} fallback={<></>}>
+						<Button variant='klubiqMainButton' onClick={navigateToAddLease}>
 						Add New Lease
-					</Button>
+						</Button>
+					</PermissionGate>
 				</Stack>
 				<Stack direction={'column'}>
 					<Paper elevation={0} component='form' sx={styles.inputStyle}>

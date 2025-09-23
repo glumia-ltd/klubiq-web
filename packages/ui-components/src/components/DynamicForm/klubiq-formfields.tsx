@@ -697,7 +697,6 @@ export const KlubiqFormFields = ({ field, formatters }: FormFieldsProps) => {
 					}
 				</Field>
 			);
-
 		default:
 			return (
 				<Field name={field.name}>

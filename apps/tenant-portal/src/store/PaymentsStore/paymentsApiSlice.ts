@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { customApiFunction } from '../customApiFunction';
 import { paymentsEndpoints } from '@/helpers/endpoints';
 import { API_TAGS } from '../store.types';
-import { PaymentMethodType } from '@/shared/types/payment.types';
+import { PaymentMethodType, UpcomingPayment } from '@/shared/types/payment.types';
 
 export const paymentsApiSlice = createApi({
 	reducerPath: 'paymentsApi',
@@ -13,7 +13,7 @@ export const paymentsApiSlice = createApi({
 	refetchOnMountOrArgChange: true,
 	refetchOnFocus: false, // Don't refetch when window regains focus
 	endpoints: (builder) => ({
-		getUpcomingPayments: builder.query<any, string>({
+		getUpcomingPayments: builder.query<UpcomingPayment[], string>({
 			query: (leaseTenantId) => ({
 				url: paymentsEndpoints.getUpcomingPayments(leaseTenantId),
 				method: 'GET',
@@ -52,6 +52,7 @@ export const paymentsApiSlice = createApi({
 				method: 'PUT',
 				body: data,
 			}),
+			invalidatesTags: [API_TAGS.CURRENT_PAYMENT, API_TAGS.PAYMENT_HISTORY],
 		}),
 	}),
 });

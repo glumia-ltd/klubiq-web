@@ -8,7 +8,7 @@ export const authEndpoints = {
 	getUserByFbid: () => `/auth/landlord/user`,
 	sendResetPasswordEmail: () => `/auth/reset-password-link`,
 	resetPassword: () => `/auth/reset-password`,
-	verifyOobCode: () => `/auth/verify-email`,
+	verifyEmail: () => `/auth/verify-email`,
 	updateUserPreferences: () => `/auth/update-preferences`,
 	getOrgSettings: (orgId: string) => `/auth/org/${orgId}/settings`,
 	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
@@ -16,11 +16,13 @@ export const authEndpoints = {
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 	csrf: () => '/security/csrf-token',
 	resendInvitation: (invitationId: string) => `/auth/resend-invitation/${invitationId}`,
+	getPermissions: (orgId: string, roleName: string) => `/auth/${orgId}/permissions/${roleName}`,
 };
 
 export const dashboardEndpoints = {
 	getOrganizationMetrics: () => `/dashboard/organization-metrics`,
-	getOrganizationComparativeMetrics: (period: string) => `/dashboard/comparative-metrics?period=${period}`,
+	getOrganizationComparativeMetrics: (period: string) =>
+		`/dashboard/comparative-metrics?period=${period}`,
 	getActivities: (orgId: string) => `/activities/${orgId}`,
 };
 
@@ -39,7 +41,8 @@ export const propertiesEndpoints = {
 		`/public/org/${orgId}/properties`,
 	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	addUnit: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
-	editUnit: (propertyUuid: string, unitId: string) => `/properties/${propertyUuid}/units/${unitId}`,
+	editUnit: (propertyUuid: string, unitId: string) =>
+		`/properties/${propertyUuid}/units/${unitId}`,
 	deleteUnits: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
 };
 
@@ -90,4 +93,17 @@ export const fileEndpoints = {
 	uploadImages: () => '/uploads/images',
 	uploadFiles: () => '/uploads/files',
 	deleteFile: () => `/uploads/delete-file`,
+};
+
+export const settingsEndpoint = {
+	updateProfile: (profileId: string) => `/users/${profileId}`,
+	updateOrganization: (uuid: string) =>
+		`/organizations/${uuid}/settings`,
+	updateOrganizationSettings: (organizationUuid: string, profileUuid: string) =>
+		`/organizations/${organizationUuid}/settings${profileUuid}`,
+	getUserOrganizationSettings: (
+		uuid: string,
+	) => `/organizations/${uuid}/settings`,
+	getNotificationPreferences: () => '/auth/notification-preferences',
+	updateNotificationPreferences: () => '/auth/notification-preferences',
 };

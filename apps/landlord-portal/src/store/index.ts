@@ -15,6 +15,7 @@ import { notificationApiSlice } from './NotificationStore/NotificationApiSlice';
 import loaderReducer from './GlobalStore/LoaderSlice';
 import { globalApiSlice } from './GlobalStore/globalApiSlice';
 import { tenantApiSlice } from './TenantStore/tenantApiSlice';
+import { settingsApiSlice } from './SettingsPageStore/SettingsApiSlice';
 import storageSession from 'redux-persist/lib/storage/session';
 import { persistReducer, persistStore } from 'redux-persist';
 import {
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
 		[notificationApiSlice.reducerPath]: notificationApiSlice.reducer,
 		[globalApiSlice.reducerPath]: globalApiSlice.reducer,
 		[tenantApiSlice.reducerPath]: tenantApiSlice.reducer,
+		[settingsApiSlice.reducerPath]:settingsApiSlice.reducer,
 });
 const persistConfig = {
 	key: 'root',
@@ -69,6 +71,7 @@ const store: Store = configureStore({
 			notificationApiSlice.middleware,
 			globalApiSlice.middleware,
 			tenantApiSlice.middleware,
+			settingsApiSlice.middleware
 		),
 });
 
@@ -85,6 +88,7 @@ export const resetStore = () => {
 	store.dispatch(notificationApiSlice.util.resetApiState());
 	store.dispatch(globalApiSlice.util.resetApiState());
 	store.dispatch(tenantApiSlice.util.resetApiState());
+	store.dispatch(settingsApiSlice.util.resetApiState())
 	
 };
 export default store;

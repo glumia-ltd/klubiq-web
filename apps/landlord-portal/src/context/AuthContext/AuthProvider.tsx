@@ -4,24 +4,25 @@ import {
 	useGetUserByFbidQuery,
 	useSignOutMutation,
 } from '../../store/AuthStore/authApiSlice';
-import { saveUser, removeUser } from '../../store/AuthStore/AuthSlice';
+import { saveUser, removeUser, endSession } from '../../store/AuthStore/AuthSlice';
 import { RootState } from '../../store';
 // import Loader from '../../components/LoaderComponent/Loader';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const dispatch = useDispatch();
-	const { isSignedIn } = useSelector((state: RootState) => state.auth);
+	const { isSignedIn, hasBeginSession } = useSelector((state: RootState) => state.auth);
 	const tenantId = sessionStorage.getItem('tenant_id');
 	const { data: user, error } = useGetUserByFbidQuery(undefined, {
-		skip: !tenantId || !isSignedIn,
+		skip: !hasBeginSession || !tenantId || !isSignedIn,
 	});
 	const [signOut] = useSignOutMutation();
 
 	useEffect(() => {
 		const handleAuth = async () => {
 			if (user) {
-				dispatch(saveUser({ user, isSignedIn: true }));
+				dispatch(saveUser({ user, isSignedIn: true, hasBeginSession: hasBeginSession }));
 			} else if (error) {
+				dispatch(endSession());
 				dispatch(removeUser());
 				if (isSignedIn || tenantId) {
 					await signOut({});
@@ -29,7 +30,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 			}
 		};
 		handleAuth();
-	}, [user, error, dispatch, isSignedIn, tenantId, signOut]);
+		
+	}, [user, error, dispatch, isSignedIn, tenantId, signOut, hasBeginSession]);
 
 	// if (isLoading) {
 	//   return <Loader />; // Your loading component

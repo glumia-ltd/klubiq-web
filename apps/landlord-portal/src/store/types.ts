@@ -9,11 +9,13 @@ export const API_TAGS = {
     NOTIFICATION: 'Notification',
     NOTIFICATION_COUNT: 'Notification-Count',
     USER: 'User',
+    SETTINGS:"settings",
     DASHBOARD_METRICS: 'Dashboard-Metrics',
     DASHBOARD_REVENUE_REPORT: 'Dashboard-Revenue-Report',
     PROPERTIES_AND_TENANTS: 'Properties-And-Tenants',
     ACTIVITY: 'Activity',
     ORGANIZATION_METRICS: 'Organization-Metrics',
     ORGANIZATION_COMPARATIVE_METRICS: 'Organization-Comparative-Metrics',
+    PERMISSIONS: 'Permissions',
   } as const;
 export const ALL_TAGS = Object.values(API_TAGS);

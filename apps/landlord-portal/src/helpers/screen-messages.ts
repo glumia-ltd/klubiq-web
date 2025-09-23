@@ -151,4 +151,24 @@ export const screenMessages = {
 			confirm: 'Are you sure you want to reset your password?',
 		},
 	},
+	settings: {
+		profileUpdate: {
+			success: 'Profile updated successfully',
+			error: 'Failed to update profile',
+			loading: 'Updating Profile...',
+			confirm: 'Are you sure you want to update this profile?',
+		},
+		companyUpdate: {
+			success: 'Account updated successfully',
+			error: 'Failed to update Account',
+			loading: 'Updating Account...',
+			confirm: 'Are you sure you want to update this Account?',
+		},
+		notificationPreference: {
+			success: 'Updated successfully',
+			error: 'Failed to update notification',
+			loading: 'Updating Notification...',
+			
+		},
+	},
 };

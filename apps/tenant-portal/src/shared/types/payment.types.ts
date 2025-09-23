@@ -36,3 +36,23 @@ export interface SavedPaymentMethod {
     txnStatus: 'success' | 'failed';
     metadata: Record<string, any>
   }
+
+  export type LeaseConfigType = {
+    currency: string;
+    currencySymbol: string;
+  }
+
+  export type UpcomingPayment = {
+    leaseId: string;
+    amount: number;
+    dueDate: string;
+    status: string;
+    invoiceId: string;
+    daysToDue: number;
+    lateFeeAmount: number;
+    securityDeposit: number;
+    leaseDaysRemaining: number;
+    propertyName: string;
+    unitNumber: string;
+    leaseConfig: LeaseConfigType;
+  }
