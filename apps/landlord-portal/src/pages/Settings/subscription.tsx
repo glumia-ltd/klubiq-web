@@ -55,7 +55,7 @@ export const Subscription = () => {
 		paymentMethod: "",
 		billingAddress: "",
 	};
-	const onSubmit = async (values: InitialFormValues) => {
+	const onSubmit = async (_values: InitialFormValues) => {
 	}
 	const subscriptionFormFields: FormFieldV1[] = [
 		{
