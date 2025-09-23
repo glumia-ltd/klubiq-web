@@ -25,6 +25,8 @@ import { Cancel, Home, Pending, Refresh,TaskAlt,ViewList } from '@mui/icons-mate
 import { useResendInvitationMutation } from '../../../store/AuthStore/authApiSlice';
 import { screenMessages } from '../../../helpers/screen-messages';
 import { openSnackbar } from '../../../store/SnackbarStore/SnackbarSlice';
+import { useCan } from '../../../authz/use-can';
+import { PERMISSIONS } from '../../../authz/constants';
 interface TenantDetails {
 	name: string;
 	companyName: string;
@@ -62,6 +64,12 @@ interface TenantDetails {
 
 const TenantDetails = () => {
 	const { user } = useSelector(getAuthState);
+	const { organizationUuid, role } = user;
+	const { can } = useCan(organizationUuid, role);
+	const canResendInvitation = useMemo(
+		() => can([PERMISSIONS.TENANT.CREATE]),
+		[can],
+	);
 	// const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -389,13 +397,13 @@ const TenantDetails = () => {
 						email: tenantDetails.email,
 						phone: tenantDetails.phone,
 						status: tenantDetails.active ? 'Active' : 'Inactive',
-						headerActions: [
+						headerActions: canResendInvitation ? [
 							tenantDetails.accountInvitation && tenantDetails.accountInvitation.status === 'Pending' && (
 								<Button variant='klubiqMainButton' size='small' startIcon={<Refresh />} onClick={handleResendInvitation} disabled={isResendingInvitation}>
 									Resend Invitation
 								</Button>
 							),
-						],
+						] : [],
 					}}
 					showTabs={false}
 					displayMode='container'

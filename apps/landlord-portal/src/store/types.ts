@@ -16,5 +16,6 @@ export const API_TAGS = {
     ACTIVITY: 'Activity',
     ORGANIZATION_METRICS: 'Organization-Metrics',
     ORGANIZATION_COMPARATIVE_METRICS: 'Organization-Comparative-Metrics',
+    PERMISSIONS: 'Permissions',
   } as const;
 export const ALL_TAGS = Object.values(API_TAGS);

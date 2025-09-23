@@ -9,7 +9,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useSelector } from 'react-redux';
 
 export const useDashboardActions = () => {
-	const { user } = useSelector(getAuthState);
+	const { user, hasBeginSession } = useSelector(getAuthState);
 	// const [downloadReport] = useDownloadReportMutation();
 
 	const [firstDay, setFirstDay] = useState<Dayjs>(
@@ -95,7 +95,7 @@ export const useDashboardActions = () => {
 	// };
 
 	useEffect(() => {
-		if (user?.uuid) {
+		if (user?.uuid && hasBeginSession) {
 			consoleDebug('Fetching dashboard data for user:', user.uuid);
 			getOrganizationActivities({ orgId: user.organizationUuid, page: 1, limit: 10 });
 			getOrganizationMetrics();

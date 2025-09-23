@@ -14,7 +14,7 @@ import {
 	useSignInMutation,
 	useVerifyMFAOtpMutation,
 } from '../../../store/AuthStore/authApiSlice';
-import { saveUser } from '../../../store/AuthStore/AuthSlice';
+import { beginSession, endSession, saveUser } from '../../../store/AuthStore/AuthSlice';
 import { consoleDebug, consoleError } from '../../../helpers/debug-logger';
 import { DynamicTanstackFormProps, KlubiqFormV1 } from '@klubiq/ui-components';
 import { z } from 'zod';
@@ -72,8 +72,6 @@ const Login = () => {
 			set2FARequired(false);
 		}
 		setIsVerifying(false);
-
-		//
 	};
 	const cancelOtpVerification = () => {
 		set2FARequired(false);
@@ -92,6 +90,7 @@ const Login = () => {
 			consoleDebug(`Setting ${item.key} in session storage:`, value);
 		});
 	};
+
 	const fetchCsrfToken = async () => {
 		try {
 			const { token } = await fetchCsrfTokenQuery().unwrap();
@@ -119,9 +118,9 @@ const Login = () => {
 			const payload = {
 				user: user,
 				isSignedIn: true,
+				hasBeginSession: true,
 			};
 			dispatch(saveUser(payload));
-
 			openSnackbar({
 				message: 'That was easy',
 				severity: 'success',
@@ -137,8 +136,8 @@ const Login = () => {
 	const onSubmit = async (values: IValuesType) => {
 		const { email, password } = values;
 		try {
-			// setLoading(true);
 			await signIn({ email, password }).unwrap();
+			dispatch(beginSession());
 			await loadUserAfterSignIn();
 			await fetchCsrfToken();
 			return;
@@ -147,6 +146,7 @@ const Login = () => {
 				consoleError('MFA Required to continue sign in');
 				set2FARequired(true);
 			} else {
+				dispatch(endSession());
 				set2FARequired(false);
 				const errorMessage =
 				(error as any)?.message || 
@@ -212,8 +212,8 @@ const Login = () => {
 				type: 'custom',
 				label: '',
 				component: (
-					<Typography textAlign='left' onClick={routeToForgotPassword}>
-						<BoldTextLink>Forgot password</BoldTextLink>
+					<Typography textAlign='left'>
+						<BoldTextLink onClick={routeToForgotPassword}>Forgot password</BoldTextLink>
 					</Typography>
 				),
 			},

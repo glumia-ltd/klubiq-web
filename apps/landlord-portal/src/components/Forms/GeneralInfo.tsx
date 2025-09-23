@@ -383,7 +383,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							<ControlledTextField
 								required
 								name={`units[${currentUnitIndex}].area.value`}
-								label='Floor Plan'
+								label='Land/Unit Size'
 								formik={formik}
 								sx={{ flex: 1 }}
 								InputProps={{
@@ -567,7 +567,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 														<Typography>{unit?.toilets}</Typography>
 													</IconButton>
 												</Tooltip>
-												<Tooltip title={`Click to adjust floor plan`}>
+												<Tooltip title={`Click to adjust land/unit size`}>
 													<IconButton onClick={() => handleOpen(unitIndex)}>
 														<FloorPlan />
 														<Typography>
@@ -714,7 +714,7 @@ const GeneralInfo = ({ amenities, formik }: CardProps) => {
 							<Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
 								<ControlledTextField
 									name={`units[${currentUnitIndex}].area.value`}
-									label='Floor Plan'
+									label='Land/Unit Size'
 									formik={formik}
 									InputProps={{
 										endAdornment: (

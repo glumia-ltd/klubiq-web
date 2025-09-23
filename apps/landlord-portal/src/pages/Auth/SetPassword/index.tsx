@@ -30,7 +30,8 @@ const SetPassword = () => {
 	const [openConfirmationModal, setOpenConfirmationModal] =
 		useState<boolean>(false);
 
-	const email = location.search.split('email=')[1]?.split('&')[0];
+	const email = searchParams.get('email');
+	// location.search.split('email=')[1]?.split('&')[0];
 	const token = searchParams.get('token');
 	const [resetPassword] = useResetPasswordMutation();
 
@@ -51,7 +52,7 @@ const SetPassword = () => {
 		const body = {
 			email,
 			password,
-			oobCode: token,
+			token,
 		};
 
 		try {

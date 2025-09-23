@@ -41,13 +41,13 @@ const ResetPassword = () => {
 	const [isInvitationValid, setIsInvitationValid] = useState(false);
 	const [isValidating, setIsValidating] = useState(false);
 	const [formReady, setFormReady] = useState(false);
-	const emailFromUrl = location.search.split('email=')[1]?.split('&')[0];
-	// searchParams.get('email');
+	const emailFromUrl = searchParams.get('email');
 	const token = searchParams.get('token');
 	const mode = searchParams.get('mode');
 	const [resetPassword] = useResetPasswordMutation();
 	const [acceptInvitation] = useAcceptInvitationMutation();
 	const [validateResetPasswordToken] = useValidateResetPasswordTokenMutation();
+	console.log(emailFromUrl, 'emailFromUrl');
 	useEffect(() => {
 		if (token) {
 			if (mode === 'resetPassword') {
@@ -73,8 +73,6 @@ const ResetPassword = () => {
 	}, [searchParams]);
 
 	const onSubmit = async (values: IPasswordType) => {
-		const oobCode =
-			mode === 'resetPassword' ? token : searchParams.get('oobCode');
 		const email = emailFromUrl ?? values.email;
 		if (!email) {
 			openSnackbar({
@@ -90,7 +88,7 @@ const ResetPassword = () => {
 				await resetPassword({
 					password: values.password,
 					email,
-					oobCode,
+					token,
 				});
 			} else {
 				await acceptInvitation({
@@ -98,7 +96,7 @@ const ResetPassword = () => {
 					data: {
 						password: values.password,
 						email: email ?? '',
-						oobCode: oobCode ?? '',
+						token: token ?? '',
 					},
 				});
 			}

@@ -6,9 +6,11 @@ import { ALL_TAGS, API_TAGS } from '../types';
 import { consoleError } from '../../helpers/debug-logger';
 import { handleApiResponse } from '../../helpers/apiResponseHandler';
 import { screenMessages } from '../../helpers/screen-messages';
-import { resetStore } from '..';
+import { resetStore, RootState } from '..';
 import { SignUpResponseType } from '../../page-tytpes/auths/signup.type';
-
+import { PermissionType, PermissionVersionType } from './authType';
+import { readPermCookie } from '../../authz/perm-token';
+type GetPermsArgs = { orgId: string; roleName: string };
 export const authApiSlice = createApi({
 	reducerPath: 'authApiSlice',
 	baseQuery: customApiFunction,
@@ -66,7 +68,10 @@ export const authApiSlice = createApi({
 
 					// Use the existing resetStore function
 					resetStore();
+					// Use the existing resetStore function
+					resetStore();
 
+					await new Promise((resolve) => setTimeout(resolve, 100));
 					await new Promise((resolve) => setTimeout(resolve, 100));
 
 					// Clear service worker cache
@@ -85,7 +90,6 @@ export const authApiSlice = createApi({
 
 					// Clear sessionStorage
 					sessionStorage.clear();
-					//window.location.reload();
 				} catch (error) {
 					consoleError('Error during sign out:', error);
 				}
@@ -99,9 +103,9 @@ export const authApiSlice = createApi({
 			}),
 		}),
 		fetchCsrfToken: builder.query<
-			{ token: string; expiresIn: number; message: string },
-			void
-		>({
+				{ token: string; expiresIn: number; message: string },
+				void
+			>({
 			query: () => ({
 				url: authEndpoints.csrf(),
 				method: 'GET',
@@ -141,6 +145,116 @@ export const authApiSlice = createApi({
 				},
 			}),
 		}),
+		getPermissions: builder.query<PermissionVersionType, GetPermsArgs>({
+			async queryFn(params, queryApi, _extra, fetchWithBQ) {
+				const state = queryApi.getState() as RootState;
+				const { hasBeginSession } = state.auth;
+				if (!hasBeginSession) {
+					return {
+						error: 'Session not found',
+					};
+				}
+				// get from cookie
+				const snap = readPermCookie('_kbq_pt');
+				if (snap) {
+					console.log('fetching permissions from cookie. Snapshot found: ', snap);
+					const permissions = snap.permissions as PermissionType[];
+					return {
+						data: {
+							permissions,
+							version: snap.version,
+							source: 'cookie',
+						},
+					};
+				} 
+				const res = await fetchWithBQ({
+					url: authEndpoints.getPermissions(params.orgId, params.roleName),
+					method: 'GET',
+					credentials: 'include',
+				});
+				if (res.data) {
+					const body = res.data as { permissions: string[]; version: string };
+					const permissions = body.permissions as PermissionType[];
+					return {
+						data: { permissions, version: body.version, source: 'server' },
+					};
+				}
+				return {
+					error: res.error as any,
+				};
+				
+			},
+			onCacheEntryAdded: async (
+				args,
+				{ cacheDataLoaded, updateCachedData, cacheEntryRemoved },
+			) => {
+				const initial = await cacheDataLoaded;
+				if (initial.data?.source !== 'server') {
+					try {
+						const resp = await fetch(
+							authEndpoints.getPermissions(args.orgId, args.roleName),
+							{ credentials: 'include' },
+						);
+						if(!resp.headers.get('Content-Type')?.includes('application/json')) {
+							return;
+						}
+						if (resp.ok) {
+							const fresh = (await resp.json()) as {
+								permissions: string[];
+								version: string;
+							};
+							updateCachedData((d) => {
+								d.permissions = fresh.permissions as PermissionType[];
+								d.version = fresh.version;
+								d.source = 'server';
+							});
+						} return;
+					} catch (error) {
+						consoleError('Error fetching permissions:', error);
+					}
+				}
+				await cacheEntryRemoved;
+			},
+			serializeQueryArgs: ({ endpointName, queryArgs }) =>
+				`${endpointName}|${queryArgs.orgId}|${queryArgs.roleName}`,
+			providesTags: (_res, _err, { orgId, roleName }) => [
+				{ type: API_TAGS.PERMISSIONS, id: `${orgId}:${roleName}` },
+			],
+		}),
+		// getPermissions: builder.query<PermissionVersionType, GetPermsArgs>({
+		// 	query: (params) => ({
+		// 		url: authEndpoints.getPermissions(params.orgId, params.roleName),
+		// 		method: 'GET',
+		// 	}),
+		// 	transformResponse: (response: {
+		// 		permissions: string[];
+		// 		version: string;
+		// 	}) => ({
+		// 		permissions: response.permissions as PermissionType[],
+		// 		version: response.version,
+		// 		source: 'server',
+		// 	}),
+		// 	serializeQueryArgs: ({ endpointName, queryArgs }) =>
+		// 		`${endpointName}|${queryArgs.orgId}|${queryArgs.roleName}`,
+
+		// 	// allow external invalidation (e.g., after admin role change)
+		// 	providesTags: (_res, _err, { orgId, roleName }) => [
+		// 		{ type: API_TAGS.PERMISSIONS, id: `${orgId}:${roleName}` },
+		// 	],
+		// }),
+		invalidatePermissions: builder.mutation<void, GetPermsArgs>({
+			queryFn: () => ({ data: undefined }),
+			invalidatesTags: (_result, _error, { orgId, roleName }) => [
+				{ type: API_TAGS.PERMISSIONS, id: `${orgId}:${roleName}` },
+			],
+		}),
+		verifyEmail: builder.mutation<{emailVerified: boolean, uid: string, email: string}, { email: string; token: string }>({
+			query: (body) => ({
+				url: authEndpoints.verifyEmail(),
+				method: 'POST',
+				body,
+			}),
+		}),
 	}),
 });
 
@@ -161,5 +275,8 @@ export const {
 	useLazyFetchCsrfTokenQuery,
 	useFetchCsrfTokenQuery,
 	useResendInvitationMutation,
-	
+	useLazyGetPermissionsQuery,
+	useGetPermissionsQuery,
+	useInvalidatePermissionsMutation,
+	useVerifyEmailMutation,
 } = authApiSlice;

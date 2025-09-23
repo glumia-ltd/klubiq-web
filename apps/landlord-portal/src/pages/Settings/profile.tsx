@@ -15,7 +15,7 @@ import {
 	KlubiqFormV1,
 } from '@klubiq/ui-components';
 import { z } from 'zod';
-import { useGetOrganizationSettingsQuery, useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
 export const Profile = () => {
@@ -157,7 +157,7 @@ export const Profile = () => {
 		verticalAlignment: 'top',
 	};
 
-	const onUploadProfile = (formData: FormData) => {
+	const onUploadProfile = (_formData: FormData) => {
 		return Promise.resolve({} as StorageUploadResult);
 	};
 	const fileUploadConfig = {
@@ -168,7 +168,7 @@ export const Profile = () => {
 		multiple: false,
 		onUploadProfile: onUploadProfile,
 		value: user?.profilePicUrl,
-		onChange: (value: FileList | null) => {
+		onChange: (_value: FileList | null) => {
 		},
 		onBlur: () => {
 		},

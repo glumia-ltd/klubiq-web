@@ -9,7 +9,7 @@ export const insightsApiSlice = createApi({
 	baseQuery: customApiFunction,
 	tagTypes: ALL_TAGS,
 	endpoints: (builder) => ({
-		getLeaseInsights: builder.query<LeaseInsights, void>({
+		getLeaseInsights: builder.query<LeaseInsights[], void>({
 			query: () => ({
 				url: tenantEndpoints.leaseInsights(),
 				method: 'GET',

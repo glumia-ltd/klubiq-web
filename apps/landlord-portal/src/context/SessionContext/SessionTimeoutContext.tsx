@@ -10,6 +10,8 @@ import TimerIcon from '@mui/icons-material/Timer';
 import { Typography } from '@mui/material';
 import { consoleLog } from '../../helpers/debug-logger';
 import { useSignOutMutation } from '../../store/AuthStore/authApiSlice';
+import { useDispatch } from 'react-redux';
+import { endSession } from '../../store/AuthStore/AuthSlice';
 
 const SessionTimeoutContext = createContext({
 	isTimedOut: false,
@@ -23,6 +25,7 @@ interface SessionTimeoutProviderProps {
 export const SessionTimeoutProvider = ({
 	children,
 }: SessionTimeoutProviderProps) => {
+	const dispatch = useDispatch();
 	const [userSignOut] = useSignOutMutation();
 	const [isTimedOut, setIsTimedOut] = useState(false);
 	const [showModal, setShowModal] = useState(false);
@@ -42,6 +45,7 @@ export const SessionTimeoutProvider = ({
 	};
 
 	const handleSignOut = async () => {
+		dispatch(endSession());
 		await userSignOut({}).unwrap();
 
 	};

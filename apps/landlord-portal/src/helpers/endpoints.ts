@@ -8,16 +8,15 @@ export const authEndpoints = {
 	getUserByFbid: () => `/auth/landlord/user`,
 	sendResetPasswordEmail: () => `/auth/reset-password-link`,
 	resetPassword: () => `/auth/reset-password`,
-	verifyOobCode: () => `/auth/verify-email`,
+	verifyEmail: () => `/auth/verify-email`,
 	updateUserPreferences: () => `/auth/update-preferences`,
 	getOrgSettings: (orgId: string) => `/auth/org/${orgId}/settings`,
 	getOrgSubscription: (orgId: string) => `/auth/org/${orgId}/subscription`,
 	firebaseAuth: () => 'https://identitytoolkit.googleapis.com/v1/accounts',
 	verifyMFAOtp: () => `/auth/mfa/verify-otp`,
 	csrf: () => '/security/csrf-token',
-	resendInvitation: (invitationId: string) =>
-		`/auth/resend-invitation/${invitationId}`,
-	
+	resendInvitation: (invitationId: string) => `/auth/resend-invitation/${invitationId}`,
+	getPermissions: (orgId: string, roleName: string) => `/auth/${orgId}/permissions/${roleName}`,
 };
 
 export const dashboardEndpoints = {
