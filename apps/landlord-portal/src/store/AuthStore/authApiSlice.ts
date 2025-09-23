@@ -68,17 +68,22 @@ export const authApiSlice = createApi({
 
 					// Use the existing resetStore function
 					resetStore();
+					// Use the existing resetStore function
+					resetStore();
 
+					await new Promise((resolve) => setTimeout(resolve, 100));
 					await new Promise((resolve) => setTimeout(resolve, 100));
 
 					// Clear service worker cache
 					const cacheNames = await caches.keys();
 					await Promise.all(
 						cacheNames.map((cacheName) => caches.delete(cacheName)),
+						cacheNames.map((cacheName) => caches.delete(cacheName)),
 					);
 
 					// Clear IndexedDB if you're using it
 					const databases = await window.indexedDB.databases();
+					databases.forEach((db) => {
 					databases.forEach((db) => {
 						if (db.name) {
 							window.indexedDB.deleteDatabase(db.name);
@@ -99,6 +104,10 @@ export const authApiSlice = createApi({
 				body,
 			}),
 		}),
+		fetchCsrfToken: builder.query<
+			{ token: string; expiresIn: number; message: string },
+			void
+		>({
 		fetchCsrfToken: builder.query<
 			{ token: string; expiresIn: number; message: string },
 			void
@@ -129,6 +138,10 @@ export const authApiSlice = createApi({
 				});
 			},
 		}),
+		resendInvitation: builder.mutation<
+			void,
+			{ invitationId: string; email: string; isTenant: boolean }
+		>({
 		resendInvitation: builder.mutation<
 			void,
 			{ invitationId: string; email: string; isTenant: boolean }

@@ -21,7 +21,8 @@ export const authEndpoints = {
 
 export const dashboardEndpoints = {
 	getOrganizationMetrics: () => `/dashboard/organization-metrics`,
-	getOrganizationComparativeMetrics: (period: string) => `/dashboard/comparative-metrics?period=${period}`,
+	getOrganizationComparativeMetrics: (period: string) =>
+		`/dashboard/comparative-metrics?period=${period}`,
 	getActivities: (orgId: string) => `/activities/${orgId}`,
 };
 
@@ -40,7 +41,8 @@ export const propertiesEndpoints = {
 		`/public/org/${orgId}/properties`,
 	patchProperty: (propertyUuid: string) => `/properties/${propertyUuid}`,
 	addUnit: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
-	editUnit: (propertyUuid: string, unitId: string) => `/properties/${propertyUuid}/units/${unitId}`,
+	editUnit: (propertyUuid: string, unitId: string) =>
+		`/properties/${propertyUuid}/units/${unitId}`,
 	deleteUnits: (propertyUuid: string) => `/properties/${propertyUuid}/units`,
 };
 
@@ -91,4 +93,17 @@ export const fileEndpoints = {
 	uploadImages: () => '/uploads/images',
 	uploadFiles: () => '/uploads/files',
 	deleteFile: () => `/uploads/delete-file`,
+};
+
+export const settingsEndpoint = {
+	updateProfile: (profileId: string) => `/users/${profileId}`,
+	updateOrganization: (uuid: string) =>
+		`/organizations/${uuid}/settings`,
+	updateOrganizationSettings: (organizationUuid: string, profileUuid: string) =>
+		`/organizations/${organizationUuid}/settings${profileUuid}`,
+	getUserOrganizationSettings: (
+		uuid: string,
+	) => `/organizations/${uuid}/settings`,
+	getNotificationPreferences: () => '/auth/notification-preferences',
+	updateNotificationPreferences: () => '/auth/notification-preferences',
 };
