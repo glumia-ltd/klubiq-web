@@ -164,11 +164,13 @@ const NavBar = () => {
 
 	const handleNotificationAction = async (item: NotificationData) => {
 		try {
-			await readNotifications({
-				notificationIds: [item.id],
-				isDelivered: false,
-				isRead: true,
-			});
+			if(!item.readAt){
+				await readNotifications({
+					notificationIds: [item.id],
+					isDelivered: false,
+					isRead: true,
+				});
+			}
 		} catch {}
 		finally {
 			if (item.actionLink) {

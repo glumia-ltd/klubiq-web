@@ -5,7 +5,8 @@ import Stack from '@mui/system/Stack';
 import { useSelector } from 'react-redux';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
 import {
-	DynamicAvatar, FileUpload,
+	DynamicAvatar,
+	FileUpload,
 	StorageUploadResult,
 } from '@klubiq/ui-components';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
@@ -22,8 +23,8 @@ export const Profile = () => {
 	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
 	const dispatch = useDispatch();
-	const [updateProfile] = useUpdateProfileMutation()
-	
+	const [updateProfile] = useUpdateProfileMutation();
+
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	interface InitialFormValues {
@@ -32,8 +33,6 @@ export const Profile = () => {
 		addressLine2: string;
 		email: string;
 		phoneNumber: string;
-
-
 	}
 	const initialValues: InitialFormValues = {
 		firstName: user?.firstName,
@@ -41,24 +40,20 @@ export const Profile = () => {
 		addressLine2: '',
 		email: user?.email,
 		phoneNumber: user?.phone,
-
-
 	};
 	const onSubmit = async (values: any) => {
-		if (!user?.profileUuid
-		) return;
+		if (!user?.profileUuid) return;
 
 		try {
 			const payload = {
-				profileId: String(user.profileUuid
-				),
+				profileId: String(user.profileUuid),
 				body: {
 					firstName: values.firstName,
 					lastName: values.lastName,
 					phoneNumber: values.phoneNumber,
 					addressLine2: values.address,
-					profilePicUrl: ""
-				}
+					profilePicUrl: '',
+				},
 			};
 			await updateProfile(payload).unwrap();
 
@@ -108,8 +103,6 @@ export const Profile = () => {
 			},
 		},
 
-
-
 		{
 			name: 'phoneNumber',
 			label: 'Phone Number',
@@ -138,9 +131,7 @@ export const Profile = () => {
 			label: 'Address',
 			type: 'text',
 			width: isMobile ? '100%' : '100%',
-
 		},
-
 	];
 
 	const profileFormConfig: DynamicTanstackFormProps = {
@@ -168,10 +159,8 @@ export const Profile = () => {
 		multiple: false,
 		onUploadProfile: onUploadProfile,
 		value: user?.profilePicUrl,
-		onChange: (_value: FileList | null) => {
-		},
-		onBlur: () => {
-		},
+		onChange: (_value: FileList | null) => {},
+		onBlur: () => {},
 		autoUploadOnSelect: true,
 		uploadButtonText: 'Upload Photo',
 		helperText: 'Upload a new profile photo.',
@@ -186,57 +175,53 @@ export const Profile = () => {
 				alignItems='flex-start'
 				justifyContent='space-between'
 			>
-				<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
-
-					<Typography variant='h3'>Profile</Typography>
-					<Typography variant='body1'>
-						Update your personal information and profile picture
-					</Typography>
+				<Typography variant='h3'>Profile</Typography>
+				<Typography variant='body1'>
+					Update your personal information and profile picture
+				</Typography>
+				<Stack
+					direction='row'
+					gap={3}
+					alignItems={isMobile ? 'flex-start' : 'center'}
+					justifyContent={isMobile ? 'center' : 'flex-start'}
+				>
+					<DynamicAvatar
+						items={[
+							{
+								image: user?.profilePicUrl,
+								name: user?.firstName + ' ' + user?.lastName,
+								label: user?.email,
+								variant: 'circle',
+								background: 'dark',
+							},
+						]}
+						showName={false}
+						size='large'
+					/>
 					<Stack
-						direction='row'
-						gap={3}
-						alignItems={isMobile ? 'flex-start' : 'center'}
-						justifyContent={isMobile ? 'center' : 'flex-start'}
+						direction='column'
+						// spacing={1}
+						gap={1}
+						alignItems='flex-start'
+						justifyContent='flex-start'
 					>
-						<DynamicAvatar
-							items={[
-								{
-									image: user?.profilePicUrl,
-									name: user?.firstName + ' ' + user?.lastName,
-									label: user?.email,
-									variant: 'circle',
-									background: 'dark',
-								},
-							]}
-							showName={false}
-							size='large'
-						/>
-						<Stack
-							direction='column'
-							// spacing={1}
-							gap={1}
-							alignItems='flex-start'
-							justifyContent='flex-start'
-						>
-							<Typography variant='h6'>Profile Photo</Typography>
-							<Typography variant='body1'>Upload a new photo.</Typography>
+						<Typography variant='h6'>Profile Photo</Typography>
+						<Typography variant='body1'>Upload a new photo.</Typography>
 
-							<Stack
-								direction='row'
-								spacing={2}
-								alignItems='center'
-								justifyContent='flex-start'
-								sx={{ mt: 2 }}
-							>
-								<FileUpload {...fileUploadConfig} />
-								<Button variant='klubiqTextButton' color='error'>
-									Remove
-								</Button>
-							</Stack>
+						<Stack
+							direction='row'
+							spacing={2}
+							alignItems='center'
+							justifyContent='flex-start'
+							sx={{ mt: 2 }}
+						>
+							<FileUpload {...fileUploadConfig} />
+							<Button variant='klubiqTextButton' color='error'>
+								Remove
+							</Button>
 						</Stack>
 					</Stack>
-				</Box>
-				<Box>{/* Dynamic Form goes here @Feyi */}</Box>
+				</Stack>
 				<KlubiqFormV1 {...profileFormConfig} />
 				{/* Dynamic Form goes here @Feyi */}
 			</Stack>

@@ -121,6 +121,8 @@ export const router = createBrowserRouter(
 						}
 					>
 						<Route path='/lease' element={<Navigate to='/leases' replace />} />
+						<Route path='/lease/:id' element={<Navigate to='/leases' replace />} />
+						<Route path='/lease/*' element={<Navigate to='/leases' replace />} />
 						<Route
 							path='/leases/*'
 							element={<Navigate to='/leases' replace />}
