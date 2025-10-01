@@ -5,8 +5,8 @@ import { useTheme } from '@mui/material/styles';
 import Profile from './profile';
 import Account from './account';
 import Notifications from './notifications';
-import Security from './security';
-import Subscription from './subscription';
+// import Security from './security';
+// import Subscription from './subscription';
 import { tabSx, contentCardSx } from './settingsStyle';
 
 const Setting: React.FC = () => {
@@ -51,30 +51,30 @@ const Setting: React.FC = () => {
 				...tabStyles,
 			},
 		},
-		{
-			id: 'security',
-			label: 'Security',
-			contentNode: (
-				<Card sx={contentCardSx}>
-					<Security />
-				</Card>
-			),
-			sx: {
-				...tabStyles,
-			},
-		},
-		{
-			id: 'subscription',
-			label: 'Subscription',
-			contentNode: (
-				<Card sx={contentCardSx}>
-					<Subscription />
-				</Card>
-			),
-			sx: {
-				...tabStyles,
-			},
-		},
+		// {
+		// 	id: 'security',
+		// 	label: 'Security',
+		// 	contentNode: (
+		// 		<Card sx={contentCardSx}>
+		// 			<Security />
+		// 		</Card>
+		// 	),
+		// 	sx: {
+		// 		...tabStyles,
+		// 	},
+		// },
+		// {
+		// 	id: 'subscription',
+		// 	label: 'Subscription',
+		// 	contentNode: (
+		// 		<Card sx={contentCardSx}>
+		// 			<Subscription />
+		// 		</Card>
+		// 	),
+		// 	sx: {
+		// 		...tabStyles,
+		// 	},
+		// },
 	];
 	const [activeTab, setActiveTab] = useState<{
 		index: number;

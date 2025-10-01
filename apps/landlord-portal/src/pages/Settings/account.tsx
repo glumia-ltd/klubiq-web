@@ -34,9 +34,9 @@ export const Account = () => {
 		language: string;
 	};
 	type LanguageOption = {
-  value: string;
-  label: string;
-};
+		value: string;
+		label: string;
+	};
 	const activeCountries: CountryType[] = orderBy(
 		filter(countries, ['active', true]),
 		'priority',
@@ -46,12 +46,12 @@ export const Account = () => {
 		value: country.currency,
 		label: `${country.currency} - ${country.name} (${country.currencySymbol})`,
 	}));
-const languageOptions: LanguageOption[] = Array.from(
-  new Set(activeCountries.map((c) => c.language))
-).map((lang) => ({
-  value: lang,
-  label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
-}));
+	const languageOptions: LanguageOption[] = Array.from(
+		new Set(activeCountries.map((c) => c.language))
+	).map((lang) => ({
+		value: lang,
+		label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
+	}));
 	interface InitialFormValues {
 		name: string;
 		addressLine2: string;
@@ -65,32 +65,32 @@ const languageOptions: LanguageOption[] = Array.from(
 		timeFormat: string;
 	}
 	const initialValues: InitialFormValues = {
-  name: user?.organization ?? '',
-  addressLine2: user?.organizationAddressLine2 ?? '',
-  phoneNumber: user?.organizationPhone ?? '',
-  companyLogo: user?.organizationLogoUrl ?? '',
-  timeFormat: user?.organizationSettings?.settings?.timeFormat ?? '24H',
-  dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
-  timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
-  currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
-  country: user?.country ?? '',
-  language: user?.organizationSettings?.settings?.language ?? 'en',
-};
+		name: user?.organization ?? '',
+		addressLine2: user?.organizationAddressLine2 ?? '',
+		phoneNumber: user?.organizationPhone ?? '',
+		companyLogo: user?.organizationLogoUrl ?? '',
+		timeFormat: user?.organizationSettings?.settings?.timeFormat ?? '24H',
+		dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
+		timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
+		currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
+		country: user?.country ?? '',
+		language: user?.organizationSettings?.settings?.language ?? 'en',
+	};
 
 	const onSubmit = async (values: any) => {
-if (!user?.uuid || !user?.organizationUuid) {
-    return;
-  }
+		if (!user?.uuid || !user?.organizationUuid) {
+			return;
+		}
 		try {
 			const payload = {
 				profileUuid: user.uuid,
-				uuid:user.organizationUuid,
+				uuid: user.organizationUuid,
 				body: {
-        name: values.name ?? '',
-        addressLine2: values.addressLine2 ?? '',
-        phoneNumber: values.phoneNumber ?? '',
-        country: values.country ?? '',
-      },
+					name: values.name ?? '',
+					addressLine2: values.addressLine2 ?? '',
+					phoneNumber: values.phoneNumber ?? '',
+					country: values.country ?? '',
+				},
 			};
 			await updateCompany(payload).unwrap();
 			dispatch(
@@ -152,7 +152,6 @@ if (!user?.uuid || !user?.organizationUuid) {
 			name: "companyLogo",
 			label: "Company Logo",
 			type: "file",
-
 		},
 		{
 			name: "",
@@ -168,7 +167,7 @@ if (!user?.uuid || !user?.organizationUuid) {
 			label: 'Language',
 			type: 'select',
 			radioGroupDirection: 'row',
-			options:languageOptions
+			options: languageOptions
 		},
 
 
