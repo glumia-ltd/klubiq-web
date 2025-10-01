@@ -9,6 +9,7 @@ import {
 } from '@klubiq/ui-components';
 import { z } from 'zod';
 import countries from '../../helpers/countries-meta.json';
+import { FileUpload } from '@klubiq/ui-components';
 import { filter, orderBy } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
 import { useUpdateOrganizationMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
@@ -24,6 +25,7 @@ export const Account = () => {
 	const dispatch = useDispatch();
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
+	const IMAGE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB
 
 	type CountryType = {
 		name: string;
@@ -152,6 +154,27 @@ export const Account = () => {
 			name: "companyLogo",
 			label: "Company Logo",
 			type: "file",
+			fileConfig: {
+				subtitle: '',
+				caption: 'Drag & Drop your files here or  Browse Files to Upload',
+				accept: 'image/*',
+				multiple: true,
+				maxSize: IMAGE_SIZE_LIMIT,
+				// onUpload: uploadPropertyImages,
+				// onDelete: deletePropertyImage,
+				uploadButtonText: 'Upload Images',
+				maxFavorites: 1,
+				tooltipMessages: {
+					upload: 'Upload company logo',
+					sizeLimit: `Maximum file size is ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB`,
+					favorite: 'Mark as cover photo',
+					unfavorite: 'Unmark as cover photo',
+					delete: 'Delete image',
+					maxFavoritesReached: 'You can only have one cover photo',
+
+				},
+			},
+
 		},
 		{
 			name: "",
