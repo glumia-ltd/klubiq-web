@@ -97,6 +97,7 @@ export const fileEndpoints = {
 
 export const settingsEndpoint = {
 	updateProfile: (profileId: string) => `/users/${profileId}`,
+	deleteUserProfilePicture: (profileUuid: string) => `/users/profile-picture/${profileUuid}`,
 	updateOrganization: (uuid: string) =>
 		`/organizations/${uuid}/settings`,
 	updateOrganizationSettings: (organizationUuid: string, profileUuid: string) =>

@@ -12,10 +12,14 @@ import countries from '../../helpers/countries-meta.json';
 import { FileUpload } from '@klubiq/ui-components';
 import { filter, orderBy } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { useUpdateOrganizationMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useUpdateOrganizationMutation, } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { useUploadImagesMutation } from '../../store/GlobalStore/globalApiSlice';
 import { screenMessages } from '../../helpers/screen-messages';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { useDeleteFileMutation } from '../../store/GlobalStore/globalApiSlice';
+import { consoleError, consoleInfo } from '../../helpers/debug-logger';
+
 import { dateFormatOptions, timeFormatOptions } from '../../helpers/utils';
 export const Account = () => {
 	const theme = useTheme();
@@ -25,6 +29,8 @@ export const Account = () => {
 	const dispatch = useDispatch();
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
+	const [uploadImages] = useUploadImagesMutation();
+	const [deleteImage] = useDeleteFileMutation();
 	const IMAGE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB
 
 	type CountryType = {
@@ -54,6 +60,26 @@ export const Account = () => {
 		value: lang,
 		label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
 	}));
+	const uploadOrganizationImages = async (formData: FormData) => {
+		if (user?.organizationUuid) {
+			formData.append('organizationUuid', user?.organizationUuid);
+		}
+		if (user?.organization) {
+			formData.append('organization', user?.organization);
+		}
+		formData.append('rootFolder', 'properties');
+		return await uploadImages(formData).unwrap();
+	}
+	const deletePropertyImage = async (fileId: string) => {
+		try {
+			const response = await deleteImage({ publicId: fileId }).unwrap();
+			consoleInfo('Delete property image response', response);
+			return true;
+		} catch (error) {
+			consoleError('Error deleting property image', error);
+			throw error;
+		}
+	}
 	interface InitialFormValues {
 		name: string;
 		addressLine2: string;
@@ -75,7 +101,7 @@ export const Account = () => {
 		dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
 		timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
 		currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
-		country: user?.country ?? '',
+		country: user?.organizationCountry ?? '',
 		language: user?.organizationSettings?.settings?.language ?? 'en',
 	};
 
@@ -92,6 +118,12 @@ export const Account = () => {
 					addressLine2: values.addressLine2 ?? '',
 					phoneNumber: values.phoneNumber ?? '',
 					country: values.country ?? '',
+					// companyLogo: values.companyLogo ?? '',
+					// language: values.language ?? 'en',
+					// currency: values.currency ?? 'NGN',
+					// timeZone: values.timeZone ?? 'Africa/Lagos',
+					// dateFormat: values.dateFormat ?? 'DD/MM/YYYY',
+					// timeFormat: values.timeFormat ?? '24H',
 				},
 			};
 			await updateCompany(payload).unwrap();
@@ -156,13 +188,13 @@ export const Account = () => {
 			type: "file",
 			fileConfig: {
 				subtitle: '',
-				caption: 'Drag & Drop your files here or  Browse Files to Upload',
+				caption: 'Drag & Drop or Browse to Upload',
 				accept: 'image/*',
-				multiple: true,
+				multiple: false,
 				maxSize: IMAGE_SIZE_LIMIT,
-				// onUpload: uploadPropertyImages,
-				// onDelete: deletePropertyImage,
-				uploadButtonText: 'Upload Images',
+				onUpload: uploadOrganizationImages,
+				onDelete: deletePropertyImage,
+				uploadButtonText: 'Upload Logo',
 				maxFavorites: 1,
 				tooltipMessages: {
 					upload: 'Upload company logo',
@@ -171,10 +203,20 @@ export const Account = () => {
 					unfavorite: 'Unmark as cover photo',
 					delete: 'Delete image',
 					maxFavoritesReached: 'You can only have one cover photo',
-
 				},
 			},
-
+			customComponent: (fieldApi, fieldConfig, form) => (
+				<FileUpload
+					value={fieldApi.state.value}
+					onChange={fieldApi.handleChange}
+					onBlur={fieldApi.handleBlur}
+					error={!!fieldApi.state.meta.errors[0]}
+					helperText={fieldApi.state.meta.errors[0]}
+					form={form}
+					fieldName="companyLogo"
+					{...fieldConfig.fileConfig}
+				/>
+			),
 		},
 		{
 			name: "",

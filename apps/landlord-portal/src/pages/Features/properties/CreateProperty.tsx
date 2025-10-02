@@ -561,7 +561,6 @@ export const CreateProperty = () => {
 			],
 			icon: { icon: <HomeIcon /> },
 		},
-		// Property Details
 		{
 			title: 'Property Details',
 			fields: [

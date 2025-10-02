@@ -19,11 +19,14 @@ import { z } from 'zod';
 import { useUpdateProfileMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
+import { useUploadImagesMutation } from '../../store/GlobalStore/globalApiSlice';
+
 export const Profile = () => {
 	const { user } = useSelector(getAuthState);
 	const theme = useTheme();
 	const dispatch = useDispatch();
 	const [updateProfile] = useUpdateProfileMutation();
+	const [uploadImages] = useUploadImagesMutation();
 
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -37,9 +40,9 @@ export const Profile = () => {
 	const initialValues: InitialFormValues = {
 		firstName: user?.firstName,
 		lastName: user?.lastName,
-		addressLine2: '',
+		addressLine2: user?.addressLine2 || '',
 		email: user?.email,
-		phoneNumber: user?.phone,
+		phoneNumber: user?.phoneNumber,
 	};
 	const onSubmit = async (values: any) => {
 		if (!user?.profileUuid) return;
@@ -148,13 +151,60 @@ export const Profile = () => {
 		verticalAlignment: 'top',
 	};
 
-	const onUploadProfile = (_formData: FormData) => {
-		return Promise.resolve({} as StorageUploadResult);
-	};
+const onUploadProfile = async (formData: FormData): Promise<StorageUploadResult | null> => {
+  try {
+    if (!user?.profileUuid) {
+      throw new Error("Profile UUID missing");
+    }
+
+    formData.append("profileUuid", user.profileUuid);
+    formData.append("rootFolder", "profile");
+
+    const results = await uploadImages(formData).unwrap();
+    const result = results?.[0]; // safer access
+
+    if (!result) throw new Error("No file returned from upload");
+
+    const uploadResult: StorageUploadResult = {
+      url: result.secure_url ?? result.url,
+    };
+
+    await updateProfile({
+      profileId: String(user.profileUuid),
+      body: { profilePicUrl: uploadResult.url },
+    }).unwrap();
+
+    dispatch(
+      openSnackbar({
+        message: screenMessages.settings.profileUpdate.success,
+        severity: "success",
+        isOpen: true,
+        duration: 2000,
+      })
+    );
+
+    return uploadResult;
+  } catch (error) {
+    dispatch(
+      openSnackbar({
+        message: `Profile photo upload failed.\n${screenMessages.settings.profileUpdate.error}`,
+        severity: "error",
+        isOpen: true,
+        duration: 7000,
+      })
+    );
+    return null;
+  }
+};
+
+
+
 	const fileUploadConfig = {
 		accept: 'image/*',
 		variant: 'button' as const,
 		uploadContext: 'profile' as const,
+		subtitle:"Upload Profile Photo",
+		caption: 'Drag & Drop or Browse to Upload',
 		maxSize: 2 * 1024 * 1024, // 2MB
 		multiple: false,
 		onUploadProfile: onUploadProfile,
