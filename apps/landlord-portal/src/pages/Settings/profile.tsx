@@ -161,7 +161,7 @@ const onUploadProfile = async (formData: FormData): Promise<StorageUploadResult 
     formData.append("rootFolder", "profile");
 
     const results = await uploadImages(formData).unwrap();
-    const result = results?.[0]; // safer access
+    const result = results?.[0]; 
 
     if (!result) throw new Error("No file returned from upload");
 
