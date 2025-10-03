@@ -54,7 +54,7 @@ export const Profile = () => {
 					firstName: values.firstName,
 					lastName: values.lastName,
 					phoneNumber: values.phoneNumber,
-					addressLine2: values.address,
+					addressLine2: values.addressLine2,
 					profilePicUrl: '',
 				},
 			};
@@ -149,73 +149,125 @@ export const Profile = () => {
 		fullWidthButtons: false,
 		horizontalAlignment: 'right',
 		verticalAlignment: 'top',
+		buttonLoadingText: 'Saving changes...'
 	};
 
-const onUploadProfile = async (formData: FormData): Promise<StorageUploadResult | null> => {
-  try {
-    if (!user?.profileUuid) {
-      throw new Error("Profile UUID missing");
-    }
 
-    formData.append("profileUuid", user.profileUuid);
-    formData.append("rootFolder", "profile");
+	const onUpload = async (formData: FormData): Promise<StorageUploadResult[]> => {
 
-    const results = await uploadImages(formData).unwrap();
-    const result = results?.[0]; 
+		try {
+			if (!user?.profileUuid) throw new Error("Profile UUID missing");
 
-    if (!result) throw new Error("No file returned from upload");
+			const newForm = new FormData();
 
-    const uploadResult: StorageUploadResult = {
-      url: result.secure_url ?? result.url,
-    };
+			const file = formData.get("file") as File;
+			if (!file) throw new Error("No file found in formData");
 
-    await updateProfile({
-      profileId: String(user.profileUuid),
-      body: { profilePicUrl: uploadResult.url },
-    }).unwrap();
+			newForm.append("files", file);
 
-    dispatch(
-      openSnackbar({
-        message: screenMessages.settings.profileUpdate.success,
-        severity: "success",
-        isOpen: true,
-        duration: 2000,
-      })
-    );
+			newForm.append("profileUuid", user.profileUuid);
+			newForm.append("rootFolder", "profile");
 
-    return uploadResult;
-  } catch (error) {
-    dispatch(
-      openSnackbar({
-        message: `Profile photo upload failed.\n${screenMessages.settings.profileUpdate.error}`,
-        severity: "error",
-        isOpen: true,
-        duration: 7000,
-      })
-    );
-    return null;
-  }
-};
+			// Call backend
+			const results = await uploadImages(newForm).unwrap();
+			const result = results?.[0];
 
+			if (!result) throw new Error("No file returned from upload");
 
+			const uploadResult: StorageUploadResult = {
+				url: result.secure_url ?? result.url,
+			};
+
+			await updateProfile({
+				profileId: String(user.profileUuid),
+				body: { profilePicUrl: uploadResult.url },
+			}).unwrap();
+
+			dispatch(
+				openSnackbar({
+					message: screenMessages.settings.profileUpdate.success,
+					severity: "success",
+					isOpen: true,
+					duration: 2000,
+				})
+			);
+
+			return [uploadResult];
+		} catch (error) {
+			dispatch(
+				openSnackbar({
+					message: `Profile photo upload failed.\n${screenMessages.settings.profileUpdate.error}`,
+					severity: "error",
+					isOpen: true,
+					duration: 7000,
+				})
+			);
+			return [];
+		}
+	};
+
+	const onDelete = async (): Promise<boolean> => {
+		try {
+			await updateProfile({
+				profileId: String(user?.profileUuid),
+				body: { profilePicUrl: "" },
+			}).unwrap();
+
+			dispatch(
+				openSnackbar({
+					message: "Profile photo removed successfully",
+					severity: "success",
+					isOpen: true,
+					duration: 2000,
+				})
+			);
+
+			return true;
+		} catch (error) {
+
+			dispatch(
+				openSnackbar({
+					message: "Failed to remove profile photo",
+					severity: "error",
+					isOpen: true,
+					duration: 7000,
+				})
+			);
+
+			return false;
+		}
+	};
 
 	const fileUploadConfig = {
-		accept: 'image/*',
-		variant: 'button' as const,
-		uploadContext: 'profile' as const,
-		subtitle:"Upload Profile Photo",
-		caption: 'Drag & Drop or Browse to Upload',
-		maxSize: 2 * 1024 * 1024, // 2MB
+		accept: "image/*",
+		variant: "button" as const,
+		uploadContext: "profile" as const,
+		subtitle: "Upload Profile Photo",
+		caption: "Drag & Drop or Browse to Upload",
+		maxSize: 2 * 1024 * 1024,
 		multiple: false,
-		onUploadProfile: onUploadProfile,
-		value: user?.profilePicUrl,
-		onChange: (_value: FileList | null) => {},
-		onBlur: () => {},
+		onUpload,
+		onDelete,
+		value: null,
 		autoUploadOnSelect: true,
-		uploadButtonText: 'Upload Photo',
-		helperText: 'Upload a new profile photo.',
-		uploadButtonVariant: 'klubiqOutlinedButton' as const,
+		uploadButtonText: "Upload Photo",
+		helperText: "Upload a new profile photo.",
+		uploadButtonVariant: "klubiqOutlinedButton" as const,
+
+		onChange: async (files: FileList | null) => {
+			if (files && files.length > 0) {
+				const file = files[0];
+				if (file) {
+					const formData = new FormData();
+					formData.append("file", file);
+					await onUpload(formData);
+				}
+			}
+		},
+
+		onBlur: () => { },
 	};
+
 
 	return (
 		<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
@@ -239,18 +291,19 @@ const onUploadProfile = async (formData: FormData): Promise<StorageUploadResult 
 						items={[
 							{
 								image: user?.profilePicUrl,
-								name: user?.firstName + ' ' + user?.lastName,
+								name: user?.firstName + " " + user?.lastName,
 								label: user?.email,
-								variant: 'circle',
-								background: 'dark',
+								variant: "circle",
+								background: "dark",
 							},
 						]}
 						showName={false}
-						size='large'
+						size="large"
 					/>
+
+
 					<Stack
 						direction='column'
-						// spacing={1}
 						gap={1}
 						alignItems='flex-start'
 						justifyContent='flex-start'
@@ -266,14 +319,18 @@ const onUploadProfile = async (formData: FormData): Promise<StorageUploadResult 
 							sx={{ mt: 2 }}
 						>
 							<FileUpload {...fileUploadConfig} />
-							<Button variant='klubiqTextButton' color='error'>
-								Remove
+							<Button
+								variant="klubiqTextButton"
+								color="error"
+								onClick={async () => {
+									await fileUploadConfig.onDelete?.();
+								}}
+							>								Remove
 							</Button>
 						</Stack>
 					</Stack>
 				</Stack>
 				<KlubiqFormV1 {...profileFormConfig} />
-				{/* Dynamic Form goes here @Feyi */}
 			</Stack>
 		</Box>
 	);
