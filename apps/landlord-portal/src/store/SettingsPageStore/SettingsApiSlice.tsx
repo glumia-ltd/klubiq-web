@@ -17,6 +17,14 @@ export const settingsApiSlice = createApi({
             }),
 
         }),
+        deleteProfilePicture: builder.mutation<any, { profileUuid: string; body: any }>({
+            query: ({ profileUuid, body }) => ({
+                url: settingsEndpoint.deleteUserProfilePicture(profileUuid),
+                method: 'DELETE',
+                body,
+            }),
+
+        }),
         updateOrganization: builder.mutation<any, { uuid: string; body: any }>({
             query: ({ uuid, body }) => ({
                 url: settingsEndpoint.updateOrganization(uuid),
@@ -71,4 +79,5 @@ export const {
     useGetOrganizationSettingsQuery,
 useGetNotificationPreferenceQuery,
     useUpdateNotificationPreferenceMutation,
+    useDeleteProfilePictureMutation,
 } = settingsApiSlice;

@@ -9,12 +9,17 @@ import {
 } from '@klubiq/ui-components';
 import { z } from 'zod';
 import countries from '../../helpers/countries-meta.json';
+import { FileUpload } from '@klubiq/ui-components';
 import { filter, orderBy } from 'lodash';
 import { openSnackbar } from '../../store/SnackbarStore/SnackbarSlice';
-import { useUpdateOrganizationMutation } from '../../store/SettingsPageStore/SettingsApiSlice';
+import { useUpdateOrganizationMutation, } from '../../store/SettingsPageStore/SettingsApiSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { useUploadImagesMutation } from '../../store/GlobalStore/globalApiSlice';
 import { screenMessages } from '../../helpers/screen-messages';
 import { getAuthState } from '../../store/AuthStore/AuthSlice';
+import { useDeleteFileMutation } from '../../store/GlobalStore/globalApiSlice';
+import { consoleError, consoleInfo } from '../../helpers/debug-logger';
+
 import { dateFormatOptions, timeFormatOptions } from '../../helpers/utils';
 export const Account = () => {
 	const theme = useTheme();
@@ -24,6 +29,9 @@ export const Account = () => {
 	const dispatch = useDispatch();
 	const isGloballyAvailable =
 		import.meta.env.VITE_IS_GLOBALLY_AVAILABLE?.toLowerCase() === 'true';
+	const [uploadImages] = useUploadImagesMutation();
+	const [deleteImage] = useDeleteFileMutation();
+	const IMAGE_SIZE_LIMIT = 1024 * 1024 * 10; // 10MB
 
 	type CountryType = {
 		name: string;
@@ -34,9 +42,9 @@ export const Account = () => {
 		language: string;
 	};
 	type LanguageOption = {
-  value: string;
-  label: string;
-};
+		value: string;
+		label: string;
+	};
 	const activeCountries: CountryType[] = orderBy(
 		filter(countries, ['active', true]),
 		'priority',
@@ -46,12 +54,32 @@ export const Account = () => {
 		value: country.currency,
 		label: `${country.currency} - ${country.name} (${country.currencySymbol})`,
 	}));
-const languageOptions: LanguageOption[] = Array.from(
-  new Set(activeCountries.map((c) => c.language))
-).map((lang) => ({
-  value: lang,
-  label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
-}));
+	const languageOptions: LanguageOption[] = Array.from(
+		new Set(activeCountries.map((c) => c.language))
+	).map((lang) => ({
+		value: lang,
+		label: lang.toUpperCase(), // or use Intl.DisplayNames for full names
+	}));
+	const uploadOrganizationImages = async (formData: FormData) => {
+		if (user?.organizationUuid) {
+			formData.append('organizationUuid', user?.organizationUuid);
+		}
+		if (user?.organization) {
+			formData.append('organization', user?.organization);
+		}
+		formData.append('rootFolder', 'properties');
+		return await uploadImages(formData).unwrap();
+	}
+	const deletePropertyImage = async (fileId: string) => {
+		try {
+			const response = await deleteImage({ publicId: fileId }).unwrap();
+			consoleInfo('Delete property image response', response);
+			return true;
+		} catch (error) {
+			consoleError('Error deleting property image', error);
+			throw error;
+		}
+	}
 	interface InitialFormValues {
 		name: string;
 		addressLine2: string;
@@ -65,32 +93,38 @@ const languageOptions: LanguageOption[] = Array.from(
 		timeFormat: string;
 	}
 	const initialValues: InitialFormValues = {
-  name: user?.organization ?? '',
-  addressLine2: user?.organizationAddressLine2 ?? '',
-  phoneNumber: user?.organizationPhone ?? '',
-  companyLogo: user?.organizationLogoUrl ?? '',
-  timeFormat: user?.organizationSettings?.settings?.timeFormat ?? '24H',
-  dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
-  timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
-  currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
-  country: user?.country ?? '',
-  language: user?.organizationSettings?.settings?.language ?? 'en',
-};
+		name: user?.organization ?? '',
+		addressLine2: user?.organizationAddressLine2 ?? '',
+		phoneNumber: user?.organizationPhone ?? '',
+		companyLogo: user?.organizationLogoUrl ?? '',
+		timeFormat: user?.organizationSettings?.settings?.timeFormat ?? '24H',
+		dateFormat: user?.organizationSettings?.settings?.dateFormat ?? 'DD/MM/YYYY',
+		timeZone: user?.organizationSettings?.settings?.timeZone ?? 'Africa/Lagos',
+		currency: user?.organizationSettings?.settings?.currency ?? 'NGN',
+		country: user?.organizationCountry ?? '',
+		language: user?.organizationSettings?.settings?.language ?? 'en',
+	};
 
 	const onSubmit = async (values: any) => {
-if (!user?.uuid || !user?.organizationUuid) {
-    return;
-  }
+		if (!user?.uuid || !user?.organizationUuid) {
+			return;
+		}
 		try {
 			const payload = {
 				profileUuid: user.uuid,
-				uuid:user.organizationUuid,
+				uuid: user.organizationUuid,
 				body: {
-        name: values.name ?? '',
-        addressLine2: values.addressLine2 ?? '',
-        phoneNumber: values.phoneNumber ?? '',
-        country: values.country ?? '',
-      },
+					name: values.name ?? '',
+					addressLine2: values.addressLine2 ?? '',
+					phoneNumber: values.phoneNumber ?? '',
+					country: values.country ?? '',
+					// companyLogo: values.companyLogo ?? '',
+					// language: values.language ?? 'en',
+					// currency: values.currency ?? 'NGN',
+					// timeZone: values.timeZone ?? 'Africa/Lagos',
+					// dateFormat: values.dateFormat ?? 'DD/MM/YYYY',
+					// timeFormat: values.timeFormat ?? '24H',
+				},
 			};
 			await updateCompany(payload).unwrap();
 			dispatch(
@@ -152,7 +186,37 @@ if (!user?.uuid || !user?.organizationUuid) {
 			name: "companyLogo",
 			label: "Company Logo",
 			type: "file",
-
+			fileConfig: {
+				subtitle: '',
+				caption: 'Drag & Drop or Browse to Upload',
+				accept: 'image/*',
+				multiple: false,
+				maxSize: IMAGE_SIZE_LIMIT,
+				onUpload: uploadOrganizationImages,
+				onDelete: deletePropertyImage,
+				uploadButtonText: 'Upload Logo',
+				maxFavorites: 1,
+				tooltipMessages: {
+					upload: 'Upload company logo',
+					sizeLimit: `Maximum file size is ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB`,
+					favorite: 'Mark as cover photo',
+					unfavorite: 'Unmark as cover photo',
+					delete: 'Delete image',
+					maxFavoritesReached: 'You can only have one cover photo',
+				},
+			},
+			customComponent: (fieldApi, fieldConfig, form) => (
+				<FileUpload
+					value={fieldApi.state.value}
+					onChange={fieldApi.handleChange}
+					onBlur={fieldApi.handleBlur}
+					error={!!fieldApi.state.meta.errors[0]}
+					helperText={fieldApi.state.meta.errors[0]}
+					form={form}
+					fieldName="companyLogo"
+					{...fieldConfig.fileConfig}
+				/>
+			),
 		},
 		{
 			name: "",
@@ -168,7 +232,7 @@ if (!user?.uuid || !user?.organizationUuid) {
 			label: 'Language',
 			type: 'select',
 			radioGroupDirection: 'row',
-			options:languageOptions
+			options: languageOptions
 		},
 
 

@@ -10,15 +10,16 @@ export default function AppRootGuard({ children }: PropsWithChildren) {
   // expects your auth slice to expose isSignedIn, orgId, roleName
   const hasCookie = readPermCookie('_kbq_pt');
   const { user, hasBeginSession } = useSelector(getAuthState);
-  const { organizationUuid, role } = user;
-
+  // const { organizationUuid, role } = user;
+  const organizationUuid = user?.organizationUuid ?? null;
+  const role = user?.role ?? null;
   // Only fetch perms for signed-in users with a known org/role
   const shouldFetch = useMemo(
-        () => hasBeginSession && Boolean(hasCookie || (organizationUuid && role)),
-        [hasBeginSession, hasCookie, organizationUuid, role]
+    () => hasBeginSession && Boolean(hasCookie || (organizationUuid && role)),
+    [hasBeginSession, hasCookie, organizationUuid, role]
   );
 
-  const {isFetching } = useGetPermissionsQuery(
+  const { isFetching } = useGetPermissionsQuery(
     { orgId: hasCookie?.orgUuid! || organizationUuid!, roleName: hasCookie?.role! || role! },
     { skip: !shouldFetch }
   );

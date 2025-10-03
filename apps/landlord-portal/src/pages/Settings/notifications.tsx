@@ -1,4 +1,4 @@
-import { Typography, useMediaQuery, useTheme, Card } from '@mui/material';
+import { Typography, useMediaQuery, useTheme, Card, Skeleton } from '@mui/material';
 import { useEffect, useState } from 'react';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
@@ -14,7 +14,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { screenMessages } from '../../helpers/screen-messages';
 export const Notifications = () => {
-	const { data} = useGetNotificationPreferenceQuery();
+	const { data, isLoading } = useGetNotificationPreferenceQuery();
 	const [updatePreference] =
 		useUpdateNotificationPreferenceMutation();
 	const dispatch = useDispatch();
@@ -104,7 +104,7 @@ export const Notifications = () => {
 			dispatch(
 				openSnackbar({
 					message: screenMessages.settings.notificationPreference.error,
-					severity: 'success',
+					severity: 'error',
 					isOpen: true,
 					duration: 2000,
 				}),
@@ -115,7 +115,7 @@ export const Notifications = () => {
 		}
 	};
 
-	
+
 
 	return (
 		<Box sx={{ width: '100%', height: '100%', px: isMobile ? 2 : 7, py: 2 }}>
@@ -132,29 +132,41 @@ export const Notifications = () => {
 
 				<Card sx={{ p: 2, mb: 2, width: '100%' }}>
 					<Typography variant="h5">Notification Preferences</Typography>
-					{notificationPreferences.map((item) => (
-						<NotificationItem
-							key={item.id}
-							{...item}
-							checked={switchStates[item.id] ?? false}
-							onToggle={handleToggle}
-						/>
-					))}
+					{isLoading ? (
+						<Stack gap={0}>
+							<Skeleton variant="rectangular" height={200} />
+						</Stack>
+					) : (
+						notificationPreferences.map((item) => (
+							<NotificationItem
+								key={item.id}
+								{...item}
+								checked={switchStates[item.id] ?? false}
+								onToggle={handleToggle}
+							/>
+						))
+					)}
 				</Card>
 
 				<Card sx={{ p: 2, mb: 2, width: '100%' }}>
 					<Typography variant="h5">Notification Channels</Typography>
-					{notificationChannels.map((item) => (
-						<NotificationItem
-							key={item.id}
-							{...item}
-							checked={switchStates[item.id] ?? false}
-							onToggle={handleToggle}
-						/>
-					))}
+					{isLoading ? (
+						<Stack gap={0}>
+							<Skeleton variant="rectangular" height={200} />
+						</Stack>
+					) : (
+						notificationChannels.map((item) => (
+							<NotificationItem
+								key={item.id}
+								{...item}
+								checked={switchStates[item.id] ?? false}
+								onToggle={handleToggle}
+							/>
+						))
+					)}
 				</Card>
 
-				
+
 			</Stack>
 		</Box>
 	);
